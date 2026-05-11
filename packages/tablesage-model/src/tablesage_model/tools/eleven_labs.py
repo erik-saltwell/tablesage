@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -30,7 +29,7 @@ class TranscriptionWords:
 
 async def transcribe_and_diarize(
     input_file: Path, language_code: str, model_id: str, request_timeout: int, tag_audio_events: bool, speaker_count: int | None
-) -> AsyncIterator[TranscriptionWords]:
+) -> list[TranscriptionWords]:
     elevenlabs: AsyncElevenLabs = AsyncElevenLabs(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
     )
@@ -57,5 +56,7 @@ async def transcribe_and_diarize(
                 timestamps_granularity="word",
                 request_options={"timeout_in_seconds": request_timeout},
             )
-    for word in transcription.words:
-        yield TranscriptionWords(text=word.text, type=WordType(word.type), start=word.start, end=word.end, speaker_id=word.speaker_id)
+    return [
+        TranscriptionWords(text=word.text, type=WordType(word.type), start=word.start, end=word.end, speaker_id=word.speaker_id)
+        for word in transcription.words
+    ]
