@@ -1,8 +1,5 @@
-from tablesage_model import hello_model
-
-
 def main() -> None:
-    print(f"TableSage TUI starting. {hello_model()}")
+    print("TableSage TUI starting.")
 
 
 if __name__ == "__main__":
