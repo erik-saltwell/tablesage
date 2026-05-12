@@ -83,7 +83,7 @@ class LoggingProtocol(Protocol):
         ...
 
 
-class _NullStatus(StatusHandle):
+class NullStatus(StatusHandle):
     """No-op implementation of StatusHandle."""
 
     def update(self, message: str) -> None:
@@ -95,7 +95,7 @@ class _NullStatus(StatusHandle):
         pass
 
 
-class _NullProgress(ProgressTask):
+class NullProgress(ProgressTask):
     """No-op implementation of ProgressTask."""
 
     def advance(self, n: int = 1) -> None:
@@ -153,12 +153,12 @@ class NullLogger(LoggingProtocol):
     @contextmanager
     def status(self, message: str) -> Iterator[StatusHandle]:
         """Yield a no-op status handle."""
-        yield _NullStatus()
+        yield NullStatus()
 
     @contextmanager
     def progress(self, description: str, total: int | None = None) -> Iterator[ProgressTask]:
         """Yield a no-op progress handle."""
-        yield _NullProgress()
+        yield NullProgress()
 
 
 @dataclass

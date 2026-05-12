@@ -73,3 +73,9 @@ def trace_path() -> Path:
 
 def logfile_path() -> Path:
     return data_root() / KnownDirectories.LOGS / KnownFiles.LOGFILE
+
+
+def to_absolute(base_path: Path, final_path: Path) -> Path:
+    if final_path.is_absolute():
+        return final_path
+    return base_path / final_path

@@ -21,7 +21,7 @@ class PhasedProgressSink(Protocol):
     async def publish(self, event: PhasedProgressEvent) -> None: ...
 
 
-class NullPhasedProgressSink(PhasedProgressSink):
+class NullPhasedProgressSink:
     async def publish(self, event: PhasedProgressEvent) -> None:
         pass
 
@@ -30,6 +30,6 @@ class IncrementalProgressSink(Protocol):
     async def publish(self, event: IncrementalProgressEvent) -> None: ...
 
 
-class NullIncrementalProgressSink(IncrementalProgressSink):
+class NullIncrementalProgressSink:
     async def publish(self, event: IncrementalProgressEvent) -> None:
         pass

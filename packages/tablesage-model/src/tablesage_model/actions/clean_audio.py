@@ -3,8 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from .. import paths
 from .._tools import audio_cleaning
-from ..protocols.progress_syncs import PhasedProgressEvent, PhasedProgressSink
+from ..protocols import PhasedProgressEvent, PhasedProgressSink
+from ..settings import AudioCleaningSettings
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:
@@ -12,7 +14,9 @@ async def _progress(sink: PhasedProgressSink, phase: str) -> None:
     await sink.publish(event)
 
 
-async def clean_audio(source_path: Path, cleaned_output_path: Path, normalize_volume: bool, sink: PhasedProgressSink) -> None:
+async def clean_audio(session_dir: Path, settings: AudioCleaningSettings, sink: PhasedProgressSink) -> None:
+    source_path: Path = paths.to_absolute(session_dir, settings.raw_audio_file)
+    cleaned_output_path: Path = paths.to_absolute(session_dir, settings.cleaned_audio_file)
     if not source_path.exists():
         raise FileNotFoundError(source_path)
 
@@ -27,7 +31,7 @@ async def clean_audio(source_path: Path, cleaned_output_path: Path, normalize_vo
         await _progress(sink, "clean with mossformer2")
         await audio_cleaning.enhance_with_mossformer2(wav_48k_path, post_mosfet_path)
 
-        if normalize_volume:
+        if settings.normalize_volume:
             await _progress(sink, "measuring loudness")
             stats = await audio_cleaning.measure_loudness(post_mosfet_path)
             await _progress(sink, "measuring normalizing and exporting to 16k mono")
