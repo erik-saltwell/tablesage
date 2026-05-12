@@ -6,7 +6,7 @@ from typing import NamedTuple
 from .text_cleaner import clean_multiple_texts
 
 
-class IndexedString(NamedTuple):
+class _IndexedString(NamedTuple):
     text: str
     index: int
 
@@ -27,7 +27,7 @@ async def punctuate_text(texts: list[str]) -> list[str]:
     """Cleans punctuates text, leaving empty strings and strings that get cleaned to empty unchanged."""
     return_values: list[str] = list(texts)
     cleaned_texts = await clean_multiple_texts(return_values)
-    indexed_texts: list[IndexedString] = [IndexedString(text, idx) for idx, text in enumerate(cleaned_texts) if text]
+    indexed_texts: list[_IndexedString] = [_IndexedString(text, idx) for idx, text in enumerate(cleaned_texts) if text]
 
     if indexed_texts:
         to_process: list[str] = [item.text for item in indexed_texts]

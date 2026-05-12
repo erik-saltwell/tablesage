@@ -5,6 +5,7 @@ from .logging_protocol import (
     _NullProgress,
     _NullStatus,
 )
+from .speech_run import SpeechRun, UnassignedSpeaker
 from .tracer_protocol import TracerProtocol
 
 __all__ = [
@@ -14,4 +15,6 @@ __all__ = [
     "_NullProgress",
     "_NullStatus",
     "TracerProtocol",
+    "SpeechRun",
+    "UnassignedSpeaker",
 ]

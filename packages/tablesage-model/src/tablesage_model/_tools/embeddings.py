@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import sys
 import types
 from dataclasses import dataclass, field
@@ -27,6 +28,9 @@ def _patch_torchaudio_sox_effects() -> None:
                 new_rate = int(effect[1])
                 tensor = torchaudio.functional.resample(tensor, sample_rate, new_rate)
                 sample_rate = new_rate
+                continue
+            msg = f"Unsupported torchaudio sox effect: {effect[0]}"
+            raise NotImplementedError(msg)
         return tensor, sample_rate
 
     sox = types.ModuleType("torchaudio.sox_effects")
@@ -75,7 +79,21 @@ def convert_multiple_to_tensors(tensor_data: list[list[float]]) -> Tensor:
     return torch.tensor(tensor_data, dtype=torch.float32)
 
 
-def copmute_similarity_single(first: Tensor, second: Tensor) -> float:
+async def compute_centroid(tensor_data: Tensor) -> Tensor:
+    if tensor_data.shape[0] == 0:
+        msg = "Cannot compute centroid for an empty embedding tensor."
+        raise ValueError(msg)
+    return await asyncio.to_thread(lambda: tensor_data.mean(dim=0).unsqueeze(0))
+
+
+async def compute_centroid_from_list(tensor_data: list[list[float]]) -> Tensor:
+    if len(tensor_data) == 0:
+        msg = "Cannot compute centroid for an empty embedding list."
+        raise ValueError(msg)
+    return await compute_centroid(convert_multiple_to_tensors(tensor_data))
+
+
+def compute_similarity_single(first: Tensor, second: Tensor) -> float:
     return float(torch.nn.functional.cosine_similarity(first, second).item())
 
 

@@ -8,28 +8,31 @@ from pathlib import Path
 from elevenlabs import AsyncElevenLabs, SpeechToTextChunkResponseModel
 
 
-class WordType(StrEnum):
+class SpeechType(StrEnum):
     WORD = "word"
     SPACING = "spacing"
     AUDIO_EVENT = "audio_event"
 
     @classmethod
-    def _missing_(cls, value: object) -> WordType:
+    def _missing_(cls, value: object) -> SpeechType:
         return cls.AUDIO_EVENT
 
 
 @dataclass
-class TranscriptionWords:
+class TranscriptionWord:
+    """This is a simple return type that looks similar to the model's TranscribedWord.
+    It is used because TranscriptionWord can have non-text speech types while TranscribedWord cannot."""
+
     text: str
-    type: WordType
+    type: SpeechType
     start: float
     end: float
-    speaker_id: str
+    speaker: str
 
 
 async def transcribe_and_diarize(
     input_file: Path, language_code: str, model_id: str, request_timeout: int, tag_audio_events: bool, speaker_count: int | None
-) -> list[TranscriptionWords]:
+) -> list[TranscriptionWord]:
     elevenlabs: AsyncElevenLabs = AsyncElevenLabs(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
     )
@@ -57,6 +60,6 @@ async def transcribe_and_diarize(
                 request_options={"timeout_in_seconds": request_timeout},
             )
     return [
-        TranscriptionWords(text=word.text, type=WordType(word.type), start=word.start, end=word.end, speaker_id=word.speaker_id)
+        TranscriptionWord(text=word.text, type=SpeechType(word.type), start=word.start, end=word.end, speaker=word.speaker_id)
         for word in transcription.words
     ]
