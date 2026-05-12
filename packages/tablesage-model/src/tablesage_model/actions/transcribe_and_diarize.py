@@ -4,7 +4,7 @@ from pathlib import Path
 
 from .. import paths
 from .._tools import eleven_labs
-from ..model import TranscribedUtterance, TranscribedWord, Transcript
+from ..model import SessionUtterance, SessionWord, SessionUtterances
 from ..protocols import PhasedProgressEvent, PhasedProgressSink
 from ..settings import TranscriptionAndDiarizationSettings
 
@@ -15,11 +15,13 @@ async def _progress(sink: PhasedProgressSink, phase: str) -> None:
 
 
 async def transcribe_and_diarize(
-    session_dir: Path,
+    campaign_slug:str,
+    session_slug:str,
     settings: TranscriptionAndDiarizationSettings,
     speaker_count: int | None,
     sink: PhasedProgressSink,
-) -> Transcript:
+) -> SessionUtterances:
+    session_dir:Path = paths.session_dir(campaign_slug, session_slug)
     input_audio_path = paths.to_absolute(session_dir, settings.input_audio_file)
     await _progress(sink, "transcribing and diarizing with elevenlabs")
     transcribed_words: list[eleven_labs.TranscriptionWord] = await eleven_labs.transcribe_and_diarize(
@@ -27,9 +29,9 @@ async def transcribe_and_diarize(
     )
 
     await _progress(sink, "building transcript")
-    current_words: list[TranscribedWord] = []
+    current_words: list[SessionWord] = []
     current_speaker: str | None = None
-    utterances: list[TranscribedUtterance] = []
+    utterances: list[SessionUtterance] = []
 
     for word in transcribed_words:
         if word.type != eleven_labs.SpeechType.WORD:
@@ -37,15 +39,15 @@ async def transcribe_and_diarize(
         if current_speaker is None:
             current_speaker = word.speaker
         if word.speaker != current_speaker:
-            utterances.append(TranscribedUtterance.from_words(current_words))
+            utterances.append(SessionUtterance.from_words(current_words))
             current_words = []
             current_speaker = word.speaker
-        current_words.append(TranscribedWord(text=word.text, start=word.start, end=word.end, speaker=word.speaker))
+        current_words.append(SessionWord(text=word.text, start=word.start, end=word.end, speaker=word.speaker))
     if current_words:
-        utterances.append(TranscribedUtterance.from_words(current_words))
+        utterances.append(SessionUtterance.from_words(current_words))
 
     if not utterances:
         msg = "No speech found in audio — transcript would be empty"
         raise ValueError(msg)
 
-    return Transcript(utterances=tuple(utterances))
+    return SessionUtterances(utterances=tuple(utterances))

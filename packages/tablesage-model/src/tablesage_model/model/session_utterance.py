@@ -9,7 +9,7 @@ from ..protocols import UnassignedSpeaker
 from .transcribed_word import TranscribedWord
 
 
-class TranscribedUtterance(BaseModel, frozen=True):
+class SessionUtterance(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     speaker: StrippedNonBlankStr
     words: NonEmptyTuple[TranscribedWord]
@@ -31,10 +31,10 @@ class TranscribedUtterance(BaseModel, frozen=True):
     def is_unassigned(self) -> bool:
         return self.speaker == UnassignedSpeaker
 
-    def unassign_speaker(self) -> TranscribedUtterance:
+    def unassign_speaker(self) -> SessionUtterance:
         return self.model_copy(update={"speaker": UnassignedSpeaker})
 
-    def embed(self, embedding: list[float]) -> TranscribedUtterance:
+    def embed(self, embedding: list[float]) -> SessionUtterance:
         return self.model_copy(update={"embedding": embedding})
 
     @staticmethod
@@ -42,7 +42,7 @@ class TranscribedUtterance(BaseModel, frozen=True):
         return " ".join(word.text for word in words)
 
     @classmethod
-    def from_words(cls, words: Iterable[TranscribedWord]) -> TranscribedUtterance:
+    def from_words(cls, words: Iterable[TranscribedWord]) -> SessionUtterance:
         new_words: tuple[TranscribedWord, ...] = tuple(sorted(words, key=lambda word: word.start))
 
         if len(new_words) == 0:

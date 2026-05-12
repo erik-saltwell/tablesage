@@ -14,7 +14,8 @@ async def _progress(sink: PhasedProgressSink, phase: str) -> None:
     await sink.publish(event)
 
 
-async def clean_audio(session_dir: Path, settings: AudioCleaningSettings, sink: PhasedProgressSink) -> None:
+async def clean_audio(campaign_slug:str, session_slug:str, settings: AudioCleaningSettings, sink: PhasedProgressSink) -> None:
+    session_dir: Path = paths.session_dir(campaign_slug, session_slug)
     source_path: Path = paths.to_absolute(session_dir, settings.raw_audio_file)
     cleaned_output_path: Path = paths.to_absolute(session_dir, settings.cleaned_audio_file)
     if not source_path.exists():

@@ -109,6 +109,9 @@ type ScribeLanguageCode = Literal[
     "zul",
 ]
 
+class SpeakerIdentificationSettings(BaseModel, frozen=True):
+    name:str = "erik"
+
 
 class AudioCleaningSettings(BaseModel, frozen=True):
     raw_audio_file: Path = Path("original.m4a")
@@ -134,3 +137,5 @@ class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
 class AppSettings(BaseModel, frozen=True):
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
+    speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
+    

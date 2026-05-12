@@ -6,5 +6,5 @@ from .._utils import NonEmptyTuple
 from .transcribed_utterance import TranscribedUtterance
 
 
-class Transcript(BaseModel, frozen=True):
+class SessionUtterances(BaseModel, frozen=True):
     utterances: NonEmptyTuple[TranscribedUtterance]

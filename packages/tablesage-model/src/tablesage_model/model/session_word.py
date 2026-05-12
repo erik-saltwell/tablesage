@@ -5,7 +5,7 @@ from pydantic import BaseModel, NonNegativeFloat
 from .._utils import StrippedNonBlankStr
 
 
-class TranscribedWord(BaseModel, frozen=True):
+class SessionWord(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     start: NonNegativeFloat
     end: NonNegativeFloat

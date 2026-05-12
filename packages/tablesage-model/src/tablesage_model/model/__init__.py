@@ -1,9 +1,9 @@
-from .transcribed_utterance import TranscribedUtterance
-from .transcribed_word import TranscribedWord
-from .transcript import Transcript
+from session_word import SessionWord
+from session_utterance import SessionUtterance
+from .session_utterances import SessionUtterances
 
 __all__ = [
-    "TranscribedWord",
-    "TranscribedUtterance",
-    "Transcript",
+    "SessionWord",
+    "SessionUtterance",
+    "SessionUtterances",
 ]
