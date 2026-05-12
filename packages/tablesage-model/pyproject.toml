@@ -20,6 +20,8 @@ dependencies = [
     "onnxruntime>=1.18.0",
     "pyannote-metrics>=3.2.1",
     "pydantic>=2.12.5",
+    "mathspell>=0.1.0",
+    "punctuators>=0.0.7",
 ]
 
 [build-system]
