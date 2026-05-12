@@ -5,10 +5,12 @@ import types
 from importlib import import_module
 from typing import Any, cast
 
+import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
 
-def test_punctuate_text_skips_empty_strings(monkeypatch: MonkeyPatch) -> None:
+@pytest.mark.anyio
+async def test_punctuate_text_skips_empty_strings(monkeypatch: MonkeyPatch) -> None:
     class FakePunctuationModel:
         received_texts: list[str] | None = None
 
@@ -38,7 +40,7 @@ def test_punctuate_text_skips_empty_strings(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.delitem(sys.modules, "tablesage_model.tools.punctuation", raising=False)
     punctuation = import_module("tablesage_model.tools.punctuation")
 
-    result = punctuation.punctuate_text(["hello world", "", "...", "bye now"])
+    result = await punctuation.punctuate_text(["hello world", "", "...", "bye now"])
 
     assert FakePunctuationModel.received_texts == ["hello world", "bye now"]
     assert result == ["Hello world.", "", "...", "Bye now."]
