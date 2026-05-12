@@ -1,9 +1,11 @@
-from session_word import SessionWord
-from session_utterance import SessionUtterance
-from .session_utterances import SessionUtterances
+from .registered_speaker import RegisteredSpeaker
+from .session_set import SessionSet
+from .session_utterance import SessionUtterance
+from .session_word import SessionWord
 
 __all__ = [
     "SessionWord",
     "SessionUtterance",
-    "SessionUtterances",
+    "SessionSet",
+    "RegisteredSpeaker",
 ]

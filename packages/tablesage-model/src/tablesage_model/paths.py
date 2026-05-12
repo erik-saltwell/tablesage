@@ -17,6 +17,7 @@ class KnownFiles(StrEnum):
     SUMMARY = "summary.md"
     TRACE = "trace.json"
     LOGFILE = "tablesage.log"
+    SESSION_SET = "session.json"
 
 
 class KnownDirectories(StrEnum):
@@ -73,6 +74,10 @@ def trace_path() -> Path:
 
 def logfile_path() -> Path:
     return data_root() / KnownDirectories.LOGS / KnownFiles.LOGFILE
+
+
+def session_set_file(campaign_slug: str, session_slug: str) -> Path:
+    return session_dir(campaign_slug, session_slug) / KnownFiles.SESSION_SET
 
 
 def to_absolute(base_path: Path, final_path: Path) -> Path:

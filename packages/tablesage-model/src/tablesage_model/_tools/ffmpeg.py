@@ -91,6 +91,34 @@ async def measure_loudness(input_wav: Path, target_i: float = -16.0, target_lra:
     return {k: str(v) for k, v in data.items()}
 
 
+async def extract_clip(input_path: Path, output_wav: Path, start: float, end: float) -> None:
+    """Extract a time-bounded clip from input_path as 16 kHz mono PCM WAV."""
+    output_wav.parent.mkdir(parents=True, exist_ok=True)
+
+    cmd = [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-ss",
+        str(start),
+        "-to",
+        str(end),
+        "-i",
+        str(input_path),
+        "-vn",
+        "-ac",
+        "1",
+        "-ar",
+        "16000",
+        "-c:a",
+        "pcm_s16le",
+        str(output_wav),
+    ]
+    await run_command_async(cmd)
+
+
 async def convert_to_16k_mono(input_path: Path, output_wav: Path) -> None:
     """Convert audio to 16 kHz mono PCM WAV without loudness normalization."""
     output_wav.parent.mkdir(parents=True, exist_ok=True)

@@ -6,13 +6,13 @@ from pydantic import BaseModel, Field
 
 from .._utils import NonEmptyTuple, StrippedNonBlankStr
 from ..protocols import UnassignedSpeaker
-from .transcribed_word import TranscribedWord
+from .session_word import SessionWord
 
 
 class SessionUtterance(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     speaker: StrippedNonBlankStr
-    words: NonEmptyTuple[TranscribedWord]
+    words: NonEmptyTuple[SessionWord]
     embedding: tuple[float, ...] = Field(default_factory=tuple)
 
     @property
@@ -38,12 +38,12 @@ class SessionUtterance(BaseModel, frozen=True):
         return self.model_copy(update={"embedding": embedding})
 
     @staticmethod
-    def build_text_from_words(words: Iterable[TranscribedWord]) -> str:
+    def build_text_from_words(words: Iterable[SessionWord]) -> str:
         return " ".join(word.text for word in words)
 
     @classmethod
-    def from_words(cls, words: Iterable[TranscribedWord]) -> SessionUtterance:
-        new_words: tuple[TranscribedWord, ...] = tuple(sorted(words, key=lambda word: word.start))
+    def from_words(cls, words: Iterable[SessionWord]) -> SessionUtterance:
+        new_words: tuple[SessionWord, ...] = tuple(sorted(words, key=lambda word: word.start))
 
         if len(new_words) == 0:
             msg = "Cannot create TranscribedUtterance with zero words"

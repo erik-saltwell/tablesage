@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field, PositiveInt, model_validator
+from pydantic import BaseModel, Field, PositiveInt
 
 type ScribeModelId = Literal["scribe_v1", "scribe_v2"]
 
@@ -109,25 +109,18 @@ type ScribeLanguageCode = Literal[
     "zul",
 ]
 
+
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
-    name:str = "erik"
+    input_audio_file: Path = Path("cleaned.wav")
+    similarity_residual_threshold: float = 0.2
 
 
 class AudioCleaningSettings(BaseModel, frozen=True):
     raw_audio_file: Path = Path("original.m4a")
-    cleaned_audio_file: Path = Path("cleaned.wav")
     normalize_volume: bool = False
-
-    @model_validator(mode="after")
-    def files_must_differ(self) -> AudioCleaningSettings:
-        if self.raw_audio_file == self.cleaned_audio_file:
-            msg = "raw_audio_file and cleaned_audio_file must not be the same path"
-            raise ValueError(msg)
-        return self
 
 
 class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
-    input_audio_file: Path = Path("cleaned.wav")
     timeout: PositiveInt = 7200
     language_code: ScribeLanguageCode = "eng"
     tag_audio_events: bool = False
@@ -138,4 +131,4 @@ class AppSettings(BaseModel, frozen=True):
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
-    
+    cleaned_audio_file: Path = Path("cleaned.wav")
