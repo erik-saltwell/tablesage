@@ -8,6 +8,7 @@ from typing import Any
 
 import torch
 import torchaudio
+from torch import Tensor
 
 
 def _patch_torchaudio_sox_effects() -> None:
@@ -64,3 +65,19 @@ class EmbeddingFactory:
         emb = result["embs"][0]
         embedding: list[float] = [float(x) for x in emb]
         return embedding
+
+
+def convert_to_tensor(tensor_data: list[float]) -> Tensor:
+    return torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0)
+
+
+def convert_multiple_to_tensors(tensor_data: list[list[float]]) -> Tensor:
+    return torch.tensor(tensor_data, dtype=torch.float32)
+
+
+def copmute_similarity_single(first: Tensor, second: Tensor) -> float:
+    return float(torch.nn.functional.cosine_similarity(first, second).item())
+
+
+def compute_similarity_multiple(single: Tensor, multiple: Tensor) -> list[float]:
+    return [float(data) for data in torch.nn.functional.cosine_similarity(single, multiple)]
