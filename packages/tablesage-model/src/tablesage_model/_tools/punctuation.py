@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from typing import NamedTuple
 
-from .text_cleaner import clean_text_for_evaluation
+from .text_cleaner import clean_multiple_texts
 
 
 class IndexedString(NamedTuple):
@@ -24,15 +24,15 @@ def _load_and_punctuate(texts: list[str]) -> list[str]:
 
 
 async def punctuate_text(texts: list[str]) -> list[str]:
+    """Cleans punctuates text, leaving empty strings and strings that get cleaned to empty unchanged."""
     return_values: list[str] = list(texts)
-    cleaned = [IndexedString(clean_text_for_evaluation(text, False), idx) for idx, text in enumerate(return_values)]
-    non_empties = [item for item in cleaned if item.text]
+    cleaned_texts = await clean_multiple_texts(return_values)
+    indexed_texts: list[IndexedString] = [IndexedString(text, idx) for idx, text in enumerate(cleaned_texts) if text]
 
-    if non_empties:
-        to_process: list[str] = [item.text for item in non_empties]
+    if indexed_texts:
+        to_process: list[str] = [item.text for item in indexed_texts]
         outputs = await asyncio.to_thread(_load_and_punctuate, to_process)
-        assert len(outputs) == len(non_empties), f"Expected {len(non_empties)} outputs, got {len(outputs)}"
-        for idx, output in enumerate(outputs):
-            return_values[non_empties[idx].index] = output
+        for item, output in zip(indexed_texts, outputs, strict=True):
+            return_values[item.index] = output
 
     return return_values

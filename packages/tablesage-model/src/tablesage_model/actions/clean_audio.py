@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from .._tools import audio_cleaning
 from ..protocols.progress_syncs import PhasedProgressEvent, PhasedProgressSink
-from ..tools import audio_cleaning
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:

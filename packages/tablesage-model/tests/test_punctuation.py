@@ -25,20 +25,19 @@ async def test_punctuate_text_skips_empty_strings(monkeypatch: MonkeyPatch) -> N
             cls.received_texts = texts
             return ["Hello world.", "Bye now."]
 
-    def clean_text_for_evaluation(text: str, do_mathspell: bool) -> str:
-        assert do_mathspell is False
-        return "" if text == "..." else text.strip()
-
-    fake_text_cleaner = cast(Any, types.ModuleType("tablesage_model.tools.text_cleaner"))
-    fake_text_cleaner.clean_text_for_evaluation = clean_text_for_evaluation
-    monkeypatch.setitem(sys.modules, "tablesage_model.tools.text_cleaner", fake_text_cleaner)
-
     fake_punctuator_models = cast(Any, types.ModuleType("punctuators.models"))
     fake_punctuator_models.PunctCapSegModelONNX = FakePunctuationModel
     monkeypatch.setitem(sys.modules, "punctuators.models", fake_punctuator_models)
 
-    monkeypatch.delitem(sys.modules, "tablesage_model.tools.punctuation", raising=False)
-    punctuation = import_module("tablesage_model.tools.punctuation")
+    async def clean_multiple_texts(texts: list[str]) -> list[str]:
+        return ["" if text == "..." else text.strip() for text in texts]
+
+    fake_text_cleaner = cast(Any, types.ModuleType("tablesage_model._tools.text_cleaner"))
+    fake_text_cleaner.clean_multiple_texts = clean_multiple_texts
+    monkeypatch.setitem(sys.modules, "tablesage_model._tools.text_cleaner", fake_text_cleaner)
+
+    monkeypatch.delitem(sys.modules, "tablesage_model._tools.punctuation", raising=False)
+    punctuation = import_module("tablesage_model._tools.punctuation")
 
     result = await punctuation.punctuate_text(["hello world", "", "...", "bye now"])
 

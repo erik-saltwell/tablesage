@@ -9,7 +9,7 @@ from pathlib import Path
 
 from clearvoice import ClearVoice
 
-from ..utils import flush_gpu_memory, run_command_async
+from .._utils import flush_gpu_memory, run_command_async
 
 
 async def convert_to_48k_wav(input_path: Path, temp_wav_path: Path) -> None:
