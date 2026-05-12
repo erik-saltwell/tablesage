@@ -14,6 +14,7 @@ class SessionUtterance(BaseModel, frozen=True):
     speaker: StrippedNonBlankStr
     words: NonEmptyTuple[SessionWord]
     embedding: tuple[float, ...] = Field(default_factory=tuple)
+    similarity_residual: float = 0.0
 
     @property
     def start(self) -> float:

@@ -44,9 +44,17 @@ async def identify_speakers(
             residual = best_similarity - avg_similarity
 
             if residual < settings.similarity_residual_threshold:
-                new_utterances.append(utterance.model_copy(update={"speaker": UnassignedSpeaker, "embedding": tuple(embedding)}))
+                new_utterances.append(
+                    utterance.model_copy(
+                        update={"speaker": UnassignedSpeaker, "embedding": tuple(embedding), "similarity_residual": residual}
+                    )
+                )
             else:
-                new_utterances.append(utterance.model_copy(update={"speaker": attendees[best_idx].name, "embedding": tuple(embedding)}))
+                new_utterances.append(
+                    utterance.model_copy(
+                        update={"speaker": attendees[best_idx].name, "embedding": tuple(embedding), "similarity_residual": residual}
+                    )
+                )
 
     await sink.publish(IncrementalProgressEvent(source="identify_speakers", completed=total, total=total))
     return SessionSet(utterances=tuple(new_utterances))
