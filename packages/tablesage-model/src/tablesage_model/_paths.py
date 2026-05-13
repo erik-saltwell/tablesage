@@ -61,8 +61,12 @@ def campaign_set_file() -> Path:
     return data_root() / KnownFiles.CAMPAIGN_SET
 
 
+def campaigns_dir() -> Path:
+    return data_root() / KnownDirectories.CAMPAIGNS
+
+
 def campaign_dir(campaign_slug: str) -> Path:
-    return data_root() / KnownDirectories.CAMPAIGNS / campaign_slug
+    return campaigns_dir() / campaign_slug
 
 
 def campaign_file(campaign_slug: str) -> Path:
