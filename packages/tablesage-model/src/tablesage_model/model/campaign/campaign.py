@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from collections.abc import Mapping
 
-from ... import _paths
-from ..cast import Player, Role
+from pydantic import BaseModel, Field
+
+from ..._utils import StrippedNonBlankStr
+from ..cast import PlayerSlug, Role
 
 
-class Campaign(BaseModel):
-    name: str
-    default_gm: str
-    players: dict[Player, list[Role]]
-
-    @property
-    def slug(self) -> str:
-        return _paths.slugify(self.name)
+class Campaign(BaseModel, frozen=True):
+    slug: StrippedNonBlankStr
+    name: StrippedNonBlankStr
+    default_gm: StrippedNonBlankStr
+    players: Mapping[PlayerSlug, tuple[Role, ...]] = Field(
+        description="Map of player slugs (ids) to the roles they have played in the campaign"
+    )

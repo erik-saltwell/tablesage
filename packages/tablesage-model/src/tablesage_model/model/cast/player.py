@@ -2,15 +2,14 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from ... import _paths
+from ..._utils import StrippedNonBlankStr
 from .voice_sample import VoiceSample
+
+type PlayerSlug = str
 
 
 class Player(BaseModel, frozen=True):
-    name: str
-    voice_samples: tuple[VoiceSample]
-    centroid: list[float]
-
-    @property
-    def slug(self) -> str:
-        return _paths.slugify(self.name)
+    slug: StrippedNonBlankStr
+    name: StrippedNonBlankStr
+    voice_samples: tuple[VoiceSample, ...]
+    centroid: tuple[float, ...]  # dimension matches VoiceSample.embedding; no length enforcement by design

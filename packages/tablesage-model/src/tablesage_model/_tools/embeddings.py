@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import sys
 import types
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -75,7 +76,7 @@ def convert_to_tensor(tensor_data: list[float]) -> Tensor:
     return torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0)
 
 
-def convert_multiple_to_tensors(tensor_data: list[list[float]]) -> Tensor:
+def convert_multiple_to_tensors(tensor_data: Sequence[Sequence[float]]) -> Tensor:
     return torch.tensor(tensor_data, dtype=torch.float32)
 
 

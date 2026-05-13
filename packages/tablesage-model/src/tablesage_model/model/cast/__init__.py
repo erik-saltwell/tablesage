@@ -1,5 +1,10 @@
 from .player import (
     Player,
+    PlayerSlug,
+)
+from .player_set import (
+    PlayerName,
+    PlayerSet,
 )
 from .role import (
     KnownRoles,
@@ -9,4 +14,12 @@ from .voice_sample import (
     VoiceSample,
 )
 
-__all__ = ["KnownRoles", "Player", "Role", "VoiceSample"]
+__all__ = [
+    "KnownRoles",
+    "Player",
+    "PlayerName",
+    "PlayerSet",
+    "Role",
+    "VoiceSample",
+    "PlayerSlug",
+]
