@@ -117,11 +117,8 @@ def voice_clips_dir(campaign_slug: str, player_slug: str) -> Path:
     return player_dir(campaign_slug, player_slug) / KnownDirectories.VOICE_CLIPS
 
 
-def generate_voice_sample_filepath(campaign_slug: str, player_slug: str) -> Path:
-    voice_clips_directory: Path = voice_clips_dir(campaign_slug, player_slug)
-    ensure_dir(voice_clips_directory)
-    # "generate_" prefix retained intentionally: the UUID makes every call produce a unique path
-    return voice_clips_directory / f"{uuid.uuid4().hex}.wav"
+def generate_voice_sample_filename() -> str:
+    return f"{uuid.uuid4().hex}.wav"
 
 
 def to_absolute(base_path: Path, final_path: Path) -> Path:

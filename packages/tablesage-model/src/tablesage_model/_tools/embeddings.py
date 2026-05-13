@@ -71,6 +71,9 @@ class EmbeddingFactory:
         embedding: list[float] = [float(x) for x in emb]
         return embedding
 
+    async def extract_async(self, audio_path: Path) -> list[float]:
+        return await asyncio.to_thread(self.extract, audio_path)
+
 
 def convert_to_tensor(tensor_data: list[float]) -> Tensor:
     return torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0)

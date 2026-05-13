@@ -60,8 +60,8 @@ def test_player_round_trips() -> None:
         slug="ada",
         name="Ada",
         voice_samples=(
-            VoiceSample(filename=Path("voice_clips/ada-1.wav"), embedding=(0.1, 0.2, 0.3)),
-            VoiceSample(filename=Path("voice_clips/ada-2.wav"), embedding=(0.4, 0.5, 0.6)),
+            VoiceSample(filepath=Path("voice_clips/ada-1.wav"), embedding=(0.1, 0.2, 0.3)),
+            VoiceSample(filepath=Path("voice_clips/ada-2.wav"), embedding=(0.4, 0.5, 0.6)),
         ),
         centroid=(0.25, 0.35, 0.45),
     )
