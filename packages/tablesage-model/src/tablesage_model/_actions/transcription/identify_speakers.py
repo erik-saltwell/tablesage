@@ -4,35 +4,36 @@ import asyncio
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from .. import paths
-from .._tools import embeddings, ffmpeg
-from ..model import RegisteredSpeaker, SessionSet, SessionUtterance
-from ..protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
-from ..settings import AppSettings, SpeakerIdentificationSettings
+from ... import _paths
+from ..._settings import AppSettings, SpeakerIdentificationSettings
+from ..._tools import embeddings, ffmpeg
+from ...model.cast import Player
+from ...model.transcription import Discourse, Utterance
+from ...protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
 
 
 async def identify_speakers(
     campaign_slug: str,
     session_slug: str,
     app_settings: AppSettings,
-    attendees: list[RegisteredSpeaker],
-    session_set: SessionSet,
+    attendees: list[Player],
+    session_set: Discourse,
     sink: IncrementalProgressSink,
-) -> SessionSet:
+) -> Discourse:
 
     if len(attendees) < 2:
         msg = "Cannot identify speakers with less than 2 attendees"
         raise ValueError(msg)
 
     settings: SpeakerIdentificationSettings = app_settings.speaker_identification
-    session_dir: Path = paths.session_dir(campaign_slug, session_slug)
-    audio_path = paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
+    session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
+    audio_path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
 
-    speakers_tensor = embeddings.convert_multiple_to_tensors([s.embedding for s in attendees])
+    speakers_tensor = embeddings.convert_multiple_to_tensors([s.centroid for s in attendees])
     factory = await asyncio.to_thread(embeddings.EmbeddingFactory)
 
     total = len(session_set.utterances)
-    new_utterances: list[SessionUtterance] = []
+    new_utterances: list[Utterance] = []
     try:
         with TemporaryDirectory() as tmpdir:
             tmp_file = Path(tmpdir) / "tmp.wav"
@@ -55,4 +56,4 @@ async def identify_speakers(
     finally:
         await sink.publish(IncrementalProgressEvent(source="identify_speakers", completed=total, total=total))
 
-    return SessionSet(utterances=tuple(new_utterances))
+    return Discourse(utterances=tuple(new_utterances))

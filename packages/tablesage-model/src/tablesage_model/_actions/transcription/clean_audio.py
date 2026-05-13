@@ -3,10 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from .. import paths
-from .._tools import ffmpeg
-from ..protocols import PhasedProgressEvent, PhasedProgressSink
-from ..settings import AppSettings, AudioCleaningSettings
+from ... import _paths
+from ..._settings import AppSettings, AudioCleaningSettings
+from ..._tools import ffmpeg
+from ...protocols import PhasedProgressEvent, PhasedProgressSink
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:
@@ -16,9 +16,9 @@ async def _progress(sink: PhasedProgressSink, phase: str) -> None:
 
 async def clean_audio(campaign_slug: str, session_slug: str, app_settings: AppSettings, sink: PhasedProgressSink) -> None:
     settings: AudioCleaningSettings = app_settings.audio_cleaning
-    session_dir: Path = paths.session_dir(campaign_slug, session_slug)
-    source_path: Path = paths.to_absolute(session_dir, settings.raw_audio_file)
-    cleaned_output_path: Path = paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
+    session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
+    source_path: Path = _paths.to_absolute(session_dir, settings.raw_audio_file)
+    cleaned_output_path: Path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
     if not source_path.exists():
         raise FileNotFoundError(source_path)
 

@@ -80,6 +80,10 @@ def session_set_file(campaign_slug: str, session_slug: str) -> Path:
     return session_dir(campaign_slug, session_slug) / KnownFiles.SESSION_SET
 
 
+def player_dir(campaign_slug: str, player_slug: str) -> Path:
+    return campaign_dir(campaign_slug) / player_slug
+
+
 def to_absolute(base_path: Path, final_path: Path) -> Path:
     if final_path.is_absolute():
         return final_path

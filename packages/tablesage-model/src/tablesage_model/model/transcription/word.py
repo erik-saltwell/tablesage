@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from pydantic import BaseModel, NonNegativeFloat
 
-from .._utils import StrippedNonBlankStr
+from ..._utils import StrippedNonBlankStr
 
 
-class SessionWord(BaseModel, frozen=True):
+class Word(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     start: NonNegativeFloat
     end: NonNegativeFloat

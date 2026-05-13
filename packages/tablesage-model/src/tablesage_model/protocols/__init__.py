@@ -1,5 +1,9 @@
 from .logging_protocol import (
+    CompositeLogger,
+    CompositeProgressTask,
+    CompositeStatusHandle,
     LoggingProtocol,
+    NullLogger,
     NullProgress,
     NullStatus,
     ProgressTask,
@@ -13,22 +17,31 @@ from .progress_syncs import (
     PhasedProgressEvent,
     PhasedProgressSink,
 )
-from .speech_run import SpeechRun, UnassignedSpeaker
-from .tracer_protocol import TracerProtocol
+from .speech_run import (
+    SpeechRun,
+    UnassignedSpeaker,
+)
+from .tracer_protocol import (
+    TracerProtocol,
+)
 
 __all__ = [
-    "LoggingProtocol",
-    "ProgressTask",
-    "StatusHandle",
-    "NullProgress",
-    "NullStatus",
-    "TracerProtocol",
-    "SpeechRun",
-    "UnassignedSpeaker",
+    "CompositeLogger",
+    "CompositeProgressTask",
+    "CompositeStatusHandle",
     "IncrementalProgressEvent",
     "IncrementalProgressSink",
+    "LoggingProtocol",
+    "NullIncrementalProgressSink",
+    "NullLogger",
+    "NullPhasedProgressSink",
+    "NullProgress",
+    "NullStatus",
     "PhasedProgressEvent",
     "PhasedProgressSink",
-    "NullIncrementalProgressSink",
-    "NullPhasedProgressSink",
+    "ProgressTask",
+    "SpeechRun",
+    "StatusHandle",
+    "TracerProtocol",
+    "UnassignedSpeaker",
 ]

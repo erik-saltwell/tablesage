@@ -5,7 +5,6 @@ from pathlib import Path
 from pydantic import BaseModel
 
 
-class RegisteredSpeaker(BaseModel, frozen=True):
-    name: str
+class VoiceSample(BaseModel, frozen=True):
+    filename: Path
     embedding: list[float]
-    included_voice_clips: list[Path]

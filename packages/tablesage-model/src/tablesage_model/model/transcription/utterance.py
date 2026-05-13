@@ -4,15 +4,15 @@ from collections.abc import Iterable
 
 from pydantic import BaseModel, Field
 
-from .._utils import NonEmptyTuple, StrippedNonBlankStr
-from ..protocols import UnassignedSpeaker
-from .session_word import SessionWord
+from ..._utils import NonEmptyTuple, StrippedNonBlankStr
+from ...protocols import UnassignedSpeaker
+from .word import Word
 
 
-class SessionUtterance(BaseModel, frozen=True):
+class Utterance(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     speaker: StrippedNonBlankStr
-    words: NonEmptyTuple[SessionWord]
+    words: NonEmptyTuple[Word]
     embedding: tuple[float, ...] = Field(default_factory=tuple)
     similarity_residual: float = 0.0
 
@@ -32,19 +32,19 @@ class SessionUtterance(BaseModel, frozen=True):
     def is_unassigned(self) -> bool:
         return self.speaker == UnassignedSpeaker
 
-    def unassign_speaker(self) -> SessionUtterance:
+    def unassign_speaker(self) -> Utterance:
         return self.model_copy(update={"speaker": UnassignedSpeaker})
 
-    def embed(self, embedding: list[float]) -> SessionUtterance:
+    def embed(self, embedding: list[float]) -> Utterance:
         return self.model_copy(update={"embedding": embedding})
 
     @staticmethod
-    def build_text_from_words(words: Iterable[SessionWord]) -> str:
+    def build_text_from_words(words: Iterable[Word]) -> str:
         return " ".join(word.text for word in words)
 
     @classmethod
-    def from_words(cls, words: Iterable[SessionWord]) -> SessionUtterance:
-        new_words: tuple[SessionWord, ...] = tuple(sorted(words, key=lambda word: word.start))
+    def from_words(cls, words: Iterable[Word]) -> Utterance:
+        new_words: tuple[Word, ...] = tuple(sorted(words, key=lambda word: word.start))
 
         if len(new_words) == 0:
             msg = "Cannot create TranscribedUtterance with zero words"
