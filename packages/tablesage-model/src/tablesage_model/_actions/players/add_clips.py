@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import asyncio
 import shutil
 from pathlib import Path
 
 from ... import _paths
-from ..._tools.embeddings import EmbeddingFactory, compute_centroid_from_list
+from ..._tools.embeddings import EmbeddingFactory, compute_centroid
 from ...io import save_player
-from ...model.cast import Player, VoiceSample
+from ...model.cast import Embedding, Player, VoiceSample
 
 
 def _get_source_files(clip_directory: Path) -> list[Path]:
@@ -36,13 +37,10 @@ async def add_clips(campaign_slug: str, player_slug: str, player_name: str, clip
         filename: str = _paths.generate_voice_sample_filename()
         target_path: Path = voice_clip_path / filename
         shutil.copy2(source_path, target_path)
-        embedding: list[float] = await embeddings_factory.extract_async(target_path)
-        tuple_embedding: tuple[float, ...] = tuple(embedding)
+        embedding: Embedding = await embeddings_factory.extract_async(target_path)
         relative_target_path = target_path.relative_to(player_file_path.parent)
-        voice_sample: VoiceSample = VoiceSample(filepath=relative_target_path, embedding=tuple_embedding)
+        voice_sample: VoiceSample = VoiceSample(filepath=relative_target_path, embedding=embedding)
         voice_samples.append(voice_sample)
-    centroid = tuple(
-        (await compute_centroid_from_list([list(voice_sample.embedding) for voice_sample in voice_samples])).squeeze().tolist()
-    )
+    centroid = await asyncio.to_thread(compute_centroid, [s.embedding for s in voice_samples])
     player: Player = Player(slug=player_slug, name=player_name, voice_samples=tuple(voice_samples), centroid=centroid)
     save_player(campaign_slug, player)

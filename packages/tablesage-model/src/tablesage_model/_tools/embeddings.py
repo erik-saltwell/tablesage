@@ -10,7 +10,8 @@ from typing import Any
 
 import torch
 import torchaudio
-from torch import Tensor
+
+from ..model.cast import Embedding
 
 
 def _patch_torchaudio_sox_effects() -> None:
@@ -63,43 +64,62 @@ class EmbeddingFactory:
 
         self._pipe = pipeline(task=Tasks.speaker_verification, model=self.model_id, device=self.device)
 
-    def extract(self, audio_path: Path) -> list[float]:
+    def extract(self, audio_path: Path) -> Embedding:
         with torch.no_grad():
             result: Any = self._pipe([str(audio_path.resolve())], output_emb=True)
         # result['embs'] is a numpy array of shape [N, 192]; take the first (and only) row
         emb = result["embs"][0]
-        embedding: list[float] = [float(x) for x in emb]
+        embedding = Embedding(root=tuple(float(x) for x in emb))
         return embedding
 
-    async def extract_async(self, audio_path: Path) -> list[float]:
+    async def extract_async(self, audio_path: Path) -> Embedding:
         return await asyncio.to_thread(self.extract, audio_path)
 
 
-def convert_to_tensor(tensor_data: list[float]) -> Tensor:
-    return torch.tensor(tensor_data, dtype=torch.float32).unsqueeze(0)
+def compute_centroid(embeddings: Sequence[Embedding]) -> Embedding:
+    """Return the L2-normalized mean of the given embeddings.
 
-
-def convert_multiple_to_tensors(tensor_data: Sequence[Sequence[float]]) -> Tensor:
-    return torch.tensor(tensor_data, dtype=torch.float32)
-
-
-async def compute_centroid(tensor_data: Tensor) -> Tensor:
-    if tensor_data.shape[0] == 0:
-        msg = "Cannot compute centroid for an empty embedding tensor."
+    All embeddings must share the same dimensionality. The result is suitable
+    for use as a single reference vector in cosine-similarity comparisons.
+    """
+    if not embeddings:
+        msg = "Cannot compute centroid of empty embedding collection."
         raise ValueError(msg)
-    return await asyncio.to_thread(lambda: tensor_data.mean(dim=0).unsqueeze(0))
+    stacked = torch.tensor([e.root for e in embeddings], dtype=torch.float32)
+    mean = stacked.mean(dim=0)
+    normalized = torch.nn.functional.normalize(mean, p=2, dim=0)
+    return Embedding(root=tuple(float(x) for x in normalized))
 
 
-async def compute_centroid_from_list(tensor_data: list[list[float]]) -> Tensor:
-    if len(tensor_data) == 0:
-        msg = "Cannot compute centroid for an empty embedding list."
-        raise ValueError(msg)
-    return await compute_centroid(convert_multiple_to_tensors(tensor_data))
+@dataclass
+class SimilarityResult:
+    best_match_index: int
+    best_match_similarity: float
+    mean_similarity: float
+    margin: float
 
 
-def compute_similarity_single(first: Tensor, second: Tensor) -> float:
-    return float(torch.nn.functional.cosine_similarity(first, second).item())
+@dataclass
+class SimilarityComputer:
+    references: tuple[Embedding, ...]
+    references_tensor: torch.Tensor = field(init=False, repr=False)
 
+    def __post_init__(self) -> None:
+        if len(self.references) < 2:
+            msg = "Cannot compute similarity with less than 2 embeddings."
+            raise ValueError(msg)
+        self.references_tensor = torch.tensor([r.root for r in self.references], dtype=torch.float32)
 
-def compute_similarity_multiple(single: Tensor, multiple: Tensor) -> list[float]:
-    return [float(data) for data in torch.nn.functional.cosine_similarity(single, multiple)]
+    def compute_similarity(self, candidate: Embedding) -> SimilarityResult:
+        test_tensor = torch.tensor(candidate.root, dtype=torch.float32).unsqueeze(0)
+        similarities: list[float] = [float(s) for s in torch.nn.functional.cosine_similarity(test_tensor, self.references_tensor)]
+        avg_similarity: float = sum(similarities) / len(similarities)
+        ranked = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)
+        best_match_index, best_similarity = ranked[0]
+        second_best_similarity = ranked[1][1]
+        return SimilarityResult(
+            best_match_index=best_match_index,
+            mean_similarity=avg_similarity,
+            margin=best_similarity - second_best_similarity,
+            best_match_similarity=best_similarity,
+        )

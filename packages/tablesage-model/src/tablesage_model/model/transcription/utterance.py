@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from ..._utils import NonEmptyTuple, StrippedNonBlankStr
 from ...protocols import UnassignedSpeaker
+from ..cast import Embedding
 from .word import Word
 
 
@@ -13,8 +14,8 @@ class Utterance(BaseModel, frozen=True):
     text: StrippedNonBlankStr
     speaker: StrippedNonBlankStr
     words: NonEmptyTuple[Word]
-    embedding: tuple[float, ...] = Field(default_factory=tuple)
-    similarity_residual: float = 0.0
+    embedding: Embedding = Field(default_factory=lambda: Embedding(root=()))
+    similarity_margin: float = 0.0
 
     @property
     def start(self) -> float:
@@ -26,7 +27,7 @@ class Utterance(BaseModel, frozen=True):
 
     @property
     def has_embeddings(self) -> bool:
-        return bool(self.embedding)
+        return len(self.embedding.root) > 0
 
     @property
     def is_unassigned(self) -> bool:
@@ -35,7 +36,7 @@ class Utterance(BaseModel, frozen=True):
     def unassign_speaker(self) -> Utterance:
         return self.model_copy(update={"speaker": UnassignedSpeaker})
 
-    def embed(self, embedding: list[float]) -> Utterance:
+    def embed(self, embedding: Embedding) -> Utterance:
         return self.model_copy(update={"embedding": embedding})
 
     @staticmethod

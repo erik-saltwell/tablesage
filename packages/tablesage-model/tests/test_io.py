@@ -20,7 +20,7 @@ from tablesage_model.io import (
 from tablesage_model.model.campaign import Campaign, CampaignSet, Session, SessionSet
 from tablesage_model.model.campaign.campaign_set import CampaignName
 from tablesage_model.model.campaign.session_set import SessionName
-from tablesage_model.model.cast import Player, PlayerName, PlayerSet, Role, VoiceSample
+from tablesage_model.model.cast import Embedding, Player, PlayerName, PlayerSet, Role, VoiceSample
 
 
 def test_campaign_set_round_trips() -> None:
@@ -60,10 +60,10 @@ def test_player_round_trips() -> None:
         slug="ada",
         name="Ada",
         voice_samples=(
-            VoiceSample(filepath=Path("voice_clips/ada-1.wav"), embedding=(0.1, 0.2, 0.3)),
-            VoiceSample(filepath=Path("voice_clips/ada-2.wav"), embedding=(0.4, 0.5, 0.6)),
+            VoiceSample(filepath=Path("voice_clips/ada-1.wav"), embedding=Embedding(root=(0.1, 0.2, 0.3))),
+            VoiceSample(filepath=Path("voice_clips/ada-2.wav"), embedding=Embedding(root=(0.4, 0.5, 0.6))),
         ),
-        centroid=(0.25, 0.35, 0.45),
+        centroid=Embedding(root=(0.25, 0.35, 0.45)),
     )
 
     save_player("sable-crown", player)

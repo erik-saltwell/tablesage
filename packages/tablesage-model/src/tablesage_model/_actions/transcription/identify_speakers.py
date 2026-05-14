@@ -6,7 +6,8 @@ from tempfile import TemporaryDirectory
 
 from ... import _paths
 from ..._settings import AppSettings, SpeakerIdentificationSettings
-from ..._tools import embeddings, ffmpeg
+from ..._tools import ffmpeg
+from ..._tools.embeddings import EmbeddingFactory, SimilarityComputer, SimilarityResult
 from ...model.cast import Player
 from ...model.transcription import Discourse, Utterance
 from ...protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
@@ -29,8 +30,9 @@ async def identify_speakers(
     session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
     audio_path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
 
-    speakers_tensor = embeddings.convert_multiple_to_tensors([s.centroid for s in attendees])
-    factory = await asyncio.to_thread(embeddings.EmbeddingFactory)
+    similarity_computer = SimilarityComputer(tuple(player.centroid for player in attendees))
+
+    factory: EmbeddingFactory = await asyncio.to_thread(EmbeddingFactory)
 
     total = len(session_set.utterances)
     new_utterances: list[Utterance] = []
@@ -40,17 +42,13 @@ async def identify_speakers(
             for i, utterance in enumerate(session_set.utterances):
                 await ffmpeg.extract_clip(audio_path, tmp_file, utterance.start, utterance.end)
 
-                embedding = await asyncio.to_thread(factory.extract, tmp_file)
-                utterance_tensor = embeddings.convert_to_tensor(embedding)
-
-                similarities = embeddings.compute_similarity_multiple(utterance_tensor, speakers_tensor)
-                best_idx, best_similarity = max(enumerate(similarities), key=lambda x: x[1])
-
-                avg_similarity = sum(similarities) / len(similarities)
-                residual = best_similarity - avg_similarity
-                speaker = UnassignedSpeaker if residual < settings.similarity_residual_threshold else attendees[best_idx].name
+                embedding = await factory.extract_async(tmp_file)
+                result: SimilarityResult = similarity_computer.compute_similarity(embedding)
+                speaker = (
+                    UnassignedSpeaker if result.margin < settings.similarity_margin_threshold else attendees[result.best_match_index].name
+                )
                 new_utterances.append(
-                    utterance.model_copy(update={"speaker": speaker, "embedding": tuple(embedding), "similarity_residual": residual})
+                    utterance.model_copy(update={"speaker": speaker, "embedding": embedding, "similarity_margin": result.margin})
                 )
                 await sink.publish(IncrementalProgressEvent(source="identify_speakers", completed=i + 1, total=total))
     finally:

@@ -9,7 +9,7 @@ from .type_aliases import ScribeLanguageCode, ScribeModelId
 
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
     input_audio_file: Path = Path("cleaned.wav")
-    similarity_residual_threshold: float = 0.2
+    similarity_margin_threshold: float = 0.1
 
 
 class AudioCleaningSettings(BaseModel, frozen=True):

@@ -4,7 +4,9 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from .embedding import Embedding
+
 
 class VoiceSample(BaseModel, frozen=True):
     filepath: Path
-    embedding: tuple[float, ...]  # dimension matches Player.centroid; no length enforcement by design
+    embedding: Embedding

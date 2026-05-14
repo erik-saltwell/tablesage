@@ -1,3 +1,6 @@
+from .embedding import (
+    Embedding,
+)
 from .player import (
     Player,
     PlayerSlug,
@@ -15,6 +18,7 @@ from .voice_sample import (
 )
 
 __all__ = [
+    "Embedding",
     "KnownRoles",
     "Player",
     "PlayerName",
