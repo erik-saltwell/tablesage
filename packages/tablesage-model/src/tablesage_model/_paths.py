@@ -15,6 +15,7 @@ class KnownFiles(StrEnum):
     PLAYER = "player.yaml"
     SESSION = "session.yaml"
     TRANSCRIPT = "transcript.md"
+    DISCOURSE = "discourse.json"
     SUMMARY = "summary.md"
     TRACE = "trace.json"
     LOGFILE = "tablesage.log"

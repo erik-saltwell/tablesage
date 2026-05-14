@@ -9,8 +9,11 @@ from .player_set import (
     PlayerName,
     PlayerSet,
 )
+from .provenance import (
+    ProvenanceType,
+)
 from .role import (
-    KnownRoles,
+    GAME_MASTER,
     Role,
 )
 from .voice_sample import (
@@ -18,12 +21,13 @@ from .voice_sample import (
 )
 
 __all__ = [
+    "GAME_MASTER",
     "Embedding",
-    "KnownRoles",
     "Player",
     "PlayerName",
     "PlayerSet",
+    "PlayerSlug",
+    "ProvenanceType",
     "Role",
     "VoiceSample",
-    "PlayerSlug",
 ]

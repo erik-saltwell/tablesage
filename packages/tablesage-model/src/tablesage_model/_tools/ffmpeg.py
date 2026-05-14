@@ -143,6 +143,28 @@ async def convert_to_16k_mono(input_path: Path, output_wav: Path) -> None:
     await run_command_async(cmd)
 
 
+async def clean_clip(source: Path, target: Path, *, normalize: bool = False) -> None:
+    """Run a source audio file through the cleaning pipeline and write the result to *target*.
+
+    Pipeline: 48 kHz wav -> Mossformer2 enhancement -> 16 kHz mono export
+    (with optional loudness normalization when *normalize* is True).
+    """
+    from tempfile import TemporaryDirectory
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory() as tmpdir:
+        tmp = Path(tmpdir)
+        wav_48k = tmp / "wav_48k.wav"
+        post_mosfet = tmp / "post_mosfet.wav"
+        await convert_to_48k_wav(source, wav_48k)
+        await enhance_with_mossformer2(wav_48k, post_mosfet)
+        if normalize:
+            stats = await measure_loudness(post_mosfet)
+            await normalize_and_export_16k_mono(post_mosfet, target, stats)
+        else:
+            await convert_to_16k_mono(post_mosfet, target)
+
+
 async def normalize_and_export_16k_mono(
     input_wav: Path,
     output_wav: Path,

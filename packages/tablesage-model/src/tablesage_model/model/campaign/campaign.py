@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from ..._utils import StrippedNonBlankStr
-from ..cast import PlayerSlug, Role
+from .glossary_entry import GlossaryEntry
 
 
 class Campaign(BaseModel, frozen=True):
     slug: StrippedNonBlankStr
     name: StrippedNonBlankStr
-    default_gm: StrippedNonBlankStr
-    players: Mapping[PlayerSlug, tuple[Role, ...]] = Field(
-        description="Map of player slugs (ids) to the roles they have played in the campaign"
-    )
+    default_gm: str = ""
+    glossary: tuple[GlossaryEntry, ...] = ()

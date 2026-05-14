@@ -4,6 +4,9 @@ from .campaign import (
 from .campaign_set import (
     CampaignSet,
 )
+from .glossary_entry import (
+    GlossaryEntry,
+)
 from .session import (
     Session,
 )
@@ -13,7 +16,8 @@ from .session_set import (
 
 __all__ = [
     "Campaign",
-    "Session",
     "CampaignSet",
+    "GlossaryEntry",
+    "Session",
     "SessionSet",
 ]

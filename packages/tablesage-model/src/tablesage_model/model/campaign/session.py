@@ -13,6 +13,9 @@ class Session(BaseModel, frozen=True):
     session_date: date
     name: StrippedNonBlankStr
     slug: StrippedNonBlankStr
+    audio_filename: str = Field(
+        description="Filename of the imported raw audio, relative to the session dir. Extension is preserved from the source file."
+    )
     attendees: Mapping[PlayerSlug, tuple[Role, ...]] = Field(
         description="Map of player slugs (ids) to the roles they played in this session."
     )

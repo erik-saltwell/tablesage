@@ -1,6 +1,7 @@
 from .app_settings import (
     AppSettings,
     AudioCleaningSettings,
+    EnhanceVoicesSettings,
     RemoveOutliersSettings,
     SpeakerIdentificationSettings,
     TranscriptionAndDiarizationSettings,
@@ -9,6 +10,7 @@ from .app_settings import (
 __all__ = [
     "AppSettings",
     "AudioCleaningSettings",
+    "EnhanceVoicesSettings",
     "RemoveOutliersSettings",
     "SpeakerIdentificationSettings",
     "TranscriptionAndDiarizationSettings",

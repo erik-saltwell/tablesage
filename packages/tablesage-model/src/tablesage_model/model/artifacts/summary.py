@@ -4,4 +4,4 @@ from pydantic import BaseModel
 
 
 class Summary(BaseModel, frozen=True):
-    name: str
+    markdown: str

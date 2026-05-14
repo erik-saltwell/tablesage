@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 from .. import _paths
-from ..model.cast import Player
+from ..model.cast import Player, PlayerSet
+from .player_set_io import load_player_set, save_player_set
 from .yaml_io import load_model_from_yaml, save_model_to_yaml
 
 
@@ -24,3 +26,22 @@ def save_player(campaign_slug: str, player: Player) -> None:
     if file_path.is_dir():
         raise IsADirectoryError(file_path)
     save_model_to_yaml(file_path, player)
+
+
+def delete_player(campaign_slug: str, player_slug: str) -> None:
+    current = load_player_set(campaign_slug)
+    remaining = tuple(p for p in current.players if p.slug != player_slug)
+    save_player_set(campaign_slug, PlayerSet(players=remaining))
+
+
+def cleanup_orphan_player_dirs(campaign_slug: str) -> tuple[str, ...]:
+    root = _paths.players_dir(campaign_slug)
+    if not root.exists():
+        return ()
+    known = {p.slug for p in load_player_set(campaign_slug).players}
+    deleted: list[str] = []
+    for child in sorted(root.iterdir()):
+        if child.is_dir() and child.name not in known:
+            shutil.rmtree(child)
+            deleted.append(child.name)
+    return tuple(deleted)

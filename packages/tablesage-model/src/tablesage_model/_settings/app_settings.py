@@ -18,7 +18,6 @@ class SpeakerIdentificationSettings(BaseModel, frozen=True):
 
 
 class AudioCleaningSettings(BaseModel, frozen=True):
-    raw_audio_file: Path = Path("original.m4a")
     normalize_volume: bool = False
 
 
@@ -29,9 +28,18 @@ class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
     model_id: ScribeModelId = "scribe_v2"
 
 
+class EnhanceVoicesSettings(BaseModel, frozen=True):
+    min_margin_for_voice_sample: float = 0.15
+    min_clip_seconds: float = 1.0
+    max_clip_seconds: float = 8.0
+
+
 class AppSettings(BaseModel, frozen=True):
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
     cleaned_audio_file: Path = Path("cleaned.wav")
     remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
+    enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
+    llm_model: str = "anthropic/claude-sonnet-4-5"
+    clean_clips_on_import: bool = False
