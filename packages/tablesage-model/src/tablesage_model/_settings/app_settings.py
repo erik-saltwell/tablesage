@@ -7,6 +7,11 @@ from pydantic import BaseModel, Field, PositiveInt
 from .type_aliases import ScribeLanguageCode, ScribeModelId
 
 
+class RemoveOutliersSettings(BaseModel, frozen=True):
+    min_sample_similarity: float = Field(default=0.6, gt=0, le=1)
+    min_samples: PositiveInt = 5
+
+
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
     input_audio_file: Path = Path("cleaned.wav")
     similarity_margin_threshold: float = 0.1
@@ -29,3 +34,4 @@ class AppSettings(BaseModel, frozen=True):
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
     cleaned_audio_file: Path = Path("cleaned.wav")
+    remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
