@@ -1,24 +1,30 @@
 from typing import ClassVar
 
 from textual.app import ComposeResult
-from textual.screen import CSSPathType, Screen
+from textual.screen import Screen
 from textual.widgets import Footer
 
 from ..widgets.tablesage_header import TableSageHeader
 
-BASE_SCREEN_CSS = "../styles/base_screen.tcss"
-
 
 class BaseScreen(Screen):
-    CSS_PATH: ClassVar[CSSPathType | None] = [BASE_SCREEN_CSS]
-
     """Common shell for app screens."""
 
+    header_section: ClassVar[str] = "welcome"
+    show_header: ClassVar[bool] = True
+    show_footer: ClassVar[bool] = True
+
     def compose(self) -> ComposeResult:
-        yield TableSageHeader()
+        if self.show_header:
+            yield TableSageHeader()
         yield from self.compose_content()
-        yield Footer()
+        if self.show_footer:
+            yield Footer()
 
     def compose_content(self) -> ComposeResult:
         """Override in subclasses."""
-        yield
+        return iter(())
+
+    def on_mount(self) -> None:
+        if self.show_header:
+            self.query_one(TableSageHeader).section = self.header_section

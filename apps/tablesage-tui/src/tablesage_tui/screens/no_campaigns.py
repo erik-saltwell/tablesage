@@ -5,12 +5,11 @@ from pathlib import Path
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Center, Container, Horizontal, Vertical
-from textual.screen import Screen
 from textual.widgets import Static
 
 from ..resources import load_resource
 from ..widgets.command_button import CommandButton
-from ..widgets.tablesage_header import TableSageHeader
+from .base_screen import BaseScreen
 from .help import HelpScreen
 
 TABLE_PATH: Path = Path("table_standard.txt")
@@ -18,22 +17,21 @@ SAGE_PATH: Path = Path("sage_computer.txt")
 LOGO_PATH: Path = Path("sun_2.txt")
 
 
-class Empty(Container): ...
+class _Empty(Container): ...
 
 
-class NoCampaignsScreen(Screen):
-    CSS_PATH = [
-        "../styles/main.tcss",
-    ]
+class NoCampaignsScreen(BaseScreen):
+    ENABLE_COMMAND_PALETTE = False
+    header_section = "welcome"
+    show_footer = False
     BINDINGS = [
         Binding("n,N", "new_campaign", "New campaign", key_display="N"),
         Binding("i,I", "import_campaign", "Import", key_display="I"),
         Binding("?", "show_help", "Help", key_display="?"),
     ]
-    ENABLE_COMMAND_PALETTE = False
 
-    def compose(self) -> ComposeResult:
-        yield TableSageHeader()
+    def compose_content(self) -> ComposeResult:
+
         with Center(id="main-content"):
             with Center(id="splash-panel") as splash_panel:
                 splash_panel.border_title = "- welcome -"
@@ -84,8 +82,6 @@ class NoCampaignsScreen(Screen):
                             ):
                                 yield Static(classes="keycap", content="?")
                                 yield Static(classes="cta-lbl cta-lbl-last", content="keybindings & help")
-
-        # yield Footer()
 
     def action_new_campaign(self) -> None:
         self.notify("New campaign")
