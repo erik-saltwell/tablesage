@@ -1,6 +1,4 @@
-def main() -> None:
-    print("TableSage TUI starting.")
-
+from tablesage_tui.screens import main
 
 if __name__ == "__main__":
     main()

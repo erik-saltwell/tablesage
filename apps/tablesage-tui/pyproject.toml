@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-tablesage-tui = "tablesage_tui.main:main"
+tablesage-tui = "tablesage_tui.screens:main"
 
 [build-system]
 requires = ["uv_build>=0.11.2,<0.12.0"]
@@ -22,3 +22,8 @@ build-backend = "uv_build"
 
 [tool.uv.sources]
 tablesage-model = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "textual-dev>=1.8.0",
+]
