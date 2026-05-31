@@ -41,7 +41,11 @@ class CommandButton(Horizontal):
 
         self.add_class("-active")
         self.set_timer(self.active_effect_duration, self._clear_active)
-        self.call_later(self.app.run_action, self.command_action)
+        self.call_later(
+            self.app.run_action,
+            self.command_action,
+            default_namespace=self.screen,
+        )
         return self
 
     def action_press(self) -> None:

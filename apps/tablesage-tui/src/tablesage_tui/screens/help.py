@@ -8,6 +8,8 @@ from textual.widgets import Static
 
 from ..widgets.tablesage_header import TableSageHeader
 
+HELP_CSS_PATH = "../styles/help.tcss"
+
 
 class HelpScreen(Screen[None]):
     BINDINGS = [
