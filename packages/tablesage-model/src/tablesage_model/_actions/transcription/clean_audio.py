@@ -3,10 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from ... import _paths
-from ..._settings import AppSettings, AudioCleaningSettings
 from ..._tools.ffmpeg import clean_clip
 from ...io import load_session
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
+from ...settings import AppSettings, AudioCleaningSettings
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:

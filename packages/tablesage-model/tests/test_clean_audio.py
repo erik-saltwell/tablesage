@@ -6,11 +6,11 @@ from pathlib import Path
 import pytest
 from tablesage_model import _paths
 from tablesage_model._actions.transcription.clean_audio import clean_audio
-from tablesage_model._settings import AppSettings
 from tablesage_model._tools import ffmpeg
 from tablesage_model.io import save_session
 from tablesage_model.model.campaign import Session
 from tablesage_model.protocols import NullPhasedProgressSink
+from tablesage_model.settings import AppSettings
 
 
 @pytest.mark.anyio

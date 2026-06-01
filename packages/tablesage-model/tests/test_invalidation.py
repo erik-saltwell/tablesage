@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from tablesage_model import _paths
 from tablesage_model._actions.invalidation import InputChange, invalidate
-from tablesage_model._settings import AppSettings
+from tablesage_model.settings import AppSettings
 
 
 def _seed_all_artifacts(campaign_slug: str, session_slug: str, app_settings: AppSettings) -> dict[str, Path]:

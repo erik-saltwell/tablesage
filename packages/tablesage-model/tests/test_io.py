@@ -318,7 +318,7 @@ def test_voice_sample_carries_provenance_and_round_trips_through_player() -> Non
 
 
 def test_app_settings_round_trip_via_save_and_load() -> None:
-    from tablesage_model._settings import AppSettings
+    from tablesage_model.settings import AppSettings
 
     settings = AppSettings(llm_model="anthropic/claude-3-7-sonnet")
     settings = settings.model_copy(
@@ -333,7 +333,7 @@ def test_app_settings_round_trip_via_save_and_load() -> None:
 
 
 def test_load_app_settings_returns_defaults_when_file_missing() -> None:
-    from tablesage_model._settings import AppSettings
+    from tablesage_model.settings import AppSettings
 
     loaded = load_app_settings()
 
@@ -341,7 +341,7 @@ def test_load_app_settings_returns_defaults_when_file_missing() -> None:
 
 
 def test_app_settings_carry_enhance_voices_block_with_defaults() -> None:
-    from tablesage_model._settings import AppSettings
+    from tablesage_model.settings import AppSettings
 
     defaults = AppSettings()
 
@@ -351,7 +351,7 @@ def test_app_settings_carry_enhance_voices_block_with_defaults() -> None:
 
 
 def test_app_settings_clean_clips_on_import_defaults_to_false_and_round_trips() -> None:
-    from tablesage_model._settings import AppSettings
+    from tablesage_model.settings import AppSettings
 
     assert AppSettings().clean_clips_on_import is False
 

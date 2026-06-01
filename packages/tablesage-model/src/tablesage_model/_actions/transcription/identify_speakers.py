@@ -5,12 +5,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from ... import _paths
-from ..._settings import AppSettings, SpeakerIdentificationSettings
 from ..._tools import ffmpeg
 from ..._tools.embeddings import EmbeddingFactory, SimilarityComputer, SimilarityResult
 from ...model.cast import Player
 from ...model.transcription import Discourse, Utterance
 from ...protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
+from ...settings import AppSettings, SpeakerIdentificationSettings
 
 
 async def identify_speakers(

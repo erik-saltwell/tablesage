@@ -4,9 +4,9 @@ import asyncio
 
 import torch
 
-from ..._settings import AppSettings, RemoveOutliersSettings
 from ...io import load_player, save_player
 from ...model.cast import Embedding, Player, VoiceSample
+from ...settings import AppSettings, RemoveOutliersSettings
 
 
 def _recompute_centroid(stacked: torch.Tensor) -> torch.Tensor:

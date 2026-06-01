@@ -5,7 +5,6 @@ from datetime import date
 
 import pytest
 from tablesage_model import _paths
-from tablesage_model._settings import AppSettings
 from tablesage_model.io import (
     save_campaign,
     save_player,
@@ -15,6 +14,7 @@ from tablesage_model.io import (
 from tablesage_model.model.campaign import Campaign, GlossaryEntry, Session
 from tablesage_model.model.cast import Embedding, Player, PlayerName, PlayerSet
 from tablesage_model.model.transcription import Discourse, Utterance, Word
+from tablesage_model.settings import AppSettings
 
 
 def _seed_campaign_and_session(campaign_slug: str, session_slug: str, *, attendee_slug: str = "ada") -> None:

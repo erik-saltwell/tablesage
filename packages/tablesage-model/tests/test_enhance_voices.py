@@ -9,12 +9,12 @@ from tablesage_model._actions.players.enhance_voices import (
     enhance_voices,
     select_enhancement_utterances,
 )
-from tablesage_model._settings import AppSettings, EnhanceVoicesSettings
 from tablesage_model.io import load_player, save_campaign, save_discourse, save_player, save_player_set, save_session
 from tablesage_model.model.campaign import Campaign, Session
 from tablesage_model.model.cast import Embedding, Player, PlayerName, PlayerSet, ProvenanceType, VoiceSample
 from tablesage_model.model.transcription import Discourse, Utterance, Word
 from tablesage_model.protocols import NullPhasedProgressSink
+from tablesage_model.settings import AppSettings, EnhanceVoicesSettings
 
 
 def _utterance(text: str, *, speaker: str, start: float, end: float, margin: float) -> Utterance:

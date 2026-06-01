@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import pytest
 from tablesage_model import _paths
-from tablesage_model._settings import AppSettings
 from tablesage_model._tools.llm import summary as llm_summary
 from tablesage_model._tools.llm.summary import generate_summary
 from tablesage_model.io import load_summary
 from tablesage_model.model.campaign import GlossaryEntry
 from tablesage_model.model.transcription import Discourse, Utterance, Word
 from tablesage_model.protocols import NullPhasedProgressSink, PhasedProgressEvent
+from tablesage_model.settings import AppSettings
 
 
 def _make_discourse(text: str = "The party met the lich-king at the gate.") -> Discourse:

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from ..._settings import AppSettings
 from ..._tools.llm.summary import generate_summary as _tool_generate_summary
 from ...io import save_summary
 from ...model.artifacts import Summary
 from ...model.campaign import GlossaryEntry
 from ...model.transcription import Discourse
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
+from ...settings import AppSettings
 
 
 async def generate_summary(

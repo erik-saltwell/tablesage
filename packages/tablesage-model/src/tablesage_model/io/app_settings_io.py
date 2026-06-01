@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .. import _paths
-from .._settings import AppSettings
+from ..settings import AppSettings
 from .yaml_io import load_model_from_yaml, save_model_to_yaml
 
 

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from ..._settings import AppSettings
 from ...io import load_campaign, load_player, load_player_set, load_session, save_discourse
 from ...io.transcript_io import save_transcript
 from ...protocols import NullIncrementalProgressSink, PhasedProgressEvent, PhasedProgressSink
+from ...settings import AppSettings
 from ..invalidation import InputChange, invalidate
 from ..transcription import clean_audio, generate_summary, identify_speakers, transcribe_and_diarize
 

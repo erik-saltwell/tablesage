@@ -3,10 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from ... import _paths
-from ..._settings import AppSettings
 from ..._tools import eleven_labs
 from ...model.transcription import Discourse, Utterance, Word
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
+from ...settings import AppSettings
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:

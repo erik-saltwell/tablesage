@@ -4,13 +4,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ... import _paths
-from ..._settings import AppSettings, EnhanceVoicesSettings
 from ..._tools import ffmpeg
 from ..._tools.embeddings import EmbeddingFactory
 from ...io import load_discourse, load_player, load_player_set, load_session, save_player
 from ...model.cast import Embedding, Player, ProvenanceType, VoiceSample
 from ...model.transcription import Discourse, Utterance
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
+from ...settings import AppSettings, EnhanceVoicesSettings
 from .remove_outliers import remove_outliers
 
 

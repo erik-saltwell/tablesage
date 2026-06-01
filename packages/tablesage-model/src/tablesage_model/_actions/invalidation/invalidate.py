@@ -3,10 +3,10 @@ from __future__ import annotations
 from enum import StrEnum
 
 from ... import _paths
-from ..._settings import AppSettings
 from ..._tools.embeddings import compute_centroid
 from ...io import load_player, load_player_set, save_player
 from ...model.cast import ProvenanceType
+from ...settings import AppSettings
 
 
 class InputChange(StrEnum):
