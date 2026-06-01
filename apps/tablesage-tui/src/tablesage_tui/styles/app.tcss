@@ -57,6 +57,10 @@ Footer {
     height: 1fr;
 }
 
+AsciiArt {
+    text-wrap: nowrap;
+}
+
 /* ******************************** */
 /*             widgets              */
 /* ******************************** */
@@ -183,11 +187,12 @@ Footer {
             height: 8;
             margin: 2 0 0 0;
             padding: 0 20 0 0;
-            width:100%
+            width:100%;
+            
         }
         .wordmark{
             height:6;
-            margin: 0 0 1 0;
+            margin: 2 0 1 0;
             width:100%;
             text-wrap: nowrap;
             
@@ -344,4 +349,12 @@ Footer {
             content-align: center middle;
         }
     }
+}
+
+/* ******************************** */
+/*               campaigns          */
+/* ******************************** */
+
+CampaignsScreen {
+
 }

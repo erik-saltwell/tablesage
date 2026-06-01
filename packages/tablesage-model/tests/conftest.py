@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from tablesage_model._actions.setup.setup_campaigns import setup_root_dir
+from tablesage_model.setup import setup_root_dir
 
 
 @pytest.fixture(autouse=True)

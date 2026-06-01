@@ -1,3 +1,3 @@
-from . import io, model, settings
+from . import io, model, settings, setup
 
-__all__ = ["io", "model", "settings"]
+__all__ = ["io", "model", "settings", "setup"]

@@ -36,7 +36,7 @@ class KnownDirectories(StrEnum):
 def data_root() -> Path:
     override = os.environ.get("TABLESAGE_DATA_DIR")
     if override:
-        return Path(override)
+        return Path(override).expanduser()
     return Path(user_data_dir("tablesage", "tablesage"))
 
 

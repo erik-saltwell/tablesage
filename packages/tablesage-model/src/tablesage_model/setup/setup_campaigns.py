@@ -3,9 +3,9 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-from ... import _paths
-from ...io import save_campaign_set
-from ...model.campaign import CampaignSet
+from .. import _paths
+from ..io import save_campaign_set
+from ..model.campaign import CampaignSet
 
 
 def setup_root_dir() -> None:

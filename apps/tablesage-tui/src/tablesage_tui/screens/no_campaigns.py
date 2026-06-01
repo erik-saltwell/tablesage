@@ -7,7 +7,7 @@ from textual.binding import Binding
 from textual.containers import Center, Container, Horizontal, Vertical
 from textual.widgets import Static
 
-from ..resources import load_resource
+from ..widgets.ascii_art import AsciiArt
 from ..widgets.command_button import CommandButton
 from .base_screen import BaseScreen
 from .help import HelpScreen
@@ -37,10 +37,10 @@ class NoCampaignsScreen(BaseScreen):
                 splash_panel.border_title = "- welcome -"
 
                 with Vertical(id="splash-panel-content"):
-                    yield Static(id="logo", content=load_resource(LOGO_PATH), markup=False)
+                    yield AsciiArt.from_resource(LOGO_PATH, id="logo")
                     with Horizontal(classes="wordmark"):
-                        yield Static(load_resource(TABLE_PATH), id="tablemark", markup=False)
-                        yield Static(load_resource(SAGE_PATH), id="sagemark", markup=False)
+                        yield AsciiArt.from_resource(TABLE_PATH, id="tablemark")
+                        yield AsciiArt.from_resource(SAGE_PATH, id="sagemark")
                     with Horizontal(classes="subtitle"):
                         yield Static(classes="campaigns", content="campaigns.")
                         yield Static(classes="intelligent", content="intelligent.")
