@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dotenv import load_dotenv
-from tablesage_model.model import CampaignSet
+from tablesage_model.model import CampaignSummary
 from textual.app import App
 
 from ..viewmodel import ModelStore
@@ -16,12 +16,12 @@ class TableSageApp(App):
 
     def __init__(self, model_store: ModelStore | None = None) -> None:
         super().__init__()
-        self.model_strore = model_store or ModelStore()
-        self.model_strore.prepare_tablesage_dir()
+        self.model_store = model_store or ModelStore()
+        self.model_store.prepare_tablesage_dir()
 
     async def switch_to_campaign_screen(self) -> None:
-        campaigns: CampaignSet = self.model_strore.load_campaigns()
-        if len(campaigns.campaigns) == 0:
+        campaigns: tuple[CampaignSummary, ...] = self.model_store.load_campaigns()
+        if len(campaigns) == 0:
             await self.push_screen(NoCampaignsScreen())
         else:
             await self.push_screen(CampaignsScreen(campaigns))
@@ -31,6 +31,10 @@ class TableSageApp(App):
 
     async def on_screen_resume(self) -> None:
         await self.switch_to_campaign_screen()
+
+    @property
+    def store(self) -> ModelStore:
+        return self.model_store
 
 
 def main() -> None:

@@ -4,6 +4,7 @@
 
 $bg:        #0f1411; 
 $panel-bg:  #1a201c;  /* bordered panel fill           */
+$dialog-backdrop: rgba(8, 11, 9, 0.62);
 $border:    #2a342d;  /* panel + footer hairlines      */
 $bg-focus:  #222a25;  /* halfway between panel-bg + border */
 $bg-focus-subtle: #1e2520; 
@@ -16,8 +17,8 @@ $accent:    #d8b06a;  /* footer keycaps, key chips     */
 $panel-bg-muted: #1a201cbb;
 $accent-soft: #d7c195; /* halfway between cream-fg and accent */
 $accent-cream: #d7c9aa; /* halfway between $accent-soft and $cream-fg*/
-
-
+$sunburst: #e0c04f;
+$dim-text: #d6d1bf;
 /* ******************************** */
 /*             reset                */
 /* ******************************** */
@@ -38,6 +39,49 @@ Footer {
     background: $panel-bg;
     row-span: 1;
     column-span: 3;
+    height: 1;
+    padding: 0 0 0 1;
+    
+    FooterKey {
+        background: $surface;
+        margin: 0 2 0 0;
+    }
+
+    /* The key itself: q, n, ctrl+p, etc. */
+    FooterKey .footer-key--key {
+        color: $panel-bg;
+        background: $accent;
+        text-style: bold;
+        padding: 0 1;
+        
+    }
+
+    /* The binding description / label next to the key */
+    FooterKey .footer-key--description {
+        color: $text-muted;
+        background: $surface;
+        padding: 0 1 0 1;
+    }
+
+    /* Hover state for the whole keybinding item */
+    FooterKey:hover {
+        background: $boost;
+        pointer: pointer;
+    }
+
+    /* Hover state, key part only */
+    FooterKey:hover .footer-key--key {
+        color: $surface;
+        background: $accent;
+    }
+
+    /* Hover state, description part only */
+    FooterKey:hover .footer-key--description {
+        color: $text;
+        background: $boost;
+    }
+
+    
 }
 
 .keycap{
@@ -149,6 +193,88 @@ CommandButton:disabled .keycap {
     color: $dim;
 }
 
+FilterOption {
+    width: auto;
+    height: 1;
+    min-height: 1;
+    margin: 0 2 0 0;
+    color: $dim;
+    text-style: none;
+    content-align: center middle;
+    pointer: pointer;
+}
+
+FilterOption:hover,
+FilterOption:focus {
+    color: $cream-fg;
+}
+
+FilterOption.-selected {
+    color: $sage;
+    text-style: underline;
+}
+
+FilterOption:disabled {
+    color: $dim;
+    text-opacity: 60%;
+    pointer: not-allowed;
+}
+
+
+/* ******************************** */
+/*             dialogs              */
+/* ******************************** */
+
+NewCampaignDialog {
+        align: center middle;
+        background: $dialog-backdrop;
+
+    #new-campaign-dialog {
+        width: 60;
+        height: auto;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+        border: $sage-glow;
+        background: $panel-bg;
+        color: $text;
+    }
+
+    #new-campaign-error {
+        height: 1;
+        color: $accent;
+        margin: 0 0 1 0;
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+
+    .dialog-actions Button#cancel {
+        margin: 0 2 0 0;
+    }
+    
+    .dialog-actions Button {
+        color: $sage;
+        background: $panel-bg;
+        border: $sage;
+        height:3;
+        min-height:1;
+        text-style: none;
+    }
+
+    .dialog-actions Button:focus {
+        background: $sage-glow;
+        color: $panel-bg;
+        text-style: none;    
+        border:none;
+    }
+}
 
 /* ******************************** */
 /*           base screen            */
@@ -356,5 +482,89 @@ Footer {
 /* ******************************** */
 
 CampaignsScreen {
+    
+
+    #content-panel {
+        background: $panel-bg;
+        margin: 2 4;
+        border: $sage-deep;
+        padding: 1 2;
+
+    #campaign-filter {
+        height: 4;
+        content-align: left middle;
+        align: left middle;
+
+        #logo {
+            color: $sunburst;
+            margin: 0 1 0 1;
+            width: 12;
+        }
+
+        .filter-option { 
+            height:1;
+            width:auto;
+            margin: 1 1 2 0;
+        }
+
+        
+
+        #search{
+            width:30;
+            height: 1;
+            min-height: 1;
+            border: none;
+            background: $bg-focus;
+            padding: 0 1;
+            color: $dim-text;
+            margin: 1 0 0 0;
+        }
+        
+    }
+    #campaign-table{
+        width:100%;
+        height:1fr;
+        background: $panel-bg;
+
+        & > .datatable--header {
+            background: $panel-bg;
+            color: $sage;
+            border-top: $border;
+            
+        }
+
+        & > .datatable--header-hover {
+            background: $bg-focus;
+            color: $cream-fg;
+            text-style: bold;
+        }
+
+        & > .datatable--header-cursor {
+            background: $sage-deep;
+            color: $bg;
+            text-style: bold;
+        }
+    }
+    .fill-space-vertical {
+        height: 1fr;
+    }
+    .fill-space-horizontal{
+            width: 1fr;
+        }
+    #panel-footer {
+        height:2;
+        width:100%;
+        
+        border-top: $border;
+        .fill-space-horizontal{
+            width: 1fr;
+        }
+        Static{
+            width: auto;
+        }
+    }
+}
+
+
 
 }

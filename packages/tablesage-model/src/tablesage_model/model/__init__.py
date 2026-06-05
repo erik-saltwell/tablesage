@@ -6,6 +6,8 @@ from .artifacts import (
 from .campaign import (
     Campaign,
     CampaignSet,
+    CampaignState,
+    CampaignSummary,
     GlossaryEntry,
     Session,
     SessionSet,
@@ -31,6 +33,7 @@ __all__ = [
     "GAME_MASTER",
     "Campaign",
     "CampaignSet",
+    "CampaignSummary",
     "Discourse",
     "Embedding",
     "GlossaryEntry",
@@ -48,4 +51,5 @@ __all__ = [
     "Utterance",
     "VoiceSample",
     "Word",
+    "CampaignState",
 ]

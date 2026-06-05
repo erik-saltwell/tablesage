@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import cast
 
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Center, Container, Horizontal, Vertical
 from textual.widgets import Static
 
+from ..dialogs.new_campaign import NewCampaignDialog, NewCampaignResult
+from ..viewmodel import ModelStore, ModelStoreHost
 from ..widgets.ascii_art import AsciiArt
 from ..widgets.command_button import CommandButton
 from .base_screen import BaseScreen
+from .campaigns import CampaignsScreen
 from .help import HelpScreen
 
 TABLE_PATH: Path = Path("table_standard.txt")
@@ -29,6 +33,14 @@ class NoCampaignsScreen(BaseScreen):
         Binding("i,I", "import_campaign", "Import", key_display="I"),
         Binding("?", "show_help", "Help", key_display="?"),
     ]
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    @property
+    def store(self) -> ModelStore:
+        host = cast(ModelStoreHost, self.app)
+        return host.store
 
     def compose_content(self) -> ComposeResult:
 
@@ -84,7 +96,14 @@ class NoCampaignsScreen(BaseScreen):
                                 yield Static(classes="cta-lbl cta-lbl-last", content="keybindings & help")
 
     def action_new_campaign(self) -> None:
-        self.notify("New campaign")
+        existing_slugs = frozenset(c.slug for c in self.store.load_campaigns())
+        self.app.push_screen(NewCampaignDialog(existing_slugs=existing_slugs), self._on_new_campaign)
+
+    def _on_new_campaign(self, result: NewCampaignResult | None) -> None:
+        if result and result.name:
+            self.store.create_campaign(campaign_name=result.name, default_gm=result.default_gm, system=result.system)
+            campaigns = self.store.load_campaigns()
+            self.app.switch_screen(CampaignsScreen(campaigns))
 
     def action_import_campaign(self) -> None:
         self.notify("Import campaign")

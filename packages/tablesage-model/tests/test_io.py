@@ -8,12 +8,14 @@ from tablesage_model.io import (
     cleanup_orphan_campaign_dirs,
     cleanup_orphan_player_dirs,
     cleanup_orphan_session_dirs,
+    create_campaign,
     delete_campaign,
     delete_player,
     delete_session,
     load_app_settings,
     load_campaign,
     load_campaign_set,
+    load_campaign_summaries,
     load_discourse,
     load_player,
     load_player_set,
@@ -55,6 +57,66 @@ def test_campaign_set_round_trips() -> None:
     save_campaign_set(campaign_set)
 
     assert load_campaign_set() == campaign_set
+
+
+def test_create_campaign_adds_campaign_to_campaign_set_and_saves_campaign() -> None:
+    save_campaign_set(CampaignSet(campaigns=(CampaignName(slug="sable-crown", name="Sable Crown"),)))
+
+    slug = create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e")
+
+    assert slug == "iron-pact"
+    assert load_campaign_set() == CampaignSet(
+        campaigns=(
+            CampaignName(slug="sable-crown", name="Sable Crown"),
+            CampaignName(slug="iron-pact", name="Iron Pact"),
+        )
+    )
+    assert load_campaign("iron-pact") == Campaign(slug="iron-pact", name="Iron Pact", default_gm="Ada", system="D&D 5e")
+
+
+def test_create_campaign_scaffolds_empty_session_set() -> None:
+    create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e")
+
+    assert load_session_set("iron-pact") == SessionSet(sessions=())
+
+
+def test_create_campaign_scaffolds_empty_player_set() -> None:
+    create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e")
+
+    assert load_player_set("iron-pact") == PlayerSet(players=())
+
+
+def test_create_campaign_raises_on_slug_collision_and_leaves_existing_untouched() -> None:
+    import pytest
+
+    create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e")
+    before = load_campaign_set()
+
+    with pytest.raises(FileExistsError):
+        create_campaign("Iron Pact", default_gm="Mallory", system="Pathfinder")
+
+    assert load_campaign_set() == before
+    assert load_campaign("iron-pact").default_gm == "Ada"
+
+
+def test_slugify_is_exposed_via_io_facade() -> None:
+    from tablesage_model.io import slugify
+
+    assert slugify("Iron Pact") == "iron-pact"
+
+
+def test_campaign_round_trips_with_description() -> None:
+    campaign = Campaign(slug="sable-crown", name="Sable Crown", default_gm="Ada", description="A grim tale of crowns.")
+
+    save_campaign(campaign)
+
+    loaded = load_campaign(campaign.slug)
+    assert loaded.description == "A grim tale of crowns."
+    assert loaded == campaign
+
+
+def test_campaign_description_defaults_to_empty() -> None:
+    assert Campaign(slug="sable-crown", name="Sable Crown").description == ""
 
 
 def test_campaign_round_trips_with_glossary() -> None:
@@ -105,8 +167,8 @@ def test_delete_session_removes_only_metadata_entry_directory_remains() -> None:
         "sable-crown",
         SessionSet(
             sessions=(
-                SessionName(slug="s1", name="One"),
-                SessionName(slug="s2", name="Two"),
+                SessionName(slug="s1", name="One", session_date=date(2026, 1, 1)),
+                SessionName(slug="s2", name="Two", session_date=date(2026, 1, 8)),
             )
         ),
     )
@@ -130,7 +192,10 @@ def test_delete_session_removes_only_metadata_entry_directory_remains() -> None:
 
 def test_cleanup_orphan_session_dirs_removes_dirs_not_in_set() -> None:
     save_campaign(Campaign(slug="sable-crown", name="Sable Crown", default_gm="Ada"))
-    save_session_set("sable-crown", SessionSet(sessions=(SessionName(slug="kept", name="Kept"),)))
+    save_session_set(
+        "sable-crown",
+        SessionSet(sessions=(SessionName(slug="kept", name="Kept", session_date=date(2026, 1, 1)),)),
+    )
     kept_dir = _paths.session_dir("sable-crown", "kept")
     kept_dir.mkdir(parents=True)
     orphan_dir = _paths.session_dir("sable-crown", "ghost")
@@ -234,7 +299,7 @@ def test_player_round_trips() -> None:
 
 
 def test_session_set_round_trips() -> None:
-    session_set = SessionSet(sessions=(SessionName(slug="session-one", name="Session One"),))
+    session_set = SessionSet(sessions=(SessionName(slug="session-one", name="Session One", session_date=date(2026, 5, 13)),))
 
     save_session_set("sable-crown", session_set)
 
@@ -373,3 +438,82 @@ def test_session_requires_audio_filename() -> None:
                 "attendees": {"ada": ("Game Master",)},
             }
         )
+
+
+def test_load_campaign_summaries_computes_session_bounds_and_counts() -> None:
+    slug = create_campaign(campaign_name="Iron Pact", default_gm="Ada", system="D&D 5e")
+    save_session_set(
+        slug,
+        SessionSet(
+            sessions=(
+                SessionName(slug="s2", name="Two", session_date=date(2026, 3, 10)),
+                SessionName(slug="s1", name="One", session_date=date(2026, 1, 5)),
+                SessionName(slug="s3", name="Three", session_date=date(2026, 2, 14)),
+            )
+        ),
+    )
+    save_player_set(
+        slug,
+        PlayerSet(
+            players=(
+                PlayerName(slug="ada", name="Ada"),
+                PlayerName(slug="bex", name="Bex"),
+            )
+        ),
+    )
+
+    (summary,) = load_campaign_summaries()
+
+    assert summary.first_session_date == date(2026, 1, 5)
+    assert summary.last_session_date == date(2026, 3, 10)
+    assert summary.session_count == 3
+    assert summary.player_count == 2
+
+
+def test_load_campaign_summaries_empty_campaign_has_no_dates() -> None:
+    create_campaign(campaign_name="Iron Pact", default_gm="Ada", system="D&D 5e")
+
+    (summary,) = load_campaign_summaries()
+
+    assert summary.first_session_date is None
+    assert summary.last_session_date is None
+    assert summary.session_count == 0
+    assert summary.player_count == 0
+
+
+def test_load_campaign_summaries_carries_campaign_fields() -> None:
+    slug = create_campaign(campaign_name="Iron Pact", default_gm="Ada", system="D&D 5e")
+    save_campaign(
+        Campaign(
+            slug=slug,
+            name="Iron Pact",
+            description="A grim pact campaign",
+            default_gm="Ada",
+            system="D&D 5e",
+        )
+    )
+
+    (summary,) = load_campaign_summaries()
+
+    assert summary.name == "Iron Pact"
+    assert summary.description == "A grim pact campaign"
+    assert summary.default_gm == "Ada"
+    assert summary.system == "D&D 5e"
+
+
+def test_load_campaign_summaries_preserves_campaign_set_order() -> None:
+    create_campaign(campaign_name="Iron Pact", default_gm="Ada", system="D&D 5e")
+    create_campaign(campaign_name="Sable Crown", default_gm="Bex", system="Blades")
+
+    summaries = load_campaign_summaries()
+
+    assert tuple(s.slug for s in summaries) == tuple(c.slug for c in load_campaign_set().campaigns)
+
+
+def test_load_campaign_summaries_fails_fast_when_campaign_files_missing() -> None:
+    import pytest
+
+    save_campaign_set(CampaignSet(campaigns=(CampaignName(slug="phantom", name="Phantom"),)))
+
+    with pytest.raises(FileNotFoundError):
+        load_campaign_summaries()
