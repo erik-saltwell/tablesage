@@ -525,26 +525,35 @@ CampaignsScreen {
         width:100%;
         height:1fr;
         background: $panel-bg;
+        text-style:none;
 
+        &:focus{
+            background: $panel-bg;
+            background-tint: $bg 0%;
+       
+            & > .datatable--header {
+                background: $panel-bg;
+                background-tint: $bg 0%;
+                color: $sage;
+                text-style: none;
+            }
+       
+        }
+        
         & > .datatable--header {
             background: $panel-bg;
+            text-style:none;
             color: $sage;
-            border-top: $border;
-            
         }
 
-        & > .datatable--header-hover {
-            background: $bg-focus;
-            color: $cream-fg;
-            text-style: bold;
+        & > .datatable--cursor {
+            background: $accent-soft;
+            color: $panel-bg;
+            text-style: none;
         }
 
-        & > .datatable--header-cursor {
-            background: $sage-deep;
-            color: $bg;
-            text-style: bold;
-        }
     }
+
     .fill-space-vertical {
         height: 1fr;
     }
