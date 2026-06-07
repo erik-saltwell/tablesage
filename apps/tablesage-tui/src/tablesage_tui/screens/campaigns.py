@@ -71,8 +71,9 @@ class CampaignsScreen(BaseScreen):
         if self._campaign_name_column_key is None or self._campaign_name_column_key not in table.columns:
             return
 
+        filtered_campaigns = self._filtered_campaigns()
         table.clear()
-        for campaign in self._filtered_campaigns():
+        for campaign in filtered_campaigns:
             table.add_row(
                 campaign.name,
                 campaign.system or EMPTY_DATE,
@@ -82,6 +83,8 @@ class CampaignsScreen(BaseScreen):
                 str(campaign.session_count),
                 str(campaign.player_count),
             )
+
+        self.highlighted_campaign_name = filtered_campaigns[0].name if filtered_campaigns else ""
 
     def __init__(self, campaigns: tuple[CampaignSummary, ...]) -> None:
         super().__init__()
@@ -110,10 +113,10 @@ class CampaignsScreen(BaseScreen):
                 yield DataTable(id="campaign-table", cell_padding=1, cursor_type="row")
 
                 with Horizontal(id="panel-footer"):
-                    yield Static(content="> press ")
-                    yield Static(classes="keycap", content="⏎")
-                    yield Static(" to select ")
-                    yield Static(content="", id="highlighted-campaign-name")
+                    yield Static(content="> press ", classes="selection-footer")
+                    yield Static(classes="keycap selection-footer", content="⏎")
+                    yield Static(" to select ", classes="selection-footer")
+                    yield Static(content="", id="highlighted-campaign-name", classes="selection-footer")
                     yield EmptyWidget(classes="fill-space-horizontal")
                     yield Static(content="or ")
                     yield Static(classes="keycap", content="N")
@@ -161,6 +164,9 @@ class CampaignsScreen(BaseScreen):
         self.highlighted_campaign_name = str(campaign_name)
 
     def watch_highlighted_campaign_name(self, campaign_name: str) -> None:
+        for widget in self.query("#panel-footer .selection-footer"):
+            widget.display = bool(campaign_name)
+
         self.query_one("#highlighted-campaign-name", Static).update(campaign_name)
 
     def on_mount(self) -> None:
