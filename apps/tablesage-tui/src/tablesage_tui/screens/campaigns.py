@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import cast
 
 from rich.text import Text
-from tablesage_model.model import CampaignState, CampaignSummary
+from tablesage_model.model import Campaign, CampaignState, CampaignSummary
 from textual import events
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -17,6 +17,7 @@ from ..dialogs.new_campaign import NewCampaignDialog, NewCampaignResult
 from ..viewmodel import ModelStore, ModelStoreHost
 from ..widgets import AsciiArt, EmptyWidget, FilterOption
 from .base_screen import BaseScreen
+from .campaign_detail import CampaignDetailScreen
 
 LOGO_PATH: Path = Path("sun_3_small.txt")
 
@@ -69,12 +70,19 @@ class CampaignsScreen(BaseScreen):
     active_filter: reactive[str] = reactive("active", init=False)
     search_text: reactive[str] = reactive("", init=False)
     highlighted_campaign_name: reactive[str] = reactive("", init=False)
+    highlighted_campaign_slug: reactive[str] = reactive("", init=False)
 
     BINDINGS = [
         Binding("n,N", "new_campaign", "New campaign", key_display="N"),
         Binding("i,I", "import_campaign", "Import", key_display="I"),
         Binding("?", "show_help", "Help", key_display="?"),
     ]
+
+    def __init__(self, campaigns: tuple[CampaignSummary, ...]) -> None:
+        super().__init__()
+        self.campaigns = campaigns
+        self._campaign_name_column_key: ColumnKey | None = None
+        self._campaign_column_keys: dict[str, ColumnKey] = {}
 
     def _filtered_campaigns(self) -> tuple[CampaignSummary, ...]:
         campaigns = self.campaigns
@@ -112,23 +120,27 @@ class CampaignsScreen(BaseScreen):
                 str(campaign.player_count),
                 _format_campaign_state(campaign.state),
                 height=2,
+                key=campaign.slug,
             )
 
         self.highlighted_campaign_name = filtered_campaigns[0].name if filtered_campaigns else ""
+        self.highlighted_campaign_slug = filtered_campaigns[0].slug if filtered_campaigns else ""
 
     @property
     def store(self) -> ModelStore:
         host = cast(ModelStoreHost, self.app)
         return host.store
 
-    def __init__(self, campaigns: tuple[CampaignSummary, ...]) -> None:
-        super().__init__()
-        self.campaigns = campaigns
-        self._campaign_name_column_key: ColumnKey | None = None
-        self._campaign_column_keys: dict[str, ColumnKey] = {}
+    def _open_campaign(self) -> None:
+        campaign = self._highlighted_campaign()
+        if campaign is None:
+            return
+        self.app.push_screen(CampaignDetailScreen(campaign))
 
-    def _open_campaign(self, campaign_name: str) -> None:
-        self.notify(f"Selected {campaign_name}")
+    def _highlighted_campaign(self) -> Campaign | None:
+        if not self.highlighted_campaign_slug:
+            return None
+        return self.store.load_campaign(self.highlighted_campaign_slug)
 
     def compose_content(self) -> ComposeResult:
         """Override in subclasses."""
@@ -184,12 +196,10 @@ class CampaignsScreen(BaseScreen):
         if self._campaign_name_column_key is None:
             return
 
-        campaign_name = event.data_table.get_cell(
-            event.row_key,
-            self._campaign_name_column_key,
-        )
-
-        self._open_campaign(_campaign_name_from_cell(campaign_name))
+        campaign_name = event.data_table.get_cell(event.row_key, self._campaign_name_column_key)
+        self.highlighted_campaign_name = _campaign_name_from_cell(campaign_name)
+        self.highlighted_campaign_slug = str(event.row_key.value)
+        self._open_campaign()
 
     def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if self._campaign_name_column_key is None:
@@ -197,6 +207,7 @@ class CampaignsScreen(BaseScreen):
 
         campaign_name = event.data_table.get_cell(event.row_key, self._campaign_name_column_key)
         self.highlighted_campaign_name = _campaign_name_from_cell(campaign_name)
+        self.highlighted_campaign_slug = str(event.row_key.value)
 
     def watch_highlighted_campaign_name(self, campaign_name: str) -> None:
         for widget in self.query("#panel-footer .selection-footer"):

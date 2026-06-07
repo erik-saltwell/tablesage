@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from tablesage_model.io import create_campaign, load_campaign_summaries
-from tablesage_model.model import CampaignSummary
+from tablesage_model.io import create_campaign, load_campaign, load_campaign_summaries
+from tablesage_model.model import Campaign, CampaignSummary
 from tablesage_model.setup import setup_root_dir
 
 
 class ModelStore:
     def load_campaigns(self) -> tuple[CampaignSummary, ...]:
         return load_campaign_summaries()
+
+    def load_campaign(self, campaign_slug: str) -> Campaign:
+        return load_campaign(campaign_slug)
 
     def prepare_tablesage_dir(self) -> None:
         setup_root_dir()
