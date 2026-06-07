@@ -101,7 +101,12 @@ class NoCampaignsScreen(BaseScreen):
 
     def _on_new_campaign(self, result: NewCampaignResult | None) -> None:
         if result and result.name:
-            self.store.create_campaign(campaign_name=result.name, default_gm=result.default_gm, system=result.system)
+            self.store.create_campaign(
+                campaign_name=result.name,
+                description=result.description,
+                default_gm=result.default_gm,
+                system=result.system,
+            )
             campaigns = self.store.load_campaigns()
             self.app.switch_screen(CampaignsScreen(campaigns))
 

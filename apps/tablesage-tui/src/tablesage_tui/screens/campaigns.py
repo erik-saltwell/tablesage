@@ -1,6 +1,8 @@
 from datetime import date
 from pathlib import Path
+from typing import cast
 
+from rich.text import Text
 from tablesage_model.model import CampaignState, CampaignSummary
 from textual import events
 from textual.app import ComposeResult
@@ -11,6 +13,8 @@ from textual.reactive import reactive
 from textual.widgets import DataTable, Input, Static
 from textual.widgets._data_table import ColumnKey
 
+from ..dialogs.new_campaign import NewCampaignDialog, NewCampaignResult
+from ..viewmodel import ModelStore, ModelStoreHost
 from ..widgets import AsciiArt, EmptyWidget, FilterOption
 from .base_screen import BaseScreen
 
@@ -21,6 +25,9 @@ EMPTY_DATE: str = "—"
 CAMPAIGN_FILTERS: tuple[str, ...] = ("active", "archived", "all")
 CAMPAIGN_COLUMN_NAME = "Campaign"
 CAMPAIGN_COLUMN_KEY = "campaign"
+CAMPAIGN_NAME_STYLE = "bold #d6d1bf"
+ACTIVE_STATUS_STYLE = "#6f8a5a"
+ARCHIVED_STATUS_STYLE = "#d8b06a"
 
 CAMPAIGN_COLUMNS: tuple[str, ...] = (
     "SYSTEM       ",
@@ -29,11 +36,32 @@ CAMPAIGN_COLUMNS: tuple[str, ...] = (
     "LAST SESSION ",
     "SESSIONS     ",
     "PLAYERS      ",
+    "STATUS      ",
 )
 
 
 def _format_date(value: date | None) -> str:
     return value.isoformat() if value is not None else EMPTY_DATE
+
+
+def _format_campaign_state(state: CampaignState) -> Text:
+    color = ACTIVE_STATUS_STYLE if state == CampaignState.Active else ARCHIVED_STATUS_STYLE
+    return Text("●", style=color)
+
+
+def _format_campaign_cell(campaign: CampaignSummary) -> Text:
+    description = campaign.description.strip()
+    cell = Text(no_wrap=True, overflow="crop")
+    cell.append(campaign.name, style=CAMPAIGN_NAME_STYLE)
+    cell.append("\n")
+    cell.append(description)
+    return cell
+
+
+def _campaign_name_from_cell(cell: object) -> str:
+    if isinstance(cell, Text):
+        return cell.plain.splitlines()[0]
+    return str(cell)
 
 
 class CampaignsScreen(BaseScreen):
@@ -75,16 +103,23 @@ class CampaignsScreen(BaseScreen):
         table.clear()
         for campaign in filtered_campaigns:
             table.add_row(
-                campaign.name,
+                _format_campaign_cell(campaign),
                 campaign.system or EMPTY_DATE,
                 campaign.default_gm or EMPTY_DATE,
                 _format_date(campaign.first_session_date),
                 _format_date(campaign.last_session_date),
                 str(campaign.session_count),
                 str(campaign.player_count),
+                _format_campaign_state(campaign.state),
+                height=2,
             )
 
         self.highlighted_campaign_name = filtered_campaigns[0].name if filtered_campaigns else ""
+
+    @property
+    def store(self) -> ModelStore:
+        host = cast(ModelStoreHost, self.app)
+        return host.store
 
     def __init__(self, campaigns: tuple[CampaignSummary, ...]) -> None:
         super().__init__()
@@ -154,14 +189,14 @@ class CampaignsScreen(BaseScreen):
             self._campaign_name_column_key,
         )
 
-        self._open_campaign(str(campaign_name))
+        self._open_campaign(_campaign_name_from_cell(campaign_name))
 
     def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if self._campaign_name_column_key is None:
             return
 
         campaign_name = event.data_table.get_cell(event.row_key, self._campaign_name_column_key)
-        self.highlighted_campaign_name = str(campaign_name)
+        self.highlighted_campaign_name = _campaign_name_from_cell(campaign_name)
 
     def watch_highlighted_campaign_name(self, campaign_name: str) -> None:
         for widget in self.query("#panel-footer .selection-footer"):
@@ -217,3 +252,18 @@ class CampaignsScreen(BaseScreen):
         table._update_count += 1
         table.check_idle()
         table.refresh()
+
+    def action_new_campaign(self) -> None:
+        existing_slugs = frozenset(c.slug for c in self.store.load_campaigns())
+        self.app.push_screen(NewCampaignDialog(existing_slugs=existing_slugs), self._on_new_campaign)
+
+    def _on_new_campaign(self, result: NewCampaignResult | None) -> None:
+        if result and result.name:
+            self.store.create_campaign(
+                campaign_name=result.name,
+                description=result.description,
+                default_gm=result.default_gm,
+                system=result.system,
+            )
+            campaigns = self.store.load_campaigns()
+            self.app.switch_screen(CampaignsScreen(campaigns))

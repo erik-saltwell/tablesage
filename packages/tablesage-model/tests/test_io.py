@@ -62,7 +62,7 @@ def test_campaign_set_round_trips() -> None:
 def test_create_campaign_adds_campaign_to_campaign_set_and_saves_campaign() -> None:
     save_campaign_set(CampaignSet(campaigns=(CampaignName(slug="sable-crown", name="Sable Crown"),)))
 
-    slug = create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e")
+    slug = create_campaign("Iron Pact", default_gm="Ada", system="D&D 5e", description="A pact of iron and ash.")
 
     assert slug == "iron-pact"
     assert load_campaign_set() == CampaignSet(
@@ -71,7 +71,13 @@ def test_create_campaign_adds_campaign_to_campaign_set_and_saves_campaign() -> N
             CampaignName(slug="iron-pact", name="Iron Pact"),
         )
     )
-    assert load_campaign("iron-pact") == Campaign(slug="iron-pact", name="Iron Pact", default_gm="Ada", system="D&D 5e")
+    assert load_campaign("iron-pact") == Campaign(
+        slug="iron-pact",
+        name="Iron Pact",
+        description="A pact of iron and ash.",
+        default_gm="Ada",
+        system="D&D 5e",
+    )
 
 
 def test_create_campaign_scaffolds_empty_session_set() -> None:

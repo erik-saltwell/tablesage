@@ -14,8 +14,8 @@ class ModelStore:
     def prepare_tablesage_dir(self) -> None:
         setup_root_dir()
 
-    def create_campaign(self, campaign_name: str, default_gm: str, system: str) -> str:
-        return create_campaign(campaign_name=campaign_name, default_gm=default_gm, system=system)
+    def create_campaign(self, campaign_name: str, default_gm: str, system: str, description: str = "") -> str:
+        return create_campaign(campaign_name=campaign_name, default_gm=default_gm, system=system, description=description)
 
 
 class ModelStoreHost(Protocol):

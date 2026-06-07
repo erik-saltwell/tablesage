@@ -526,6 +526,7 @@ CampaignsScreen {
         height:1fr;
         background: $panel-bg;
         text-style:none;
+        color: $sage-deep;
 
         &:focus{
             background: $panel-bg;
@@ -547,7 +548,7 @@ CampaignsScreen {
         }
 
         & > .datatable--cursor {
-            background: $accent-soft;
+            background: $sage-deep;
             color: $panel-bg;
             text-style: none;
         }

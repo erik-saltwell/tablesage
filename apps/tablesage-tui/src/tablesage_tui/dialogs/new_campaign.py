@@ -13,6 +13,7 @@ from textual.widgets import Button, Input, Static
 @dataclass(frozen=True)
 class NewCampaignResult:
     name: str
+    description: str
     system: str
     default_gm: str
 
@@ -30,6 +31,7 @@ class NewCampaignDialog(ModalScreen[NewCampaignResult | None]):
         with Vertical(id="new-campaign-dialog") as dlg:
             dlg.border_title = "New Campaign"
             yield Input(placeholder="Campaign name", id="campaign-name")
+            yield Input(placeholder="Description", id="campaign-description")
             yield Input(placeholder="System", id="campaign-system")
             yield Input(placeholder="Default GM", id="campaign-default-gm")
             yield Static("", id="new-campaign-error")
@@ -58,10 +60,12 @@ class NewCampaignDialog(ModalScreen[NewCampaignResult | None]):
 
     def _submit(self) -> None:
         name_input = self.query_one("#campaign-name", Input)
+        description_input = self.query_one("#campaign-description", Input)
         system_input = self.query_one("#campaign-system", Input)
         default_gm_input = self.query_one("#campaign-default-gm", Input)
 
         name = name_input.value.strip()
+        description = description_input.value.strip()
         system = system_input.value.strip()
         default_gm = default_gm_input.value.strip()
 
@@ -85,4 +89,4 @@ class NewCampaignDialog(ModalScreen[NewCampaignResult | None]):
             default_gm_input.focus()
             return
 
-        self.dismiss(NewCampaignResult(name=name, system=system, default_gm=default_gm))
+        self.dismiss(NewCampaignResult(name=name, description=description, system=system, default_gm=default_gm))

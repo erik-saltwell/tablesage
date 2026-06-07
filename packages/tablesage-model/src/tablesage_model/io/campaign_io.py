@@ -12,12 +12,18 @@ from .session_set_io import load_session_set, save_session_set
 from .yaml_io import load_model_from_yaml, save_model_to_yaml
 
 
-def create_campaign(campaign_name: str, default_gm: str, system: str) -> str:
+def create_campaign(campaign_name: str, default_gm: str, system: str, description: str = "") -> str:
     campaign_slug: str = _paths.slugify(campaign_name)
     if _paths.campaign_dir(campaign_slug).exists():
         raise FileExistsError(f"A campaign with slug '{campaign_slug}' already exists")
     new_campaign_name: CampaignName = CampaignName(slug=campaign_slug, name=campaign_name)
-    campaign: Campaign = Campaign(slug=campaign_slug, name=campaign_name, default_gm=default_gm, system=system)
+    campaign: Campaign = Campaign(
+        slug=campaign_slug,
+        name=campaign_name,
+        description=description,
+        default_gm=default_gm,
+        system=system,
+    )
 
     # Build the campaign workspace fully before committing it to the campaign set, so a
     # partial scaffold leaves only an orphan dir (swept by cleanup_orphan_campaign_dirs)

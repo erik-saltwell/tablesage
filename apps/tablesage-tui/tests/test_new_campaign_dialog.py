@@ -22,9 +22,10 @@ class _Host(App[None]):
         self.result = result
 
 
-def _fill(app: _Host, name: str, system: str, default_gm: str) -> None:
+def _fill(app: _Host, name: str, system: str, default_gm: str, description: str = "") -> None:
     dialog = app.screen
     dialog.query_one("#campaign-name", Input).value = name
+    dialog.query_one("#campaign-description", Input).value = description
     dialog.query_one("#campaign-system", Input).value = system
     dialog.query_one("#campaign-default-gm", Input).value = default_gm
 
@@ -50,10 +51,15 @@ def test_unique_name_dismisses_with_result() -> None:
         app = _Host(existing_slugs=frozenset({"iron-pact"}))
         async with app.run_test() as pilot:
             await pilot.pause()
-            _fill(app, name="Sable Crown", system="D&D 5e", default_gm="Ada")
+            _fill(app, name="Sable Crown", description="A grim tale of crowns.", system="D&D 5e", default_gm="Ada")
             await pilot.click("#create")
             await pilot.pause()
 
-            assert app.result == NewCampaignResult(name="Sable Crown", system="D&D 5e", default_gm="Ada")
+            assert app.result == NewCampaignResult(
+                name="Sable Crown",
+                description="A grim tale of crowns.",
+                system="D&D 5e",
+                default_gm="Ada",
+            )
 
     asyncio.run(scenario())
