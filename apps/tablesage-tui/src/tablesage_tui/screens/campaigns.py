@@ -23,12 +23,13 @@ LOGO_PATH: Path = Path("sun_3_small.txt")
 
 # Shown wherever a campaign has no session history yet (no first/last session date).
 EMPTY_DATE: str = "—"
-CAMPAIGN_FILTERS: tuple[str, ...] = ("active", "archived", "all")
+CAMPAIGN_FILTERS: tuple[str, ...] = ("active", "unstarted", "archived", "all")
 CAMPAIGN_COLUMN_NAME = "Campaign"
 CAMPAIGN_COLUMN_KEY = "campaign"
 CAMPAIGN_NAME_STYLE = "bold #d6d1bf"
+UNSTARTED_STATUS_STYLE = "#d8b06a"
 ACTIVE_STATUS_STYLE = "#6f8a5a"
-ARCHIVED_STATUS_STYLE = "#d8b06a"
+ARCHIVED_STATUS_STYLE = "#8a5a5a"
 
 CAMPAIGN_COLUMNS: tuple[str, ...] = (
     "SYSTEM       ",
@@ -46,7 +47,12 @@ def _format_date(value: date | None) -> str:
 
 
 def _format_campaign_state(state: CampaignState) -> Text:
-    color = ACTIVE_STATUS_STYLE if state == CampaignState.Active else ARCHIVED_STATUS_STYLE
+    if state == CampaignState.Active:
+        color = ACTIVE_STATUS_STYLE
+    elif state == CampaignState.Unstarted:
+        color = UNSTARTED_STATUS_STYLE
+    else:
+        color = ARCHIVED_STATUS_STYLE
     return Text("●", style=color)
 
 
@@ -87,7 +93,9 @@ class CampaignsScreen(BaseScreen):
     def _filtered_campaigns(self) -> tuple[CampaignSummary, ...]:
         campaigns = self.campaigns
 
-        if self.active_filter == "active":
+        if self.active_filter == "unstarted":
+            campaigns = tuple(c for c in campaigns if c.state == CampaignState.Unstarted)
+        elif self.active_filter == "active":
             campaigns = tuple(c for c in campaigns if c.state == CampaignState.Active)
         elif self.active_filter == "archived":
             campaigns = tuple(c for c in campaigns if c.state == CampaignState.Archived)
@@ -152,7 +160,10 @@ class CampaignsScreen(BaseScreen):
                     filter_counts = self._filter_counts()
                     for filter_name in CAMPAIGN_FILTERS:
                         yield FilterOption(
-                            filter_name, filter_counts[filter_name], selected=filter_name == self.active_filter, classes="filter-option"
+                            filter_name,
+                            filter_counts[filter_name],
+                            selected=filter_name == self.active_filter,
+                            classes=f"filter-option filter-{filter_name}",
                         )
                     yield EmptyWidget(classes="fill-space-horizontal")
                     yield Input(id="search", placeholder="/search campaigns...")
@@ -171,8 +182,9 @@ class CampaignsScreen(BaseScreen):
 
     def _filter_counts(self) -> dict[str, int]:
         return {
-            "active": len([campaign for campaign in self.campaigns if campaign.state == CampaignState.Active]),
-            "archived": len([campaign for campaign in self.campaigns if campaign.state == CampaignState.Archived]),
+            "unstarted": len([c for c in self.campaigns if c.state == CampaignState.Unstarted]),
+            "active": len([c for c in self.campaigns if c.state == CampaignState.Active]),
+            "archived": len([c for c in self.campaigns if c.state == CampaignState.Archived]),
             "all": len(self.campaigns),
         }
 

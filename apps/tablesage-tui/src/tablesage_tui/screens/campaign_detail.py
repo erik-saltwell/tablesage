@@ -1,25 +1,16 @@
-from rich.text import Text
 from tablesage_model.io import load_player, load_player_set, load_session, load_session_set
-from tablesage_model.model import Campaign, CampaignState, GlossaryEntry, Player, Session
+from tablesage_model.model import Campaign, GlossaryEntry, Player, Session
+from textual import on
 from textual.binding import Binding
-from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Input, Static
+from textual.containers import Horizontal, Vertical
+from textual.events import Click
+from textual.widgets import Input, Static, TabbedContent, TabPane
 
-from tablesage_tui.widgets import EmptyWidget
+from tablesage_tui.widgets import CampaignStateWidget, EmptyWidget
 
-from ..widgets.tablesage_header import TableSageHeader
 from .base_screen import BaseScreen, ComposeResult
 
-ACTIVE_STATE_STYLE = "#6f8a5a"
-ARCHIVED_STATE_STYLE = "#d8b06a"
 EMPTY_DATE = "—"
-
-CAMPAIGN_DETAIL_TABS: list[str] = [
-    "[ overview ]",
-    "[ sessions ]",
-    "[ glossary ]",
-    "[ players ]",
-]
 
 
 class CampaignDetailScreen(BaseScreen):
@@ -31,13 +22,8 @@ class CampaignDetailScreen(BaseScreen):
         super().__init__()
         self.campaign = campaign
 
-    def _campaign_state(self) -> Static:
-        state_text = str(self.campaign.state).lower()
-        state_style = ACTIVE_STATE_STYLE if self.campaign.state == CampaignState.Active else ARCHIVED_STATE_STYLE
-        content = Text()
-        content.append("● ", style=state_style)
-        content.append(state_text)
-        return Static(id="campaign-state", content=content)
+    def get_header_section(self) -> str:
+        return f"campaigns / {self.campaign.name}"
 
     def _sessions(self, session_count: int = -1) -> list[Session]:
         session_names = sorted(
@@ -76,55 +62,33 @@ class CampaignDetailScreen(BaseScreen):
     def compose_content(self) -> ComposeResult:
         with Vertical(id="content-panel"):
             with Horizontal(id="campaign-header"):
-                yield Static(classes="keycap", content="←")
-                yield Static(content=" campaigns")
-                with Vertical(id="campaign-overview"):
-                    with Horizontal(id="name-and-state"):
-                        yield Static(id="campaign-name", content=self.campaign.name)
-                        yield self._campaign_state()
-                    with Horizontal(id="campaign-details"):
-                        yield Static(content="system")
-                        yield Input(placeholder="<system>")
-                        yield Static(content="gm")
-                        yield Input(placeholder="<gm>")
+                yield Static(id="back-keycap", classes="keycap", content="←")
+                yield Static(classes="campaigns-text", content=" return to campaigns")
                 yield EmptyWidget(classes="fill-space-horizontal")
-                with Vertical(id="last-session-data"):
-                    yield Static(classes="label", content="LAST SESSION")
-                    yield Static(id="last-session-display", content=self._last_session_date_text())
-        with Horizontal(
-            id="campaign-tabs",
-        ):
-            for tab_name in CAMPAIGN_DETAIL_TABS:
-                yield Static(content=tab_name)
-        with Container(id="campiagn-description-container") as d:
-            d.border_title = "description"
-            with Input(id="campaign-description") as desc_input:
-                desc_input.value = self.campaign.description
-        with Horizontal(id="sessions-and-glossary"):
-            with Vertical(id="sessions-summary") as s:
-                s.border_title = "recent sessions"
-                for session in self._sessions(3):
-                    with Vertical(classes="recent-session-item"):
-                        yield Static(classes="recent-session-item-date", content=session.session_date.strftime("%Y.%m.%d"))
-                        yield Static(classes="recent-session-item-name", content=session.name)
-                yield Static(classes="see-more-footer", content="> sessions screen")
-            with Vertical(id="glossary-summary") as g:
-                g.border_title = "glossary"
-                for entry in self._glossary_entries():
-                    with Vertical(classes="glossary-entry"):
-                        yield Static(classes="glossary-entry-term", content=entry.term)
-                        yield Static(classes="glossary-entry-description", content=entry.description)
-                yield Static(classes="see-more-footer", content="> glossary screen")
-        with Vertical(id="players-summary") as p:
-            p.border_title = "players"
-            with Horizontal(id="players-summary-players"):
-                for player in self._players():
-                    yield Static(classes="player-entry", content=player.name)
-            yield Static(classes="see-more-footer", content="> players screen")
+            yield Static(id="campaign-name", content=self.campaign.name.upper())
+            with TabbedContent(initial="overview", id="campaign-tabs"):
+                with TabPane(" overview ", id="overview"):
+                    with Horizontal(id="overview-tabbed-panel") as h:
+                        h.border_title = "campaign details"
+                        with Vertical(id="metadata-editor"):
+                            yield Static(content="Description")
+                            yield Input(id="description-input", placeholder="campaign description")
+                            with Horizontal(id="details-row"):
+                                yield Static(classes="label", content="System:")
+                                yield Input(id="input-system", placeholder="system")
+                                yield Static(classes="label", content="GM:")
+                                yield Input(id="input-gm", placeholder="game master")
+                                yield Static(classes="label", content="State: ")
+                                yield CampaignStateWidget(self.campaign.state, id="campaign-state")
+                        with Vertical(id="last_session_data"):
+                            yield Static(content="Last Session")
+                            yield Static(id="last-session-display", content=self._last_session_date_text())
+                with TabPane(" sessions ", id="sessions"):
+                    yield Static()
 
-    def on_mount(self) -> None:
-        super().on_mount()
-        self.query_one(TableSageHeader).section = f"campaigns / {self.campaign.name}"
+    @on(Click, "#back-keycap")
+    def _on_back_click(self) -> None:
+        self.action_back()
 
     def action_back(self) -> None:
         self.app.pop_screen()

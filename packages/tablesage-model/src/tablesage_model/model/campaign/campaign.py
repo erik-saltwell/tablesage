@@ -9,6 +9,7 @@ from .glossary_entry import GlossaryEntry
 
 
 class CampaignState(StrEnum):
+    Unstarted = "unstarted"
     Active = ("active",)
     Archived = "archived"
 

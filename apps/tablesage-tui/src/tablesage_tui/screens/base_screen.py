@@ -16,10 +16,13 @@ class BaseScreen(Screen):
 
     def compose(self) -> ComposeResult:
         if self.show_header:
-            yield TableSageHeader()
+            yield TableSageHeader(section=self.get_header_section())
         yield from self.compose_content()
         if self.show_footer:
             yield Footer()
+
+    def get_header_section(self) -> str:
+        return self.header_section
 
     def compose_content(self) -> ComposeResult:
         """Override in subclasses."""
@@ -27,4 +30,4 @@ class BaseScreen(Screen):
 
     def on_mount(self) -> None:
         if self.show_header:
-            self.query_one(TableSageHeader).section = self.header_section
+            self.query_one(TableSageHeader).section = self.get_header_section()

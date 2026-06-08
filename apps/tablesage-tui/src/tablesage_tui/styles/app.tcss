@@ -12,13 +12,14 @@ $cream-fg:      #d6d1bf;  /* warm cream body text          */
 $dim:       #7c8478;  /* secondary / hint copy         */
 $sage:      #a3b88c;  /* primary sage green            */
 $sage-deep: #6f8a5a;  /* header bar fill               */
+$archived:  #8a5a5a;  /* muted red, same brightness/saturation as $sage-deep */
 $sage-glow: rgba(163, 184, 140, 0.45);
 $accent:    #d8b06a;  /* footer keycaps, key chips     */
 $panel-bg-muted: #1a201cbb;
 $accent-soft: #d7c195; /* halfway between cream-fg and accent */
 $accent-cream: #d7c9aa; /* halfway between $accent-soft and $cream-fg*/
 $sunburst: #e0c04f;
-$dim-text: #d6d1bf;
+$dim-text: #a9ab9c;   /*#d6d1bf;*/
 /* ******************************** */
 /*             reset                */
 /* ******************************** */
@@ -33,6 +34,16 @@ $dim-text: #d6d1bf;
 /********************************** */
 Screen {
     background: $bg;
+}
+
+Input{
+    height: 1;
+    min-height: 1;
+    border: none;
+    background: $bg-focus;
+    padding: 0 1;
+    color: $dim-text;
+    margin: 1 0 0 0;
 }
 
 Footer {
@@ -209,10 +220,15 @@ FilterOption:focus {
     color: $cream-fg;
 }
 
-FilterOption.-selected {
-    color: $sage;
-    text-style: underline;
-}
+FilterOption.filter-active    { color: $sage-deep; }
+FilterOption.filter-unstarted { color: $accent; }
+FilterOption.filter-archived  { color: $archived; }
+FilterOption.filter-all       { color: $sage-deep; }
+
+FilterOption.filter-active.-selected    { color: $panel-bg; background: $sage-deep; }
+FilterOption.filter-unstarted.-selected { color: $panel-bg; background: $accent; }
+FilterOption.filter-archived.-selected  { color: $panel-bg; background: $archived; }
+FilterOption.filter-all.-selected       { color: $panel-bg; background: $sage-deep; }
 
 FilterOption:disabled {
     color: $dim;
@@ -577,4 +593,105 @@ CampaignsScreen {
 
 
 
+}
+/* ******************************** */
+/*          campaign details        */
+/* ******************************** */
+
+CampaignDetailScreen{
+    background: $bg;
+    color:$sage;
+    #content-panel{
+        padding: 1 2;    
+        #campaign-header{
+            width:100%;
+            height:1;
+            #back-keycap {
+                pointer: pointer;
+            }
+            .campaigns-text{
+                height:1;
+                width:auto;
+                padding: 0 5 0 0;       
+            }
+            .fill-space-horizontal{
+                width:1fr;
+            }
+            #campaign-name{
+                color:$cream-fg;
+                text-style: bold;
+                width:auto;
+            }
+        }
+        #campaign-tabs{
+            width:100%;
+            color: $sage-deep;
+            margin: 1 0 1 0;
+            ContentTab{
+                height: 1;
+                margin: 0 0;
+                color:$sage-deep;
+                background: transparent;
+                text-style:none;
+            }
+            ContentTab.-active{
+                height: 1;
+                margin: 0 0;
+                color:$panel-bg;
+                background: $cream-fg;
+                text-style:none;
+            }
+            ContentTabs {
+                height: 2;
+            }
+
+            ContentTabs .underline--bar {
+                background: $border;
+                color:$cream-fg;
+            }
+
+            ContentTabs:focus .underline--bar {
+                background: $sage-deep;
+            }
+        }
+    }
+    #overview-tabbed-panel{
+        margin:1 2;
+        border: solid $sage-deep;
+        height:8;
+        #metadata-editor{
+            height:10;
+            width:1fr;
+            margin:0 2;
+            padding:0;
+            #description-input{
+                height:3;
+                border:none;
+                margin:0;
+            }
+            #details-row{
+
+                margin: 1 0 0 0 ;
+                .label{
+                    width:auto;
+                    height:1;
+                    margin: 0 1 0 0;
+                }
+                Input{
+                    width:20;
+                    height:1;
+                    border:none;
+                    margin:0 3 0  0;
+
+                }
+            }
+        }
+        #last_session_data{
+            width: 20;
+            #last-session-display{
+                color:$accent;
+                text-style:bold;
+            }
+        }
+    }
 }

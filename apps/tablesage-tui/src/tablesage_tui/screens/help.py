@@ -17,7 +17,7 @@ class HelpScreen(Screen[None]):
     ]
 
     def compose(self) -> ComposeResult:
-        yield TableSageHeader()
+        yield TableSageHeader(section="help")
 
         with Center(id="help-content"):
             with Center(id="help-panel") as help_panel:
@@ -46,6 +46,3 @@ class HelpScreen(Screen[None]):
 
                     yield Static("", classes="bottom-spacer")
                     yield Static("Campaign workflows are coming next.", classes="help-note")
-
-    def on_mount(self) -> None:
-        self.query_one(TableSageHeader).section = "help"
