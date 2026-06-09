@@ -10,7 +10,7 @@ from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.widgets import GlossaryEntryWidget
 from tablesage_tui.widgets.tablesage_header import TableSageHeader
 from textual.app import App
-from textual.widgets import Input, Static
+from textual.widgets import Input, Static, TextArea
 
 
 class _Host(App[None]):
@@ -113,7 +113,7 @@ def test_add_glossary_entry_updates_screen_glossary_without_changing_campaign(mo
             await pilot.pause()
 
             app.screen.query_one("#glossary-term", Input).value = "Quarl"
-            app.screen.query_one("#glossary-description", Input).value = "A lich-king."
+            app.screen.query_one("#glossary-description", TextArea).text = "A lich-king."
             await pilot.click("#save-glossary-entry")
             await pilot.pause()
 
@@ -138,7 +138,7 @@ def test_edit_glossary_entry_can_rename_term_in_screen_glossary(monkeypatch: pyt
             await pilot.pause()
 
             app.screen.query_one("#glossary-term", Input).value = "Veyra"
-            app.screen.query_one("#glossary-description", Input).value = "A queen in exile."
+            app.screen.query_one("#glossary-description", TextArea).text = "A queen in exile."
             await pilot.click("#save-glossary-entry")
             await pilot.pause()
 
@@ -185,7 +185,7 @@ def test_duplicate_glossary_term_keeps_dialog_open(monkeypatch: pytest.MonkeyPat
             await pilot.pause()
 
             app.screen.query_one("#glossary-term", Input).value = "Quarl"
-            app.screen.query_one("#glossary-description", Input).value = "Duplicate."
+            app.screen.query_one("#glossary-description", TextArea).text = "Duplicate."
             await pilot.click("#save-glossary-entry")
             await pilot.pause()
 
