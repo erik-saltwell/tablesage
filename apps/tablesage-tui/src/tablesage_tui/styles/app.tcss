@@ -43,8 +43,12 @@ Input{
     border: none;
     background: $bg-focus;
     padding: 0 1;
-    color: $dim-text;
+    color: $cream-fg;
     margin: 1 0 0 0;
+
+    & > .input--placeholder {
+        color: $dim-text;
+    }
 }
 
 Footer {
@@ -350,6 +354,125 @@ ConfirmDeleteGlossaryEntryDialog {
         color: $panel-bg;
         text-style: none;
         border: none;
+    }
+}
+
+ConfirmationDialog,
+TextInputDialog {
+    align: center middle;
+    background: $dialog-backdrop;
+
+    #confirmation-dialog,
+    #text-input-dialog {
+        width: 60;
+        height: auto;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    #confirmation-prompt,
+    #text-input-prompt {
+        height: auto;
+        color: $cream-fg;
+        margin: 0 0 1 0;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+        background: $bg-focus;
+        color: $text;
+        border:none;
+
+        & > .input--placeholder {
+            color: $dim;
+            text-style: italic;
+        }
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+
+    .dialog-actions Button {
+        color: $sage;
+        background: $panel-bg;
+        border: $sage;
+        height: 3;
+        min-height: 1;
+        text-style: none;
+        margin: 0 0 0 2;
+    }
+
+    .dialog-actions Button:focus {
+        background: $sage-glow;
+        color: $panel-bg;
+        text-style: none;
+        border: none;
+    }
+}
+
+EditPlayersDialog {
+    align: center middle;
+    background: $dialog-backdrop;
+
+    #edit-players-dialog {
+        width: 76;
+        height: 20;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    #edit-players-command-list {
+        width: 25;
+        height: 100%;
+        margin: 0 2 0 0;
+        border-right: solid $border;
+        padding: 0 1 0 0;
+    }
+
+    .edit-players-command {
+        height: 1;
+        width: 100%;
+        margin: 0 0 1 0;
+    }
+
+    .edit-players-command-label {
+        height: 1;
+        width: auto;
+        margin: 0 0 0 1;
+        color: $cream-fg;
+    }
+
+    #edit-players-table {
+        width: 1fr;
+        height: 100%;
+        background: $panel-bg;
+        text-style: none;
+        color: $sage-deep;
+        scrollbar-gutter: stable;
+        scrollbar-size-vertical: 1;
+        scrollbar-background: $panel-bg;
+        scrollbar-background-hover: $bg-focus-subtle;
+        scrollbar-background-active: $bg-focus;
+        scrollbar-color: $border;
+        scrollbar-color-hover: $sage-deep;
+        scrollbar-color-active: $sage;
+        scrollbar-corner-color: $panel-bg;
+
+        & > .datatable--header {
+            background: $panel-bg;
+            color: $sage;
+            text-style: none;
+        }
+
+        & > .datatable--cursor {
+            background: $sage-deep;
+            color: $panel-bg;
+            text-style: none;
+        }
     }
 }
 
@@ -748,7 +871,6 @@ CampaignDetailScreen{
                     height:1;
                     border:none;
                     margin:0 3 0  0;
-
                 }
             }
         }
@@ -768,12 +890,58 @@ CampaignDetailScreen{
         width:100%;
         min-height:0;
         
-        #players-summary{
+        #player-summary{
             width:1fr;
             height:100%;
             border: solid $sage-deep;
             margin:0 3 0 2;
-            padding: 1;
+            padding: 0;
+
+            #player-list{
+                height:1fr;
+                min-height:0;
+                width:100%;
+                padding:0 1;
+                overflow-y:auto;
+                scrollbar-gutter: stable;
+                scrollbar-size-vertical: 1;
+                scrollbar-background: $panel-bg;
+                scrollbar-background-hover: $bg-focus-subtle;
+                scrollbar-background-active: $bg-focus;
+                scrollbar-color: $border;
+                scrollbar-color-hover: $sage-deep;
+                scrollbar-color-active: $sage;
+                scrollbar-corner-color: $panel-bg;
+            }
+
+            PlayerDetailWidget{
+                height:1;
+                min-height:1;
+                width:100%;
+                padding:0;
+                margin:0 0 1 0;
+                pointer:pointer;
+
+                .player-clip-count{
+                    color:$accent;
+                    width:4;
+                    content-align:right middle;
+                    margin:0 2 0 0;
+                }
+
+                .player-name{
+                    color:$cream-fg;
+                    width:1fr;
+                }
+
+                &:hover{
+                    background:$bg-focus-subtle-25;
+                }
+
+                &:focus{
+                    background:$bg-focus;
+                }
+            }
         }
         #glossary-summary{
             width:1fr;
