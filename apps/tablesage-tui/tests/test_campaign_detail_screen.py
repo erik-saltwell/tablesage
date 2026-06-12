@@ -3,14 +3,12 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 
-import pytest
 from tablesage_model.model import (
     Campaign,
     CampaignState,
     GlossaryEntry,
-    SessionSet,
+    Session,
 )
-from tablesage_tui.screens import campaign_detail
 from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.widgets import CampaignStateWidget, GlossaryEntryWidget
 from tablesage_tui.widgets.tablesage_header import TableSageHeader
@@ -28,6 +26,15 @@ class _Host(App[None]):
     async def on_mount(self) -> None:
         await self.push_screen(self._screen)
 
+    @property
+    def store(self) -> _Store:
+        return _Store()
+
+
+class _Store:
+    def get_last_session_for_campaign(self, _campaign_slug: str) -> Session:
+        raise LookupError("No sessions")
+
 
 def _campaign(glossary: tuple[GlossaryEntry, ...] = ()) -> Campaign:
     return Campaign(
@@ -41,13 +48,7 @@ def _campaign(glossary: tuple[GlossaryEntry, ...] = ()) -> Campaign:
     )
 
 
-def _stub_loaders(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(campaign_detail, "load_session_set", lambda _slug: SessionSet(sessions=()))
-
-
-def test_campaign_detail_header_shows_campaign_path(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_header_shows_campaign_path() -> None:
     async def scenario() -> None:
         app = _Host(CampaignDetailScreen(_campaign()))
         async with app.run_test() as pilot:
@@ -62,9 +63,7 @@ def test_campaign_detail_header_shows_campaign_path(monkeypatch: pytest.MonkeyPa
     asyncio.run(scenario())
 
 
-def test_campaign_detail_tabs_render_literal_labels(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_tabs_render_literal_labels() -> None:
     async def scenario() -> None:
         app = _Host(CampaignDetailScreen(_campaign()))
         async with app.run_test() as pilot:
@@ -99,9 +98,7 @@ def test_campaign_detail_has_no_player_bindings() -> None:
     assert bound_actions.isdisjoint(player_actions)
 
 
-def test_campaign_detail_starts_not_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_starts_not_dirty() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
         app = _Host(detail_screen)
@@ -113,9 +110,7 @@ def test_campaign_detail_starts_not_dirty(monkeypatch: pytest.MonkeyPatch) -> No
     asyncio.run(scenario())
 
 
-def test_campaign_detail_metadata_input_changes_mark_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_metadata_input_changes_mark_screen_dirty() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
         app = _Host(detail_screen)
@@ -131,9 +126,7 @@ def test_campaign_detail_metadata_input_changes_mark_screen_dirty(monkeypatch: p
     asyncio.run(scenario())
 
 
-def test_campaign_detail_gm_and_system_input_changes_mark_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_gm_and_system_input_changes_mark_screen_dirty() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
         app = _Host(detail_screen)
@@ -151,9 +144,7 @@ def test_campaign_detail_gm_and_system_input_changes_mark_screen_dirty(monkeypat
     asyncio.run(scenario())
 
 
-def test_campaign_detail_state_change_marks_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_state_change_marks_screen_dirty() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
         app = _Host(detail_screen)
@@ -168,9 +159,7 @@ def test_campaign_detail_state_change_marks_screen_dirty(monkeypatch: pytest.Mon
     asyncio.run(scenario())
 
 
-def test_campaign_detail_name_change_marks_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_name_change_marks_screen_dirty() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
         app = _Host(detail_screen)
@@ -185,9 +174,7 @@ def test_campaign_detail_name_change_marks_screen_dirty(monkeypatch: pytest.Monk
     asyncio.run(scenario())
 
 
-def test_glossary_selection_enables_only_glossary_bindings(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_glossary_selection_enables_only_glossary_bindings() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign(glossary=(GlossaryEntry(term="Quarl", description="A lich-king."),)))
         app = _Host(detail_screen)
@@ -207,9 +194,7 @@ def test_glossary_selection_enables_only_glossary_bindings(monkeypatch: pytest.M
     asyncio.run(scenario())
 
 
-def test_campaign_detail_renders_glossary_summary_without_player_summary(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_renders_glossary_summary_without_player_summary() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign(glossary=(GlossaryEntry(term="Quarl", description="A lich-king."),)))
         app = _Host(detail_screen)
@@ -223,9 +208,7 @@ def test_campaign_detail_renders_glossary_summary_without_player_summary(monkeyp
     asyncio.run(scenario())
 
 
-def test_campaign_detail_renders_sorted_glossary_entry_widgets(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_campaign_detail_renders_sorted_glossary_entry_widgets() -> None:
     async def scenario() -> None:
         app = _Host(
             CampaignDetailScreen(
@@ -250,9 +233,7 @@ def test_campaign_detail_renders_sorted_glossary_entry_widgets(monkeypatch: pyte
     asyncio.run(scenario())
 
 
-def test_add_glossary_entry_updates_campaign_glossary(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_add_glossary_entry_updates_campaign_glossary() -> None:
     async def scenario() -> None:
         campaign = _campaign()
         detail_screen = CampaignDetailScreen(campaign)
@@ -274,9 +255,7 @@ def test_add_glossary_entry_updates_campaign_glossary(monkeypatch: pytest.Monkey
     asyncio.run(scenario())
 
 
-def test_edit_glossary_entry_can_rename_term_in_screen_glossary(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_edit_glossary_entry_can_rename_term_in_screen_glossary() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign(glossary=(GlossaryEntry(term="Quarl", description="A lich-king."),)))
         app = _Host(detail_screen)
@@ -299,9 +278,7 @@ def test_edit_glossary_entry_can_rename_term_in_screen_glossary(monkeypatch: pyt
     asyncio.run(scenario())
 
 
-def test_delete_glossary_entry_requires_confirmation(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_delete_glossary_entry_requires_confirmation() -> None:
     async def scenario() -> None:
         entry = GlossaryEntry(term="Quarl", description="A lich-king.")
         detail_screen = CampaignDetailScreen(_campaign(glossary=(entry,)))
@@ -325,9 +302,7 @@ def test_delete_glossary_entry_requires_confirmation(monkeypatch: pytest.MonkeyP
     asyncio.run(scenario())
 
 
-def test_duplicate_glossary_term_keeps_dialog_open(monkeypatch: pytest.MonkeyPatch) -> None:
-    _stub_loaders(monkeypatch)
-
+def test_duplicate_glossary_term_keeps_dialog_open() -> None:
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign(glossary=(GlossaryEntry(term="Quarl", description="A lich-king."),)))
         app = _Host(detail_screen)

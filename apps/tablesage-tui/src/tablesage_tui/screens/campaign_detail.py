@@ -54,7 +54,10 @@ class CampaignDetailScreen(BaseScreen):
         return _sort_glossary_entries(self.campaign.glossary)
 
     def _last_session(self) -> Session | None:
-        return self.store.get_last_session_for_campaign(self.campaign.slug)
+        try:
+            return self.store.get_last_session_for_campaign(self.campaign.slug)
+        except LookupError:
+            return None
 
     def _last_session_date_text(self) -> str:
         last_session = self._last_session()
