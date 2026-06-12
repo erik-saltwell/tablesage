@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from tablesage_model.io import load_player, load_player_set, load_session, load_session_set
-from tablesage_model.model import Campaign, GlossaryEntry, Player, Session
+from typing import cast
+
+from tablesage_model.model import Campaign, GlossaryEntry, Session
 from textual import on
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -10,8 +11,9 @@ from textual.events import Click
 from textual.widgets import Input, Static, TabbedContent, TabPane
 
 from tablesage_tui.dialogs import ConfirmDeleteGlossaryEntryDialog, GlossaryEntryDialog, GlossaryEntryDialogResult
-from tablesage_tui.widgets import CampaignStateWidget, EmptyWidget, GlossaryEntryWidget, GlossaryList, PlayerDetailWidget, PlayerList
+from tablesage_tui.widgets import CampaignStateWidget, EmptyWidget, GlossaryEntryWidget, GlossaryList
 
+from ..viewmodel import ModelStore, ModelStoreHost
 from .base_screen import BaseScreen
 
 EMPTY_DATE = "—"
@@ -21,50 +23,27 @@ def _sort_glossary_entries(entries: tuple[GlossaryEntry, ...]) -> tuple[Glossary
     return tuple(sorted(entries, key=lambda entry: entry.term.casefold()))
 
 
-def _sort_players(players: list[Player]) -> tuple[Player, ...]:
-    return tuple(sorted(players, key=lambda player: player.name.casefold()))
-
-
 class CampaignDetailScreen(BaseScreen):
     BINDINGS = [
         Binding("escape", "back", "Back", key_display="Esc"),
         Binding("g", "add_glossary_entry", "Add Glossary"),
-        Binding("p", "add_player", "Add Player"),
         Binding("e", "edit_glossary_entry", "Edit Glossary"),
-        Binding("e", "update_player_name", "Edit Player"),
-        Binding("d", "delete_glossary_entry", "Delete Glossary"),
-        Binding("d", "delete_player", "Delete Player"),
-        Binding("f", "add_clips_from_folder", "Add Clips Folder", key_display="F"),
-        Binding("s", "add_clips_from_session", "Add Clips Session", key_display="S"),
-        Binding("r", "recompute_speechprint", "Recompute Speechprint", key_display="V"),
+        Binding("delete", "delete_glossary_entry", "Delete Glossary", key_display="Del"),
     ]
+
+    @property
+    def store(self) -> ModelStore:
+        host = cast(ModelStoreHost, self.app)
+        return host.store
 
     def __init__(self, campaign: Campaign) -> None:
         super().__init__()
         self.campaign = campaign
         self.is_dirty = False
         self._selected_glossary_term: str | None = None
-        self.players = self._players()
-        self._selected_player_slug: str | None = None
 
     def get_header_section(self) -> str:
         return f"campaigns / {self.campaign.name}"
-
-    def _sessions(self, session_count: int = -1) -> list[Session]:
-        session_names = sorted(
-            load_session_set(self.campaign.slug).sessions,
-            key=lambda session_name: session_name.session_date,
-            reverse=True,
-        )
-        if session_count >= 0:
-            session_names = session_names[:session_count]
-        return [load_session(self.campaign.slug, session_name.slug) for session_name in session_names]
-
-    def _players(self, player_count: int = -1) -> tuple[Player, ...]:
-        player_names = list(load_player_set(self.campaign.slug).players)
-        if player_count >= 0:
-            player_names = player_names[:player_count]
-        return _sort_players([load_player(self.campaign.slug, player_name.slug) for player_name in player_names])
 
     def _entry_by_term(self, term: str | None) -> GlossaryEntry | None:
         if term is None:
@@ -75,10 +54,7 @@ class CampaignDetailScreen(BaseScreen):
         return _sort_glossary_entries(self.campaign.glossary)
 
     def _last_session(self) -> Session | None:
-        sessions = self._sessions(session_count=1)
-        if not sessions:
-            return None
-        return sessions[0]
+        return self.store.get_last_session_for_campaign(self.campaign.slug)
 
     def _last_session_date_text(self) -> str:
         last_session = self._last_session()
@@ -110,10 +86,7 @@ class CampaignDetailScreen(BaseScreen):
                         with Vertical(id="last_session_data"):
                             yield Static(content="Last Session")
                             yield Static(id="last-session-display", content=self._last_session_date_text())
-                    with Horizontal(id="players-and-glossary"):
-                        with Vertical(id="player-summary") as v:
-                            v.border_title = "players"
-                            yield PlayerList(self.players, id="player-list")
+                    with Horizontal(id="glossary-section"):
                         with Vertical(id="glossary-summary") as v:
                             v.border_title = "glossary"
                             yield GlossaryList(self._glossary_entries(), id="glossary-list")
@@ -138,33 +111,31 @@ class CampaignDetailScreen(BaseScreen):
         self._select_glossary_entry(event.term)
         self.action_delete_glossary_entry()
 
-    @on(PlayerDetailWidget.Selected)
-    def _on_player_selected(self, event: PlayerDetailWidget.Selected) -> None:
-        self._select_player(event.player_slug)
+    @on(CampaignStateWidget.StateChanged)
+    def _on_campaign_state_changed(self, event: CampaignStateWidget.StateChanged) -> None:
+        self._replace_campaign(state=event.state)
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        if event.input.id == "description-input":
+            self._replace_campaign(description=event.value)
+            return
+
+        if event.input.id == "input-gm":
+            self._replace_campaign(default_gm=event.value)
+            return
+
+        if event.input.id == "input-system":
+            self._replace_campaign(system=event.value)
+            return
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action in {"edit_glossary_entry", "delete_glossary_entry"}:
             return bool(self._selected_glossary_term)
 
-        if action in {
-            "delete_player",
-            "update_player_name",
-            "add_clips_from_folder",
-            "add_clips_from_session",
-            "recompute_speechprint",
-        }:
-            return bool(self._selected_player_slug)
-
         return super().check_action(action, parameters)
 
     def _select_glossary_entry(self, term: str) -> None:
         self._selected_glossary_term = term
-        self._selected_player_slug = None
-        self.refresh_bindings()
-
-    def _select_player(self, player_slug: str) -> None:
-        self._selected_player_slug = player_slug
-        self._selected_glossary_term = None
         self.refresh_bindings()
 
     def action_back(self) -> None:
@@ -198,49 +169,6 @@ class CampaignDetailScreen(BaseScreen):
 
         self.app.push_screen(ConfirmDeleteGlossaryEntryDialog(entry.term), self._on_delete_glossary_entry_result)
 
-    def action_add_player(self) -> None:
-        self.notify("Add player")
-
-    def action_delete_player(self) -> None:
-        selected_player = self._selected_player()
-        if selected_player is None:
-            self.notify("Select a player to delete.")
-            return
-        self.notify(f"Delete player: {selected_player.name}")
-
-    def action_update_player_name(self) -> None:
-        selected_player = self._selected_player()
-        if selected_player is None:
-            self.notify("Select a player to rename.")
-            return
-        self.notify(f"Rename player: {selected_player.name}")
-
-    def action_add_clips_from_folder(self) -> None:
-        selected_player = self._selected_player()
-        if selected_player is None:
-            self.notify("Select a player to add clips.")
-            return
-        self.notify(f"Add clips from folder: {selected_player.name}")
-
-    def action_add_clips_from_session(self) -> None:
-        selected_player = self._selected_player()
-        if selected_player is None:
-            self.notify("Select a player to add clips.")
-            return
-        self.notify(f"Add clips from session: {selected_player.name}")
-
-    def action_recompute_speechprint(self) -> None:
-        selected_player = self._selected_player()
-        if selected_player is None:
-            self.notify("Select a player to recompute speechprint.")
-            return
-        self.notify(f"Recompute speechprint: {selected_player.name}")
-
-    def _selected_player(self) -> Player | None:
-        if self._selected_player_slug is None:
-            return None
-        return next((player for player in self.players if player.slug == self._selected_player_slug), None)
-
     def _existing_glossary_terms(self) -> frozenset[str]:
         return frozenset(entry.term for entry in self.campaign.glossary)
 
@@ -271,8 +199,19 @@ class CampaignDetailScreen(BaseScreen):
         self._select_glossary_entry(updated_entry.term)
         self._refresh_glossary_list()
 
+    def _replace_campaign(self, **updates: object) -> None:
+        if not updates:
+            return
+
+        current_values = self.campaign.model_dump()
+        if all(current_values[field] == value for field, value in updates.items()):
+            return
+
+        self.campaign = self.campaign.model_copy(update=updates)
+        self.is_dirty = True
+
     def _replace_glossary(self, glossary: tuple[GlossaryEntry, ...]) -> None:
-        self.campaign = self.campaign.model_copy(update={"glossary": _sort_glossary_entries(glossary)})
+        self._replace_campaign(glossary=_sort_glossary_entries(glossary))
 
     def _refresh_glossary_list(self) -> None:
         glossary_list = self.query_one("#glossary-list", GlossaryList)

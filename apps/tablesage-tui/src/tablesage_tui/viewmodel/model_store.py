@@ -9,8 +9,10 @@ from tablesage_model.io import (
     list_orphan_campaign_dirs,
     load_campaign,
     load_campaign_summaries,
+    load_session,
+    load_session_set,
 )
-from tablesage_model.model import Campaign, CampaignSummary
+from tablesage_model.model import Campaign, CampaignSummary, Session
 from tablesage_model.setup import setup_root_dir
 
 
@@ -20,6 +22,12 @@ class ModelStore:
 
     def load_campaign(self, campaign_slug: str) -> Campaign:
         return load_campaign(campaign_slug)
+
+    def get_last_session_for_campaign(self, campaign_slug: str) -> Session:
+        sessions = sorted(load_session_set(campaign_slug).sessions, key=lambda session: session.session_date, reverse=True)
+        if not sessions:
+            raise LookupError(f"Campaign '{campaign_slug}' has no sessions")
+        return load_session(campaign_slug, sessions[0].slug)
 
     def prepare_tablesage_dir(self) -> None:
         setup_root_dir()

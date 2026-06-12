@@ -7,18 +7,12 @@ import pytest
 from tablesage_model.model import (
     Campaign,
     CampaignState,
-    Embedding,
     GlossaryEntry,
-    Player,
-    PlayerName,
-    PlayerSet,
-    ProvenanceType,
     SessionSet,
-    VoiceSample,
 )
 from tablesage_tui.screens import campaign_detail
 from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
-from tablesage_tui.widgets import GlossaryEntryWidget, PlayerDetailWidget, PlayerList
+from tablesage_tui.widgets import CampaignStateWidget, GlossaryEntryWidget
 from tablesage_tui.widgets.tablesage_header import TableSageHeader
 from textual.app import App
 from textual.widgets import Input, Static, TextArea
@@ -49,36 +43,6 @@ def _campaign(glossary: tuple[GlossaryEntry, ...] = ()) -> Campaign:
 
 def _stub_loaders(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(campaign_detail, "load_session_set", lambda _slug: SessionSet(sessions=()))
-    monkeypatch.setattr(campaign_detail, "load_player_set", lambda _slug: PlayerSet(players=()))
-
-
-def _voice_sample(slug: str, index: int) -> VoiceSample:
-    return VoiceSample(
-        filepath=Path(f"{slug}-{index}.wav"),
-        embedding=Embedding((1.0,)),
-        provenance_type=ProvenanceType.IMPORT,
-        source="test",
-        index=index,
-    )
-
-
-def _player(slug: str, name: str, clip_count: int = 0) -> Player:
-    return Player(
-        slug=slug,
-        name=name,
-        voice_samples=tuple(_voice_sample(slug, index) for index in range(clip_count)),
-        centroid=Embedding((1.0,)),
-    )
-
-
-def _stub_players(monkeypatch: pytest.MonkeyPatch, players: tuple[Player, ...]) -> None:
-    players_by_slug = {player.slug: player for player in players}
-    monkeypatch.setattr(
-        campaign_detail,
-        "load_player_set",
-        lambda _slug: PlayerSet(players=tuple(PlayerName(slug=player.slug, name=player.name) for player in players)),
-    )
-    monkeypatch.setattr(campaign_detail, "load_player", lambda _campaign_slug, player_slug: players_by_slug[player_slug])
 
 
 def test_campaign_detail_header_shows_campaign_path(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -113,36 +77,30 @@ def test_campaign_detail_tabs_render_literal_labels(monkeypatch: pytest.MonkeyPa
     asyncio.run(scenario())
 
 
-def test_campaign_detail_renders_player_detail_widgets(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(campaign_detail, "load_session_set", lambda _slug: SessionSet(sessions=()))
-    _stub_players(
-        monkeypatch,
-        (
-            _player("quinn", "Quinn", clip_count=0),
-            _player("ada", "Ada", clip_count=2),
-        ),
-    )
+def test_delete_glossary_entry_uses_delete_key_binding() -> None:
+    binding = next(binding for binding in CampaignDetailScreen.BINDINGS if binding.action == "delete_glossary_entry")
 
-    async def scenario() -> None:
-        app = _Host(CampaignDetailScreen(_campaign()))
-        async with app.run_test() as pilot:
-            await pilot.pause()
-
-            player_list = app.screen.query_one("#player-list", PlayerList)
-            players = list(player_list.query(PlayerDetailWidget))
-
-            assert [player.player_slug for player in players] == ["ada", "quinn"]
-            assert str(players[0].query_one(".player-clip-count", Static).render()) == "2"
-            assert str(players[0].query_one(".player-name", Static).render()) == "Ada"
-            assert str(players[1].query_one(".player-clip-count", Static).render()) == "0"
-            assert str(players[1].query_one(".player-name", Static).render()) == "Quinn"
-
-    asyncio.run(scenario())
+    assert binding.key == "delete"
+    assert binding.key_display == "Del"
 
 
-def test_player_selection_enables_player_bindings(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(campaign_detail, "load_session_set", lambda _slug: SessionSet(sessions=()))
-    _stub_players(monkeypatch, (_player("ada", "Ada", clip_count=2),))
+def test_campaign_detail_has_no_player_bindings() -> None:
+    player_actions = {
+        "add_player",
+        "delete_player",
+        "update_player_name",
+        "add_clips_from_folder",
+        "add_clips_from_session",
+        "recompute_speechprint",
+    }
+
+    bound_actions = {binding.action for binding in CampaignDetailScreen.BINDINGS}
+
+    assert bound_actions.isdisjoint(player_actions)
+
+
+def test_campaign_detail_starts_not_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
 
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign())
@@ -150,23 +108,79 @@ def test_player_selection_enables_player_bindings(monkeypatch: pytest.MonkeyPatc
         async with app.run_test() as pilot:
             await pilot.pause()
 
-            assert detail_screen.check_action("delete_player", ()) is False
-            assert detail_screen.check_action("update_player_name", ()) is False
-            assert detail_screen.check_action("add_clips_from_folder", ()) is False
-            assert detail_screen.check_action("add_clips_from_session", ()) is False
-            assert detail_screen.check_action("recompute_speechprint", ()) is False
+            assert detail_screen.is_dirty is False
 
-            app.screen.query_one(PlayerDetailWidget).focus()
+    asyncio.run(scenario())
+
+
+def test_campaign_detail_metadata_input_changes_mark_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
+
+    async def scenario() -> None:
+        detail_screen = CampaignDetailScreen(_campaign())
+        app = _Host(detail_screen)
+        async with app.run_test() as pilot:
             await pilot.pause()
 
-            assert detail_screen._selected_player_slug == "ada"
-            assert detail_screen.check_action("edit_glossary_entry", ()) is False
-            assert detail_screen.check_action("delete_glossary_entry", ()) is False
-            assert detail_screen.check_action("delete_player", ()) is True
-            assert detail_screen.check_action("update_player_name", ()) is True
-            assert detail_screen.check_action("add_clips_from_folder", ()) is True
-            assert detail_screen.check_action("add_clips_from_session", ()) is True
-            assert detail_screen.check_action("recompute_speechprint", ()) is True
+            app.screen.query_one("#description-input", Input).value = "A changed description."
+            await pilot.pause()
+
+            assert detail_screen.campaign.description == "A changed description."
+            assert detail_screen.is_dirty is True
+
+    asyncio.run(scenario())
+
+
+def test_campaign_detail_gm_and_system_input_changes_mark_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
+
+    async def scenario() -> None:
+        detail_screen = CampaignDetailScreen(_campaign())
+        app = _Host(detail_screen)
+        async with app.run_test() as pilot:
+            await pilot.pause()
+
+            app.screen.query_one("#input-gm", Input).value = "Bex"
+            app.screen.query_one("#input-system", Input).value = "Blades"
+            await pilot.pause()
+
+            assert detail_screen.campaign.default_gm == "Bex"
+            assert detail_screen.campaign.system == "Blades"
+            assert detail_screen.is_dirty is True
+
+    asyncio.run(scenario())
+
+
+def test_campaign_detail_state_change_marks_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
+
+    async def scenario() -> None:
+        detail_screen = CampaignDetailScreen(_campaign())
+        app = _Host(detail_screen)
+        async with app.run_test() as pilot:
+            await pilot.pause()
+
+            detail_screen._on_campaign_state_changed(CampaignStateWidget.StateChanged(CampaignState.Archived))
+
+            assert detail_screen.campaign.state == CampaignState.Archived
+            assert detail_screen.is_dirty is True
+
+    asyncio.run(scenario())
+
+
+def test_campaign_detail_name_change_marks_screen_dirty(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
+
+    async def scenario() -> None:
+        detail_screen = CampaignDetailScreen(_campaign())
+        app = _Host(detail_screen)
+        async with app.run_test() as pilot:
+            await pilot.pause()
+
+            detail_screen._replace_campaign(name="Sable Crown")
+
+            assert detail_screen.campaign.name == "Sable Crown"
+            assert detail_screen.is_dirty is True
 
     asyncio.run(scenario())
 
@@ -189,18 +203,12 @@ def test_glossary_selection_enables_only_glossary_bindings(monkeypatch: pytest.M
             assert detail_screen._selected_glossary_term == "Quarl"
             assert detail_screen.check_action("edit_glossary_entry", ()) is True
             assert detail_screen.check_action("delete_glossary_entry", ()) is True
-            assert detail_screen.check_action("delete_player", ()) is False
-            assert detail_screen.check_action("update_player_name", ()) is False
-            assert detail_screen.check_action("add_clips_from_folder", ()) is False
-            assert detail_screen.check_action("add_clips_from_session", ()) is False
-            assert detail_screen.check_action("recompute_speechprint", ()) is False
 
     asyncio.run(scenario())
 
 
-def test_player_and_glossary_selection_switch_binding_groups(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(campaign_detail, "load_session_set", lambda _slug: SessionSet(sessions=()))
-    _stub_players(monkeypatch, (_player("ada", "Ada", clip_count=2),))
+def test_campaign_detail_renders_glossary_summary_without_player_summary(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_loaders(monkeypatch)
 
     async def scenario() -> None:
         detail_screen = CampaignDetailScreen(_campaign(glossary=(GlossaryEntry(term="Quarl", description="A lich-king."),)))
@@ -208,17 +216,9 @@ def test_player_and_glossary_selection_switch_binding_groups(monkeypatch: pytest
         async with app.run_test() as pilot:
             await pilot.pause()
 
-            app.screen.query_one(PlayerDetailWidget).focus()
-            await pilot.pause()
-
-            assert detail_screen.check_action("delete_player", ()) is True
-            assert detail_screen.check_action("edit_glossary_entry", ()) is False
-
-            app.screen.query_one(GlossaryEntryWidget).focus()
-            await pilot.pause()
-
-            assert detail_screen.check_action("delete_player", ()) is False
-            assert detail_screen.check_action("edit_glossary_entry", ()) is True
+            assert list(app.screen.query("#player-summary")) == []
+            assert list(app.screen.query("#player-list")) == []
+            assert list(app.screen.query("#glossary-summary"))
 
     asyncio.run(scenario())
 
@@ -268,6 +268,7 @@ def test_add_glossary_entry_updates_campaign_glossary(monkeypatch: pytest.Monkey
             await pilot.pause()
 
             assert detail_screen.campaign.glossary == (GlossaryEntry(term="Quarl", description="A lich-king."),)
+            assert detail_screen.is_dirty is True
             assert app.screen.query_one(GlossaryEntryWidget).term == "Quarl"
 
     asyncio.run(scenario())
@@ -292,6 +293,7 @@ def test_edit_glossary_entry_can_rename_term_in_screen_glossary(monkeypatch: pyt
             await pilot.pause()
 
             assert detail_screen.campaign.glossary == (GlossaryEntry(term="Veyra", description="A queen in exile."),)
+            assert detail_screen.is_dirty is True
             assert app.screen.query_one(GlossaryEntryWidget).term == "Veyra"
 
     asyncio.run(scenario())
@@ -317,6 +319,7 @@ def test_delete_glossary_entry_requires_confirmation(monkeypatch: pytest.MonkeyP
             await pilot.pause()
 
             assert detail_screen.campaign.glossary == ()
+            assert detail_screen.is_dirty is True
             assert list(app.screen.query(GlossaryEntryWidget)) == []
 
     asyncio.run(scenario())
