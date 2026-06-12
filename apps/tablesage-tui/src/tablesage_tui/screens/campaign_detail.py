@@ -42,6 +42,7 @@ class CampaignDetailScreen(BaseScreen):
     def __init__(self, campaign: Campaign) -> None:
         super().__init__()
         self.campaign = campaign
+        self.is_dirty = False
         self._selected_glossary_term: str | None = None
         self.players = self._players()
         self._selected_player_slug: str | None = None

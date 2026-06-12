@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from tablesage_model.io import create_campaign, load_campaign, load_campaign_summaries
+from tablesage_model.io import (
+    cleanup_orphan_campaign_dirs,
+    create_campaign,
+    delete_campaign,
+    list_orphan_campaign_dirs,
+    load_campaign,
+    load_campaign_summaries,
+)
 from tablesage_model.model import Campaign, CampaignSummary
 from tablesage_model.setup import setup_root_dir
 
@@ -19,6 +26,15 @@ class ModelStore:
 
     def create_campaign(self, campaign_name: str, default_gm: str, system: str, description: str = "") -> str:
         return create_campaign(campaign_name=campaign_name, default_gm=default_gm, system=system, description=description)
+
+    def delete_campaign(self, campaign_slug: str) -> None:
+        delete_campaign(campaign_slug)
+
+    def list_deleted_campaigns(self) -> tuple[str, ...]:
+        return list_orphan_campaign_dirs()
+
+    def clean_deleted_campaigns(self) -> tuple[str, ...]:
+        return cleanup_orphan_campaign_dirs()
 
 
 class ModelStoreHost(Protocol):

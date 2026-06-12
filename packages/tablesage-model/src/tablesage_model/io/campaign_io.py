@@ -100,14 +100,16 @@ def delete_campaign(campaign_slug: str) -> None:
     save_campaign_set(CampaignSet(campaigns=remaining))
 
 
-def cleanup_orphan_campaign_dirs() -> tuple[str, ...]:
+def list_orphan_campaign_dirs() -> tuple[str, ...]:
     root = _paths.campaigns_dir()
     if not root.exists():
         return ()
     known = {c.slug for c in load_campaign_set().campaigns}
-    deleted: list[str] = []
-    for child in sorted(root.iterdir()):
-        if child.is_dir() and child.name not in known:
-            shutil.rmtree(child)
-            deleted.append(child.name)
-    return tuple(deleted)
+    return tuple(child.name for child in sorted(root.iterdir()) if child.is_dir() and child.name not in known)
+
+
+def cleanup_orphan_campaign_dirs() -> tuple[str, ...]:
+    deleted = list_orphan_campaign_dirs()
+    for campaign_slug in deleted:
+        shutil.rmtree(_paths.campaign_dir(campaign_slug))
+    return deleted

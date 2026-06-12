@@ -13,6 +13,7 @@ from textual.reactive import reactive
 from textual.widgets import DataTable, Input, Static
 from textual.widgets._data_table import ColumnKey
 
+from ..dialogs import ConfirmationDialog
 from ..dialogs.new_campaign import NewCampaignDialog, NewCampaignResult
 from ..viewmodel import ModelStore, ModelStoreHost
 from ..widgets import AsciiArt, EmptyWidget, FilterOption
@@ -81,6 +82,8 @@ class CampaignsScreen(BaseScreen):
     BINDINGS = [
         Binding("n,N", "new_campaign", "New campaign", key_display="N"),
         Binding("i,I", "import_campaign", "Import", key_display="I"),
+        Binding("delete", "delete_campaign", "Delete Command", key_display="Del"),
+        Binding("c,C", "clean_deleted_campaigns", "Clean Orphaned Campaigns", key_display="C"),
         Binding("?", "show_help", "Help", key_display="?"),
     ]
 
@@ -133,6 +136,7 @@ class CampaignsScreen(BaseScreen):
 
         self.highlighted_campaign_name = filtered_campaigns[0].name if filtered_campaigns else ""
         self.highlighted_campaign_slug = filtered_campaigns[0].slug if filtered_campaigns else ""
+        self.refresh_bindings()
 
     @property
     def store(self) -> ModelStore:
@@ -149,6 +153,12 @@ class CampaignsScreen(BaseScreen):
         if not self.highlighted_campaign_slug:
             return None
         return self.store.load_campaign(self.highlighted_campaign_slug)
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "delete_campaign":
+            return bool(self.highlighted_campaign_slug)
+
+        return super().check_action(action, parameters)
 
     def compose_content(self) -> ComposeResult:
         """Override in subclasses."""
@@ -211,6 +221,7 @@ class CampaignsScreen(BaseScreen):
         campaign_name = event.data_table.get_cell(event.row_key, self._campaign_name_column_key)
         self.highlighted_campaign_name = _campaign_name_from_cell(campaign_name)
         self.highlighted_campaign_slug = str(event.row_key.value)
+        self.refresh_bindings()
         self._open_campaign()
 
     def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
@@ -220,6 +231,7 @@ class CampaignsScreen(BaseScreen):
         campaign_name = event.data_table.get_cell(event.row_key, self._campaign_name_column_key)
         self.highlighted_campaign_name = _campaign_name_from_cell(campaign_name)
         self.highlighted_campaign_slug = str(event.row_key.value)
+        self.refresh_bindings()
 
     def watch_highlighted_campaign_name(self, campaign_name: str) -> None:
         for widget in self.query("#panel-footer .selection-footer"):
@@ -290,3 +302,61 @@ class CampaignsScreen(BaseScreen):
             )
             campaigns = self.store.load_campaigns()
             self.app.switch_screen(CampaignsScreen(campaigns))
+
+    def action_delete_campaign(self) -> None:
+        campaign_slug = self.highlighted_campaign_slug
+        if not campaign_slug:
+            self.notify("Select a campaign to delete.")
+            return
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Confirm Campaign Deletion",
+                prompt=(
+                    f"Do you want to remove {self.highlighted_campaign_name} from the system?  You will need to run the "
+                    '"clean orphaned campaigns" command to remove it from disk?'
+                ),
+                show_cancel=False,
+            ),
+            lambda confirmed: self._on_delete_campaign_confirmation(confirmed, campaign_slug),
+        )
+
+    def _on_delete_campaign_confirmation(self, confirmed: bool | None, campaign_slug: str) -> None:
+        if not confirmed:
+            return
+
+        self.perform_delete(campaign_slug)
+        self._reload_campaigns()
+
+    def perform_delete(self, campaign_slug: str) -> None:
+        self.store.delete_campaign(campaign_slug)
+
+    def action_clean_deleted_campaigns(self) -> None:
+        deleted_campaigns = self.store.list_deleted_campaigns()
+        if not deleted_campaigns:
+            self.notify("No deleted campaigns to remove.")
+            return
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Confirm Deleted Campaign Cleanup",
+                prompt=f"Remove {len(deleted_campaigns)} deleted campaign(s) from disk?",
+                show_cancel=False,
+            ),
+            self._on_clean_deleted_campaigns_confirmation,
+        )
+
+    def _on_clean_deleted_campaigns_confirmation(self, confirmed: bool | None) -> None:
+        if not confirmed:
+            return
+
+        deleted = self.store.clean_deleted_campaigns()
+        if deleted:
+            self.notify(f"Removed {len(deleted)} orphaned campaign(s).")
+            return
+
+        self.notify("No deleted orphaned to remove.")
+
+    def _reload_campaigns(self) -> None:
+        self.campaigns = self.store.load_campaigns()
+        self._refresh_campaign_table()

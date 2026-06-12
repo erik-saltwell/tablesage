@@ -12,6 +12,7 @@ from tablesage_model.io import (
     delete_campaign,
     delete_player,
     delete_session,
+    list_orphan_campaign_dirs,
     load_app_settings,
     load_campaign,
     load_campaign_set,
@@ -265,6 +266,20 @@ def test_cleanup_orphan_campaign_dirs_removes_dirs_not_in_set() -> None:
 
     assert deleted == ("ghost",)
     assert not orphan_dir.exists()
+    assert _paths.campaign_dir("kept").exists()
+
+
+def test_list_orphan_campaign_dirs_does_not_remove_dirs() -> None:
+    save_campaign_set(CampaignSet(campaigns=(CampaignName(slug="kept", name="Kept"),)))
+    save_campaign(Campaign(slug="kept", name="Kept", default_gm="Ada"))
+    orphan_dir = _paths.campaign_dir("ghost")
+    orphan_dir.mkdir(parents=True)
+    (orphan_dir / "stray.txt").write_text("leftover")
+
+    deleted = list_orphan_campaign_dirs()
+
+    assert deleted == ("ghost",)
+    assert orphan_dir.exists()
     assert _paths.campaign_dir("kept").exists()
 
 
