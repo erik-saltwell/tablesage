@@ -4,7 +4,7 @@ from pathlib import Path
 
 from ... import _paths
 from ..._tools import eleven_labs
-from ...model.transcription import Discourse, Utterance, Word
+from ...model.discourse import Discourse, Utterance, Word
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
 from ...settings import AppSettings
 
@@ -23,7 +23,7 @@ async def transcribe_and_diarize(
 ) -> Discourse:
     settings = app_settings.transcription_and_diarization
     session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
-    input_audio_path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
+    input_audio_path = _paths.to_absolute(session_dir, app_settings.audio_cleaning.cleaned_audio_file)
     await _progress(sink, "transcribing and diarizing with elevenlabs")
     transcribed_words: list[eleven_labs.TranscriptionWord] = await eleven_labs.transcribe_and_diarize(
         input_audio_path, settings.language_code, settings.model_id, settings.timeout, settings.tag_audio_events, speaker_count

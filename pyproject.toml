@@ -44,6 +44,9 @@ select = [
 
 [tool.ty]
 environment.root = ["./packages", "./apps"]
+[tool.ty.analysis]
+respect-type-ignore-comments = true
+
 
 [tool.ty.rules]
 unused-ignore-comment = "warn"

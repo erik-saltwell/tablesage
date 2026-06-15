@@ -1,0 +1,207 @@
+from __future__ import annotations
+
+import sys
+from datetime import date
+
+import pytest
+from tablesage_model import _paths
+from tablesage_model.io import (
+    save_campaign,
+    save_player,
+    save_player_set,
+    save_session,
+)
+from tablesage_model.model.campaign import Campaign, GlossaryEntry, Session
+from tablesage_model.model.cast import Embedding, Player, PlayerName, PlayerSet
+from tablesage_model.model.transcription import Discourse, Utterance, Word
+from tablesage_model.settings import AppSettings
+
+
+def _seed_campaign_and_session(campaign_slug: str, session_slug: str, *, attendee_slug: str = "ada") -> None:
+    campaign = Campaign(
+        slug=campaign_slug,
+        name="Sable Crown",
+        default_gm="Ada",
+        glossary=(GlossaryEntry(term="Quarl", description="A lich-king"),),
+    )
+    save_campaign(campaign)
+
+    player = Player(
+        slug=attendee_slug,
+        name="Ada",
+        voice_samples=(),
+        centroid=Embedding(root=(0.1, 0.2, 0.3)),
+    )
+    save_player(campaign_slug, player)
+    save_player_set(campaign_slug, PlayerSet(players=(PlayerName(slug=attendee_slug, name="Ada"),)))
+
+    save_session(
+        campaign_slug,
+        Session(
+            session_date=date(2026, 5, 13),
+            name="Session One",
+            slug=session_slug,
+            audio_filename="raw.m4a",
+            attendees={attendee_slug: ("Game Master",)},
+        ),
+    )
+
+
+def _make_discourse() -> Discourse:
+    words = (
+        Word(text="hello", start=0.0, end=0.5, speaker="ada"),
+        Word(text="world", start=0.5, end=1.0, speaker="ada"),
+    )
+    return Discourse(utterances=(Utterance.from_words(words),))
+
+
+def _install_action_mocks(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    clean_audio_writes: bool = True,
+    transcribe_returns: Discourse | None = None,
+    transcribe_raises: BaseException | None = None,
+    identify_returns: Discourse | None = None,
+    summary_body: str = "# fake summary",
+    call_log: list[str] | None = None,
+) -> None:
+    import tablesage_model._actions.process_session._orchestrator  # noqa: F401  (load submodule)
+
+    orchestrator = sys.modules["tablesage_model._actions.process_session._orchestrator"]
+
+    async def fake_clean_audio(campaign_slug: str, session_slug: str, app_settings: AppSettings, sink: object) -> None:
+        if call_log is not None:
+            call_log.append("clean_audio")
+        if clean_audio_writes:
+            session_dir = _paths.session_dir(campaign_slug, session_slug)
+            _paths.ensure_dir(session_dir)
+            (session_dir / app_settings.cleaned_audio_file).write_bytes(b"cleaned")
+
+    async def fake_transcribe(
+        campaign_slug: str,
+        session_slug: str,
+        app_settings: AppSettings,
+        speaker_count: int | None,
+        sink: object,
+    ) -> Discourse:
+        if call_log is not None:
+            call_log.append("transcribe_and_diarize")
+        if transcribe_raises is not None:
+            raise transcribe_raises
+        return transcribe_returns or _make_discourse()
+
+    async def fake_identify(
+        campaign_slug: str,
+        session_slug: str,
+        app_settings: AppSettings,
+        attendees: list[Player],
+        session_set: Discourse,
+        sink: object,
+    ) -> Discourse:
+        if call_log is not None:
+            call_log.append("identify_speakers")
+        return identify_returns or session_set
+
+    async def fake_generate_summary(
+        campaign_slug: str,
+        session_slug: str,
+        app_settings: AppSettings,
+        glossary: tuple[GlossaryEntry, ...],
+        discourse: Discourse,
+        sink: object,
+    ) -> None:
+        if call_log is not None:
+            call_log.append("generate_summary")
+        from tablesage_model.io import save_summary
+        from tablesage_model.model.artifacts import Summary
+
+        save_summary(campaign_slug, session_slug, Summary(markdown=summary_body))
+
+    monkeypatch.setattr(orchestrator, "clean_audio", fake_clean_audio)
+    monkeypatch.setattr(orchestrator, "transcribe_and_diarize", fake_transcribe)
+    monkeypatch.setattr(orchestrator, "identify_speakers", fake_identify)
+    monkeypatch.setattr(orchestrator, "generate_summary", fake_generate_summary)
+
+
+@pytest.mark.anyio
+async def test_process_session_raises_orphan_attendee_before_any_sub_action_runs(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_model._actions.process_session._orchestrator import OrphanAttendeeError, _process_session
+    from tablesage_model.protocols import NullPhasedProgressSink
+
+    # Seed campaign + session whose attendee slug is NOT in the PlayerSet.
+    _seed_campaign_and_session("sable-crown", "session-one", attendee_slug="ada")
+    save_player_set("sable-crown", PlayerSet(players=()))  # empty — Ada is now orphaned
+
+    call_log: list[str] = []
+    _install_action_mocks(monkeypatch, call_log=call_log)
+
+    with pytest.raises(OrphanAttendeeError) as excinfo:
+        await _process_session("sable-crown", "session-one", AppSettings(), NullPhasedProgressSink())
+
+    assert "ada" in excinfo.value.missing_slugs
+    assert call_log == []
+
+
+@pytest.mark.anyio
+async def test_process_session_writes_transcript_and_summary_to_disk(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_model._actions.process_session._orchestrator import _process_session
+    from tablesage_model.protocols import NullPhasedProgressSink
+
+    _seed_campaign_and_session("sable-crown", "session-one")
+    _install_action_mocks(monkeypatch, summary_body="# the summary")
+
+    await _process_session("sable-crown", "session-one", AppSettings(), NullPhasedProgressSink())
+
+    session_dir = _paths.session_dir("sable-crown", "session-one")
+    assert (session_dir / _paths.KnownFiles.TRANSCRIPT).exists()
+    assert (session_dir / _paths.KnownFiles.SUMMARY).read_text(encoding="utf-8") == "# the summary"
+
+
+@pytest.mark.anyio
+async def test_process_session_persists_discourse_to_disk(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_model._actions.process_session._orchestrator import _process_session
+    from tablesage_model.io import load_discourse
+    from tablesage_model.protocols import NullPhasedProgressSink
+
+    _seed_campaign_and_session("sable-crown", "session-one")
+    expected = _make_discourse()
+    _install_action_mocks(monkeypatch, identify_returns=expected)
+
+    await _process_session("sable-crown", "session-one", AppSettings(), NullPhasedProgressSink())
+
+    assert load_discourse("sable-crown", "session-one") == expected
+
+
+def test_invalidate_process_session_rerun_deletes_discourse() -> None:
+    from tablesage_model._actions.invalidation import InputChange, invalidate
+    from tablesage_model.io import save_discourse
+
+    _seed_campaign_and_session("sable-crown", "session-one")
+    save_discourse("sable-crown", "session-one", _make_discourse())
+
+    invalidate("sable-crown", "session-one", InputChange.PROCESS_SESSION_RERUN, AppSettings())
+
+    session_dir = _paths.session_dir("sable-crown", "session-one")
+    assert not (session_dir / _paths.KnownFiles.DISCOURSE).exists()
+
+
+@pytest.mark.anyio
+async def test_process_session_failure_mid_pipeline_leaves_no_downstream_artifacts(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_model._actions.process_session._orchestrator import _process_session
+    from tablesage_model.protocols import NullPhasedProgressSink
+
+    _seed_campaign_and_session("sable-crown", "session-one")
+
+    # Pre-seed downstream artifacts as if a previous successful run completed.
+    session_dir = _paths.session_dir("sable-crown", "session-one")
+    _paths.ensure_dir(session_dir)
+    (session_dir / _paths.KnownFiles.TRANSCRIPT).write_text("stale transcript", encoding="utf-8")
+    (session_dir / _paths.KnownFiles.SUMMARY).write_text("stale summary", encoding="utf-8")
+
+    _install_action_mocks(monkeypatch, transcribe_raises=RuntimeError("api blew up"))
+
+    with pytest.raises(RuntimeError, match="api blew up"):
+        await _process_session("sable-crown", "session-one", AppSettings(), NullPhasedProgressSink())
+
+    assert not (session_dir / _paths.KnownFiles.TRANSCRIPT).exists()
+    assert not (session_dir / _paths.KnownFiles.SUMMARY).exists()
