@@ -15,7 +15,9 @@ resolution-markers = [
 
 [manifest]
 members = [
+    "tablesage-application",
     "tablesage-model",
+    "tablesage-tools",
     "tablesage-tui",
     "tablesage-workspace",
 ]
@@ -4230,6 +4232,21 @@ wheels = [
 ]
 
 [[package]]
+name = "tablesage-application"
+version = "0.1.0"
+source = { editable = "packages/tablesage-application" }
+dependencies = [
+    { name = "tablesage-model" },
+    { name = "tablesage-tools" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "tablesage-model", editable = "packages/tablesage-model" },
+    { name = "tablesage-tools", editable = "packages/tablesage-tools" },
+]
+
+[[package]]
 name = "tablesage-model"
 version = "0.1.0"
 source = { editable = "packages/tablesage-model" }
@@ -4271,12 +4288,17 @@ requires-dist = [
 ]
 
 [[package]]
+name = "tablesage-tools"
+version = "0.1.0"
+source = { editable = "packages/tablesage-tools" }
+
+[[package]]
 name = "tablesage-tui"
 version = "0.1.0"
 source = { editable = "apps/tablesage-tui" }
 dependencies = [
     { name = "python-dotenv" },
-    { name = "tablesage-model" },
+    { name = "tablesage-application" },
     { name = "textual" },
 ]
 
@@ -4288,7 +4310,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0" },
-    { name = "tablesage-model", editable = "packages/tablesage-model" },
+    { name = "tablesage-application", editable = "packages/tablesage-application" },
     { name = "textual", specifier = ">=8.2.6" },
 ]
 
