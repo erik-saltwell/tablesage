@@ -7,12 +7,15 @@ from pathlib import Path
 
 import yaml
 
+from tablesage_model.model import Player
+
 from .. import _paths
 from .._actions.transcription.clean_audio import clean_audio
+from .._actions.transcription.identify_speakers import identify_speakers as _identify_speakers
 from .._actions.transcription.transcribe_and_diarize import transcribe_and_diarize as _transcribe_and_diarize
 from .._utils import run_command
 from ..model.discourse import Discourse
-from ..protocols import PhasedProgressEvent, PhasedProgressSink
+from ..protocols import IncrementalProgressSink, PhasedProgressEvent, PhasedProgressSink
 from ..settings import AppSettings
 
 
@@ -120,10 +123,15 @@ async def transcribe_and_diarize(
 
 
 async def identify_speakers_by_voice(
-    settings: AppSettings, campaign_slug: str, session_slug: str, sessions_dir: Path, sink: PhasedProgressSink
+    settings: AppSettings, attendees: list[Player], campaign_slug: str, session_slug: str, sessions_dir: Path, sink: IncrementalProgressSink
 ) -> None:
     await _check_state([SessionState.transcribed_and_diarized], session_slug, sessions_dir)
-    # discourse: Discourse = await _identify_speakers(campaign_slug=campaign_slug, session_slug=session_slug, app_settings=settings)
+    session: Discourse = Discourse.load(sessions_dir / session_slug / _paths.KnownFiles.DISCOURSE)
+    discourse: Discourse = await _identify_speakers(
+        campaign_slug=campaign_slug, session_slug=session_slug, app_settings=settings, attendees=attendees, session_set=session, sink=sink
+    )
+    discourse.save(sessions_dir / session_slug / _paths.KnownFiles.DISCOURSE)
+    await _save_session_state(sessions_dir, SessionState.speakers_identified)
 
 
 async def get_session_state(session_slug: str, sessions_dir: Path) -> SessionState:

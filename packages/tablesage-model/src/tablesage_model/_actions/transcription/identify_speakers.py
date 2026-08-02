@@ -7,8 +7,8 @@ from tempfile import TemporaryDirectory
 from ... import _paths
 from ..._tools import ffmpeg
 from ..._tools.embeddings import EmbeddingFactory, SimilarityComputer, SimilarityResult
-from ...model.cast import Player
-from ...model.transcription import Discourse, Utterance
+from ...model.discourse import Discourse, Utterance
+from ...model.player import Player
 from ...protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
 from ...settings import AppSettings, SpeakerIdentificationSettings
 
