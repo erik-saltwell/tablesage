@@ -15,7 +15,7 @@ from .._actions.transcription.identify_speakers import identify_speakers as _ide
 from .._actions.transcription.transcribe_and_diarize import transcribe_and_diarize as _transcribe_and_diarize
 from .._utils import run_command
 from ..model.discourse import Discourse
-from ..protocols import IncrementalProgressSink, PhasedProgressEvent, PhasedProgressSink
+from ..protocols import IncrementalProgressSink, PhasedProgressSink
 from ..settings import AppSettings
 
 
@@ -66,10 +66,6 @@ async def _check_not_state(disallowed_states: list[SessionState], session_slug: 
 class _KnownSessionFiles(StrEnum):
     settings_file = "settings.yaml"
     state_file = "state.yaml"
-
-
-async def _emit(sink: PhasedProgressSink, phase: str) -> None:
-    await sink.publish(PhasedProgressEvent(source="process_session", phase=phase))
 
 
 async def create_session(settings: AppSettings, session_slug: str, sessions_dir: Path) -> None:
