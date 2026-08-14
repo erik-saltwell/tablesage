@@ -4291,6 +4291,32 @@ requires-dist = [
 name = "tablesage-tools"
 version = "0.1.0"
 source = { editable = "packages/tablesage-tools" }
+dependencies = [
+    { name = "clearvoice" },
+    { name = "elevenlabs" },
+    { name = "jiwer" },
+    { name = "litellm" },
+    { name = "mathspell" },
+    { name = "modelscope", extra = ["framework"] },
+    { name = "punctuators" },
+    { name = "pydantic" },
+    { name = "torch" },
+    { name = "torchaudio" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "clearvoice", specifier = ">=0.1.2" },
+    { name = "elevenlabs", specifier = ">=2.46.0" },
+    { name = "jiwer", specifier = ">=3.1.0" },
+    { name = "litellm", specifier = ">=1.83.0" },
+    { name = "mathspell", specifier = ">=0.1.0" },
+    { name = "modelscope", extras = ["framework"], specifier = ">=1.36.3" },
+    { name = "punctuators", specifier = ">=0.0.7" },
+    { name = "pydantic", specifier = ">=2.12.5" },
+    { name = "torch", specifier = "==2.10.0" },
+    { name = "torchaudio", specifier = "==2.10.0" },
+]
 
 [[package]]
 name = "tablesage-tui"
