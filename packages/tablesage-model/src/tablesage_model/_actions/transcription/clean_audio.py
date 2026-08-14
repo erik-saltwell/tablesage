@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from ... import _paths
 from ..._tools.ffmpeg import clean_clip
+from ...io import load_session
 from ...protocols import PhasedProgressEvent, PhasedProgressSink
-from ...settings import AppSettings
+from ...settings import AppSettings, AudioCleaningSettings
 
 
 async def _progress(sink: PhasedProgressSink, phase: str) -> None:
@@ -13,23 +15,13 @@ async def _progress(sink: PhasedProgressSink, phase: str) -> None:
 
 
 async def clean_audio(campaign_slug: str, session_slug: str, app_settings: AppSettings, sink: PhasedProgressSink) -> None:
-    await clean_audio_raw(
-        input_audio_file=app_settings.input_audio_file,
-        cleaned_audio_file=app_settings.audio_cleaning.cleaned_audio_file,
-        normalize_volume=app_settings.audio_cleaning.normalize_volume,
-        sink=sink,
-    )
-
-
-async def clean_audio_raw(
-    input_audio_file: Path,
-    cleaned_audio_file: Path,
-    normalize_volume: bool,
-    sink: PhasedProgressSink,
-) -> None:
-
-    if not input_audio_file.exists():
-        raise FileNotFoundError(input_audio_file)
+    settings: AudioCleaningSettings = app_settings.audio_cleaning
+    session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
+    session = load_session(campaign_slug, session_slug)
+    source_path: Path = session_dir / session.audio_filename
+    cleaned_output_path: Path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
+    if not source_path.exists():
+        raise FileNotFoundError(source_path)
 
     await _progress(sink, "cleaning audio")
-    await clean_clip(input_audio_file, cleaned_audio_file, normalize=normalize_volume)
+    await clean_clip(source_path, cleaned_output_path, normalize=settings.normalize_volume)

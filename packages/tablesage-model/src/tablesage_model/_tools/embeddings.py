@@ -11,7 +11,7 @@ from typing import Any
 import torch
 import torchaudio
 
-from ..model import Embedding
+from ..model.cast import Embedding
 
 
 def _patch_torchaudio_sox_effects() -> None:
@@ -69,7 +69,7 @@ class EmbeddingFactory:
             result: Any = self._pipe([str(audio_path.resolve())], output_emb=True)
         # result['embs'] is a numpy array of shape [N, 192]; take the first (and only) row
         emb = result["embs"][0]
-        embedding = tuple(float(x) for x in emb)
+        embedding = Embedding(root=tuple(float(x) for x in emb))
         return embedding
 
     async def extract_async(self, audio_path: Path) -> Embedding:
@@ -85,10 +85,10 @@ def compute_centroid(embeddings: Sequence[Embedding]) -> Embedding:
     if not embeddings:
         msg = "Cannot compute centroid of empty embedding collection."
         raise ValueError(msg)
-    stacked = torch.tensor([e for e in embeddings], dtype=torch.float32)
+    stacked = torch.tensor([e.root for e in embeddings], dtype=torch.float32)
     mean = stacked.mean(dim=0)
     normalized = torch.nn.functional.normalize(mean, p=2, dim=0)
-    return tuple(float(x) for x in normalized)
+    return Embedding(root=tuple(float(x) for x in normalized))
 
 
 @dataclass
@@ -108,10 +108,10 @@ class SimilarityComputer:
         if len(self.references) < 2:
             msg = "Cannot compute similarity with less than 2 embeddings."
             raise ValueError(msg)
-        self.references_tensor = torch.tensor([r for r in self.references], dtype=torch.float32)
+        self.references_tensor = torch.tensor([r.root for r in self.references], dtype=torch.float32)
 
     def compute_similarity(self, candidate: Embedding) -> SimilarityResult:
-        test_tensor = torch.tensor(candidate, dtype=torch.float32).unsqueeze(0)
+        test_tensor = torch.tensor(candidate.root, dtype=torch.float32).unsqueeze(0)
         similarities: list[float] = [float(s) for s in torch.nn.functional.cosine_similarity(test_tensor, self.references_tensor)]
         avg_similarity: float = sum(similarities) / len(similarities)
         ranked = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)

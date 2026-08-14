@@ -31,4 +31,3 @@ Thumbs.db
 
 # VS Code local settings are usually okay to commit selectively.
 # Keep .vscode/settings.json if it contains shared project settings.
-.aider*

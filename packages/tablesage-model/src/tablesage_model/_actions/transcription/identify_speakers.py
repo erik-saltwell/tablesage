@@ -7,8 +7,8 @@ from tempfile import TemporaryDirectory
 from ... import _paths
 from ..._tools import ffmpeg
 from ..._tools.embeddings import EmbeddingFactory, SimilarityComputer, SimilarityResult
-from ...model.discourse import Discourse, Utterance
-from ...model.player import Player
+from ...model.cast import Player
+from ...model.transcription import Discourse, Utterance
 from ...protocols import IncrementalProgressEvent, IncrementalProgressSink, UnassignedSpeaker
 from ...settings import AppSettings, SpeakerIdentificationSettings
 
@@ -28,7 +28,7 @@ async def identify_speakers(
 
     settings: SpeakerIdentificationSettings = app_settings.speaker_identification
     session_dir: Path = _paths.session_dir(campaign_slug, session_slug)
-    audio_path = _paths.to_absolute(session_dir, app_settings.audio_cleaning.cleaned_audio_file)
+    audio_path = _paths.to_absolute(session_dir, app_settings.cleaned_audio_file)
 
     similarity_computer = SimilarityComputer(tuple(player.centroid for player in attendees))
 

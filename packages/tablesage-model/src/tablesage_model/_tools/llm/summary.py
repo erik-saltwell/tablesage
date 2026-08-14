@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ...model import GlossaryEntry
-from ...model.discourse import Discourse
+from ...model.campaign import GlossaryEntry
+from ...model.transcription import Discourse
 
 
 async def _call_llm(prompt: str, model: str) -> str:
