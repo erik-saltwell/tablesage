@@ -32,12 +32,12 @@ async def test_punctuate_text_skips_empty_strings(monkeypatch: MonkeyPatch) -> N
     async def clean_multiple_texts(texts: list[str]) -> list[str]:
         return ["" if text == "..." else text.strip() for text in texts]
 
-    fake_text_cleaner = cast(Any, types.ModuleType("tablesage_model._tools.text_cleaner"))
+    fake_text_cleaner = cast(Any, types.ModuleType("tablesage_tools.text.cleaning"))
     fake_text_cleaner.clean_multiple_texts = clean_multiple_texts
-    monkeypatch.setitem(sys.modules, "tablesage_model._tools.text_cleaner", fake_text_cleaner)
+    monkeypatch.setitem(sys.modules, "tablesage_tools.text.cleaning", fake_text_cleaner)
 
-    monkeypatch.delitem(sys.modules, "tablesage_model._tools.punctuation", raising=False)
-    punctuation = import_module("tablesage_model._tools.punctuation")
+    monkeypatch.delitem(sys.modules, "tablesage_tools.text.punctuation", raising=False)
+    punctuation = import_module("tablesage_tools.text.punctuation")
 
     result = await punctuation.punctuate_text(["hello world", "", "...", "bye now"])
 

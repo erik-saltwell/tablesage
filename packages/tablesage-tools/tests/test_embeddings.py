@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from tablesage_model._tools.embeddings import SimilarityComputer, compute_centroid
-from tablesage_model.model.cast import Embedding
+from tablesage_tools.embeddings import Embedding, SimilarityComputer, compute_centroid
 
 
 def test_compute_centroid_returns_normalized_mean_embedding() -> None:
