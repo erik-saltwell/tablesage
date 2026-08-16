@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dotenv import load_dotenv
-from tablesage_model.setup import ensure_database
+from tablesage_application import Application
 from textual.app import App
 from textual.binding import Binding
 from textual.screen import Screen
@@ -10,6 +10,10 @@ from .landing import LandingScreen
 
 
 class TableSageApp(App):
+    def __init__(self, application: Application) -> None:
+        self._application = application
+        super().__init__()
+
     CSS_PATH = ["../styles/app.tcss"]
     BINDINGS = [
         Binding(
@@ -29,8 +33,8 @@ class TableSageApp(App):
 
 def main() -> None:
     load_dotenv()
-    ensure_database()
-    app = TableSageApp()
+    application = Application()
+    app = TableSageApp(application)
     app.run()
 
 

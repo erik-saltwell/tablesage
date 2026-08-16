@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "sqlmodel>=0.0.39",
     "tablesage-model",
     "tablesage-tools",
 ]
