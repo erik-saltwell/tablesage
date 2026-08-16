@@ -10,8 +10,8 @@ from .landing import LandingScreen
 
 
 class TableSageApp(App):
-    def __init__(self, application: Application) -> None:
-        self.application = application
+    def __init__(self, application: Application | None = None) -> None:
+        self.application = application or Application()
         super().__init__()
 
     CSS_PATH = ["../styles/app.tcss"]

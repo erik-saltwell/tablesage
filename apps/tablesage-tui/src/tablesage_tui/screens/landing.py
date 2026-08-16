@@ -1,8 +1,10 @@
+from tablesage_model.model import Campaign
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Grid, Vertical
 from textual.widgets import Static
 
+from ..dialogs import ConfirmationDialog, TextInputDialog
 from ..widgets import AsciiArt, CommandButton, EmptyWidget
 from .base import TableSageScreen
 
@@ -56,7 +58,32 @@ class LandingScreen(TableSageScreen):
                     yield Static(" to start your first campaign")
 
     def action_new_campaign(self) -> None:
-        self.notify("New campaign setup is coming next.")
+        self.app.push_screen(
+            TextInputDialog(
+                title="New Campaign",
+                prompt="Enter a name for the new campaign:",
+                placeholder="> campaign name",
+                submit_label="Create",
+            ),
+            self._create_campaign,
+        )
+
+    def _create_campaign(self, name: str | None) -> None:
+        if not name:
+            return
+
+        try:
+            campaign = self.application.create_campaign(Campaign(name=name))
+        except ValueError as error:
+            self.notify(str(error), severity="error")
+            return
+
+        self.notify(f"Created campaign '{campaign.name}'.")
 
     def action_import_campaign(self) -> None:
-        self.notify("Imprt campaign is coming soon.")
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Import Campaign",
+                prompt="Import an existing campaign?",
+            )
+        )

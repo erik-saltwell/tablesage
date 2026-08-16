@@ -11,7 +11,9 @@
 
 $pine-950:  #090d0a;
 $pine-900:  #0f1411;
+$pine-850:  #131915;
 $pine-800:  #171e19;
+$pine-750:  #1d241f;
 $pine-700:  #222a25;
 $pine-600:  #2a342d;
 
@@ -20,6 +22,10 @@ $cream-200: #d6d1bf;
 
 $sage-400:  #a3b88c;
 $sage-600:  #6f8a5a;
+$sage-700:  #5b714a;
+$sage-800:  #485a3b;
+$sage-850:  #3c4a34;
+$sage-900:  #35442d;
 
 $amber-600: #a9793c;
 $amber-400: #d8b06a;
@@ -45,7 +51,7 @@ $surface-2-fg: $cream-200;
 $surface-3-bg: $pine-700;
 $surface-3-fg: $cream-200;
 
-$surface-border: $pine-600;
+$surface-border: $sage-700;
 
 /* ******************************** */
 /*        shared content colors      */
@@ -68,16 +74,16 @@ $selected-fg: $pine-950;
 /* ******************************** */
 
 /* Resting */
-$control-bg:     $surface-3-bg;
-$control-fg:     $surface-3-fg;
-$control-border: $surface-border;
+$control-bg:     $pine-800;
+$control-fg:     $surface-1-fg;
+$control-border: $sage-600;
 
 /* Supporting text */
 $control-placeholder-fg: $fg-muted;
 
 /* Hover */
-$control-hover-bg: $pine-600;
-$control-hover-fg: $cream-200;
+$control-hover-bg: $surface-3-bg;
+$control-hover-fg: $surface-3-fg;
 
 /* Focus */
 $control-focus-bg:     $control-bg;
@@ -90,6 +96,52 @@ $control-disabled-fg: $fg-muted;
 
 /* Invalid */
 $control-invalid-border: $fg-danger;
+
+/* ******************************** */
+/*            button colors          */
+/* ******************************** */
+
+/* Secondary: resting */
+$button-bg:     transparent;
+$button-fg:     $sage-400;
+$button-border: $surface-border;
+
+/* Secondary: hover */
+$button-hover-bg:     $sage-900;
+$button-hover-fg:     $cream-200;
+$button-hover-border: $surface-border;
+
+/* Secondary: focus */
+$button-focus-bg:     $sage-900;
+$button-focus-fg:     $cream-200;
+$button-focus-border: $surface-border;
+
+/* Secondary: active */
+$button-active-bg:     $sage-700;
+$button-active-fg:     $pine-950;
+$button-active-border: $surface-border;
+
+/* Secondary: disabled */
+$button-disabled-bg:     transparent;
+$button-disabled-fg:     $sage-800;
+$button-disabled-border: $surface-border;
+
+/* Primary */
+$button-primary-bg:              $surface-border;
+$button-primary-fg:              $pine-950;
+$button-primary-border:          $surface-border;
+$button-primary-hover-bg:        $sage-400;
+$button-primary-hover-fg:        $pine-950;
+$button-primary-hover-border:    $surface-border;
+$button-primary-focus-bg:        $surface-border;
+$button-primary-focus-fg:        $pine-950;
+$button-primary-focus-border:    $surface-border;
+$button-primary-active-bg:       $surface-border;
+$button-primary-active-fg:       $pine-950;
+$button-primary-active-border:   $surface-border;
+$button-primary-disabled-bg:     $surface-border;
+$button-primary-disabled-fg:     $pine-800;
+$button-primary-disabled-border: $surface-border;
 
 /* ******************************** */
 /*             overlays              */
@@ -289,6 +341,185 @@ CommandButton:disabled {
     color: $control-disabled-fg;
     opacity: 0.5;
     pointer: not-allowed;
+}
+
+/* ******************************** */
+/*          common controls         */
+/* ******************************** */
+
+Input {
+    background: $control-bg;
+    color: $control-fg;
+    border: solid $control-border;
+    padding: 0 1;
+
+    & > .input--placeholder,
+    & > .input--suggestion {
+        color: $control-placeholder-fg;
+    }
+
+    & > .input--cursor {
+        background: $selected-bg;
+        color: $selected-fg;
+    }
+
+    & > .input--selection {
+        background: $selected-bg;
+        color: $selected-fg;
+    }
+
+    &:hover {
+        background: $control-hover-bg;
+        color: $control-hover-fg;
+    }
+
+    &:focus {
+        background: $control-focus-bg;
+        background-tint: transparent;
+        color: $control-focus-fg;
+        border: solid $control-focus-border;
+    }
+
+    &.-invalid {
+        border: solid $control-invalid-border;
+    }
+
+    &.-invalid:focus {
+        border: solid $control-invalid-border;
+    }
+
+    &:disabled {
+        background: $control-disabled-bg;
+        color: $control-disabled-fg;
+        opacity: 0.5;
+        pointer: not-allowed;
+    }
+}
+
+Button {
+    width: auto;
+    min-width: 8;
+    height: 3;
+    min-height: 3;
+    padding: 0;
+    line-pad: 1;
+
+    background: $button-bg;
+    background-tint: transparent;
+    color: $button-fg;
+    border: tall $button-border;
+    text-style: none;
+    tint: transparent;
+    pointer: pointer;
+
+    &:hover {
+        background: $button-hover-bg;
+        color: $button-hover-fg;
+        border: tall $button-hover-border;
+    }
+
+    &:focus {
+        background: $button-focus-bg;
+        background-tint: transparent;
+        color: $button-focus-fg;
+        border: tall $button-focus-border;
+        text-style: none;
+    }
+
+    &.-active {
+        background: $button-active-bg;
+        color: $button-active-fg;
+        border: tall $button-active-border;
+        tint: transparent;
+    }
+
+    &:disabled {
+        background: $button-disabled-bg;
+        color: $button-disabled-fg;
+        border: tall $button-disabled-border;
+        opacity: 1;
+        text-opacity: 1;
+        text-style: none;
+        pointer: not-allowed;
+    }
+
+    &.-primary {
+        background: $button-primary-bg;
+        color: $button-primary-fg;
+        border: tall $button-primary-border;
+
+        &:hover {
+            background: $button-primary-hover-bg;
+            color: $button-primary-hover-fg;
+            border: tall $button-primary-hover-border;
+        }
+
+        &:focus {
+            background: $button-primary-focus-bg;
+            background-tint: transparent;
+            color: $button-primary-focus-fg;
+            border: tall $button-primary-focus-border;
+        }
+
+        &.-active {
+            background: $button-primary-active-bg;
+            color: $button-primary-active-fg;
+            border: tall $button-primary-active-border;
+            tint: transparent;
+        }
+
+        &:disabled {
+            background: $button-primary-disabled-bg;
+            color: $button-primary-disabled-fg;
+            border: tall $button-primary-disabled-border;
+            opacity: 1;
+            text-opacity: 1;
+            text-style: none;
+        }
+    }
+}
+
+/* ******************************** */
+/*              dialogs             */
+/* ******************************** */
+
+ConfirmationDialog,
+TextInputDialog {
+    align: center middle;
+    background: $overlay-bg;
+
+    #confirmation-dialog,
+    #text-input-dialog {
+        width: 60;
+        height: auto;
+        background: $pine-750;
+        color: $surface-2-fg;
+        border: solid $surface-border;
+        padding: 1 2;
+
+        border-title-align: left;
+        border-title-color: $fg-accent;
+        border-title-style: bold;
+    }
+
+    #confirmation-prompt,
+    #text-input-prompt {
+        height: auto;
+        margin: 0 0 1 0;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+
+        Button {
+            margin: 0 0 0 1;
+        }
+    }
 }
 
 /* ******************************** */
