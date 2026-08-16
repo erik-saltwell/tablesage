@@ -1,3 +1,7 @@
-from . import model, settings
+from . import model, settings, setup
 
-__all__ = ["model", "settings"]
+__all__ = [
+    "model",
+    "settings",
+    "setup",
+]

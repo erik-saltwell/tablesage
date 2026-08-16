@@ -1,1 +1,5 @@
-__all__: list[str] = []
+from .campaign import Campaign
+
+__all__: list[str] = [
+    "Campaign",
+]

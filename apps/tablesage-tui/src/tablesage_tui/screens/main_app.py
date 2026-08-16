@@ -2,22 +2,28 @@ from __future__ import annotations
 
 from dotenv import load_dotenv
 from textual.app import App
+from textual.binding import Binding
+from textual.screen import Screen
 
-from ..viewmodel import ModelStore
+from .landing import LandingScreen
 
 
 class TableSageApp(App):
     CSS_PATH = ["../styles/app.tcss"]
+    BINDINGS = [
+        Binding(
+            "ctrl+q",
+            "quit",
+            "Quit",
+            key_display="^Q",
+            priority=True,
+        ),
+    ]
 
     ENABLE_COMMAND_PALETTE = False
 
-    def __init__(self, model_store: ModelStore | None = None) -> None:
-        super().__init__()
-        self.model_store = model_store or ModelStore()
-
-    @property
-    def store(self) -> ModelStore:
-        return self.model_store
+    def get_default_screen(self) -> Screen[None]:
+        return LandingScreen()
 
 
 def main() -> None:

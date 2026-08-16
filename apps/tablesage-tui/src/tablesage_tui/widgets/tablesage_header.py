@@ -44,7 +44,7 @@ class TableSageHeader(Widget):
             return
 
         header_context.update(f"v{self.version} · {self.section}")
-        header_campaign.update(self.campaign)
+        header_campaign.update(f"{self.campaign} ·")
         self.update_clock()
 
     def update_clock(self) -> None:

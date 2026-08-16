@@ -23,6 +23,8 @@ dependencies = [
     "mathspell>=0.1.0",
     "punctuators>=0.0.7",
     "modelscope[framework]>=1.36.3",
+    "sqlmodel>=0.0.39",
+    "alembic>=1.18.4",
 ]
 
 [build-system]

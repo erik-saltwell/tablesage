@@ -1,0 +1,996 @@
+/* ******************************** */
+/*           constants              */
+/* ******************************** */
+
+$bg:        #0f1411; 
+$panel-bg:  #1a201c;  /* bordered panel fill           */
+$dialog-backdrop: rgba(8, 11, 9, 0.62);
+$border:    #2a342d;  /* panel + footer hairlines      */
+$bg-focus:  #222a25;  /* halfway between panel-bg + border */
+$bg-focus-subtle: #1e2520; 
+$bg-focus-subtle-25: rgba(30, 37, 32, 0.25);
+$cream-fg:      #d6d1bf;  /* warm cream body text          */
+$dim:       #7c8478;  /* secondary / hint copy         */
+$sage:      #a3b88c;  /* primary sage green            */
+$sage-deep: #6f8a5a;  /* header bar fill               */
+$archived:  #8a5a5a;  /* muted red, same brightness/saturation as $sage-deep */
+$sage-glow: rgba(163, 184, 140, 0.45);
+$accent:    #d8b06a;  /* footer keycaps, key chips     */
+$panel-bg-muted: #1a201cbb;
+$accent-soft: #d7c195; /* halfway between cream-fg and accent */
+$accent-cream: #d7c9aa; /* halfway between $accent-soft and $cream-fg*/
+$sunburst: #e0c04f;
+$dim-text: #a9ab9c;   /*#d6d1bf;*/
+/* ******************************** */
+/*             reset                */
+/* ******************************** */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* ******************************** */
+/*               common             */
+/********************************** */
+Screen {
+    background: $bg;
+}
+
+Input{
+    height: 1;
+    min-height: 1;
+    border: none;
+    background: $bg-focus;
+    padding: 0 1;
+    color: $cream-fg;
+    margin: 1 0 0 0;
+
+    & > .input--placeholder {
+        color: $dim-text;
+    }
+}
+
+Footer {
+    background: $panel-bg;
+    row-span: 1;
+    column-span: 3;
+    height: 1;
+    padding: 0 0 0 1;
+    
+    FooterKey {
+        background: $surface;
+        margin: 0 2 0 0;
+    }
+
+    /* The key itself: q, n, ctrl+p, etc. */
+    FooterKey .footer-key--key {
+        color: $panel-bg;
+        background: $accent;
+        text-style: bold;
+        padding: 0 1;
+        
+    }
+
+    /* The binding description / label next to the key */
+    FooterKey .footer-key--description {
+        color: $text-muted;
+        background: $surface;
+        padding: 0 1 0 1;
+    }
+
+    /* Hover state for the whole keybinding item */
+    FooterKey:hover {
+        background: $boost;
+        pointer: pointer;
+    }
+
+    /* Hover state, key part only */
+    FooterKey:hover .footer-key--key {
+        color: $surface;
+        background: $accent;
+    }
+
+    /* Hover state, description part only */
+    FooterKey:hover .footer-key--description {
+        color: $text;
+        background: $boost;
+    }
+
+    
+}
+
+.keycap{
+    width: 3;
+    height: 1;
+    min-height:1;
+    min-width:3;
+    background: $accent;
+    color: $panel-bg;
+    text-style: bold;
+    content-align: center middle;
+}
+
+#main-content {
+    align: center middle;
+    content-align: center middle;
+    height: 1fr;
+}
+
+AsciiArt {
+    text-wrap: nowrap;
+}
+
+/* ******************************** */
+/*             widgets              */
+/* ******************************** */
+
+TableSageHeader {
+    height: 1;
+    row-span: 1;
+    column-span: 3;
+    background: $sage-deep;
+    color: $panel-bg-muted;
+    layout: horizontal;
+
+    .brand-panel{
+        width:1fr;
+        align: left middle;
+        
+        * {
+            width:auto;
+            margin: 0 0 0 2;
+        }
+        .brand{
+            margin: 0 0 0 2;
+            text-style: bold;
+            color: $bg;
+        }
+    }
+    .info-panel{
+        width:1fr;
+        align: right middle;
+        * {
+            width: auto;
+            margin: 0 2 0 0;
+        }
+        .clock{
+
+        }
+    }   
+}
+
+CommandButton {
+    width: auto;
+    height: 1;
+    min-height: 1;
+    padding: 0 1;
+    color: $sage-deep;
+    background: transparent;
+    content-align: center middle;
+    pointer: pointer;
+
+    Static {
+        width: auto;
+        height: 1;
+    }
+}
+
+CommandButton:hover,
+CommandButton:focus {
+    background: $bg-focus;
+    color: $cream-fg;
+}
+
+CommandButton:hover .keycap,
+CommandButton:focus .keycap {
+    background: $accent-cream;
+    color: $bg;
+}
+
+CommandButton.-active {
+    background: $sage-deep;
+    color: $bg;
+}
+
+CommandButton.-active .keycap {
+    background: $panel-bg;
+    color: $accent;
+}
+
+CommandButton:disabled {
+    color: $dim;
+    text-opacity: 60%;
+    pointer: not-allowed;
+}
+
+CommandButton:disabled .keycap {
+    background: $border;
+    color: $dim;
+}
+
+FilterOption {
+    width: auto;
+    height: 1;
+    min-height: 1;
+    margin: 0 2 0 0;
+    color: $dim;
+    text-style: none;
+    content-align: center middle;
+    pointer: pointer;
+}
+
+FilterOption:hover,
+FilterOption:focus {
+    color: $cream-fg;
+}
+
+FilterOption.filter-active    { color: $sage-deep; }
+FilterOption.filter-unstarted { color: $accent; }
+FilterOption.filter-archived  { color: $archived; }
+FilterOption.filter-all       { color: $sage-deep; }
+
+FilterOption.filter-active.-selected    { color: $panel-bg; background: $sage-deep; }
+FilterOption.filter-unstarted.-selected { color: $panel-bg; background: $accent; }
+FilterOption.filter-archived.-selected  { color: $panel-bg; background: $archived; }
+FilterOption.filter-all.-selected       { color: $panel-bg; background: $sage-deep; }
+
+FilterOption:disabled {
+    color: $dim;
+    text-opacity: 60%;
+    pointer: not-allowed;
+}
+
+
+/* ******************************** */
+/*             dialogs              */
+/* ******************************** */
+
+NewCampaignDialog {
+        align: center middle;
+        background: $dialog-backdrop;
+
+    #new-campaign-dialog {
+        width: 60;
+        height: auto;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+        border: $sage-glow;
+        background: $panel-bg;
+        color: $text;
+    }
+
+    #new-campaign-error {
+        height: 1;
+        color: $accent;
+        margin: 0 0 1 0;
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+
+    .dialog-actions Button#cancel {
+        margin: 0 2 0 0;
+    }
+    
+    .dialog-actions Button {
+        color: $sage;
+        background: $panel-bg;
+        border: $sage;
+        height:3;
+        min-height:1;
+        text-style: none;
+    }
+
+    .dialog-actions Button:focus {
+        background: $sage-glow;
+        color: $panel-bg;
+        text-style: none;    
+        border:none;
+    }
+}
+
+GlossaryEntryDialog,
+ConfirmDeleteGlossaryEntryDialog {
+    align: center middle;
+    background: $dialog-backdrop;
+
+    #glossary-entry-dialog,
+    #delete-glossary-entry-dialog {
+        width: 60;
+        height: auto;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+        border: $sage-glow;
+        background: $panel-bg;
+        color: $text;
+    }
+
+    #glossary-entry-error {
+        height: 1;
+        color: $accent;
+        margin: 0 0 1 0;
+    }
+
+    #delete-glossary-entry-message {
+        height: auto;
+        color: $cream-fg;
+        margin: 0 0 1 0;
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+
+    .dialog-actions Button {
+        color: $sage;
+        background: $panel-bg;
+        border: $sage;
+        height: 3;
+        min-height: 1;
+        text-style: none;
+    }
+
+    .dialog-actions Button#cancel-glossary-entry,
+    .dialog-actions Button#cancel-delete-glossary-entry {
+        margin: 0 2 0 0;
+    }
+
+    .dialog-actions Button:focus {
+        background: $sage-glow;
+        color: $panel-bg;
+        text-style: none;
+        border: none;
+    }
+}
+
+ConfirmationDialog,
+TextInputDialog {
+    align: center middle;
+    background: $dialog-backdrop;
+
+    #confirmation-dialog,
+    #text-input-dialog {
+        width: 60;
+        height: auto;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    #confirmation-prompt,
+    #text-input-prompt {
+        height: auto;
+        color: $cream-fg;
+        margin: 0 0 1 0;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+        background: $bg-focus;
+        color: $text;
+        border:none;
+
+        & > .input--placeholder {
+            color: $dim;
+            text-style: italic;
+        }
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+
+    .dialog-actions Button {
+        color: $sage;
+        background: $panel-bg;
+        border: $sage;
+        height: 3;
+        min-height: 1;
+        text-style: none;
+        margin: 0 0 0 2;
+    }
+
+    .dialog-actions Button:focus {
+        background: $sage-glow;
+        color: $panel-bg;
+        text-style: none;
+        border: none;
+    }
+}
+
+EditPlayersDialog {
+    align: center middle;
+    background: $dialog-backdrop;
+
+    #edit-players-dialog {
+        width: 76;
+        height: 20;
+        background: $panel-bg;
+        border: $sage;
+        padding: 1 2;
+    }
+
+    #edit-players-command-list {
+        width: 25;
+        height: 100%;
+        margin: 0 2 0 0;
+        border-right: solid $border;
+        padding: 0 1 0 0;
+    }
+
+    .edit-players-command {
+        height: 1;
+        width: 100%;
+        margin: 0 0 1 0;
+    }
+
+    .edit-players-command-label {
+        height: 1;
+        width: auto;
+        margin: 0 0 0 1;
+        color: $cream-fg;
+    }
+
+    #edit-players-table {
+        width: 1fr;
+        height: 100%;
+        background: $panel-bg;
+        text-style: none;
+        color: $sage-deep;
+        scrollbar-gutter: stable;
+        scrollbar-size-vertical: 1;
+        scrollbar-background: $panel-bg;
+        scrollbar-background-hover: $bg-focus-subtle;
+        scrollbar-background-active: $bg-focus;
+        scrollbar-color: $border;
+        scrollbar-color-hover: $sage-deep;
+        scrollbar-color-active: $sage;
+        scrollbar-corner-color: $panel-bg;
+
+        & > .datatable--header {
+            background: $panel-bg;
+            color: $sage;
+            text-style: none;
+        }
+
+        & > .datatable--cursor {
+            background: $sage-deep;
+            color: $panel-bg;
+            text-style: none;
+        }
+    }
+}
+
+/* ******************************** */
+/*           base screen            */
+/* ******************************** */
+
+Footer {
+    background: $panel-bg;
+    row-span: 1;
+    column-span: 3;
+}
+
+
+/* ******************************** */
+/*           no campaigns           */
+/* ******************************** */
+
+
+
+#splash-panel {
+    height:35;
+    background: $panel-bg;
+    border: $sage-glow;
+    border-title-align: left;
+    border-title-color: $sage-glow;
+    border-title-style: bold;
+    margin:  4 8 4 8;
+    max-width: 120;
+
+    #splash-panel-content {
+        width:88;
+        height:100%;
+
+        #logo {
+            content-align: right middle;
+            color: $sage-deep;
+            height: 8;
+            margin: 2 0 0 0;
+            padding: 0 20 0 0;
+            width:100%;
+            
+        }
+        .wordmark{
+            height:6;
+            margin: 2 0 1 0;
+            width:100%;
+            text-wrap: nowrap;
+            
+            #tablemark {
+                color:$sage-deep;
+                width:1fr;
+                content-align: right bottom;
+                height:100%;
+                text-wrap: nowrap;
+            }
+            #sagemark {
+                color: $accent-cream;
+                width: 1fr;
+                content-align: left bottom;
+                height:100%;
+                text-wrap: nowrap;
+            }
+        }
+        .subtitle{
+            height: 1;
+            width:100%;
+            color:$sage-glow;
+            text-style: italic;
+            .campaigns{
+                content-align: right middle;
+                width: 1fr;
+                height: 100%;
+                margin: 0 2 0 0;
+            }
+            .intelligent{
+                content-align: left middle;
+                width: 1fr;
+                height: 100%;
+            }
+        }
+        .divider{
+            content-align: center middle;
+            margin: 2 0 0 0;
+            color: $sage-deep;
+            text-style: italic;
+        }
+        .bottom-spacer {
+            min-height:1;
+            max-height: 50;
+            height:1fr;
+        }
+    }
+
+    .call-to-action{
+        margin: 1 0 0 0;
+        height: 1;
+        width:auto;
+        content-align: center middle;
+    }
+
+    .commmon-actions{
+        margin: 6 0 1 0;
+        height: 1;
+        width: auto;
+        content-align: center middle;
+
+        CommandButton.splash-command {
+            margin: 0 6 0 0;
+        }
+
+        CommandButton.splash-command .keycap {
+            margin: 0 1 0 0;
+        }
+
+        #help-command {
+            margin: 0;
+        }
+    }
+}
+
+/* ******************************** */
+/*               help               */
+/* ******************************** */
+
+
+#help-content {
+    align: center middle;
+    content-align: center middle;
+    height: 1fr;
+}
+
+#help-panel {
+    min-height: 24;
+    height: 100%;
+    background: $panel-bg;
+    border: $sage-glow;
+    border-title-align: left;
+    border-title-color: $sage-glow;
+    border-title-style: bold;
+    margin: 4 8 4 8;
+    max-width: 120;
+
+    #help-panel-content {
+        width: 72;
+        height: 100%;
+        color: $sage-deep;
+        align: center top;
+
+        .help-title {
+            height: 1;
+            width: 100%;
+            margin: 2 0 1 0;
+            color: $accent-cream;
+            text-style: bold;
+            content-align: center middle;
+        }
+
+        .help-copy {
+            height: 1;
+            width: 100%;
+            margin: 0 0 2 0;
+            color: $sage-glow;
+            content-align: center middle;
+        }
+
+        .help-bindings {
+            height: auto;
+            width: 56;
+        }
+
+        .help-binding-row {
+            height: 1;
+            width: 100%;
+            margin: 0 0 1 0;
+        }
+
+        .help-key {
+            margin: 0 2 0 0;
+        }
+
+        .help-binding-description {
+            height: 1;
+            width: 1fr;
+            color: $cream-fg;
+            content-align: left middle;
+        }
+
+        .bottom-spacer {
+            min-height: 0;
+            height: 1fr;
+        }
+
+        .help-note {
+            height: 1;
+            width: 100%;
+            margin: 0 0 1 0;
+            color: $sage-glow;
+            text-style: italic;
+            content-align: center middle;
+        }
+    }
+}
+
+/* ******************************** */
+/*               campaigns          */
+/* ******************************** */
+
+CampaignsScreen {
+    
+
+    #content-panel {
+        background: $panel-bg;
+        margin: 2 4;
+        border: $sage-deep;
+        padding: 1 2;
+
+    #campaign-filter {
+        height: 4;
+        content-align: left middle;
+        align: left middle;
+
+        #logo {
+            color: $sunburst;
+            margin: 0 1 0 1;
+            width: 12;
+        }
+
+        .filter-option { 
+            height:1;
+            width:auto;
+            margin: 1 1 2 0;
+        }
+
+        
+
+        #search{
+            width:30;
+            height: 1;
+            min-height: 1;
+            border: none;
+            background: $bg-focus;
+            padding: 0 1;
+            color: $dim-text;
+            margin: 1 0 0 0;
+        }
+        
+    }
+    #campaign-table{
+        width:100%;
+        height:1fr;
+        background: $panel-bg;
+        text-style:none;
+        color: $sage-deep;
+
+        &:focus{
+            background: $panel-bg;
+            background-tint: $bg 0%;
+       
+            & > .datatable--header {
+                background: $panel-bg;
+                background-tint: $bg 0%;
+                color: $sage;
+                text-style: none;
+            }
+       
+        }
+        
+        & > .datatable--header {
+            background: $panel-bg;
+            text-style:none;
+            color: $sage;
+        }
+
+        & > .datatable--cursor {
+            background: $sage-deep;
+            color: $panel-bg;
+            text-style: none;
+        }
+
+    }
+
+    .fill-space-vertical {
+        height: 1fr;
+    }
+    .fill-space-horizontal{
+            width: 1fr;
+        }
+    #panel-footer {
+        height:2;
+        width:100%;
+        
+        border-top: $border;
+        .fill-space-horizontal{
+            width: 1fr;
+        }
+        Static{
+            width: auto;
+        }
+    }
+}
+
+
+
+}
+/* ******************************** */
+/*          campaign details        */
+/* ******************************** */
+
+CampaignDetailScreen{
+    background: $bg;
+    color:$sage;
+    #content-panel{
+        padding: 1 2;    
+        height:1fr;
+        min-height:0;
+        #campaign-header{
+            width:100%;
+            height:1;
+            margin: 0 0 1 0;
+            #back-keycap {
+                pointer: pointer;
+            }
+            .campaigns-text{
+                height:1;
+                width:auto;
+                padding: 0 5 0 0;       
+            }
+            .fill-space-horizontal{
+                width:1fr;
+            }
+        }
+        #campaign-name{
+            color:$cream-fg;
+            text-style: bold;
+            width:auto;
+        }
+    
+        #campaign-tabs{
+            width:100%;
+            color: $sage-deep;
+            margin: 1 0 0 0;
+            height:1fr;
+            ContentTab{
+                height: 1;
+                margin: 0 0;
+                color:$sage-deep;
+                background: transparent;
+                text-style:none;
+            }
+            ContentTab.-active{
+                height: 1;
+                margin: 0 0;
+                color:$panel-bg;
+                background: $cream-fg;
+                text-style:none;
+            }
+            ContentTabs {
+                height: 2;
+            }
+
+            ContentTabs .underline--bar {
+                background: $border;
+                color:$cream-fg;
+            }
+
+            ContentTabs:focus .underline--bar {
+                background: $sage-deep;
+            }
+        }
+    }
+    #overview-tabbed-panel{
+        margin:1 2;
+        border: solid $sage-deep;
+        height: 8 ;
+        #metadata-editor{
+            height:auto;
+            width:1fr;
+            margin:0 2;
+            padding:0;
+            #description-input{
+                height:3;
+                border:none;
+                margin:0;
+            }
+            #details-row{
+
+                margin: 1 0 0 0 ;
+                .label{
+                    width:auto;
+                    height:1;
+                    margin: 0 1 0 0;
+                }
+                Input{
+                    width:20;
+                    height:1;
+                    border:none;
+                    margin:0 3 0  0;
+                }
+            }
+        }
+        #last_session_data{
+            width: 15;
+            border-left: solid $sage-deep;
+            padding: 0 0 0 1;
+            margin:1 0 2 1 ;
+            #last-session-display{
+                color:$accent;
+                text-style:bold;
+            }
+        }
+    }
+    #glossary-section{
+        height:1fr;
+        width:100%;
+        min-height:0;
+
+        #glossary-summary{
+            width:100%;
+            height:100%;
+            border: solid $sage-deep;
+            margin:0 2;
+            padding: 0;
+
+            #glossary-list{
+                height:1fr;
+                min-height:0;
+                width:100%;
+                padding:0 1;
+                overflow-y:auto;
+                scrollbar-gutter: stable;
+                scrollbar-size-vertical: 1;
+                scrollbar-background: $panel-bg;
+                scrollbar-background-hover: $bg-focus-subtle;
+                scrollbar-background-active: $bg-focus;
+                scrollbar-color: $border;
+                scrollbar-color-hover: $sage-deep;
+                scrollbar-color-active: $sage;
+                scrollbar-corner-color: $panel-bg;
+            }
+
+            GlossaryEntryWidget{
+                height: auto;
+                min-height:2;
+                padding:0;
+                margin:0 0 1 0;
+                pointer:pointer;
+
+                .glossary-entry-header{
+                    height:1;
+                    width:100%;
+                }
+
+                .glossary-entry-term{
+                    color:$cream-fg;
+                    width:auto;
+                }
+
+                .glossary-entry-description{
+                    color:$dim;
+                    border-bottom:solid $border;
+                    height:auto;
+                    min-height:1;
+                }
+
+                .glossary-entry-actions{
+                    display:none;
+                    height:1;
+                    width:auto;
+                }
+
+                .glossary-entry-actions Button{
+                    width:auto;
+                    height:1;
+                    min-height:1;
+                    border:none;
+                    background:transparent;
+                    color:$dim;
+                    text-style:none;
+                    margin:0 0 0 1;
+                }
+
+                &:hover{
+                    background:$bg-focus-subtle-25;
+                }
+                
+                &:focus{
+                    background:$bg-focus;
+                }
+
+                &:hover .glossary-entry-actions,
+                &:focus .glossary-entry-actions,
+                &:focus-within .glossary-entry-actions{
+                    display:block;
+                }
+
+                .glossary-entry-actions Button:hover,
+                .glossary-entry-actions Button:focus{
+                    color:$cream-fg;
+                    background:$bg-focus;
+                }
+            }
+        }
+    }
+}
+
+GlossaryEntryDialog{
+    #glossary-entry-dialog{
+        #glossary-term{
+            height:3;
+        }
+        #glossary-description{
+            height: 6;
+            min-height: 3;
+            border: $sage-glow;
+            background: $panel-bg;
+            color: $text;
+            margin: 0 0 1 0;
+        }
+    }
+}

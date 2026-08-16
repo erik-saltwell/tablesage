@@ -20,16 +20,14 @@ Represents one tabletop campaign and owns its player, glossary, and session reco
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
 | `id` | UUID, primary key | Internal identity. |
-| `slug` | text, unique | Stable filesystem-safe identifier. |
 | `name` | text, non-empty | Display name. |
 | `description` | text, nullable | Optional campaign description. |
 | `game_system` | text, nullable | Game system label. |
 | `default_gm_player_id` | UUID, nullable FK to `player` | Preferred GM when that person is a campaign player. |
 | `default_gm_name` | text, nullable | Transitional/display fallback for a GM not yet modeled as a player. |
-| `status` | enum: `active`, `archived`, `removed` | `removed` is a recoverable logical removal state. |
 | `created_at`, `updated_at` | UTC datetime | Audit fields. |
 
-Indexes: unique `slug`; index `status` for campaign-list filtering.
+Deleting a campaign hard-deletes its row (cascading to owned rows such as glossary entries). It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action. There is no `status`/archive state on `Campaign` for now.
 
 ## Glossary entry
 
@@ -57,10 +55,11 @@ A campaign participant who can attend sessions and receive transcript attributio
 | `campaign_id` | UUID, FK to `campaign`, required | Campaign-local identity. |
 | `slug` | text, required | Human-readable stable identifier within a campaign. |
 | `name` | text, non-empty | Display name. |
-| `status` | enum: `active`, `archived`, `removed` | Preserve historical references after deactivation. |
 | `created_at`, `updated_at` | UTC datetime | |
 
 Constraint: unique `(campaign_id, slug)`.
+
+Deleting a player hard-deletes its row. It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action. There is no `status`/archive state on `Player` for now. Note: `utterance.player_id`, `diarized_speaker.player_id`, and `voice_sample.player_id` reference players — deleting a player who has transcript history needs an explicit FK on-delete decision (e.g. `SET NULL`) rather than cascading, so that history isn't silently destroyed.
 
 ### Voice profile
 
@@ -129,10 +128,12 @@ A dated recording and its processing lifecycle within a campaign.
 | `name` | text, non-empty | Session title. |
 | `session_date` | date | Game-session date. |
 | `raw_audio_asset_id` | UUID, nullable FK to `media_asset` | Original imported recording. |
-| `status` | enum: `draft`, `ready`, `processing`, `processed`, `needs_review`, `failed`, `removed` | Current user-facing state. |
+| `status` | enum: `draft`, `ready`, `processing`, `processed`, `needs_review`, `failed` | Current user-facing state. |
 | `created_at`, `updated_at` | UTC datetime | |
 
 Constraint: unique `(campaign_id, slug)`. Index `(campaign_id, session_date)` supports ordered session lists.
+
+Deleting a session hard-deletes its row. It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action.
 
 ### Session attendance
 
