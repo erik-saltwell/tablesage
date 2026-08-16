@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dotenv import load_dotenv
+from tablesage_model.setup import ensure_database
 from textual.app import App
 from textual.binding import Binding
 from textual.screen import Screen
@@ -28,6 +29,7 @@ class TableSageApp(App):
 
 def main() -> None:
     load_dotenv()
+    ensure_database()
     app = TableSageApp()
     app.run()
 
