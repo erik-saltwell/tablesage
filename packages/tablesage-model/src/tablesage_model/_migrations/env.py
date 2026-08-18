@@ -3,7 +3,15 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
-from tablesage_model.model import Campaign  # noqa
+from tablesage_model.model import (  # noqa
+    Campaign,
+    CampaignPlayer,
+    GlossaryEntry,
+    Player,
+    Session,
+    SessionAttendance,
+    SessionAttendanceRole,
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,22 +1,22 @@
-from tablesage_model.model import Campaign
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Grid, Vertical
 from textual.widgets import Static
 
-from ..dialogs import ConfirmationDialog, TextInputDialog
 from ..widgets import AsciiArt, CommandButton, EmptyWidget
 from .base import TableSageScreen
+from .campaign_list import CampaignListScreen
+from .players_list import PlayersListScreen
 
 
 class LandingScreen(TableSageScreen):
-    """Shown when there are no campaigns."""
+    """The app's permanent home/hub screen, always shown at startup."""
 
     AUTO_FOCUS = ""
     section = "welcome"
     BINDINGS = [
-        Binding("n,N", "new_campaign", "New campaign", key_display="N"),
-        Binding("i,I", "import_campaign", "Import campaign", key_display="I"),
+        Binding("c,C", "show_campaigns", "Campaigns", key_display="C"),
+        Binding("p,P", "show_players", "Players", key_display="P"),
     ]
 
     def compose_content(self) -> ComposeResult:
@@ -48,42 +48,27 @@ class LandingScreen(TableSageScreen):
                     id="welcome-divider",
                 )
 
-                with CommandButton(
-                    "new_campaign",
-                    id="start-campaign-command",
-                    classes="call-to-action",
-                ):
-                    yield Static("> type ")
-                    yield Static("N", id="first-campaign-key", classes="keycap")
-                    yield Static(" to start your first campaign")
+                with Vertical(id="welcome-actions"):
+                    with CommandButton(
+                        "show_campaigns",
+                        id="show-campaigns-command",
+                        classes="call-to-action",
+                    ):
+                        yield Static("> type ")
+                        yield Static("C", id="campaigns-key", classes="keycap")
+                        yield Static(" to browse campaigns")
 
-    def action_new_campaign(self) -> None:
-        self.app.push_screen(
-            TextInputDialog(
-                title="New Campaign",
-                prompt="Enter a name for the new campaign:",
-                placeholder="> campaign name",
-                submit_label="Create",
-            ),
-            self._create_campaign,
-        )
+                    with CommandButton(
+                        "show_players",
+                        id="show-players-command",
+                        classes="call-to-action",
+                    ):
+                        yield Static("> type ")
+                        yield Static("P", id="players-key", classes="keycap")
+                        yield Static(" to browse players")
 
-    def _create_campaign(self, name: str | None) -> None:
-        if not name:
-            return
+    def action_show_campaigns(self) -> None:
+        self.app.push_screen(CampaignListScreen())
 
-        try:
-            campaign = self.application.create_campaign(Campaign(name=name))
-        except ValueError as error:
-            self.notify(str(error), severity="error")
-            return
-
-        self.notify(f"Created campaign '{campaign.name}'.")
-
-    def action_import_campaign(self) -> None:
-        self.app.push_screen(
-            ConfirmationDialog(
-                title="Import Campaign",
-                prompt="Import an existing campaign?",
-            )
-        )
+    def action_show_players(self) -> None:
+        self.app.push_screen(PlayersListScreen())

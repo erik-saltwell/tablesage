@@ -8,6 +8,14 @@ implementation is deleted, but its business rules — the actual decisions about
 anywhere else, and should carry forward into `tablesage-application` when it's
 rebuilt against the new repository interfaces. This document captures them.
 
+Note: the retired implementation treated `Player` as campaign-owned and
+identified by a campaign-scoped slug. The current design in
+`tablesage_data_model.md` makes `Player` top-level (linked to campaigns via
+`campaign_player`) and drops slugs in favor of unique names. Rules below are
+described in their original slug/campaign-owned terms where that's just
+identifier plumbing, but "attendee"/"player set" should be read as "campaign
+roster" throughout.
+
 ## Session invalidation (`_actions/invalidation/invalidate.py`)
 
 Four named input-change reasons, two of which are "destructive":
@@ -21,7 +29,7 @@ Four named input-change reasons, two of which are "destructive":
 
 Retracting session-enhancement samples on invalidation:
 - For every player, split their voice samples into "removed" (matches this
-  `session_slug` + `provenance_type == SESSION_ENHANCEMENT`) and "kept".
+  session's id + `provenance_type == SESSION_ENHANCEMENT`) and "kept".
 - Skip players with no matching samples (no-op, no write).
 - Delete the backing clip files for removed samples.
 - Recompute the centroid from the kept samples (or leave the existing
@@ -97,9 +105,12 @@ Fixed order, each phase reported via a `PhasedProgressSink` event:
 1. `invalidate(..., PROCESS_SESSION_RERUN)` — a full reprocess starts by
    invalidating stale derivatives (see above), *before* anything is
    recomputed. This is what makes reprocessing idempotent/safe to rerun.
-2. Load campaign, session, and player set; **fail fast** if any session
-   attendee slug isn't a known player (`OrphanAttendeeError`, listing every
-   missing slug at once, not just the first) — this happens before any
+2. Load campaign, session, and campaign roster; **fail fast** if any session
+   attendee isn't a current roster member of this campaign (`OrphanAttendeeError`,
+   listing every orphaned attendee at once, not just the first), and
+   separately fail fast if any roster player has no computed voice centroid
+   (players may now exist outside this campaign or with no voice profile at
+   all, since Player is no longer campaign-owned) — this happens before any
    expensive work (audio cleaning, transcription) starts.
 3. Clean audio.
 4. Transcribe + diarize (no speaker count hint passed at the full-pipeline

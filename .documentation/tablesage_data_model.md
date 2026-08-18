@@ -6,28 +6,47 @@ The database stores structured metadata, relationships, processing history, tran
 
 ## Modeling conventions
 
-- Use UUID primary keys for domain records. Human-readable slugs are stable secondary identifiers, not foreign keys.
+- Use UUID primary keys for domain records. `Campaign` and `Player` additionally require a unique, human-readable `name`, which is also the name of their on-disk folder — there is no separate slug field. `Session` folders are instead named by a campaign-scoped sequence number (see below); a session's `name` is not unique.
 - Store timestamps in UTC.
 - Store embeddings in a portable serialized form initially, such as a BLOB plus dimension/format metadata. Do not depend on SQLite vector search for the first version.
 - Use enums for closed lifecycle/provenance values; use text fields for user-entered role names and error details.
 - Preserve generated/derived records long enough to explain stale, failed, and superseded work. Do not silently overwrite history.
 - Use `created_at` and `updated_at` on user-maintained root records; use immutable provenance on generated records.
+- Renaming a `Campaign` or `Player` renames its on-disk folder as part of the same operation; if the filesystem rename fails, the whole rename fails and rolls back.
 
 ## Campaign
 
-Represents one tabletop campaign and owns its player, glossary, and session records.
+Represents one tabletop campaign. Campaigns and players are both top-level records; a campaign's participants are the players linked to it through `campaign_player` (below), not owned rows.
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
 | `id` | UUID, primary key | Internal identity. |
-| `name` | text, non-empty | Display name. |
+| `name` | text, non-empty, unique | Display name; also the on-disk campaign folder name. |
 | `description` | text, nullable | Optional campaign description. |
 | `game_system` | text, nullable | Game system label. |
-| `default_gm_player_id` | UUID, nullable FK to `player` | Preferred GM when that person is a campaign player. |
-| `default_gm_name` | text, nullable | Transitional/display fallback for a GM not yet modeled as a player. |
 | `created_at`, `updated_at` | UTC datetime | Audit fields. |
 
-Deleting a campaign hard-deletes its row (cascading to owned rows such as glossary entries). It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action. There is no `status`/archive state on `Campaign` for now.
+There is no `default_gm_player_id`/`default_gm_name` on `Campaign` — the GM is just whichever `campaign_player` row has `default_role_name == "game-master"`.
+
+Deleting a campaign hard-deletes its row (cascading to owned rows such as glossary entries and `campaign_player` memberships). It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action, which only touches campaign folders (not player folders). There is no `status`/archive state on `Campaign` for now.
+
+## Campaign roster
+
+### Campaign player
+
+Links a player to a campaign and carries the campaign-specific default used when creating new sessions.
+
+| Field | Type / constraint | Notes |
+| --- | --- | --- |
+| `id` | UUID, primary key | |
+| `campaign_id` | UUID, FK to `campaign`, required | |
+| `player_id` | UUID, FK to `player`, required | |
+| `default_role_name` | text, non-empty | `"game-master"` marks this member as the campaign's GM; any other value is their default character name. Used only to seed `session_attendance_role` when a new session is created — a player can hold different roles in different sessions (e.g. after a character death), and this default is editable per campaign. |
+| `created_at` | UTC datetime | |
+
+Constraint: unique `(campaign_id, player_id)`. A player may belong to any number of campaigns, and the same player can have a different `default_role_name` in each.
+
+Only players linked through `campaign_player` may be selected as attendees or attributed speakers for that campaign's sessions.
 
 ## Glossary entry
 
@@ -35,47 +54,31 @@ Campaign-specific terminology used as generation context.
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
-| `id` | UUID, primary key | |
-| `campaign_id` | UUID, FK to `campaign`, required | Owner. |
+| `campaign_id` | UUID, FK to `campaign`, required, part of primary key | Owner. |
+| `id` | UUID, part of primary key | |
 | `term` | text, non-empty | Term or proper noun. |
 | `description` | text, nullable | Meaning/spelling guidance. |
 | `created_at`, `updated_at` | UTC datetime | |
 
-Constraint: unique `(campaign_id, term)` after an agreed normalization rule.
+Primary key: composite `(campaign_id, id)` — unlike other tables in this document, glossary entries have no independent identity outside their owning campaign. Constraint: unique `(campaign_id, term)` after an agreed normalization rule.
 
-## Player and voice profile
+## Player
 
-### Player
-
-A campaign participant who can attend sessions and receive transcript attribution.
+A top-level participant identity, independent of any campaign. A player may belong to zero or more campaigns via `campaign_player`, and carries its own voice profile directly (folded onto this table rather than a separate one, since a player has at most one current profile and no profile history is tracked).
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
 | `id` | UUID, primary key | |
-| `campaign_id` | UUID, FK to `campaign`, required | Campaign-local identity. |
-| `slug` | text, required | Human-readable stable identifier within a campaign. |
-| `name` | text, non-empty | Display name. |
-| `created_at`, `updated_at` | UTC datetime | |
-
-Constraint: unique `(campaign_id, slug)`.
-
-Deleting a player hard-deletes its row. It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action. There is no `status`/archive state on `Player` for now. Note: `utterance.player_id`, `diarized_speaker.player_id`, and `voice_sample.player_id` reference players — deleting a player who has transcript history needs an explicit FK on-delete decision (e.g. `SET NULL`) rather than cascading, so that history isn't silently destroyed.
-
-### Voice profile
-
-The current derived representation used for speaker matching. One active profile belongs to one player.
-
-| Field | Type / constraint | Notes |
-| --- | --- | --- |
-| `id` | UUID, primary key | |
-| `player_id` | UUID, unique FK to `player` | One current profile per player. |
-| `centroid_embedding` | serialized embedding, nullable | Null until sufficient accepted samples exist. |
+| `name` | text, non-empty, unique | Display name; also the on-disk player folder name (holding that player's wav voice clips). |
+| `centroid_embedding` | serialized embedding, nullable | Null until sufficient accepted samples exist; a player may exist with no clips and no centroid. |
 | `embedding_dimension` | integer, nullable | Validates compatibility. |
 | `sample_count` | integer | Derived/cacheable count of accepted samples. |
-| `computed_at` | UTC datetime, nullable | Last profile computation. |
-| `status` | enum: `untrained`, `ready`, `needs_review` | Profile health. |
+| `computed_at` | UTC datetime, nullable | Last centroid computation. |
+| `created_at`, `updated_at` | UTC datetime | |
 
-The centroid is derived from accepted voice samples and must be recomputed when their acceptance changes.
+Deleting a player hard-deletes its row (and its `campaign_player` memberships). It does not remove the player's on-disk clip directory; that becomes orphaned and is removed by a separate, user-invoked "cleanup players" action. There is no `status`/archive state on `Player` for now. Note: `utterance.player_id`, `diarized_speaker.player_id`, and `voice_sample.player_id` reference players — deleting a player who has transcript history needs an explicit FK on-delete decision (e.g. `SET NULL`) rather than cascading, so that history isn't silently destroyed.
+
+The centroid is derived from accepted voice samples and must be recomputed when their acceptance changes. Processing actions that require speaker identification (e.g. processing a session's transcript) fail fast if any roster player for that session's campaign has a null centroid, rather than silently skipping identification for that player.
 
 ### Media asset
 
@@ -122,35 +125,35 @@ A dated recording and its processing lifecycle within a campaign.
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
-| `id` | UUID, primary key | |
+| `id` | UUID, primary key | Shown in the UI. |
 | `campaign_id` | UUID, FK to `campaign`, required | Owner. |
-| `slug` | text, required | Stable campaign-local identifier. |
-| `name` | text, non-empty | Session title. |
+| `sequence_number` | integer, required | Campaign-scoped, assigned as `max existing + 1` at creation, never reused after a session is deleted (no gap-filling). Zero-padded to 3 digits as the on-disk session folder name (e.g. `007`). |
+| `name` | text, non-empty | Session title. Not required to be unique. |
 | `session_date` | date | Game-session date. |
 | `raw_audio_asset_id` | UUID, nullable FK to `media_asset` | Original imported recording. |
 | `status` | enum: `draft`, `ready`, `processing`, `processed`, `needs_review`, `failed` | Current user-facing state. |
 | `created_at`, `updated_at` | UTC datetime | |
 
-Constraint: unique `(campaign_id, slug)`. Index `(campaign_id, session_date)` supports ordered session lists.
+Constraint: unique `(campaign_id, sequence_number)`. Index `(campaign_id, session_date)` supports ordered session lists.
 
 Deleting a session hard-deletes its row. It does not remove associated media files from disk; those become orphaned and are removed by a separate, user-invoked cleanup action.
 
 ### Session attendance
 
-Joins known campaign players to a session.
+Joins campaign-roster players (see `campaign_player`) to a session. Only players who are members of the session's campaign may be added here.
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
 | `id` | UUID, primary key | |
 | `session_id` | UUID, FK to `session`, required | |
-| `player_id` | UUID, FK to `player`, required | |
+| `player_id` | UUID, FK to `player`, required | Must be a member of `session.campaign_id` via `campaign_player`. |
 | `created_at` | UTC datetime | |
 
-Constraint: unique `(session_id, player_id)`.
+Constraint: unique `(session_id, player_id)`. When attendance is created, seed one `session_attendance_role` row from the matching `campaign_player.default_role_name`; the user may add, edit, or remove roles afterward.
 
-### Attendance role
+### Session attendance role
 
-Allows one attendee to have zero or more free-form roles in a session.
+Allows one attendee to have zero or more free-form roles in a session (e.g. a player who takes over an NPC alongside their main character).
 
 | Field | Type / constraint | Notes |
 | --- | --- | --- |
@@ -265,20 +268,22 @@ Constraint: unique `(utterance_id, position)`.
 
 ## Required relationship rules
 
-- A campaign owns players, sessions, and glossary entries.
-- A session can reference only players from its campaign as attendees or attributed speakers.
-- A player can have many voice samples but one current voice profile.
+- Campaign and Player are both top-level; a campaign's participants are the players linked via `campaign_player`, not owned rows. A player may belong to any number of campaigns (or none).
+- A campaign owns its sessions and glossary entries directly (unlike players).
+- A session can reference only players who are members of its campaign (via `campaign_player`) as attendees or attributed speakers.
+- A player can have many voice samples but carries at most one current centroid/profile, stored directly on the `player` row.
 - A session-derived voice sample must reference its source session; when available, it should reference its utterance.
 - An imported directory source is replaceable as a unit: a new import supersedes/retires previous `directory_import` samples for the same player and normalized source directory.
 - An enhancement run is replaceable as a unit: rerunning it supersedes/retires prior `session_enhancement` samples for that player/session pair.
 - Diarized speakers are session-local anonymous clusters. They may map to a player, but the original cluster label must remain available for audit and re-review.
 - User-reviewed utterance attribution takes precedence over automatic matching until the user explicitly changes it.
 - Changing raw audio, attendance, or transcript attribution marks affected artifacts and session-derived voice samples stale; it does not delete raw audio automatically.
+- Processing actions requiring speaker identification fail fast if any campaign-roster player lacks a computed centroid, rather than silently proceeding without identifying that player.
 
 ## Initial migration sequence
 
-1. Create campaign, glossary, player, session, attendance, and media-asset tables.
-2. Create voice-profile and voice-sample tables.
+1. Create campaign, player, campaign-player, glossary, session, session-attendance, session-attendance-role, and media-asset tables.
+2. Create voice-sample table (centroid fields already live on `player`).
 3. Create processing-run, artifact, and summary tables.
 4. Create diarized-speaker, utterance, and word tables.
 5. Add indexes and uniqueness constraints after the basic relationships are established.

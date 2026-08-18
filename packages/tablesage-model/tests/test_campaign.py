@@ -6,6 +6,7 @@ import pytest
 import tablesage_model
 from alembic import command
 from alembic.config import Config
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, create_engine, select
 from tablesage_model.model import Campaign
 
@@ -34,7 +35,6 @@ def test_migration_creates_campaign_table_and_round_trips(tmp_path: Path) -> Non
     assert stored.name == "Iron Pact"
     assert stored.description is None
     assert stored.game_system is None
-    assert stored.default_gm_name is None
     assert stored.created_at is not None
     assert stored.updated_at is not None
 
@@ -42,3 +42,17 @@ def test_migration_creates_campaign_table_and_round_trips(tmp_path: Path) -> Non
 def test_campaign_rejects_blank_name() -> None:
     with pytest.raises(ValueError, match="name must not be blank"):
         Campaign(name="   ")
+
+
+def test_campaign_name_must_be_unique(tmp_path: Path) -> None:
+    db_path = tmp_path / "test.db"
+    _upgrade_head(db_path)
+
+    engine = create_engine(f"sqlite:///{db_path}")
+    with Session(engine) as session:
+        session.add(Campaign(name="Iron Pact"))
+        session.commit()
+
+        session.add(Campaign(name="Iron Pact"))
+        with pytest.raises(IntegrityError):
+            session.commit()

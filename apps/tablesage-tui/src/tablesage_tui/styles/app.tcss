@@ -153,7 +153,11 @@ $overlay-bg: rgba(9, 13, 10, 0.72);
 /*          surface mappings         */
 /* ******************************** */
 
-Screen,
+Screen {
+    background: $surface-0-bg;
+    color: $surface-2-fg;
+}
+
 .surface-0 {
     background: $surface-0-bg;
     color: $surface-0-fg;
@@ -533,7 +537,7 @@ LandingScreen {
 
     #welcome-panel {
         width: 80;
-        height: 30;
+        height: 31;
 
         #welcome-content {
             width: 100%;
@@ -544,7 +548,7 @@ LandingScreen {
         #welcome-lockup {
             width: auto;
             height: auto;
-            margin: 1 0 0 0;
+            margin: 0;
 
             layout: grid;
             grid-size: 2 2;
@@ -560,7 +564,13 @@ LandingScreen {
                 width: 100%;
                 height: auto;
 
-                content-align: center middle;
+                /* content-align stays left so the art's own internal shape
+                   (each line's relative indent) isn't distorted by per-line
+                   justification; padding-left instead shifts the whole block
+                   right so its widest line (17 cols) meets the box's right
+                   edge (23 cols, set by sage-wordmark's width below). */
+                content-align: left middle;
+                padding-left: 6;
                 text-wrap: nowrap;
                 padding-bottom: 1;
                 padding-top: 1;
@@ -600,13 +610,107 @@ LandingScreen {
             text-wrap: nowrap;
         }
 
-        .call-to-action {
-            width: 47;
-            height: 1;
-            content-align: center middle;
-            align: center middle;
+        #welcome-actions {
+            width: auto;
+            height: auto;
             margin-top: 2;
         }
-        
+
+        .call-to-action {
+            width: auto;
+            height: 1;
+            content-align: left middle;
+            align: left middle;
+            margin-top: 1;
+        }
+
+        #show-campaigns-command {
+            margin-top: 0;
+        }
+
+    }
+}
+
+/* ******************************** */
+/*        campaign list screen      */
+/* ******************************** */
+
+CampaignListScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #campaign-list-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+
+    #campaign-table {
+        width: 1fr;
+        height: 1fr;
+        background: transparent;
+
+        & > .datatable--header {
+            background: $surface-3-bg;
+            color: $fg-accent;
+            text-style: bold;
+        }
+
+        & > .datatable--odd-row {
+            background: $surface-2-bg;
+            color: $surface-2-fg;
+        }
+
+        & > .datatable--even-row {
+            background: $surface-1-bg;
+            color: $surface-2-fg;
+        }
+
+        & > .datatable--cursor {
+            background: $selected-bg;
+            color: $selected-fg;
+        }
+    }
+}
+
+/* ******************************** */
+/*        players list screen       */
+/* ******************************** */
+
+PlayersListScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #players-list-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+
+    #players-table {
+        width: 1fr;
+        height: 1fr;
+        background: transparent;
+
+        & > .datatable--header {
+            background: $surface-3-bg;
+            color: $fg-accent;
+            text-style: bold;
+        }
+
+        & > .datatable--odd-row {
+            background: $surface-2-bg;
+            color: $surface-2-fg;
+        }
+
+        & > .datatable--even-row {
+            background: $surface-1-bg;
+            color: $surface-2-fg;
+        }
+
+        & > .datatable--cursor {
+            background: $selected-bg;
+            color: $selected-fg;
+        }
     }
 }

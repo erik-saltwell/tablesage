@@ -16,11 +16,11 @@ The Textual user interface. It presents data, collects input, renders progress/e
 
 ## `tablesage-application`
 
-The orchestration layer. It implements use cases such as campaign management, session processing, voice-profile seeding/enhancement, transcript review, and summary generation.
+The orchestration layer. It implements use cases such as campaign management, campaign roster management, player management, session processing, voice-profile seeding/enhancement, transcript review, and summary generation.
 
 Application use cases validate inputs, own transaction boundaries, coordinate repositories and tools, emit progress, and return UI-friendly results. They depend on repository interfaces, never on a concrete SQLite implementation.
 
-Organize this package by use case rather than technical helper type, for example `campaigns`, `sessions`, `voice_profiles`, `transcript_review`, and `summaries`.
+Organize this package by use case rather than technical helper type, for example `campaigns`, `players`, `sessions`, `voice_profiles`, `transcript_review`, and `summaries`. `players` is independent of `campaigns` — a player is not owned by any single campaign, so player CRUD and voice-profile management live outside the `campaigns` module, linked only through the roster (`campaign_player`).
 
 ## `tablesage-model`
 

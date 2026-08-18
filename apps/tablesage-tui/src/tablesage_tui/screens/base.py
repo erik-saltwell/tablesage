@@ -39,3 +39,7 @@ class TableSageScreen(Screen[None]):
     @property
     def application(self) -> Application:
         return cast("TableSageApp", self.app).application
+
+    def action_pop_screen(self) -> None:
+        """Pop back to the previous screen. Subclasses opt in via an `escape` binding."""
+        self.app.pop_screen()

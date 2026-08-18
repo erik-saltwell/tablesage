@@ -10,12 +10,12 @@ This document describes product behaviour. The relational data that supports it 
 
 **Description:** Start a workspace for one tabletop campaign.
 
-**Goal:** Give the user a durable place for its people, glossary, sessions, and derived artifacts.
+**Goal:** Give the user a durable place for its glossary, sessions, and derived artifacts, and a roster of the players who take part.
 
-- The user provides a campaign name and optionally a description, game system, and default game master.
-- The app creates the campaign and a stable, human-readable slug.
-- The app checks that the slug is unique before creating the campaign.
-- The new campaign opens with no players, sessions, or glossary entries.
+- The user provides a campaign name and optionally a description and game system.
+- The app checks that the name is unique before creating the campaign.
+- The app creates the campaign and its on-disk folder, named after the campaign name.
+- The new campaign opens with an empty roster, no sessions, and no glossary entries.
 
 ### View and edit campaign metadata
 
@@ -24,9 +24,21 @@ This document describes product behaviour. The relational data that supports it 
 **Goal:** Keep campaign information accurate without changing historical session data.
 
 - The user opens a campaign.
-- The app shows its name, description, game system, and default game master.
-- The user edits one or more fields and saves.
-- The app validates required values and persists the change.
+- The app shows its name, description, and game system.
+- The user edits one or more fields and saves; renaming the campaign renames its on-disk folder as part of the same operation.
+- The app validates required values (including name uniqueness) and persists the change.
+
+### Manage the campaign roster
+
+**Description:** Link known players to a campaign and set the role each defaults to when a new session is created.
+
+**Goal:** Let a session's attendee list and default roles be assembled from campaign membership, without re-entering a player's identity or voice profile per campaign.
+
+- The user opens a campaign's roster and adds one or more existing players (players are created and maintained separately — see "Players and voice profiles" below).
+- For each roster member, the user sets a `default_role_name`: `"game-master"` marks that member as this campaign's GM, any other value is their default character name.
+- The same player can be a roster member of multiple campaigns, with a different default role in each.
+- The user removes a player from the roster without affecting the player's identity, voice profile, or membership in other campaigns.
+- Only roster members can be selected as attendees when creating or editing a session in this campaign.
 
 ### Archive, restore, and remove a campaign
 
@@ -49,8 +61,8 @@ This document describes product behaviour. The relational data that supports it 
 **Goal:** Provide useful context for generated summaries and make proper nouns easier to recognize and review.
 
 - The user opens the campaign glossary.
-- The user adds, edits, or deletes a term and its optional explanation.
-- The app prevents blank terms and keeps entries associated with the campaign.
+- The user adds, edits, or deletes a term and its optional definition.
+- The app prevents blank terms, enforces that a term is unique within its campaign, and keeps entries associated with the campaign.
 - The user can search or filter entries when the glossary is large.
 
 ### Regenerate a summary after glossary changes
@@ -67,16 +79,19 @@ This document describes product behaviour. The relational data that supports it 
 
 ## Players and voice profiles
 
+Players are top-level records, independent of any single campaign — a player's identity, on-disk voice clips, and centroid are managed once and can be linked into any number of campaigns via the campaign roster (above).
+
 ### Create and maintain a player
 
-**Description:** Create a campaign participant who may later be identified in session audio.
+**Description:** Create a participant identity who may later be linked to one or more campaigns and identified in session audio.
 
-**Goal:** Keep a stable identity for attendance, transcript attribution, and voice-profile training.
+**Goal:** Keep a stable identity for attendance, transcript attribution, and voice-profile training, decoupled from any particular campaign.
 
-- The user adds a player with a display name.
-- The app creates a campaign-local player record and stable slug/identifier.
-- The user can edit the display name or deactivate/remove the player after the app explains any affected session attendance.
-- A new player may initially have no voice samples and cannot yet be identified automatically by voice.
+- The user adds a player with a display name; the app checks that the name is unique across all players.
+- The app creates the player record and its on-disk clip directory, named after the player name.
+- The user can edit the display name (renaming the on-disk directory as part of the same operation) or delete the player after the app explains any affected campaign memberships and session attendance.
+- A new player may initially have no voice samples and no centroid, and cannot yet be identified automatically by voice; they remain a valid, listable player in this state.
+- As a shortcut, the user may instead create a player directly from a single audio file: providing a name and one file in one step, which becomes the player's first voice clip and triggers an immediate centroid computation.
 
 ### Add voice clips from a directory
 
@@ -140,9 +155,10 @@ This document describes product behaviour. The relational data that supports it 
 
 **Goal:** Establish a durable processing unit without requiring the user to complete all setup at once.
 
-- The user chooses a campaign and creates a session with a name and date.
+- The user chooses a campaign and creates a session with a name and date; the name need not be unique.
+- The app assigns the session the next unused sequence number for that campaign and creates its on-disk session folder, named as a zero-padded 3-digit number (e.g. `007`); deleted sessions leave gaps rather than being renumbered or reused.
 - The user imports or attaches an audio recording.
-- The user selects known attendees and optionally assigns their roles.
+- The user selects attendees from the campaign roster; each is seeded with the role from their roster `default_role_name`, which the user may edit or add to per session (a player can hold multiple roles in a session, and different roles across sessions, e.g. after a character death).
 - The app preserves the original audio and records its source and storage location.
 - The session is shown as ready for processing once its required inputs are present.
 
@@ -165,7 +181,7 @@ This document describes product behaviour. The relational data that supports it 
 **Goal:** Transform a recording into structured, attributable, reviewable text and a summary.
 
 - The user starts processing a session with valid audio and attendance.
-- The app validates prerequisites and reports missing/corrupt inputs before starting expensive work.
+- The app validates prerequisites and reports missing/corrupt inputs before starting expensive work, including failing fast (not partially skipping) if any attendee's player has no computed voice centroid.
 - The app cleans/normalizes audio when configured.
 - The app transcribes and diarizes the recording.
 - The app identifies speakers when participant profiles are available; otherwise it retains anonymous diarized speakers.
@@ -231,7 +247,7 @@ This document describes product behaviour. The relational data that supports it 
 
 **Goal:** Prevent silent failures and expensive retries that cannot succeed.
 
-- The app detects missing audio, unsupported media, empty/no-speech audio, missing attendees, and attendees whose player records are unavailable.
+- The app detects missing audio, unsupported media, empty/no-speech audio, missing attendees, attendees no longer on the campaign roster, and roster players with no computed voice centroid.
 - The app reports the affected session and the action required to fix it.
 - The user corrects the input and retries processing.
 
