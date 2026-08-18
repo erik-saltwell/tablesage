@@ -527,6 +527,44 @@ TextInputDialog {
 }
 
 /* ******************************** */
+/*          notifications           */
+/* ******************************** */
+
+Toast {
+    background: $pine-750;
+    color: $surface-2-fg;
+    border-left: outer $surface-border;
+}
+
+.toast--title {
+    color: $surface-2-fg;
+}
+
+Toast.-information {
+    border-left: outer $fg-accent;
+}
+
+Toast.-information .toast--title {
+    color: $fg-accent;
+}
+
+Toast.-warning {
+    border-left: outer $fg-warning;
+}
+
+Toast.-warning .toast--title {
+    color: $fg-warning;
+}
+
+Toast.-error {
+    border-left: outer $fg-danger;
+}
+
+Toast.-error .toast--title {
+    color: $fg-danger;
+}
+
+/* ******************************** */
 /*         landing screen           */
 /* ******************************** */
 
