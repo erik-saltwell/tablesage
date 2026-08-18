@@ -37,12 +37,16 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
   - The `Escape`-pops-back navigation rule from `tablesage_tui_screens.md` wasn't implemented anywhere yet — added `TableSageScreen.action_pop_screen()` in `base.py`, with `Campaigns List` and `Players List` opting in via their own `escape` binding (Landing has no back target, so it doesn't get one). Without this, Landing → Campaigns/Players was a one-way trip.
   - `campaign_list.py`'s existing bindings still use the pre-taxonomy `O` "open campaign" letter rather than the agreed `E`/Enter convention; left as-is since Phase 3 is where that file gets touched for real — flagging so it isn't mistaken for the final binding set.
 
-## Phase 3 — Campaigns List screen
+## Phase 3 — Campaigns List screen — ✅ complete
 
 - Wire real `N` (create), `D` (delete + confirm), `C` (cleanup + confirm) — finishing the "coming soon" stubs already in `campaign_list.py`.
 - `E`/Enter pushes Campaign Detail (Phase 4).
 - `I` import — stays a stub, moved here from Landing.
 - Relabel the existing "First Session" column to "Last Session," wired to the new computed most-recent-session-date value instead of the current hardcoded `""`.
+- Not in the original plan text, added during implementation:
+  - Campaign Detail (Phase 4) doesn't exist yet, so `E`/Enter stays a "coming soon" stub for now — only the binding itself was renamed from the pre-taxonomy `O` to `E`/Enter, matching Players List and the screen-taxonomy convention. It will be wired for real in Phase 4.
+  - `N`/`D`/`C` all use a `@work`-decorated async action plus `push_screen_wait` to await the relevant dialog (`TextInputDialog` for create, `ConfirmationDialog` for delete/cleanup) before mutating and reloading — this is the first use of that pattern in the TUI and establishes it for later phases.
+  - Duplicate-name errors from `create_campaign` (a `ValueError`) are caught and shown via `self.notify(..., severity="error")` rather than re-opening the dialog.
 
 ## Phase 4 — Campaign Detail screen
 
