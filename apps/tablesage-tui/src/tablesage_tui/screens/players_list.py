@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import uuid
+
 from tablesage_model.model import Player
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.widgets import DataTable
 
+from ..dialogs import ConfirmationDialog, TextInputDialog
 from .base import TableSageScreen
 
 
@@ -36,20 +39,53 @@ class PlayersListScreen(TableSageScreen):
 
     def _reload_players(self) -> None:
         table = self.query_one("#players-table", DataTable)
+        selected_id = self._selected_player_id()
+
         table.clear()
-        for player in self.application.list_players():
+        restored_row: int | None = None
+        for index, player in enumerate(self.application.list_players()):
             table.add_row(*self._row_cells(player), key=str(player.id))
+            if selected_id is not None and player.id == selected_id:
+                restored_row = index
+
+        if restored_row is not None:
+            table.move_cursor(row=restored_row)
 
     def _row_cells(self, player: Player) -> tuple[str, str, str]:
         centroid_status = "ready" if player.centroid_embedding is not None else "no samples"
         return player.name, str(player.sample_count), centroid_status
+
+    def _selected_player_id(self) -> uuid.UUID | None:
+        table = self.query_one("#players-table", DataTable)
+        if table.row_count == 0:
+            return None
+        row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
+        return uuid.UUID(row_key) if row_key else None
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         event.stop()
         self.action_open_player()
 
     def action_new_player(self) -> None:
-        self.notify("Creating a new player is coming soon.")
+        def on_dismiss(name: str | None) -> None:
+            if not name:
+                return
+            try:
+                self.application.create_player(Player(name=name))
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+            self._reload_players()
+
+        self.app.push_screen(
+            TextInputDialog(
+                title="New Player",
+                prompt="Enter a player name",
+                placeholder="Player name",
+                submit_label="Create Player",
+            ),
+            on_dismiss,
+        )
 
     def action_create_players_from_audio(self) -> None:
         self.notify("Creating players from audio is coming soon.")
@@ -58,7 +94,42 @@ class PlayersListScreen(TableSageScreen):
         self.notify("Opening a player is coming soon.")
 
     def action_delete_player(self) -> None:
-        self.notify("Deleting a player is coming soon.")
+        player_id = self._selected_player_id()
+        if player_id is None:
+            return
+
+        def on_dismiss(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            try:
+                self.application.delete_player(player_id)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+            self._reload_players()
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Delete Player",
+                prompt="Delete this player? This does not remove their files on disk.",
+            ),
+            on_dismiss,
+        )
 
     def action_cleanup_players(self) -> None:
-        self.notify("Cleaning up players is coming soon.")
+        def on_dismiss(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            removed = self.application.cleanup_orphan_player_dirs()
+            if removed:
+                self.notify(f"Removed {len(removed)} orphan player folder(s): {', '.join(removed)}.")
+            else:
+                self.notify("No orphan player folders found.")
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Clean Up Players",
+                prompt="Remove player folders on disk that have no matching player in the database?",
+            ),
+            on_dismiss,
+        )

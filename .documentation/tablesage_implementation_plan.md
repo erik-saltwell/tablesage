@@ -77,10 +77,15 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 - `RolePickerDialog` now takes `player_name` (always) and `current_role` (edit path only) and surfaces both in its title/prompt, so "Default Role" reads as "Default Role — Alice" instead of a generic dialog with no indication of who it's for.
 - Binding label wording: Campaigns List and Players List `E`/Enter now reads "Edit campaign"/"Edit player" instead of "Open campaign"/"Open player", matching what the key actually does (opens straight into an editable inline form, not a read-only view).
 
-## Phase 5 — Players List screen
+## Phase 5 — Players List screen — ✅ complete
 
 - Mirrors Campaigns List: `N`, `E`/Enter → Player Detail, `D`, `C` all wired to `players.py`.
 - `F` (create players from audio) — stub only.
+- Not in the original plan text, added during implementation:
+  - Player Detail doesn't exist yet (that's Phase 6), so `E`/Enter stays a "coming soon" stub, matching how Campaign Detail was deferred in Phase 3 — the binding itself already read "Edit player" from the Phase 4 fix pass.
+  - `N`/`D`/`C` use the callback-style `push_screen(dialog, callback)` pattern established in the Phase 4 fix pass (not the earlier `@work` + `push_screen_wait` pattern from the original Phase 3 implementation).
+  - `D` catches `ValueError` from `application.delete_player` and shows it as an error notify — `players.py` raises this when the player has attended sessions, which is a real, reachable case (unlike campaign delete, which has no such guard).
+  - `_reload_players` restores the table cursor to the previously-selected player by id after a reload, matching the Phase 4 fix pass's Campaign List behavior. `on_screen_resume` was deliberately *not* added here — there's no Player Detail screen yet to resume from, so there is nothing to exercise it against; add it alongside Phase 6.
 
 ## Phase 6 — Player Detail screen
 
