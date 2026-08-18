@@ -35,6 +35,10 @@ class Application:
         with Session(self._engine) as session:
             return campaigns.list_campaigns(session)
 
+    def get_campaign(self, campaign_id: uuid.UUID) -> Campaign:
+        with Session(self._engine) as session:
+            return campaigns.get_campaign(session, campaign_id)
+
     def last_session_dates(self) -> dict[uuid.UUID, date]:
         with Session(self._engine) as session:
             return campaigns.last_session_dates(session)
@@ -42,6 +46,13 @@ class Application:
     def rename_campaign(self, campaign_id: uuid.UUID, new_name: str) -> Campaign:
         with Session(self._engine) as session:
             result = campaigns.rename_campaign(session, campaign_id, new_name, paths.campaigns_root(self._cwd))
+            session.commit()
+            session.refresh(result)
+            return result
+
+    def update_campaign(self, campaign_id: uuid.UUID, description: str | None, game_system: str | None) -> Campaign:
+        with Session(self._engine) as session:
+            result = campaigns.update_campaign(session, campaign_id, description, game_system)
             session.commit()
             session.refresh(result)
             return result

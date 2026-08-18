@@ -156,6 +156,14 @@ $overlay-bg: rgba(9, 13, 10, 0.72);
 Screen {
     background: $surface-0-bg;
     color: $surface-2-fg;
+
+    scrollbar-background: $surface-2-bg;
+    scrollbar-background-hover: $surface-3-bg;
+    scrollbar-background-active: $surface-3-bg;
+    scrollbar-color: $sage-700;
+    scrollbar-color-hover: $sage-600;
+    scrollbar-color-active: $sage-400;
+    scrollbar-corner-color: $surface-2-bg;
 }
 
 .surface-0 {
@@ -484,16 +492,53 @@ Button {
 }
 
 /* ******************************** */
+/*        shared data tables        */
+/* ******************************** */
+
+.tablesage-table {
+    width: 1fr;
+    height: 1fr;
+    background: transparent;
+
+    & > .datatable--header {
+        background: $surface-3-bg;
+        color: $fg-accent;
+        text-style: bold;
+    }
+
+    & > .datatable--odd-row {
+        background: $surface-2-bg;
+        color: $surface-2-fg;
+    }
+
+    & > .datatable--even-row {
+        background: $surface-1-bg;
+        color: $surface-2-fg;
+    }
+
+    & > .datatable--cursor {
+        background: $selected-bg;
+        color: $selected-fg;
+    }
+}
+
+/* ******************************** */
 /*              dialogs             */
 /* ******************************** */
 
 ConfirmationDialog,
-TextInputDialog {
+TextInputDialog,
+PlayerPickerDialog,
+RolePickerDialog,
+GlossaryEntryDialog {
     align: center middle;
     background: $overlay-bg;
 
     #confirmation-dialog,
-    #text-input-dialog {
+    #text-input-dialog,
+    #player-picker-dialog,
+    #role-picker-dialog,
+    #glossary-entry-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -507,9 +552,22 @@ TextInputDialog {
     }
 
     #confirmation-prompt,
-    #text-input-prompt {
+    #text-input-prompt,
+    #role-picker-prompt,
+    #player-picker-empty {
         height: auto;
         margin: 0 0 1 0;
+    }
+
+    #player-picker-table {
+        height: 12;
+        margin: 0 0 1 0;
+    }
+
+    .field-label {
+        height: 1;
+        color: $fg-muted;
+        margin: 0 0 0 0;
     }
 
     Input {
@@ -750,5 +808,69 @@ PlayersListScreen {
             background: $selected-bg;
             color: $selected-fg;
         }
+    }
+}
+
+/* ******************************** */
+/*       campaign detail screen     */
+/* ******************************** */
+
+CampaignDetailScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #campaign-detail-panel {
+        width: 1fr;
+        height: 1fr;
+        layout: vertical;
+    }
+
+    #campaign-metadata {
+        height: auto;
+        margin: 0 0 1 0;
+
+        .field-row {
+            height: 3;
+            align: left middle;
+            margin: 0 0 1 0;
+
+            .field-label {
+                width: 14;
+                height: 1;
+                color: $fg-muted;
+            }
+
+            Input {
+                width: 1fr;
+            }
+        }
+    }
+
+    #campaign-detail-tabs {
+        height: 1;
+        margin: 0 0 1 0;
+
+        .tab-label {
+            width: auto;
+            height: 1;
+            margin: 0 2 0 0;
+            color: $fg-muted;
+            pointer: pointer;
+
+            &:hover {
+                color: $control-hover-fg;
+            }
+
+            &.-active {
+                color: $fg-accent;
+                text-style: bold;
+            }
+        }
+    }
+
+    #campaign-detail-switcher {
+        width: 1fr;
+        height: 1fr;
     }
 }

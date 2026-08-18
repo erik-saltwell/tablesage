@@ -7,12 +7,20 @@ from sqlalchemy import CheckConstraint, UniqueConstraint
 from sqlalchemy.orm import validates
 from sqlmodel import Field, SQLModel
 
+GAME_MASTER_ROLE = "game-master"
+"""Magic ``default_role_name`` value marking a roster member as the campaign's GM.
+
+Application and TUI code must reference this constant rather than the raw
+string; it is never something the user types directly (see the GM/Character
+role picker in the TUI screens doc).
+"""
+
 
 class CampaignPlayer(SQLModel, table=True):
     """Links a player to a campaign and carries the campaign-specific default role.
 
     ``default_role_name`` seeds a session's role when the session is created;
-    the magic value ``"game-master"`` marks this member as the campaign's GM,
+    the magic value ``GAME_MASTER_ROLE`` marks this member as the campaign's GM,
     any other value is their default character name.
     """
 

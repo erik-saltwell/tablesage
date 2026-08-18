@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 
 import pytest
@@ -46,6 +47,31 @@ def test_create_campaign_creates_a_folder(tmp_path: Path) -> None:
     application.create_campaign(Campaign(name="Iron Pact"))
 
     assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact").is_dir()
+
+
+def test_get_campaign_returns_the_matching_campaign(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+
+    assert application.get_campaign(campaign.id).name == "Iron Pact"
+
+
+def test_get_campaign_raises_for_unknown_id(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+
+    with pytest.raises(ValueError, match="not found"):
+        application.get_campaign(uuid.uuid4())
+
+
+def test_update_campaign_sets_description_and_game_system(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+
+    updated = application.update_campaign(campaign.id, "A grim war", "Dungeon World")
+
+    assert updated.description == "A grim war"
+    assert updated.game_system == "Dungeon World"
+    assert application.get_campaign(campaign.id).description == "A grim war"
 
 
 def test_rename_campaign_renames_folder(tmp_path: Path) -> None:

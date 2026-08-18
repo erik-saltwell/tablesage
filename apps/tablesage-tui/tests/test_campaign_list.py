@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from tablesage_model.model import Campaign
 from tablesage_tui.dialogs import ConfirmationDialog, TextInputDialog
+from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.screens.campaign_list import CampaignListScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from textual.pilot import Pilot
@@ -57,6 +58,52 @@ async def test_campaign_table_shows_last_session_date() -> None:
 
 
 @pytest.mark.anyio
+async def test_no_horizontal_scroll_with_long_name_and_description() -> None:
+    campaign = Campaign(
+        name="A Very Long Campaign Name That Should Not Force A Scrollbar",
+        description="An extremely long campaign description that goes on and on and on and on and on forever",
+    )
+    application = _application(campaigns=[campaign])
+
+    async with TableSageApp(application).run_test(size=(120, 40)) as pilot:
+        await _open_campaign_list(pilot)
+
+        table = pilot.app.screen.query_one("#campaign-table", DataTable)
+        assert table.virtual_size.width <= table.size.width
+
+
+@pytest.mark.anyio
+async def test_resuming_the_screen_after_editing_a_campaign_reloads_it() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaigns=[campaign])
+    application.get_campaign = MagicMock(return_value=campaign)
+    application.list_roster = MagicMock(return_value=[])
+    application.list_sessions = MagicMock(return_value=[])
+    application.list_glossary_entries = MagicMock(return_value=[])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+
+        list_screen = pilot.app.screen
+        assert isinstance(list_screen, CampaignListScreen)
+
+        await pilot.press("enter")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+
+        # simulate the campaign's game_system having changed on the detail screen
+        application.list_campaigns = MagicMock(return_value=[Campaign(id=campaign.id, name="Iron Pact", game_system="Dungeon World")])
+
+        await pilot.press("escape")
+        await pilot.pause()
+        assert pilot.app.screen is list_screen
+
+        table = list_screen.query_one("#campaign-table", DataTable)
+        row = tuple(str(cell) for cell in table.get_row_at(0))
+        assert row[1] == "Dungeon World"
+
+
+@pytest.mark.anyio
 async def test_open_and_import_actions_are_stubbed_with_notify() -> None:
     async with TableSageApp(_application()).run_test() as pilot:
         await _open_campaign_list(pilot)
@@ -81,6 +128,24 @@ async def test_enter_on_selected_campaign_opens_campaign() -> None:
             await pilot.pause()
 
         open_campaign.assert_called_once_with()
+
+
+@pytest.mark.anyio
+async def test_enter_on_selected_campaign_pushes_campaign_detail() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaigns=[campaign])
+    application.get_campaign = MagicMock(return_value=campaign)
+    application.list_roster = MagicMock(return_value=[])
+    application.list_sessions = MagicMock(return_value=[])
+    application.list_glossary_entries = MagicMock(return_value=[])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
 
 
 @pytest.mark.anyio

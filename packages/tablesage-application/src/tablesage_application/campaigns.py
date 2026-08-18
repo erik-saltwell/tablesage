@@ -37,6 +37,13 @@ def list_campaigns(session: Session) -> list[Campaign]:
     return list(session.exec(select(Campaign)).all())
 
 
+def get_campaign(session: Session, campaign_id: uuid.UUID) -> Campaign:
+    campaign = session.get(Campaign, campaign_id)
+    if campaign is None:
+        raise ValueError("Campaign not found.")
+    return campaign
+
+
 def last_session_dates(session: Session) -> dict[uuid.UUID, date]:
     """Most recent session date per campaign id, computed dynamically from Session rows."""
     result: dict[uuid.UUID, date] = {}
@@ -50,10 +57,18 @@ def last_session_dates(session: Session) -> dict[uuid.UUID, date]:
 
 
 def rename_campaign(session: Session, campaign_id: uuid.UUID, new_name: str, campaigns_root: Path) -> Campaign:
-    campaign = session.get(Campaign, campaign_id)
-    if campaign is None:
-        raise ValueError("Campaign not found.")
+    campaign = get_campaign(session, campaign_id)
     rename_named_entity(session, campaign, new_name, campaigns_root, kind="campaign")
+    return campaign
+
+
+def update_campaign(session: Session, campaign_id: uuid.UUID, description: str | None, game_system: str | None) -> Campaign:
+    """Update the non-name metadata fields. Renaming has its own dedicated path (`rename_campaign`)."""
+    campaign = get_campaign(session, campaign_id)
+    campaign.description = description
+    campaign.game_system = game_system
+    session.add(campaign)
+    session.flush()
     return campaign
 
 
