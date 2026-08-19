@@ -17,6 +17,14 @@ some other repositories use.
 - `.documentation/tablesage_implementation_plan.md` — the phased build-out plan for the current
   campaign/player re-architecture, with each phase marked complete as it finishes. Check this first
   for what's actually built vs. still planned.
+- `.documentation/session_detail_screen.md` — the Session Detail screen design: metadata, attendance
+  and roles, the import/process/generate-summary pipeline, artifact-existence indicators, and
+  invalidation rules. Supersedes the "Session Detail" entry under `tablesage_tui_screens.md`'s
+  deferred-items list.
+- `.documentation/player_detail_screen.md` — the Player Detail screen design: file-driven voice clip
+  list (no `VoiceSample` table), centroid recompute/auto-recompute rules, and zero-sample centroid
+  clearing. Supersedes the relevant parts of the "Player Detail" section in
+  `tablesage_tui_screens.md`.
 
 Before architecture, diagnosis, TDD, PRD, or triage work:
 

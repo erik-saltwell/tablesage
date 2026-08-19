@@ -4,7 +4,11 @@ This plan sequences the work needed to bring the codebase in line with [`tablesa
 
 Phases are ordered so each is mergeable and testable on its own; later phases depend on earlier ones. See "Explicitly deferred" at the end for what this plan does *not* cover.
 
-## Phase 0 — Data model & migrations (`tablesage-model`) — ✅ complete
+Status (unstarted/designed/implemented) for each phase is tracked in
+[`.scratch/implementation-plan/work-items.md`](../.scratch/implementation-plan/work-items.md),
+not here — this doc holds each phase's scope/narrative only.
+
+## Phase 0 — Data model & migrations (`tablesage-model`)
 
 - `Campaign`: drop `default_gm_name`; add a unique index on `name`. Do **not** add a `first_session`/`last_session` field — "last session" is always derived from the `Session` table, never stored on `Campaign`.
 - New `Player`: `id`, `name` (unique), `centroid_embedding`, `embedding_dimension`, `sample_count`, `computed_at`, timestamps. No FK — top-level.
@@ -14,7 +18,7 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 - New `SessionAttendance` + `SessionAttendanceRole` (shape as in the data-model doc).
 - One Alembic migration per table (or combined, if preferred at implementation time).
 
-## Phase 1 — Filesystem + application layer (`tablesage-application`) — ✅ complete
+## Phase 1 — Filesystem + application layer (`tablesage-application`)
 
 - Path helpers: campaign folder (`<name>`), player folder (`<name>`), session folder (`<campaign>/<3-digit sequence>`).
 - Shared rename-with-rollback helper: DB update + `os.rename`, both-or-neither.
@@ -27,7 +31,7 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 - Extend the `Application` façade with all of the above.
 - Not in the original plan text, added during implementation: `tablesage_model.setup.create_engine` now enables `PRAGMA foreign_keys=ON` per connection — SQLite ignores declared `ondelete="CASCADE"`/FK constraints entirely without this, which would have silently left `campaign_player`/`glossary_entry`/`session` rows orphaned on delete.
 
-## Phase 2 — Landing screen rework — ✅ complete
+## Phase 2 — Landing screen rework
 
 - Remove `N` (new campaign); keep `I` but move its handler off Landing.
 - Add `C` → push Campaigns List, `P` → push Players List.
@@ -37,7 +41,7 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
   - The `Escape`-pops-back navigation rule from `tablesage_tui_screens.md` wasn't implemented anywhere yet — added `TableSageScreen.action_pop_screen()` in `base.py`, with `Campaigns List` and `Players List` opting in via their own `escape` binding (Landing has no back target, so it doesn't get one). Without this, Landing → Campaigns/Players was a one-way trip.
   - `campaign_list.py`'s existing bindings still use the pre-taxonomy `O` "open campaign" letter rather than the agreed `E`/Enter convention; left as-is since Phase 3 is where that file gets touched for real — flagging so it isn't mistaken for the final binding set.
 
-## Phase 3 — Campaigns List screen — ✅ complete
+## Phase 3 — Campaigns List screen
 
 - Wire real `N` (create), `D` (delete + confirm), `C` (cleanup + confirm) — finishing the "coming soon" stubs already in `campaign_list.py`.
 - `E`/Enter pushes Campaign Detail (Phase 4).
@@ -48,7 +52,7 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
   - `N`/`D`/`C` all use a `@work`-decorated async action plus `push_screen_wait` to await the relevant dialog (`TextInputDialog` for create, `ConfirmationDialog` for delete/cleanup) before mutating and reloading — this is the first use of that pattern in the TUI and establishes it for later phases.
   - Duplicate-name errors from `create_campaign` (a `ValueError`) are caught and shown via `self.notify(..., severity="error")` rather than re-opening the dialog.
 
-## Phase 4 — Campaign Detail screen — ✅ complete
+## Phase 4 — Campaign Detail screen
 
 - Inline metadata form (name/description/game_system), wired to rename/update on field commit.
 - Tabs `R`(oster)/`S`(essions, default)/`G`(lossary).
@@ -77,7 +81,7 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 - `RolePickerDialog` now takes `player_name` (always) and `current_role` (edit path only) and surfaces both in its title/prompt, so "Default Role" reads as "Default Role — Alice" instead of a generic dialog with no indication of who it's for.
 - Binding label wording: Campaigns List and Players List `E`/Enter now reads "Edit campaign"/"Edit player" instead of "Open campaign"/"Open player", matching what the key actually does (opens straight into an editable inline form, not a read-only view).
 
-## Phase 5 — Players List screen — ✅ complete
+## Phase 5 — Players List screen
 
 - Mirrors Campaigns List: `N`, `E`/Enter → Player Detail, `D`, `C` all wired to `players.py`.
 - `F` (create players from audio) — stub only.
@@ -89,9 +93,10 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 
 ## Phase 6 — Player Detail screen
 
-- Inline metadata form (name), wired to rename-with-fs-rollback.
-- Voice-clip child list: `D` wired once a minimal `VoiceSample` read path exists; `f`/`s` stay stubs (no import screens yet, so the list will typically be empty — expected).
-- Screen ops: `R` recompute centroid — wired to `tablesage-tools`'s existing `compute_centroid`, no-op if zero samples; `C` cleanup — stub (algorithm undesigned).
+- Design: see `.documentation/player_detail_screen.md`.
+- Inline metadata form: editable `name` (rename-with-fs-rollback), plus read-only `sample count`/`computed at`, refreshed after any recompute-triggering action.
+- Voice-clip child list is file-driven, not DB-backed — no `VoiceSample` table. Columns: filename + computed duration. `D` deletes the file, `ConfirmationDialog` first, then auto-triggers a full recompute (clearing the centroid fields outright if that brings the count to zero); `f`/`s` stay stubs.
+- Screen ops: `R` recompute centroid — always a full re-embed-everything-on-disk recompute (wired to `tablesage-tools`'s existing `compute_centroid`), not incremental; `C` cleanup — stub (algorithm undesigned, owned by Phase 13).
 
 ## Phase 7 — Tests
 
@@ -99,9 +104,43 @@ Phases are ordered so each is mergeable and testable on its own; later phases de
 - Application: roster add/remove, rename-rollback-on-fs-failure, cleanup-orphan-dir logic (campaign/player/session), glossary uniqueness, computed last-session-date.
 - TUI: extend the existing `test_landing.py`/`test_campaign_list.py` pattern to Campaign Detail, Players List, Player Detail — binding presence, stub-vs-real action behavior.
 
+## Phase 8 — Session Detail screen
+
+- New `screens/session_detail.py`, `composite` shape per `.documentation/session_detail_screen.md`: inline metadata form (name, date, read-only status label), no tabs — attendance list on the left, artifact indicators (Input Audio / Processed Session / Session Summary) on the right.
+- Attendance: `N` opens a roster-member picker (excludes current attendees), seeds one role translating the `GAME_MASTER_ROLE` magic value to "Game Master" (mirrors the Phase 4 Roster-tab display rule — this finally resolves the "unresolved, revisit when Session Detail is designed" note from `tablesage_tui_screens.md`); `E`/Enter opens a new free-text multi-role editor dialog per attendee; `D` removes an attendee, `ConfirmationDialog` first. New application-layer methods for `session_attendance`/`session_attendance_role` CRUD.
+- `I` Import audio: `TextInputDialog` path entry, validated and copied into the session folder under a fixed filename. If a processed session and/or summary already exist, deletes them immediately (destructive, confirmed) before the new audio lands.
+- Indicators are computed from the filesystem only (no `session_artifact` table use), and gate `P`/`G` — both bindings exist this phase but stay stubbed (notify only) until Phases 11/12.
+- Wire Campaign Detail's Sessions tab `N`/`E`/`D` (stubbed since Phase 4) to real behavior: `N` creates via `sessions.py`'s `create_session` and opens Session Detail, `E`/Enter opens Session Detail, `D` hard-deletes with confirmation.
+
+## Phase 9 — Import player from file system
+
+- New directory-picker dialog — the first real filesystem-browsing widget in the app (the earlier campaign directory-picker mockup was never implemented; Phase 4's Import-campaign stub and Session Detail's Phase 8 `I` both currently use `TextInputDialog` path-as-text instead).
+- Wires Player Detail's `f` binding (stub since Phase 6) to directory-import voice-clip logic per `application_business_rules.md`: source directory must contain at least one `.wav`, re-import replaces prior `IMPORT`-provenance samples wholesale (delete-then-recreate, not append), centroid recomputed after.
+
+## Phase 10 — Import player from audio file
+
+- New screen: pick a session within a campaign, then select/attribute clips from that session's processed audio to a player's voice profile. Wires Player Detail's `s` binding (stub since Phase 6).
+- Depends on Phase 8 — the source is a session's processed-session artifact, so this phase can't precede Session Detail.
+- Session-enhancement rules from `application_business_rules.md` apply: retract-then-add (delete this session's prior `SESSION_ENHANCEMENT` samples first), selection filtered by `similarity_margin`/clip-duration thresholds, outlier removal runs automatically after.
+
+## Phase 11 — Process session
+
+- Wires Session Detail's `P` binding (stubbed in Phase 8) to the real pipeline: invalidate-then-recompute (deletes stale downstream files first, so reprocessing is idempotent), clean audio → transcribe/diarize → identify speakers → write the canonical processed-session file via temp-file-then-rename.
+- `P` gating (enabled/disabled, not just attempt-and-fail): input audio present, at least 2 attendees, every attendee has a computed centroid.
+- First use of a progress modal on the TUI side, driven by the existing `PhasedProgressSink`/`IncrementalProgressSink` split from `application_business_rules.md`.
+- Failure: error toast plus a persistent "last run failed" banner near the indicators until the next successful run.
+
+## Phase 12 — Generate summary
+
+- Wires Session Detail's `G` binding (stubbed in Phase 8) to real summary generation from the processed session plus the current campaign glossary, same temp-then-rename write pattern as Phase 11.
+- `G` gating: processed session file present.
+- Shares the progress-modal and toast+banner failure handling built in Phase 11.
+
+## Phase 13 — Player Detail cleanup (unused voice samples)
+
+- Design the selection algorithm for what counts as "unused" for centroid purposes — undesigned as of Phase 6, where `C` was left a stub for exactly this reason.
+- Wire Player Detail's `C` binding to the algorithm once designed, following the existing cleanup pattern (`ConfirmationDialog` first, real disk/DB mutation after) used by Campaigns List, Players List, and Campaign Detail's Sessions tab.
+
 ## Explicitly deferred (not in this plan)
 
-- Session Detail screen itself.
-- The `f`/`s` voice-clip import screens and the `F` bulk-create-from-audio screen.
-- Player Detail's cleanup-unused-samples algorithm.
-- Translating the `"game-master"` magic value into session-level role text when seeding a new session's attendance roles.
+- The `F` bulk-create-players-from-audio screen (one recording containing multiple distinct speakers → multiple new players at once) — distinct from Phase 9/10's single-player clip import.
