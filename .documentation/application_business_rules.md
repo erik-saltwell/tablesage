@@ -76,6 +76,26 @@ rule in `tablesage_data_model.md`'s "Required relationship rules".
 
 ## Outlier removal (`_actions/players/remove_outliers.py`)
 
+**Reimplemented** (unlike the rest of this document, this is no longer just
+retired-implementation history): this algorithm now lives in
+`tablesage_tools.embeddings.compute_centroid`, which every clip-based
+centroid recompute runs through. It also gained a file-content-hash dedup
+pass beforehand — clips with identical bytes are collapsed to their
+first-seen path before embedding, so duplicates never inflate the centroid
+or the sample count.
+
+`min_sample_similarity`/`min_samples` are `AppSettings.remove_outliers`
+(`tablesage_model.settings`), loaded once by the TUI composition root
+(`tablesage_tui.screens.main_app.main`) via `tablesage_model.setup.ensure_settings`
+and injected into `Application`. The TUI ships a default `settings.yaml`
+packaged inside `tablesage_tui/resources/`; `ensure_settings` copies it out to
+`.tablesage/settings.yaml` in the working directory the first time the app
+runs there (including under a `uv tool`/`uvx` install, since the file travels
+inside the installed wheel) and never overwrites it again, so on-disk edits
+persist across runs. `compute_centroid` itself stays settings-agnostic —
+it only ever sees plain `float`/`int` values, per `system_architecture.md`'s
+rule that `tablesage-tools` doesn't know about `AppSettings`.
+
 - No-op if the player has `<= min_samples` samples (default **5**) — never
   prune below/at the floor.
 - Iterative: compute the L2-normalized centroid, find the single

@@ -47,7 +47,7 @@ Tools may compute embeddings and centroids. The application/domain layers decide
 
 ## Composition and testing
 
-The executable composition root constructs concrete SQLite repositories and tool adapters, then injects them into application use cases. This is the only place that knows all concrete implementations.
+The executable composition root constructs concrete SQLite repositories and tool adapters, then injects them into application use cases. This is the only place that knows all concrete implementations. It's also where `AppSettings` gets loaded (`tablesage_model.setup.ensure_settings`, deploying the TUI's packaged default `settings.yaml` to `.tablesage/settings.yaml` on first run) and injected into `Application` — settings aren't read anywhere below this point.
 
 - Test domain invariants without SQLite or provider dependencies.
 - Test application use cases with fake repositories and fake tools.

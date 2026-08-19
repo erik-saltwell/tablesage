@@ -96,7 +96,7 @@ not here — this doc holds each phase's scope/narrative only.
 - Design: see `.documentation/player_detail_screen.md`.
 - Inline metadata form: editable `name` (rename-with-fs-rollback), plus read-only `sample count`/`computed at`, refreshed after any recompute-triggering action.
 - Voice-clip child list is file-driven, not DB-backed — no `VoiceSample` table. Columns: filename + computed duration. `D` deletes the file, `ConfirmationDialog` first, then auto-triggers a full recompute (clearing the centroid fields outright if that brings the count to zero); `f`/`s` stay stubs.
-- Screen ops: `R` recompute centroid — always a full re-embed-everything-on-disk recompute (wired to `tablesage-tools`'s existing `compute_centroid`), not incremental; `C` cleanup — stub (algorithm undesigned, owned by Phase 13).
+- Screen ops: `R` recompute centroid — always a full re-embed-everything-on-disk recompute (wired to `tablesage-tools`'s existing `compute_centroid`), not incremental; `C` cleanup — stub at the time this phase landed (algorithm undesigned, owned by Phase 13, later completed).
 
 ## Phase 7 — Tests
 
@@ -137,10 +137,10 @@ not here — this doc holds each phase's scope/narrative only.
 - `G` gating: processed session file present.
 - Shares the progress-modal and toast+banner failure handling built in Phase 11.
 
-## Phase 13 — Player Detail cleanup (unused voice samples)
+## Phase 13 — Player Detail cleanup (unused voice samples) — done
 
-- Design the selection algorithm for what counts as "unused" for centroid purposes — undesigned as of Phase 6, where `C` was left a stub for exactly this reason.
-- Wire Player Detail's `C` binding to the algorithm once designed, following the existing cleanup pattern (`ConfirmationDialog` first, real disk/DB mutation after) used by Campaigns List, Players List, and Campaign Detail's Sessions tab.
+- Selection algorithm: `tablesage_tools.embeddings.compute_centroid` now dedupes clips by file-content hash (first-seen kept) and prunes similarity outliers (iterative worst-sample-at-a-time, per `application_business_rules.md`'s "Outlier removal"), returning the unused paths alongside the centroid.
+- Player Detail's `C` binding is wired to `players.cleanup_voice_clips` (shares a compute core with `recompute_centroid`, but additionally deletes each unused path from disk before writing the new centroid), following the existing cleanup pattern (`ConfirmationDialog` first, real disk/DB mutation after) used by Campaigns List, Players List, and Campaign Detail's Sessions tab.
 
 ## Explicitly deferred (not in this plan)
 

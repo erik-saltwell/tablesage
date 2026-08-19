@@ -7,6 +7,7 @@ import pytest
 from tablesage_application import Application
 from tablesage_application.players import VoiceClip
 from tablesage_model.model import Player
+from tablesage_model.settings import AppSettings, RemoveOutliersSettings
 from tablesage_tools.embeddings import Embedding
 
 
@@ -110,8 +111,8 @@ def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: 
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
     folder = tmp_path / ".tablesage" / "players" / "Alice"
-    _write_wav(folder / "clip_001.wav")
-    _write_wav(folder / "clip_002.wav")
+    _write_wav(folder / "clip_001.wav", num_frames=16000)
+    _write_wav(folder / "clip_002.wav", num_frames=8000)
 
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
 
@@ -127,8 +128,8 @@ def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatc
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
     folder = tmp_path / ".tablesage" / "players" / "Alice"
-    _write_wav(folder / "clip_001.wav")
-    _write_wav(folder / "clip_002.wav")
+    _write_wav(folder / "clip_001.wav", num_frames=16000)
+    _write_wav(folder / "clip_002.wav", num_frames=8000)
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
 
     progress_calls: list[tuple[int, int]] = []
@@ -174,3 +175,56 @@ def test_delete_voice_clip_raises_for_missing_file(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="not found"):
         application.delete_voice_clip(player.id, "nope.wav")
+
+
+def test_cleanup_voice_clips_deletes_duplicate_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    _write_wav(folder / "clip_001.wav")
+    _write_wav(folder / "clip_002.wav")  # identical bytes to clip_001 -> duplicate
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    updated, deleted = application.cleanup_voice_clips(player.id)
+
+    assert deleted == ["clip_002.wav"]
+    assert not (folder / "clip_002.wav").exists()
+    assert (folder / "clip_001.wav").exists()
+    assert updated.sample_count == 1
+
+
+def test_cleanup_voice_clips_reports_nothing_deleted_when_all_unique(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    _write_wav(folder / "clip_001.wav", num_frames=16000)
+    _write_wav(folder / "clip_002.wav", num_frames=8000)
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    updated, deleted = application.cleanup_voice_clips(player.id)
+
+    assert deleted == []
+    assert updated.sample_count == 2
+
+
+def test_cleanup_voice_clips_uses_injected_settings_for_outlier_threshold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = AppSettings(remove_outliers=RemoveOutliersSettings(min_sample_similarity=0.99, min_samples=1))
+    application = Application(tmp_path, settings=settings)
+    player = application.create_player(Player(name="Alice"))
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    _write_wav(folder / "clip_001.wav", num_frames=16000)
+    _write_wav(folder / "clip_002.wav", num_frames=8000)
+    _write_wav(folder / "clip_003.wav", num_frames=4000)
+
+    embeddings = {
+        folder / "clip_001.wav": Embedding(root=(1.0, 0.0)),
+        folder / "clip_002.wav": Embedding(root=(1.0, 0.0)),
+        folder / "clip_003.wav": Embedding(root=(0.0, 1.0)),
+    }
+    monkeypatch.setattr(application, "_embed_clip", lambda path: embeddings[path])
+
+    updated, deleted = application.cleanup_voice_clips(player.id)
+
+    assert deleted == ["clip_003.wav"]
+    assert not (folder / "clip_003.wav").exists()
+    assert updated.sample_count == 2

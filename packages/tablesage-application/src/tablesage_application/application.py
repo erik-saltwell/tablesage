@@ -9,17 +9,19 @@ from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
+from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
 from . import campaigns, glossary, paths, players, roster, sessions
 
 
 class Application:
-    def __init__(self, cwd: Path | None = None) -> None:
+    def __init__(self, cwd: Path | None = None, settings: AppSettings | None = None) -> None:
         self._cwd: Path = cwd if cwd is not None else Path.cwd()
         self._db_path: Path = setup.ensure_database(self._cwd)
         self._engine = setup.create_engine(self._db_path)
         self._embedding_factory: EmbeddingFactory | None = None
+        self._settings: AppSettings = settings if settings is not None else AppSettings()
 
     # Campaigns
 
@@ -111,7 +113,10 @@ class Application:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
-            result = players.delete_voice_clip(session, player_id, filename, folder, self._embed_clip, on_progress)
+            outliers = self._settings.remove_outliers
+            result = players.delete_voice_clip(
+                session, player_id, filename, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
+            )
             session.commit()
             session.refresh(result)
             return result
@@ -120,10 +125,25 @@ class Application:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
-            result = players.recompute_centroid(session, player_id, folder, self._embed_clip, on_progress)
+            outliers = self._settings.remove_outliers
+            result = players.recompute_centroid(
+                session, player_id, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
+            )
             session.commit()
             session.refresh(result)
             return result
+
+    def cleanup_voice_clips(self, player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Player, list[str]]:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            folder = paths.player_folder(self._cwd, player.name)
+            outliers = self._settings.remove_outliers
+            result, deleted_filenames = players.cleanup_voice_clips(
+                session, player_id, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
+            )
+            session.commit()
+            session.refresh(result)
+            return result, deleted_filenames
 
     def _embed_clip(self, path: Path) -> Embedding:
         if self._embedding_factory is None:

@@ -11,7 +11,7 @@ from pathlib import Path
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 from tablesage_model.model import Player
-from tablesage_tools.embeddings import Embedding, compute_centroid
+from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_centroid
 
 from ._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
 
@@ -94,47 +94,101 @@ def _serialize_centroid(embedding: Embedding) -> tuple[str, int]:
     return json.dumps(list(embedding.root)), len(embedding.root)
 
 
+def _compute_recompute_result(
+    player_folder: Path,
+    embed: Callable[[Path], Embedding],
+    on_progress: Callable[[int, int], None] | None,
+    min_sample_similarity: float,
+    min_samples: int,
+) -> tuple[Embedding | None, int, tuple[Path, ...]]:
+    """Embed every clip on disk and compute the centroid, without touching the DB or filesystem.
+
+    Returns the centroid (`None` if there are no clips), the count of clips
+    that actually contributed to it, and every clip path that didn't
+    (duplicates, pruned outliers) -- still present on disk either way.
+    """
+    clip_paths = sorted(player_folder.glob(VOICE_CLIP_GLOB)) if player_folder.exists() else []
+    if not clip_paths:
+        return None, 0, ()
+
+    result = compute_centroid(clip_paths, embed, on_progress, min_sample_similarity, min_samples)
+    used_count = len(clip_paths) - len(result.unused_paths)
+    return result.centroid, used_count, result.unused_paths
+
+
+def _apply_centroid(player: Player, centroid: Embedding | None, used_count: int) -> None:
+    if centroid is None:
+        player.centroid_embedding = None
+        player.embedding_dimension = None
+        player.sample_count = 0
+        player.computed_at = None
+    else:
+        serialized, dimension = _serialize_centroid(centroid)
+        player.centroid_embedding = serialized
+        player.embedding_dimension = dimension
+        player.sample_count = used_count
+        player.computed_at = datetime.now(UTC)
+
+
 def recompute_centroid(
     session: Session,
     player_id: uuid.UUID,
     player_folder: Path,
     embed: Callable[[Path], Embedding],
     on_progress: Callable[[int, int], None] | None = None,
+    min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
+    min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> Player:
     """Recompute a player's centroid from every clip currently on disk.
 
     Always a full recompute (re-embeds everything), never incremental. Clears
     the centroid entirely rather than leaving a stale one if no clips remain.
-    `on_progress`, if given, is called as `(clips_embedded, total_clips)`
-    after each clip's embedding completes -- real step counts for a
-    determinate progress display, not just a busy indicator.
+    Duplicate clips (identical file contents) and similarity outliers are
+    excluded from the computed centroid; `sample_count` reflects only the
+    clips actually used. `min_sample_similarity`/`min_samples` normally come
+    from the caller's loaded `AppSettings.remove_outliers`. `on_progress`, if
+    given, is called as `(clips_embedded, total_unique_clips)` after each
+    unique clip's embedding completes -- real step counts for a determinate
+    progress display, not just a busy indicator.
     """
     player = get_player(session, player_id)
-    clip_paths = sorted(player_folder.glob(VOICE_CLIP_GLOB)) if player_folder.exists() else []
-
-    if not clip_paths:
-        player.centroid_embedding = None
-        player.embedding_dimension = None
-        player.sample_count = 0
-        player.computed_at = None
-    else:
-        total = len(clip_paths)
-        embeddings: list[Embedding] = []
-        for index, path in enumerate(clip_paths, start=1):
-            embeddings.append(embed(path))
-            if on_progress is not None:
-                on_progress(index, total)
-
-        centroid = compute_centroid(embeddings)
-        serialized, dimension = _serialize_centroid(centroid)
-        player.centroid_embedding = serialized
-        player.embedding_dimension = dimension
-        player.sample_count = len(clip_paths)
-        player.computed_at = datetime.now(UTC)
-
+    centroid, used_count, _unused_paths = _compute_recompute_result(player_folder, embed, on_progress, min_sample_similarity, min_samples)
+    _apply_centroid(player, centroid, used_count)
     session.add(player)
     session.flush()
     return player
+
+
+def cleanup_voice_clips(
+    session: Session,
+    player_id: uuid.UUID,
+    player_folder: Path,
+    embed: Callable[[Path], Embedding],
+    on_progress: Callable[[int, int], None] | None = None,
+    min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
+    min_samples: int = DEFAULT_MIN_SAMPLES,
+) -> tuple[Player, list[str]]:
+    """Recompute the centroid, then delete every clip file that didn't contribute to it.
+
+    Unlike a plain recompute, this permanently removes duplicate and outlier
+    clip files from disk rather than just excluding them from the centroid --
+    it owns its own recompute-while-pruning pass instead of leaving the
+    unused files to be re-discovered (and re-embedded) next time. Files are
+    deleted before the player's centroid fields are written, mirroring
+    `delete_voice_clip`'s disk-then-DB order, so a mid-loop deletion failure
+    can't leave a persisted centroid that disagrees with what's on disk.
+    `min_sample_similarity`/`min_samples` normally come from the caller's
+    loaded `AppSettings.remove_outliers`. Returns the updated player and the
+    filenames that were deleted.
+    """
+    player = get_player(session, player_id)
+    centroid, used_count, unused_paths = _compute_recompute_result(player_folder, embed, on_progress, min_sample_similarity, min_samples)
+    for path in unused_paths:
+        path.unlink(missing_ok=True)
+    _apply_centroid(player, centroid, used_count)
+    session.add(player)
+    session.flush()
+    return player, [path.name for path in unused_paths]
 
 
 def delete_voice_clip(
@@ -144,10 +198,12 @@ def delete_voice_clip(
     player_folder: Path,
     embed: Callable[[Path], Embedding],
     on_progress: Callable[[int, int], None] | None = None,
+    min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
+    min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> Player:
     """Delete a voice clip file, then auto-recompute the centroid over what remains."""
     clip_path = player_folder / filename
     if not clip_path.is_file():
         raise ValueError(f"Voice clip '{filename}' not found.")
     clip_path.unlink()
-    return recompute_centroid(session, player_id, player_folder, embed, on_progress)
+    return recompute_centroid(session, player_id, player_folder, embed, on_progress, min_sample_similarity, min_samples)

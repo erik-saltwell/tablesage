@@ -314,13 +314,13 @@ async def test_recompute_centroid_shows_error_notification_on_failure() -> None:
 
 
 @pytest.mark.anyio
-async def test_cleanup_and_import_actions_are_stubbed_with_notify() -> None:
+async def test_import_actions_are_stubbed_with_notify() -> None:
     application = _application()
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, application.get_player.return_value.id)
 
-        for key in ("c", "f", "s"):
+        for key in ("f", "s"):
             await pilot.press(key)
             await pilot.pause()
             await _wait_for_progress_worker(pilot)
@@ -328,8 +328,70 @@ async def test_cleanup_and_import_actions_are_stubbed_with_notify() -> None:
 
 
 @pytest.mark.anyio
-async def test_cleanup_and_import_actions_route_through_progress_dialog() -> None:
-    """C/F/S are stubs today, but every command on this screen goes through run_with_progress, not a bare notify."""
+async def test_cleanup_confirms_then_recomputes_and_deletes_unused_clips() -> None:
+    player = Player(name="Alice")
+    updated_player = Player(id=player.id, name="Alice", sample_count=2)
+    application = _application(player=player)
+    application.cleanup_voice_clips = MagicMock(return_value=(updated_player, ["dup.wav", "outlier.wav"]))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("c")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            await pilot.press("tab", "tab", "enter")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        application.cleanup_voice_clips.assert_called_once()
+        assert application.cleanup_voice_clips.call_args.args[0] == player.id
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "2"
+        notify.assert_called_once_with("Removed 2 unused voice clip(s).")
+
+
+@pytest.mark.anyio
+async def test_cleanup_cancelled_does_not_delete() -> None:
+    application = _application()
+    application.cleanup_voice_clips = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        await pilot.press("c")
+        await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
+
+        application.cleanup_voice_clips.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_cleanup_notifies_when_nothing_removed() -> None:
+    player = Player(name="Alice", sample_count=1)
+    application = _application(player=player)
+    application.cleanup_voice_clips = MagicMock(return_value=(player, []))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("c")
+        await pilot.pause()
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            await pilot.press("tab", "tab", "enter")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        notify.assert_called_once_with("No unused voice clips found.")
+
+
+@pytest.mark.anyio
+async def test_import_actions_route_through_progress_dialog() -> None:
+    """F/S are stubs today, but every command on this screen goes through run_with_progress, not a bare notify."""
     application = _application()
 
     async with TableSageApp(application).run_test() as pilot:
@@ -338,11 +400,11 @@ async def test_cleanup_and_import_actions_route_through_progress_dialog() -> Non
         assert isinstance(screen, PlayerDetailScreen)
 
         with patch.object(screen, "run_with_progress") as run_with_progress:
-            for key in ("c", "f", "s"):
+            for key in ("f", "s"):
                 await pilot.press(key)
                 await pilot.pause()
 
-        assert run_with_progress.call_count == 3
+        assert run_with_progress.call_count == 2
         for call in run_with_progress.call_args_list:
             assert "work" in call.kwargs
             assert "on_success" in call.kwargs

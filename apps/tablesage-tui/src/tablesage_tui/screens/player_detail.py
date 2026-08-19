@@ -43,7 +43,7 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("Name", classes="field-label")
                     yield CommittingInput(id="player-name-input")
                 with Horizontal(classes="field-row", id="player-stats-row"):
-                    yield Static("Sample Count:", classes="field-label")
+                    yield Static("Samples In Centroid:", classes="field-label")
                     yield Static("", id="player-sample-count-value", classes="field-value")
                     yield Static("Computed At:", classes="field-label")
                     yield Static("", id="player-computed-at-value", classes="field-value")
@@ -176,12 +176,32 @@ class PlayerDetailScreen(TableSageScreen):
             self.notify("No voice clips on disk; centroid cleared.")
 
     def action_cleanup(self) -> None:
-        self.run_with_progress(
-            title="Cleaning Up",
-            message="Checking for unused voice samples…",
-            work=lambda: None,
-            on_success=lambda _: self.notify("Cleaning up unused voice samples is coming soon."),
+        def on_dismiss(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            self.run_with_progress(
+                title="Cleaning Up",
+                message="Recomputing the centroid and removing unused voice clips…",
+                work=lambda: self.application.cleanup_voice_clips(self._player_id, self.report_progress),
+                on_success=self._after_cleanup,
+            )
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Clean Up Voice Clips",
+                prompt="Recompute the centroid and permanently delete any duplicate or outlier clip files it finds?",
+            ),
+            on_dismiss,
         )
+
+    def _after_cleanup(self, result: tuple[Player, list[str]]) -> None:
+        player, deleted_filenames = result
+        self._refresh_centroid_display(player)
+        self._reload_voice_clips()
+        if deleted_filenames:
+            self.notify(f"Removed {len(deleted_filenames)} unused voice clip(s).")
+        else:
+            self.notify("No unused voice clips found.")
 
     def action_import_from_directory(self) -> None:
         self.run_with_progress(

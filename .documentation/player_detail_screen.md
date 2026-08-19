@@ -16,13 +16,18 @@ after any clip is added or removed.
 - **Voice clip** — an audio file in the player folder. Has no database row of
   its own; the list is built by reading the directory, not by querying a
   table.
-- **Centroid** — the player's voice-profile embedding, computed from all clips
-  currently in the folder. Stored directly on `Player`
+- **Centroid** — the player's voice-profile embedding, computed from the
+  clips currently in the folder. Stored directly on `Player`
   (`centroid_embedding`, `embedding_dimension`, `sample_count`, `computed_at`)
-  — no separate voice-profile or voice-sample table.
-- **Recompute** — a full, clean recomputation: re-embed every clip file
-  currently on disk and overwrite the centroid fields. Cheap enough to always
-  run in full rather than incrementally.
+  — no separate voice-profile or voice-sample table. Duplicate clips
+  (identical file contents, by hash — first-seen kept) and similarity
+  outliers (see `application_business_rules.md`'s "Outlier removal") are
+  excluded from the computation; `sample_count` reflects only the clips
+  actually used, not the raw file count on disk.
+- **Recompute** — a full, clean recomputation: re-embed every unique clip
+  file currently on disk (deduping and pruning outliers as above) and
+  overwrite the centroid fields. Cheap enough to always run in full rather
+  than incrementally.
 
 ## Flows
 
@@ -70,10 +75,14 @@ after any clip is added or removed.
 - **Auto-recompute on mutation**: any action that changes the clips on disk —
   deleting a clip here, and future import actions from Phase 9/10 — triggers
   a full recompute automatically. `C` cleanup is the one exception: its own
-  (separately designed, Phase 13) algorithm owns its own recompute-while-
-  pruning logic rather than triggering a second, redundant recompute after.
-- **`C` cleanup** stays a stub on this screen; the "what counts as unused"
-  selection algorithm is designed separately in Phase 13.
+  algorithm owns its own recompute-while-pruning logic rather than
+  triggering a second, redundant recompute after.
+- **`C` cleanup**: recomputes the centroid via `compute_centroid` (which
+  already excludes duplicate-by-content and outlier clips from the result —
+  see `application_business_rules.md`'s "Outlier removal"), then deletes
+  every clip file named in the result's `unused_paths` from disk. "What
+  counts as unused" is entirely `compute_centroid`'s decision; cleanup's own
+  job is just recompute-then-delete over whatever it reports.
 
 ## Open Questions / Ripple Effects
 
@@ -97,6 +106,9 @@ after any clip is added or removed.
      centroid fields if the folder has zero clips.
    - `delete_voice_clip(player, filename)`: deletes the file, then calls
      `recompute_centroid`.
+   - `cleanup_voice_clips(player)`: shares a `recompute_centroid` core with
+     the plain recompute path, but additionally deletes each path
+     `compute_centroid` reports as unused and returns their filenames.
    - Helper to list clip files + compute duration per file for the TUI list,
      reading the folder directly (no DB query).
 3. **TUI layer** (`apps/tablesage-tui`):
@@ -107,7 +119,8 @@ after any clip is added or removed.
    - Voice clip list: `simple-root` child list, `D` wired with
      `ConfirmationDialog` → delete + recompute + refresh metadata display;
      `E`/Enter disabled; `f`/`s` stay stubs; `R` wired to
-     `recompute_centroid` + refresh; `C` stays stubbed pending Phase 13.
+     `recompute_centroid` + refresh; `C` wired to `cleanup_voice_clips` +
+     refresh, notifying with the count of clips removed.
 4. **Docs**: this doc supersedes the "Player Detail" section of
    `.documentation/tablesage_tui_screens.md` for the details resolved here
    (list scope, auto-recompute, zero-sample clearing); that doc's existing
