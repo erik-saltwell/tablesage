@@ -41,13 +41,13 @@ class PlayerDetailScreen(TableSageScreen):
                 with Horizontal(classes="field-row"):
                     yield Static("Name", classes="field-label")
                     yield CommittingInput(id="player-name-input")
-                with Horizontal(classes="field-row"):
+                with Horizontal(classes="field-row", id="player-stats-row"):
                     yield Static("Sample Count", classes="field-label")
-                    yield Static("", id="player-sample-count-value")
-                with Horizontal(classes="field-row"):
+                    yield Static("", id="player-sample-count-value", classes="field-value")
                     yield Static("Computed At", classes="field-label")
-                    yield Static("", id="player-computed-at-value")
+                    yield Static("", id="player-computed-at-value", classes="field-value")
 
+            yield Static("Voice Clips", classes="section-title")
             table: DataTable[str] = DataTable(id="voice-clips-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
             table.add_column("Clip", key="filename")
             table.add_column("Duration", key="duration")

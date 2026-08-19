@@ -908,12 +908,32 @@ PlayerDetailScreen {
             Input {
                 width: 1fr;
             }
+        }
 
-            Static#player-sample-count-value,
-            Static#player-computed-at-value {
-                width: 1fr;
+        #player-stats-row {
+            height: 1;
+            margin: 0;
+
+            .field-value {
                 color: $surface-2-fg;
+                margin: 0 4 0 0;
+            }
+
+            #player-sample-count-value {
+                width: 8;
+            }
+
+            #player-computed-at-value {
+                width: 1fr;
+                margin: 0;
             }
         }
+    }
+
+    .section-title {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-accent;
+        text-style: bold;
     }
 }
