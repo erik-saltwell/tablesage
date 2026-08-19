@@ -141,9 +141,12 @@ class PlayerDetailScreen(TableSageScreen):
         def on_dismiss(confirmed: bool | None) -> None:
             if not confirmed:
                 return
-            player = self.application.delete_voice_clip(self._player_id, filename)
-            self._refresh_centroid_display(player)
-            self._reload_voice_clips()
+            self.run_with_progress(
+                title="Deleting Clip",
+                message=f"Deleting '{filename}' and recomputing the centroid…",
+                work=lambda: self.application.delete_voice_clip(self._player_id, filename),
+                on_success=self._after_delete_clip,
+            )
 
         self.app.push_screen(
             ConfirmationDialog(
@@ -153,8 +156,19 @@ class PlayerDetailScreen(TableSageScreen):
             on_dismiss,
         )
 
+    def _after_delete_clip(self, player: Player) -> None:
+        self._refresh_centroid_display(player)
+        self._reload_voice_clips()
+
     def action_recompute_centroid(self) -> None:
-        player = self.application.recompute_centroid(self._player_id)
+        self.run_with_progress(
+            title="Recomputing Centroid",
+            message="Embedding voice clips and recomputing the centroid…",
+            work=lambda: self.application.recompute_centroid(self._player_id),
+            on_success=self._after_recompute_centroid,
+        )
+
+    def _after_recompute_centroid(self, player: Player) -> None:
         self._refresh_centroid_display(player)
         if player.sample_count:
             self.notify(f"Centroid recomputed from {player.sample_count} clip(s).")

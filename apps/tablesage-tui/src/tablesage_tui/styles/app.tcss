@@ -530,7 +530,8 @@ ConfirmationDialog,
 TextInputDialog,
 PlayerPickerDialog,
 RolePickerDialog,
-GlossaryEntryDialog {
+GlossaryEntryDialog,
+ProgressDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -538,7 +539,8 @@ GlossaryEntryDialog {
     #text-input-dialog,
     #player-picker-dialog,
     #role-picker-dialog,
-    #glossary-entry-dialog {
+    #glossary-entry-dialog,
+    #progress-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -554,9 +556,19 @@ GlossaryEntryDialog {
     #confirmation-prompt,
     #text-input-prompt,
     #role-picker-prompt,
-    #player-picker-empty {
+    #player-picker-empty,
+    #progress-message {
         height: auto;
         margin: 0 0 1 0;
+    }
+
+    #progress-bar {
+        width: 1fr;
+        height: 1;
+
+        Bar {
+            width: 1fr;
+        }
     }
 
     #player-picker-table {

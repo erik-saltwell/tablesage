@@ -1,17 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from tablesage_application import Application
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.screen import Screen
 from textual.widgets import Footer
+from textual.worker import Worker, WorkerState
 
+from ..dialogs.progress import ProgressDialog
 from ..widgets.tablesage_header import TableSageHeader
 
 if TYPE_CHECKING:
     from .main_app import TableSageApp
+
+_PROGRESS_WORKER_GROUP = "tablesage-progress"
+
+ResultT = TypeVar("ResultT")
 
 
 class TableSageScreen(Screen[None]):
@@ -19,6 +26,8 @@ class TableSageScreen(Screen[None]):
 
     section = ""
     campaign = "no campaign loaded"
+
+    _progress_on_success: Callable[[Any], None] | None = None
 
     def compose(self) -> ComposeResult:
         with Vertical(classes="app-frame surface-1"):
@@ -43,3 +52,41 @@ class TableSageScreen(Screen[None]):
     def action_pop_screen(self) -> None:
         """Pop back to the previous screen. Subclasses opt in via an `escape` binding."""
         self.app.pop_screen()
+
+    def run_with_progress(self, *, title: str, message: str, work: Callable[[], ResultT], on_success: Callable[[ResultT], None]) -> None:
+        """Run `work` on a background thread behind a cancel-less `ProgressDialog`.
+
+        `on_success` runs once `work` finishes, after the dialog is popped --
+        never as the continuation of an awaited coroutine (a prior rendering
+        bug traced list mutations that happened that way), always as a plain
+        `on_worker_state_changed` event-handler callback instead.
+        """
+        self._progress_on_success = on_success
+        self.app.push_screen(ProgressDialog(title=title, message=message))
+        self.run_worker(
+            work,
+            thread=True,
+            exclusive=True,
+            exit_on_error=False,
+            group=_PROGRESS_WORKER_GROUP,
+            name=_PROGRESS_WORKER_GROUP,
+        )
+
+    def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
+        if event.worker.group != _PROGRESS_WORKER_GROUP:
+            return
+        if event.state not in (WorkerState.SUCCESS, WorkerState.ERROR):
+            return
+
+        if isinstance(self.app.screen, ProgressDialog):
+            self.app.pop_screen()
+
+        on_success = self._progress_on_success
+        self._progress_on_success = None
+
+        if event.state == WorkerState.ERROR:
+            self.notify(str(event.worker.error), severity="error")
+            return
+
+        if on_success is not None:
+            on_success(event.worker.result)

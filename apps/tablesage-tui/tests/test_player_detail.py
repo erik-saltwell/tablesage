@@ -1,3 +1,4 @@
+import threading
 import uuid
 from datetime import datetime
 from unittest.mock import MagicMock
@@ -5,7 +6,7 @@ from unittest.mock import MagicMock
 import pytest
 from tablesage_application.players import VoiceClip
 from tablesage_model.model import Player
-from tablesage_tui.dialogs import ConfirmationDialog
+from tablesage_tui.dialogs import ConfirmationDialog, ProgressDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.widgets import CommittingInput
@@ -23,6 +24,12 @@ def _application(*, player: Player | None = None, clips: list[VoiceClip] | None 
 
 async def _open_player_detail(pilot: Pilot, player_id: uuid.UUID) -> None:
     pilot.app.push_screen(PlayerDetailScreen(player_id))
+    await pilot.pause()
+
+
+async def _wait_for_progress_worker(pilot: Pilot) -> None:
+    """Wait for the background-thread worker behind a ProgressDialog to finish and its callback to run."""
+    await pilot.app.workers.wait_for_complete()
     await pilot.pause()
 
 
@@ -161,8 +168,10 @@ async def test_delete_clip_confirms_then_deletes_and_refreshes() -> None:
 
         await pilot.press("tab", "tab", "enter")
         await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_voice_clip.assert_called_once_with(player.id, "clip_001.wav")
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
         assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "0"
 
 
@@ -210,11 +219,56 @@ async def test_recompute_centroid_updates_display() -> None:
 
         await pilot.press("r")
         await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.recompute_centroid.assert_called_once_with(player.id)
         screen = pilot.app.screen
+        assert isinstance(screen, PlayerDetailScreen)
         assert screen.query_one("#player-sample-count-value", Static).render() == "4"
         assert screen.query_one("#player-computed-at-value", Static).render() == "2026-08-19 09:00"
+
+
+@pytest.mark.anyio
+async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
+    release = threading.Event()
+    player = Player(name="Alice")
+    application = _application(player=player)
+
+    def slow_recompute(player_id: uuid.UUID) -> Player:
+        release.wait(timeout=5)
+        return Player(id=player_id, name="Alice", sample_count=2)
+
+    application.recompute_centroid = MagicMock(side_effect=slow_recompute)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("r")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ProgressDialog)
+
+        release.set()
+        await _wait_for_progress_worker(pilot)
+
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "2"
+
+
+@pytest.mark.anyio
+async def test_recompute_centroid_shows_error_notification_on_failure() -> None:
+    player = Player(name="Alice")
+    application = _application(player=player)
+    application.recompute_centroid = MagicMock(side_effect=RuntimeError("embedding model unavailable"))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("r")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
 
 
 @pytest.mark.anyio
