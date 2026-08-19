@@ -144,7 +144,7 @@ class PlayerDetailScreen(TableSageScreen):
             self.run_with_progress(
                 title="Deleting Clip",
                 message=f"Deleting '{filename}' and recomputing the centroid…",
-                work=lambda: self.application.delete_voice_clip(self._player_id, filename),
+                work=lambda: self.application.delete_voice_clip(self._player_id, filename, self.report_progress),
                 on_success=self._after_delete_clip,
             )
 
@@ -164,7 +164,7 @@ class PlayerDetailScreen(TableSageScreen):
         self.run_with_progress(
             title="Recomputing Centroid",
             message="Embedding voice clips and recomputing the centroid…",
-            work=lambda: self.application.recompute_centroid(self._player_id),
+            work=lambda: self.application.recompute_centroid(self._player_id, self.report_progress),
             on_success=self._after_recompute_centroid,
         )
 

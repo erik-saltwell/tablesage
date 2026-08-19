@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
@@ -106,20 +107,20 @@ class Application:
             player = players.get_player(session, player_id)
             return players.list_voice_clips(paths.player_folder(self._cwd, player.name))
 
-    def delete_voice_clip(self, player_id: uuid.UUID, filename: str) -> Player:
+    def delete_voice_clip(self, player_id: uuid.UUID, filename: str, on_progress: Callable[[int, int], None] | None = None) -> Player:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
-            result = players.delete_voice_clip(session, player_id, filename, folder, self._embed_clip)
+            result = players.delete_voice_clip(session, player_id, filename, folder, self._embed_clip, on_progress)
             session.commit()
             session.refresh(result)
             return result
 
-    def recompute_centroid(self, player_id: uuid.UUID) -> Player:
+    def recompute_centroid(self, player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> Player:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
-            result = players.recompute_centroid(session, player_id, folder, self._embed_clip)
+            result = players.recompute_centroid(session, player_id, folder, self._embed_clip, on_progress)
             session.commit()
             session.refresh(result)
             return result

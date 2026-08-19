@@ -28,3 +28,7 @@ class ProgressDialog(ModalScreen[None]):
 
     def update_message(self, message: str) -> None:
         self.query_one("#progress-message", Static).update(message)
+
+    def set_progress(self, completed: int, total: int) -> None:
+        """Switch the bar from indeterminate to a determinate completed/total display."""
+        self.query_one("#progress-bar", ProgressBar).update(total=total, progress=completed)

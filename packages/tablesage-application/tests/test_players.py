@@ -123,6 +123,20 @@ def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: 
     assert updated.computed_at is not None
 
 
+def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    _write_wav(folder / "clip_001.wav")
+    _write_wav(folder / "clip_002.wav")
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    progress_calls: list[tuple[int, int]] = []
+    application.recompute_centroid(player.id, lambda completed, total: progress_calls.append((completed, total)))
+
+    assert progress_calls == [(1, 2), (2, 2)]
+
+
 def test_recompute_centroid_clears_when_no_clips(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))

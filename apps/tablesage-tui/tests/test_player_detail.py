@@ -1,5 +1,7 @@
+import asyncio
 import threading
 import uuid
+from collections.abc import Callable
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -11,7 +13,7 @@ from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
-from textual.widgets import DataTable, Input, Static
+from textual.widgets import DataTable, Input, ProgressBar, Static
 
 
 def _application(*, player: Player | None = None, clips: list[VoiceClip] | None = None) -> MagicMock:
@@ -170,7 +172,8 @@ async def test_delete_clip_confirms_then_deletes_and_refreshes() -> None:
         await pilot.pause()
         await _wait_for_progress_worker(pilot)
 
-        application.delete_voice_clip.assert_called_once_with(player.id, "clip_001.wav")
+        application.delete_voice_clip.assert_called_once()
+        assert application.delete_voice_clip.call_args.args[:2] == (player.id, "clip_001.wav")
         assert isinstance(pilot.app.screen, PlayerDetailScreen)
         assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "0"
 
@@ -221,7 +224,8 @@ async def test_recompute_centroid_updates_display() -> None:
         await pilot.pause()
         await _wait_for_progress_worker(pilot)
 
-        application.recompute_centroid.assert_called_once_with(player.id)
+        application.recompute_centroid.assert_called_once()
+        assert application.recompute_centroid.call_args.args[0] == player.id
         screen = pilot.app.screen
         assert isinstance(screen, PlayerDetailScreen)
         assert screen.query_one("#player-sample-count-value", Static).render() == "4"
@@ -234,7 +238,7 @@ async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
     player = Player(name="Alice")
     application = _application(player=player)
 
-    def slow_recompute(player_id: uuid.UUID) -> Player:
+    def slow_recompute(player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> Player:
         release.wait(timeout=5)
         return Player(id=player_id, name="Alice", sample_count=2)
 
@@ -253,6 +257,44 @@ async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
 
         assert isinstance(pilot.app.screen, PlayerDetailScreen)
         assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "2"
+
+
+@pytest.mark.anyio
+async def test_recompute_centroid_reports_determinate_progress() -> None:
+    release = threading.Event()
+    progress_reported = threading.Event()
+    player = Player(name="Alice")
+    application = _application(player=player)
+
+    def slow_recompute(player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> Player:
+        if on_progress is not None:
+            on_progress(3, 6)
+        progress_reported.set()
+        release.wait(timeout=5)
+        return Player(id=player_id, name="Alice", sample_count=6)
+
+    application.recompute_centroid = MagicMock(side_effect=slow_recompute)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("r")
+        await pilot.pause()
+
+        for _ in range(200):
+            if progress_reported.is_set():
+                break
+            await asyncio.sleep(0.01)
+        assert progress_reported.is_set(), "on_progress was never called"
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ProgressDialog)
+        bar = screen.query_one("#progress-bar", ProgressBar)
+        assert bar.total == pytest.approx(6)
+        assert bar.progress == pytest.approx(3)
+
+        release.set()
+        await _wait_for_progress_worker(pilot)
 
 
 @pytest.mark.anyio

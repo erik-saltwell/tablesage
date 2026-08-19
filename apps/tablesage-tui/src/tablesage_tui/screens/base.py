@@ -28,6 +28,7 @@ class TableSageScreen(Screen[None]):
     campaign = "no campaign loaded"
 
     _progress_on_success: Callable[[Any], None] | None = None
+    _progress_dialog: ProgressDialog | None = None
 
     def compose(self) -> ComposeResult:
         with Vertical(classes="app-frame surface-1"):
@@ -62,7 +63,9 @@ class TableSageScreen(Screen[None]):
         `on_worker_state_changed` event-handler callback instead.
         """
         self._progress_on_success = on_success
-        self.app.push_screen(ProgressDialog(title=title, message=message))
+        dialog = ProgressDialog(title=title, message=message)
+        self._progress_dialog = dialog
+        self.app.push_screen(dialog)
         self.run_worker(
             work,
             thread=True,
@@ -72,6 +75,18 @@ class TableSageScreen(Screen[None]):
             name=_PROGRESS_WORKER_GROUP,
         )
 
+    def report_progress(self, completed: int, total: int) -> None:
+        """Update the visible ProgressDialog's bar to a determinate completed/total display.
+
+        Safe to call from the background thread running `run_with_progress`'s
+        `work` callable -- hops back onto the app's event loop via
+        `call_from_thread` rather than touching widgets directly off-thread.
+        """
+        dialog = self._progress_dialog
+        if dialog is None:
+            return
+        self.app.call_from_thread(dialog.set_progress, completed, total)
+
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
         if event.worker.group != _PROGRESS_WORKER_GROUP:
             return
@@ -80,6 +95,7 @@ class TableSageScreen(Screen[None]):
 
         if isinstance(self.app.screen, ProgressDialog):
             self.app.pop_screen()
+        self._progress_dialog = None
 
         on_success = self._progress_on_success
         self._progress_on_success = None

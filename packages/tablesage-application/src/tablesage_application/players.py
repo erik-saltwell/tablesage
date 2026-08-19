@@ -94,11 +94,20 @@ def _serialize_centroid(embedding: Embedding) -> tuple[str, int]:
     return json.dumps(list(embedding.root)), len(embedding.root)
 
 
-def recompute_centroid(session: Session, player_id: uuid.UUID, player_folder: Path, embed: Callable[[Path], Embedding]) -> Player:
+def recompute_centroid(
+    session: Session,
+    player_id: uuid.UUID,
+    player_folder: Path,
+    embed: Callable[[Path], Embedding],
+    on_progress: Callable[[int, int], None] | None = None,
+) -> Player:
     """Recompute a player's centroid from every clip currently on disk.
 
     Always a full recompute (re-embeds everything), never incremental. Clears
     the centroid entirely rather than leaving a stale one if no clips remain.
+    `on_progress`, if given, is called as `(clips_embedded, total_clips)`
+    after each clip's embedding completes -- real step counts for a
+    determinate progress display, not just a busy indicator.
     """
     player = get_player(session, player_id)
     clip_paths = sorted(player_folder.glob(VOICE_CLIP_GLOB)) if player_folder.exists() else []
@@ -109,7 +118,14 @@ def recompute_centroid(session: Session, player_id: uuid.UUID, player_folder: Pa
         player.sample_count = 0
         player.computed_at = None
     else:
-        centroid = compute_centroid([embed(path) for path in clip_paths])
+        total = len(clip_paths)
+        embeddings: list[Embedding] = []
+        for index, path in enumerate(clip_paths, start=1):
+            embeddings.append(embed(path))
+            if on_progress is not None:
+                on_progress(index, total)
+
+        centroid = compute_centroid(embeddings)
         serialized, dimension = _serialize_centroid(centroid)
         player.centroid_embedding = serialized
         player.embedding_dimension = dimension
@@ -122,11 +138,16 @@ def recompute_centroid(session: Session, player_id: uuid.UUID, player_folder: Pa
 
 
 def delete_voice_clip(
-    session: Session, player_id: uuid.UUID, filename: str, player_folder: Path, embed: Callable[[Path], Embedding]
+    session: Session,
+    player_id: uuid.UUID,
+    filename: str,
+    player_folder: Path,
+    embed: Callable[[Path], Embedding],
+    on_progress: Callable[[int, int], None] | None = None,
 ) -> Player:
     """Delete a voice clip file, then auto-recompute the centroid over what remains."""
     clip_path = player_folder / filename
     if not clip_path.is_file():
         raise ValueError(f"Voice clip '{filename}' not found.")
     clip_path.unlink()
-    return recompute_centroid(session, player_id, player_folder, embed)
+    return recompute_centroid(session, player_id, player_folder, embed, on_progress)
