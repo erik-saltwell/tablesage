@@ -926,6 +926,10 @@ PlayerDetailScreen {
 
             #player-computed-at-value {
                 width: auto;
+            }
+
+            #player-centroid-hash-value {
+                width: auto;
                 margin: 0;
             }
         }

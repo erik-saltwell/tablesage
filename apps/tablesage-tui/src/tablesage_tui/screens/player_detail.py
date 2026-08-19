@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import uuid
 
 from tablesage_model.model import Player
@@ -24,8 +25,8 @@ class PlayerDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_clip", "Delete clip", key_display="D"),
         Binding("r,R", "recompute_centroid", "Recompute", key_display="R"),
         Binding("c,C", "cleanup", "Clean up", key_display="C"),
-        Binding("f,F", "import_from_directory", "From directory", key_display="F"),
-        Binding("s,S", "import_from_session", "From session", key_display="S"),
+        Binding("f,F", "import_from_directory", "Directory Import", key_display="F"),
+        Binding("s,S", "import_from_session", "Session Import", key_display="S"),
     ]
 
     def __init__(self, player_id: uuid.UUID) -> None:
@@ -46,6 +47,8 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("", id="player-sample-count-value", classes="field-value")
                     yield Static("Computed At:", classes="field-label")
                     yield Static("", id="player-computed-at-value", classes="field-value")
+                    yield Static("Centroid Hash:", classes="field-label")
+                    yield Static("", id="player-centroid-hash-value", classes="field-value")
 
             yield Static("Voice Clips", classes="section-title")
             table: DataTable[str] = DataTable(id="voice-clips-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
@@ -98,6 +101,14 @@ class PlayerDetailScreen(TableSageScreen):
         self.query_one("#player-sample-count-value", Static).update(str(player.sample_count))
         computed_at = player.computed_at.strftime("%Y-%m-%d %H:%M") if player.computed_at else "Never"
         self.query_one("#player-computed-at-value", Static).update(computed_at)
+        self.query_one("#player-centroid-hash-value", Static).update(self._centroid_hash(player))
+
+    @staticmethod
+    def _centroid_hash(player: Player) -> str:
+        """A short hash of the centroid, computed here (not stored) purely so a recompute's effect is visible at a glance."""
+        if player.centroid_embedding is None:
+            return "None"
+        return hashlib.sha256(player.centroid_embedding.encode()).hexdigest()[:8]
 
     # Voice clips
 

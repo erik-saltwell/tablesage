@@ -38,6 +38,39 @@ async def test_metadata_is_prefilled() -> None:
         assert screen.query_one("#player-name-input", Input).value == "Alice"
         assert screen.query_one("#player-sample-count-value", Static).render() == "3"
         assert screen.query_one("#player-computed-at-value", Static).render() == "Never"
+        assert screen.query_one("#player-centroid-hash-value", Static).render() == "None"
+
+
+@pytest.mark.anyio
+async def test_metadata_shows_centroid_hash_when_set() -> None:
+    player = Player(name="Alice", centroid_embedding="[0.1, 0.2]")
+    application = _application(player=player)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        screen = pilot.app.screen
+        hash_value = str(screen.query_one("#player-centroid-hash-value", Static).render())
+        assert hash_value != "None"
+        assert len(hash_value) == 8
+
+
+@pytest.mark.anyio
+async def test_centroid_hash_changes_when_centroid_changes() -> None:
+    player_a = Player(name="Alice", centroid_embedding="[0.1, 0.2]")
+    player_b = Player(id=player_a.id, name="Alice", centroid_embedding="[0.9, 0.8]")
+    application = _application(player=player_a)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player_a.id)
+
+        screen = pilot.app.screen
+        assert isinstance(screen, PlayerDetailScreen)
+        hash_a = str(screen.query_one("#player-centroid-hash-value", Static).render())
+        screen._refresh_centroid_display(player_b)
+        hash_b = str(screen.query_one("#player-centroid-hash-value", Static).render())
+
+        assert hash_a != hash_b
 
 
 @pytest.mark.anyio
