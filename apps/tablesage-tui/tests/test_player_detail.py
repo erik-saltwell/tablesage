@@ -122,6 +122,27 @@ async def test_voice_clips_table_shows_clips() -> None:
 
 
 @pytest.mark.anyio
+async def test_total_duration_sums_every_clip_on_disk() -> None:
+    clips = [VoiceClip(filename="clip_001.wav", duration_seconds=45.0), VoiceClip(filename="clip_002.wav", duration_seconds=100.0)]
+    application = _application(clips=clips)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        assert pilot.app.screen.query_one("#player-total-duration-value", Static).render() == "2:25"
+
+
+@pytest.mark.anyio
+async def test_total_duration_is_zero_with_no_clips() -> None:
+    application = _application(clips=[])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        assert pilot.app.screen.query_one("#player-total-duration-value", Static).render() == "0:00"
+
+
+@pytest.mark.anyio
 async def test_rename_commits_on_enter() -> None:
     player = Player(name="Alice")
     application = _application(player=player)

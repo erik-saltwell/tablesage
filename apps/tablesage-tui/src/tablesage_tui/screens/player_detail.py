@@ -26,12 +26,12 @@ class PlayerDetailScreen(TableSageScreen):
     section = "player detail"
     AUTO_FOCUS = ""
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
-        Binding("d,D,delete,backspace", "delete_clip", "Delete clip", key_display="D"),
+        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("d,D,delete,backspace", "delete_clip", "Delete", key_display="D"),
         Binding("r,R", "recompute_centroid", "Recompute", key_display="R"),
-        Binding("c,C", "cleanup", "Clean up", key_display="C"),
-        Binding("f,F", "import_from_directory", "Directory Import", key_display="F"),
-        Binding("s,S", "import_from_session", "Session Import", key_display="S"),
+        Binding("c,C", "cleanup", "Clean Up", key_display="C"),
+        Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
+        Binding("s,S", "import_from_session", "Session Imp", key_display="S"),
     ]
 
     def __init__(self, player_id: uuid.UUID) -> None:
@@ -48,12 +48,17 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("Name", classes="field-label")
                     yield CommittingInput(id="player-name-input")
                 with Horizontal(classes="field-row", id="player-stats-row"):
-                    yield Static("Samples In Centroid:", classes="field-label")
+                    yield Static("Centroid Samples:", classes="field-label")
                     yield Static("", id="player-sample-count-value", classes="field-value")
+                    yield Static("", classes="field-spacer")
                     yield Static("Computed At:", classes="field-label")
                     yield Static("", id="player-computed-at-value", classes="field-value")
-                    yield Static("Centroid Hash:", classes="field-label")
+                    yield Static("", classes="field-spacer")
+                    yield Static("Centroid", classes="field-label")
                     yield Static("", id="player-centroid-hash-value", classes="field-value")
+                    yield Static("", classes="field-spacer")
+                    yield Static("Duration", classes="field-label")
+                    yield Static("", id="player-total-duration-value", classes="field-value")
 
             yield Static("Voice Clips", classes="section-title")
             table: DataTable[str] = DataTable(id="voice-clips-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
@@ -126,13 +131,23 @@ class PlayerDetailScreen(TableSageScreen):
 
         table.clear()
         restored_row: int | None = None
+        total_duration = 0.0
         for index, clip in enumerate(self.application.list_voice_clips(self._player_id)):
             table.add_row(clip.filename, f"{clip.duration_seconds:.1f}s", key=clip.filename)
+            total_duration += clip.duration_seconds
             if selected is not None and clip.filename == selected:
                 restored_row = index
 
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+
+        self.query_one("#player-total-duration-value", Static).update(self._format_duration(total_duration))
+
+    @staticmethod
+    def _format_duration(total_seconds: float) -> str:
+        """`M:SS` across every clip on disk -- not just the ones the current centroid used."""
+        minutes, seconds = divmod(round(total_seconds), 60)
+        return f"{minutes}:{seconds:02d}"
 
     def _selected_clip_filename(self) -> str | None:
         table = self.query_one("#voice-clips-table", DataTable)

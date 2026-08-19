@@ -20,12 +20,15 @@ class TableSageApp(App):
 
     CSS_PATH = ["../styles/app.tcss"]
     BINDINGS = [
+        # Kept working everywhere (priority=True), but not shown in the footer
+        # except on LandingScreen, which re-declares it with show=True.
         Binding(
             "ctrl+q",
             "quit",
             "Quit",
             key_display="^Q",
             priority=True,
+            show=False,
         ),
     ]
 

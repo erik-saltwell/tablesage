@@ -26,11 +26,11 @@ class CampaignListScreen(TableSageScreen):
 
     section = "campaigns"
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
-        Binding("n,N", "new_campaign", "New campaign", key_display="N"),
-        Binding("enter,e,E", "open_campaign", "Edit campaign", key_display="E"),
+        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("n,N", "new_campaign", "New Campaign", key_display="N"),
+        Binding("enter,e,E", "open_campaign", "Edit Campaign", key_display="E"),
         Binding("d,D,delete,backspace", "delete_campaign", "Delete", key_display="D"),
-        Binding("c,C", "cleanup_campaigns", "Clean up", key_display="C"),
+        Binding("c,C", "cleanup_campaigns", "Clean Up", key_display="C"),
         Binding("i,I", "import_campaign", "Import", key_display="I"),
     ]
 

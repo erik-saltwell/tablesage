@@ -31,7 +31,7 @@ class TableSageScreen(Screen[None]):
     # Merged with each subclass's own BINDINGS (Textual combines BINDINGS across
     # the whole MRO), so every screen gets F5 without redeclaring it.
     BINDINGS = [
-        Binding("f5", "refresh_screen", "Refresh", key_display="F5"),
+        Binding("f5", "refresh_screen", "Refresh", key_display="F5", show=False),
     ]
 
     _progress_on_success: Callable[[Any], None] | None = None

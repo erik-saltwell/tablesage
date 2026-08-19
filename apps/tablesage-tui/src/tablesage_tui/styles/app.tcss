@@ -166,6 +166,20 @@ Screen {
     scrollbar-corner-color: $surface-2-bg;
 }
 
+/* Widget's own DEFAULT_CSS gives every widget an explicit scrollbar-* value
+   (Textual's built-in $scrollbar* theme tokens), so the Screen-level rule
+   above never actually cascades down -- DataTable (the only scrollable
+   widget in this app) needs its own override to pick up our palette. */
+DataTable {
+    scrollbar-background: $surface-2-bg;
+    scrollbar-background-hover: $surface-3-bg;
+    scrollbar-background-active: $surface-3-bg;
+    scrollbar-color: $sage-700;
+    scrollbar-color-hover: $sage-600;
+    scrollbar-color-active: $sage-400;
+    scrollbar-corner-color: $surface-2-bg;
+}
+
 .surface-0 {
     background: $surface-0-bg;
     color: $surface-0-fg;
@@ -287,10 +301,6 @@ Footer {
             opacity: 0.5;
         }
     }
-    FooterKey:last-child {
-        dock: right;
-    }
-
     FooterLabel {
         background: $surface-2-bg;
         color: $surface-2-fg;
@@ -677,6 +687,13 @@ LandingScreen {
         align: center middle;
     }
 
+    /* Quit (^Q) is only shown in this screen's footer -- see landing.py's
+       BINDINGS -- and stays right-docked here, unlike every other screen's
+       footer which just flows left-to-right. */
+    Footer FooterKey:last-child {
+        dock: right;
+    }
+
     #welcome-panel {
         width: 80;
         height: 31;
@@ -958,25 +975,29 @@ PlayerDetailScreen {
 
         #player-stats-row {
             height: 1;
-            margin: 0 1 0 0;
-            align: right middle;
+            align: left middle;
+            /* Inset 1 column in from the Name input's edges on both sides
+               (left offset = its label column width + 1, right offset = 1),
+               so the row reads as gently nested inside the input's bounds
+               rather than flush with them. */
+            margin: 0 1 0 15;
+
+            .field-label {
+                width: auto;
+                margin: 0 1 0 0;
+            }
 
             .field-value {
+                width: auto;
                 color: $surface-2-fg;
-                margin: 0 4 0 0;
             }
 
-            #player-sample-count-value {
-                width: 8;
-            }
-
-            #player-computed-at-value {
-                width: auto;
-            }
-
-            #player-centroid-hash-value {
-                width: auto;
-                margin: 0;
+            /* Flexible gaps between label-value pairs: whatever width is left
+               after the (fixed-width) labels/values distributes evenly here,
+               so the row's content spans exactly as wide as the Name input
+               (same start, same end) regardless of terminal width. */
+            .field-spacer {
+                width: 1fr;
             }
         }
     }

@@ -30,14 +30,14 @@ class CampaignDetailScreen(TableSageScreen):
     section = "campaign detail"
     AUTO_FOCUS = ""
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
+        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
         Binding("r,R", "show_roster", "Roster", key_display="R"),
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
         Binding("n,N", "new_item", "New", key_display="N"),
         Binding("enter,e,E", "edit_item", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_item", "Delete", key_display="D"),
-        Binding("c,C", "cleanup", "Clean up", key_display="C"),
+        Binding("c,C", "cleanup", "Clean Up", key_display="C"),
     ]
 
     def __init__(self, campaign_id: uuid.UUID) -> None:

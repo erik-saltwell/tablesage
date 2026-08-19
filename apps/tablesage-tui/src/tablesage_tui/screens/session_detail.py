@@ -26,13 +26,13 @@ class SessionDetailScreen(TableSageScreen):
     section = "session detail"
     AUTO_FOCUS = ""
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
-        Binding("n,N", "new_attendee", "Add attendee", key_display="N"),
-        Binding("enter,e,E", "edit_attendee", "Edit roles", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_attendee", "Remove attendee", key_display="D"),
-        Binding("i,I", "import_audio", "Import audio", key_display="I"),
+        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("n,N", "new_attendee", "Add Attendee", key_display="N"),
+        Binding("enter,e,E", "edit_attendee", "Edit Roles", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
+        Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("p,P", "process_session", "Process", key_display="P"),
-        Binding("g,G", "generate_summary", "Generate summary", key_display="G"),
+        Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:

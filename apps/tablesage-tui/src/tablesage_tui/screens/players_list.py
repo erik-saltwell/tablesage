@@ -18,12 +18,12 @@ class PlayersListScreen(TableSageScreen):
 
     section = "players"
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
-        Binding("n,N", "new_player", "New player", key_display="N"),
-        Binding("f,F", "create_players_from_audio", "From audio", key_display="F"),
-        Binding("enter,e,E", "open_player", "Edit player", key_display="E"),
+        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("n,N", "new_player", "New Player", key_display="N"),
+        Binding("f,F", "create_players_from_audio", "From Audio", key_display="F"),
+        Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
-        Binding("c,C", "cleanup_players", "Clean up", key_display="C"),
+        Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
     ]
 
     def compose_content(self) -> ComposeResult:

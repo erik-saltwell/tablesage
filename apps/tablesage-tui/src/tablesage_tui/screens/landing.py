@@ -17,6 +17,10 @@ class LandingScreen(TableSageScreen):
     BINDINGS = [
         Binding("c,C", "show_campaigns", "Campaigns", key_display="C"),
         Binding("p,P", "show_players", "Players", key_display="P"),
+        # The only screen that shows Quit -- every other screen inherits the
+        # app-level binding (still works via ctrl+q) but keeps it out of its
+        # footer.
+        Binding("ctrl+q", "quit", "Quit", key_display="^Q", priority=True, show=True),
     ]
 
     def compose_content(self) -> ComposeResult:
