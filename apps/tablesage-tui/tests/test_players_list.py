@@ -289,3 +289,17 @@ async def test_cleanup_players_cancelled_does_not_clean() -> None:
         await pilot.pause()
 
         application.cleanup_orphan_player_dirs.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_f5_reloads_players() -> None:
+    application = _application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        application.list_players.reset_mock()
+
+        await pilot.press("f5")
+        await pilot.pause()
+
+        application.list_players.assert_called_once()

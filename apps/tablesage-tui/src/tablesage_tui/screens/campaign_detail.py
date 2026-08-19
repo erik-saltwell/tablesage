@@ -92,6 +92,13 @@ class CampaignDetailScreen(TableSageScreen):
                     yield glossary_table
 
     def on_mount(self) -> None:
+        self._reload_metadata_and_tables()
+        self._set_active_tab("sessions")
+
+    def refresh_data(self) -> None:
+        self._reload_metadata_and_tables()
+
+    def _reload_metadata_and_tables(self) -> None:
         campaign = self.application.get_campaign(self._campaign_id)
         self._campaign_name = campaign.name
         self._description = campaign.description
@@ -105,7 +112,6 @@ class CampaignDetailScreen(TableSageScreen):
         self._reload_roster()
         self._reload_sessions()
         self._reload_glossary()
-        self._set_active_tab("sessions")
 
     # Metadata
 

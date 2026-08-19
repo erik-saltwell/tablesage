@@ -287,3 +287,19 @@ async def test_cleanup_campaigns_cancelled_does_not_clean() -> None:
         await pilot.pause()
 
         application.cleanup_orphan_campaign_dirs.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_f5_reloads_campaigns() -> None:
+    application = _application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+        application.list_campaigns.reset_mock()
+
+        await pilot.press("f5")
+        await pilot.pause()
+
+        # >=1, not ==1: `on_resize` also reloads, so a resize during `pilot.pause()`
+        # can legitimately add an extra call independent of the F5 press being tested.
+        assert application.list_campaigns.call_count >= 1

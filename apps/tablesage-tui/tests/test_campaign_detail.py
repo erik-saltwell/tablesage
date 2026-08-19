@@ -509,3 +509,33 @@ async def test_escape_pops_back_to_campaign_list() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, CampaignListScreen)
+
+
+@pytest.mark.anyio
+async def test_f5_reloads_metadata_and_all_tabs_without_changing_active_tab() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("r")
+        await pilot.pause()
+        screen = pilot.app.screen
+        assert isinstance(screen, CampaignDetailScreen)
+        assert screen._active_tab == "roster"
+
+        application.get_campaign.reset_mock()
+        application.list_roster.reset_mock()
+        application.list_sessions.reset_mock()
+        application.list_glossary_entries.reset_mock()
+
+        await pilot.press("f5")
+        await pilot.pause()
+
+        application.get_campaign.assert_called_once()
+        application.list_roster.assert_called_once()
+        application.list_sessions.assert_called_once()
+        application.list_glossary_entries.assert_called_once()
+        assert screen._active_tab == "roster"

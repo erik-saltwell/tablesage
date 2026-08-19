@@ -72,3 +72,10 @@ class LandingScreen(TableSageScreen):
 
     def action_show_players(self) -> None:
         self.app.push_screen(PlayersListScreen())
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "refresh_screen":
+            # Landing shows no live data (base `TableSageScreen`'s F5 binding is inherited
+            # regardless), so hide it rather than advertise a refresh that does nothing.
+            return False
+        return True

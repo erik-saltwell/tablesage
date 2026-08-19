@@ -58,6 +58,21 @@ after any clip is added or removed.
    the app) or developer support, not a step the user must remember after
    normal in-app actions (see auto-recompute below).
 
+### Refresh (`F5`)
+1. Base `TableSageScreen` binding (see `tablesage_tui_screens.md`'s binding
+   conventions table), not specific to this screen.
+2. Re-reads the player's row plus the voice-clip list from disk/DB and
+   redraws the name field, sample count, computed-at, centroid hash, and
+   clip table — for changes made outside the app (editing the DB directly,
+   dropping/removing files in the player folder by hand).
+3. Distinct from `R`: `F5` never re-embeds or writes a new centroid, it only
+   redisplays whatever `sample_count`/`centroid_embedding` already say on
+   disk. If clips were added out-of-band, `F5` will show the *old* centroid
+   until `R` is pressed.
+4. Overwrites the name field with the on-disk value even mid-edit (the field
+   is a `CommittingInput` that hasn't committed yet) — F5 always trusts
+   disk/DB over an uncommitted keystroke.
+
 ## Behaviors & Rules
 
 - **Screen shape**: `composite`, one child list (voice clips), no tabs — list

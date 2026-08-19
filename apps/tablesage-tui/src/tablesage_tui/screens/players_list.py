@@ -41,6 +41,9 @@ class PlayersListScreen(TableSageScreen):
     def on_screen_resume(self) -> None:
         self._reload_players()
 
+    def refresh_data(self) -> None:
+        self._reload_players()
+
     def _reload_players(self) -> None:
         table = self.query_one("#players-table", DataTable)
         selected_id = self._selected_player_id()

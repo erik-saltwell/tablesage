@@ -57,6 +57,9 @@ class PlayerDetailScreen(TableSageScreen):
             yield table
 
     def on_mount(self) -> None:
+        self.refresh_data()
+
+    def refresh_data(self) -> None:
         player = self.application.get_player(self._player_id)
         self._player_name = player.name
 

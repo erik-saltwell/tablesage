@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from tablesage_application import Application
 from textual.app import ComposeResult
+from textual.binding import Binding
 from textual.containers import Vertical
 from textual.screen import Screen
 from textual.widgets import Footer
@@ -26,6 +27,12 @@ class TableSageScreen(Screen[None]):
 
     section = ""
     campaign = "no campaign loaded"
+
+    # Merged with each subclass's own BINDINGS (Textual combines BINDINGS across
+    # the whole MRO), so every screen gets F5 without redeclaring it.
+    BINDINGS = [
+        Binding("f5", "refresh_screen", "Refresh", key_display="F5"),
+    ]
 
     _progress_on_success: Callable[[Any], None] | None = None
     _progress_dialog: ProgressDialog | None = None
@@ -53,6 +60,13 @@ class TableSageScreen(Screen[None]):
     def action_pop_screen(self) -> None:
         """Pop back to the previous screen. Subclasses opt in via an `escape` binding."""
         self.app.pop_screen()
+
+    def action_refresh_screen(self) -> None:
+        """Reload this screen's data from the DB/disk -- for changes made outside the app."""
+        self.refresh_data()
+
+    def refresh_data(self) -> None:
+        """Reload the data this screen displays. No-op by default; override in screens that show live data."""
 
     def run_with_progress(self, *, title: str, message: str, work: Callable[[], ResultT], on_success: Callable[[ResultT], None]) -> None:
         """Run `work` on a background thread behind a cancel-less `ProgressDialog`.

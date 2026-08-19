@@ -52,6 +52,9 @@ class CampaignListScreen(TableSageScreen):
     def on_resize(self, event: Resize) -> None:
         self._reload_campaigns()
 
+    def refresh_data(self) -> None:
+        self._reload_campaigns()
+
     def _reload_campaigns(self) -> None:
         table = self.query_one("#campaign-table", DataTable)
         selected_id = self._selected_campaign_id()

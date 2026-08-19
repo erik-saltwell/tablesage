@@ -63,3 +63,12 @@ async def test_first_call_to_action_is_not_initially_focused() -> None:
         await pilot.press("tab")
 
         assert button.has_focus
+
+
+@pytest.mark.anyio
+async def test_f5_is_hidden_on_landing() -> None:
+    async with TableSageApp(_application()).run_test() as pilot:
+        screen = pilot.app.screen
+        assert isinstance(screen, LandingScreen)
+
+        assert "f5" not in screen.active_bindings

@@ -426,3 +426,20 @@ async def test_escape_pops_back_to_players_list() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_f5_reloads_player_metadata_and_voice_clips() -> None:
+    player = Player(name="Alice")
+    application = _application(player=player)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+        application.get_player.reset_mock()
+        application.list_voice_clips.reset_mock()
+
+        await pilot.press("f5")
+        await pilot.pause()
+
+        application.get_player.assert_called_once()
+        application.list_voice_clips.assert_called_once()
