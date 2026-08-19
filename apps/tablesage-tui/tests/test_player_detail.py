@@ -1,7 +1,7 @@
 import threading
 import uuid
 from datetime import datetime
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from tablesage_application.players import VoiceClip
@@ -281,8 +281,29 @@ async def test_cleanup_and_import_actions_are_stubbed_with_notify() -> None:
         for key in ("c", "f", "s"):
             await pilot.press(key)
             await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+            assert isinstance(pilot.app.screen, PlayerDetailScreen)
 
-        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+
+@pytest.mark.anyio
+async def test_cleanup_and_import_actions_route_through_progress_dialog() -> None:
+    """C/F/S are stubs today, but every command on this screen goes through run_with_progress, not a bare notify."""
+    application = _application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+        screen = pilot.app.screen
+        assert isinstance(screen, PlayerDetailScreen)
+
+        with patch.object(screen, "run_with_progress") as run_with_progress:
+            for key in ("c", "f", "s"):
+                await pilot.press(key)
+                await pilot.pause()
+
+        assert run_with_progress.call_count == 3
+        for call in run_with_progress.call_args_list:
+            assert "work" in call.kwargs
+            assert "on_success" in call.kwargs
 
 
 @pytest.mark.anyio

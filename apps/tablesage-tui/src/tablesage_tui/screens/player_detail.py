@@ -176,10 +176,25 @@ class PlayerDetailScreen(TableSageScreen):
             self.notify("No voice clips on disk; centroid cleared.")
 
     def action_cleanup(self) -> None:
-        self.notify("Cleaning up unused voice samples is coming soon.")
+        self.run_with_progress(
+            title="Cleaning Up",
+            message="Checking for unused voice samples…",
+            work=lambda: None,
+            on_success=lambda _: self.notify("Cleaning up unused voice samples is coming soon."),
+        )
 
     def action_import_from_directory(self) -> None:
-        self.notify("Importing voice clips from a directory is coming soon.")
+        self.run_with_progress(
+            title="Directory Import",
+            message="Preparing to import voice clips from a directory…",
+            work=lambda: None,
+            on_success=lambda _: self.notify("Importing voice clips from a directory is coming soon."),
+        )
 
     def action_import_from_session(self) -> None:
-        self.notify("Importing voice clips from a session is coming soon.")
+        self.run_with_progress(
+            title="Session Import",
+            message="Preparing to import voice clips from a session…",
+            work=lambda: None,
+            on_success=lambda _: self.notify("Importing voice clips from a session is coming soon."),
+        )
