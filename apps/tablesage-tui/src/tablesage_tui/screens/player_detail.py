@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import uuid
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tablesage_model.model import Player
 from textual.app import ComposeResult
@@ -9,10 +11,13 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
 
-from ..dialogs import ConfirmationDialog
+from ..dialogs import ConfirmationDialog, FilesystemPickerDialog
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
+
+if TYPE_CHECKING:
+    from tablesage_application.players import ImportResult
 
 
 class PlayerDetailScreen(TableSageScreen):
@@ -207,12 +212,57 @@ class PlayerDetailScreen(TableSageScreen):
             self.notify("No unused voice clips found.")
 
     def action_import_from_directory(self) -> None:
-        self.run_with_progress(
-            title="Directory Import",
-            message="Preparing to import voice clips from a directory…",
-            work=lambda: None,
-            on_success=lambda _: self.notify("Importing voice clips from a directory is coming soon."),
+        def on_picked(source_dir: Path | None) -> None:
+            if source_dir is None:
+                return
+
+            try:
+                self.application.validate_import_source(source_dir)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+
+            prior_clips = self.application.find_prior_import_clips(self._player_id, source_dir)
+            if not prior_clips:
+                self._run_directory_import(source_dir)
+                return
+
+            def on_confirm(confirmed: bool | None) -> None:
+                if confirmed:
+                    self._run_directory_import(source_dir)
+
+            self.app.push_screen(
+                ConfirmationDialog(
+                    title="Replace Prior Import",
+                    prompt=f"This will replace {len(prior_clips)} clip(s) previously imported from this directory.",
+                ),
+                on_confirm,
+            )
+
+        self.app.push_screen(
+            FilesystemPickerDialog(title="Import Voice Clips From Directory", mode="directory"),
+            on_picked,
         )
+
+    def _run_directory_import(self, source_dir: Path) -> None:
+        self.run_with_progress(
+            title="Importing Voice Clips",
+            message=f"Importing voice clips from '{source_dir}'…",
+            work=lambda: self.application.import_voice_clips(self._player_id, source_dir, self.report_progress),
+            on_success=self._after_import_from_directory,
+        )
+
+    def _after_import_from_directory(self, result: tuple[Player, ImportResult]) -> None:
+        player, import_result = result
+        self._refresh_centroid_display(player)
+        self._reload_voice_clips()
+
+        message = f"Imported {import_result.imported_count} clip(s)."
+        if import_result.replaced_count:
+            message += f" Replaced {import_result.replaced_count} prior clip(s)."
+        if import_result.rejected_filenames:
+            message += f" Skipped {len(import_result.rejected_filenames)} (couldn't embed)."
+        self.notify(message)
 
     def action_import_from_session(self) -> None:
         self.run_with_progress(

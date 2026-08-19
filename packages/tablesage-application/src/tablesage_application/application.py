@@ -145,6 +145,37 @@ class Application:
             session.refresh(result)
             return result, deleted_filenames
 
+    def validate_import_source(self, source_dir: Path) -> None:
+        players.validate_import_source(source_dir)
+
+    def find_prior_import_clips(self, player_id: uuid.UUID, source_dir: Path) -> list[Path]:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            folder = paths.player_folder(self._cwd, player.name)
+            return players.find_prior_import_clips(folder, source_dir)
+
+    def import_voice_clips(
+        self, player_id: uuid.UUID, source_dir: Path, on_progress: Callable[[int, int], None] | None = None
+    ) -> tuple[Player, players.ImportResult]:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            folder = paths.player_folder(self._cwd, player.name)
+            outliers = self._settings.remove_outliers
+            result, import_result = players.import_voice_clips(
+                session,
+                player_id,
+                player.name,
+                source_dir,
+                folder,
+                self._embed_clip,
+                on_progress,
+                outliers.min_sample_similarity,
+                outliers.min_samples,
+            )
+            session.commit()
+            session.refresh(result)
+            return result, import_result
+
     def _embed_clip(self, path: Path) -> Embedding:
         if self._embedding_factory is None:
             import torch

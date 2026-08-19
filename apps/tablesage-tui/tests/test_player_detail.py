@@ -3,12 +3,13 @@ import threading
 import uuid
 from collections.abc import Callable
 from datetime import datetime
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from tablesage_application.players import VoiceClip
+from tablesage_application.players import ImportResult, VoiceClip
 from tablesage_model.model import Player
-from tablesage_tui.dialogs import ConfirmationDialog, ProgressDialog
+from tablesage_tui.dialogs import ConfirmationDialog, FilesystemPickerDialog, ProgressDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.widgets import CommittingInput
@@ -21,6 +22,8 @@ def _application(*, player: Player | None = None, clips: list[VoiceClip] | None 
     return MagicMock(
         get_player=MagicMock(return_value=player),
         list_voice_clips=MagicMock(return_value=clips or []),
+        validate_import_source=MagicMock(return_value=None),
+        find_prior_import_clips=MagicMock(return_value=[]),
     )
 
 
@@ -314,17 +317,16 @@ async def test_recompute_centroid_shows_error_notification_on_failure() -> None:
 
 
 @pytest.mark.anyio
-async def test_import_actions_are_stubbed_with_notify() -> None:
+async def test_session_import_action_is_stubbed_with_notify() -> None:
     application = _application()
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, application.get_player.return_value.id)
 
-        for key in ("f", "s"):
-            await pilot.press(key)
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-            assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        await pilot.press("s")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
 
 
 @pytest.mark.anyio
@@ -390,8 +392,8 @@ async def test_cleanup_notifies_when_nothing_removed() -> None:
 
 
 @pytest.mark.anyio
-async def test_import_actions_route_through_progress_dialog() -> None:
-    """F/S are stubs today, but every command on this screen goes through run_with_progress, not a bare notify."""
+async def test_session_import_routes_through_progress_dialog() -> None:
+    """S is a stub today, but it still goes through run_with_progress, not a bare notify."""
     application = _application()
 
     async with TableSageApp(application).run_test() as pilot:
@@ -400,14 +402,180 @@ async def test_import_actions_route_through_progress_dialog() -> None:
         assert isinstance(screen, PlayerDetailScreen)
 
         with patch.object(screen, "run_with_progress") as run_with_progress:
-            for key in ("f", "s"):
-                await pilot.press(key)
-                await pilot.pause()
+            await pilot.press("s")
+            await pilot.pause()
 
-        assert run_with_progress.call_count == 2
-        for call in run_with_progress.call_args_list:
-            assert "work" in call.kwargs
-            assert "on_success" in call.kwargs
+        assert run_with_progress.call_count == 1
+        call = run_with_progress.call_args_list[0]
+        assert "work" in call.kwargs
+        assert "on_success" in call.kwargs
+
+
+@pytest.mark.anyio
+async def test_directory_import_opens_filesystem_picker() -> None:
+    application = _application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, FilesystemPickerDialog)
+
+
+@pytest.mark.anyio
+async def test_directory_import_cancelled_does_nothing() -> None:
+    application = _application()
+    application.import_voice_clips = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        picker.dismiss(None)
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        application.import_voice_clips.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_directory_import_validation_error_shows_notify_and_stops(tmp_path: Path) -> None:
+    application = _application()
+    application.validate_import_source = MagicMock(side_effect=ValueError("'foo' contains no .wav files."))
+    application.import_voice_clips = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            picker.dismiss(tmp_path)
+            await pilot.pause()
+
+        notify.assert_called_once_with("'foo' contains no .wav files.", severity="error")
+        application.import_voice_clips.assert_not_called()
+        application.find_prior_import_clips.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_directory_import_without_prior_clips_imports_directly(tmp_path: Path) -> None:
+    player = Player(name="Alice")
+    updated_player = Player(id=player.id, name="Alice", sample_count=3)
+    application = _application(player=player)
+    application.import_voice_clips = MagicMock(
+        return_value=(updated_player, ImportResult(imported_count=3, replaced_count=0, rejected_filenames=()))
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            picker.dismiss(tmp_path)
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        application.import_voice_clips.assert_called_once()
+        assert application.import_voice_clips.call_args.args[:2] == (player.id, tmp_path)
+        assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "3"
+        notify.assert_called_once_with("Imported 3 clip(s).")
+
+
+@pytest.mark.anyio
+async def test_directory_import_with_prior_clips_confirms_first(tmp_path: Path) -> None:
+    player = Player(name="Alice")
+    application = _application(player=player)
+    application.find_prior_import_clips = MagicMock(return_value=[tmp_path / "old1.wav", tmp_path / "old2.wav"])
+    application.import_voice_clips = MagicMock(
+        return_value=(
+            Player(id=player.id, name="Alice", sample_count=2),
+            ImportResult(imported_count=2, replaced_count=2, rejected_filenames=()),
+        )
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.import_voice_clips.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        application.import_voice_clips.assert_called_once()
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_directory_import_replace_confirmation_cancelled_does_not_import(tmp_path: Path) -> None:
+    application = _application()
+    application.find_prior_import_clips = MagicMock(return_value=[tmp_path / "old1.wav"])
+    application.import_voice_clips = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, application.get_player.return_value.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        await pilot.press("escape")
+        await pilot.pause()
+
+        application.import_voice_clips.assert_not_called()
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_directory_import_reports_rejected_and_replaced_counts(tmp_path: Path) -> None:
+    player = Player(name="Alice")
+    updated_player = Player(id=player.id, name="Alice", sample_count=1)
+    application = _application(player=player)
+    application.import_voice_clips = MagicMock(
+        return_value=(updated_player, ImportResult(imported_count=1, replaced_count=2, rejected_filenames=("bad.wav",)))
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            picker.dismiss(tmp_path)
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        notify.assert_called_once_with("Imported 1 clip(s). Replaced 2 prior clip(s). Skipped 1 (couldn't embed).")
 
 
 @pytest.mark.anyio

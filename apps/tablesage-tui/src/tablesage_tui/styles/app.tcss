@@ -531,7 +531,8 @@ TextInputDialog,
 PlayerPickerDialog,
 RolePickerDialog,
 GlossaryEntryDialog,
-ProgressDialog {
+ProgressDialog,
+FilesystemPickerDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -540,7 +541,8 @@ ProgressDialog {
     #player-picker-dialog,
     #role-picker-dialog,
     #glossary-entry-dialog,
-    #progress-dialog {
+    #progress-dialog,
+    #filesystem-picker-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -572,6 +574,17 @@ ProgressDialog {
     }
 
     #player-picker-table {
+        height: 12;
+        margin: 0 0 1 0;
+    }
+
+    #filesystem-picker-path {
+        height: auto;
+        color: $fg-muted;
+        margin: 0 0 1 0;
+    }
+
+    #filesystem-picker-table {
         height: 12;
         margin: 0 0 1 0;
     }
