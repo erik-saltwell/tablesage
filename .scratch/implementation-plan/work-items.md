@@ -24,7 +24,7 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 6 | Player Detail screen | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `8741da2` |
 | 7 | Tests | Implemented | — | `8741da2` |
 | 8 | Session Detail screen | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
-| 9 | Import player from file system | Designed | [`.documentation/import_player_from_filesystem.md`](../../.documentation/import_player_from_filesystem.md) | — |
+| 9 | Import player from file system | Implemented | [`.documentation/import_player_from_filesystem.md`](../../.documentation/import_player_from_filesystem.md) | `6842595` |
 | 10 | Import player from audio file | Unstarted | — | — |
 | 11 | Process session | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
 | 12 | Generate summary | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
