@@ -21,8 +21,8 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 3 | Campaigns List screen | Implemented | — | `bc7323c` |
 | 4 | Campaign Detail screen | Implemented | — | `511131b` |
 | 5 | Players List screen | Implemented | — | `9c6270d` |
-| 6 | Player Detail screen | Designed | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | — |
-| 7 | Tests | Unstarted | — | — |
+| 6 | Player Detail screen | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `8741da2` |
+| 7 | Tests | Implemented | — | `8741da2` |
 | 8 | Session Detail screen | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
 | 9 | Import player from file system | Unstarted | — | — |
 | 10 | Import player from audio file | Unstarted | — | — |
