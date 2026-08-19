@@ -103,6 +103,7 @@ not here — this doc holds each phase's scope/narrative only.
 - Model: uniqueness constraints, migration up/down.
 - Application: roster add/remove, rename-rollback-on-fs-failure, cleanup-orphan-dir logic (campaign/player/session), glossary uniqueness, computed last-session-date.
 - TUI: extend the existing `test_landing.py`/`test_campaign_list.py` pattern to Campaign Detail, Players List, Player Detail — binding presence, stub-vs-real action behavior.
+- Not in the original plan text, added during implementation: most of this phase's scope (model uniqueness/migration tests, application-layer roster/rename-rollback/cleanup/glossary tests) landed incidentally as part of the Phase 0-2 and Phase 3-5 commits rather than as separate work here — `test_setup.py`, `test_roster.py`, `test_glossary.py`, `test_application.py`'s rename/cleanup coverage, etc. already existed before this phase was picked up. The only genuinely new work this phase added was `test_player_detail.py` (Phase 6's screen) plus `test_players.py` coverage for `list_voice_clips`/`recompute_centroid`/`delete_voice_clip`, using an injected fake embedder rather than the real GPU-backed `EmbeddingFactory` so the suite stays fast and hardware-independent.
 
 ## Phase 8 — Session Detail screen
 

@@ -874,3 +874,46 @@ CampaignDetailScreen {
         height: 1fr;
     }
 }
+
+/* ******************************** */
+/*        player detail screen      */
+/* ******************************** */
+
+PlayerDetailScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #player-detail-panel {
+        width: 1fr;
+        height: 1fr;
+        layout: vertical;
+    }
+
+    #player-metadata {
+        height: auto;
+        margin: 0 0 1 0;
+
+        .field-row {
+            height: 3;
+            align: left middle;
+            margin: 0 0 1 0;
+
+            .field-label {
+                width: 14;
+                height: 1;
+                color: $fg-muted;
+            }
+
+            Input {
+                width: 1fr;
+            }
+
+            Static#player-sample-count-value,
+            Static#player-computed-at-value {
+                width: 1fr;
+                color: $surface-2-fg;
+            }
+        }
+    }
+}

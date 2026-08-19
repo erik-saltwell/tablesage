@@ -10,6 +10,7 @@ from textual.widgets import DataTable
 
 from ..dialogs import ConfirmationDialog, TextInputDialog
 from .base import TableSageScreen
+from .player_detail import PlayerDetailScreen
 
 
 class PlayersListScreen(TableSageScreen):
@@ -35,6 +36,9 @@ class PlayersListScreen(TableSageScreen):
             yield table
 
     def on_mount(self) -> None:
+        self._reload_players()
+
+    def on_screen_resume(self) -> None:
         self._reload_players()
 
     def _reload_players(self) -> None:
@@ -91,7 +95,10 @@ class PlayersListScreen(TableSageScreen):
         self.notify("Creating players from audio is coming soon.")
 
     def action_open_player(self) -> None:
-        self.notify("Opening a player is coming soon.")
+        player_id = self._selected_player_id()
+        if player_id is None:
+            return
+        self.app.push_screen(PlayerDetailScreen(player_id))
 
     def action_delete_player(self) -> None:
         player_id = self._selected_player_id()

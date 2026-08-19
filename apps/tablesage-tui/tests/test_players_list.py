@@ -4,14 +4,18 @@ import pytest
 from tablesage_model.model import Player
 from tablesage_tui.dialogs import ConfirmationDialog, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
+from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.screens.players_list import PlayersListScreen
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input
 
 
 def _application(*, players: list | None = None) -> MagicMock:
+    roster = players or []
     return MagicMock(
-        list_players=MagicMock(return_value=players or []),
+        list_players=MagicMock(return_value=roster),
+        get_player=MagicMock(side_effect=lambda player_id: next(p for p in roster if p.id == player_id)),
+        list_voice_clips=MagicMock(return_value=[]),
     )
 
 
@@ -57,17 +61,18 @@ async def test_players_table_shows_centroid_status() -> None:
 
 
 @pytest.mark.anyio
-async def test_open_and_from_audio_actions_are_stubbed_with_notify() -> None:
+async def test_from_audio_action_is_stubbed_with_notify() -> None:
     async with TableSageApp(_application()).run_test() as pilot:
         await _open_players_list(pilot)
 
-        for key in ("enter", "f"):
-            await pilot.press(key)
-            await pilot.pause()
+        await pilot.press("f")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
 
 
 @pytest.mark.anyio
-async def test_enter_on_selected_player_opens_player() -> None:
+async def test_enter_on_selected_player_calls_action_open_player() -> None:
     application = _application(players=[Player(name="Alice")])
 
     async with TableSageApp(application).run_test() as pilot:
@@ -81,6 +86,51 @@ async def test_enter_on_selected_player_opens_player() -> None:
             await pilot.pause()
 
         open_player.assert_called_once_with()
+
+
+@pytest.mark.anyio
+async def test_enter_on_selected_player_opens_player_detail_screen() -> None:
+    application = _application(players=[Player(name="Alice")])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_enter_with_no_players_does_nothing() -> None:
+    async with TableSageApp(_application()).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_returning_from_player_detail_reloads_players() -> None:
+    application = _application(players=[Player(name="Alice")])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("enter")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+
+        assert application.list_players.call_count >= 1
+        call_count_before_pop = application.list_players.call_count
+
+        await pilot.press("escape")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+        assert application.list_players.call_count > call_count_before_pop
 
 
 @pytest.mark.anyio

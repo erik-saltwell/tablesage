@@ -8,6 +8,7 @@ from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
+from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
 from . import campaigns, glossary, paths, players, roster, sessions
 
@@ -17,6 +18,7 @@ class Application:
         self._cwd: Path = cwd if cwd is not None else Path.cwd()
         self._db_path: Path = setup.ensure_database(self._cwd)
         self._engine = setup.create_engine(self._db_path)
+        self._embedding_factory: EmbeddingFactory | None = None
 
     # Campaigns
 
@@ -98,6 +100,37 @@ class Application:
     def cleanup_orphan_player_dirs(self) -> list[str]:
         with Session(self._engine) as session:
             return players.cleanup_orphan_player_dirs(session, paths.players_root(self._cwd))
+
+    def list_voice_clips(self, player_id: uuid.UUID) -> list[players.VoiceClip]:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            return players.list_voice_clips(paths.player_folder(self._cwd, player.name))
+
+    def delete_voice_clip(self, player_id: uuid.UUID, filename: str) -> Player:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            folder = paths.player_folder(self._cwd, player.name)
+            result = players.delete_voice_clip(session, player_id, filename, folder, self._embed_clip)
+            session.commit()
+            session.refresh(result)
+            return result
+
+    def recompute_centroid(self, player_id: uuid.UUID) -> Player:
+        with Session(self._engine) as session:
+            player = players.get_player(session, player_id)
+            folder = paths.player_folder(self._cwd, player.name)
+            result = players.recompute_centroid(session, player_id, folder, self._embed_clip)
+            session.commit()
+            session.refresh(result)
+            return result
+
+    def _embed_clip(self, path: Path) -> Embedding:
+        if self._embedding_factory is None:
+            import torch
+
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self._embedding_factory = EmbeddingFactory(device=device)
+        return self._embedding_factory.extract(path)
 
     # Roster
 
