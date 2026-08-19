@@ -892,7 +892,7 @@ PlayerDetailScreen {
 
     #player-metadata {
         height: auto;
-        margin: 0 0 1 0;
+        margin: 0 0 2 0;
 
         .field-row {
             height: 3;
@@ -912,7 +912,7 @@ PlayerDetailScreen {
 
         #player-stats-row {
             height: 1;
-            margin: 0;
+            margin: 0 1 0 0;
             align: right middle;
 
             .field-value {
