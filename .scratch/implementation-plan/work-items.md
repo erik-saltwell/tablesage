@@ -28,4 +28,4 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 10 | Import player from audio file | Unstarted | — | — |
 | 11 | Process session | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
 | 12 | Generate summary | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
-| 13 | Player Detail cleanup (unused samples) | Unstarted | — | — |
+| 13 | Player Detail cleanup (unused samples) | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `36d6d05` |
