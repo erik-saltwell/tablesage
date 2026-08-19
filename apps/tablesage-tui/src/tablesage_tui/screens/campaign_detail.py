@@ -14,10 +14,12 @@ from ..dialogs import (
     GlossaryEntryDialog,
     PlayerPickerDialog,
     RolePickerDialog,
+    TextInputDialog,
 )
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
+from .session_detail import SessionDetailScreen
 
 _TABS = ("roster", "sessions", "glossary")
 
@@ -94,6 +96,9 @@ class CampaignDetailScreen(TableSageScreen):
     def on_mount(self) -> None:
         self._reload_metadata_and_tables()
         self._set_active_tab("sessions")
+
+    def on_screen_resume(self) -> None:
+        self._reload_metadata_and_tables()
 
     def refresh_data(self) -> None:
         self._reload_metadata_and_tables()
@@ -288,6 +293,44 @@ class CampaignDetailScreen(TableSageScreen):
                 key=str(session.id),
             )
 
+    def _new_session(self) -> None:
+        def on_dismiss(name: str | None) -> None:
+            if name is None:
+                return
+            try:
+                created = self.application.create_session(self._campaign_id, name)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+            self.app.push_screen(SessionDetailScreen(created.id))
+
+        self.app.push_screen(
+            TextInputDialog(title="New Session", prompt="Enter a name", placeholder="Session name", submit_label="Create Session"),
+            on_dismiss,
+        )
+
+    def _open_session(self) -> None:
+        session_id = self._selected_row_id("sessions-table")
+        if session_id is None:
+            return
+        self.app.push_screen(SessionDetailScreen(session_id))
+
+    def _delete_session(self) -> None:
+        session_id = self._selected_row_id("sessions-table")
+        if session_id is None:
+            return
+
+        def on_dismiss(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            self.application.delete_session(session_id)
+            self._reload_sessions()
+
+        self.app.push_screen(
+            ConfirmationDialog(title="Delete Session", prompt="Permanently delete this session, its attendance, and its roles?"),
+            on_dismiss,
+        )
+
     def action_cleanup(self) -> None:
         if self._active_tab != "sessions":
             return
@@ -385,7 +428,7 @@ class CampaignDetailScreen(TableSageScreen):
         elif self._active_tab == "glossary":
             self._new_glossary_entry()
         else:
-            self.notify("Creating a new session is coming soon.")
+            self._new_session()
 
     def action_edit_item(self) -> None:
         if self._active_tab == "roster":
@@ -393,7 +436,7 @@ class CampaignDetailScreen(TableSageScreen):
         elif self._active_tab == "glossary":
             self._edit_glossary_entry()
         else:
-            self.notify("Opening a session is coming soon.")
+            self._open_session()
 
     def action_delete_item(self) -> None:
         if self._active_tab == "roster":
@@ -401,4 +444,4 @@ class CampaignDetailScreen(TableSageScreen):
         elif self._active_tab == "glossary":
             self._delete_glossary_entry()
         else:
-            self.notify("Deleting a session is coming soon.")
+            self._delete_session()

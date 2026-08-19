@@ -532,7 +532,8 @@ PlayerPickerDialog,
 RolePickerDialog,
 GlossaryEntryDialog,
 ProgressDialog,
-FilesystemPickerDialog {
+FilesystemPickerDialog,
+RoleEditorDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -542,7 +543,8 @@ FilesystemPickerDialog {
     #role-picker-dialog,
     #glossary-entry-dialog,
     #progress-dialog,
-    #filesystem-picker-dialog {
+    #filesystem-picker-dialog,
+    #role-editor-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -587,6 +589,25 @@ FilesystemPickerDialog {
     #filesystem-picker-table {
         height: 12;
         margin: 0 0 1 0;
+    }
+
+    #role-editor-table {
+        height: 8;
+        margin: 0 0 1 0;
+    }
+
+    #role-editor-add-row {
+        height: 3;
+        align: left middle;
+        margin: 0 0 1 0;
+
+        Input {
+            width: 1fr;
+        }
+
+        Button {
+            margin: 0 0 0 1;
+        }
     }
 
     .field-label {
@@ -965,5 +986,80 @@ PlayerDetailScreen {
         margin: 0 0 1 0;
         color: $fg-accent;
         text-style: bold;
+    }
+}
+
+/* ******************************** */
+/*       session detail screen      */
+/* ******************************** */
+
+SessionDetailScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #session-detail-panel {
+        width: 1fr;
+        height: 1fr;
+        layout: vertical;
+    }
+
+    #session-metadata {
+        height: auto;
+        margin: 0 0 2 0;
+
+        .field-row {
+            height: 3;
+            align: left middle;
+            margin: 0 0 1 0;
+
+            .field-label {
+                width: 14;
+                height: 1;
+                color: $fg-muted;
+            }
+
+            Input {
+                width: 1fr;
+            }
+
+            .field-value {
+                width: 1fr;
+                color: $surface-2-fg;
+            }
+        }
+    }
+
+    .section-title {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-accent;
+        text-style: bold;
+    }
+
+    #session-detail-body {
+        width: 1fr;
+        height: 1fr;
+    }
+
+    #session-attendance-column {
+        width: 1fr;
+        height: 1fr;
+        margin: 0 2 0 0;
+    }
+
+    #session-indicators-column {
+        width: 34;
+        height: 1fr;
+
+        Static {
+            height: auto;
+            margin: 0 0 1 0;
+        }
+
+        #session-process-reason,
+        #session-generate-reason {
+            color: $fg-muted;
+        }
     }
 }

@@ -256,3 +256,72 @@ class Application:
             if campaign is None:
                 raise ValueError("Campaign not found.")
             return sessions.cleanup_orphan_session_dirs(session, campaign_id, paths.campaign_folder(self._cwd, campaign.name))
+
+    def get_session(self, session_id: uuid.UUID) -> GameSession:
+        with Session(self._engine) as session:
+            return sessions.get_session(session, session_id)
+
+    def update_session(self, session_id: uuid.UUID, name: str, session_date: date | None) -> GameSession:
+        with Session(self._engine) as session:
+            result = sessions.update_session(session, session_id, name, session_date)
+            session.commit()
+            session.refresh(result)
+            return result
+
+    def delete_session(self, session_id: uuid.UUID) -> None:
+        with Session(self._engine) as session:
+            sessions.delete_session(session, session_id)
+            session.commit()
+
+    def _session_folder(self, session: Session, game_session: GameSession) -> Path:
+        campaign = session.get(Campaign, game_session.campaign_id)
+        if campaign is None:
+            raise ValueError("Campaign not found.")
+        return paths.session_folder(self._cwd, campaign.name, game_session.sequence_number)
+
+    def session_artifacts(self, session_id: uuid.UUID) -> sessions.SessionArtifacts:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return sessions.session_artifacts(self._session_folder(session, game_session))
+
+    def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.import_audio(source_path, self._session_folder(session, game_session))
+
+    def can_process_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return sessions.can_process_session(session, session_id, self._session_folder(session, game_session))
+
+    def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return sessions.can_generate_summary(self._session_folder(session, game_session))
+
+    def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
+        with Session(self._engine) as session:
+            return sessions.list_attendance(session, session_id)
+
+    def add_attendance(self, session_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            result = sessions.add_attendance(session, game_session.campaign_id, session_id, player_id)
+            session.commit()
+            return result
+
+    def remove_attendance(self, session_id: uuid.UUID, attendance_id: uuid.UUID) -> None:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            sessions.remove_attendance(session, attendance_id)
+            session.commit()
+
+    def set_attendance_roles(self, session_id: uuid.UUID, attendance_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            result = sessions.set_attendance_roles(session, attendance_id, roles)
+            session.commit()
+            return result

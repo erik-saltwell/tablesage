@@ -2,11 +2,13 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
+from tablesage_application.sessions import SessionArtifacts
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
-from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, PlayerPickerDialog, RolePickerDialog
+from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, PlayerPickerDialog, RolePickerDialog, TextInputDialog
 from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.screens.main_app import TableSageApp
+from tablesage_tui.screens.session_detail import SessionDetailScreen
 from tablesage_tui.widgets import CommittingInput
 from textual.widgets import Button, DataTable, Input, Static
 
@@ -26,6 +28,13 @@ def _application(
         list_sessions=MagicMock(return_value=sessions or []),
         list_glossary_entries=MagicMock(return_value=glossary or []),
         list_players=MagicMock(return_value=players or []),
+        # Sensible defaults so navigating into a real SessionDetailScreen
+        # (opened by N/E on the Sessions tab) doesn't crash on mount.
+        get_session=MagicMock(return_value=GameSession(campaign_id=campaign.id, sequence_number=1, name="Session")),
+        list_attendance=MagicMock(return_value=[]),
+        session_artifacts=MagicMock(return_value=SessionArtifacts(has_input_audio=False, has_processed_session=False, has_summary=False)),
+        can_process_session=MagicMock(return_value=(False, "Import input audio first.")),
+        can_generate_summary=MagicMock(return_value=(False, "Process the session first.")),
     )
 
 
@@ -435,19 +444,66 @@ async def test_sessions_table_shows_sessions_sorted_by_sequence() -> None:
 
 
 @pytest.mark.anyio
-async def test_session_n_e_d_are_stubbed_with_notify() -> None:
+async def test_new_session_creates_and_opens_session_detail() -> None:
     campaign = Campaign(name="Iron Pact")
+    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
     application = _application(campaign=campaign)
+    application.create_session = MagicMock(return_value=created)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
 
-        for key in ("n", "enter", "d"):
-            await pilot.press(key)
-            await pilot.pause()
+        await pilot.press("n")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, TextInputDialog)
 
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        application.create_session.assert_called_once_with(campaign.id, "Session One")
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_edit_session_opens_session_detail() -> None:
+    campaign = Campaign(name="Iron Pact")
+    game_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    application = _application(campaign=campaign, sessions=[game_session])
+    application.get_session = MagicMock(return_value=game_session)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_delete_session_confirms_then_deletes_and_reloads() -> None:
+    campaign = Campaign(name="Iron Pact")
+    game_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    application = _application(campaign=campaign, sessions=[game_session])
+    application.delete_session = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("d")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_session.assert_called_once_with(game_session.id)
         assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert application.list_sessions.call_count >= 2
 
 
 @pytest.mark.anyio

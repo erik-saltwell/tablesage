@@ -2,7 +2,7 @@
 
 This document specifies the Textual UI: the screen inventory, navigation, and the reusable interaction patterns that keep every screen consistent. It assumes the domain model in [`tablesage_data_model.md`](tablesage_data_model.md) and the product behavior in [`tablesage_use_cases.md`](tablesage_use_cases.md).
 
-Session Detail (the single-session screen: processing pipeline, transcript review, generated-artifact cleanup) and the two voice-clip import screens (from a directory, from a session) are explicitly **out of scope** for this document — they're called out where they attach, but not designed here.
+Session Detail (see `.documentation/session_detail_screen.md`) and directory-based voice-clip import (see `.documentation/import_player_from_filesystem.md`) are now designed and built; they're called out where they attach but not re-specified here. The session-derived voice-clip import screen (`s` on Player Detail) remains explicitly **out of scope** for this document.
 
 ## Screen taxonomy
 
@@ -93,9 +93,9 @@ Kind: `editable-root` child list (rows = `campaign_player`).
 Kind: `editable-root` child list (rows = `Session`).
 
 - Columns: sequence number, name, date, status.
-- `N` new, `E`/Enter open, `D` delete — all three bound but **stubbed** (notify only) until Session Detail is designed.
+- `N` new — **real**: `TextInputDialog` for a name, creates via `create_session`, opens Session Detail. `E`/Enter open — **real**: opens Session Detail for the selected session. `D` delete — **real**: hard-deletes the `Session` row (DB-only; the on-disk folder is left as an orphan for `C` to clean up later), confirmed via `ConfirmationDialog`.
 - `C` cleanup — **real**: removes session folders on disk (within this campaign's folder) that have no matching `Session` row in the DB. Confirmed via `ConfirmationDialog`.
-- Note for the future Session Detail design: seeding a new session's `session_attendance_role` from a roster member's `default_role_name` needs to translate the `"game-master"` magic value into the human-readable string `"Game Master"` (or equivalent) — session-level roles are pure free text and should never surface the raw magic value. Unresolved; revisit when Session Detail is designed.
+- Seeding a new session attendee's `session_attendance_role` from their `campaign_player.default_role_name` translates the `"game-master"` magic value into the human-readable string `"Game Master"` — see `.documentation/session_detail_screen.md`.
 
 #### Glossary tab
 
@@ -128,14 +128,12 @@ Kind: `simple-root` child list (rows = voice clip / voice sample).
 
 - `E`/Enter disabled — clips have no editable fields.
 - `N` not used — there are two comparably-weighted creation paths, not one dominant one, so each gets its own letter instead:
-  - `f` import from a directory — **stub**, needs its own future screen (a directory picker).
+  - `f` import from a directory — **real**, see `.documentation/import_player_from_filesystem.md`.
   - `s` import from a session — **stub**, needs its own future screen (pick a session within a campaign, then select/attribute clips).
 - `D` delete clip — real, `ConfirmationDialog`.
 
 ## Open items deferred to future design passes
 
-- Session Detail screen (metadata, attendance/role editing, processing pipeline actions like "process transcript," artifact cleanup).
-- The `f` (import from directory) and `s` (import from session) clip-import screens.
+- The `s` (import from session) clip-import screen.
 - The `F` (create players from audio) bulk-creation flow.
-- Player Detail's `C` cleanup algorithm (which voice samples count as "unused" for centroid purposes).
-- Translating `campaign_player.default_role_name`'s `"game-master"` magic value into session-level role text.
+- Session Detail's `P` (process) and `G` (generate summary) pipeline actions — gated correctly but stay stubbed (notify only) until Phases 11/12.
