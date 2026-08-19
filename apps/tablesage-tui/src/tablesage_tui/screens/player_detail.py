@@ -42,9 +42,9 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("Name", classes="field-label")
                     yield CommittingInput(id="player-name-input")
                 with Horizontal(classes="field-row", id="player-stats-row"):
-                    yield Static("Sample Count", classes="field-label")
+                    yield Static("Sample Count:", classes="field-label")
                     yield Static("", id="player-sample-count-value", classes="field-value")
-                    yield Static("Computed At", classes="field-label")
+                    yield Static("Computed At:", classes="field-label")
                     yield Static("", id="player-computed-at-value", classes="field-value")
 
             yield Static("Voice Clips", classes="section-title")

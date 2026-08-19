@@ -926,7 +926,6 @@ PlayerDetailScreen {
 
             #player-computed-at-value {
                 width: auto;
-                min-width: 20;
                 margin: 0;
             }
         }
