@@ -913,6 +913,7 @@ PlayerDetailScreen {
         #player-stats-row {
             height: 1;
             margin: 0;
+            align: right middle;
 
             .field-value {
                 color: $surface-2-fg;
@@ -924,7 +925,8 @@ PlayerDetailScreen {
             }
 
             #player-computed-at-value {
-                width: 1fr;
+                width: auto;
+                min-width: 20;
                 margin: 0;
             }
         }
