@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import uuid
 from collections.abc import Callable
 from datetime import date
@@ -10,6 +11,7 @@ from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
+from tablesage_tools.audio import clean_clip
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
 from . import campaigns, glossary, paths, players, roster, sessions
@@ -284,10 +286,16 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return sessions.session_artifacts(self._session_folder(session, game_session))
 
+    def validate_import_audio_source(self, source_path: Path) -> None:
+        sessions.validate_import_source(source_path)
+
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.import_audio(source_path, self._session_folder(session, game_session))
+            sessions.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
+
+    def _clean_session_audio(self, source: Path, target: Path) -> None:
+        asyncio.run(clean_clip(source, target, normalize=self._settings.session_audio_import.normalize_volume))
 
     def can_process_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -308,6 +316,22 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             sessions.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance(session, game_session.campaign_id, session_id, player_id)
+            session.commit()
+            return result
+
+    def add_attendance_with_roles(self, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            result = sessions.add_attendance_with_roles(session, game_session.campaign_id, session_id, player_id, roles)
+            session.commit()
+            return result
+
+    def set_attendance_player(self, session_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            result = sessions.set_attendance_player(session, game_session.campaign_id, attendance_id, player_id)
             session.commit()
             return result
 

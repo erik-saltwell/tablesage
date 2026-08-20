@@ -17,11 +17,14 @@ session are also managed here, since processing depends on them.
   for whether each of these exists — there is no database table tracking file
   presence or versions.
 - **Input audio** — the raw recording, brought into the session folder by the
-  Import action.
+  Import action. Import always runs the recording through the audio-cleaning
+  pipeline (noise/voice enhancement, plus optional loudness normalization)
+  before it's written as `input_audio.wav` — the file on disk is always the
+  cleaned version, never the untouched source.
 - **Processed session (canonical log format)** — the output of the Process
-  pipeline: cleaned audio, transcription, diarization, and speaker
-  identification, collapsed into one declarative transcript file. Its internal
-  format is out of scope for this design.
+  pipeline: transcription, diarization, and speaker identification over the
+  (already-cleaned) input audio, collapsed into one declarative transcript
+  file. Its internal format is out of scope for this design.
 - **Session summary** — a generated output derived from the processed session
   and the campaign glossary. The first of what may become a family of "outputs
   generated from the canonical format," but the only one designed today.
@@ -38,19 +41,29 @@ session are also managed here, since processing depends on them.
 
 ### Import audio
 1. User triggers `I`.
-2. `TextInputDialog` prompts for an absolute file path.
-3. App validates the path exists, copies it into the session folder under the
-   fixed input-audio filename.
-4. If a processed session and/or summary already exist, this is treated as
-   audio replacement: those downstream files are deleted immediately, after a
-   `ConfirmationDialog` (see Invalidation below).
+2. `FilesystemPickerDialog` (file-mode) opens for the user to browse to and
+   select a single audio file. If a processed session and/or summary already
+   exist, a `ConfirmationDialog` warns that this will invalidate them (see
+   Invalidation below) before anything runs.
+3. The chosen path is validated fast (must be a file with a recognized audio
+   extension — `.wav`/`.mp3`/`.m4a`/`.flac`/`.ogg`) before the slow work
+   starts; an invalid choice shows an error toast and stops here.
+4. A progress modal opens (`run_with_progress`) while the file is cleaned
+   (noise/voice enhancement, plus loudness normalization if
+   `session_audio_import.normalize_volume` is enabled) into a temp file in
+   the session folder.
+5. Only once cleaning succeeds: any stale processed session/summary are
+   deleted, then the cleaned temp file is renamed into place as
+   `input_audio.wav`. If cleaning fails, nothing is deleted and nothing is
+   overwritten — the session is left exactly as it was, with an error toast.
 
 ### Process a session
 1. Available (`P` enabled) only when input audio exists, there are at least 2
    attendees, and every attendee has a computed voice centroid.
 2. A progress modal opens (this is a long-running operation).
-3. Pipeline runs: clean audio → transcribe/diarize → identify speakers → write
-   the canonical processed-session file.
+3. Pipeline runs: transcribe/diarize → identify speakers → write the
+   canonical processed-session file. (Cleaning already happened at Import
+   time — the input audio Process reads is always pre-cleaned.)
 4. The output is written to a temp path and renamed into place on success, so a
    failed run never leaves a partial/corrupt file that would misread as
    "present."
@@ -66,17 +79,30 @@ session are also managed here, since processing depends on them.
    summary file.
 
 ### Manage attendance
-1. `N` opens a roster-member picker scoped to the campaign roster, excluding
-   players already attending. Selecting a player seeds one role from their
-   `campaign_player.default_role_name`, translating the `"game-master"` magic
-   value to the human-readable `"Game Master"` string (any other value is used
-   as-is as a character name).
-2. `E`/Enter on an attendee opens a role-editor dialog: a free-text list where
-   roles can be added, edited, or removed for that attendee.
-3. `D` removes an attendee (and their roles) from the session, after
-   `ConfirmationDialog`.
-4. Adding/removing an attendee or editing their roles is a destructive edit
-   (see Invalidation below).
+1. `N` (add) and `E`/Enter (edit) both open the same `AttendeeDialog` -- one
+   composite-style modal with a `Select` "combo box" for the player (options
+   scoped to the campaign roster; already-attending players are excluded,
+   except the attendee's own current player when editing) and a role list
+   below it with its own add/edit/remove actions. `N` opens it with no player
+   preselected and an empty role list; `E`/Enter opens it preseeded with the
+   attendee's current player and roles.
+2. The player field is always a live `Select`, in both Add and Edit --
+   editing can reassign an existing attendance row to a different roster
+   player, not just change its roles. Reassignment goes through
+   `set_attendance_player` (uniqueness-checked the same way `add_attendance`
+   is, since `(session_id, player_id)` is still unique).
+3. Roles are held in-memory inside the dialog and only written to the DB when
+   the dialog's Save is pressed (via `add_attendance_with_roles` for a new
+   attendee, or `set_attendance_player` + `set_attendance_roles` for an
+   edit). Two ways to add a role: "Add Role" opens a `TextInputDialog` for a
+   custom name; "Add Game Master" appends the literal `"Game Master"` string
+   directly, no text entry. "Edit" and "Remove" act on the selected role row.
+   Save is disabled until a player is selected and at least one role exists.
+4. `D` removes an attendee (and their roles) from the session, after
+   `ConfirmationDialog`. This stays a separate, simpler flow -- not folded
+   into `AttendeeDialog`.
+5. Adding/removing an attendee, editing their roles, or reassigning their
+   player is a destructive edit (see Invalidation below).
 
 ## Behaviors & Rules
 
@@ -88,15 +114,24 @@ session are also managed here, since processing depends on them.
   always overwritten in place.
 - **Process (`P`) gating**: disabled unless (a) the input audio file exists,
   (b) there are at least 2 attendees, and (c) every current attendee has a
-  computed voice centroid. Reason for disablement is shown on hover/selection.
+  computed voice centroid. The disablement reason (from
+  `can_process_session`) is computed but not currently surfaced in the UI —
+  removed for now, may return in some form later.
 - **Generate summary (`G`) gating**: disabled unless the processed session
   file exists.
 - **Invalidation deletes files immediately.** Any action the business rules
-  treat as destructive — re-importing audio, adding/removing an attendee,
-  editing roles, rerunning Process — deletes the now-stale downstream files
-  right away (after confirmation for user-initiated destructive edits), rather
-  than waiting for the next generation step to overwrite them. This keeps the
-  indicator panel always accurate, since existence is the only signal it has.
+  treat as destructive — adding/removing an attendee, editing roles, rerunning
+  Process — deletes the now-stale downstream files right away (after
+  confirmation for user-initiated destructive edits), rather than waiting for
+  the next generation step to overwrite them. This keeps the indicator panel
+  always accurate, since existence is the only signal it has.
+  - **Import audio is the one exception to "immediately."** Because cleaning
+    is a slow, failure-prone step (unlike the other destructive edits, which
+    are instant DB/file operations), invalidation there is deferred until the
+    new cleaned audio has actually landed — see Import audio's flow above. The
+    `ConfirmationDialog` still fires up front, before cleaning starts, so the
+    user isn't surprised by the eventual deletion; only the deletion itself is
+    delayed.
 - **Raw input audio is never deleted** by invalidation — only derived files
   (processed session, summary) are.
 - **Failure handling**: a failed Process or Generate run shows an error toast
@@ -123,8 +158,10 @@ session are also managed here, since processing depends on them.
   opened externally.
 - A generic "output generator" picker/registry — Summary is hardcoded as the
   one known output today; revisit if/when a second output type is designed.
-- A filesystem file-picker dialog for Import — reuses the existing
-  `TextInputDialog` (path-as-text) pattern instead.
+- A per-import toggle for cleaning or normalization — cleaning is always on;
+  normalization is a `settings.yaml` knob
+  (`session_audio_import.normalize_volume`), not a per-invocation choice, per
+  the same reasoning as Phase 9's `clean_clips` decision.
 
 ## Implementation Approach
 
@@ -135,8 +172,16 @@ session are also managed here, since processing depends on them.
    values (`draft`, `ready`, `needs_review`) become dead code to remove or are
    left for possible future use.
 2. **Application layer** (`tablesage-application`):
-   - Extend `sessions.py` (or a new module) with: `import_audio(session, path)`,
-     `process_session(session)` (wraps the existing orchestrator/pipeline,
+   - `sessions.py`: `validate_import_source(source_path)` (fast-fail extension
+     check) and `import_audio(source_path, session_folder, clean)`, where
+     `clean` is an injected `Callable[[Path, Path], None]` — keeps this module
+     decoupled from the concrete (async, ffmpeg/ML-backed) cleaning tool, and
+     testable with a stub. `Application._clean_session_audio` supplies the
+     real implementation (`asyncio.run(tablesage_tools.audio.clean_clip(...))`,
+     reading `normalize` from `AppSettings.session_audio_import`), the same
+     lazy-construction-behind-a-bound-method pattern `_embed_clip` already
+     uses for voice-clip embedding.
+   - `process_session(session)` (wraps the existing orchestrator/pipeline,
      writes via temp-file-then-rename, invalidates+deletes stale downstream
      files first), `generate_summary(session)` (same temp-then-rename
      pattern).
@@ -154,11 +199,18 @@ session are also managed here, since processing depends on them.
    - New `screens/session_detail.py`, following `campaign_detail.py`'s
      `composite` pattern (inline `CommittingInput` metadata fields, no tabs
      needed here since there's only one list plus a side panel).
-   - New dialog: role-editor (free-text multi-value list per attendee) —
-     likely a variant near `dialogs/roster.py`.
-   - Reuse: `TextInputDialog` for Import's path entry, `ConfirmationDialog` for
-     all destructive actions, the roster-member picker pattern from Campaign
-     Detail's `_new_roster_member`.
+   - `dialogs/attendee_editor.py`: `AttendeeDialog`, the unified Add/Edit
+     modal (`Select` combo box for the player, a role `DataTable` with
+     Add Role / Add Game Master / Edit / Remove) plus its `AttendeeResult`
+     dataclass. Distinct from Campaign Detail's `PlayerPickerDialog`/
+     `RolePickerDialog` (`dialogs/roster.py`), which manage the campaign
+     roster itself, not one session's attendance -- those stay as-is.
+   - `TextInputDialog` gained an `initial_value` param so `AttendeeDialog`
+     can reuse it for both "Add Role" (blank) and "Edit Role" (prefilled)
+     rather than needing a separate prefilled-input dialog.
+   - Reuse: `FilesystemPickerDialog` (file-mode) for Import's path selection —
+     the same picker Phase 9 built and left file-mode unused for —
+     `ConfirmationDialog` for all destructive actions.
    - New: a progress modal for Process/Generate (blocking, shows phase
      progress) — check whether `PhasedProgressSink`/`IncrementalProgressSink`
      (named in `application_business_rules.md`) already have a TUI-side

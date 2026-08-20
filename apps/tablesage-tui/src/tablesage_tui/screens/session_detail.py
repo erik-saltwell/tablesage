@@ -11,7 +11,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
 
-from ..dialogs import ConfirmationDialog, PlayerPickerDialog, RoleEditorDialog, TextInputDialog
+from ..dialogs import AttendeeDialog, AttendeeResult, ConfirmationDialog, FilesystemPickerDialog
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -28,7 +28,7 @@ class SessionDetailScreen(TableSageScreen):
     BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
         Binding("n,N", "new_attendee", "Add Attendee", key_display="N"),
-        Binding("enter,e,E", "edit_attendee", "Edit Roles", key_display="E"),
+        Binding("enter,e,E", "edit_attendee", "Edit Attendee", key_display="E"),
         Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("p,P", "process_session", "Process", key_display="P"),
@@ -68,11 +68,10 @@ class SessionDetailScreen(TableSageScreen):
 
                 with Vertical(id="session-indicators-column"):
                     yield Static("Artifacts", classes="section-title")
-                    yield Static("", id="indicator-input-audio")
-                    yield Static("", id="indicator-processed-session")
-                    yield Static("", id="indicator-summary")
-                    yield Static("", id="session-process-reason", classes="field-value")
-                    yield Static("", id="session-generate-reason", classes="field-value")
+                    with Vertical(id="artifacts-panel"):
+                        yield Static("", id="indicator-input-audio")
+                        yield Static("", id="indicator-processed-session")
+                        yield Static("", id="indicator-summary")
 
     def on_mount(self) -> None:
         self.refresh_data()
@@ -150,23 +149,23 @@ class SessionDetailScreen(TableSageScreen):
 
     def _refresh_indicators(self) -> None:
         artifacts = self.application.session_artifacts(self._session_id)
-        self.query_one("#indicator-input-audio", Static).update(self._indicator_text("Input Audio", artifacts.has_input_audio))
-        self.query_one("#indicator-processed-session", Static).update(
-            self._indicator_text("Processed Session", artifacts.has_processed_session)
-        )
-        self.query_one("#indicator-summary", Static).update(self._indicator_text("Session Summary", artifacts.has_summary))
-
-        _, process_reason = self.application.can_process_session(self._session_id)
-        self.query_one("#session-process-reason", Static).update(process_reason or "")
-        _, generate_reason = self.application.can_generate_summary(self._session_id)
-        self.query_one("#session-generate-reason", Static).update(generate_reason or "")
+        self._set_indicator("#indicator-input-audio", "Input Audio", artifacts.has_input_audio)
+        self._set_indicator("#indicator-processed-session", "Processed Session", artifacts.has_processed_session)
+        self._set_indicator("#indicator-summary", "Session Summary", artifacts.has_summary)
 
         self.refresh_bindings()
 
+    def _set_indicator(self, widget_id: str, label: str, present: bool) -> None:
+        widget = self.query_one(widget_id, Static)
+        widget.update(self._indicator_text(label, present))
+        widget.set_class(not present, "artifact-missing")
+
     @staticmethod
     def _indicator_text(label: str, present: bool) -> str:
-        # Square brackets are Rich markup, so "present"/"missing" rather than "[x]"/"[ ]".
-        return f"{label}: present" if present else f"{label}: missing"
+        # Radio-box look: a filled circle for present, a hollow one for missing
+        # (color comes from the "artifact-missing" CSS class, not markup here).
+        symbol = "●" if present else "○"
+        return f"{symbol} {label}"
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action == "process_session":
@@ -202,25 +201,34 @@ class SessionDetailScreen(TableSageScreen):
     # Import audio
 
     def action_import_audio(self) -> None:
-        def on_path(path_str: str | None) -> None:
-            if path_str is None:
+        def on_picked(source_path: Path | None) -> None:
+            if source_path is None:
+                return
+
+            try:
+                self.application.validate_import_audio_source(source_path)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
                 return
 
             def do_import() -> None:
-                try:
-                    self.application.import_session_audio(self._session_id, Path(path_str))
-                except ValueError as exc:
-                    self.notify(str(exc), severity="error")
-                    return
-                self._refresh_indicators()
-                self.notify("Input audio imported.")
+                self.run_with_progress(
+                    title="Import Audio",
+                    message="Cleaning audio…",
+                    work=lambda: self.application.import_session_audio(self._session_id, source_path),
+                    on_success=self._after_import_audio,
+                )
 
             self._with_invalidation_guard(do_import)
 
         self.app.push_screen(
-            TextInputDialog(title="Import Audio", prompt="Enter the absolute path to the audio file", submit_label="Import"),
-            on_path,
+            FilesystemPickerDialog(title="Import Audio", mode="file"),
+            on_picked,
         )
+
+    def _after_import_audio(self, _result: None) -> None:
+        self._refresh_indicators()
+        self.notify("Input audio imported.")
 
     # Process / Generate -- gated (see check_action), but the pipeline itself
     # is stubbed until Phases 11/12.
@@ -270,13 +278,13 @@ class SessionDetailScreen(TableSageScreen):
         attending_ids = {attendee.player_id for attendee in self.application.list_attendance(self._session_id)}
         available = [player for _, player in self.application.list_roster(game_session.campaign_id) if player.id not in attending_ids]
 
-        def on_picked(player_id: uuid.UUID | None) -> None:
-            if player_id is None:
+        def on_saved(result: AttendeeResult | None) -> None:
+            if result is None:
                 return
 
             def do_add() -> None:
                 try:
-                    self.application.add_attendance(self._session_id, player_id)
+                    self.application.add_attendance_with_roles(self._session_id, result.player_id, list(result.roles))
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
@@ -284,20 +292,30 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_add)
 
-        self.app.push_screen(PlayerPickerDialog(players=available), on_picked)
+        self.app.push_screen(AttendeeDialog(players=available, attendee=None), on_saved)
 
     def action_edit_attendee(self) -> None:
         attendee = self._selected_attendee()
         if attendee is None:
             return
 
-        def on_saved(roles: list[str] | None) -> None:
-            if roles is None:
+        game_session = self.application.get_session(self._session_id)
+        attending_ids = {a.player_id for a in self.application.list_attendance(self._session_id)}
+        available = [
+            player
+            for _, player in self.application.list_roster(game_session.campaign_id)
+            if player.id not in attending_ids or player.id == attendee.player_id
+        ]
+
+        def on_saved(result: AttendeeResult | None) -> None:
+            if result is None:
                 return
 
             def do_save() -> None:
                 try:
-                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, roles)
+                    if result.player_id != attendee.player_id:
+                        self.application.set_attendance_player(self._session_id, attendee.attendance_id, result.player_id)
+                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, list(result.roles))
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
@@ -305,7 +323,7 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_save)
 
-        self.app.push_screen(RoleEditorDialog(player_name=attendee.player_name, roles=list(attendee.roles)), on_saved)
+        self.app.push_screen(AttendeeDialog(players=available, attendee=attendee), on_saved)
 
     def action_delete_attendee(self) -> None:
         attendee = self._selected_attendee()

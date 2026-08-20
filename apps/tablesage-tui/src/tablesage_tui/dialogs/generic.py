@@ -2,22 +2,11 @@ from __future__ import annotations
 
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
+from textual.containers import Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, Input, Static
 
-
-class _DialogActions(Horizontal):
-    """An action row whose buttons share the widest content-sized width."""
-
-    def on_mount(self) -> None:
-        self.call_after_refresh(self._equalize_button_widths)
-
-    def _equalize_button_widths(self) -> None:
-        buttons = list(self.query(Button))
-        widest_width = max((button.region.width for button in buttons), default=0)
-        for button in buttons:
-            button.styles.width = widest_width
+from ..widgets import EqualWidthButtonRow
 
 
 class ConfirmationDialog(ModalScreen[bool | None]):
@@ -35,7 +24,7 @@ class ConfirmationDialog(ModalScreen[bool | None]):
         with Vertical(id="confirmation-dialog") as dialog:
             dialog.border_title = self._title
             yield Static(self._prompt, id="confirmation-prompt")
-            with _DialogActions(classes="dialog-actions"):
+            with EqualWidthButtonRow(classes="dialog-actions"):
                 if self._show_cancel:
                     yield Button("Cancel", id="confirmation-cancel")
                 yield Button("No", id="confirmation-no")
@@ -69,25 +58,27 @@ class TextInputDialog(ModalScreen[str | None]):
         prompt: str,
         placeholder: str = "",
         submit_label: str = "Submit",
+        initial_value: str = "",
     ) -> None:
         super().__init__()
         self._title = title
         self._prompt = prompt
         self._placeholder = placeholder
         self._submit_label = submit_label
+        self._initial_value = initial_value
 
     def compose(self) -> ComposeResult:
         with Vertical(id="text-input-dialog") as dialog:
             dialog.border_title = self._title
             yield Static(self._prompt, id="text-input-prompt")
-            yield Input(id="text-input-value", placeholder=self._placeholder)
-            with _DialogActions(classes="dialog-actions"):
+            yield Input(id="text-input-value", value=self._initial_value, placeholder=self._placeholder)
+            with EqualWidthButtonRow(classes="dialog-actions"):
                 yield Button("Cancel", id="text-input-cancel")
                 yield Button(
                     self._submit_label,
                     id="text-input-submit",
                     variant="primary",
-                    disabled=True,
+                    disabled=not self._initial_value.strip(),
                 )
 
     def on_mount(self) -> None:

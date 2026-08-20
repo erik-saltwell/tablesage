@@ -7,11 +7,11 @@ import pytest
 from tablesage_application.sessions import Attendee, SessionArtifacts
 from tablesage_model.model import CampaignPlayer, Player
 from tablesage_model.model import Session as GameSession
-from tablesage_tui.dialogs import ConfirmationDialog, PlayerPickerDialog, RoleEditorDialog, TextInputDialog
+from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, FilesystemPickerDialog, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from textual.pilot import Pilot
-from textual.widgets import Button, DataTable, Input, Static
+from textual.widgets import Button, DataTable, Input, Select, Static
 
 
 def _artifacts(*, input_audio: bool = False, processed: bool = False, summary: bool = False) -> SessionArtifacts:
@@ -38,6 +38,12 @@ def _application(
 
 async def _open_session_detail(pilot: Pilot, session_id: uuid.UUID) -> None:
     pilot.app.push_screen(SessionDetailScreen(session_id))
+    await pilot.pause()
+
+
+async def _wait_for_progress_worker(pilot: Pilot) -> None:
+    """Wait for the background-thread worker behind a ProgressDialog to finish and its callback to run."""
+    await pilot.app.workers.wait_for_complete()
     await pilot.pause()
 
 
@@ -145,20 +151,27 @@ async def test_indicators_reflect_artifact_state() -> None:
         await _open_session_detail(pilot, session.id)
 
         screen = pilot.app.screen
-        assert "present" in str(screen.query_one("#indicator-input-audio", Static).render())
-        assert "missing" in str(screen.query_one("#indicator-processed-session", Static).render())
-        assert "missing" in str(screen.query_one("#indicator-summary", Static).render())
+        input_audio = screen.query_one("#indicator-input-audio", Static)
+        processed_session = screen.query_one("#indicator-processed-session", Static)
+        summary = screen.query_one("#indicator-summary", Static)
+
+        assert "●" in str(input_audio.render())
+        assert not input_audio.has_class("artifact-missing")
+
+        assert "○" in str(processed_session.render())
+        assert processed_session.has_class("artifact-missing")
+
+        assert "○" in str(summary.render())
+        assert summary.has_class("artifact-missing")
 
 
 @pytest.mark.anyio
-async def test_process_disabled_shows_reason_and_does_not_run() -> None:
+async def test_process_disabled_does_not_run() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, can_process=(False, "At least 2 attendees are required."))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
-
-        assert "At least 2 attendees are required." in str(pilot.app.screen.query_one("#session-process-reason", Static).render())
 
         with patch.object(SessionDetailScreen, "notify") as notify:
             await pilot.press("p")
@@ -198,40 +211,71 @@ async def test_generate_summary_disabled_does_not_run() -> None:
 
 
 @pytest.mark.anyio
-async def test_import_audio_no_downstream_artifacts_imports_directly() -> None:
+async def test_import_audio_no_downstream_artifacts_imports_directly(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
+    application.validate_import_audio_source = MagicMock()
     application.import_session_audio = MagicMock()
+    source = tmp_path / "recording.wav"
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
         await pilot.press("i")
         await pilot.pause()
-        assert isinstance(pilot.app.screen, TextInputDialog)
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
 
-        pilot.app.screen.query_one("#text-input-value", Input).value = "/tmp/recording.wav"
-        await pilot.press("enter")
+        picker.dismiss(source)
         await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        application.import_session_audio.assert_called_once()
-        assert application.import_session_audio.call_args.args == (session.id, Path("/tmp/recording.wav"))
+        application.validate_import_audio_source.assert_called_once_with(source)
+        application.import_session_audio.assert_called_once_with(session.id, source)
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_import_audio_with_downstream_artifacts_confirms_first() -> None:
+async def test_import_audio_validation_error_shows_notify_and_stops(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(input_audio=True, processed=True))
+    application = _application(session=session)
+    application.validate_import_audio_source = MagicMock(side_effect=ValueError("'recording.txt' isn't a recognized audio file."))
     application.import_session_audio = MagicMock()
+    source = tmp_path / "recording.txt"
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
         await pilot.press("i")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "/tmp/recording.wav"
-        await pilot.press("enter")
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            picker.dismiss(source)
+            await pilot.pause()
+
+        notify.assert_called_once_with("'recording.txt' isn't a recognized audio file.", severity="error")
+        application.import_session_audio.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_import_audio_with_downstream_artifacts_confirms_first(tmp_path: Path) -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(input_audio=True, processed=True))
+    application.validate_import_audio_source = MagicMock()
+    application.import_session_audio = MagicMock()
+    source = tmp_path / "recording.wav"
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("i")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FilesystemPickerDialog)
+
+        picker.dismiss(source)
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
@@ -239,12 +283,13 @@ async def test_import_audio_with_downstream_artifacts_confirms_first() -> None:
 
         await pilot.press("tab", "tab", "enter")
         await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        application.import_session_audio.assert_called_once()
+        application.import_session_audio.assert_called_once_with(session.id, source)
 
 
 @pytest.mark.anyio
-async def test_new_attendee_excludes_current_attendees_and_invalidation_guard() -> None:
+async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_and_roles() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     already_attending = Player(name="Bob")
     available_player = Player(name="Alice")
@@ -256,8 +301,8 @@ async def test_new_attendee_excludes_current_attendees_and_invalidation_guard() 
             (CampaignPlayer(campaign_id=session.campaign_id, player_id=available_player.id, default_role_name="Alice"), available_player),
         ]
     )
-    application.add_attendance = MagicMock(
-        return_value=Attendee(attendance_id=session.id, player_id=available_player.id, player_name="Alice", roles=("Alice",))
+    application.add_attendance_with_roles = MagicMock(
+        return_value=Attendee(attendance_id=session.id, player_id=available_player.id, player_name="Alice", roles=("Game Master",))
     )
 
     async with TableSageApp(application).run_test() as pilot:
@@ -265,24 +310,34 @@ async def test_new_attendee_excludes_current_attendees_and_invalidation_guard() 
 
         await pilot.press("n")
         await pilot.pause()
-        picker = pilot.app.screen
-        assert isinstance(picker, PlayerPickerDialog)
+        dialog = pilot.app.screen
+        assert isinstance(dialog, AttendeeDialog)
 
-        table = picker.query_one("#player-picker-table", DataTable)
-        rows = [str(table.get_row_at(row)[0]) for row in range(table.row_count)]
-        assert rows == ["Alice"]
+        select = dialog.query_one("#attendee-player-select", Select)
+        offered = [label for label, value in select._options if value is not Select.NULL]
+        assert offered == ["Alice"]
 
-        await pilot.press("enter")
+        select.value = available_player.id
+        await pilot.pause()
+        dialog.query_one("#attendee-add-gm", Button).press()
         await pilot.pause()
 
-        application.add_attendance.assert_called_once_with(session.id, available_player.id)
+        assert not dialog.query_one("#attendee-save", Button).disabled
+        dialog.query_one("#attendee-save", Button).press()
+        await pilot.pause()
+
+        application.add_attendance_with_roles.assert_called_once_with(session.id, available_player.id, ["Game Master"])
 
 
 @pytest.mark.anyio
-async def test_edit_attendee_opens_role_editor_and_saves() -> None:
+async def test_edit_attendee_opens_attendee_dialog_and_saves_roles() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    attendee = Attendee(attendance_id=session.id, player_id=session.id, player_name="Alice", roles=("Zaria",))
+    player = Player(name="Alice")
+    attendee = Attendee(attendance_id=session.id, player_id=player.id, player_name="Alice", roles=("Zaria",))
     application = _application(session=session, attendees=[attendee])
+    application.list_roster = MagicMock(
+        return_value=[(CampaignPlayer(campaign_id=session.campaign_id, player_id=player.id, default_role_name="Alice"), player)]
+    )
     application.set_attendance_roles = MagicMock(
         return_value=Attendee(
             attendance_id=attendee.attendance_id, player_id=attendee.player_id, player_name="Alice", roles=("Zaria", "Narrator")
@@ -295,15 +350,89 @@ async def test_edit_attendee_opens_role_editor_and_saves() -> None:
         await pilot.press("e")
         await pilot.pause()
         dialog = pilot.app.screen
-        assert isinstance(dialog, RoleEditorDialog)
+        assert isinstance(dialog, AttendeeDialog)
 
-        dialog.query_one("#role-editor-input", Input).value = "Narrator"
+        select = dialog.query_one("#attendee-player-select", Select)
+        assert select.value == attendee.player_id
+
+        dialog.query_one("#attendee-add-role", Button).press()
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, TextInputDialog)
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Narrator"
         await pilot.press("enter")
         await pilot.pause()
-        dialog.query_one("#role-editor-save", Button).press()
+
+        dialog.query_one("#attendee-save", Button).press()
         await pilot.pause()
 
         application.set_attendance_roles.assert_called_once_with(session.id, attendee.attendance_id, ["Zaria", "Narrator"])
+
+
+@pytest.mark.anyio
+async def test_edit_attendee_reassigning_player_calls_set_attendance_player() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    original_player = Player(name="Alice")
+    other_player = Player(name="Priya")
+    attendee = Attendee(attendance_id=session.id, player_id=original_player.id, player_name="Alice", roles=("Zaria",))
+    application = _application(session=session, attendees=[attendee])
+    application.list_roster = MagicMock(
+        return_value=[
+            (CampaignPlayer(campaign_id=session.campaign_id, player_id=original_player.id, default_role_name="Alice"), original_player),
+            (CampaignPlayer(campaign_id=session.campaign_id, player_id=other_player.id, default_role_name="Priya"), other_player),
+        ]
+    )
+    application.set_attendance_player = MagicMock(
+        return_value=Attendee(attendance_id=attendee.attendance_id, player_id=other_player.id, player_name="Priya", roles=("Zaria",))
+    )
+    application.set_attendance_roles = MagicMock(
+        return_value=Attendee(attendance_id=attendee.attendance_id, player_id=other_player.id, player_name="Priya", roles=("Zaria",))
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("e")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, AttendeeDialog)
+
+        dialog.query_one("#attendee-player-select", Select).value = other_player.id
+        await pilot.pause()
+        dialog.query_one("#attendee-save", Button).press()
+        await pilot.pause()
+
+        application.set_attendance_player.assert_called_once_with(session.id, attendee.attendance_id, other_player.id)
+        application.set_attendance_roles.assert_called_once_with(session.id, attendee.attendance_id, ["Zaria"])
+
+
+@pytest.mark.anyio
+async def test_attendee_dialog_add_role_rejects_duplicate() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    player = Player(name="Alice")
+    attendee = Attendee(attendance_id=session.id, player_id=player.id, player_name="Alice", roles=("Narrator",))
+    application = _application(session=session, attendees=[attendee])
+    application.list_roster = MagicMock(
+        return_value=[(CampaignPlayer(campaign_id=session.campaign_id, player_id=player.id, default_role_name="Alice"), player)]
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("e")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, AttendeeDialog)
+
+        table = dialog.query_one("#attendee-role-table", DataTable)
+        assert table.row_count == 1
+
+        dialog.query_one("#attendee-add-role", Button).press()
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Narrator"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert dialog.query_one("#attendee-role-table", DataTable).row_count == 1
 
 
 @pytest.mark.anyio

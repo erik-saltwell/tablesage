@@ -21,6 +21,10 @@ class AudioCleaningSettings(BaseModel, frozen=True):
     normalize_volume: bool = False
 
 
+class SessionAudioImportSettings(BaseModel, frozen=True):
+    normalize_volume: bool = False
+
+
 class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
     timeout: PositiveInt = 7200
     language_code: ScribeLanguageCode = "eng"
@@ -43,3 +47,4 @@ class AppSettings(BaseModel, frozen=True):
     enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"
     clean_clips_on_import: bool = False
+    session_audio_import: SessionAudioImportSettings = Field(default_factory=SessionAudioImportSettings)

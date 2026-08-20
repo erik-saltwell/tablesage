@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import shutil
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -103,19 +103,47 @@ def invalidate_downstream(session_folder: Path) -> None:
     (session_folder / SESSION_SUMMARY_FILENAME).unlink(missing_ok=True)
 
 
-def import_audio(source_path: Path, session_folder: Path) -> None:
-    """Copy `source_path` into the session folder as the fixed input-audio file.
+_AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".flac", ".ogg"}
 
-    Treated as audio replacement: any existing processed session/summary are
-    invalidated (deleted) first, per the "invalidation deletes files
-    immediately" rule -- the caller is expected to have already confirmed
-    this with the user when those artifacts existed.
+
+def validate_import_source(source_path: Path) -> None:
+    """Raise if `source_path` isn't a file with a recognized audio extension.
+
+    A fast-fail UX check only -- the actual cleaning pipeline (ffmpeg) can
+    handle far more than this list, but session recordings plausibly arrive
+    as any of these common recorder/voice-memo formats, unlike the player
+    voice-clip import's `.wav`-only source directories.
+    """
+    if not source_path.is_file():
+        raise ValueError(f"'{source_path}' is not a file.")
+    if source_path.suffix.lower() not in _AUDIO_EXTENSIONS:
+        raise ValueError(f"'{source_path.name}' isn't a recognized audio file.")
+
+
+def import_audio(source_path: Path, session_folder: Path, clean: Callable[[Path, Path], None]) -> None:
+    """Clean `source_path` into the session folder as the fixed input-audio file.
+
+    `clean(source, target)` is injected so this stays decoupled from the
+    concrete (async, ffmpeg/ML-backed) cleaning tool -- see `Application._clean_session_audio`.
+    Cleaned into a temp file in the same folder first, so a failed/partial
+    clean never corrupts an existing `input_audio.wav`; downstream artifacts
+    (processed session, summary) are only invalidated once the clean has
+    actually succeeded, so a failure leaves prior processing intact instead
+    of destroying it for nothing.
     """
     if not source_path.is_file():
         raise ValueError(f"'{source_path}' is not a file.")
     session_folder.mkdir(parents=True, exist_ok=True)
+
+    temp_target = session_folder / f".{INPUT_AUDIO_FILENAME}.tmp"
+    try:
+        clean(source_path, temp_target)
+    except Exception:
+        temp_target.unlink(missing_ok=True)
+        raise
+
     invalidate_downstream(session_folder)
-    shutil.copyfile(source_path, session_folder / INPUT_AUDIO_FILENAME)
+    temp_target.replace(session_folder / INPUT_AUDIO_FILENAME)
 
 
 # Process/Generate preconditions
@@ -197,6 +225,47 @@ def add_attendance(session: Session, campaign_id: uuid.UUID, session_id: uuid.UU
     player = session.get(Player, player_id)
     assert player is not None
     return Attendee(attendance_id=attendance.id, player_id=player_id, player_name=player.name, roles=(seed_role,))
+
+
+def add_attendance_with_roles(
+    session: Session, campaign_id: uuid.UUID, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]
+) -> Attendee:
+    """Create a new attendance row for `player_id`, then set its role list to `roles`.
+
+    Combines `add_attendance` (which seeds one default role from the
+    campaign membership) with `set_attendance_roles` (which overwrites it) --
+    the caller is the attendee dialog, where roles are chosen directly, so
+    the end result should be exactly the roles the user picked, not the
+    seeded default plus them.
+    """
+    attendee = add_attendance(session, campaign_id, session_id, player_id)
+    return set_attendance_roles(session, attendee.attendance_id, roles)
+
+
+def set_attendance_player(session: Session, campaign_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
+    """Reassign an existing attendance row to a different roster player."""
+    attendance = session.get(SessionAttendance, attendance_id)
+    if attendance is None:
+        raise ValueError("Attendance not found.")
+
+    membership = session.exec(
+        select(CampaignPlayer).where(CampaignPlayer.campaign_id == campaign_id).where(CampaignPlayer.player_id == player_id)
+    ).first()
+    if membership is None:
+        raise ValueError("This player is not a member of the campaign roster.")
+
+    attendance.player_id = player_id
+    session.add(attendance)
+    try:
+        session.flush()
+    except IntegrityError as exc:
+        session.rollback()
+        raise ValueError("This player is already attending the session.") from exc
+
+    player = session.get(Player, player_id)
+    assert player is not None
+    roles = session.exec(select(SessionAttendanceRole.name).where(SessionAttendanceRole.attendance_id == attendance_id)).all()
+    return Attendee(attendance_id=attendance_id, player_id=player_id, player_name=player.name, roles=tuple(sorted(roles)))
 
 
 def remove_attendance(session: Session, attendance_id: uuid.UUID) -> None:

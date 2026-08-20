@@ -418,6 +418,54 @@ Input {
     }
 }
 
+Select {
+    color: $control-fg;
+
+    & > SelectCurrent {
+        background: $control-bg;
+        color: $control-fg;
+        border: solid $control-border;
+
+        Static#label {
+            color: $control-placeholder-fg;
+        }
+
+        &.-has-value Static#label {
+            color: $control-fg;
+        }
+
+        .arrow {
+            color: $control-placeholder-fg;
+        }
+    }
+
+    &:focus > SelectCurrent {
+        background: $control-focus-bg;
+        color: $control-focus-fg;
+        border: solid $control-focus-border;
+    }
+
+    & > SelectOverlay {
+        background: $control-bg;
+        color: $control-fg;
+        border: solid $control-border;
+
+        &:focus {
+            border: solid $control-focus-border;
+        }
+
+        & > .option-list--option-highlighted {
+            background: $selected-bg;
+            color: $selected-fg;
+        }
+
+        & > .option-list--option-hover {
+            background: $control-hover-bg;
+            color: $control-hover-fg;
+        }
+    }
+}
+
 Button {
     width: auto;
     min-width: 8;
@@ -543,7 +591,7 @@ RolePickerDialog,
 GlossaryEntryDialog,
 ProgressDialog,
 FilesystemPickerDialog,
-RoleEditorDialog {
+AttendeeDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -554,7 +602,7 @@ RoleEditorDialog {
     #glossary-entry-dialog,
     #progress-dialog,
     #filesystem-picker-dialog,
-    #role-editor-dialog {
+    #attendee-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -567,10 +615,15 @@ RoleEditorDialog {
         border-title-style: bold;
     }
 
+    #attendee-dialog {
+        width: 90;
+    }
+
     #confirmation-prompt,
     #text-input-prompt,
     #role-picker-prompt,
     #player-picker-empty,
+    #attendee-empty,
     #progress-message {
         height: auto;
         margin: 0 0 1 0;
@@ -601,22 +654,43 @@ RoleEditorDialog {
         margin: 0 0 1 0;
     }
 
-    #role-editor-table {
-        height: 8;
-        margin: 0 0 1 0;
-    }
-
-    #role-editor-add-row {
+    #attendee-player-row {
         height: 3;
         align: left middle;
         margin: 0 0 1 0;
 
-        Input {
-            width: 1fr;
+        .field-label {
+            width: 8;
         }
 
+        Select {
+            width: 1fr;
+        }
+    }
+
+    #attendee-role-table {
+        height: 8;
+        margin: 0 0 1 0;
+    }
+
+    #attendee-role-actions {
+        width: 1fr;
+        height: auto;
+        margin: 0 0 1 0;
+
         Button {
-            margin: 0 0 0 1;
+            margin: 0 1 0 0;
+        }
+
+        #attendee-role-actions-add {
+            width: 1fr;
+            height: auto;
+        }
+
+        #attendee-role-actions-edit {
+            width: auto;
+            height: auto;
+            dock: right;
         }
     }
 
@@ -624,6 +698,13 @@ RoleEditorDialog {
         height: 1;
         color: $fg-muted;
         margin: 0 0 0 0;
+    }
+
+    .section-title {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-accent;
+        text-style: bold;
     }
 
     Input {
@@ -1066,21 +1147,33 @@ SessionDetailScreen {
     #session-attendance-column {
         width: 1fr;
         height: 1fr;
-        margin: 0 2 0 0;
+        margin: 0 4 0 0;
+    }
+
+    #attendance-table {
+        /* Long, comma-separated role lists should clip, not grow a
+           horizontal scrollbar -- there's no way to scroll a DataTable
+           column of unbounded width and it's not worth adding one for this. */
+        overflow-x: hidden;
     }
 
     #session-indicators-column {
         width: 34;
         height: 1fr;
+    }
+
+    #artifacts-panel {
+        height: 1fr;
+        padding: 1 2;
+        border: solid $surface-border;
 
         Static {
             height: auto;
             margin: 0 0 1 0;
-        }
 
-        #session-process-reason,
-        #session-generate-reason {
-            color: $fg-muted;
+            &.artifact-missing {
+                color: $fg-muted;
+            }
         }
     }
 }
