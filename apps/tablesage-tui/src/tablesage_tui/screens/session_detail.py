@@ -10,8 +10,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
+from textual_fspicker import FileOpen, Filters
 
-from ..dialogs import AttendeeDialog, AttendeeResult, ConfirmationDialog, FilesystemPickerDialog
+from ..dialogs import AttendeeDialog, AttendeeResult, ConfirmationDialog
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -221,8 +222,15 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_import)
 
+        extensions = self.application.audio_import_extensions()
+        audio_filter = Filters(
+            (
+                f"Audio files ({', '.join(sorted(extensions))})",
+                lambda path: path.suffix.lower() in extensions,
+            ),
+        )
         self.app.push_screen(
-            FilesystemPickerDialog(title="Import Audio", mode="file"),
+            FileOpen(title="Import Audio", location=Path.home(), filters=audio_filter),
             on_picked,
         )
 

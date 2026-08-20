@@ -289,6 +289,9 @@ class Application:
     def validate_import_audio_source(self, source_path: Path) -> None:
         sessions.validate_import_source(source_path)
 
+    def audio_import_extensions(self) -> frozenset[str]:
+        return sessions.AUDIO_EXTENSIONS
+
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)

@@ -590,7 +590,6 @@ PlayerPickerDialog,
 RolePickerDialog,
 GlossaryEntryDialog,
 ProgressDialog,
-FilesystemPickerDialog,
 AttendeeDialog {
     align: center middle;
     background: $overlay-bg;
@@ -601,7 +600,6 @@ AttendeeDialog {
     #role-picker-dialog,
     #glossary-entry-dialog,
     #progress-dialog,
-    #filesystem-picker-dialog,
     #attendee-dialog {
         width: 60;
         height: auto;
@@ -639,17 +637,6 @@ AttendeeDialog {
     }
 
     #player-picker-table {
-        height: 12;
-        margin: 0 0 1 0;
-    }
-
-    #filesystem-picker-path {
-        height: auto;
-        color: $fg-muted;
-        margin: 0 0 1 0;
-    }
-
-    #filesystem-picker-table {
         height: 12;
         margin: 0 0 1 0;
     }
@@ -714,6 +701,89 @@ AttendeeDialog {
     .dialog-actions {
         height: auto;
         align: right middle;
+
+        Button {
+            margin: 0 0 0 1;
+        }
+    }
+}
+
+/* ******************************** */
+/*   filesystem picker (fspicker)   */
+/* ******************************** */
+
+FileOpen,
+FileSave,
+SelectDirectory {
+    align: center middle;
+    background: $overlay-bg;
+
+    Dialog {
+        width: 70%;
+        height: 80%;
+        background: $pine-750;
+        color: $surface-2-fg;
+        border: solid $surface-border;
+        padding: 1 2;
+
+        border-title-align: left;
+        border-title-color: $fg-accent;
+        border-title-style: bold;
+        border-subtitle-color: $fg-danger;
+        border-subtitle-background: $pine-750;
+    }
+
+    CurrentDirectory {
+        background: transparent;
+        color: $fg-muted;
+        border-bottom: solid $surface-border;
+        margin: 0 0 1 0;
+    }
+
+    DirectoryNavigation {
+        background: transparent;
+        border: blank;
+
+        scrollbar-background: $surface-2-bg;
+        scrollbar-background-hover: $surface-3-bg;
+        scrollbar-background-active: $surface-3-bg;
+        scrollbar-color: $sage-700;
+        scrollbar-color-hover: $sage-600;
+        scrollbar-color-active: $sage-400;
+        scrollbar-corner-color: $surface-2-bg;
+
+        & > .directory-navigation--hidden {
+            color: $fg-muted;
+            text-style: italic;
+        }
+
+        & > .option-list--option-highlighted {
+            background: $selected-bg;
+            color: $selected-fg;
+        }
+
+        & > .option-list--option-hover {
+            background: $control-hover-bg;
+            color: $control-hover-fg;
+        }
+    }
+
+    InputBar {
+        height: auto;
+        align: right middle;
+        padding: 1 0 0 0;
+
+        Input {
+            background: $control-bg;
+            color: $control-fg;
+            border: solid $control-border;
+
+            &:focus {
+                background: $control-focus-bg;
+                color: $control-focus-fg;
+                border: solid $control-focus-border;
+            }
+        }
 
         Button {
             margin: 0 0 0 1;

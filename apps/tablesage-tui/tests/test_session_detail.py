@@ -7,11 +7,12 @@ import pytest
 from tablesage_application.sessions import Attendee, SessionArtifacts
 from tablesage_model.model import CampaignPlayer, Player
 from tablesage_model.model import Session as GameSession
-from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, FilesystemPickerDialog, TextInputDialog
+from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from textual.pilot import Pilot
 from textual.widgets import Button, DataTable, Input, Select, Static
+from textual_fspicker import FileOpen
 
 
 def _artifacts(*, input_audio: bool = False, processed: bool = False, summary: bool = False) -> SessionArtifacts:
@@ -224,7 +225,7 @@ async def test_import_audio_no_downstream_artifacts_imports_directly(tmp_path: P
         await pilot.press("i")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, FileOpen)
 
         picker.dismiss(source)
         await pilot.pause()
@@ -249,7 +250,7 @@ async def test_import_audio_validation_error_shows_notify_and_stops(tmp_path: Pa
         await pilot.press("i")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, FileOpen)
 
         with patch.object(SessionDetailScreen, "notify") as notify:
             picker.dismiss(source)
@@ -273,7 +274,7 @@ async def test_import_audio_with_downstream_artifacts_confirms_first(tmp_path: P
         await pilot.press("i")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, FileOpen)
 
         picker.dismiss(source)
         await pilot.pause()

@@ -1,5 +1,4 @@
 from .attendee_editor import AttendeeDialog, AttendeeResult
-from .filesystem_picker import FilesystemPickerDialog
 from .generic import ConfirmationDialog, TextInputDialog
 from .glossary_entry import GlossaryEntryDialog
 from .progress import ProgressDialog
@@ -10,7 +9,6 @@ __all__ = [
     "AttendeeResult",
     "ConfirmationDialog",
     "TextInputDialog",
-    "FilesystemPickerDialog",
     "GlossaryEntryDialog",
     "PlayerPickerDialog",
     "ProgressDialog",

@@ -9,12 +9,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 from tablesage_application.players import ImportResult, VoiceClip
 from tablesage_model.model import Player
-from tablesage_tui.dialogs import ConfirmationDialog, FilesystemPickerDialog, ProgressDialog
+from tablesage_tui.dialogs import ConfirmationDialog, ProgressDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input, ProgressBar, Static
+from textual_fspicker import SelectDirectory
 
 
 def _application(*, player: Player | None = None, clips: list[VoiceClip] | None = None) -> MagicMock:
@@ -433,7 +434,7 @@ async def test_session_import_routes_through_progress_dialog() -> None:
 
 
 @pytest.mark.anyio
-async def test_directory_import_opens_filesystem_picker() -> None:
+async def test_directory_import_opens_directory_picker() -> None:
     application = _application()
 
     async with TableSageApp(application).run_test() as pilot:
@@ -442,7 +443,7 @@ async def test_directory_import_opens_filesystem_picker() -> None:
         await pilot.press("f")
         await pilot.pause()
 
-        assert isinstance(pilot.app.screen, FilesystemPickerDialog)
+        assert isinstance(pilot.app.screen, SelectDirectory)
 
 
 @pytest.mark.anyio
@@ -456,7 +457,7 @@ async def test_directory_import_cancelled_does_nothing() -> None:
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
 
         picker.dismiss(None)
         await pilot.pause()
@@ -477,7 +478,7 @@ async def test_directory_import_validation_error_shows_notify_and_stops(tmp_path
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
 
         with patch.object(PlayerDetailScreen, "notify") as notify:
             picker.dismiss(tmp_path)
@@ -503,7 +504,7 @@ async def test_directory_import_without_prior_clips_imports_directly(tmp_path: P
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
 
         with patch.object(PlayerDetailScreen, "notify") as notify:
             picker.dismiss(tmp_path)
@@ -535,7 +536,7 @@ async def test_directory_import_with_prior_clips_confirms_first(tmp_path: Path) 
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
         picker.dismiss(tmp_path)
         await pilot.pause()
 
@@ -562,7 +563,7 @@ async def test_directory_import_replace_confirmation_cancelled_does_not_import(t
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
         picker.dismiss(tmp_path)
         await pilot.pause()
 
@@ -589,7 +590,7 @@ async def test_directory_import_reports_rejected_and_replaced_counts(tmp_path: P
         await pilot.press("f")
         await pilot.pause()
         picker = pilot.app.screen
-        assert isinstance(picker, FilesystemPickerDialog)
+        assert isinstance(picker, SelectDirectory)
 
         with patch.object(PlayerDetailScreen, "notify") as notify:
             picker.dismiss(tmp_path)

@@ -103,7 +103,7 @@ def invalidate_downstream(session_folder: Path) -> None:
     (session_folder / SESSION_SUMMARY_FILENAME).unlink(missing_ok=True)
 
 
-_AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".flac", ".ogg"}
+AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})
 
 
 def validate_import_source(source_path: Path) -> None:
@@ -116,7 +116,7 @@ def validate_import_source(source_path: Path) -> None:
     """
     if not source_path.is_file():
         raise ValueError(f"'{source_path}' is not a file.")
-    if source_path.suffix.lower() not in _AUDIO_EXTENSIONS:
+    if source_path.suffix.lower() not in AUDIO_EXTENSIONS:
         raise ValueError(f"'{source_path.name}' isn't a recognized audio file.")
 
 

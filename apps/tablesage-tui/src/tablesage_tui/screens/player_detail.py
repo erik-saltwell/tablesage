@@ -10,8 +10,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
+from textual_fspicker import SelectDirectory
 
-from ..dialogs import ConfirmationDialog, FilesystemPickerDialog
+from ..dialogs import ConfirmationDialog
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -255,7 +256,7 @@ class PlayerDetailScreen(TableSageScreen):
             )
 
         self.app.push_screen(
-            FilesystemPickerDialog(title="Import Voice Clips From Directory", mode="directory"),
+            SelectDirectory(title="Import Voice Clips From Directory", location=Path.home()),
             on_picked,
         )
 
