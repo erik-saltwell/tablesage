@@ -32,4 +32,4 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 15 | Enhance players from session | Designed | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | — |
 | 16 | Punctuated transcript as its own artifact | Unstarted | — | — |
 | 17 | Export artifact command | Unstarted | — | — |
-| 18 | Move to textual-fspicker for file/directory picking | Unstarted | — | — |
+| 18 | Move to textual-fspicker for file/directory picking | Implemented | — | `c741008` |
