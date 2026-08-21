@@ -36,6 +36,15 @@ from an already-*processed* Session. This work item instead:
   is written to the database until Stage 5, and role text is never
   persisted (there's no `session_attendance_role` row to put it in; it only
   ever appears in the final printed summary).
+- **Run context** — a mutable object the flow itself owns (not any one
+  `Screen`), holding everything gathered so far: the picked audio path, the
+  optional pre-step candidate list, `speaker_count`, the built `Transcript`,
+  per-speaker centroids, and the attendee map as the user edits it. Each
+  stage screen reads from and writes into this shared object rather than
+  owning its own copy — popping a pushed `Screen` (e.g. going back a step)
+  destroys that screen's local state but not the run context, which is what
+  makes "go back and keep what I had" possible at all (see Wizard screen,
+  below).
 - **Pre-step candidate list** — an *optional*, purely textual list of
   expected name + role pairs the user can supply before transcription even
   runs, when they already know who's on the recording. It exists only to
@@ -44,7 +53,9 @@ from an already-*processed* Session. This work item instead:
   the audio-based existing-player matching (that's a separate, independent
   signal — see below).
 - **Two independent matching signals**, both via
-  `tablesage_tools.embeddings.SimilarityComputer` — never conflated:
+  `tablesage_tools.embeddings.SimilarityComputer` — never conflated, and
+  both **only meaningful with at least two reference embeddings** (see
+  Behaviors & Rules for the below-that-floor fallback):
   - **Pre-review recommendation**: each diarized speaker's centroid vs. a
     `SimilarityComputer` built from every *existing* player's centroid.
     Above `AppSettings.speaker_identification.similarity_margin_threshold`,
@@ -56,7 +67,13 @@ from an already-*processed* Session. This work item instead:
     Clips that aren't unambiguously closer to their assigned speaker than to
     any sibling speaker in the same recording are discarded — this is what
     "high confidence" means at extraction time, since identity itself is
-    already human-decided by this point (see Behaviors & Rules).
+    already human-decided by this point (see Behaviors & Rules). Note this
+    gate is inherently weak for a speaker with only a handful of utterances:
+    each candidate clip is compared against a centroid that clip itself
+    helped compute, which structurally inflates its own margin, and
+    `remove_outliers`-style pruning is inert below `min_samples` anyway. It
+    reliably catches gross misattribution on longer recordings; it is not a
+    strong per-clip filter on a short one.
 - **Wizard screen** — this flow is a full pushed `Screen` per stage
   (push/pop, like every other back-navigation in the app), not a chain of
   modal dialogs — see Implementation Approach for why.
@@ -65,48 +82,68 @@ from an already-*processed* Session. This work item instead:
 
 ### Stage 1 — Launch and pick the audio file
 1. User triggers `F` on Players List.
-2. `FilesystemPickerDialog` (file-mode) opens, same picker Session Detail's
-   Import Audio uses. Extension validation mirrors that flow too
-   (`.wav`/`.mp3`/`.m4a`/`.flac`/`.ogg`).
+2. A `textual_fspicker.FileOpen` dialog opens with a `Filters` built from
+   `Application.audio_import_extensions()` — the exact same call shape
+   `SessionDetailScreen.action_import_audio` already uses for its own audio
+   picker. No new dialog abstraction; no separately maintained extension
+   list.
 
 ### Stage 2 — Optional pre-step list, speaker count, transcribe + diarize
 1. User is asked whether they want to pre-declare expected names/roles. If
-   yes, a simple add/edit/remove list (mirroring `AttendeeDialog`'s role
-   table, but rows are name+role pairs instead of just roles) collects the
-   **pre-step candidate list**.
+   yes, a simple add/edit/remove list (mirroring `AttendeeDialog`'s
+   add/edit/remove role-table *pattern* — a `DataTable` plus buttons that
+   push a small edit dialog — but rows are name+role pairs instead of just
+   roles) collects the **pre-step candidate list**.
 2. User is asked whether they know how many distinct speakers are on the
    recording. Yes → a number, passed as `speaker_count`; no → `None` (let
    diarization auto-detect).
 3. Progress screen runs, in order: `clean_clip` (always on, normalize per
-   `AppSettings.session_audio_import.normalize_volume`, reused as-is — see
-   Implementation Approach) → `transcribe_and_diarize` with the chosen
-   `speaker_count`.
-4. Output: a flat `list[TranscriptionWord]` (word-level, diarized, no
-   confidence field) is grouped into per-speaker utterance segments
-   (contiguous same-speaker runs) — new logic this flow adds, nothing in
-   `tablesage-tools` does this today.
+   `AppSettings.session_audio_import.normalize_volume`, reused as-is) →
+   `transcribe_and_diarize` with the chosen `speaker_count` → `punctuate_transcript`.
+4. Output: a `tablesage_tools.model.Transcript`, already grouped into
+   per-speaker `Utterance`s (`Transcript.from_words` groups contiguous
+   same-speaker word runs — this happens *inside* `transcribe_and_diarize`
+   itself) and already punctuated (`punctuate_transcript` fills in
+   `Utterance.punctuated_text` for every utterance in one pass, the same
+   call `transcribe_audio.py` makes for Session Detail's transcription
+   flow). No new grouping or punctuation logic — this flow only needs to
+   *aggregate* `Transcript.utterances` by `.speaker` to get each diarized
+   speaker's utterances.
 
 ### Stage 3 — LLM-proposed attendee map
-1. Per-speaker utterance text (punctuated via `tablesage_tools.text.punctuate_text`
-   for readability) is sent to `call_llm` (model from `AppSettings.llm_model`)
-   along with the pre-step candidate list, if any, asking it to propose a
-   name + role per diarized speaker ID from dialogue context (people
-   addressing each other, self-introductions, etc).
+1. Per-speaker utterance text — `utterance.punctuated_text` for every
+   utterance sharing that speaker, joined in order — is sent via
+   `tablesage_application.llm.call_llm_with_prompt` (a new `PromptName`
+   member, with its own `system.md`/`template.j2` under `_prompts/`,
+   following the `summarize_session` precedent) along with the pre-step
+   candidate list, if any, asking it to propose a name + role per diarized
+   speaker ID from dialogue context (people addressing each other,
+   self-introductions, etc). The call passes a `response_model` (a small
+   Pydantic list-of-`{speaker_id, name, role}` shape) so the reply is
+   schema-constrained JSON, not prose the app has to parse.
 2. In parallel, each diarized speaker's centroid is computed
-   (`compute_centroid` over utterance clips extracted for that purpose) and
-   checked against existing players via the **pre-review recommendation**
-   signal above.
+   (`compute_centroid` over that speaker's utterance clips, extracted once
+   into a run-scoped temporary directory — see Implementation Approach) and,
+   if at least two existing players have a computed centroid, checked
+   against them via the **pre-review recommendation** signal above. With
+   fewer than two existing players, this signal is skipped entirely (not
+   approximated) — see Behaviors & Rules.
 3. The two signals are merged into one proposed attendee map: an
    audio-matched existing player wins if its margin clears the threshold;
    otherwise the LLM's guessed name seeds a "new player" row.
 
 ### Stage 4 — Human review
-1. A table, one row per diarized speaker ID: speaker label, a `Select` of
-   [every existing player] + a "New Player" sentinel (pre-selected per
-   Stage 3's proposal), an editable name field (relevant/shown only in "New
-   Player" mode, pre-filled from the LLM's guess), a free-text role field,
-   and an Exclude toggle for speaker IDs that turn out not to be a real
-   speaker (noise, crosstalk artifact, etc).
+1. A `DataTable`, one row per diarized speaker ID, rendered as **text**:
+   speaker label, resolved target ("→ Alice" or "→ New Player: Alice"),
+   role, and included/excluded state. `DataTable` cells can't host live
+   interactive widgets (`Select`, `Input`, checkboxes), so — mirroring
+   `AttendeeDialog`'s own precedent for exactly this constraint — editing a
+   row pushes a small per-speaker editor dialog: a `Select` of [every
+   existing player] + a "New Player" sentinel (pre-selected per Stage 3's
+   proposal), an editable name field (relevant/shown only in "New Player"
+   mode, pre-filled from the LLM's guess), a free-text role field, and an
+   Exclude toggle. Confirming the dialog writes the row's resolution back
+   into the run context and refreshes that row's text in the table.
 2. The user can pull up everything a given speaker said (the punctuated,
    grouped utterance text) to judge the row — there is no audio playback
    anywhere in this app, so transcript text is the only review signal.
@@ -116,22 +153,32 @@ from an already-*processed* Session. This work item instead:
 3. Excluded speakers are dropped entirely from every later stage.
 
 ### Stage 5 — Extract, embed, build/enhance players
-1. For each non-excluded, human-confirmed speaker: extract that speaker's
-   utterance segments from the cleaned audio via `extract_clip`, embed each,
-   and run the **post-review clip-quality gate** against a
-   `SimilarityComputer` built from this run's finalized speaker centroids.
-   Clips that fail the margin (`AppSettings.enhance_voices.min_margin_for_voice_sample`)
-   or fall outside the duration bounds (`min_clip_seconds`/`max_clip_seconds`)
-   are discarded.
+1. For each non-excluded, human-confirmed speaker: reuse that speaker's
+   per-utterance clips already extracted in Stage 3 (copy, don't
+   re-extract, from the run-scoped temp directory into the target player's
+   folder — see Implementation Approach) and run the **post-review
+   clip-quality gate** against a `SimilarityComputer` built from this run's
+   finalized speaker centroids, when at least two speakers were confirmed
+   this run; with exactly one confirmed speaker, the gate is skipped (there
+   is no sibling to disambiguate against) and every duration-valid clip is
+   kept. Clips that fail the margin
+   (`AppSettings.enhance_voices.min_margin_for_voice_sample`) or fall
+   outside the duration bounds (`min_clip_seconds`/`max_clip_seconds`) are
+   discarded.
 2. Surviving clips are written into the target player's folder under
-   `diarized-<player_slug>-<sourcehash8>-<uuid4>.wav` — `sourcehash8` is a
-   hash of the picked audio file's resolved path, mirroring directory
+   `diarized-<player_slug>-<sourcehash8>-<uuid4>.wav` — `sourcehash8` is
+   `clips.hash8(str(picked_audio_path.resolve()))`, mirroring directory
    import's `import-<player_slug>-<sourcehash8>-<uuid4>.wav` convention
-   exactly (see `import_player_from_filesystem.md`). Re-running this flow
+   exactly (see `import_player_from_filesystem.md`), but hashing the picked
+   *file's* resolved path directly via the already-public `hash8` rather
+   than the directory-only `_source_hash` helper. Re-running this flow
    against the *same* source file replaces that file's prior contribution to
    each player, same "replace as a unit" semantics as directory reimport —
    copy-then-delete, not delete-then-copy, so a bad rerun never leaves a
-   player with fewer samples than they started with.
+   player with fewer samples than they started with. This adds a third
+   prefix (`diarized`) to `find_clips_by_hash_segment`'s existing
+   `import`/`session` set — its docstring listing "callers/prefixes" needs
+   updating alongside this change.
 3. "New Player" rows create the `Player` row first (folder starts empty),
    then are treated identically to an existing-player match from here on.
 
@@ -167,6 +214,18 @@ from an already-*processed* Session. This work item instead:
 - **Editing is speaker-ID level only.** No per-clip reassignment UI;
   rename/exclude a whole speaker ID, that's it. The margin gate does the
   work a manual clip-review UI would otherwise need to do by hand.
+- **Below-floor matching signals degrade to "no signal," never an error.**
+  `SimilarityComputer` raises if given fewer than two reference embeddings
+  — a real possibility here, since this flow's whole point is bootstrapping
+  voice profiles when few or no players exist yet. Rather than adding a new
+  setting for a degraded single-reference comparison, both matching stages
+  simply skip the signal below that floor: Stage 3 with fewer than two
+  existing players (every row seeds purely from the LLM's guess, as "New
+  Player"), Stage 5 with exactly one confirmed speaker this run (the gate
+  is skipped, every duration-valid clip is kept). This means the flow works
+  end-to-end on a brand-new install with zero existing players and/or a
+  single-speaker recording — only the "might this be someone you already
+  know" recommendation is unavailable in that case, not the flow itself.
 - **No mid-flight cancellation.** Matches every other `ProgressDialog` in
   the app (cancel-less by design). Nothing touches the database or any
   player folder until Stage 5, so waiting out or force-quitting a long
@@ -188,14 +247,17 @@ from an already-*processed* Session. This work item instead:
     clip-quality gate.
   - `remove_outliers` — Stage 6's centroid recompute.
 - **Screen architecture**: a full pushed `Screen` per stage (push/pop),
-  not a chain of modal dialogs. Reasons: (1) real back-navigation — dialogs
-  in this app dismiss forward-only, and a 6-stage flow without "go back one
-  step and keep what I had" is unforgiving; (2) the "show me everything
-  Speaker N said" transcript view needs somewhere to live without stacking
-  a third modal on top of a second; (3) this is a long-running, stateful
-  task in the same weight class as Session Detail, which already
-  established "big multi-stage task gets a real screen" as this codebase's
-  convention.
+  not a chain of modal dialogs, all reading from and writing into one
+  shared run-context object (see Key Concepts) rather than each screen
+  owning its own state. Reasons: (1) real back-navigation — dialogs in this
+  app dismiss forward-only, and a 6-stage flow without "go back one step
+  and keep what I had" is unforgiving, and popping a `Screen` destroys it,
+  so the state that survives a pop has to live outside any one screen; (2)
+  the "show me everything Speaker N said" transcript view needs somewhere
+  to live without stacking a third modal on top of a second; (3) this is a
+  long-running, stateful task in the same weight class as Session Detail,
+  which already established "big multi-stage task gets a real screen" as
+  this codebase's convention.
 
 ## Out of Scope
 
@@ -210,23 +272,38 @@ from an already-*processed* Session. This work item instead:
 - A "creatable select" input control (search-or-type-new). The pre-step
   list is plain free text; the review step's existing-vs-new choice is a
   `Select` + sentinel option, not a fuzzy-matching combo box.
+- GPU-memory flushing between cleaning and embedding stages. Nothing in
+  this flow has ever been observed to OOM back-to-back Mossformer2/ERes2NetV2
+  runs; `_utils.flush_gpu_memory()` exists but has no call site anywhere in
+  the app today, and adding a speculative one here isn't warranted absent
+  an actual failure.
 
 ## Implementation Approach
 
 ### Reusable `tablesage-tools` code (all currently unused by any
-application-layer call site — this feature is largely orchestration, not
-new ML/audio work)
+application-layer call site except where noted — this feature is largely
+orchestration, not new ML/audio work)
 
 - `audio.clean_clip(source, target, *, normalize=False)` — Stage 2 cleaning
   (already wired for Session Detail's Import Audio; same call here).
 - `transcription.transcribe_and_diarize(input_file, language_code, model_id,
-  request_timeout, tag_audio_events, speaker_count)` → `list[TranscriptionWord]`
+  request_timeout, tag_audio_events, speaker_count)` → `Transcript`
   — Stage 2; `speaker_count: int | None` is the exact hook this flow's
-  "do you know how many speakers" branch needs.
-- `text.punctuate_text(texts) -> list[str]` — restores punctuation/casing on
-  raw ASR word streams; used for both the Stage 3 LLM prompt and the Stage 4
-  "show me what they said" review text.
-- `llm.call_llm(prompt, model)` — Stage 3.
+  "do you know how many speakers" branch needs. Already returns
+  speaker-grouped `Utterance`s via `Transcript.from_words` — no separate
+  grouping step needed.
+- `punctuation.punctuate_transcript(transcript) -> Transcript` — Stage 2's
+  final step, filling in `Utterance.punctuated_text` for every utterance in
+  one call; the same call `session_pipeline.transcribe_audio` already makes
+  for Session Detail's transcription flow. (The lower-level
+  `text.punctuate_text(texts) -> list[str]` this wraps is not called
+  directly here.)
+- `tablesage_application.llm.call_llm_with_prompt(prompt: PromptName,
+  template_data, model, response_model=...)` — Stage 3; wraps
+  `tablesage_tools.llm.call_llm`'s system/user-prompt-plus-optional-schema
+  call with this app's template-file convention. Needs a new `PromptName`
+  member and a `system.md`/`template.j2` pair under `_prompts/`, following
+  the existing `summarize_session` precedent.
 - `embeddings.EmbeddingFactory(device=...).extract(path)` /
   `.extract_async(path)` — same embedder already used elsewhere in the app
   (`Application._embed_clip`).
@@ -236,13 +313,15 @@ new ML/audio work)
   outlier pruning included.
 - `embeddings.SimilarityComputer(references=...).compute_similarity(candidate)`
   → `SimilarityResult(best_match_index, best_match_similarity, mean_similarity,
-  margin)` — both matching signals (Stage 3 pre-review, Stage 5 post-review).
-- `audio.extract_clip(input_path, output_wav, start, end)` — Stage 5 clip
-  extraction by timestamp.
-- `_utils.flush_gpu_memory()` — worth calling between the Mossformer2
-  (cleaning) and ERes2NetV2 (embedding) GPU stages if they run back-to-back
-  in one worker; no existing call site demonstrates this yet, so this would
-  be its first user.
+  margin)` — both matching signals (Stage 3 pre-review, Stage 5 post-review),
+  guarded by the below-floor fallback in Behaviors & Rules; raises if
+  constructed with fewer than two references, so callers must check the
+  count first rather than relying on a try/except.
+- `audio.extract_clip(input_path, output_wav, start, end)` — Stage 3, to
+  build the run-scoped per-utterance clips used both for centroid
+  computation there and, by copy rather than re-extraction, for Stage 5's
+  written player clips (extracting each utterance's audio only once, not
+  once per stage).
 
 ### New code required
 
@@ -250,25 +329,36 @@ new ML/audio work)
    exists.
 2. **`tablesage-application`**: a new module (e.g. `player_import_from_audio.py`)
    orchestrating Stages 2–6 as plain functions with injected callables for
-   the async/ML tool calls (mirroring `Application._embed_clip`/
-   `_clean_session_audio`'s pattern, so this stays unit-testable without
-   invoking ffmpeg/ElevenLabs/litellm/ModelScope). Needs: the
-   word-to-utterance-segment grouping helper, the replace-as-a-unit
-   filename/matching logic (mirroring `find_prior_import_clips`), and the
+   the async/ML tool calls (mirroring `players_from_session.py`'s
+   `asyncio.run(...)`-inside-a-sync-function shape, so this stays
+   unit-testable without invoking ffmpeg/ElevenLabs/litellm/ModelScope).
+   Needs: the per-speaker utterance-aggregation helper (grouping an already
+   speaker-labeled `Transcript.utterances` by `.speaker` — not the deeper
+   word-to-utterance grouping, which `Transcript.from_words` already does),
+   the run-scoped temp-directory clip extraction shared between Stage 3 and
+   Stage 5, the replace-as-a-unit filename/matching logic (mirroring
+   `find_prior_import_clips`, but hashing the picked file's path directly
+   via `hash8` rather than `_source_hash`'s directory-only hashing), the new
+   `PromptName`/`system.md`/`template.j2` for Stage 3, and the
    application-facade methods wiring settings + tool callables together.
 3. **`tablesage-tui`**: one new `Screen` subclass per stage (file picker
-   reuse aside), wired to Players List's existing `F` binding; a new
-   name+role list-builder widget/dialog for the pre-step (reusing
-   `AttendeeDialog`'s role-table pattern); a review-table screen with the
-   `Select`-plus-"New Player"-sentinel row shape; a read-only summary
-   screen for Stage 7.
+   reuse aside), wired to Players List's existing `F` binding, all sharing
+   one mutable run-context object owned by the flow rather than by any
+   screen; a new name+role list-builder widget/dialog for the pre-step
+   (reusing `AttendeeDialog`'s add/edit/remove pattern); a Stage 4 review
+   screen whose `DataTable` renders each speaker's resolution as text, with
+   a per-speaker editor dialog (mirroring `AttendeeDialog`'s own workaround
+   for the same "no live widgets inside `DataTable` cells" constraint) for
+   the `Select`/name/role/exclude fields; a read-only summary screen for
+   Stage 7.
 4. **Docs**: update `tablesage_implementation_plan.md`'s Phase 10 section to
    reflect the split into work items 14/15, and `tablesage_use_cases.md` if
    its "Seed voice profiles from an unidentified session" / "Enhance
    profiles from an identified session" use cases need reconciling against
    this design's actual shape.
-5. **Tests**: application-layer tests for the utterance-grouping helper, the
-   two `SimilarityComputer`-based matching stages (with stub embeddings,
-   not real ones), replace-as-a-unit filename matching, and
+5. **Tests**: application-layer tests for the per-speaker aggregation
+   helper, the two `SimilarityComputer`-based matching stages including
+   their below-floor (fewer-than-two-references) fallback paths (with stub
+   embeddings, not real ones), replace-as-a-unit filename matching, and
    partial-completion behavior on a simulated mid-batch failure; TUI tests
    per stage screen following the existing headless `run_test()` convention.
