@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from pydantic import BaseModel, Field, PositiveInt
 
 from .type_aliases import ScribeLanguageCode, ScribeModelId
@@ -13,7 +11,6 @@ class RemoveOutliersSettings(BaseModel, frozen=True):
 
 
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
-    input_audio_file: Path = Path("cleaned.wav")
     similarity_margin_threshold: float = 0.1
 
 
@@ -42,7 +39,6 @@ class AppSettings(BaseModel, frozen=True):
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
-    cleaned_audio_file: Path = Path("cleaned.wav")
     remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
     enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"

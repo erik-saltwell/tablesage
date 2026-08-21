@@ -2,7 +2,7 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
-from tablesage_application.session_pipeline.artifacts import SessionArtifacts
+from tablesage_application.paths import ArtifactName
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, PlayerPickerDialog, RolePickerDialog, TextInputDialog
@@ -32,9 +32,10 @@ def _application(
         # (opened by N/E on the Sessions tab) doesn't crash on mount.
         get_session=MagicMock(return_value=GameSession(campaign_id=campaign.id, sequence_number=1, name="Session")),
         list_attendance=MagicMock(return_value=[]),
-        session_artifacts=MagicMock(return_value=SessionArtifacts(has_input_audio=False, has_processed_session=False, has_summary=False)),
+        session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
         can_process_session=MagicMock(return_value=(False, "Import input audio first.")),
         can_generate_summary=MagicMock(return_value=(False, "Process the session first.")),
+        can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
     )
 
 

@@ -6,6 +6,8 @@ from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from tablesage_application.paths import ARTIFACTS, ArtifactCategory, ArtifactName
+from tablesage_application.session_pipeline import import_audio, transcribe_audio
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -20,6 +22,12 @@ from .base import TableSageScreen
 if TYPE_CHECKING:
     from tablesage_application.entities.sessions import Attendee
 
+_STAGE_LABELS = {
+    transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
+    transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
+    transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
+}
+
 
 class SessionDetailScreen(TableSageScreen):
     """A single session's metadata, attendance, and artifact indicators."""
@@ -32,6 +40,7 @@ class SessionDetailScreen(TableSageScreen):
         Binding("enter,e,E", "edit_attendee", "Edit Attendee", key_display="E"),
         Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
+        Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
         Binding("p,P", "process_session", "Process", key_display="P"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
     ]
@@ -71,6 +80,7 @@ class SessionDetailScreen(TableSageScreen):
                     yield Static("Artifacts", classes="section-title")
                     with Vertical(id="artifacts-panel"):
                         yield Static("", id="indicator-input-audio")
+                        yield Static("", id="indicator-transcript")
                         yield Static("", id="indicator-processed-session")
                         yield Static("", id="indicator-summary")
 
@@ -149,10 +159,11 @@ class SessionDetailScreen(TableSageScreen):
     # Indicators / gating
 
     def _refresh_indicators(self) -> None:
-        artifacts = self.application.session_artifacts(self._session_id)
-        self._set_indicator("#indicator-input-audio", "Input Audio", artifacts.has_input_audio)
-        self._set_indicator("#indicator-processed-session", "Processed Session", artifacts.has_processed_session)
-        self._set_indicator("#indicator-summary", "Session Summary", artifacts.has_summary)
+        session_artifacts = self.application.session_artifacts(self._session_id)
+        self._set_indicator("#indicator-input-audio", "Input Audio", session_artifacts[ArtifactName.INPUT_AUDIO])
+        self._set_indicator("#indicator-transcript", "Transcript", session_artifacts[ArtifactName.TRANSCRIPT])
+        self._set_indicator("#indicator-processed-session", "Processed Session", session_artifacts[ArtifactName.PROCESSED_SESSION])
+        self._set_indicator("#indicator-summary", "Session Summary", session_artifacts[ArtifactName.SUMMARY])
 
         self.refresh_bindings()
 
@@ -169,6 +180,9 @@ class SessionDetailScreen(TableSageScreen):
         return f"{symbol} {label}"
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "transcribe_audio":
+            enabled, _ = self.application.can_transcribe_audio(self._session_id)
+            return True if enabled else None
         if action == "process_session":
             enabled, _ = self.application.can_process_session(self._session_id)
             return True if enabled else None
@@ -179,11 +193,14 @@ class SessionDetailScreen(TableSageScreen):
 
     # Invalidation guard -- shared by every destructive edit (import audio,
     # add/remove attendee, edit roles): confirm first only if there's
-    # something to lose.
+    # something derived (i.e. not IMPORTED) to lose.
 
     def _with_invalidation_guard(self, action: Callable[[], None]) -> None:
-        artifacts = self.application.session_artifacts(self._session_id)
-        if not (artifacts.has_processed_session or artifacts.has_summary):
+        session_artifacts = self.application.session_artifacts(self._session_id)
+        has_derived_artifact = any(
+            present and ARTIFACTS[name].category is not ArtifactCategory.IMPORTED for name, present in session_artifacts.items()
+        )
+        if not has_derived_artifact:
             action()
             return
 
@@ -213,10 +230,12 @@ class SessionDetailScreen(TableSageScreen):
                 return
 
             def do_import() -> None:
+                session_folder = self.application.session_folder(self._session_id)
+                normalize_volume = self.application.settings.session_audio_import.normalize_volume
                 self.run_with_progress(
                     title="Import Audio",
                     message="Cleaning audio…",
-                    work=lambda: self.application.import_session_audio(self._session_id, source_path),
+                    work=lambda: import_audio.import_audio(source_path, session_folder, normalize_volume),
                     on_success=self._after_import_audio,
                 )
 
@@ -237,6 +256,43 @@ class SessionDetailScreen(TableSageScreen):
     def _after_import_audio(self, _result: None) -> None:
         self._refresh_indicators()
         self.notify("Input audio imported.")
+
+    # Transcribe
+
+    def action_transcribe_audio(self) -> None:
+        session_folder = self.application.session_folder(self._session_id)
+        centroids = self.application.session_player_centroids(self._session_id)
+        embed = self.application.embedding_factory()
+        settings = self.application.settings
+
+        def work() -> transcribe_audio.TranscriptionResult:
+            return transcribe_audio.transcribe_audio(
+                session_folder,
+                centroids,
+                embed,
+                settings.transcription_and_diarization,
+                settings.speaker_identification,
+                on_progress=self._on_transcribe_progress,
+            )
+
+        # No invalidation guard: transcribe_audio only ever (over)writes transcript.json/.md,
+        # never touches processed_session.json/summary.md, so there's nothing to warn about.
+        self.run_with_progress(
+            title="Transcribe",
+            message=_STAGE_LABELS[transcribe_audio.Stage.TRANSCRIBING],
+            work=work,
+            on_success=self._after_transcribe_audio,
+        )
+
+    def _on_transcribe_progress(self, stage: transcribe_audio.Stage, completed: int, total: int) -> None:
+        self.report_stage_progress(_STAGE_LABELS[stage], completed, total)
+
+    def _after_transcribe_audio(self, result: transcribe_audio.TranscriptionResult) -> None:
+        self._refresh_indicators()
+        if result.unassigned_speaker_count:
+            self.notify(f"Transcribed. {result.unassigned_speaker_count} of {result.utterance_count} utterances need speaker review.")
+        else:
+            self.notify("Transcribed.")
 
     # Process / Generate -- gated (see check_action), but the pipeline itself
     # is stubbed until Phases 11/12.

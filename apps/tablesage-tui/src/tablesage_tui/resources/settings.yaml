@@ -17,3 +17,17 @@ session_audio_import:
   # through the audio-cleaning pipeline; this toggles loudness normalization
   # on top of that cleaning.
   normalize_volume: false
+
+transcription_and_diarization:
+  # Session Detail's "Transcribe" (T) sends the session's input audio to
+  # ElevenLabs Scribe for transcription and speaker diarization.
+  timeout: 7200
+  language_code: eng
+  tag_audio_events: false
+  model_id: scribe_v2
+
+speaker_identification:
+  # After diarization, each utterance's voice is compared against attending
+  # players' centroids; a match whose margin over the runner-up falls below
+  # this threshold is left as "Unassigned Speaker" rather than guessed.
+  similarity_margin_threshold: 0.1

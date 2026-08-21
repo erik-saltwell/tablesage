@@ -7,12 +7,13 @@ from sqlmodel import Session
 from tablesage_model.model import Player
 
 from ..entities.sessions import list_attendance
+from ..paths import ArtifactName
 from .artifacts import session_artifacts
 
 
 def can_process_session(session: Session, session_id: uuid.UUID, session_folder: Path) -> tuple[bool, str | None]:
     """One shared precondition check, usable both for `P`'s enabled/disabled UI state and as a guard inside `process_session` itself."""
-    if not session_artifacts(session_folder).has_input_audio:
+    if not session_artifacts(session_folder)[ArtifactName.INPUT_AUDIO]:
         return False, "Import input audio first."
 
     attendees = list_attendance(session, session_id)
@@ -32,6 +33,6 @@ def _player_has_centroid(session: Session, player_id: uuid.UUID) -> bool:
 
 
 def can_generate_summary(session_folder: Path) -> tuple[bool, str | None]:
-    if not session_artifacts(session_folder).has_processed_session:
+    if not session_artifacts(session_folder)[ArtifactName.PROCESSED_SESSION]:
         return False, "Process the session first."
     return True, None

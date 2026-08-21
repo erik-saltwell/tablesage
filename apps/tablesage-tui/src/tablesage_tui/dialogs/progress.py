@@ -30,5 +30,10 @@ class ProgressDialog(ModalScreen[None]):
         self.query_one("#progress-message", Static).update(message)
 
     def set_progress(self, completed: int, total: int) -> None:
-        """Switch the bar from indeterminate to a determinate completed/total display."""
-        self.query_one("#progress-bar", ProgressBar).update(total=total, progress=completed)
+        """Switch the bar to a determinate completed/total display, or back to indeterminate if `total` is 0.
+
+        `total=0` is the sentinel a multi-stage caller (see
+        `TableSageScreen.report_stage_progress`) uses for a stage it can't
+        itemize -- a single opaque call rather than a loop over N items.
+        """
+        self.query_one("#progress-bar", ProgressBar).update(total=total or None, progress=completed)

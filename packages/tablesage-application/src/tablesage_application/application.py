@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import asyncio
+import json
 import uuid
 from collections.abc import Callable
 from datetime import date
@@ -11,12 +11,11 @@ from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
-from tablesage_tools.audio import clean_clip
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
 from . import paths
 from .entities import campaigns, glossary, players, roster, sessions
-from .session_pipeline import artifacts, import_audio, processing
+from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
 from .voice_clips import clips
 
 
@@ -27,6 +26,10 @@ class Application:
         self._engine = setup.create_engine(self._db_path)
         self._embedding_factory: EmbeddingFactory | None = None
         self._settings: AppSettings = settings if settings is not None else AppSettings()
+
+    @property
+    def settings(self) -> AppSettings:
+        return self._settings
 
     # Campaigns
 
@@ -181,13 +184,16 @@ class Application:
             session.refresh(result)
             return result, import_result
 
-    def _embed_clip(self, path: Path) -> Embedding:
+    def embedding_factory(self) -> EmbeddingFactory:
         if self._embedding_factory is None:
             import torch
 
             device = "cuda" if torch.cuda.is_available() else "cpu"
             self._embedding_factory = EmbeddingFactory(device=device)
-        return self._embedding_factory.extract(path)
+        return self._embedding_factory
+
+    def _embed_clip(self, path: Path) -> Embedding:
+        return self.embedding_factory().extract(path)
 
     # Roster
 
@@ -284,24 +290,31 @@ class Application:
             raise ValueError("Campaign not found.")
         return paths.session_folder(self._cwd, campaign.name, game_session.sequence_number)
 
-    def session_artifacts(self, session_id: uuid.UUID) -> artifacts.SessionArtifacts:
+    def session_folder(self, session_id: uuid.UUID) -> Path:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return self._session_folder(session, game_session)
+
+    def session_artifacts(self, session_id: uuid.UUID) -> dict[paths.ArtifactName, bool]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return artifacts.session_artifacts(self._session_folder(session, game_session))
+
+    def session_player_centroids(self, session_id: uuid.UUID) -> dict[str, Embedding]:
+        """Attending players' voice centroids, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
+        with Session(self._engine) as session:
+            centroids: dict[str, Embedding] = {}
+            for attendee in sessions.list_attendance(session, session_id):
+                player = session.get(Player, attendee.player_id)
+                if player is not None and player.centroid_embedding is not None:
+                    centroids[player.name] = Embedding.model_validate(json.loads(player.centroid_embedding))
+            return centroids
 
     def validate_import_audio_source(self, source_path: Path) -> None:
         import_audio.validate_import_source(source_path)
 
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
-
-    def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            import_audio.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
-
-    def _clean_session_audio(self, source: Path, target: Path) -> None:
-        asyncio.run(clean_clip(source, target, normalize=self._settings.session_audio_import.normalize_volume))
 
     def can_process_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -312,6 +325,11 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return processing.can_generate_summary(self._session_folder(session, game_session))
+
+    def can_transcribe_audio(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return transcribe_audio.can_transcribe_audio(session, session_id, self._session_folder(session, game_session))
 
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:

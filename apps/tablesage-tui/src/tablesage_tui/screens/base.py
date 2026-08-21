@@ -101,6 +101,20 @@ class TableSageScreen(Screen[None]):
             return
         self.app.call_from_thread(dialog.set_progress, completed, total)
 
+    def report_stage_progress(self, message: str, completed: int, total: int) -> None:
+        """Like `report_progress`, but also swaps the dialog's status message -- for multi-stage work.
+
+        `total=0` means indeterminate for the stage in progress (see
+        `ProgressDialog.set_progress`); a determinate `(completed, total)`
+        only ever comes from a single stage, never a global count across
+        stages, so the message is what tells the user which stage that is.
+        """
+        dialog = self._progress_dialog
+        if dialog is None:
+            return
+        self.app.call_from_thread(dialog.update_message, message)
+        self.app.call_from_thread(dialog.set_progress, completed, total)
+
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
         if event.worker.group != _PROGRESS_WORKER_GROUP:
             return
