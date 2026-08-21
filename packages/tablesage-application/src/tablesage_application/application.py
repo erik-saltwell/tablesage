@@ -16,7 +16,7 @@ from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
 from . import paths
 from .entities import campaigns, glossary, players, roster, sessions
-from .session_pipeline import processing
+from .session_pipeline import artifacts, import_audio, processing
 from .voice_clips import clips
 
 
@@ -284,13 +284,13 @@ class Application:
             raise ValueError("Campaign not found.")
         return paths.session_folder(self._cwd, campaign.name, game_session.sequence_number)
 
-    def session_artifacts(self, session_id: uuid.UUID) -> processing.SessionArtifacts:
+    def session_artifacts(self, session_id: uuid.UUID) -> artifacts.SessionArtifacts:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return processing.session_artifacts(self._session_folder(session, game_session))
+            return artifacts.session_artifacts(self._session_folder(session, game_session))
 
     def validate_import_audio_source(self, source_path: Path) -> None:
-        processing.validate_import_source(source_path)
+        import_audio.validate_import_source(source_path)
 
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
@@ -298,7 +298,7 @@ class Application:
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
+            import_audio.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
 
     def _clean_session_audio(self, source: Path, target: Path) -> None:
         asyncio.run(clean_clip(source, target, normalize=self._settings.session_audio_import.normalize_volume))
@@ -320,7 +320,7 @@ class Application:
     def add_attendance(self, session_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.invalidate_downstream(self._session_folder(session, game_session))
+            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance(session, game_session.campaign_id, session_id, player_id)
             session.commit()
             return result
@@ -328,7 +328,7 @@ class Application:
     def add_attendance_with_roles(self, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.invalidate_downstream(self._session_folder(session, game_session))
+            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance_with_roles(session, game_session.campaign_id, session_id, player_id, roles)
             session.commit()
             return result
@@ -336,7 +336,7 @@ class Application:
     def set_attendance_player(self, session_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.invalidate_downstream(self._session_folder(session, game_session))
+            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_player(session, game_session.campaign_id, attendance_id, player_id)
             session.commit()
             return result
@@ -344,14 +344,14 @@ class Application:
     def remove_attendance(self, session_id: uuid.UUID, attendance_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.invalidate_downstream(self._session_folder(session, game_session))
+            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             sessions.remove_attendance(session, attendance_id)
             session.commit()
 
     def set_attendance_roles(self, session_id: uuid.UUID, attendance_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            processing.invalidate_downstream(self._session_folder(session, game_session))
+            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_roles(session, attendance_id, roles)
             session.commit()
             return result
