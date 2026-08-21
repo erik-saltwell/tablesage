@@ -16,8 +16,7 @@ from tablesage_model.model import Player
 from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_centroid
 
 from ..entities.players import get_player
-
-VOICE_CLIP_GLOB = "*.wav"
+from ..paths import VOICE_CLIP_GLOB
 
 # `import-<player_slug>-<sourcehash8>-<uuid4hex>.wav` -- see
 # `.documentation/import_player_from_filesystem.md`. The hash segment is the

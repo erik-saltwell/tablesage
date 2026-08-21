@@ -12,6 +12,8 @@ SESSION_SUMMARY_FILENAME = "summary.md"
 
 AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})
 
+VOICE_CLIP_GLOB = "*.wav"
+
 
 def campaigns_root(cwd: Path) -> Path:
     return cwd / ".tablesage" / "campaigns"
