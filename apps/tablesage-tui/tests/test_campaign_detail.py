@@ -33,7 +33,6 @@ def _application(
         get_session=MagicMock(return_value=GameSession(campaign_id=campaign.id, sequence_number=1, name="Session")),
         list_attendance=MagicMock(return_value=[]),
         session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
-        can_process_session=MagicMock(return_value=(False, "Import input audio first.")),
         can_generate_summary=MagicMock(return_value=(False, "Process the session first.")),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
     )

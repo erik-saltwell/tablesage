@@ -13,12 +13,15 @@ session are also managed here, since processing depends on them.
 
 - **Session folder** — an on-disk directory (`{campaign}/{sequence:03d}/`) holding
   a fixed set of known filenames, registered in `tablesage_application.paths.ARTIFACTS`
-  (an `ArtifactName` → `ArtifactSpec(filename, category)` map): the input audio,
-  the transcript (json + human-readable), the processed/canonical session file,
-  and the session summary. The filesystem is the source of truth for whether
-  each of these exists — there is no database table tracking file presence or
-  versions. Every artifact's `category` (`imported`, `from_audio`, or
-  `from_log`) drives invalidation generically — see Invalidation below.
+  (an `ArtifactName` → `ArtifactSpec(filename, category, should_show_in_ui,
+  display_name)` map): the input audio, the transcript (json + human-readable),
+  the processed/canonical session file, and the session summary. The filesystem
+  is the source of truth for whether each of these exists — there is no
+  database table tracking file presence or versions. Every artifact's
+  `category` (`imported`, `from_audio`, or `from_log`) drives invalidation
+  generically — see Invalidation below. `should_show_in_ui`/`display_name`
+  drive the indicator panel (see Indicators below) — the panel is generated
+  from this registry rather than hand-listing artifacts in the screen.
 - **Input audio** — the raw recording, brought into the session folder by the
   Import action. Import always runs the recording through the audio-cleaning
   pipeline (noise/voice enhancement, plus optional loudness normalization)
@@ -36,8 +39,11 @@ session are also managed here, since processing depends on them.
   structuring pass over the transcript into a well-structured, machine-usable
   record of the session (intended to support future uses beyond the summary,
   e.g. a wiki generator). Its internal format is undesigned and this pipeline
-  step is not yet implemented (`P` is still a stub) — this doc's Process
-  section describes the intended shape, not current behavior.
+  step is not yet implemented — the `P`/Process binding has been removed from
+  the screen pending that redesign (this doc's Process section describes the
+  intended shape, not current behavior), and the artifact is hidden from the
+  indicator panel (`should_show_in_ui=False`) since nothing surfaces it to the
+  user yet.
 - **Session summary** — a generated output derived from the processed session
   (i.e. the canonical log, not the raw transcript) and the campaign glossary.
   The first of what may become a family of "outputs generated from the
@@ -46,11 +52,12 @@ session are also managed here, since processing depends on them.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
   an NPC, or a role changing after a character death).
-- **Indicators** — the four-item status readout (Input Audio / Transcript /
-  Processed Session / Session Summary) that shows what exists and gates which
-  pipeline actions are available. This replaces most of `Session.status`; only
-  `processing` (a run is in flight) and `failed` (the last run errored) survive
-  as system-managed state.
+- **Indicators** — the status readout, driven by `ARTIFACTS`' `should_show_in_ui`
+  flag: currently Input Audio / Transcript / Summary are shown (Transcript's
+  `.json` twin and Processed Session are tracked but hidden — see their bullets
+  above). This replaces most of `Session.status`; only `processing` (a run is
+  in flight) and `failed` (the last run errored) survive as system-managed
+  state.
 
 ## Flows
 
@@ -97,6 +104,11 @@ session are also managed here, since processing depends on them.
    (Process, once implemented, will need to re-check its own inputs).
 
 ### Process a session
+
+**Not currently reachable from this screen.** The `P` binding has been removed
+pending a redesign of this step; the flow below describes the intended shape
+from before that removal, not current behavior.
+
 1. Available (`P` enabled) only when input audio exists, there are at least 2
    attendees, and every attendee has a computed voice centroid.
 2. A progress modal opens (this is a long-running operation).
@@ -160,11 +172,11 @@ session are also managed here, since processing depends on them.
   attendee count, since transcription's speaker-ID step tolerates a single
   attendee (`identify_speakers` needs ≥2 *centroids*, but a solo session with
   0 identified speakers is still a valid, if degenerate, transcription).
-- **Process (`P`) gating**: disabled unless (a) the input audio file exists,
-  (b) there are at least 2 attendees, and (c) every current attendee has a
-  computed voice centroid. The disablement reason (from
-  `can_process_session`) is computed but not currently surfaced in the UI —
-  removed for now, may return in some form later.
+- **Process (`P`)**: the binding and action have been removed from this screen
+  pending a redesign of the processing step (see the Process a session flow
+  above). `session_pipeline.processing.can_process_session` still exists and
+  is tested at that layer, but `Application` no longer exposes a wrapping
+  method for it, since nothing on the TUI side calls it.
 - **Generate summary (`G`) gating**: disabled unless the processed session
   file exists.
 - **Invalidation deletes files immediately, driven by the artifact registry.**

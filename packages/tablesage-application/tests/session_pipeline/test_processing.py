@@ -5,6 +5,7 @@ import wave
 from pathlib import Path
 
 import pytest
+from sqlmodel import Session
 from tablesage_application import Application, session_pipeline
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
@@ -137,13 +138,21 @@ def test_validate_import_audio_source_accepts_common_audio_extensions(tmp_path: 
     application.validate_import_audio_source(source)  # no raise
 
 
+def _can_process_session(application: Application, session_id: uuid.UUID) -> tuple[bool, str | None]:
+    """`Application` no longer wraps this (nothing on the TUI side calls it since the `P`
+    binding was removed) -- `processing.can_process_session` itself is still live/tested."""
+    session_folder = application.session_folder(session_id)
+    with Session(application._engine) as session:
+        return session_pipeline.processing.can_process_session(session, session_id, session_folder)
+
+
 def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(session_pipeline.import_audio, "clean_clip", _async_stub_clean_clip)
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
 
-    enabled, reason = application.can_process_session(game_session.id)
+    enabled, reason = _can_process_session(application, game_session.id)
     assert not enabled
     assert reason == "Import input audio first."
 
@@ -155,7 +164,7 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     application.add_player_to_campaign(campaign.id, alice.id, GAME_MASTER_ROLE)
     application.add_attendance(game_session.id, alice.id)
 
-    enabled, reason = application.can_process_session(game_session.id)
+    enabled, reason = _can_process_session(application, game_session.id)
     assert not enabled
     assert reason == "At least 2 attendees are required."
 
@@ -163,7 +172,7 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     application.add_player_to_campaign(campaign.id, bob.id, "Bob's Character")
     application.add_attendance(game_session.id, bob.id)
 
-    enabled, reason = application.can_process_session(game_session.id)
+    enabled, reason = _can_process_session(application, game_session.id)
     assert not enabled
     assert reason is not None and "Missing voice profile" in reason
     assert "Alice" in reason
@@ -175,7 +184,7 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     application.recompute_centroid(alice.id)
     application.recompute_centroid(bob.id)
 
-    enabled, reason = application.can_process_session(game_session.id)
+    enabled, reason = _can_process_session(application, game_session.id)
     assert enabled
     assert reason is None
 

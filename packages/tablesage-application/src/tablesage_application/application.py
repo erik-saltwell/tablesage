@@ -316,11 +316,6 @@ class Application:
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
 
-    def can_process_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            return processing.can_process_session(session, session_id, self._session_folder(session, game_session))
-
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)

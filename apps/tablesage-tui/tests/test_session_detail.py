@@ -35,7 +35,6 @@ def _application(
     session: GameSession | None = None,
     attendees: list[Attendee] | None = None,
     artifacts: dict[ArtifactName, bool] | None = None,
-    can_process: tuple[bool, str | None] = (False, "Import input audio first."),
     can_generate: tuple[bool, str | None] = (False, "Process the session first."),
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
     session_folder: Path | None = None,
@@ -45,7 +44,6 @@ def _application(
         get_session=MagicMock(return_value=session),
         list_attendance=MagicMock(return_value=attendees or []),
         session_artifacts=MagicMock(return_value=artifacts or _artifacts()),
-        can_process_session=MagicMock(return_value=can_process),
         can_generate_summary=MagicMock(return_value=can_generate),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
@@ -170,10 +168,11 @@ async def test_indicators_reflect_artifact_state() -> None:
         await _open_session_detail(pilot, session.id)
 
         screen = pilot.app.screen
-        input_audio = screen.query_one("#indicator-input-audio", Static)
-        transcript = screen.query_one("#indicator-transcript", Static)
-        processed_session = screen.query_one("#indicator-processed-session", Static)
-        summary = screen.query_one("#indicator-summary", Static)
+        assert isinstance(screen, SessionDetailScreen)
+        indicators = screen._indicators
+        input_audio = indicators[ArtifactName.INPUT_AUDIO]
+        transcript = indicators[ArtifactName.TRANSCRIPT_TEXT]
+        summary = indicators[ArtifactName.SUMMARY]
 
         assert "●" in str(input_audio.render())
         assert not input_audio.has_class("artifact-missing")
@@ -181,47 +180,14 @@ async def test_indicators_reflect_artifact_state() -> None:
         assert "○" in str(transcript.render())
         assert transcript.has_class("artifact-missing")
 
-        assert "○" in str(processed_session.render())
-        assert processed_session.has_class("artifact-missing")
-
         assert "○" in str(summary.render())
         assert summary.has_class("artifact-missing")
 
-        # The panel gained a 4th indicator (transcript) -- confirm it's actually laid out
-        # on screen, not just present in the DOM but clipped/zero-sized.
-        for indicator in (input_audio, transcript, processed_session, summary):
+        # Confirm the indicators are actually laid out on screen, not just
+        # present in the DOM but clipped/zero-sized.
+        for indicator in (input_audio, transcript, summary):
             assert indicator.region.width > 0
             assert indicator.region.height > 0
-
-
-@pytest.mark.anyio
-async def test_process_disabled_does_not_run() -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, can_process=(False, "At least 2 attendees are required."))
-
-    async with TableSageApp(application).run_test() as pilot:
-        await _open_session_detail(pilot, session.id)
-
-        with patch.object(SessionDetailScreen, "notify") as notify:
-            await pilot.press("p")
-            await pilot.pause()
-
-        notify.assert_not_called()
-
-
-@pytest.mark.anyio
-async def test_process_enabled_runs_stub_notify() -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, can_process=(True, None))
-
-    async with TableSageApp(application).run_test() as pilot:
-        await _open_session_detail(pilot, session.id)
-
-        with patch.object(SessionDetailScreen, "notify") as notify:
-            await pilot.press("p")
-            await pilot.pause()
-
-        notify.assert_called_once_with("Processing a session is coming soon.")
 
 
 @pytest.mark.anyio

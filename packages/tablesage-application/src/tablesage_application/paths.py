@@ -33,20 +33,34 @@ class ArtifactCategory(Enum):
 class ArtifactSpec:
     filename: str
     category: ArtifactCategory
+    should_show_in_ui: bool
+    display_name: str
 
 
 # Fixed filenames within a session folder -- the filesystem is the only
 # source of truth for artifact existence, there is no `session_artifact`
 # table. See `.documentation/import_player_from_filesystem.md`'s sibling doc,
 # `.documentation/session_detail_screen.md`.
+#
+# Order here is pipeline order, and drives both the indicator panel's layout
+# and `should_show_in_ui`'s filtering -- entries stay in this order whether
+# or not they're shown.
 ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
-    ArtifactName.INPUT_AUDIO: ArtifactSpec("input_audio.wav", ArtifactCategory.IMPORTED),
-    ArtifactName.PROCESSED_SESSION: ArtifactSpec("processed_session.json", ArtifactCategory.FROM_AUDIO),
+    ArtifactName.INPUT_AUDIO: ArtifactSpec(
+        "input_audio.wav", ArtifactCategory.IMPORTED, should_show_in_ui=True, display_name="Input Audio"
+    ),
+    ArtifactName.TRANSCRIPT: ArtifactSpec(
+        "transcript.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (JSON)"
+    ),
+    ArtifactName.TRANSCRIPT_TEXT: ArtifactSpec(
+        "transcript.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=True, display_name="Transcript"
+    ),
+    ArtifactName.PROCESSED_SESSION: ArtifactSpec(
+        "processed_session.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Processed Session"
+    ),
     # Today's `can_generate_summary` gate reads `has_processed_session`, so this is FROM_AUDIO --
     # it'll move to FROM_LOG once `generate_summary` is rewired to read the canonical log instead.
-    ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_AUDIO),
-    ArtifactName.TRANSCRIPT: ArtifactSpec("transcript.json", ArtifactCategory.FROM_AUDIO),
-    ArtifactName.TRANSCRIPT_TEXT: ArtifactSpec("transcript.md", ArtifactCategory.FROM_AUDIO),
+    ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=True, display_name="Summary"),
 }
 
 AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})

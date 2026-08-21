@@ -41,7 +41,6 @@ class SessionDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
-        Binding("p,P", "process_session", "Process", key_display="P"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
     ]
 
@@ -50,6 +49,7 @@ class SessionDetailScreen(TableSageScreen):
         self._session_id = session_id
         self._session_name = ""
         self._session_date: date | None = None
+        self._indicators: dict[ArtifactName, Static] = {}
 
     def compose_content(self) -> ComposeResult:
         with Vertical(id="session-detail-panel", classes="panel surface-2") as panel:
@@ -79,10 +79,12 @@ class SessionDetailScreen(TableSageScreen):
                 with Vertical(id="session-indicators-column"):
                     yield Static("Artifacts", classes="section-title")
                     with Vertical(id="artifacts-panel"):
-                        yield Static("", id="indicator-input-audio")
-                        yield Static("", id="indicator-transcript")
-                        yield Static("", id="indicator-processed-session")
-                        yield Static("", id="indicator-summary")
+                        for name, spec in ARTIFACTS.items():
+                            if not spec.should_show_in_ui:
+                                continue
+                            indicator = Static("")
+                            self._indicators[name] = indicator
+                            yield indicator
 
     def on_mount(self) -> None:
         self.refresh_data()
@@ -160,17 +162,12 @@ class SessionDetailScreen(TableSageScreen):
 
     def _refresh_indicators(self) -> None:
         session_artifacts = self.application.session_artifacts(self._session_id)
-        self._set_indicator("#indicator-input-audio", "Input Audio", session_artifacts[ArtifactName.INPUT_AUDIO])
-        self._set_indicator("#indicator-transcript", "Transcript", session_artifacts[ArtifactName.TRANSCRIPT])
-        self._set_indicator("#indicator-processed-session", "Processed Session", session_artifacts[ArtifactName.PROCESSED_SESSION])
-        self._set_indicator("#indicator-summary", "Session Summary", session_artifacts[ArtifactName.SUMMARY])
+        for name, widget in self._indicators.items():
+            present = session_artifacts[name]
+            widget.update(self._indicator_text(ARTIFACTS[name].display_name, present))
+            widget.set_class(not present, "artifact-missing")
 
         self.refresh_bindings()
-
-    def _set_indicator(self, widget_id: str, label: str, present: bool) -> None:
-        widget = self.query_one(widget_id, Static)
-        widget.update(self._indicator_text(label, present))
-        widget.set_class(not present, "artifact-missing")
 
     @staticmethod
     def _indicator_text(label: str, present: bool) -> str:
@@ -182,9 +179,6 @@ class SessionDetailScreen(TableSageScreen):
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action == "transcribe_audio":
             enabled, _ = self.application.can_transcribe_audio(self._session_id)
-            return True if enabled else None
-        if action == "process_session":
-            enabled, _ = self.application.can_process_session(self._session_id)
             return True if enabled else None
         if action == "generate_summary":
             enabled, _ = self.application.can_generate_summary(self._session_id)
@@ -294,11 +288,8 @@ class SessionDetailScreen(TableSageScreen):
         else:
             self.notify("Transcribed.")
 
-    # Process / Generate -- gated (see check_action), but the pipeline itself
-    # is stubbed until Phases 11/12.
-
-    def action_process_session(self) -> None:
-        self.notify("Processing a session is coming soon.")
+    # Generate -- gated (see check_action), but the pipeline itself is
+    # stubbed until Phase 12.
 
     def action_generate_summary(self) -> None:
         self.notify("Generating a summary is coming soon.")
