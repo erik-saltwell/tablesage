@@ -4,9 +4,9 @@ import importlib
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from . import audio, embeddings, llm, text, transcription
+    from . import audio, embeddings, llm, punctuation, speakers, text, transcription
 
-__all__ = ["audio", "embeddings", "llm", "text", "transcription"]
+__all__ = ["audio", "embeddings", "llm", "punctuation", "speakers", "text", "transcription"]
 
 
 def __getattr__(name: str) -> object:

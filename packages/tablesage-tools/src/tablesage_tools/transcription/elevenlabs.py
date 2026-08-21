@@ -1,38 +1,16 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
-from enum import StrEnum
 from pathlib import Path
 
 from elevenlabs import AsyncElevenLabs, SpeechToTextChunkResponseModel
 
-
-class SpeechType(StrEnum):
-    WORD = "word"
-    SPACING = "spacing"
-    AUDIO_EVENT = "audio_event"
-
-    @classmethod
-    def _missing_(cls, value: object) -> SpeechType:
-        return cls.AUDIO_EVENT
-
-
-@dataclass
-class TranscriptionWord:
-    """This is a simple return type that looks similar to the model's TranscribedWord.
-    It is used because TranscriptionWord can have non-text speech types while TranscribedWord cannot."""
-
-    text: str
-    type: SpeechType
-    start: float
-    end: float
-    speaker: str
+from ..model import SpeechType, Transcript, TranscriptionWord
 
 
 async def transcribe_and_diarize(
     input_file: Path, language_code: str, model_id: str, request_timeout: int, tag_audio_events: bool, speaker_count: int | None
-) -> list[TranscriptionWord]:
+) -> Transcript:
     elevenlabs: AsyncElevenLabs = AsyncElevenLabs(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
     )
@@ -59,7 +37,8 @@ async def transcribe_and_diarize(
                 timestamps_granularity="word",
                 request_options={"timeout_in_seconds": request_timeout},
             )
-    return [
+    words = (
         TranscriptionWord(text=word.text, type=SpeechType(word.type), start=word.start, end=word.end, speaker=word.speaker_id)
         for word in transcription.words
-    ]
+    )
+    return Transcript.from_words(words)

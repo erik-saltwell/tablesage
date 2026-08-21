@@ -1,7 +1,8 @@
-from .elevenlabs import SpeechType, TranscriptionWord, transcribe_and_diarize
+from .elevenlabs import SpeechType, Transcript, TranscriptionWord, transcribe_and_diarize
 
 __all__ = [
     "SpeechType",
+    "Transcript",
     "TranscriptionWord",
     "transcribe_and_diarize",
 ]
