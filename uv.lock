@@ -4250,6 +4250,7 @@ name = "tablesage-application"
 version = "0.1.0"
 source = { editable = "packages/tablesage-application" }
 dependencies = [
+    { name = "jinja2" },
     { name = "sqlmodel" },
     { name = "tablesage-model" },
     { name = "tablesage-tools" },
@@ -4257,6 +4258,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "jinja2", specifier = ">=3.1.0" },
     { name = "sqlmodel", specifier = ">=0.0.39" },
     { name = "tablesage-model", editable = "packages/tablesage-model" },
     { name = "tablesage-tools", editable = "packages/tablesage-tools" },
