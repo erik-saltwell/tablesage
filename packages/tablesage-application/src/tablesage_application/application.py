@@ -14,7 +14,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.audio import clean_clip
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
-from . import paths
+from . import paths, session_paths
 from .entities import campaigns, glossary, players, roster, sessions
 from .session_pipeline import processing
 from .voice_clips import clips
@@ -293,7 +293,7 @@ class Application:
         processing.validate_import_source(source_path)
 
     def audio_import_extensions(self) -> frozenset[str]:
-        return processing.AUDIO_EXTENSIONS
+        return session_paths.AUDIO_EXTENSIONS
 
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
         with Session(self._engine) as session:

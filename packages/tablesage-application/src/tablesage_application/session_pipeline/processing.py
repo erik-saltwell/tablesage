@@ -9,14 +9,7 @@ from sqlmodel import Session
 from tablesage_model.model import Player
 
 from ..entities.sessions import list_attendance
-
-# Fixed filenames within a session folder -- the filesystem is the only
-# source of truth for artifact existence, there is no `session_artifact`
-# table. See `.documentation/import_player_from_filesystem.md`'s sibling doc,
-# `.documentation/session_detail_screen.md`.
-INPUT_AUDIO_FILENAME = "input_audio.wav"
-PROCESSED_SESSION_FILENAME = "processed_session.json"
-SESSION_SUMMARY_FILENAME = "summary.md"
+from ..session_paths import AUDIO_EXTENSIONS, INPUT_AUDIO_FILENAME, PROCESSED_SESSION_FILENAME, SESSION_SUMMARY_FILENAME
 
 
 @dataclass(frozen=True)
@@ -45,9 +38,6 @@ def invalidate_downstream(session_folder: Path) -> None:
     """
     (session_folder / PROCESSED_SESSION_FILENAME).unlink(missing_ok=True)
     (session_folder / SESSION_SUMMARY_FILENAME).unlink(missing_ok=True)
-
-
-AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})
 
 
 def validate_import_source(source_path: Path) -> None:
