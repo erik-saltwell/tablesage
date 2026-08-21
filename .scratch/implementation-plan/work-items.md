@@ -29,7 +29,7 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 12 | Generate summary | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
 | 13 | Player Detail cleanup (unused samples) | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `36d6d05` |
 | 14 | Import players from audio file | Designed | [`.documentation/import_players_from_audio_file.md`](../../.documentation/import_players_from_audio_file.md) | — |
-| 15 | Enhance players from session | Designed | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | — |
+| 15 | Enhance players from session | Implemented | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | `e478ad2` |
 | 16 | Punctuated transcript as its own artifact | Implemented | — | `15f52b8` |
 | 17 | Export artifact command | Unstarted | — | — |
 | 18 | Move to textual-fspicker for file/directory picking | Implemented | — | `c741008` |
