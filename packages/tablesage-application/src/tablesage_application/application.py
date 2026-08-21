@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 from datetime import date
 from pathlib import Path
 
@@ -12,9 +13,11 @@ from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Playe
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
+from tablesage_tools.model import Transcript
 
-from . import paths, players_from_session
+from . import paths, player_import_from_audio, players_from_session
 from .entities import campaigns, glossary, players, roster, sessions
+from .llm import PromptName, call_llm_with_prompt
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
 from .voice_clips import clips
 
@@ -391,6 +394,105 @@ class Application:
                 session_folder,
                 campaign.name,
                 game_session.name,
+                player_folders,
+                self._embed_clip,
+                self._settings.enhance_voices,
+                self._settings.remove_outliers,
+                on_progress,
+            )
+            session.commit()
+            return result
+
+    # Import players from audio (Players List's "From Audio", F)
+
+    def import_players_from_audio_transcribe(
+        self,
+        source_audio_path: Path,
+        cleaned_audio_path: Path,
+        speaker_count: int | None,
+        on_progress: player_import_from_audio.OnProgress | None = None,
+    ) -> Transcript:
+        return player_import_from_audio.transcribe_audio_file(
+            source_audio_path,
+            cleaned_audio_path,
+            self._settings.session_audio_import.normalize_volume,
+            self._settings.transcription_and_diarization,
+            speaker_count,
+            on_progress,
+        )
+
+    def import_players_from_audio_propose(
+        self,
+        cleaned_audio_path: Path,
+        clip_dir: Path,
+        transcript: Transcript,
+        candidates: list[player_import_from_audio.SpeakerCandidate],
+        on_progress: player_import_from_audio.OnProgress | None = None,
+    ) -> player_import_from_audio.ProposeResult:
+        with Session(self._engine) as session:
+            existing_centroids: dict[uuid.UUID, tuple[str, Embedding]] = {}
+            for player in players.list_players(session):
+                if player.centroid_embedding is not None:
+                    existing_centroids[player.id] = (player.name, Embedding.model_validate(json.loads(player.centroid_embedding)))
+
+        return player_import_from_audio.propose_attendees(
+            cleaned_audio_path,
+            clip_dir,
+            transcript,
+            candidates,
+            existing_centroids,
+            self._embed_clip,
+            self._propose_speakers,
+            self._settings.speaker_identification.similarity_margin_threshold,
+            on_progress,
+        )
+
+    def _propose_speakers(
+        self, utterance_texts: list[tuple[str, str]], candidates: list[player_import_from_audio.SpeakerCandidate]
+    ) -> list[player_import_from_audio.SpeakerGuess]:
+        template_data = player_import_from_audio.SpeakerProposalPromptData(
+            speakers=[{"speaker_id": speaker_id, "transcript": text} for speaker_id, text in utterance_texts],
+            candidates=[{"name": candidate.name, "role": candidate.role} for candidate in candidates],
+        )
+        raw = asyncio.run(
+            call_llm_with_prompt(
+                PromptName.PROPOSE_SPEAKERS,
+                template_data,
+                self._settings.llm_model,
+                response_model=player_import_from_audio.SpeakerGuesses,
+            )
+        )
+        return player_import_from_audio.SpeakerGuesses.model_validate_json(raw).speakers
+
+    def import_players_from_audio_build(
+        self,
+        source_audio_path: Path,
+        speaker_clips: Mapping[str, Sequence[player_import_from_audio.SpeakerUtteranceClip]],
+        speaker_centroids: dict[str, Embedding],
+        pending: list[player_import_from_audio.PendingResolution],
+        on_progress: player_import_from_audio.OnProgress | None = None,
+    ) -> player_import_from_audio.ImportFromAudioResult:
+        with Session(self._engine) as session:
+            player_folders: dict[uuid.UUID, Path] = {}
+            resolved: list[player_import_from_audio.ResolvedSpeaker] = []
+            for item in pending:
+                if item.player_id is None:
+                    player = players.create_player(session, Player(name=item.player_name), paths.players_root(self._cwd))
+                else:
+                    player = players.get_player(session, item.player_id)
+                player_folders[player.id] = paths.player_folder(self._cwd, player.name)
+                resolved.append(
+                    player_import_from_audio.ResolvedSpeaker(
+                        speaker_id=item.speaker_id, player_id=player.id, player_name=player.name, role=item.role
+                    )
+                )
+
+            result = player_import_from_audio.build_players_from_audio(
+                session,
+                source_audio_path,
+                speaker_clips,
+                speaker_centroids,
+                resolved,
                 player_folders,
                 self._embed_clip,
                 self._settings.enhance_voices,

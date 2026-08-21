@@ -10,6 +10,7 @@ class PromptName(StrEnum):
     """Each member names a subdirectory of `_prompts/` holding a `system.md` + `template.j2` pair."""
 
     SUMMARIZE_SESSION = "summarize_session"
+    PROPOSE_SPEAKERS = "propose_speakers"
 
 
 def read_system_prompt(name: PromptName) -> str:

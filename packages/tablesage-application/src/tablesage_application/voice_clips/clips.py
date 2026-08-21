@@ -199,8 +199,9 @@ def find_clips_by_hash_segment(player_folder: Path, prefix: str, hash_value: str
 
     Matching is by the hash segment only -- stable across player/campaign/session renames,
     unlike matching on the cosmetic slug segments would be. Shared by directory import
-    (`prefix="import"`, hashing the source directory) and "enhance from session"
-    (`prefix="session"`, hashing the session id).
+    (`prefix="import"`, hashing the source directory), "enhance from session"
+    (`prefix="session"`, hashing the session id), and "import players from audio file"
+    (`prefix="diarized"`, hashing the picked audio file's resolved path).
     """
     if not player_folder.exists():
         return []
