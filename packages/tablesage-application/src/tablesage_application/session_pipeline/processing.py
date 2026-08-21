@@ -9,7 +9,7 @@ from sqlmodel import Session
 from tablesage_model.model import Player
 
 from ..entities.sessions import list_attendance
-from ..session_paths import AUDIO_EXTENSIONS, INPUT_AUDIO_FILENAME, PROCESSED_SESSION_FILENAME, SESSION_SUMMARY_FILENAME
+from ..paths import AUDIO_EXTENSIONS, INPUT_AUDIO_FILENAME, PROCESSED_SESSION_FILENAME, SESSION_SUMMARY_FILENAME
 
 
 @dataclass(frozen=True)

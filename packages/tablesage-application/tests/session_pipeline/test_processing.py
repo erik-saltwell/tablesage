@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from tablesage_application import Application
-from tablesage_application.session_paths import PROCESSED_SESSION_FILENAME, SESSION_SUMMARY_FILENAME
+from tablesage_application.paths import PROCESSED_SESSION_FILENAME, SESSION_SUMMARY_FILENAME
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
 from tablesage_tools.embeddings import Embedding
 
