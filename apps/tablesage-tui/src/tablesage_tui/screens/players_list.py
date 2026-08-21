@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 
 from tablesage_application.paths import ArtifactName
 from tablesage_application.players_from_session import EnhanceResult, Stage
@@ -9,10 +10,13 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.widgets import DataTable
+from textual_fspicker import FileOpen, Filters
 
 from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
+from ..player_import_run import PlayerImportRun
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
+from .player_import_prestep import PlayerImportPreStepScreen
 
 _STAGE_LABELS = {
     Stage.EXTRACTING: "Extracting voice clips…",
@@ -103,7 +107,27 @@ class PlayersListScreen(TableSageScreen):
         )
 
     def action_create_players_from_audio(self) -> None:
-        self.notify("Creating players from audio is coming soon.")
+        def on_picked(source_path: Path | None) -> None:
+            if source_path is None:
+                return
+            try:
+                self.application.validate_import_audio_source(source_path)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+            self.app.push_screen(PlayerImportPreStepScreen(PlayerImportRun(source_audio_path=source_path)))
+
+        extensions = self.application.audio_import_extensions()
+        audio_filter = Filters(
+            (
+                f"Audio files ({', '.join(sorted(extensions))})",
+                lambda path: path.suffix.lower() in extensions,
+            ),
+        )
+        self.app.push_screen(
+            FileOpen(title="Import Players From Audio", location=Path.home(), filters=audio_filter),
+            on_picked,
+        )
 
     def action_enhance_from_session(self) -> None:
         campaigns = self.application.list_campaigns()

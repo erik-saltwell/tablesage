@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,9 +10,11 @@ from tablesage_model.model import Session as GameSession
 from tablesage_tui.dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
+from tablesage_tui.screens.player_import_prestep import PlayerImportPreStepScreen
 from tablesage_tui.screens.players_list import PlayersListScreen
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input
+from textual_fspicker import FileOpen
 
 
 def _application(*, players: list | None = None) -> MagicMock:
@@ -21,6 +24,8 @@ def _application(*, players: list | None = None) -> MagicMock:
         get_player=MagicMock(side_effect=lambda player_id: next(p for p in roster if p.id == player_id)),
         list_voice_clips=MagicMock(return_value=[]),
         list_campaigns=MagicMock(return_value=[]),
+        audio_import_extensions=MagicMock(return_value=frozenset({".wav", ".mp3"})),
+        validate_import_audio_source=MagicMock(),
     )
 
 
@@ -71,14 +76,70 @@ async def test_players_table_shows_centroid_status() -> None:
 
 
 @pytest.mark.anyio
-async def test_from_audio_action_is_stubbed_with_notify() -> None:
+async def test_from_audio_action_opens_file_picker() -> None:
     async with TableSageApp(_application()).run_test() as pilot:
         await _open_players_list(pilot)
 
         await pilot.press("f")
         await pilot.pause()
 
+        assert isinstance(pilot.app.screen, FileOpen)
+
+
+@pytest.mark.anyio
+async def test_from_audio_cancelled_picker_does_not_open_wizard() -> None:
+    async with TableSageApp(_application()).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("f")
+        await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
+
         assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_from_audio_invalid_source_notifies_and_stays_on_players_list() -> None:
+    application = _application()
+    application.validate_import_audio_source = MagicMock(side_effect=ValueError("not a recognized audio file"))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        screen = pilot.app.screen
+        assert isinstance(screen, PlayersListScreen)
+
+        with patch.object(PlayersListScreen, "notify") as notify:
+            screen.action_create_players_from_audio()
+            await pilot.pause()
+            picker = pilot.app.screen
+            assert isinstance(picker, FileOpen)
+            picker.dismiss(Path("/tmp/not-audio.txt"))
+            await pilot.pause()
+
+            notify.assert_called_once()
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_from_audio_valid_source_opens_prestep_screen() -> None:
+    application = _application()
+    application.validate_import_audio_source = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        screen = pilot.app.screen
+        assert isinstance(screen, PlayersListScreen)
+
+        screen.action_create_players_from_audio()
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FileOpen)
+        picker.dismiss(Path("/tmp/source.wav"))
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayerImportPreStepScreen)
 
 
 @pytest.mark.anyio
