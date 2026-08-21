@@ -9,7 +9,7 @@ from sqlmodel import Session, select
 from tablesage_model.model import Campaign
 from tablesage_model.model import Session as GameSession
 
-from ._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
+from .._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
 
 
 def has_campaigns(session: Session) -> bool:

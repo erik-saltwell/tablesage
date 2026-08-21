@@ -16,7 +16,7 @@ from ..widgets import EqualWidthButtonRow
 from .generic import TextInputDialog
 
 if TYPE_CHECKING:
-    from tablesage_application.sessions import Attendee
+    from tablesage_application.entities.sessions import Attendee
 
 # The human-readable role name seeded for a campaign's GM (mirrors
 # `application.sessions._seed_role_name` and `campaign_detail.py`'s equivalent

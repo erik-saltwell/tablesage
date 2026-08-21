@@ -18,7 +18,7 @@ from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
-    from tablesage_application.players import ImportResult
+    from tablesage_application.voice_clips.clips import ImportResult
 
 
 class PlayerDetailScreen(TableSageScreen):

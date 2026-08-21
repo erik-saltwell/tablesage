@@ -11,12 +11,11 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
-from sqlalchemy.exc import IntegrityError
-from sqlmodel import Session, select
+from sqlmodel import Session
 from tablesage_model.model import Player
 from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_centroid
 
-from ._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
+from ..entities.players import get_player
 
 VOICE_CLIP_GLOB = "*.wav"
 
@@ -33,55 +32,6 @@ class VoiceClip:
 
     filename: str
     duration_seconds: float
-
-
-def create_player(session: Session, player: Player, players_root: Path) -> Player:
-    session.add(player)
-    try:
-        session.flush()
-    except IntegrityError as exc:
-        session.rollback()
-        raise ValueError(f"A player named '{player.name}' already exists.") from exc
-
-    try:
-        create_named_entity_folder(players_root, player.name, kind="player")
-    except ValueError:
-        session.rollback()
-        raise
-
-    return player
-
-
-def list_players(session: Session) -> list[Player]:
-    return list(session.exec(select(Player)).all())
-
-
-def get_player(session: Session, player_id: uuid.UUID) -> Player:
-    player = session.get(Player, player_id)
-    if player is None:
-        raise ValueError("Player not found.")
-    return player
-
-
-def rename_player(session: Session, player_id: uuid.UUID, new_name: str, players_root: Path) -> Player:
-    player = get_player(session, player_id)
-    rename_named_entity(session, player, new_name, players_root, kind="player")
-    return player
-
-
-def delete_player(session: Session, player_id: uuid.UUID) -> None:
-    player = get_player(session, player_id)
-    session.delete(player)
-    try:
-        session.flush()
-    except IntegrityError as exc:
-        session.rollback()
-        raise ValueError("This player has attended sessions and cannot be deleted.") from exc
-
-
-def cleanup_orphan_player_dirs(session: Session, players_root: Path) -> list[str]:
-    known_names = {player.name for player in list_players(session)}
-    return cleanup_orphan_dirs(players_root, known_names)
 
 
 def list_voice_clips(player_folder: Path) -> list[VoiceClip]:

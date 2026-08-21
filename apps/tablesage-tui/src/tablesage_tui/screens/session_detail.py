@@ -18,7 +18,7 @@ from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
-    from tablesage_application.sessions import Attendee
+    from tablesage_application.entities.sessions import Attendee
 
 
 class SessionDetailScreen(TableSageScreen):

@@ -1,7 +1,7 @@
 import uuid
 
 import pytest
-from tablesage_application.sessions import Attendee
+from tablesage_application.entities.sessions import Attendee
 from tablesage_model.model import Player
 from tablesage_tui.dialogs import AttendeeDialog, AttendeeResult, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp

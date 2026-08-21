@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from tablesage_application import Application
-from tablesage_application.players import VoiceClip
+from tablesage_application.voice_clips.clips import VoiceClip
 from tablesage_model.model import Player
 from tablesage_model.settings import AppSettings, RemoveOutliersSettings
 from tablesage_tools.embeddings import Embedding
@@ -18,70 +18,6 @@ def _write_wav(path: Path, *, num_frames: int = 16000, framerate: int = 16000) -
         wav_file.setsampwidth(2)
         wav_file.setframerate(framerate)
         wav_file.writeframes(b"\x00\x00" * num_frames)
-
-
-def test_create_player_creates_db_row_and_folder(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-
-    created = application.create_player(Player(name="Alice"))
-
-    assert created.id is not None
-    assert created.sample_count == 0
-    assert (tmp_path / ".tablesage" / "players" / "Alice").is_dir()
-
-
-def test_create_player_rejects_duplicate_name(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    application.create_player(Player(name="Alice"))
-
-    with pytest.raises(ValueError, match="already exists"):
-        application.create_player(Player(name="Alice"))
-
-
-def test_rename_player_renames_folder(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    player = application.create_player(Player(name="Alice"))
-
-    renamed = application.rename_player(player.id, "Alicia")
-
-    assert renamed.name == "Alicia"
-    assert not (tmp_path / ".tablesage" / "players" / "Alice").exists()
-    assert (tmp_path / ".tablesage" / "players" / "Alicia").is_dir()
-
-
-def test_rename_player_rejects_duplicate_name(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    application.create_player(Player(name="Alice"))
-    bob = application.create_player(Player(name="Bob"))
-
-    with pytest.raises(ValueError, match="already exists"):
-        application.rename_player(bob.id, "Alice")
-
-    # rollback should leave Bob's folder untouched under his original name
-    assert (tmp_path / ".tablesage" / "players" / "Bob").is_dir()
-
-
-def test_delete_player_removes_row_but_keeps_folder(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    player = application.create_player(Player(name="Alice"))
-
-    application.delete_player(player.id)
-
-    assert application.list_players() == []
-    assert (tmp_path / ".tablesage" / "players" / "Alice").is_dir()
-
-
-def test_cleanup_orphan_player_dirs_removes_only_unknown_folders(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    player = application.create_player(Player(name="Alice"))
-    application.delete_player(player.id)
-    application.create_player(Player(name="Bob"))
-
-    removed = application.cleanup_orphan_player_dirs()
-
-    assert removed == ["Alice"]
-    assert not (tmp_path / ".tablesage" / "players" / "Alice").exists()
-    assert (tmp_path / ".tablesage" / "players" / "Bob").is_dir()
 
 
 def test_list_voice_clips_returns_empty_when_no_clips(tmp_path: Path) -> None:

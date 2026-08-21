@@ -14,7 +14,10 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.audio import clean_clip
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
-from . import campaigns, glossary, paths, players, roster, sessions
+from . import paths
+from .entities import campaigns, glossary, players, roster, sessions
+from .session_pipeline import processing
+from .voice_clips import clips
 
 
 class Application:
@@ -106,17 +109,17 @@ class Application:
         with Session(self._engine) as session:
             return players.cleanup_orphan_player_dirs(session, paths.players_root(self._cwd))
 
-    def list_voice_clips(self, player_id: uuid.UUID) -> list[players.VoiceClip]:
+    def list_voice_clips(self, player_id: uuid.UUID) -> list[clips.VoiceClip]:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
-            return players.list_voice_clips(paths.player_folder(self._cwd, player.name))
+            return clips.list_voice_clips(paths.player_folder(self._cwd, player.name))
 
     def delete_voice_clip(self, player_id: uuid.UUID, filename: str, on_progress: Callable[[int, int], None] | None = None) -> Player:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
             outliers = self._settings.remove_outliers
-            result = players.delete_voice_clip(
+            result = clips.delete_voice_clip(
                 session, player_id, filename, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
             )
             session.commit()
@@ -128,7 +131,7 @@ class Application:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
             outliers = self._settings.remove_outliers
-            result = players.recompute_centroid(
+            result = clips.recompute_centroid(
                 session, player_id, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
             )
             session.commit()
@@ -140,7 +143,7 @@ class Application:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
             outliers = self._settings.remove_outliers
-            result, deleted_filenames = players.cleanup_voice_clips(
+            result, deleted_filenames = clips.cleanup_voice_clips(
                 session, player_id, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
             )
             session.commit()
@@ -148,22 +151,22 @@ class Application:
             return result, deleted_filenames
 
     def validate_import_source(self, source_dir: Path) -> None:
-        players.validate_import_source(source_dir)
+        clips.validate_import_source(source_dir)
 
     def find_prior_import_clips(self, player_id: uuid.UUID, source_dir: Path) -> list[Path]:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
-            return players.find_prior_import_clips(folder, source_dir)
+            return clips.find_prior_import_clips(folder, source_dir)
 
     def import_voice_clips(
         self, player_id: uuid.UUID, source_dir: Path, on_progress: Callable[[int, int], None] | None = None
-    ) -> tuple[Player, players.ImportResult]:
+    ) -> tuple[Player, clips.ImportResult]:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
             outliers = self._settings.remove_outliers
-            result, import_result = players.import_voice_clips(
+            result, import_result = clips.import_voice_clips(
                 session,
                 player_id,
                 player.name,
@@ -281,21 +284,21 @@ class Application:
             raise ValueError("Campaign not found.")
         return paths.session_folder(self._cwd, campaign.name, game_session.sequence_number)
 
-    def session_artifacts(self, session_id: uuid.UUID) -> sessions.SessionArtifacts:
+    def session_artifacts(self, session_id: uuid.UUID) -> processing.SessionArtifacts:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return sessions.session_artifacts(self._session_folder(session, game_session))
+            return processing.session_artifacts(self._session_folder(session, game_session))
 
     def validate_import_audio_source(self, source_path: Path) -> None:
-        sessions.validate_import_source(source_path)
+        processing.validate_import_source(source_path)
 
     def audio_import_extensions(self) -> frozenset[str]:
-        return sessions.AUDIO_EXTENSIONS
+        return processing.AUDIO_EXTENSIONS
 
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
+            processing.import_audio(source_path, self._session_folder(session, game_session), self._clean_session_audio)
 
     def _clean_session_audio(self, source: Path, target: Path) -> None:
         asyncio.run(clean_clip(source, target, normalize=self._settings.session_audio_import.normalize_volume))
@@ -303,12 +306,12 @@ class Application:
     def can_process_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return sessions.can_process_session(session, session_id, self._session_folder(session, game_session))
+            return processing.can_process_session(session, session_id, self._session_folder(session, game_session))
 
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return sessions.can_generate_summary(self._session_folder(session, game_session))
+            return processing.can_generate_summary(self._session_folder(session, game_session))
 
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:
@@ -317,7 +320,7 @@ class Application:
     def add_attendance(self, session_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            processing.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance(session, game_session.campaign_id, session_id, player_id)
             session.commit()
             return result
@@ -325,7 +328,7 @@ class Application:
     def add_attendance_with_roles(self, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            processing.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance_with_roles(session, game_session.campaign_id, session_id, player_id, roles)
             session.commit()
             return result
@@ -333,7 +336,7 @@ class Application:
     def set_attendance_player(self, session_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            processing.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_player(session, game_session.campaign_id, attendance_id, player_id)
             session.commit()
             return result
@@ -341,14 +344,14 @@ class Application:
     def remove_attendance(self, session_id: uuid.UUID, attendance_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            processing.invalidate_downstream(self._session_folder(session, game_session))
             sessions.remove_attendance(session, attendance_id)
             session.commit()
 
     def set_attendance_roles(self, session_id: uuid.UUID, attendance_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            sessions.invalidate_downstream(self._session_folder(session, game_session))
+            processing.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_roles(session, attendance_id, roles)
             session.commit()
             return result

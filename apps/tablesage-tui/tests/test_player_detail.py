@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from tablesage_application.players import ImportResult, VoiceClip
+from tablesage_application.voice_clips.clips import ImportResult, VoiceClip
 from tablesage_model.model import Player
 from tablesage_tui.dialogs import ConfirmationDialog, ProgressDialog
 from tablesage_tui.screens.main_app import TableSageApp

@@ -2,7 +2,7 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
-from tablesage_application.sessions import SessionArtifacts
+from tablesage_application.session_pipeline.processing import SessionArtifacts
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, PlayerPickerDialog, RolePickerDialog, TextInputDialog
