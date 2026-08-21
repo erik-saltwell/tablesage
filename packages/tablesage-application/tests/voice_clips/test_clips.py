@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from tablesage_application import Application
-from tablesage_application.voice_clips.clips import VoiceClip
+from tablesage_application.voice_clips.clips import VoiceClip, find_clips_by_hash_segment, hash8
 from tablesage_model.model import Player
 from tablesage_model.settings import AppSettings, RemoveOutliersSettings
 from tablesage_tools.embeddings import Embedding
@@ -284,6 +284,19 @@ def test_find_prior_import_clips_survives_player_rename(tmp_path: Path, monkeypa
 
     matches = application.find_prior_import_clips(player.id, source_dir)
     assert len(matches) == 1
+
+
+def test_find_clips_by_hash_segment_matches_only_the_given_prefix_and_hash(tmp_path: Path) -> None:
+    folder = tmp_path / "player"
+    session_hash = hash8("session-id-a")
+    other_hash = hash8("session-id-b")
+    _write_wav(folder / f"session-alice-iron-pact-one-{session_hash}-{'a' * 32}.wav")
+    _write_wav(folder / f"session-alice-iron-pact-one-{other_hash}-{'b' * 32}.wav")
+    _write_wav(folder / f"import-alice-{session_hash}-{'c' * 32}.wav")
+
+    matches = find_clips_by_hash_segment(folder, "session", session_hash)
+
+    assert [path.name for path in matches] == [f"session-alice-iron-pact-one-{session_hash}-{'a' * 32}.wav"]
 
 
 def test_import_voice_clips_first_time_has_no_replacements(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

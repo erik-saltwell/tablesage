@@ -118,11 +118,26 @@ not here — this doc holds each phase's scope/narrative only.
 - New directory-picker dialog — the first real filesystem-browsing widget in the app (the earlier campaign directory-picker mockup was never implemented; Phase 4's Import-campaign stub and Session Detail's Phase 8 `I` both currently use `TextInputDialog` path-as-text instead).
 - Wires Player Detail's `f` binding (stub since Phase 6) to directory-import voice-clip logic per `application_business_rules.md`: source directory must contain at least one `.wav`, re-import replaces prior `IMPORT`-provenance samples wholesale (delete-then-recreate, not append), centroid recomputed after.
 
-## Phase 10 — Import player from audio file
+## Phase 10 — Import player from audio file (superseded — split into work items 14/15)
 
-- New screen: pick a session within a campaign, then select/attribute clips from that session's processed audio to a player's voice profile. Wires Player Detail's `s` binding (stub since Phase 6).
-- Depends on Phase 8 — the source is a session's processed-session artifact, so this phase can't precede Session Detail.
-- Session-enhancement rules from `application_business_rules.md` apply: retract-then-add (delete this session's prior `SESSION_ENHANCEMENT` samples first), selection filtered by `similarity_margin`/clip-duration thresholds, outlier removal runs automatically after.
+This phase's original single-screen description (pick a session, attribute
+clips to a player from its *processed-session* artifact) has been split into
+two distinct work items, tracked separately in
+`.scratch/implementation-plan/work-items.md`:
+
+- **Work item 14** — "Import players from audio file"
+  (`.documentation/import_players_from_audio_file.md`): bulk-create *new*
+  players from an unattributed recording (diarize → LLM-guess → human
+  review). Lives on Players List (`F`, "From Audio").
+- **Work item 15** — "Enhance players from session"
+  (`.documentation/enhance_players_from_session.md`, implemented): pull
+  high-confidence voice clips for a session's *existing* attendees, fully
+  automatic, no review step. Lives on Players List (`S`, "From Session") —
+  not Player Detail's `s` binding as originally sketched here, which has
+  been removed. Decoupled from Phase 11 (Process): it reads `transcript.json`
+  (Phase 8's Transcribe output) directly rather than waiting on the
+  processed-session artifact, since Transcribe's `identify_speakers` already
+  attributes every utterance to an attendee (or leaves it unassigned).
 
 ## Phase 11 — Process session
 

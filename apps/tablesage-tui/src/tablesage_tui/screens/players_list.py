@@ -2,15 +2,22 @@ from __future__ import annotations
 
 import uuid
 
+from tablesage_application.paths import ArtifactName
+from tablesage_application.players_from_session import EnhanceResult, Stage
 from tablesage_model.model import Player
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.widgets import DataTable
 
-from ..dialogs import ConfirmationDialog, TextInputDialog
+from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
+
+_STAGE_LABELS = {
+    Stage.EXTRACTING: "Extracting voice clips…",
+    Stage.RECOMPUTING_CENTROIDS: "Recomputing centroids…",
+}
 
 
 class PlayersListScreen(TableSageScreen):
@@ -21,6 +28,7 @@ class PlayersListScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
         Binding("n,N", "new_player", "New Player", key_display="N"),
         Binding("f,F", "create_players_from_audio", "From Audio", key_display="F"),
+        Binding("s,S", "enhance_from_session", "From Session", key_display="S"),
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
@@ -96,6 +104,41 @@ class PlayersListScreen(TableSageScreen):
 
     def action_create_players_from_audio(self) -> None:
         self.notify("Creating players from audio is coming soon.")
+
+    def action_enhance_from_session(self) -> None:
+        campaigns = self.application.list_campaigns()
+        sessions_by_campaign = {campaign.id: self.application.list_sessions(campaign.id) for campaign in campaigns}
+        has_transcript = {
+            session.id: self.application.session_artifacts(session.id)[ArtifactName.TRANSCRIPT]
+            for sessions in sessions_by_campaign.values()
+            for session in sessions
+        }
+
+        def on_picked(session_id: uuid.UUID | None) -> None:
+            if session_id is None:
+                return
+
+            def work() -> EnhanceResult:
+                return self.application.enhance_players_from_session(session_id, on_progress=self._on_enhance_progress)
+
+            def on_success(result: EnhanceResult) -> None:
+                self._reload_players()
+                self.notify(f"Enhanced {result.enhanced_player_count} player(s) with {result.clip_count} clip(s) total.")
+
+            self.run_with_progress(
+                title="From Session",
+                message=_STAGE_LABELS[Stage.EXTRACTING],
+                work=work,
+                on_success=on_success,
+            )
+
+        self.app.push_screen(
+            SessionFromCampaignPickerDialog(campaigns=campaigns, sessions_by_campaign=sessions_by_campaign, has_transcript=has_transcript),
+            on_picked,
+        )
+
+    def _on_enhance_progress(self, stage: Stage, completed: int, total: int) -> None:
+        self.report_stage_progress(_STAGE_LABELS[stage], completed, total)
 
     def action_open_player(self) -> None:
         player_id = self._selected_player_id()

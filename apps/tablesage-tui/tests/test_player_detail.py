@@ -414,26 +414,6 @@ async def test_cleanup_notifies_when_nothing_removed() -> None:
 
 
 @pytest.mark.anyio
-async def test_session_import_routes_through_progress_dialog() -> None:
-    """S is a stub today, but it still goes through run_with_progress, not a bare notify."""
-    application = _application()
-
-    async with TableSageApp(application).run_test() as pilot:
-        await _open_player_detail(pilot, application.get_player.return_value.id)
-        screen = pilot.app.screen
-        assert isinstance(screen, PlayerDetailScreen)
-
-        with patch.object(screen, "run_with_progress") as run_with_progress:
-            await pilot.press("s")
-            await pilot.pause()
-
-        assert run_with_progress.call_count == 1
-        call = run_with_progress.call_args_list[0]
-        assert "work" in call.kwargs
-        assert "on_success" in call.kwargs
-
-
-@pytest.mark.anyio
 async def test_directory_import_opens_directory_picker() -> None:
     application = _application()
 

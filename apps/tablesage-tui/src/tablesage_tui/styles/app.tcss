@@ -590,7 +590,8 @@ PlayerPickerDialog,
 RolePickerDialog,
 GlossaryEntryDialog,
 ProgressDialog,
-AttendeeDialog {
+AttendeeDialog,
+SessionFromCampaignPickerDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -600,7 +601,8 @@ AttendeeDialog {
     #role-picker-dialog,
     #glossary-entry-dialog,
     #progress-dialog,
-    #attendee-dialog {
+    #attendee-dialog,
+    #session-picker-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -613,7 +615,8 @@ AttendeeDialog {
         border-title-style: bold;
     }
 
-    #attendee-dialog {
+    #attendee-dialog,
+    #session-picker-dialog {
         width: 90;
     }
 
@@ -622,8 +625,28 @@ AttendeeDialog {
     #role-picker-prompt,
     #player-picker-empty,
     #attendee-empty,
+    #session-picker-empty,
     #progress-message {
         height: auto;
+        margin: 0 0 1 0;
+    }
+
+    #session-picker-campaign-row {
+        height: 3;
+        align: left middle;
+        margin: 0 0 1 0;
+
+        .field-label {
+            width: 8;
+        }
+
+        Select {
+            width: 1fr;
+        }
+    }
+
+    #session-picker-table {
+        height: 12;
         margin: 0 0 1 0;
     }
 

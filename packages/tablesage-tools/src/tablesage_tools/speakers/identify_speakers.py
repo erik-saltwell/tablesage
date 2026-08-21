@@ -43,7 +43,7 @@ async def identify_speakers(
             embedding = await embed.extract_async(tmp_file)
             result: SimilarityResult = similarity_computer.compute_similarity(embedding)
             speaker = UNASSIGNED_SPEAKER if result.margin < similarity_margin_threshold else names[result.best_match_index]
-            new_utterances.append(utterance.model_copy(update={"speaker": speaker}))
+            new_utterances.append(utterance.model_copy(update={"speaker": speaker, "similarity_margin": result.margin}))
 
             if on_progress is not None:
                 on_progress(index + 1, total)

@@ -32,7 +32,6 @@ class PlayerDetailScreen(TableSageScreen):
         Binding("r,R", "recompute_centroid", "Recompute", key_display="R"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
-        Binding("s,S", "import_from_session", "Session Imp", key_display="S"),
     ]
 
     def __init__(self, player_id: uuid.UUID) -> None:
@@ -279,11 +278,3 @@ class PlayerDetailScreen(TableSageScreen):
         if import_result.rejected_filenames:
             message += f" Skipped {len(import_result.rejected_filenames)} (couldn't embed)."
         self.notify(message)
-
-    def action_import_from_session(self) -> None:
-        self.run_with_progress(
-            title="Session Import",
-            message="Preparing to import voice clips from a session…",
-            work=lambda: None,
-            on_success=lambda _: self.notify("Importing voice clips from a session is coming soon."),
-        )

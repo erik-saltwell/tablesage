@@ -31,3 +31,15 @@ speaker_identification:
   # players' centroids; a match whose margin over the runner-up falls below
   # this threshold is left as "Unassigned Speaker" rather than guessed.
   similarity_margin_threshold: 0.1
+
+enhance_voices:
+  # Players List's "From Session" (S) pulls high-confidence voice clips out
+  # of a transcribed session's utterances. This is a stricter bar than
+  # speaker_identification's own threshold above -- an utterance can be
+  # confident enough to attribute to a player without being confident enough
+  # to bank as a new training sample for that player's voice profile.
+  min_margin_for_voice_sample: 0.15
+  # Utterances shorter than this make weak training samples; excluded.
+  min_clip_seconds: 1.0
+  # Utterances longer than this are likely a mis-segmented run-on; excluded.
+  max_clip_seconds: 8.0

@@ -20,9 +20,9 @@ from ..paths import VOICE_CLIP_GLOB
 
 # `import-<player_slug>-<sourcehash8>-<uuid4hex>.wav` -- see
 # `.documentation/import_player_from_filesystem.md`. The hash segment is the
-# only part matching relies on; the slug is a cosmetic, as-of-import-time
-# snapshot that goes stale (harmlessly) if the player is later renamed.
-_IMPORT_FILENAME_RE = re.compile(r"^import-.+-([0-9a-f]{8})-[0-9a-f]{32}\.wav$")
+# only part matching relies on (see `find_clips_by_hash_segment`); the slug
+# is a cosmetic, as-of-import-time snapshot that goes stale (harmlessly) if
+# the player is later renamed.
 
 
 @dataclass(frozen=True)
@@ -176,17 +176,41 @@ class ImportResult:
     rejected_filenames: tuple[str, ...]
 
 
-def _slugify(name: str) -> str:
+def slugify(name: str) -> str:
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", name).strip("-").lower()
     return slug or "clip"
 
 
+def hash8(value: str) -> str:
+    """An 8-hex-char stable hash, used as the matching segment in a generated clip filename."""
+    return hashlib.sha256(value.encode()).hexdigest()[:8]
+
+
 def _source_hash(source_dir: Path) -> str:
-    return hashlib.sha256(str(source_dir.resolve()).encode()).hexdigest()[:8]
+    return hash8(str(source_dir.resolve()))
 
 
 def _generated_import_filename(player_name: str, source_hash: str) -> str:
-    return f"import-{_slugify(player_name)}-{source_hash}-{uuid.uuid4().hex}.wav"
+    return f"import-{slugify(player_name)}-{source_hash}-{uuid.uuid4().hex}.wav"
+
+
+def find_clips_by_hash_segment(player_folder: Path, prefix: str, hash_value: str) -> list[Path]:
+    """Find clips in `player_folder` matching `<prefix>-...-<hash_value>-<uuid4hex>.wav`.
+
+    Matching is by the hash segment only -- stable across player/campaign/session renames,
+    unlike matching on the cosmetic slug segments would be. Shared by directory import
+    (`prefix="import"`, hashing the source directory) and "enhance from session"
+    (`prefix="session"`, hashing the session id).
+    """
+    if not player_folder.exists():
+        return []
+    pattern = re.compile(rf"^{re.escape(prefix)}-.+-([0-9a-f]{{8}})-[0-9a-f]{{32}}\.wav$")
+    matches = []
+    for path in sorted(player_folder.glob(f"{prefix}-*.wav")):
+        match = pattern.match(path.name)
+        if match and match.group(1) == hash_value:
+            matches.append(path)
+    return matches
 
 
 def validate_import_source(source_dir: Path) -> None:
@@ -198,21 +222,8 @@ def validate_import_source(source_dir: Path) -> None:
 
 
 def find_prior_import_clips(player_folder: Path, source_dir: Path) -> list[Path]:
-    """Find clips in `player_folder` from a previous import of this same `source_dir`.
-
-    Matching is by the hash segment of the filename convention only (see
-    `_IMPORT_FILENAME_RE`) -- stable across player renames, unlike matching
-    on the cosmetic name segment would be.
-    """
-    if not player_folder.exists():
-        return []
-    source_hash = _source_hash(source_dir)
-    matches = []
-    for path in sorted(player_folder.glob("import-*.wav")):
-        match = _IMPORT_FILENAME_RE.match(path.name)
-        if match and match.group(1) == source_hash:
-            matches.append(path)
-    return matches
+    """Find clips in `player_folder` from a previous import of this same `source_dir`."""
+    return find_clips_by_hash_segment(player_folder, "import", _source_hash(source_dir))
 
 
 def import_voice_clips(

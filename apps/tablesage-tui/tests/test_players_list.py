@@ -1,8 +1,12 @@
+import uuid
 from unittest.mock import MagicMock, patch
 
 import pytest
-from tablesage_model.model import Player
-from tablesage_tui.dialogs import ConfirmationDialog, TextInputDialog
+from tablesage_application.paths import ArtifactName
+from tablesage_application.players_from_session import EnhanceResult
+from tablesage_model.model import Campaign, Player
+from tablesage_model.model import Session as GameSession
+from tablesage_tui.dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.screens.players_list import PlayersListScreen
@@ -16,7 +20,13 @@ def _application(*, players: list | None = None) -> MagicMock:
         list_players=MagicMock(return_value=roster),
         get_player=MagicMock(side_effect=lambda player_id: next(p for p in roster if p.id == player_id)),
         list_voice_clips=MagicMock(return_value=[]),
+        list_campaigns=MagicMock(return_value=[]),
     )
+
+
+async def _wait_for_progress_worker(pilot: Pilot) -> None:
+    await pilot.app.workers.wait_for_complete()
+    await pilot.pause()
 
 
 async def _open_players_list(pilot: Pilot) -> None:
@@ -303,3 +313,105 @@ async def test_f5_reloads_players() -> None:
         await pilot.pause()
 
         application.list_players.assert_called_once()
+
+
+def _enhance_application() -> tuple[MagicMock, Campaign, GameSession, GameSession]:
+    campaign = Campaign(name="Iron Pact")
+    transcribed_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    untranscribed_session = GameSession(campaign_id=campaign.id, sequence_number=2, name="Session Two")
+
+    application = _application()
+    application.list_campaigns = MagicMock(return_value=[campaign])
+    application.list_sessions = MagicMock(return_value=[transcribed_session, untranscribed_session])
+
+    def _session_artifacts(session_id: uuid.UUID) -> dict[ArtifactName, bool]:
+        transcribed = session_id == transcribed_session.id
+        return dict.fromkeys(ArtifactName, False) | {ArtifactName.TRANSCRIPT: transcribed}
+
+    application.session_artifacts = MagicMock(side_effect=_session_artifacts)
+    application.enhance_players_from_session = MagicMock(return_value=EnhanceResult(enhanced_player_count=2, clip_count=5))
+    return application, campaign, transcribed_session, untranscribed_session
+
+
+@pytest.mark.anyio
+async def test_enhance_from_session_opens_picker_with_campaign_and_session_data() -> None:
+    application, campaign, transcribed_session, untranscribed_session = _enhance_application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("s")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, SessionFromCampaignPickerDialog)
+        table = screen.query_one("#session-picker-table", DataTable)
+        assert table.row_count == 2
+        application.list_campaigns.assert_called_once_with()
+        application.list_sessions.assert_called_once_with(campaign.id)
+        assert application.session_artifacts.call_count == 2
+
+
+@pytest.mark.anyio
+async def test_enhance_from_session_cancel_does_not_run() -> None:
+    application, *_rest = _enhance_application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("s")
+        await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+        application.enhance_players_from_session.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_enhance_from_session_selecting_untranscribed_session_notifies_error_and_stays_open() -> None:
+    application, *_rest = _enhance_application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press("s")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, SessionFromCampaignPickerDialog)
+        table = screen.query_one("#session-picker-table", DataTable)
+        table.move_cursor(row=1)  # the untranscribed session
+
+        with patch.object(screen, "notify") as notify:
+            await pilot.press("enter")
+            await pilot.pause()
+
+            notify.assert_called_once()
+
+        assert isinstance(pilot.app.screen, SessionFromCampaignPickerDialog)
+        application.enhance_players_from_session.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_enhance_from_session_selecting_transcribed_session_runs_and_reports_result() -> None:
+    application, _campaign, transcribed_session, _untranscribed = _enhance_application()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press("s")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, SessionFromCampaignPickerDialog)
+        table = screen.query_one("#session-picker-table", DataTable)
+        table.move_cursor(row=0)  # the transcribed session
+
+        with patch.object(PlayersListScreen, "notify") as notify:
+            await pilot.press("enter")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+        application.enhance_players_from_session.assert_called_once()
+        assert application.enhance_players_from_session.call_args.args[0] == transcribed_session.id
+        notify.assert_called_once_with("Enhanced 2 player(s) with 5 clip(s) total.")

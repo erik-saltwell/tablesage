@@ -13,7 +13,7 @@ from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 
-from . import paths
+from . import paths, players_from_session
 from .entities import campaigns, glossary, players, roster, sessions
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
 from .voice_clips import clips
@@ -366,5 +366,36 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_roles(session, attendance_id, roles)
+            session.commit()
+            return result
+
+    def enhance_players_from_session(
+        self, session_id: uuid.UUID, on_progress: players_from_session.OnProgress | None = None
+    ) -> players_from_session.EnhanceResult:
+        """Players List's "From Session" (S): pull high-confidence voice clips out of a transcribed session."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            campaign = session.get(Campaign, game_session.campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
+            session_folder = self._session_folder(session, game_session)
+
+            player_folders: dict[uuid.UUID, Path] = {}
+            for attendee in sessions.list_attendance(session, session_id):
+                player = players.get_player(session, attendee.player_id)
+                player_folders[attendee.player_id] = paths.player_folder(self._cwd, player.name)
+
+            result = players_from_session.enhance_players_from_session(
+                session,
+                session_id,
+                session_folder,
+                campaign.name,
+                game_session.name,
+                player_folders,
+                self._embed_clip,
+                self._settings.enhance_voices,
+                self._settings.remove_outliers,
+                on_progress,
+            )
             session.commit()
             return result
