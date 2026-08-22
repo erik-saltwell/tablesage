@@ -1311,6 +1311,13 @@ SessionDetailScreen {
 /* ******************************** */
 
 PlayerImportPreStepScreen {
+    /* Matches the listbox/checkbox's "solid" border on this screen -- the app-wide
+       "tall" border (see Button, above) reads as taller than "solid" even at the same
+       3-row height, and every button here sits beside a solid-bordered control. */
+    Button {
+        border: solid $button-border;
+    }
+
     /* The source filename is a static context line, not an actionable heading --
        muted color plus an extra blank line below it distinguishes it from the list's
        own bold/accent title, which names what the box below it actually does. */
@@ -1357,6 +1364,24 @@ PlayerImportPreStepScreen {
             /* Docked (not "align: right middle" on the row) so the clean-audio
                checkbox can sit at the row's left instead of bunching up beside it. */
             dock: right;
+
+            /* The plain "Button { border: solid }" override above loses to
+               Button's own "&.-primary { border: tall }" (a class beats a bare
+               type selector), so restate solid at id specificity for every state
+               that rule sets a border in. */
+            border: solid $button-primary-border;
+
+            &:hover {
+                border: solid $button-primary-hover-border;
+            }
+
+            &:focus {
+                border: solid $button-primary-focus-border;
+            }
+
+            &.-active {
+                border: solid $button-primary-active-border;
+            }
         }
     }
 }
