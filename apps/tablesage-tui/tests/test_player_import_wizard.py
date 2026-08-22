@@ -246,7 +246,7 @@ async def test_transcript_view_plays_selected_clip(monkeypatch: pytest.MonkeyPat
         await pilot.press("t")
         await pilot.pause()
 
-        await pilot.press("enter")
+        await pilot.press("p")
         await pilot.pause()
 
         assert played == [clip.clip_path]

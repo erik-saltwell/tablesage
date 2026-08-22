@@ -22,13 +22,15 @@ class TranscriptViewDialog(ModalScreen[None]):
 
     There's no way to reassign or exclude an individual utterance here (see
     `.documentation/import_players_from_audio_file.md` -- editing stays speaker-ID
-    level), but the reviewer can play any one utterance's clip to help judge the row,
-    since transcript text alone doesn't always settle "is this really who I think it is."
+    level), but pressing `P` plays the selected row's clip to help judge it, since
+    transcript text alone doesn't always settle "is this really who I think it is."
+    Playback is bound to a dedicated key, not row selection, so browsing the table
+    with the cursor never triggers audio by accident.
     """
 
     BINDINGS = [
         Binding("escape", "close", "Close", show=False),
-        Binding("enter,p,P", "play_selected", "Play Clip", key_display="Enter"),
+        Binding("p,P", "play_selected", "Play Clip", key_display="P"),
     ]
 
     def __init__(self, *, speaker_id: str, clips: Sequence[SpeakerUtteranceClip]) -> None:
@@ -48,10 +50,6 @@ class TranscriptViewDialog(ModalScreen[None]):
                 table.add_row(_format_timestamp(clip.utterance.start), text or "(no dialogue captured)", key=str(index))
             yield table
             yield Button("Close", id="transcript-view-close")
-
-    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
-        event.stop()
-        self.action_play_selected()
 
     def action_play_selected(self) -> None:
         if not self._clips:

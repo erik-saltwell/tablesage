@@ -145,12 +145,15 @@ from an already-*processed* Session. This work item instead:
    Exclude toggle. Confirming the dialog writes the row's resolution back
    into the run context and refreshes that row's text in the table.
 2. The user can pull up everything a given speaker said: a per-utterance
-   list (timestamp + punctuated text), each row playable via `ffplay`
-   (`tablesage_tui.audio_playback.ClipPlayer`, fire-and-forget, one clip at
-   a time) against the same clip already extracted for Stage 3's centroid
-   computation — no re-extraction, no new dependency (`ffplay` ships
-   alongside the `ffmpeg` binary this app already requires). This is a
-   deliberate, narrow exception to "no audio playback anywhere in this
+   list (timestamp + punctuated text). Pressing `P` plays the selected
+   row's clip via `ffplay` (`tablesage_tui.audio_playback.ClipPlayer`,
+   fire-and-forget, one clip at a time) — a dedicated key binding, not a
+   click/Enter row-selection handler, so moving the cursor through the
+   table to read never triggers playback by accident — against the same
+   clip already extracted for Stage 3's centroid computation, no
+   re-extraction, no new dependency (`ffplay` ships alongside the `ffmpeg`
+   binary this app already requires). This is a deliberate, narrow
+   exception to "no audio playback anywhere in this
    app" elsewhere in the app: this view is read/listen-only, it doesn't let
    the reviewer reassign or exclude an individual utterance. Editing stays
    scoped to the speaker-ID level only — no per-clip reassignment; the
