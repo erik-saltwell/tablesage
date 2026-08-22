@@ -13,7 +13,7 @@ def assert_button_colors(
 ) -> None:
     assert button.styles.background.hex == background
     assert button.styles.color.hex == foreground
-    assert button.styles.border.top[0] == "tall"
+    assert button.styles.border.top[0] == "solid"
     assert button.styles.border.top[1].hex == border
 
 

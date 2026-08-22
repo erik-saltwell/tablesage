@@ -520,7 +520,7 @@ Button {
     background: $button-bg;
     background-tint: transparent;
     color: $button-fg;
-    border: tall $button-border;
+    border: solid $button-border;
     text-style: none;
     tint: transparent;
     pointer: pointer;
@@ -528,28 +528,28 @@ Button {
     &:hover {
         background: $button-hover-bg;
         color: $button-hover-fg;
-        border: tall $button-hover-border;
+        border: solid $button-hover-border;
     }
 
     &:focus {
         background: $button-focus-bg;
         background-tint: transparent;
         color: $button-focus-fg;
-        border: tall $button-focus-border;
+        border: solid $button-focus-border;
         text-style: none;
     }
 
     &.-active {
         background: $button-active-bg;
         color: $button-active-fg;
-        border: tall $button-active-border;
+        border: solid $button-active-border;
         tint: transparent;
     }
 
     &:disabled {
         background: $button-disabled-bg;
         color: $button-disabled-fg;
-        border: tall $button-disabled-border;
+        border: solid $button-disabled-border;
         opacity: 1;
         text-opacity: 1;
         text-style: none;
@@ -559,32 +559,32 @@ Button {
     &.-primary {
         background: $button-primary-bg;
         color: $button-primary-fg;
-        border: tall $button-primary-border;
+        border: solid $button-primary-border;
 
         &:hover {
             background: $button-primary-hover-bg;
             color: $button-primary-hover-fg;
-            border: tall $button-primary-hover-border;
+            border: solid $button-primary-hover-border;
         }
 
         &:focus {
             background: $button-primary-focus-bg;
             background-tint: transparent;
             color: $button-primary-focus-fg;
-            border: tall $button-primary-focus-border;
+            border: solid $button-primary-focus-border;
         }
 
         &.-active {
             background: $button-primary-active-bg;
             color: $button-primary-active-fg;
-            border: tall $button-primary-active-border;
+            border: solid $button-primary-active-border;
             tint: transparent;
         }
 
         &:disabled {
             background: $button-primary-disabled-bg;
             color: $button-primary-disabled-fg;
-            border: tall $button-primary-disabled-border;
+            border: solid $button-primary-disabled-border;
             opacity: 1;
             text-opacity: 1;
             text-style: none;
@@ -853,10 +853,6 @@ SelectDirectory {
 
         Button {
             margin: 1 0 0 1;
-            /* Matches Input/Select's border style in this row -- the app-wide "tall"
-               border (see Button, below) reads as taller than "solid" even at the same
-               3-row height, since this is the one place a Button sits inline with them. */
-            border: solid $button-border;
         }
     }
 }
@@ -1323,13 +1319,6 @@ SessionDetailScreen {
 /* ******************************** */
 
 PlayerImportPreStepScreen {
-    /* Matches the listbox/checkbox's "solid" border on this screen -- the app-wide
-       "tall" border (see Button, above) reads as taller than "solid" even at the same
-       3-row height, and every button here sits beside a solid-bordered control. */
-    Button {
-        border: solid $button-border;
-    }
-
     /* The source filename is a static context line, not an actionable heading --
        muted color plus an extra blank line below it distinguishes it from the list's
        own bold/accent title, which names what the box below it actually does. */
@@ -1376,24 +1365,6 @@ PlayerImportPreStepScreen {
             /* Docked (not "align: right middle" on the row) so the clean-audio
                checkbox can sit at the row's left instead of bunching up beside it. */
             dock: right;
-
-            /* The plain "Button { border: solid }" override above loses to
-               Button's own "&.-primary { border: tall }" (a class beats a bare
-               type selector), so restate solid at id specificity for every state
-               that rule sets a border in. */
-            border: solid $button-primary-border;
-
-            &:hover {
-                border: solid $button-primary-hover-border;
-            }
-
-            &:focus {
-                border: solid $button-primary-focus-border;
-            }
-
-            &.-active {
-                border: solid $button-primary-active-border;
-            }
         }
     }
 }
