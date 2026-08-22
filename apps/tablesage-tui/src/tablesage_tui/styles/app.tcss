@@ -20,6 +20,7 @@ $pine-600:  #2a342d;
 $stone-500: #8f988b;
 $cream-200: #d6d1bf;
 
+$sage-200:  #d7e6be;
 $sage-400:  #a3b88c;
 $sage-600:  #6f8a5a;
 $sage-700:  #5b714a;
@@ -101,47 +102,13 @@ $control-invalid-border: $fg-danger;
 /*            button colors          */
 /* ******************************** */
 
-/* Secondary: resting */
-$button-bg:     transparent;
-$button-fg:     $sage-400;
-$button-border: $surface-border;
-
-/* Secondary: hover */
-$button-hover-bg:     $sage-900;
-$button-hover-fg:     $cream-200;
-$button-hover-border: $surface-border;
-
-/* Secondary: focus */
-$button-focus-bg:     $sage-900;
-$button-focus-fg:     $cream-200;
-$button-focus-border: $surface-border;
-
-/* Secondary: active */
-$button-active-bg:     $sage-700;
-$button-active-fg:     $pine-950;
-$button-active-border: $surface-border;
-
-/* Secondary: disabled */
-$button-disabled-bg:     transparent;
-$button-disabled-fg:     $sage-800;
-$button-disabled-border: $surface-border;
-
-/* Primary */
-$button-primary-bg:              $surface-border;
-$button-primary-fg:              $pine-950;
-$button-primary-border:          $surface-border;
-$button-primary-hover-bg:        $sage-400;
-$button-primary-hover-fg:        $pine-950;
-$button-primary-hover-border:    $surface-border;
-$button-primary-focus-bg:        $surface-border;
-$button-primary-focus-fg:        $pine-950;
-$button-primary-focus-border:    $surface-border;
-$button-primary-active-bg:       $surface-border;
-$button-primary-active-fg:       $pine-950;
-$button-primary-active-border:   $surface-border;
-$button-primary-disabled-bg:     $surface-border;
-$button-primary-disabled-fg:     $pine-800;
-$button-primary-disabled-border: $surface-border;
+/* One identity color per variant -- text and border always match it (see Button,
+   below); only the resting background and the -active/disabled states diverge from
+   it, and those are expressed directly as percentages/overrides of this same color
+   rather than as separate named tokens. */
+$button-bg:         transparent;
+$button-fg:         $sage-400;
+$button-primary-fg: $sage-200;
 
 /* ******************************** */
 /*             overlays              */
@@ -509,47 +476,51 @@ Checkbox {
     }
 }
 
+/* One identity color drives text + border together in every state except pressed
+   (text goes transparent, border/background both become the identity color) and
+   disabled (both become $fg-muted, overriding whichever variant it was -- disabled
+   shouldn't still be signaling "this is the important one"). Hover and focus are
+   identical: a 50%-alpha wash of the identity color over whatever's underneath. */
 Button {
     width: auto;
     min-width: 8;
     height: 3;
     min-height: 3;
     padding: 0;
-    line-pad: 1;
 
     background: $button-bg;
     background-tint: transparent;
     color: $button-fg;
-    border: solid $button-border;
+    border: solid $button-fg;
     text-style: none;
     tint: transparent;
     pointer: pointer;
 
     &:hover {
-        background: $button-hover-bg;
-        color: $button-hover-fg;
-        border: solid $button-hover-border;
+        background: $button-fg 50%;
+        color: $button-fg;
+        border: solid $button-fg;
     }
 
     &:focus {
-        background: $button-focus-bg;
+        background: $button-fg 50%;
         background-tint: transparent;
-        color: $button-focus-fg;
-        border: solid $button-focus-border;
+        color: $button-fg;
+        border: solid $button-fg;
         text-style: none;
     }
 
     &.-active {
-        background: $button-active-bg;
-        color: $button-active-fg;
-        border: solid $button-active-border;
+        background: $button-fg;
+        color: transparent;
+        border: solid $button-fg;
         tint: transparent;
     }
 
     &:disabled {
-        background: $button-disabled-bg;
-        color: $button-disabled-fg;
-        border: solid $button-disabled-border;
+        background: $button-bg;
+        color: $fg-muted;
+        border: solid $fg-muted;
         opacity: 1;
         text-opacity: 1;
         text-style: none;
@@ -557,37 +528,32 @@ Button {
     }
 
     &.-primary {
-        background: $button-primary-bg;
         color: $button-primary-fg;
-        border: solid $button-primary-border;
+        border: solid $button-primary-fg;
 
         &:hover {
-            background: $button-primary-hover-bg;
-            color: $button-primary-hover-fg;
-            border: solid $button-primary-hover-border;
+            background: $button-primary-fg 50%;
+            color: $button-primary-fg;
+            border: solid $button-primary-fg;
         }
 
         &:focus {
-            background: $button-primary-focus-bg;
+            background: $button-primary-fg 50%;
             background-tint: transparent;
-            color: $button-primary-focus-fg;
-            border: solid $button-primary-focus-border;
+            color: $button-primary-fg;
+            border: solid $button-primary-fg;
         }
 
         &.-active {
-            background: $button-primary-active-bg;
-            color: $button-primary-active-fg;
-            border: solid $button-primary-active-border;
+            background: $button-primary-fg;
+            color: transparent;
+            border: solid $button-primary-fg;
             tint: transparent;
         }
 
         &:disabled {
-            background: $button-primary-disabled-bg;
-            color: $button-primary-disabled-fg;
-            border: solid $button-primary-disabled-border;
-            opacity: 1;
-            text-opacity: 1;
-            text-style: none;
+            color: $fg-muted;
+            border: solid $fg-muted;
         }
     }
 }
