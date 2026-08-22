@@ -136,13 +136,19 @@ async def test_prestep_add_candidate_flow() -> None:
         assert table.row_count == 1
 
 
-@pytest.mark.anyio
-async def test_prestep_continue_transcribes_proposes_and_opens_review() -> None:
-    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
-    application = _application()
-    transcript = object()
-    application.import_players_from_audio_transcribe = MagicMock(return_value=transcript)
-    propose_result = ProposeResult(
+async def _add_candidate(pilot: Pilot, name: str, role: str) -> None:
+    pilot.app.screen.query_one("#player-import-add-candidate", Button).press()
+    await pilot.pause()
+    pilot.app.screen.query_one("#text-input-value", Input).value = name
+    await pilot.press("enter")
+    await pilot.pause()
+    pilot.app.screen.query_one("#text-input-value", Input).value = role
+    await pilot.press("enter")
+    await pilot.pause()
+
+
+def _propose_result() -> ProposeResult:
+    return ProposeResult(
         proposals=(
             SpeakerProposal(
                 speaker_id="speaker_0",
@@ -157,19 +163,50 @@ async def test_prestep_continue_transcribes_proposes_and_opens_review() -> None:
         speaker_clips={},
         speaker_centroids={},
     )
-    application.import_players_from_audio_propose = MagicMock(return_value=propose_result)
+
+
+@pytest.mark.anyio
+async def test_prestep_continue_with_no_candidates_passes_none_speaker_count() -> None:
+    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
+    application = _application()
+    application.import_players_from_audio_transcribe = MagicMock(return_value=object())
+    application.import_players_from_audio_propose = MagicMock(return_value=_propose_result())
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(PlayerImportPreStepScreen(run))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#player-import-speaker-count", Input).value = "2"
+        pilot.app.screen.query_one("#player-import-continue", Button).press()
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        application.import_players_from_audio_transcribe.assert_called_once()
+        assert application.import_players_from_audio_transcribe.call_args.args[2] is None
+        assert run.speaker_count is None
+        assert isinstance(pilot.app.screen, PlayerImportReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_prestep_continue_derives_speaker_count_from_candidate_list() -> None:
+    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
+    application = _application()
+    application.import_players_from_audio_transcribe = MagicMock(return_value=object())
+    application.import_players_from_audio_propose = MagicMock(return_value=_propose_result())
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportPreStepScreen(run))
+        await pilot.pause()
+
+        await _add_candidate(pilot, "Alice", "Game Master")
+        await _add_candidate(pilot, "Bob", "Rogue")
+
         pilot.app.screen.query_one("#player-import-continue", Button).press()
         await pilot.pause()
         await _wait_for_progress_worker(pilot)
 
         application.import_players_from_audio_transcribe.assert_called_once()
         assert application.import_players_from_audio_transcribe.call_args.args[2] == 2
+        assert run.speaker_count == 2
         application.import_players_from_audio_propose.assert_called_once()
         assert isinstance(pilot.app.screen, PlayerImportReviewScreen)
         assert run.resolutions["speaker_0"].player_name == "Alice"

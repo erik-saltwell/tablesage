@@ -1274,3 +1274,50 @@ SessionDetailScreen {
         }
     }
 }
+
+/* ******************************** */
+/*  player import from audio wizard */
+/* ******************************** */
+
+PlayerImportPreStepScreen {
+    /* The source filename is a static context line, not an actionable heading --
+       muted color plus a blank line below it distinguishes it from the list's own
+       bold/accent title, which names what the box below it actually does. */
+    #player-import-source {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-muted;
+    }
+
+    .section-title {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-accent;
+        text-style: bold;
+    }
+
+    #player-import-candidates-row {
+        height: 14;
+        margin: 0 0 1 0;
+
+        #player-import-candidates-table {
+            border: solid $surface-border;
+        }
+
+        #player-import-candidate-actions {
+            width: 14;
+            height: 1fr;
+            margin: 0 0 0 1;
+
+            Button {
+                width: 1fr;
+                margin: 0 0 1 0;
+            }
+        }
+    }
+
+    .dialog-actions {
+        height: auto;
+        align: right middle;
+    }
+}

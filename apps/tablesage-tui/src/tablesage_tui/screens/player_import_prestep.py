@@ -7,11 +7,10 @@ from tablesage_application.player_import_from_audio import ProposeResult, Speake
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Button, DataTable, Input, Static
+from textual.widgets import Button, DataTable, Static
 
 from ..dialogs.generic import TextInputDialog
 from ..player_import_run import PlayerImportRun, SpeakerResolution
-from ..widgets import EqualWidthButtonRow
 from .base import TableSageScreen
 from .player_import_review import PlayerImportReviewScreen
 
@@ -25,7 +24,12 @@ _STAGE_LABELS = {
 
 
 class PlayerImportPreStepScreen(TableSageScreen):
-    """Stage 2: optional pre-step candidate list + speaker count, then transcribe/diarize/propose."""
+    """Stage 2: optional pre-step candidate list, then transcribe/diarize/propose.
+
+    `speaker_count` is derived from the candidate list rather than entered separately --
+    empty list means "unsure, let diarization auto-detect," a populated list means "exactly
+    this many," since each candidate row names one expected distinct speaker.
+    """
 
     section = "players"
 
@@ -43,21 +47,18 @@ class PlayerImportPreStepScreen(TableSageScreen):
             yield Static(f"Source: {self._run.source_audio_path.name}", id="player-import-source")
 
             yield Static("Expected speakers (optional)", classes="section-title")
-            table: DataTable[str] = DataTable(
-                id="player-import-candidates-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
-            )
-            table.add_column("Name", key="name")
-            table.add_column("Role", key="role")
-            yield table
-            with EqualWidthButtonRow(id="player-import-candidate-actions"):
-                yield Button("Add", id="player-import-add-candidate")
-                yield Button("Remove", id="player-import-remove-candidate")
+            with Horizontal(id="player-import-candidates-row"):
+                table: DataTable[str] = DataTable(
+                    id="player-import-candidates-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+                )
+                table.add_column("Name", key="name")
+                table.add_column("Role", key="role")
+                yield table
+                with Vertical(id="player-import-candidate-actions"):
+                    yield Button("Add", id="player-import-add-candidate")
+                    yield Button("Remove", id="player-import-remove-candidate")
 
-            with Horizontal(id="player-import-speaker-count-row"):
-                yield Static("Speaker count (leave blank if unsure)", classes="field-label")
-                yield Input(id="player-import-speaker-count", placeholder="e.g. 3", type="integer")
-
-            with EqualWidthButtonRow(classes="dialog-actions"):
+            with Horizontal(classes="dialog-actions"):
                 yield Button("Continue", id="player-import-continue", variant="primary")
 
     def on_mount(self) -> None:
@@ -103,8 +104,7 @@ class PlayerImportPreStepScreen(TableSageScreen):
         self._reload_candidates()
 
     def _continue(self) -> None:
-        count_input = self.query_one("#player-import-speaker-count", Input).value.strip()
-        speaker_count = int(count_input) if count_input else None
+        speaker_count = len(self._run.candidates) if self._run.candidates else None
         self._run.speaker_count = speaker_count
 
         clip_dir = Path(tempfile.mkdtemp(prefix="tablesage-import-"))

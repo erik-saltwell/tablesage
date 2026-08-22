@@ -88,18 +88,21 @@ from an already-*processed* Session. This work item instead:
    picker. No new dialog abstraction; no separately maintained extension
    list.
 
-### Stage 2 — Optional pre-step list, speaker count, transcribe + diarize
+### Stage 2 — Optional pre-step list, transcribe + diarize
 1. User is asked whether they want to pre-declare expected names/roles. If
    yes, a simple add/edit/remove list (mirroring `AttendeeDialog`'s
    add/edit/remove role-table *pattern* — a `DataTable` plus buttons that
    push a small edit dialog — but rows are name+role pairs instead of just
    roles) collects the **pre-step candidate list**.
-2. User is asked whether they know how many distinct speakers are on the
-   recording. Yes → a number, passed as `speaker_count`; no → `None` (let
-   diarization auto-detect).
+2. `speaker_count` is derived from that same list, not asked separately: an
+   empty list means "unsure, let diarization auto-detect" (`None`); a
+   populated list means "exactly this many" (`len(candidates)`), since each
+   candidate row already names one expected distinct speaker — asking the
+   count a second time as its own field would just be a second place for
+   the same fact to go stale against the first.
 3. Progress screen runs, in order: `clean_clip` (always on, normalize per
    `AppSettings.session_audio_import.normalize_volume`, reused as-is) →
-   `transcribe_and_diarize` with the chosen `speaker_count` → `punctuate_transcript`.
+   `transcribe_and_diarize` with the derived `speaker_count` → `punctuate_transcript`.
 4. Output: a `tablesage_tools.model.Transcript`, already grouped into
    per-speaker `Utterance`s (`Transcript.from_words` groups contiguous
    same-speaker word runs — this happens *inside* `transcribe_and_diarize`
