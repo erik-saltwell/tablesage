@@ -31,5 +31,5 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 14 | Import players from audio file | Implemented | [`.documentation/import_players_from_audio_file.md`](../../.documentation/import_players_from_audio_file.md) | `f01c5c1` |
 | 15 | Enhance players from session | Implemented | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | `e478ad2` |
 | 16 | Punctuated transcript as its own artifact | Implemented | — | `15f52b8` |
-| 17 | Export artifact command | Designed | [`.documentation/export_artifact.md`](../../.documentation/export_artifact.md) | — |
+| 17 | Export artifact command | Implemented | [`.documentation/export_artifact.md`](../../.documentation/export_artifact.md) | `a242a0a` |
 | 18 | Move to textual-fspicker for file/directory picking | Implemented | — | `c741008` |
