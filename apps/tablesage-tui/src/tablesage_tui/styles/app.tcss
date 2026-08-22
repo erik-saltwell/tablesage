@@ -471,8 +471,11 @@ Checkbox {
     color: $control-fg;
     border: solid $control-border;
 
+    /* Unchecked: the glyph matches its own background exactly, so it's
+       invisible -- an empty-looking box reads as "off" far more clearly
+       than a dim-but-still-visible X did next to a bright checked one. */
     & > .toggle--button {
-        color: $control-placeholder-fg;
+        color: $control-bg;
         background: $control-bg;
     }
 
@@ -494,6 +497,15 @@ Checkbox {
         background: $control-focus-bg;
         color: $control-focus-fg;
         border: solid $control-focus-border;
+
+        /* ToggleButton's own built-in `:focus > .toggle--label` rule (Textual's
+           theme $block-cursor-background/-foreground, blue by default) is more
+           specific than a bare Checkbox:focus color reassignment -- override the
+           label directly so focus doesn't fall back to that blue highlight. */
+        & > .toggle--label {
+            color: $control-focus-fg;
+            background: $control-focus-bg;
+        }
     }
 }
 
