@@ -466,6 +466,37 @@ Select {
     }
 }
 
+Checkbox {
+    background: $control-bg;
+    color: $control-fg;
+    border: solid $control-border;
+
+    & > .toggle--button {
+        color: $control-placeholder-fg;
+        background: $control-bg;
+    }
+
+    &.-on > .toggle--button {
+        color: $fg-accent;
+        background: $control-bg;
+    }
+
+    & > .toggle--label {
+        color: $control-fg;
+    }
+
+    &:hover {
+        background: $control-hover-bg;
+        color: $control-hover-fg;
+    }
+
+    &:focus {
+        background: $control-focus-bg;
+        color: $control-focus-fg;
+        border: solid $control-focus-border;
+    }
+}
+
 Button {
     width: auto;
     min-width: 8;
@@ -1318,9 +1349,14 @@ PlayerImportPreStepScreen {
 
     .dialog-actions {
         height: auto;
-        align: right middle;
         /* Right-align Continue with the listbox's own right edge, not the wider row
            that also includes the Add/Remove column beside it (14 wide + 1 margin). */
         margin: 0 15 0 0;
+
+        #player-import-continue {
+            /* Docked (not "align: right middle" on the row) so the clean-audio
+               checkbox can sit at the row's left instead of bunching up beside it. */
+            dock: right;
+        }
     }
 }

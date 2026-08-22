@@ -58,9 +58,8 @@ class PlayerImportPreStepScreen(TableSageScreen):
                     yield Button("Add", id="player-import-add-candidate")
                     yield Button("Remove", id="player-import-remove-candidate")
 
-            yield Checkbox("Clean audio before processing", value=True, id="player-import-clean-audio")
-
             with Horizontal(classes="dialog-actions"):
+                yield Checkbox("Clean audio before processing", value=True, id="player-import-clean-audio")
                 yield Button("Continue", id="player-import-continue", variant="primary")
 
     def on_mount(self) -> None:
