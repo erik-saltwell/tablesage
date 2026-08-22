@@ -51,6 +51,9 @@ def _stub_clean_and_transcribe(monkeypatch: pytest.MonkeyPatch) -> None:
     async def _stub_clean_clip(source: Path, target: Path, *, normalize: bool = False) -> None:
         _write_wav(target)
 
+    async def _stub_convert_to_16k_mono(source: Path, target: Path) -> None:
+        _write_wav(target)
+
     async def _stub_transcribe_and_diarize(*args: object, **kwargs: object) -> Transcript:
         return Transcript.from_words([_word("hi", "speaker_0", 0.0, 1.0), _word("yo", "speaker_1", 1.0, 2.0)])
 
@@ -58,6 +61,7 @@ def _stub_clean_and_transcribe(monkeypatch: pytest.MonkeyPatch) -> None:
         return Transcript(utterances=[u.model_copy(update={"punctuated_text": f"{u.text}."}) for u in transcript.utterances])
 
     monkeypatch.setattr(pia_module, "clean_clip", _stub_clean_clip)
+    monkeypatch.setattr(pia_module, "convert_to_16k_mono", _stub_convert_to_16k_mono)
     monkeypatch.setattr(pia_module, "transcribe_and_diarize", _stub_transcribe_and_diarize)
     monkeypatch.setattr(pia_module, "punctuate_transcript", _stub_punctuate_transcript)
 
@@ -83,6 +87,38 @@ def test_transcribe_audio_file_reports_staged_progress_and_returns_transcript(tm
         (Stage.PUNCTUATING, 0, 0),
         (Stage.PUNCTUATING, 1, 1),
     ]
+
+
+def test_transcribe_audio_file_should_clean_audio_false_skips_clean_clip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, _stub_clean_and_transcribe: None
+) -> None:
+    clean_clip_calls: list[Path] = []
+    convert_calls: list[Path] = []
+
+    async def _tracking_clean_clip(source: Path, target: Path, *, normalize: bool = False) -> None:
+        clean_clip_calls.append(source)
+        _write_wav(target)
+
+    monkeypatch.setattr(pia_module, "clean_clip", _tracking_clean_clip)
+
+    async def _tracking_convert(source: Path, target: Path) -> None:
+        convert_calls.append(source)
+        _write_wav(target)
+
+    monkeypatch.setattr(pia_module, "convert_to_16k_mono", _tracking_convert)
+
+    transcribe_audio_file(
+        tmp_path / "source.wav",
+        tmp_path / "cleaned.wav",
+        normalize_volume=False,
+        transcription_settings=_TRANSCRIPTION_SETTINGS,
+        speaker_count=2,
+        should_clean_audio=False,
+    )
+
+    assert clean_clip_calls == []
+    assert convert_calls == [tmp_path / "source.wav"]
+    assert (tmp_path / "cleaned.wav").is_file()
 
 
 # --- propose_attendees ---

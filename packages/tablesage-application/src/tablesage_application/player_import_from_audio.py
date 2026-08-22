@@ -11,7 +11,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from sqlmodel import Session
 from tablesage_model.settings import EnhanceVoicesSettings, RemoveOutliersSettings, TranscriptionAndDiarizationSettings
-from tablesage_tools.audio import clean_clip, extract_clip
+from tablesage_tools.audio import clean_clip, convert_to_16k_mono, extract_clip
 from tablesage_tools.embeddings import Embedding, SimilarityComputer, compute_centroid
 from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.punctuation import punctuate_transcript
@@ -57,6 +57,8 @@ def transcribe_audio_file(
     transcription_settings: TranscriptionAndDiarizationSettings,
     speaker_count: int | None,
     on_progress: OnProgress | None = None,
+    *,
+    should_clean_audio: bool = True,
 ) -> Transcript:
     """Clean, transcribe+diarize, and punctuate a standalone audio file into a speaker-labeled `Transcript`.
 
@@ -64,11 +66,19 @@ def transcribe_audio_file(
     `cleaned_audio_path` (a run-scoped temp file, not a session folder -- this flow has no
     session yet) and has no attendee centroids to pass as an expected-speaker-count fallback:
     `speaker_count` is a wizard input the user optionally supplies directly.
+
+    `should_clean_audio=False` skips the Mossformer2 noise-removal pass (and, since it's
+    part of the same call, `normalize_volume` with it) entirely -- a plain format
+    conversion still runs, so `cleaned_audio_path` is always a valid 16kHz mono wav either
+    way, matching `clean_clip`'s own guaranteed output format for every downstream stage.
     """
 
     async def _run() -> Transcript:
         _report(on_progress, Stage.CLEANING, 0, 0)
-        await clean_clip(source_audio_path, cleaned_audio_path, normalize=normalize_volume)
+        if should_clean_audio:
+            await clean_clip(source_audio_path, cleaned_audio_path, normalize=normalize_volume)
+        else:
+            await convert_to_16k_mono(source_audio_path, cleaned_audio_path)
         _report(on_progress, Stage.CLEANING, 1, 1)
 
         _report(on_progress, Stage.TRANSCRIBING, 0, 0)

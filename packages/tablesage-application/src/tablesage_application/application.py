@@ -426,6 +426,8 @@ class Application:
         cleaned_audio_path: Path,
         speaker_count: int | None,
         on_progress: player_import_from_audio.OnProgress | None = None,
+        *,
+        should_clean_audio: bool = True,
     ) -> Transcript:
         return player_import_from_audio.transcribe_audio_file(
             source_audio_path,
@@ -434,6 +436,7 @@ class Application:
             self._settings.transcription_and_diarization,
             speaker_count,
             on_progress,
+            should_clean_audio=should_clean_audio,
         )
 
     def import_players_from_audio_propose(

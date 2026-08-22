@@ -25,7 +25,7 @@ from tablesage_tui.screens.player_import_prestep import PlayerImportPreStepScree
 from tablesage_tui.screens.player_import_review import PlayerImportReviewScreen
 from tablesage_tui.screens.player_import_summary import PlayerImportSummaryScreen
 from textual.pilot import Pilot
-from textual.widgets import Button, DataTable, Input, Select
+from textual.widgets import Button, Checkbox, DataTable, Input, Select
 
 _ALICE = Player(name="Alice")
 
@@ -182,8 +182,29 @@ async def test_prestep_continue_with_no_candidates_passes_none_speaker_count() -
 
         application.import_players_from_audio_transcribe.assert_called_once()
         assert application.import_players_from_audio_transcribe.call_args.args[2] is None
+        assert application.import_players_from_audio_transcribe.call_args.kwargs["should_clean_audio"] is True
         assert run.speaker_count is None
         assert isinstance(pilot.app.screen, PlayerImportReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_prestep_unchecking_clean_audio_passes_should_clean_audio_false() -> None:
+    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
+    application = _application()
+    application.import_players_from_audio_transcribe = MagicMock(return_value=object())
+    application.import_players_from_audio_propose = MagicMock(return_value=_propose_result())
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportPreStepScreen(run))
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#player-import-clean-audio", Checkbox).value = False
+        pilot.app.screen.query_one("#player-import-continue", Button).press()
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        application.import_players_from_audio_transcribe.assert_called_once()
+        assert application.import_players_from_audio_transcribe.call_args.kwargs["should_clean_audio"] is False
 
 
 @pytest.mark.anyio

@@ -1313,13 +1313,6 @@ PlayerImportPreStepScreen {
                 width: 1fr;
                 margin: 0 0 1 0;
             }
-
-            /* Margin on the container (rather than just its first child) competes
-               with the table's own height:1fr for the row's fr-height distribution
-               and shrinks the table by a row -- keep it on the button instead. */
-            #player-import-add-candidate {
-                margin-top: 1;
-            }
         }
     }
 

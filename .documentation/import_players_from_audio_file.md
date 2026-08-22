@@ -100,9 +100,16 @@ from an already-*processed* Session. This work item instead:
    candidate row already names one expected distinct speaker — asking the
    count a second time as its own field would just be a second place for
    the same fact to go stale against the first.
-3. Progress screen runs, in order: `clean_clip` (always on, normalize per
-   `AppSettings.session_audio_import.normalize_volume`, reused as-is) →
-   `transcribe_and_diarize` with the derived `speaker_count` → `punctuate_transcript`.
+3. A checkbox, "Clean audio before processing," defaulting checked, lets the
+   user skip the Mossformer2 noise-removal pass (e.g. for an already-clean
+   recording, to save the time it takes) — a per-run wizard input, not a
+   setting, same reasoning as `speaker_count`. Unchecked, a plain 16kHz mono
+   format conversion still runs in `clean_clip`'s place, so downstream
+   stages always get the same guaranteed audio format either way.
+4. Progress screen runs, in order: `clean_clip` (normalize per
+   `AppSettings.session_audio_import.normalize_volume`, reused as-is) or,
+   if cleaning was skipped, a plain format conversion → `transcribe_and_diarize`
+   with the derived `speaker_count` → `punctuate_transcript`.
 4. Output: a `tablesage_tools.model.Transcript`, already grouped into
    per-speaker `Utterance`s (`Transcript.from_words` groups contiguous
    same-speaker word runs — this happens *inside* `transcribe_and_diarize`
@@ -247,11 +254,12 @@ from an already-*processed* Session. This work item instead:
   `import_voice_clips`/`cleanup_voice_clips`) — no all-or-nothing
   transaction across the whole batch.
 - **Settings are entirely reused, nothing new added to `AppSettings`:**
-  - `session_audio_import.normalize_volume` — Stage 2 cleaning.
+  - `session_audio_import.normalize_volume` — Stage 2 cleaning, when
+    cleaning isn't skipped.
   - `transcription_and_diarization` (`timeout`, `language_code`,
     `tag_audio_events`, `model_id`) — Stage 2 transcription; `speaker_count`
-    itself is a per-run wizard input, not a setting (same reasoning as
-    Phase 9's `clean_clips` decision).
+    and whether to clean the audio are both per-run wizard inputs, not
+    settings (same reasoning as Phase 9's `clean_clips` decision).
   - `llm_model` — Stage 3.
   - `speaker_identification.similarity_margin_threshold` — Stage 3's
     pre-review existing-player recommendation.
@@ -300,7 +308,11 @@ application-layer call site except where noted — this feature is largely
 orchestration, not new ML/audio work)
 
 - `audio.clean_clip(source, target, *, normalize=False)` — Stage 2 cleaning
-  (already wired for Session Detail's Import Audio; same call here).
+  (already wired for Session Detail's Import Audio; same call here), when
+  the "Clean audio before processing" checkbox is checked.
+- `audio.convert_to_16k_mono(input_path, output_wav)` — Stage 2's
+  clean-skipped path; guarantees the same output format `clean_clip` would
+  have produced, without the Mossformer2 pass.
 - `transcription.transcribe_and_diarize(input_file, language_code, model_id,
   request_timeout, tag_audio_events, speaker_count)` → `Transcript`
   — Stage 2; `speaker_count: int | None` is the exact hook this flow's

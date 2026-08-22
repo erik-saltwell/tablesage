@@ -7,7 +7,7 @@ from tablesage_application.player_import_from_audio import ProposeResult, Speake
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Button, DataTable, Static
+from textual.widgets import Button, Checkbox, DataTable, Static
 
 from ..dialogs.generic import TextInputDialog
 from ..player_import_run import PlayerImportRun, SpeakerResolution
@@ -58,6 +58,8 @@ class PlayerImportPreStepScreen(TableSageScreen):
                     yield Button("Add", id="player-import-add-candidate")
                     yield Button("Remove", id="player-import-remove-candidate")
 
+            yield Checkbox("Clean audio before processing", value=True, id="player-import-clean-audio")
+
             with Horizontal(classes="dialog-actions"):
                 yield Button("Continue", id="player-import-continue", variant="primary")
 
@@ -106,6 +108,7 @@ class PlayerImportPreStepScreen(TableSageScreen):
     def _continue(self) -> None:
         speaker_count = len(self._run.candidates) if self._run.candidates else None
         self._run.speaker_count = speaker_count
+        should_clean_audio = self.query_one("#player-import-clean-audio", Checkbox).value
 
         clip_dir = Path(tempfile.mkdtemp(prefix="tablesage-import-"))
         self._run.clip_dir = clip_dir
@@ -113,7 +116,11 @@ class PlayerImportPreStepScreen(TableSageScreen):
 
         def work() -> ProposeResult:
             transcript = self.application.import_players_from_audio_transcribe(
-                self._run.source_audio_path, cleaned_audio_path, speaker_count, on_progress=self._on_progress
+                self._run.source_audio_path,
+                cleaned_audio_path,
+                speaker_count,
+                on_progress=self._on_progress,
+                should_clean_audio=should_clean_audio,
             )
             return self.application.import_players_from_audio_propose(
                 cleaned_audio_path, clip_dir, transcript, self._run.candidates, on_progress=self._on_progress
