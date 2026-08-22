@@ -80,7 +80,7 @@ async def test_from_audio_action_opens_file_picker() -> None:
     async with TableSageApp(_application()).run_test() as pilot:
         await _open_players_list(pilot)
 
-        await pilot.press("f")
+        await pilot.press("a")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, FileOpen)
@@ -91,7 +91,7 @@ async def test_from_audio_cancelled_picker_does_not_open_wizard() -> None:
     async with TableSageApp(_application()).run_test() as pilot:
         await _open_players_list(pilot)
 
-        await pilot.press("f")
+        await pilot.press("a")
         await pilot.pause()
         await pilot.press("escape")
         await pilot.pause()

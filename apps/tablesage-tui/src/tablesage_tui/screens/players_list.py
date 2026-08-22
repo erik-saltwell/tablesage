@@ -31,7 +31,7 @@ class PlayersListScreen(TableSageScreen):
     BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
         Binding("n,N", "new_player", "New Player", key_display="N"),
-        Binding("f,F", "create_players_from_audio", "From Audio", key_display="F"),
+        Binding("a,A", "create_players_from_audio", "From Audio", key_display="A"),
         Binding("s,S", "enhance_from_session", "From Session", key_display="S"),
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
