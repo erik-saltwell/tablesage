@@ -1281,17 +1281,17 @@ SessionDetailScreen {
 
 PlayerImportPreStepScreen {
     /* The source filename is a static context line, not an actionable heading --
-       muted color plus a blank line below it distinguishes it from the list's own
-       bold/accent title, which names what the box below it actually does. */
+       muted color plus an extra blank line below it distinguishes it from the list's
+       own bold/accent title, which names what the box below it actually does. */
     #player-import-source {
         height: 1;
-        margin: 0 0 1 0;
+        margin: 0 0 2 1;
         color: $fg-muted;
     }
 
     .section-title {
         height: 1;
-        margin: 0 0 1 0;
+        margin: 0 0 1 1;
         color: $fg-accent;
         text-style: bold;
     }
@@ -1319,5 +1319,8 @@ PlayerImportPreStepScreen {
     .dialog-actions {
         height: auto;
         align: right middle;
+        /* Right-align Continue with the listbox's own right edge, not the wider row
+           that also includes the Add/Remove column beside it (14 wide + 1 margin). */
+        margin: 0 15 0 0;
     }
 }
