@@ -250,7 +250,7 @@ TableSageHeader {
     }
 
     .header-context {
-        margin: 0 0 0 1;
+        margin: 1 0 0 1;
     }
 
     .header-campaign,
@@ -726,7 +726,7 @@ SessionFromCampaignPickerDialog {
         align: right middle;
 
         Button {
-            margin: 0 0 0 1;
+            margin: 1 0 0 1;
         }
     }
 }
@@ -809,7 +809,7 @@ SelectDirectory {
         }
 
         Button {
-            margin: 0 0 0 1;
+            margin: 1 0 0 1;
             /* Matches Input/Select's border style in this row -- the app-wide "tall"
                border (see Button, below) reads as taller than "solid" even at the same
                3-row height, since this is the one place a Button sits inline with them. */
@@ -1312,6 +1312,13 @@ PlayerImportPreStepScreen {
             Button {
                 width: 1fr;
                 margin: 0 0 1 0;
+            }
+
+            /* Margin on the container (rather than just its first child) competes
+               with the table's own height:1fr for the row's fr-height distribution
+               and shrinks the table by a row -- keep it on the button instead. */
+            #player-import-add-candidate {
+                margin-top: 1;
             }
         }
     }
