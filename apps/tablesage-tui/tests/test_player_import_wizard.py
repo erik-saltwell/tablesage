@@ -111,7 +111,22 @@ async def test_speaker_resolution_dialog_cancel_dismisses_none() -> None:
 
 
 def _application() -> MagicMock:
-    return MagicMock()
+    return MagicMock(list_players=MagicMock(return_value=[]))
+
+
+async def _add_candidate(pilot: Pilot, name: str, *roles: str) -> None:
+    await pilot.press("n")
+    await pilot.pause()
+    pilot.app.screen.query_one("#attendee-name", Input).value = name
+    await pilot.pause()
+    for role in roles:
+        pilot.app.screen.query_one("#attendee-add-role", Button).press()
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = role
+        await pilot.press("enter")
+        await pilot.pause()
+    pilot.app.screen.query_one("#attendee-save", Button).press()
+    await pilot.pause()
 
 
 @pytest.mark.anyio
@@ -122,29 +137,47 @@ async def test_prestep_add_candidate_flow() -> None:
         pilot.app.push_screen(PlayerImportPreStepScreen(run))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#player-import-add-candidate", Button).press()
-        await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
-        await pilot.press("enter")
-        await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Game Master"
-        await pilot.press("enter")
-        await pilot.pause()
+        await _add_candidate(pilot, "Alice", "Game Master")
 
-        assert run.candidates == [SpeakerCandidate(name="Alice", role="Game Master")]
+        assert run.candidates == [SpeakerCandidate(name="Alice", roles=("Game Master",))]
         table = pilot.app.screen.query_one("#player-import-candidates-table", DataTable)
         assert table.row_count == 1
 
 
-async def _add_candidate(pilot: Pilot, name: str, role: str) -> None:
-    pilot.app.screen.query_one("#player-import-add-candidate", Button).press()
-    await pilot.pause()
-    pilot.app.screen.query_one("#text-input-value", Input).value = name
-    await pilot.press("enter")
-    await pilot.pause()
-    pilot.app.screen.query_one("#text-input-value", Input).value = role
-    await pilot.press("enter")
-    await pilot.pause()
+@pytest.mark.anyio
+async def test_prestep_edit_candidate_flow() -> None:
+    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
+    run.candidates.append(SpeakerCandidate(name="Alice", roles=("Game Master",)))
+
+    async with TableSageApp(_application()).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportPreStepScreen(run))
+        await pilot.pause()
+
+        await pilot.press("e")
+        await pilot.pause()
+        assert pilot.app.screen.query_one("#attendee-name", Input).value == "Alice"
+        pilot.app.screen.query_one("#attendee-name", Input).value = "Alicia"
+        pilot.app.screen.query_one("#attendee-save", Button).press()
+        await pilot.pause()
+
+        assert run.candidates == [SpeakerCandidate(name="Alicia", roles=("Game Master",))]
+
+
+@pytest.mark.anyio
+async def test_prestep_delete_candidate_removes_it() -> None:
+    run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
+    run.candidates.append(SpeakerCandidate(name="Alice", roles=("Game Master",)))
+
+    async with TableSageApp(_application()).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportPreStepScreen(run))
+        await pilot.pause()
+
+        await pilot.press("d")
+        await pilot.pause()
+
+        assert run.candidates == []
+        table = pilot.app.screen.query_one("#player-import-candidates-table", DataTable)
+        assert table.row_count == 0
 
 
 def _propose_result() -> ProposeResult:

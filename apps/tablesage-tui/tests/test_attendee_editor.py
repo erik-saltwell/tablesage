@@ -1,7 +1,4 @@
-import uuid
-
 import pytest
-from tablesage_application.entities.sessions import Attendee
 from tablesage_model.model import Player
 from tablesage_tui.dialogs import AttendeeDialog, AttendeeResult, TextInputDialog
 from tablesage_tui.screens.main_app import TableSageApp
@@ -14,7 +11,7 @@ _BOB = Player(name="Bob")
 @pytest.mark.anyio
 async def test_add_mode_starts_blank_with_no_roles_and_save_disabled() -> None:
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE, _BOB], attendee=None))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE, _BOB], title="Add Attendee"))
         await pilot.pause()
 
         select = pilot.app.screen.query_one("#attendee-player-select", Select)
@@ -25,10 +22,10 @@ async def test_add_mode_starts_blank_with_no_roles_and_save_disabled() -> None:
 
 @pytest.mark.anyio
 async def test_edit_mode_preselects_player_and_shows_existing_roles() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria", "Narrator"))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE, _BOB], attendee=attendee))
+        pilot.app.push_screen(
+            AttendeeDialog(players=[_ALICE, _BOB], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria", "Narrator"])
+        )
         await pilot.pause()
 
         select = pilot.app.screen.query_one("#attendee-player-select", Select)
@@ -44,10 +41,8 @@ async def test_edit_mode_preselects_player_and_shows_existing_roles() -> None:
 
 @pytest.mark.anyio
 async def test_add_custom_role_via_dialog() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-add-role", Button).press()
@@ -65,10 +60,8 @@ async def test_add_custom_role_via_dialog() -> None:
 
 @pytest.mark.anyio
 async def test_add_duplicate_custom_role_is_a_no_op() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-add-role", Button).press()
@@ -82,10 +75,8 @@ async def test_add_duplicate_custom_role_is_a_no_op() -> None:
 
 @pytest.mark.anyio
 async def test_add_game_master_role_is_one_click() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-add-gm", Button).press()
@@ -98,10 +89,8 @@ async def test_add_game_master_role_is_one_click() -> None:
 
 @pytest.mark.anyio
 async def test_add_duplicate_game_master_role_is_a_no_op() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Game Master",))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Game Master"]))
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-add-gm", Button).press()
@@ -112,10 +101,8 @@ async def test_add_duplicate_game_master_role_is_a_no_op() -> None:
 
 @pytest.mark.anyio
 async def test_edit_selected_role_renames_it() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria", "Narrator"))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria", "Narrator"]))
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
@@ -135,10 +122,8 @@ async def test_edit_selected_role_renames_it() -> None:
 
 @pytest.mark.anyio
 async def test_edit_selected_role_rejects_renaming_to_an_existing_role() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria", "Narrator"))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria", "Narrator"]))
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
@@ -155,10 +140,8 @@ async def test_edit_selected_role_rejects_renaming_to_an_existing_role() -> None
 
 @pytest.mark.anyio
 async def test_remove_selected_role() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria", "Narrator"))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria", "Narrator"]))
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
@@ -172,10 +155,8 @@ async def test_remove_selected_role() -> None:
 
 @pytest.mark.anyio
 async def test_removing_last_role_disables_save() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
-
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
@@ -191,7 +172,7 @@ async def test_save_dismisses_with_chosen_player_and_roles() -> None:
     results: list[AttendeeResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE, _BOB], attendee=None), results.append)
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE, _BOB], title="Add Attendee"), results.append)
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-player-select", Select).value = _BOB.id
@@ -201,16 +182,15 @@ async def test_save_dismisses_with_chosen_player_and_roles() -> None:
         pilot.app.screen.query_one("#attendee-save", Button).press()
         await pilot.pause()
 
-        assert results == [AttendeeResult(player_id=_BOB.id, roles=("Game Master",))]
+        assert results == [AttendeeResult(player_id=_BOB.id, player_name="Bob", roles=("Game Master",))]
 
 
 @pytest.mark.anyio
 async def test_cancel_dismisses_with_none() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
     results: list[AttendeeResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee), results.append)
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]), results.append)
         await pilot.pause()
 
         pilot.app.screen.query_one("#attendee-cancel", Button).press()
@@ -221,11 +201,10 @@ async def test_cancel_dismisses_with_none() -> None:
 
 @pytest.mark.anyio
 async def test_escape_dismisses_with_none() -> None:
-    attendee = Attendee(attendance_id=uuid.uuid4(), player_id=_ALICE.id, player_name="Alice", roles=("Zaria",))
     results: list[AttendeeResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], attendee=attendee), results.append)
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]), results.append)
         await pilot.pause()
 
         await pilot.press("escape")
@@ -239,7 +218,7 @@ async def test_no_players_available_shows_message_and_close_button() -> None:
     results: list[AttendeeResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[], attendee=None), results.append)
+        pilot.app.push_screen(AttendeeDialog(players=[], title="Add Attendee"), results.append)
         await pilot.pause()
 
         assert pilot.app.screen.query_one("#attendee-empty")
@@ -247,3 +226,77 @@ async def test_no_players_available_shows_message_and_close_button() -> None:
         await pilot.pause()
 
         assert results == [None]
+
+
+# --- allow_new_player=True ---
+
+
+@pytest.mark.anyio
+async def test_allow_new_player_defaults_to_new_player_with_name_row_visible() -> None:
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True))
+        await pilot.pause()
+
+        select = pilot.app.screen.query_one("#attendee-player-select", Select)
+        assert not select.is_blank()
+        assert pilot.app.screen.query_one("#attendee-name-row").display is True
+        assert pilot.app.screen.query_one("#attendee-save", Button).disabled
+
+
+@pytest.mark.anyio
+async def test_allow_new_player_works_with_zero_existing_players() -> None:
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(AttendeeDialog(players=[], title="Add Expected Speaker", allow_new_player=True))
+        await pilot.pause()
+
+        assert pilot.app.screen.query_one("#attendee-name-row").display is True
+        assert not pilot.app.screen.query("#attendee-empty")
+
+
+@pytest.mark.anyio
+async def test_allow_new_player_selecting_existing_player_hides_name_row() -> None:
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True))
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
+        await pilot.pause()
+
+        assert pilot.app.screen.query_one("#attendee-name-row").display is False
+
+
+@pytest.mark.anyio
+async def test_allow_new_player_submitting_free_form_name() -> None:
+    results: list[AttendeeResult | None] = []
+
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True), results.append)
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#attendee-name", Input).value = "Zara"
+        await pilot.pause()
+        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        await pilot.pause()
+        assert not pilot.app.screen.query_one("#attendee-save", Button).disabled
+        pilot.app.screen.query_one("#attendee-save", Button).press()
+        await pilot.pause()
+
+        assert results == [AttendeeResult(player_id=None, player_name="Zara", roles=("Game Master",))]
+
+
+@pytest.mark.anyio
+async def test_allow_new_player_submitting_existing_player_returns_its_id_and_name() -> None:
+    results: list[AttendeeResult | None] = []
+
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True), results.append)
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
+        await pilot.pause()
+        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        await pilot.pause()
+        pilot.app.screen.query_one("#attendee-save", Button).press()
+        await pilot.pause()
+
+        assert results == [AttendeeResult(player_id=_ALICE.id, player_name="Alice", roles=("Game Master",))]

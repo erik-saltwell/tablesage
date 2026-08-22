@@ -105,10 +105,16 @@ def transcribe_audio_file(
 
 @dataclass(frozen=True)
 class SpeakerCandidate:
-    """One pre-step name+role guess the user supplies before transcription, to help the LLM guess (Stage 3)."""
+    """One pre-step name+roles guess the user supplies before transcription, to help the LLM guess (Stage 3).
+
+    `roles` (plural) matches `Attendee.roles`'s shape -- multiple roles per candidate,
+    same as a real attendee can hold. Only ever joined into one display string for the
+    LLM prompt hint (see `Application.import_players_from_audio_propose`); nothing else
+    in this flow needs them separately.
+    """
 
     name: str
-    role: str
+    roles: tuple[str, ...]
 
 
 @dataclass(frozen=True)

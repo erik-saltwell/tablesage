@@ -470,7 +470,7 @@ class Application:
     ) -> list[player_import_from_audio.SpeakerGuess]:
         template_data = player_import_from_audio.SpeakerProposalPromptData(
             speakers=[{"speaker_id": speaker_id, "transcript": text} for speaker_id, text in utterance_texts],
-            candidates=[{"name": candidate.name, "role": candidate.role} for candidate in candidates],
+            candidates=[{"name": candidate.name, "role": ", ".join(candidate.roles)} for candidate in candidates],
         )
         raw = asyncio.run(
             call_llm_with_prompt(

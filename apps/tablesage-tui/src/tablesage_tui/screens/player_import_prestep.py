@@ -9,7 +9,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Checkbox, DataTable, Static
 
-from ..dialogs.generic import TextInputDialog
+from ..dialogs import AttendeeDialog, AttendeeResult
 from ..player_import_run import PlayerImportRun, SpeakerResolution
 from .base import TableSageScreen
 from .player_import_review import PlayerImportReviewScreen
@@ -29,12 +29,20 @@ class PlayerImportPreStepScreen(TableSageScreen):
     `speaker_count` is derived from the candidate list rather than entered separately --
     empty list means "unsure, let diarization auto-detect," a populated list means "exactly
     this many," since each candidate row names one expected distinct speaker.
+
+    Candidate rows are edited with the same `AttendeeDialog` Session Detail uses for real
+    attendees, in its `allow_new_player=True` mode -- a candidate isn't a DB-backed
+    attendance row (there's no session yet), so it can be either an existing player or a
+    free-form name, unlike a real attendee which must be an existing player.
     """
 
     section = "players"
 
     BINDINGS = [
         Binding("escape", "pop_screen", "Cancel", key_display="Esc", show=False),
+        Binding("n,N", "new_candidate", "New", key_display="N"),
+        Binding("enter,e,E", "edit_candidate", "Edit", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_candidate", "Delete", key_display="D"),
     ]
 
     def __init__(self, run: PlayerImportRun) -> None:
@@ -47,16 +55,12 @@ class PlayerImportPreStepScreen(TableSageScreen):
             yield Static(f"Source: {self._run.source_audio_path.name}", id="player-import-source")
 
             yield Static("Expected speakers (optional)", classes="section-title")
-            with Horizontal(id="player-import-candidates-row"):
-                table: DataTable[str] = DataTable(
-                    id="player-import-candidates-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
-                )
-                table.add_column("Name", key="name")
-                table.add_column("Role", key="role")
-                yield table
-                with Vertical(id="player-import-candidate-actions"):
-                    yield Button("Add", id="player-import-add-candidate")
-                    yield Button("Remove", id="player-import-remove-candidate")
+            table: DataTable[str] = DataTable(
+                id="player-import-candidates-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+            )
+            table.add_column("Name", key="name")
+            table.add_column("Roles", key="roles")
+            yield table
 
             with Horizontal(classes="dialog-actions"):
                 yield Checkbox("Clean audio before processing", value=True, id="player-import-clean-audio")
@@ -67,41 +71,68 @@ class PlayerImportPreStepScreen(TableSageScreen):
 
     def _reload_candidates(self) -> None:
         table = self.query_one("#player-import-candidates-table", DataTable)
+        selected = self._selected_candidate_index()
         table.clear()
         for index, candidate in enumerate(self._run.candidates):
-            table.add_row(candidate.name, candidate.role, key=str(index))
+            table.add_row(candidate.name, ", ".join(candidate.roles), key=str(index))
+        if selected is not None and selected < table.row_count:
+            table.move_cursor(row=selected)
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "player-import-add-candidate":
-            self._add_candidate()
-        elif event.button.id == "player-import-remove-candidate":
-            self._remove_selected_candidate()
-        elif event.button.id == "player-import-continue":
-            self._continue()
-
-    def _add_candidate(self) -> None:
-        def on_name(name: str | None) -> None:
-            if not name:
-                return
-
-            def on_role(role: str | None) -> None:
-                if not role:
-                    return
-                self._run.candidates.append(SpeakerCandidate(name=name, role=role))
-                self._reload_candidates()
-
-            self.app.push_screen(TextInputDialog(title="Expected Speaker", prompt="Role", submit_label="Add"), on_role)
-
-        self.app.push_screen(TextInputDialog(title="Expected Speaker", prompt="Name", submit_label="Next"), on_name)
-
-    def _remove_selected_candidate(self) -> None:
+    def _selected_candidate_index(self) -> int | None:
         table = self.query_one("#player-import-candidates-table", DataTable)
         if table.row_count == 0:
-            return
+            return None
         row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
-        if row_key is None:
+        return int(row_key) if row_key is not None else None
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        event.stop()
+        self.action_edit_candidate()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "player-import-continue":
+            self._continue()
+
+    def action_new_candidate(self) -> None:
+        def on_saved(result: AttendeeResult | None) -> None:
+            if result is None:
+                return
+            self._run.candidates.append(SpeakerCandidate(name=result.player_name, roles=result.roles))
+            self._reload_candidates()
+
+        self.app.push_screen(
+            AttendeeDialog(players=self.application.list_players(), title="New Expected Speaker", allow_new_player=True),
+            on_saved,
+        )
+
+    def action_edit_candidate(self) -> None:
+        index = self._selected_candidate_index()
+        if index is None:
             return
-        del self._run.candidates[int(row_key)]
+        candidate = self._run.candidates[index]
+
+        def on_saved(result: AttendeeResult | None) -> None:
+            if result is None:
+                return
+            self._run.candidates[index] = SpeakerCandidate(name=result.player_name, roles=result.roles)
+            self._reload_candidates()
+
+        self.app.push_screen(
+            AttendeeDialog(
+                players=self.application.list_players(),
+                title="Edit Expected Speaker",
+                player_name=candidate.name,
+                roles=list(candidate.roles),
+                allow_new_player=True,
+            ),
+            on_saved,
+        )
+
+    def action_delete_candidate(self) -> None:
+        index = self._selected_candidate_index()
+        if index is None:
+            return
+        del self._run.candidates[index]
         self._reload_candidates()
 
     def _continue(self) -> None:

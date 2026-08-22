@@ -90,10 +90,18 @@ from an already-*processed* Session. This work item instead:
 
 ### Stage 2 — Optional pre-step list, transcribe + diarize
 1. User is asked whether they want to pre-declare expected names/roles. If
-   yes, a simple add/edit/remove list (mirroring `AttendeeDialog`'s
-   add/edit/remove role-table *pattern* — a `DataTable` plus buttons that
-   push a small edit dialog — but rows are name+role pairs instead of just
-   roles) collects the **pre-step candidate list**.
+   yes, a `DataTable` collects the **pre-step candidate list** — standard
+   list bindings (`N`/`Enter`,`E`/`D`,`Delete`), no dedicated Add/Remove
+   buttons, matching every other list screen in this app. Editing a
+   candidate literally reuses `AttendeeDialog` (Session Detail's own
+   attendee editor), in its `allow_new_player=True` mode: a candidate isn't
+   a DB-backed attendance row (there's no session yet to attach one to), so
+   unlike a real attendee it can be either an existing player from the
+   `Select` or a free-form typed name. `SpeakerCandidate.roles` is plural
+   for the same reason `Attendee.roles` is — the dialog's role table is
+   otherwise unchanged, and multiple roles just get joined into one display
+   string (`", ".join(...)`) for Stage 3's LLM prompt hint, the only place
+   they're ever read as text.
 2. `speaker_count` is derived from that same list, not asked separately: an
    empty list means "unsure, let diarization auto-detect" (`None`); a
    populated list means "exactly this many" (`len(candidates)`), since each
@@ -369,11 +377,11 @@ orchestration, not new ML/audio work)
    `PromptName`/`system.md`/`template.j2` for Stage 3, and the
    application-facade methods wiring settings + tool callables together.
 3. **`tablesage-tui`**: one new `Screen` subclass per stage (file picker
-   reuse aside), wired to Players List's existing `F` binding, all sharing
-   one mutable run-context object owned by the flow rather than by any
-   screen; a new name+role list-builder widget/dialog for the pre-step
-   (reusing `AttendeeDialog`'s add/edit/remove pattern); a Stage 4 review
-   screen whose `DataTable` renders each speaker's resolution as text, with
+   reuse aside), wired to Players List's `A` binding, all sharing one
+   mutable run-context object owned by the flow rather than by any screen;
+   the pre-step's candidate list reuses `AttendeeDialog` directly (see
+   above) rather than a dedicated dialog; a Stage 4 review screen whose
+   `DataTable` renders each speaker's resolution as text, with
    a per-speaker editor dialog (mirroring `AttendeeDialog`'s own workaround
    for the same "no live widgets inside `DataTable` cells" constraint) for
    the `Select`/name/role/exclude fields; a read-only summary screen for

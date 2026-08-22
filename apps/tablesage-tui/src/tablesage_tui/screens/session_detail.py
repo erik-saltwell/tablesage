@@ -346,10 +346,13 @@ class SessionDetailScreen(TableSageScreen):
         def on_saved(result: AttendeeResult | None) -> None:
             if result is None:
                 return
+            player_id = result.player_id
+            assert player_id is not None  # allow_new_player=False below guarantees this
+            roles = list(result.roles)
 
             def do_add() -> None:
                 try:
-                    self.application.add_attendance_with_roles(self._session_id, result.player_id, list(result.roles))
+                    self.application.add_attendance_with_roles(self._session_id, player_id, roles)
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
@@ -357,7 +360,7 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_add)
 
-        self.app.push_screen(AttendeeDialog(players=available, attendee=None), on_saved)
+        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee"), on_saved)
 
     def action_edit_attendee(self) -> None:
         attendee = self._selected_attendee()
@@ -375,12 +378,15 @@ class SessionDetailScreen(TableSageScreen):
         def on_saved(result: AttendeeResult | None) -> None:
             if result is None:
                 return
+            player_id = result.player_id
+            assert player_id is not None  # allow_new_player=False below guarantees this
+            roles = list(result.roles)
 
             def do_save() -> None:
                 try:
-                    if result.player_id != attendee.player_id:
-                        self.application.set_attendance_player(self._session_id, attendee.attendance_id, result.player_id)
-                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, list(result.roles))
+                    if player_id != attendee.player_id:
+                        self.application.set_attendance_player(self._session_id, attendee.attendance_id, player_id)
+                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, roles)
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
@@ -388,7 +394,10 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_save)
 
-        self.app.push_screen(AttendeeDialog(players=available, attendee=attendee), on_saved)
+        self.app.push_screen(
+            AttendeeDialog(players=available, title="Edit Attendee", player_id=attendee.player_id, roles=list(attendee.roles)),
+            on_saved,
+        )
 
     def action_delete_attendee(self) -> None:
         attendee = self._selected_attendee()
