@@ -243,7 +243,7 @@ class SessionDetailScreen(TableSageScreen):
         extensions = self.application.audio_import_extensions()
         audio_filter = Filters(
             (
-                f"Audio files ({', '.join(sorted(extensions))})",
+                "Audio files",
                 lambda path: path.suffix.lower() in extensions,
             ),
         )
