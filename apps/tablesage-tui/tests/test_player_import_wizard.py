@@ -16,6 +16,7 @@ from tablesage_application.player_import_from_audio import (
     SpeakerUtteranceClip,
 )
 from tablesage_model.model import Player
+from tablesage_tui.audio_playback import ClipPlayer
 from tablesage_tui.dialogs.speaker_resolution import NEW_PLAYER, SpeakerResolutionDialog, SpeakerResolutionResult
 from tablesage_tui.dialogs.transcript_view import TranscriptViewDialog
 from tablesage_tui.player_import_run import PlayerImportRun, SpeakerResolution
@@ -179,7 +180,9 @@ async def test_prestep_continue_transcribes_proposes_and_opens_review() -> None:
 
 def _run_with_proposal(*, matched_player_id: uuid.UUID | None = None, matched_player_name: str | None = None) -> PlayerImportRun:
     run = PlayerImportRun(source_audio_path=Path("/tmp/source.wav"))
-    clip = SpeakerUtteranceClip(utterance=MagicMock(start=0.0, end=1.0), clip_path=Path("/tmp/clip.wav"))
+    clip = SpeakerUtteranceClip(
+        utterance=MagicMock(start=0.0, end=1.0, punctuated_text="hello there", text="hello there"), clip_path=Path("/tmp/clip.wav")
+    )
     run.propose_result = ProposeResult(
         proposals=(
             SpeakerProposal(
@@ -226,6 +229,27 @@ async def test_review_view_transcript_opens_dialog() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, TranscriptViewDialog)
+
+
+@pytest.mark.anyio
+async def test_transcript_view_plays_selected_clip(monkeypatch: pytest.MonkeyPatch) -> None:
+    played: list[Path] = []
+    monkeypatch.setattr(ClipPlayer, "play", lambda self, path: played.append(path))
+    run = _run_with_proposal()
+    assert run.propose_result is not None
+    clip = run.propose_result.speaker_clips["speaker_0"][0]
+
+    async with TableSageApp(_application()).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportReviewScreen(run))
+        await pilot.pause()
+
+        await pilot.press("t")
+        await pilot.pause()
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert played == [clip.clip_path]
 
 
 @pytest.mark.anyio

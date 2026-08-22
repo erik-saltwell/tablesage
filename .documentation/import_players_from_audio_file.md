@@ -144,12 +144,18 @@ from an already-*processed* Session. This work item instead:
    mode, pre-filled from the LLM's guess), a free-text role field, and an
    Exclude toggle. Confirming the dialog writes the row's resolution back
    into the run context and refreshes that row's text in the table.
-2. The user can pull up everything a given speaker said (the punctuated,
-   grouped utterance text) to judge the row — there is no audio playback
-   anywhere in this app, so transcript text is the only review signal.
-   Editing is scoped to the speaker-ID level only — no per-clip
-   reassignment; the post-review margin gate (Stage 5) is what catches
-   individual misattributed utterances, not manual clip surgery.
+2. The user can pull up everything a given speaker said: a per-utterance
+   list (timestamp + punctuated text), each row playable via `ffplay`
+   (`tablesage_tui.audio_playback.ClipPlayer`, fire-and-forget, one clip at
+   a time) against the same clip already extracted for Stage 3's centroid
+   computation — no re-extraction, no new dependency (`ffplay` ships
+   alongside the `ffmpeg` binary this app already requires). This is a
+   deliberate, narrow exception to "no audio playback anywhere in this
+   app" elsewhere in the app: this view is read/listen-only, it doesn't let
+   the reviewer reassign or exclude an individual utterance. Editing stays
+   scoped to the speaker-ID level only — no per-clip reassignment; the
+   post-review margin gate (Stage 5) is what catches individual
+   misattributed utterances, not manual clip surgery.
 3. Excluded speakers are dropped entirely from every later stage.
 
 ### Stage 5 — Extract, embed, build/enhance players
@@ -266,8 +272,11 @@ from an already-*processed* Session. This work item instead:
 - Per-clip reassignment during review (see Behaviors & Rules) — a
   materially heavier "Seed from unidentified session"-style clip browser,
   not needed given the post-review margin gate.
-- Audio playback of any kind — this app has none anywhere; review relies on
-  punctuated transcript text.
+- Playback anywhere outside Stage 4's transcript view (e.g. no waveform
+  scrubbing, no playback controls elsewhere in the app — this remains the
+  one screen in the app with any audio playback at all) and no way to
+  play more than one utterance's clip at a time (no queued/continuous
+  playback across a speaker's whole transcript).
 - Mid-flight cancellation — revisit only if it proves painful in practice.
 - A "creatable select" input control (search-or-type-new). The pre-step
   list is plain free text; the review step's existing-vs-new choice is a
@@ -350,7 +359,10 @@ orchestration, not new ML/audio work)
    a per-speaker editor dialog (mirroring `AttendeeDialog`'s own workaround
    for the same "no live widgets inside `DataTable` cells" constraint) for
    the `Select`/name/role/exclude fields; a read-only summary screen for
-   Stage 7.
+   Stage 7; `tablesage_tui.audio_playback.ClipPlayer`, a thin
+   `subprocess.Popen`-based wrapper shelling out to `ffplay` for the
+   transcript view's per-utterance playback (stops any clip already
+   playing before starting the next).
 4. **Docs**: update `tablesage_implementation_plan.md`'s Phase 10 section to
    reflect the split into work items 14/15, and `tablesage_use_cases.md` if
    its "Seed voice profiles from an unidentified session" / "Enhance

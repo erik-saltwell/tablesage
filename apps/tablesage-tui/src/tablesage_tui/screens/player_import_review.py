@@ -101,8 +101,9 @@ class PlayerImportReviewScreen(TableSageScreen):
         speaker_id = self._selected_speaker_id()
         if speaker_id is None:
             return
-        proposal = next(p for p in self._proposals() if p.speaker_id == speaker_id)
-        self.app.push_screen(TranscriptViewDialog(speaker_id=speaker_id, text=proposal.transcript_text))
+        result = self._run.propose_result
+        clips = result.speaker_clips.get(speaker_id, ()) if result is not None else ()
+        self.app.push_screen(TranscriptViewDialog(speaker_id=speaker_id, clips=clips))
 
     def action_cancel(self) -> None:
         self._cleanup_clip_dir()
