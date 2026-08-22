@@ -11,6 +11,7 @@ from tablesage_model.model import CampaignPlayer, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, TextInputDialog
+from tablesage_tui.screens.artifact_export import ArtifactExportScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from textual.pilot import Pilot
@@ -37,6 +38,7 @@ def _application(
     artifacts: dict[ArtifactName, bool] | None = None,
     can_generate: tuple[bool, str | None] = (False, "Process the session first."),
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
+    can_export: tuple[bool, str | None] = (False, "No artifacts to export yet."),
     session_folder: Path | None = None,
 ) -> MagicMock:
     session = session or GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
@@ -46,6 +48,8 @@ def _application(
         session_artifacts=MagicMock(return_value=artifacts or _artifacts()),
         can_generate_summary=MagicMock(return_value=can_generate),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
+        can_export_artifacts=MagicMock(return_value=can_export),
+        exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
         embedding_factory=MagicMock(),
@@ -499,6 +503,34 @@ async def test_delete_attendee_confirms_then_removes() -> None:
         # a second confirmation guards invalidation since there are no
         # downstream artifacts here, so it proceeds straight through
         application.remove_attendance.assert_called_once_with(session.id, attendee.attendance_id)
+
+
+@pytest.mark.anyio
+async def test_export_disabled_does_not_push_screen() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, can_export=(False, "No artifacts to export yet."))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("x")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_export_enabled_pushes_artifact_export_screen() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(summary=True), can_export=(True, None))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("x")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ArtifactExportScreen)
 
 
 @pytest.mark.anyio

@@ -35,6 +35,7 @@ def _application(
         session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
         can_generate_summary=MagicMock(return_value=(False, "Process the session first.")),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
+        can_export_artifacts=MagicMock(return_value=(False, "No artifacts to export yet.")),
     )
 
 

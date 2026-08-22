@@ -242,6 +242,67 @@ def test_can_transcribe_audio_requires_input_audio_and_attendees(tmp_path: Path,
     assert reason is None
 
 
+def test_can_export_artifacts_requires_a_user_facing_artifact(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+
+    enabled, reason = application.can_export_artifacts(game_session.id)
+    assert not enabled
+    assert reason == "No artifacts to export yet."
+
+    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    # PROCESSED_SESSION exists but isn't should_show_in_ui -- must not count.
+    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    enabled, reason = application.can_export_artifacts(game_session.id)
+    assert not enabled
+    assert reason == "No artifacts to export yet."
+
+    (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+    enabled, reason = application.can_export_artifacts(game_session.id)
+    assert enabled
+    assert reason is None
+
+
+def test_exportable_artifacts_excludes_non_ui_artifacts(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+
+    assert application.exportable_artifacts(game_session.id) == [ArtifactName.SUMMARY]
+
+
+def test_export_artifact_copies_file_without_deleting_source(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    (folder / SESSION_SUMMARY_FILENAME).write_text("summary contents")
+    destination = tmp_path / "exported-summary.md"
+
+    application.export_artifact(game_session.id, ArtifactName.SUMMARY, destination)
+
+    assert destination.read_text() == "summary contents"
+    assert (folder / SESSION_SUMMARY_FILENAME).read_text() == "summary contents"
+
+
+def test_export_artifact_overwrites_existing_destination(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    (folder / SESSION_SUMMARY_FILENAME).write_text("new contents")
+    destination = tmp_path / "exported-summary.md"
+    destination.write_text("stale contents")
+
+    application.export_artifact(game_session.id, ArtifactName.SUMMARY, destination)
+
+    assert destination.read_text() == "new contents"
+
+
 def test_attendance_mutation_invalidates_stale_downstream_artifacts(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))

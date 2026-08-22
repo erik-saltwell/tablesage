@@ -17,6 +17,7 @@ from textual_fspicker import FileOpen, Filters
 from ..dialogs import AttendeeDialog, AttendeeResult, ConfirmationDialog
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
+from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
@@ -42,6 +43,7 @@ class SessionDetailScreen(TableSageScreen):
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
+        Binding("x,X", "export_artifacts", "Export Artifact", key_display="X"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:
@@ -183,6 +185,9 @@ class SessionDetailScreen(TableSageScreen):
         if action == "generate_summary":
             enabled, _ = self.application.can_generate_summary(self._session_id)
             return True if enabled else None
+        if action == "export_artifacts":
+            enabled, _ = self.application.can_export_artifacts(self._session_id)
+            return True if enabled else None
         return True
 
     # Invalidation guard -- shared by every destructive edit (import audio,
@@ -293,6 +298,11 @@ class SessionDetailScreen(TableSageScreen):
 
     def action_generate_summary(self) -> None:
         self.notify("Generating a summary is coming soon.")
+
+    # Export -- gated (see check_action).
+
+    def action_export_artifacts(self) -> None:
+        self.app.push_screen(ArtifactExportScreen(self._session_id))
 
     # Attendance
 

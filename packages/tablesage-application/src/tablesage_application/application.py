@@ -303,6 +303,21 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return artifacts.session_artifacts(self._session_folder(session, game_session))
 
+    def exportable_artifacts(self, session_id: uuid.UUID) -> list[paths.ArtifactName]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return artifacts.exportable_artifacts(self._session_folder(session, game_session))
+
+    def can_export_artifacts(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return artifacts.can_export_artifacts(self._session_folder(session, game_session))
+
+    def export_artifact(self, session_id: uuid.UUID, artifact_name: paths.ArtifactName, destination: Path) -> None:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            artifacts.export_artifact(self._session_folder(session, game_session), artifact_name, destination)
+
     def session_player_centroids(self, session_id: uuid.UUID) -> dict[str, Embedding]:
         """Attending players' voice centroids, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
         with Session(self._engine) as session:
