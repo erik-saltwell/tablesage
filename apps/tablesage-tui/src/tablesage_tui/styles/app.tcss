@@ -810,6 +810,10 @@ SelectDirectory {
 
         Button {
             margin: 0 0 0 1;
+            /* Matches Input/Select's border style in this row -- the app-wide "tall"
+               border (see Button, below) reads as taller than "solid" even at the same
+               3-row height, since this is the one place a Button sits inline with them. */
+            border: solid $button-border;
         }
     }
 }
