@@ -232,14 +232,13 @@ async def test_no_players_available_shows_message_and_close_button() -> None:
 
 
 @pytest.mark.anyio
-async def test_allow_new_player_defaults_to_new_player_with_name_row_visible() -> None:
+async def test_allow_new_player_shows_only_the_name_input_not_the_player_select() -> None:
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True))
         await pilot.pause()
 
-        select = pilot.app.screen.query_one("#attendee-player-select", Select)
-        assert not select.is_blank()
-        assert pilot.app.screen.query_one("#attendee-name-row").display is True
+        assert not pilot.app.screen.query("#attendee-player-select")
+        assert pilot.app.screen.query_one("#attendee-name", Input)
         assert pilot.app.screen.query_one("#attendee-save", Button).disabled
 
 
@@ -249,20 +248,18 @@ async def test_allow_new_player_works_with_zero_existing_players() -> None:
         pilot.app.push_screen(AttendeeDialog(players=[], title="Add Expected Speaker", allow_new_player=True))
         await pilot.pause()
 
-        assert pilot.app.screen.query_one("#attendee-name-row").display is True
+        assert pilot.app.screen.query_one("#attendee-name", Input)
         assert not pilot.app.screen.query("#attendee-empty")
 
 
 @pytest.mark.anyio
-async def test_allow_new_player_selecting_existing_player_hides_name_row() -> None:
+async def test_default_mode_shows_only_the_player_select_not_the_name_input() -> None:
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True))
+        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Attendee"))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
-        await pilot.pause()
-
-        assert pilot.app.screen.query_one("#attendee-name-row").display is False
+        assert pilot.app.screen.query_one("#attendee-player-select", Select)
+        assert not pilot.app.screen.query("#attendee-name")
 
 
 @pytest.mark.anyio
@@ -282,21 +279,3 @@ async def test_allow_new_player_submitting_free_form_name() -> None:
         await pilot.pause()
 
         assert results == [AttendeeResult(player_id=None, player_name="Zara", roles=("Game Master",))]
-
-
-@pytest.mark.anyio
-async def test_allow_new_player_submitting_existing_player_returns_its_id_and_name() -> None:
-    results: list[AttendeeResult | None] = []
-
-    async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Expected Speaker", allow_new_player=True), results.append)
-        await pilot.pause()
-
-        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
-        await pilot.pause()
-        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
-        await pilot.pause()
-        pilot.app.screen.query_one("#attendee-save", Button).press()
-        await pilot.pause()
-
-        assert results == [AttendeeResult(player_id=_ALICE.id, player_name="Alice", roles=("Game Master",))]

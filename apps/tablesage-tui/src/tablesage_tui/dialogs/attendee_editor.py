@@ -13,7 +13,6 @@ from textual.widgets.select import NoSelection
 
 from ..widgets import EqualWidthButtonRow
 from .generic import TextInputDialog
-from .speaker_resolution import NEW_PLAYER
 
 # The human-readable role name seeded for a campaign's GM (mirrors
 # `application.sessions._seed_role_name` and `campaign_detail.py`'s equivalent
@@ -24,10 +23,10 @@ _GAME_MASTER_LABEL = "Game Master"
 
 @dataclass(frozen=True)
 class AttendeeResult:
-    """`player_id` is `None` only when `allow_new_player=True` and a free-form name was
-    typed instead of picking an existing player. `player_name` is always populated
-    either way -- callers that only care about a name (not a DB-backed attendance row)
-    never need to cross-reference `players` themselves."""
+    """`player_id` is `None` only when `allow_new_player=True` (that mode never shows a
+    player Select at all, only a free-form name Input). `player_name` is always
+    populated either way -- callers that only care about a name (not a DB-backed
+    attendance row) never need to cross-reference `players` themselves."""
 
     player_id: uuid.UUID | None
     player_name: str
@@ -35,15 +34,14 @@ class AttendeeResult:
 
 
 class AttendeeDialog(ModalScreen[AttendeeResult | None]):
-    """Pick a player (or, with `allow_new_player`, type a free-form name instead) and
-    manage their roles. Used both for Session Detail's real, DB-backed attendees
-    (`allow_new_player=False`, the default -- a session attendance row needs an actual
-    `Player`) and for the player-import-from-audio wizard's pre-step candidate list
-    (`allow_new_player=True` -- those are just a name+roles hint for the LLM, never
-    written to the DB, so there's no player to require).
-
-    The player field stays a live `Select` either way -- editing can reassign to a
-    different player, not just change roles.
+    """Name a player -- by picking one, or with `allow_new_player`, by typing a
+    free-form name instead -- and manage their roles. Used both for Session Detail's
+    real, DB-backed attendees (`allow_new_player=False`, the default -- a session
+    attendance row needs an actual `Player`, so only the `Select` shows) and for the
+    player-import-from-audio wizard's pre-step candidate list (`allow_new_player=True`
+    -- those are just a name+roles hint for the LLM, never written to the DB, so only
+    the free-form name `Input` shows). The two are mutually exclusive, never both
+    visible at once.
     """
 
     BINDINGS = [
@@ -78,22 +76,19 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
                     yield Button("Close", id="attendee-close")
                 return
 
-            with Horizontal(id="attendee-player-row"):
-                yield Static("Player", classes="field-label")
-                options = [("New Player", NEW_PLAYER)] if self._allow_new_player else []
-                options += [(player.name, player.id) for player in self._players]
-                yield Select[uuid.UUID](
-                    options,
-                    id="attendee-player-select",
-                    value=self._initial_select_value(),
-                    prompt="Choose a player…",
-                    allow_blank=not self._allow_new_player,
-                )
-
             if self._allow_new_player:
                 with Horizontal(id="attendee-name-row"):
                     yield Static("New Player Name", classes="field-label")
                     yield Input(id="attendee-name", value=self._player_name)
+            else:
+                with Horizontal(id="attendee-player-row"):
+                    yield Static("Player", classes="field-label")
+                    yield Select[uuid.UUID](
+                        [(player.name, player.id) for player in self._players],
+                        id="attendee-player-select",
+                        value=self._player_id if self._player_id is not None else Select.NULL,
+                        prompt="Choose a player…",
+                    )
 
             yield Static("Roles", classes="section-title")
             table: DataTable[str] = DataTable(id="attendee-role-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
@@ -112,28 +107,10 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
                 yield Button("Cancel", id="attendee-cancel")
                 yield Button("Save", id="attendee-save", variant="primary", disabled=True)
 
-    def _initial_select_value(self) -> uuid.UUID | NoSelection:
-        if self._player_id is not None:
-            return self._player_id
-        if self._allow_new_player:
-            return NEW_PLAYER
-        return Select.NULL
-
     def on_mount(self) -> None:
         if not self._players and not self._allow_new_player:
             return
-        self._update_name_visibility()
         self._reload_roles()
-
-    # Player / free-form name
-
-    def _selected_player_id(self) -> uuid.UUID | NoSelection:
-        return self.query_one("#attendee-player-select", Select).value
-
-    def _update_name_visibility(self) -> None:
-        if not self._allow_new_player:
-            return
-        self.query_one("#attendee-name-row").display = self._selected_player_id() == NEW_PLAYER
 
     # Roles (held in-memory here; only written to the DB by the caller after Save)
 
@@ -196,7 +173,7 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
     # Save gating
 
     def _update_save_enabled(self) -> None:
-        if self._allow_new_player and self._selected_player_id() == NEW_PLAYER:
+        if self._allow_new_player:
             player_ok = bool(self.query_one("#attendee-name", Input).value.strip())
         else:
             player_ok = not self.query_one("#attendee-player-select", Select).is_blank()
@@ -204,8 +181,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
 
     def on_select_changed(self, event: Select.Changed) -> None:
         event.stop()
-        if event.select.id == "attendee-player-select":
-            self._update_name_visibility()
         self._update_save_enabled()
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -231,14 +206,16 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
             self._submit()
 
     def _submit(self) -> None:
-        player_id = self._selected_player_id()
-        if self._allow_new_player and player_id == NEW_PLAYER:
+        if not self._roles:
+            return
+        if self._allow_new_player:
             name = self.query_one("#attendee-name", Input).value.strip()
-            if not name or not self._roles:
+            if not name:
                 return
             self.dismiss(AttendeeResult(player_id=None, player_name=name, roles=tuple(self._roles)))
             return
-        if isinstance(player_id, NoSelection) or not self._roles:
+        player_id = self.query_one("#attendee-player-select", Select).value
+        if isinstance(player_id, NoSelection):
             return
         player = next(p for p in self._players if p.id == player_id)
         self.dismiss(AttendeeResult(player_id=player.id, player_name=player.name, roles=tuple(self._roles)))

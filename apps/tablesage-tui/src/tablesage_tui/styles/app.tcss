@@ -673,16 +673,18 @@ SessionFromCampaignPickerDialog {
         margin: 0 0 1 0;
     }
 
-    #attendee-player-row {
+    #attendee-player-row,
+    #attendee-name-row {
         height: 3;
         align: left middle;
         margin: 0 0 1 0;
 
         .field-label {
-            width: 8;
+            width: 16;
         }
 
-        Select {
+        Select,
+        Input {
             width: 1fr;
         }
     }

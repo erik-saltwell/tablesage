@@ -96,8 +96,10 @@ from an already-*processed* Session. This work item instead:
    candidate literally reuses `AttendeeDialog` (Session Detail's own
    attendee editor), in its `allow_new_player=True` mode: a candidate isn't
    a DB-backed attendance row (there's no session yet to attach one to), so
-   unlike a real attendee it can be either an existing player from the
-   `Select` or a free-form typed name. `SpeakerCandidate.roles` is plural
+   unlike a real attendee — which must be an existing `Player`, picked from
+   a `Select` — a candidate is always a free-form typed name; the two modes
+   are mutually exclusive, `allow_new_player=True` never shows the player
+   `Select` at all. `SpeakerCandidate.roles` is plural
    for the same reason `Attendee.roles` is — the dialog's role table is
    otherwise unchanged, and multiple roles just get joined into one display
    string (`", ".join(...)`) for Stage 3's LLM prompt hint, the only place
