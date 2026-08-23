@@ -136,11 +136,24 @@ from an already-*processed* Session. This work item instead:
    `tablesage_application.llm.call_llm_with_prompt` (a new `PromptName`
    member, with its own `system.md`/`template.j2` under `_prompts/`,
    following the `summarize_session` precedent) along with the pre-step
-   candidate list, if any, asking it to propose a name + role per diarized
-   speaker ID from dialogue context (people addressing each other,
-   self-introductions, etc). The call passes a `response_model` (a small
-   Pydantic list-of-`{speaker_id, name, role}` shape) so the reply is
-   schema-constrained JSON, not prose the app has to parse.
+   candidate list, if any, asking it to propose a player name + confidence
+   per diarized speaker label from dialogue context (people addressing each
+   other, self-introductions, GM-like behavior, etc). The call passes
+   `response_model=SpeakerGuesses` — `{scratchpad: str, speakers:
+   [{speaker_label, player, confidence: "low"|"medium"|"high"}]}` — as a
+   genuine structured-output request (`litellm`'s `response_format`, strict
+   JSON-schema mode), not prose the app has to parse. `scratchpad` is the
+   *first* field in the schema and exists purely so the model has somewhere
+   to reason before committing to `speakers`: schema enforcement only
+   guarantees a response's *shape*, not room for free text outside it, so
+   the chain-of-thought has to live inside the schema, field-ordered ahead
+   of the answers it informs. Its content is never read by the app. No
+   `role` is requested here at all — `SpeakerProposal.suggested_role` is
+   always `""` for an LLM-driven proposal now; the review screen's role
+   field just starts blank. The model's own "unassigned speaker" sentinel
+   (for a label it can't identify) is matched case-insensitively and
+   substituted with the raw diarized label instead of being shown to the
+   user as if it were a real name.
 2. In parallel, each diarized speaker's centroid is computed
    (`compute_centroid` over that speaker's utterance clips, extracted once
    into a run-scoped temporary directory — see Implementation Approach) and,

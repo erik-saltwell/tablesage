@@ -7,6 +7,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel
 from sqlmodel import Session
@@ -125,13 +126,19 @@ class SpeakerUtteranceClip:
 
 @dataclass(frozen=True)
 class SpeakerProposal:
-    """One diarized speaker's proposed resolution, before human review (Stage 4)."""
+    """One diarized speaker's proposed resolution, before human review (Stage 4).
+
+    `suggested_role` is always `""` -- the LLM is no longer asked for a role (see
+    `SpeakerGuess`), only a name and a confidence. The review screen's role field simply
+    starts blank for an LLM-driven proposal now.
+    """
 
     speaker_id: str
     utterance_count: int
     transcript_text: str
     suggested_name: str
     suggested_role: str
+    suggested_confidence: str | None
     matched_player_id: uuid.UUID | None
     matched_player_name: str | None
 
@@ -144,14 +151,24 @@ class ProposeResult:
 
 
 class SpeakerGuess(BaseModel):
-    speaker_id: str
-    name: str
-    role: str
+    speaker_label: str
+    player: str
+    confidence: Literal["low", "medium", "high"]
 
 
 class SpeakerGuesses(BaseModel):
-    """The LLM's proposed name+role per diarized speaker ID -- schema for `call_llm_with_prompt`'s `response_model`."""
+    """The LLM's proposed player+confidence per diarized speaker label -- schema for
+    `call_llm_with_prompt`'s `response_model`, matching `_prompts/propose_speakers/system.md`'s
+    `<output_format>` exactly (field names, field order, and `scratchpad` first).
 
+    `scratchpad` gives the model a place to reason before committing to `speakers` --
+    schema-constrained structured output only guarantees the *shape* of a response, not
+    room for chain-of-thought outside it, so the reasoning has to be a field in the schema
+    itself, ordered first, rather than free prose before/after a JSON block. Its content is
+    never read by this app; it exists purely to give the model somewhere to think.
+    """
+
+    scratchpad: str
     speakers: list[SpeakerGuess]
 
 
@@ -164,10 +181,14 @@ class SpeakerProposalPromptData:
 
 
 # Injected: per-speaker (speaker_id, transcript_text) pairs plus the pre-step candidate list,
-# in; a name+role guess per speaker_id, out. Wraps `call_llm_with_prompt` + `PromptName` +
-# `SpeakerGuesses` parsing at the Application layer, kept out of this module so it stays
+# in; a player+confidence guess per speaker_id, out. Wraps `call_llm_with_prompt` + `PromptName`
+# + `SpeakerGuesses` parsing at the Application layer, kept out of this module so it stays
 # unit-testable without litellm.
 ProposeSpeakers = Callable[[list[tuple[str, str]], list[SpeakerCandidate]], list[SpeakerGuess]]
+
+# The literal sentinel `system.md` instructs the model to use for "couldn't determine a
+# name" -- matched case-insensitively, never surfaced to the user as if it were a real name.
+_UNASSIGNED_GUESS = "unassigned speaker"
 
 
 def _utterances_by_speaker(transcript: Transcript) -> dict[str, list[Utterance]]:
@@ -175,6 +196,16 @@ def _utterances_by_speaker(transcript: Transcript) -> dict[str, list[Utterance]]
     for utterance in transcript.utterances:
         by_speaker.setdefault(utterance.speaker, []).append(utterance)
     return by_speaker
+
+
+def _suggested_name(speaker_id: str, guesses: dict[str, SpeakerGuess]) -> str:
+    """The LLM's guessed player name, or the raw diarized `speaker_id` itself when there's no
+    guess to show -- a visibly synthetic placeholder ("speaker_0") beats silently showing the
+    model's own "unassigned speaker" sentinel as if it were a real name."""
+    guess = guesses.get(speaker_id)
+    if guess is None or guess.player.strip().lower() == _UNASSIGNED_GUESS:
+        return speaker_id
+    return guess.player
 
 
 def propose_attendees(
@@ -239,7 +270,7 @@ def propose_attendees(
     }
 
     _report(on_progress, Stage.PROPOSING_ATTENDEES, 0, 0)
-    guesses = {guess.speaker_id: guess for guess in propose_speakers([(sid, speaker_texts[sid]) for sid in speaker_ids], candidates)}
+    guesses = {guess.speaker_label: guess for guess in propose_speakers([(sid, speaker_texts[sid]) for sid in speaker_ids], candidates)}
     _report(on_progress, Stage.PROPOSING_ATTENDEES, 1, 1)
 
     proposals = tuple(
@@ -247,8 +278,9 @@ def propose_attendees(
             speaker_id=speaker_id,
             utterance_count=len(by_speaker[speaker_id]),
             transcript_text=speaker_texts[speaker_id],
-            suggested_name=guesses[speaker_id].name if speaker_id in guesses else speaker_id,
-            suggested_role=guesses[speaker_id].role if speaker_id in guesses else "",
+            suggested_name=_suggested_name(speaker_id, guesses),
+            suggested_role="",
+            suggested_confidence=guesses[speaker_id].confidence if speaker_id in guesses else None,
             matched_player_id=matches[speaker_id][0] if speaker_id in matches else None,
             matched_player_name=matches[speaker_id][1] if speaker_id in matches else None,
         )

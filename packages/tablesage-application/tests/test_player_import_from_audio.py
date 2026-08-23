@@ -144,7 +144,7 @@ def _transcript_two_speakers() -> Transcript:
 
 def test_propose_attendees_aggregates_by_speaker_in_first_appearance_order(tmp_path: Path) -> None:
     def propose_speakers(utterance_texts: list[tuple[str, str]], candidates: list[SpeakerCandidate]) -> list[SpeakerGuess]:
-        return [SpeakerGuess(speaker_id=sid, name=f"Guess-{sid}", role="Player") for sid, _text in utterance_texts]
+        return [SpeakerGuess(speaker_label=sid, player=f"Guess-{sid}", confidence="high") for sid, _text in utterance_texts]
 
     result = propose_attendees(
         tmp_path / "cleaned.wav",
@@ -171,7 +171,7 @@ def test_propose_attendees_skips_existing_player_match_below_two_references(tmp_
     alice_id = uuid.uuid4()
 
     def propose_speakers(utterance_texts: list[tuple[str, str]], candidates: list[SpeakerCandidate]) -> list[SpeakerGuess]:
-        return [SpeakerGuess(speaker_id=sid, name=sid, role="") for sid, _text in utterance_texts]
+        return [SpeakerGuess(speaker_label=sid, player=sid, confidence="low") for sid, _text in utterance_texts]
 
     result = propose_attendees(
         tmp_path / "cleaned.wav",
@@ -191,7 +191,7 @@ def test_propose_attendees_matches_existing_player_above_margin_threshold(tmp_pa
     alice_id, bob_id = uuid.uuid4(), uuid.uuid4()
 
     def propose_speakers(utterance_texts: list[tuple[str, str]], candidates: list[SpeakerCandidate]) -> list[SpeakerGuess]:
-        return [SpeakerGuess(speaker_id=sid, name=sid, role="") for sid, _text in utterance_texts]
+        return [SpeakerGuess(speaker_label=sid, player=sid, confidence="low") for sid, _text in utterance_texts]
 
     # speaker_0 (extracted first) embeds to (1,0); speaker_1 (extracted second) embeds to (0,1).
     # Alice matches (1,0), Bob matches (0,1).

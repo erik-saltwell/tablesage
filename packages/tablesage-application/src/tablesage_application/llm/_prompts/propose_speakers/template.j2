@@ -1,16 +1,16 @@
 {% if candidates %}
-The importer expects these people to be on the recording (name -- role), though not
-necessarily all of them, and there may be others not listed:
+<attendees>
 {% for candidate in candidates %}
-- {{ candidate.name }} -- {{ candidate.role }}
+{{ candidate.name }}: {{ candidate.role }}
 {% endfor %}
-
+</attendees>
 {% endif %}
-Diarized speakers and everything each one said:
+<transcript>
 {% for speaker in speakers %}
-### {{ speaker.speaker_id }}
-{{ speaker.transcript }}
+*{{ speaker.speaker_id }}* - {{ speaker.transcript }}
 
 {% endfor %}
+</transcript>
+
 For every diarized speaker ID above, propose a name and role. Use the speaker ID itself as
 the name if you can't tell who they are from the dialogue.
