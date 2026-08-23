@@ -3,13 +3,30 @@ name = "tablesage-workspace"
 version = "0.1.0"
 description = "Workspace root for TableSage."
 requires-python = ">=3.12"
-dependencies = []
+# The root project itself ships no code -- these exist so a bare `uv sync`/`uv run` installs
+# every workspace member's full dependency tree (tablesage-tui transitively pulls in
+# tablesage-application, tablesage-tools, tablesage-model). Without this, root's own
+# dependency list was empty, so a plain `uv sync` synced *only* this project (plus the dev
+# group) and silently pruned everything else out of .venv -- including things like the
+# en-core-web-sm spacy model that aren't declared as PyPI-style deps anywhere else.
+dependencies = [
+  "tablesage-application",
+  "tablesage-model",
+  "tablesage-tools",
+  "tablesage-tui",
+]
 
 [tool.uv.workspace]
 members = [
   "packages/*",
   "apps/*",
 ]
+
+[tool.uv.sources]
+tablesage-application = { workspace = true }
+tablesage-model = { workspace = true }
+tablesage-tools = { workspace = true }
+tablesage-tui = { workspace = true }
 
 [dependency-groups]
 dev = [
@@ -18,6 +35,10 @@ dev = [
   "mypy>=1.18",
   "ty>=0.0.35",
   "pre-commit>=4.6.0",
+  # Also declared in apps/tablesage-tui's own dev group, but a package-scoped dev group
+  # doesn't sync by default with a bare `uv sync` the way the root's does -- duplicated
+  # here so `textual run --dev` keeps working after one.
+  "textual-dev>=1.8.0",
 ]
 
 [tool.ruff]

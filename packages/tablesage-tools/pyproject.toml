@@ -10,6 +10,10 @@ requires-python = ">=3.12"
 dependencies = [
     "clearvoice>=0.1.2",
     "elevenlabs>=2.46.0",
+    # spacy model mathspell (via tablesage_tools.text.cleaning) loads by name at import
+    # time -- not a normal PyPI package, so it needs a direct wheel reference or `uv sync`
+    # silently prunes it (it did, once, at commit d0a2e7e -- see that commit's message).
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "jiwer>=3.1.0",
     "litellm>=1.83.0",
     "mathspell>=0.1.0",

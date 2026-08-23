@@ -857,6 +857,14 @@ wheels = [
 ]
 
 [[package]]
+name = "en-core-web-sm"
+version = "3.8.0"
+source = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
+wheels = [
+    { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl", hash = "sha256:1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85" },
+]
+
+[[package]]
 name = "fastuuid"
 version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -4320,6 +4328,7 @@ source = { editable = "packages/tablesage-tools" }
 dependencies = [
     { name = "clearvoice" },
     { name = "elevenlabs" },
+    { name = "en-core-web-sm" },
     { name = "jiwer" },
     { name = "litellm" },
     { name = "mathspell" },
@@ -4335,6 +4344,7 @@ dependencies = [
 requires-dist = [
     { name = "clearvoice", specifier = ">=0.1.2" },
     { name = "elevenlabs", specifier = ">=2.46.0" },
+    { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
     { name = "jiwer", specifier = ">=3.1.0" },
     { name = "litellm", specifier = ">=1.83.0" },
     { name = "mathspell", specifier = ">=0.1.0" },
@@ -4379,6 +4389,12 @@ dev = [{ name = "textual-dev", specifier = ">=1.8.0" }]
 name = "tablesage-workspace"
 version = "0.1.0"
 source = { virtual = "." }
+dependencies = [
+    { name = "tablesage-application" },
+    { name = "tablesage-model" },
+    { name = "tablesage-tools" },
+    { name = "tablesage-tui" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -4386,10 +4402,17 @@ dev = [
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "textual-dev" },
     { name = "ty" },
 ]
 
 [package.metadata]
+requires-dist = [
+    { name = "tablesage-application", editable = "packages/tablesage-application" },
+    { name = "tablesage-model", editable = "packages/tablesage-model" },
+    { name = "tablesage-tools", editable = "packages/tablesage-tools" },
+    { name = "tablesage-tui", editable = "apps/tablesage-tui" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -4397,6 +4420,7 @@ dev = [
     { name = "pre-commit", specifier = ">=4.6.0" },
     { name = "pytest", specifier = ">=8" },
     { name = "ruff", specifier = ">=0.13" },
+    { name = "textual-dev", specifier = ">=1.8.0" },
     { name = "ty", specifier = ">=0.0.35" },
 ]
 
