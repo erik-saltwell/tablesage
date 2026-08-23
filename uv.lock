@@ -4252,6 +4252,7 @@ source = { editable = "packages/tablesage-application" }
 dependencies = [
     { name = "jinja2" },
     { name = "sqlmodel" },
+    { name = "structlog" },
     { name = "tablesage-model" },
     { name = "tablesage-tools" },
 ]
@@ -4260,6 +4261,7 @@ dependencies = [
 requires-dist = [
     { name = "jinja2", specifier = ">=3.1.0" },
     { name = "sqlmodel", specifier = ">=0.0.39" },
+    { name = "structlog", specifier = ">=25.1.0" },
     { name = "tablesage-model", editable = "packages/tablesage-model" },
     { name = "tablesage-tools", editable = "packages/tablesage-tools" },
 ]
@@ -4324,6 +4326,7 @@ dependencies = [
     { name = "modelscope", extra = ["framework"] },
     { name = "punctuators" },
     { name = "pydantic" },
+    { name = "structlog" },
     { name = "torch" },
     { name = "torchaudio" },
 ]
@@ -4338,6 +4341,7 @@ requires-dist = [
     { name = "modelscope", extras = ["framework"], specifier = ">=1.36.3" },
     { name = "punctuators", specifier = ">=0.0.7" },
     { name = "pydantic", specifier = ">=2.12.5" },
+    { name = "structlog", specifier = ">=25.1.0" },
     { name = "torch", specifier = "==2.10.0" },
     { name = "torchaudio", specifier = "==2.10.0" },
 ]

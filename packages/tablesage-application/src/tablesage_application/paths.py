@@ -76,6 +76,10 @@ def players_root(cwd: Path) -> Path:
     return cwd / ".tablesage" / "players"
 
 
+def logs_root(cwd: Path) -> Path:
+    return cwd / ".tablesage" / "logs"
+
+
 def campaign_folder(cwd: Path, campaign_name: str) -> Path:
     return campaigns_root(cwd) / campaign_name
 

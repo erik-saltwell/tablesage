@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from dotenv import load_dotenv
 from tablesage_application import Application
+from tablesage_application.observability import configure_logging
 from tablesage_model.setup import ensure_settings
 from textual.app import App
 from textual.binding import Binding
@@ -40,6 +43,7 @@ class TableSageApp(App):
 
 def main() -> None:
     load_dotenv()
+    configure_logging(Path.cwd())
     settings = ensure_settings(None, load_resource("settings.yaml"))
     application = Application(settings=settings)
     app = TableSageApp(application)

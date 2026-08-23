@@ -16,6 +16,7 @@ dependencies = [
     "modelscope[framework]>=1.36.3",
     "pydantic>=2.12.5",
     "punctuators>=0.0.7",
+    "structlog>=25.1.0",
     "torch==2.10.0",
     "torchaudio==2.10.0",
 ]

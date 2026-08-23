@@ -18,6 +18,7 @@ from tablesage_tools.model import Transcript
 from . import paths, player_import_from_audio, players_from_session
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
+from .observability import wide_event
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
 from .voice_clips import clips
 
@@ -420,6 +421,7 @@ class Application:
 
     # Import players from audio (Players List's "From Audio", F)
 
+    @wide_event
     def import_players_from_audio_transcribe(
         self,
         source_audio_path: Path,
@@ -439,6 +441,7 @@ class Application:
             should_clean_audio=should_clean_audio,
         )
 
+    @wide_event
     def import_players_from_audio_propose(
         self,
         cleaned_audio_path: Path,
@@ -465,6 +468,7 @@ class Application:
             on_progress,
         )
 
+    @wide_event
     def _propose_speakers(
         self, utterance_texts: list[tuple[str, str]], candidates: list[player_import_from_audio.SpeakerCandidate]
     ) -> list[player_import_from_audio.SpeakerGuess]:
@@ -482,6 +486,7 @@ class Application:
         )
         return player_import_from_audio.SpeakerGuesses.model_validate_json(raw).speakers
 
+    @wide_event
     def import_players_from_audio_build(
         self,
         source_audio_path: Path,
