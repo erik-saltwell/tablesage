@@ -600,7 +600,9 @@ RolePickerDialog,
 GlossaryEntryDialog,
 ProgressDialog,
 AttendeeDialog,
-SessionFromCampaignPickerDialog {
+SessionFromCampaignPickerDialog,
+SpeakerResolutionDialog,
+TranscriptViewDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -611,7 +613,9 @@ SessionFromCampaignPickerDialog {
     #glossary-entry-dialog,
     #progress-dialog,
     #attendee-dialog,
-    #session-picker-dialog {
+    #session-picker-dialog,
+    #speaker-resolution-dialog,
+    #transcript-view-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -625,8 +629,13 @@ SessionFromCampaignPickerDialog {
     }
 
     #attendee-dialog,
-    #session-picker-dialog {
+    #session-picker-dialog,
+    #speaker-resolution-dialog {
         width: 90;
+    }
+
+    #transcript-view-dialog {
+        width: 120;
     }
 
     #confirmation-prompt,
@@ -713,6 +722,28 @@ SessionFromCampaignPickerDialog {
             height: auto;
             dock: right;
         }
+    }
+
+    #speaker-resolution-player-row,
+    #speaker-resolution-name-row,
+    #speaker-resolution-status-row {
+        height: 3;
+        align: left middle;
+        margin: 0 0 1 0;
+
+        .field-label {
+            width: 16;
+        }
+
+        Select,
+        Input {
+            width: 1fr;
+        }
+    }
+
+    #transcript-view-table {
+        height: 20;
+        margin: 0 0 1 0;
     }
 
     .field-label {
