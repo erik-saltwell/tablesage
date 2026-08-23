@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 
 from tablesage_application.paths import ArtifactName
+from tablesage_application.player_import_from_audio import ProposeResult, SpeakerProposal
 from tablesage_application.players_from_session import EnhanceResult, Stage
 from tablesage_model.model import Player
 from textual.app import ComposeResult
@@ -13,10 +14,11 @@ from textual.widgets import DataTable
 from textual_fspicker import FileOpen, Filters
 
 from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
-from ..player_import_run import PlayerImportRun
+from ..player_import_run import PlayerImportRun, SpeakerResolution
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
 from .player_import_prestep import PlayerImportPreStepScreen
+from .player_import_review import PlayerImportReviewScreen
 
 _STAGE_LABELS = {
     Stage.EXTRACTING: "Extracting voice clips…",
@@ -36,6 +38,9 @@ class PlayersListScreen(TableSageScreen):
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
+        # TEMPORARY -- dev-only shortcut to eyeball the review screen without running the
+        # real transcribe+LLM pipeline. Remove once no longer needed.
+        Binding("r,R", "preview_review_screen", "Preview Review (DEV)", key_display="R"),
     ]
 
     def compose_content(self) -> ComposeResult:
@@ -210,3 +215,47 @@ class PlayersListScreen(TableSageScreen):
             ),
             on_dismiss,
         )
+
+    def action_preview_review_screen(self) -> None:
+        """TEMPORARY: push the Stage 4 review screen with fake data, skipping the real
+        transcribe/diarize/propose pipeline, so its layout/styling can be eyeballed
+        directly. Remove this action and its binding once no longer needed."""
+        run = PlayerImportRun(source_audio_path=Path("/tmp/preview-session.wav"))
+        proposals = (
+            SpeakerProposal(
+                speaker_id="speaker_0",
+                utterance_count=42,
+                transcript_text="Hi everyone, welcome back. Let's pick up where we left off last week -- "
+                "you were all standing at the mouth of the cave.",
+                suggested_name="Alice",
+                suggested_confidence="high",
+                matched_player_id=None,
+                matched_player_name=None,
+            ),
+            SpeakerProposal(
+                speaker_id="speaker_1",
+                utterance_count=17,
+                transcript_text="Thanks! I'm ready to roll some dice.",
+                suggested_name="speaker_1",
+                suggested_confidence="low",
+                matched_player_id=None,
+                matched_player_name=None,
+            ),
+            SpeakerProposal(
+                speaker_id="speaker_2",
+                utterance_count=9,
+                transcript_text="My character checks the door for traps before we go in.",
+                suggested_name="Bob",
+                suggested_confidence="medium",
+                matched_player_id=None,
+                matched_player_name=None,
+            ),
+        )
+        run.propose_result = ProposeResult(proposals=proposals, speaker_clips={}, speaker_centroids={})
+        for proposal in proposals:
+            run.resolutions[proposal.speaker_id] = SpeakerResolution(
+                player_id=proposal.matched_player_id,
+                player_name=proposal.matched_player_name or proposal.suggested_name,
+                excluded=False,
+            )
+        self.app.push_screen(PlayerImportReviewScreen(run))

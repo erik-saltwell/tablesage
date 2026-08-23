@@ -35,11 +35,10 @@ class PlayerImportSummaryScreen(TableSageScreen):
                 id="player-import-summary-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
             )
             table.add_column("Player", key="player")
-            table.add_column("Role", key="role")
             table.add_column("Clips", key="clips")
             yield table
 
     def on_mount(self) -> None:
         table = self.query_one("#player-import-summary-table", DataTable)
         for row in self._result.summary:
-            table.add_row(row.player_name, row.role, str(row.clip_count))
+            table.add_row(row.player_name, str(row.clip_count))

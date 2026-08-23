@@ -40,7 +40,7 @@ async def _wait_for_progress_worker(pilot: Pilot) -> None:
 
 @pytest.mark.anyio
 async def test_speaker_resolution_dialog_new_player_requires_name() -> None:
-    current = SpeakerResolution(player_id=None, player_name="", role="GM")
+    current = SpeakerResolution(player_id=None, player_name="")
 
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(SpeakerResolutionDialog(players=[_ALICE], current=current))
@@ -55,7 +55,7 @@ async def test_speaker_resolution_dialog_new_player_requires_name() -> None:
 
 @pytest.mark.anyio
 async def test_speaker_resolution_dialog_new_player_submits_result() -> None:
-    current = SpeakerResolution(player_id=None, player_name="Guessed Name", role="GM")
+    current = SpeakerResolution(player_id=None, player_name="Guessed Name")
     results: list[SpeakerResolutionResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
@@ -70,12 +70,12 @@ async def test_speaker_resolution_dialog_new_player_submits_result() -> None:
         pilot.app.screen.query_one("#speaker-resolution-save", Button).press()
         await pilot.pause()
 
-        assert results == [SpeakerResolutionResult(player_id=None, player_name="Guessed Name", role="GM", excluded=False)]
+        assert results == [SpeakerResolutionResult(player_id=None, player_name="Guessed Name", excluded=False)]
 
 
 @pytest.mark.anyio
 async def test_speaker_resolution_dialog_selecting_existing_player_submits_its_id() -> None:
-    current = SpeakerResolution(player_id=None, player_name="Guessed Name", role="")
+    current = SpeakerResolution(player_id=None, player_name="Guessed Name")
     results: list[SpeakerResolutionResult | None] = []
 
     async with TableSageApp().run_test() as pilot:
@@ -91,12 +91,12 @@ async def test_speaker_resolution_dialog_selecting_existing_player_submits_its_i
         pilot.app.screen.query_one("#speaker-resolution-save", Button).press()
         await pilot.pause()
 
-        assert results == [SpeakerResolutionResult(player_id=_ALICE.id, player_name="Alice", role="", excluded=False)]
+        assert results == [SpeakerResolutionResult(player_id=_ALICE.id, player_name="Alice", excluded=False)]
 
 
 @pytest.mark.anyio
 async def test_speaker_resolution_dialog_cancel_dismisses_none() -> None:
-    current = SpeakerResolution(player_id=None, player_name="X", role="")
+    current = SpeakerResolution(player_id=None, player_name="X")
 
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(SpeakerResolutionDialog(players=[_ALICE], current=current))
@@ -188,7 +188,6 @@ def _propose_result() -> ProposeResult:
                 utterance_count=1,
                 transcript_text="hi",
                 suggested_name="Alice",
-                suggested_role="GM",
                 suggested_confidence="high",
                 matched_player_id=None,
                 matched_player_name=None,
@@ -282,7 +281,6 @@ def _run_with_proposal(*, matched_player_id: uuid.UUID | None = None, matched_pl
                 utterance_count=1,
                 transcript_text="hello there",
                 suggested_name="Guessed",
-                suggested_role="GM",
                 suggested_confidence="high",
                 matched_player_id=matched_player_id,
                 matched_player_name=matched_player_name,
@@ -292,7 +290,7 @@ def _run_with_proposal(*, matched_player_id: uuid.UUID | None = None, matched_pl
         speaker_centroids={"speaker_0": MagicMock()},
     )
     run.resolutions["speaker_0"] = SpeakerResolution(
-        player_id=matched_player_id, player_name=matched_player_name or "Guessed", role="GM", excluded=False
+        player_id=matched_player_id, player_name=matched_player_name or "Guessed", excluded=False
     )
     return run
 
@@ -307,7 +305,7 @@ async def test_review_table_shows_new_player_row() -> None:
 
         table = pilot.app.screen.query_one("#player-import-review-table", DataTable)
         row = tuple(str(cell) for cell in table.get_row_at(0))
-        assert row == ("speaker_0", "New Player: Guessed", "GM", "Included")
+        assert row == ("speaker_0", "New Player: Guessed", "Included")
 
 
 @pytest.mark.anyio
@@ -393,7 +391,7 @@ async def test_review_build_success_pops_to_players_list_and_pushes_summary() ->
     run = _run_with_proposal()
     application = _application()
     build_result = ImportFromAudioResult(
-        affected_player_count=1, clip_count=1, summary=(ImportAttendeeSummary(player_name="Guessed", role="GM", clip_count=1),)
+        affected_player_count=1, clip_count=1, summary=(ImportAttendeeSummary(player_name="Guessed", clip_count=1),)
     )
     application.import_players_from_audio_build = MagicMock(return_value=build_result)
 
@@ -417,7 +415,7 @@ async def test_review_build_success_pops_to_players_list_and_pushes_summary() ->
 @pytest.mark.anyio
 async def test_summary_screen_renders_rows_and_escape_pops() -> None:
     result = ImportFromAudioResult(
-        affected_player_count=1, clip_count=2, summary=(ImportAttendeeSummary(player_name="Alice", role="GM", clip_count=2),)
+        affected_player_count=1, clip_count=2, summary=(ImportAttendeeSummary(player_name="Alice", clip_count=2),)
     )
 
     async with TableSageApp(_application()).run_test() as pilot:
@@ -426,7 +424,7 @@ async def test_summary_screen_renders_rows_and_escape_pops() -> None:
 
         table = pilot.app.screen.query_one("#player-import-summary-table", DataTable)
         row = tuple(str(cell) for cell in table.get_row_at(0))
-        assert row == ("Alice", "GM", "2")
+        assert row == ("Alice", "2")
 
         await pilot.press("escape")
         await pilot.pause()

@@ -168,7 +168,6 @@ class PlayerImportPreStepScreen(TableSageScreen):
             self._run.resolutions[proposal.speaker_id] = SpeakerResolution(
                 player_id=proposal.matched_player_id,
                 player_name=proposal.matched_player_name or proposal.suggested_name,
-                role=proposal.suggested_role,
                 excluded=False,
             )
 

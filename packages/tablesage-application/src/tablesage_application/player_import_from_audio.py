@@ -126,18 +126,12 @@ class SpeakerUtteranceClip:
 
 @dataclass(frozen=True)
 class SpeakerProposal:
-    """One diarized speaker's proposed resolution, before human review (Stage 4).
-
-    `suggested_role` is always `""` -- the LLM is no longer asked for a role (see
-    `SpeakerGuess`), only a name and a confidence. The review screen's role field simply
-    starts blank for an LLM-driven proposal now.
-    """
+    """One diarized speaker's proposed resolution, before human review (Stage 4)."""
 
     speaker_id: str
     utterance_count: int
     transcript_text: str
     suggested_name: str
-    suggested_role: str
     suggested_confidence: str | None
     matched_player_id: uuid.UUID | None
     matched_player_name: str | None
@@ -279,7 +273,6 @@ def propose_attendees(
             utterance_count=len(by_speaker[speaker_id]),
             transcript_text=speaker_texts[speaker_id],
             suggested_name=_suggested_name(speaker_id, guesses),
-            suggested_role="",
             suggested_confidence=guesses[speaker_id].confidence if speaker_id in guesses else None,
             matched_player_id=matches[speaker_id][0] if speaker_id in matches else None,
             matched_player_name=matches[speaker_id][1] if speaker_id in matches else None,
@@ -308,7 +301,6 @@ class PendingResolution:
     speaker_id: str
     player_id: uuid.UUID | None
     player_name: str
-    role: str
 
 
 @dataclass(frozen=True)
@@ -318,7 +310,6 @@ class ResolvedSpeaker:
     speaker_id: str
     player_id: uuid.UUID
     player_name: str
-    role: str
 
 
 @dataclass(frozen=True)
@@ -326,7 +317,6 @@ class AttendeeSummary:
     """One line of Stage 7's read-only summary."""
 
     player_name: str
-    role: str
     clip_count: int
 
 
@@ -416,7 +406,6 @@ def build_players_from_audio(
 
     affected_player_count = sum(1 for count in written_counts.values() if count > 0)
     summary = tuple(
-        AttendeeSummary(player_name=attendee.player_name, role=attendee.role, clip_count=written_counts[attendee.player_id])
-        for attendee in resolved
+        AttendeeSummary(player_name=attendee.player_name, clip_count=written_counts[attendee.player_id]) for attendee in resolved
     )
     return ImportFromAudioResult(affected_player_count=affected_player_count, clip_count=sum(written_counts.values()), summary=summary)

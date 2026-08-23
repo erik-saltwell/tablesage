@@ -22,7 +22,6 @@ NEW_PLAYER: uuid.UUID = uuid.UUID(int=0)
 class SpeakerResolutionResult:
     player_id: uuid.UUID | None
     player_name: str
-    role: str
     excluded: bool
 
 
@@ -59,10 +58,6 @@ class SpeakerResolutionDialog(ModalScreen[SpeakerResolutionResult | None]):
             with Horizontal(id="speaker-resolution-name-row"):
                 yield Static("New Player Name", classes="field-label")
                 yield Input(id="speaker-resolution-name", value=self._current.player_name)
-
-            with Horizontal(id="speaker-resolution-role-row"):
-                yield Static("Role", classes="field-label")
-                yield Input(id="speaker-resolution-role", value=self._current.role)
 
             with Horizontal(id="speaker-resolution-status-row"):
                 yield Static("Status", classes="field-label")
@@ -103,7 +98,6 @@ class SpeakerResolutionDialog(ModalScreen[SpeakerResolutionResult | None]):
 
     def _submit(self) -> None:
         player_id = self._selected_player_id()
-        role = self.query_one("#speaker-resolution-role", Input).value.strip()
         excluded = bool(self.query_one("#speaker-resolution-status-select", Select).value)
 
         if player_id == NEW_PLAYER:
@@ -111,8 +105,8 @@ class SpeakerResolutionDialog(ModalScreen[SpeakerResolutionResult | None]):
             if not name:
                 self.notify("Enter a name for the new player.", severity="error")
                 return
-            self.dismiss(SpeakerResolutionResult(player_id=None, player_name=name, role=role, excluded=excluded))
+            self.dismiss(SpeakerResolutionResult(player_id=None, player_name=name, excluded=excluded))
             return
 
         player = next(p for p in self._players if p.id == player_id)
-        self.dismiss(SpeakerResolutionResult(player_id=player.id, player_name=player.name, role=role, excluded=excluded))
+        self.dismiss(SpeakerResolutionResult(player_id=player.id, player_name=player.name, excluded=excluded))

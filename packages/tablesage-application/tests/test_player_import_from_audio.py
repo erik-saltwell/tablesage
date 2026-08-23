@@ -250,7 +250,7 @@ def test_build_players_from_audio_filters_by_duration_and_writes_diarized_clips(
         tmp_path / "source.wav",
         speaker_clips,
         speaker_centroids={"speaker_0": _unit_embedding(1.0, 0.0)},
-        pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice", role="Player")],
+        pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice")],
     )
 
     assert result.clip_count == 1
@@ -272,7 +272,7 @@ def test_build_players_from_audio_gate_skipped_below_two_confirmed_speakers(tmp_
         # Deliberately a centroid mismatched with what `embed` returns for the clip -- if the
         # gate ran with only one confirmed speaker, this clip would fail it. It must not run.
         speaker_centroids={"speaker_0": _unit_embedding(0.0, 1.0)},
-        pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice", role="Player")],
+        pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice")],
     )
 
     assert result.clip_count == 1
@@ -301,8 +301,8 @@ def test_build_players_from_audio_gate_rejects_clip_closer_to_a_sibling_speaker(
         speaker_clips,
         speaker_centroids={"speaker_0": _unit_embedding(0.0, 1.0), "speaker_1": _unit_embedding(1.0, 0.0)},
         pending=[
-            PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice", role="Player"),
-            PendingResolution(speaker_id="speaker_1", player_id=bob.id, player_name="Bob", role="GM"),
+            PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice"),
+            PendingResolution(speaker_id="speaker_1", player_id=bob.id, player_name="Bob"),
         ],
     )
 
@@ -326,7 +326,7 @@ def test_build_players_from_audio_rerun_replaces_prior_clips_as_a_unit(tmp_path:
             source_audio,
             speaker_clips,
             speaker_centroids={"speaker_0": _unit_embedding(1.0, 0.0)},
-            pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice", role="Player")],
+            pending=[PendingResolution(speaker_id="speaker_0", player_id=alice.id, player_name="Alice")],
         )
 
     _run()
@@ -349,7 +349,7 @@ def test_build_players_from_audio_creates_new_players(tmp_path: Path, monkeypatc
         tmp_path / "source.wav",
         speaker_clips,
         speaker_centroids={"speaker_0": _unit_embedding(1.0, 0.0)},
-        pending=[PendingResolution(speaker_id="speaker_0", player_id=None, player_name="Newbie", role="Player")],
+        pending=[PendingResolution(speaker_id="speaker_0", player_id=None, player_name="Newbie")],
     )
 
     assert result.clip_count == 1

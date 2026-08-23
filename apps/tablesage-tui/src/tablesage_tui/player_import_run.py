@@ -16,7 +16,6 @@ class SpeakerResolution:
 
     player_id: uuid.UUID | None
     player_name: str
-    role: str
     excluded: bool = False
 
 

@@ -30,12 +30,12 @@ from an already-*processed* Session. This work item instead:
   flow. Not a `Player`, not persisted — purely a working label until the
   user's review step resolves it to a real player identity or excludes it.
 - **Attendee map** — the working table this flow builds and refines:
-  diarized speaker ID → (assign to an existing `Player`, or create a new one
-  with an editable name) + a free-text role. Same conceptual shape as
-  Session Detail's attendance (player + roles), but transient — nothing here
-  is written to the database until Stage 5, and role text is never
-  persisted (there's no `session_attendance_role` row to put it in; it only
-  ever appears in the final printed summary).
+  diarized speaker ID → assign to an existing `Player`, or create a new one
+  with an editable name. Transient — nothing here is written to the
+  database until Stage 5. Unlike Session Detail's attendance, this map
+  carries no role at all — the LLM was never asked for one (see Stage 3),
+  and it was never persisted by this flow to begin with, so there was
+  nothing to keep once the LLM stopped supplying it.
 - **Run context** — a mutable object the flow itself owns (not any one
   `Screen`), holding everything gathered so far: the picked audio path, the
   optional pre-step candidate list, `speaker_count`, the built `Transcript`,
@@ -148,12 +148,16 @@ from an already-*processed* Session. This work item instead:
    guarantees a response's *shape*, not room for free text outside it, so
    the chain-of-thought has to live inside the schema, field-ordered ahead
    of the answers it informs. Its content is never read by the app. No
-   `role` is requested here at all — `SpeakerProposal.suggested_role` is
-   always `""` for an LLM-driven proposal now; the review screen's role
-   field just starts blank. The model's own "unassigned speaker" sentinel
-   (for a label it can't identify) is matched case-insensitively and
-   substituted with the raw diarized label instead of being shown to the
-   user as if it were a real name.
+   `role` is requested here at all — role has been removed from this flow
+   entirely (`SpeakerProposal`/`SpeakerResolution`/`PendingResolution`/
+   `AttendeeSummary` no longer carry one, and the review screen's table and
+   per-speaker editor dialog no longer show a Role column/field). It was
+   never persisted anywhere by this flow to begin with — Stage 7's summary
+   was its only real consumer — so once the LLM stopped supplying it, there
+   was nothing left to source it from. The model's own "unassigned speaker"
+   sentinel (for a label it can't identify) is matched case-insensitively
+   and substituted with the raw diarized label instead of being shown to
+   the user as if it were a real name.
 2. In parallel, each diarized speaker's centroid is computed
    (`compute_centroid` over that speaker's utterance clips, extracted once
    into a run-scoped temporary directory — see Implementation Approach) and,
@@ -167,16 +171,17 @@ from an already-*processed* Session. This work item instead:
 
 ### Stage 4 — Human review
 1. A `DataTable`, one row per diarized speaker ID, rendered as **text**:
-   speaker label, resolved target ("→ Alice" or "→ New Player: Alice"),
-   role, and included/excluded state. `DataTable` cells can't host live
-   interactive widgets (`Select`, `Input`, checkboxes), so — mirroring
-   `AttendeeDialog`'s own precedent for exactly this constraint — editing a
-   row pushes a small per-speaker editor dialog: a `Select` of [every
-   existing player] + a "New Player" sentinel (pre-selected per Stage 3's
-   proposal), an editable name field (relevant/shown only in "New Player"
-   mode, pre-filled from the LLM's guess), a free-text role field, and an
-   Exclude toggle. Confirming the dialog writes the row's resolution back
-   into the run context and refreshes that row's text in the table.
+   speaker label, resolved target ("→ Alice" or "→ New Player: Alice"), and
+   included/excluded state. `DataTable` cells can't host live interactive
+   widgets (`Select`, `Input`, checkboxes), so — mirroring `AttendeeDialog`'s
+   own precedent for exactly this constraint — editing a row pushes a small
+   per-speaker editor dialog: a `Select` of [every existing player] + a
+   "New Player" sentinel (pre-selected per Stage 3's proposal), an editable
+   name field (relevant/shown only in "New Player" mode, pre-filled from
+   the LLM's guess), and an Exclude toggle. No role field — role was
+   dropped from this flow entirely (see Stage 3). Confirming the dialog
+   writes the row's resolution back into the run context and refreshes
+   that row's text in the table.
 2. The user can pull up everything a given speaker said: a per-utterance
    list (timestamp + punctuated text). Pressing `P` plays the selected
    row's clip via `ffplay` (`tablesage_tui.audio_playback.ClipPlayer`,
@@ -235,8 +240,8 @@ from an already-*processed* Session. This work item instead:
    complete once written.
 
 ### Stage 7 — Final summary
-1. A read-only screen lists the finalized attendee map (player name, role,
-   clip counts) for the user to note down. Nothing here is persisted;
+1. A read-only screen lists the finalized attendee map (player name, clip
+   count) for the user to note down. Nothing here is persisted;
    recreating the actual Campaign/Session/Attendance rows that this map
    describes is a fully manual follow-up step, using the flows those
    screens already provide.
@@ -399,7 +404,7 @@ orchestration, not new ML/audio work)
    `DataTable` renders each speaker's resolution as text, with
    a per-speaker editor dialog (mirroring `AttendeeDialog`'s own workaround
    for the same "no live widgets inside `DataTable` cells" constraint) for
-   the `Select`/name/role/exclude fields; a read-only summary screen for
+   the `Select`/name/exclude fields; a read-only summary screen for
    Stage 7; `tablesage_tui.audio_playback.ClipPlayer`, a thin
    `subprocess.Popen`-based wrapper shelling out to `ffplay` for the
    transcript view's per-utterance playback (stops any clip already

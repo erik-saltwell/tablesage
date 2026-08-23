@@ -44,7 +44,6 @@ class PlayerImportReviewScreen(TableSageScreen):
             )
             table.add_column("Speaker", key="speaker")
             table.add_column("Resolves To", key="target")
-            table.add_column("Role", key="role")
             table.add_column("Status", key="status")
             yield table
 
@@ -64,7 +63,7 @@ class PlayerImportReviewScreen(TableSageScreen):
             resolution = self._run.resolutions[proposal.speaker_id]
             target = f"New Player: {resolution.player_name}" if resolution.player_id is None else resolution.player_name
             status = "Excluded" if resolution.excluded else "Included"
-            table.add_row(proposal.speaker_id, target, resolution.role, status, key=proposal.speaker_id)
+            table.add_row(proposal.speaker_id, target, status, key=proposal.speaker_id)
             if selected == proposal.speaker_id:
                 restored_row = index
         if restored_row is not None:
@@ -91,7 +90,7 @@ class PlayerImportReviewScreen(TableSageScreen):
             if result is None:
                 return
             self._run.resolutions[speaker_id] = SpeakerResolution(
-                player_id=result.player_id, player_name=result.player_name, role=result.role, excluded=result.excluded
+                player_id=result.player_id, player_name=result.player_name, excluded=result.excluded
             )
             self._reload_table()
 
@@ -120,9 +119,7 @@ class PlayerImportReviewScreen(TableSageScreen):
             return
 
         pending = [
-            PendingResolution(
-                speaker_id=speaker_id, player_id=resolution.player_id, player_name=resolution.player_name, role=resolution.role
-            )
+            PendingResolution(speaker_id=speaker_id, player_id=resolution.player_id, player_name=resolution.player_name)
             for speaker_id, resolution in self._run.resolutions.items()
             if not resolution.excluded
         ]

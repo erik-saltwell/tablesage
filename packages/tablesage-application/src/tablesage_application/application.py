@@ -500,9 +500,7 @@ class Application:
                     player = players.get_player(session, item.player_id)
                 player_folders[player.id] = paths.player_folder(self._cwd, player.name)
                 resolved.append(
-                    player_import_from_audio.ResolvedSpeaker(
-                        speaker_id=item.speaker_id, player_id=player.id, player_name=player.name, role=item.role
-                    )
+                    player_import_from_audio.ResolvedSpeaker(speaker_id=item.speaker_id, player_id=player.id, player_name=player.name)
                 )
 
             result = player_import_from_audio.build_players_from_audio(
