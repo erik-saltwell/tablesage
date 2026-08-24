@@ -44,6 +44,8 @@ def _stub_pipeline(monkeypatch: pytest.MonkeyPatch) -> None:
         embed: EmbeddingFactory,
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,
+        *,
+        log_diagnostics: bool = False,
     ) -> Transcript:
         total = len(transcript.utterances)
         new_utterances = []

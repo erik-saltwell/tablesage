@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -116,6 +117,12 @@ class SimilarityResult:
     best_match_similarity: float
     mean_similarity: float
     margin: float
+    second_best_index: int
+    second_best_similarity: float
+    # Every reference's raw cosine similarity, in `SimilarityComputer.references` order --
+    # kept so a caller can log full per-utterance diagnostics (which speaker was close, and
+    # detect a NaN reading) without recomputing anything.
+    similarities: tuple[float, ...]
 
 
 @dataclass
@@ -133,12 +140,19 @@ class SimilarityComputer:
         test_tensor = torch.tensor(candidate.root, dtype=torch.float32).unsqueeze(0)
         similarities: list[float] = [float(s) for s in torch.nn.functional.cosine_similarity(test_tensor, self.references_tensor)]
         avg_similarity: float = sum(similarities) / len(similarities)
-        ranked = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)
+        # A NaN similarity (a NaN in the candidate or a reference embedding) sorts
+        # unpredictably under plain `<` comparison -- treat it as the least similar so
+        # it can never win best/second-best and silently poison the margin; callers can
+        # still see it happened via `similarities` (see identify_speakers's NaN check).
+        ranked = sorted(enumerate(similarities), key=lambda x: -math.inf if math.isnan(x[1]) else x[1], reverse=True)
         best_match_index, best_similarity = ranked[0]
-        second_best_similarity = ranked[1][1]
+        second_best_index, second_best_similarity = ranked[1]
         return SimilarityResult(
             best_match_index=best_match_index,
             mean_similarity=avg_similarity,
             margin=best_similarity - second_best_similarity,
             best_match_similarity=best_similarity,
+            second_best_index=second_best_index,
+            second_best_similarity=second_best_similarity,
+            similarities=tuple(similarities),
         )

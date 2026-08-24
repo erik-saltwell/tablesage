@@ -12,6 +12,7 @@ class RemoveOutliersSettings(BaseModel, frozen=True):
 
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
     similarity_margin_threshold: float = 0.1
+    log_diagnostics: bool = False
 
 
 class AudioCleaningSettings(BaseModel, frozen=True):

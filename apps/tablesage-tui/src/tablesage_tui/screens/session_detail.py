@@ -228,17 +228,34 @@ class SessionDetailScreen(TableSageScreen):
                 self.notify(str(exc), severity="error")
                 return
 
-            def do_import() -> None:
+            def do_import(*, should_clean_audio: bool) -> None:
                 session_folder = self.application.session_folder(self._session_id)
                 normalize_volume = self.application.settings.session_audio_import.normalize_volume
                 self.run_with_progress(
                     title="Import Audio",
-                    message="Cleaning audio…",
-                    work=lambda: import_audio.import_audio(source_path, session_folder, normalize_volume),
+                    message="Cleaning audio…" if should_clean_audio else "Importing audio…",
+                    work=lambda: import_audio.import_audio(
+                        source_path, session_folder, normalize_volume, should_clean_audio=should_clean_audio
+                    ),
                     on_success=self._after_import_audio,
                 )
 
-            self._with_invalidation_guard(do_import)
+            if source_path.suffix.lower() == ".wav":
+
+                def on_clean_choice(should_clean_audio: bool | None) -> None:
+                    if should_clean_audio is None:
+                        return
+                    self._with_invalidation_guard(lambda: do_import(should_clean_audio=should_clean_audio))
+
+                self.app.push_screen(
+                    ConfirmationDialog(
+                        title="Clean Audio?",
+                        prompt="Run this .wav through noise-cleaning before import? Skip if it's already been cleaned.",
+                    ),
+                    on_clean_choice,
+                )
+            else:
+                self._with_invalidation_guard(lambda: do_import(should_clean_audio=True))
 
         extensions = self.application.audio_import_extensions()
         audio_filter = Filters(
@@ -261,10 +278,14 @@ class SessionDetailScreen(TableSageScreen):
     def action_transcribe_audio(self) -> None:
         session_folder = self.application.session_folder(self._session_id)
         centroids = self.application.session_player_centroids(self._session_id)
-        embed = self.application.embedding_factory()
         settings = self.application.settings
 
         def work() -> transcribe_audio.TranscriptionResult:
+            # `embedding_factory()` loads the ERes2NetV2 model on first use (multi-second,
+            # possibly downloading it) -- called here, on the progress dialog's background
+            # thread, rather than before `run_with_progress`, so that cost is covered by the
+            # dialog instead of stalling the UI before it can even appear.
+            embed = self.application.embedding_factory()
             return transcribe_audio.transcribe_audio(
                 session_folder,
                 centroids,

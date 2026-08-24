@@ -1,18 +1,22 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import re
 import shutil
+import tempfile
 import uuid
 import wave
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
+import widelog
 from sqlmodel import Session
 from tablesage_model.model import Player
+from tablesage_tools.audio import clean_clip
 from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_centroid
 
 from ..entities.players import get_player
@@ -109,12 +113,16 @@ def recompute_centroid(
     unique clip's embedding completes -- real step counts for a determinate
     progress display, not just a busy indicator.
     """
-    player = get_player(session, player_id)
-    centroid, used_count, _unused_paths = _compute_recompute_result(player_folder, embed, on_progress, min_sample_similarity, min_samples)
-    _apply_centroid(player, centroid, used_count)
-    session.add(player)
-    session.flush()
-    return player
+    with widelog.wide_event(op="recompute_centroid", player_id=str(player_id), player_folder=str(player_folder)) as log:
+        player = get_player(session, player_id)
+        centroid, used_count, _unused_paths = _compute_recompute_result(
+            player_folder, embed, on_progress, min_sample_similarity, min_samples
+        )
+        _apply_centroid(player, centroid, used_count)
+        session.add(player)
+        session.flush()
+        log.set(used_count=used_count)
+        return player
 
 
 def cleanup_voice_clips(
@@ -139,14 +147,18 @@ def cleanup_voice_clips(
     loaded `AppSettings.remove_outliers`. Returns the updated player and the
     filenames that were deleted.
     """
-    player = get_player(session, player_id)
-    centroid, used_count, unused_paths = _compute_recompute_result(player_folder, embed, on_progress, min_sample_similarity, min_samples)
-    for path in unused_paths:
-        path.unlink(missing_ok=True)
-    _apply_centroid(player, centroid, used_count)
-    session.add(player)
-    session.flush()
-    return player, [path.name for path in unused_paths]
+    with widelog.wide_event(op="cleanup_voice_clips", player_id=str(player_id), player_folder=str(player_folder)) as log:
+        player = get_player(session, player_id)
+        centroid, used_count, unused_paths = _compute_recompute_result(
+            player_folder, embed, on_progress, min_sample_similarity, min_samples
+        )
+        for path in unused_paths:
+            path.unlink(missing_ok=True)
+        _apply_centroid(player, centroid, used_count)
+        session.add(player)
+        session.flush()
+        log.set(used_count=used_count, deleted_count=len(unused_paths))
+        return player, [path.name for path in unused_paths]
 
 
 def delete_voice_clip(
@@ -160,11 +172,12 @@ def delete_voice_clip(
     min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> Player:
     """Delete a voice clip file, then auto-recompute the centroid over what remains."""
-    clip_path = player_folder / filename
-    if not clip_path.is_file():
-        raise ValueError(f"Voice clip '{filename}' not found.")
-    clip_path.unlink()
-    return recompute_centroid(session, player_id, player_folder, embed, on_progress, min_sample_similarity, min_samples)
+    with widelog.wide_event(op="delete_voice_clip", player_id=str(player_id), filename=filename, player_folder=str(player_folder)):
+        clip_path = player_folder / filename
+        if not clip_path.is_file():
+            raise ValueError(f"Voice clip '{filename}' not found.")
+        clip_path.unlink()
+        return recompute_centroid(session, player_id, player_folder, embed, on_progress, min_sample_similarity, min_samples)
 
 
 @dataclass(frozen=True)
@@ -174,6 +187,7 @@ class ImportResult:
     imported_count: int
     replaced_count: int
     rejected_filenames: tuple[str, ...]
+    removed_outlier_filenames: tuple[str, ...] = field(default=())
 
 
 def slugify(name: str) -> str:
@@ -237,6 +251,9 @@ def import_voice_clips(
     on_progress: Callable[[int, int], None] | None = None,
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
+    *,
+    should_clean_audio: bool = False,
+    normalize_volume: bool = False,
 ) -> tuple[Player, ImportResult]:
     """Import every `.wav` file in `source_dir` as a new voice clip, then auto-recompute the centroid.
 
@@ -250,37 +267,82 @@ def import_voice_clips(
     `compute_centroid` already treats duplicates/outliers as "exclude, don't
     fail." `min_sample_similarity`/`min_samples` normally come from the
     caller's loaded `AppSettings.remove_outliers`.
+
+    When `should_clean_audio` is set, each source file is first run through
+    `clean_clip` (Mossformer2 denoise, optionally loudness-normalized per
+    `normalize_volume`) into a scratch temp directory, and the cleaned result
+    is what gets copied into `player_folder` -- so a rejected/outlier clip is
+    always judged on its cleaned audio, matching what actually lands on disk.
+    Cleaning also opts the import into deleting embedding outliers from disk
+    (not just excluding them from the centroid), mirroring `cleanup_voice_clips`,
+    since a clean pass is the moment the user has already signaled they want
+    higher-quality samples.
     """
-    validate_import_source(source_dir)
-    source_files = sorted(source_dir.glob(VOICE_CLIP_GLOB))
-    prior_clips = find_prior_import_clips(player_folder, source_dir)
-    source_hash = _source_hash(source_dir)
+    with widelog.wide_event(
+        op="import_voice_clips",
+        player_id=str(player_id),
+        player_name=player_name,
+        source_dir=str(source_dir),
+        should_clean_audio=should_clean_audio,
+    ) as log:
+        validate_import_source(source_dir)
+        source_files = sorted(source_dir.glob(VOICE_CLIP_GLOB))
+        prior_clips = find_prior_import_clips(player_folder, source_dir)
+        source_hash = _source_hash(source_dir)
 
-    player_folder.mkdir(parents=True, exist_ok=True)
-    rejected: list[str] = []
-    imported_count = 0
-    total = len(source_files)
-    for index, source_file in enumerate(source_files, start=1):
-        target = player_folder / _generated_import_filename(player_name, source_hash)
-        shutil.copyfile(source_file, target)
+        player_folder.mkdir(parents=True, exist_ok=True)
+        rejected: list[str] = []
+        imported_count = 0
+        total = len(source_files)
+
+        clean_dir = Path(tempfile.mkdtemp(prefix="tablesage-clean-")) if should_clean_audio else None
         try:
-            embed(target)
-        except Exception:
-            target.unlink(missing_ok=True)
-            rejected.append(source_file.name)
-        else:
-            imported_count += 1
-        if on_progress is not None:
-            on_progress(index, total)
+            for index, source_file in enumerate(source_files, start=1):
+                target = player_folder / _generated_import_filename(player_name, source_hash)
+                if clean_dir is not None:
+                    cleaned_file = clean_dir / source_file.name
+                    asyncio.run(clean_clip(source_file, cleaned_file, normalize=normalize_volume))
+                    shutil.copyfile(cleaned_file, target)
+                    cleaned_file.unlink(missing_ok=True)
+                else:
+                    shutil.copyfile(source_file, target)
+                try:
+                    embed(target)
+                except Exception:
+                    target.unlink(missing_ok=True)
+                    rejected.append(source_file.name)
+                else:
+                    imported_count += 1
+                if on_progress is not None:
+                    on_progress(index, total)
+        finally:
+            if clean_dir is not None:
+                shutil.rmtree(clean_dir, ignore_errors=True)
 
-    for old_clip in prior_clips:
-        old_clip.unlink(missing_ok=True)
+        for old_clip in prior_clips:
+            old_clip.unlink(missing_ok=True)
 
-    player = get_player(session, player_id)
-    centroid, used_count, _unused_paths = _compute_recompute_result(player_folder, embed, None, min_sample_similarity, min_samples)
-    _apply_centroid(player, centroid, used_count)
-    session.add(player)
-    session.flush()
+        player = get_player(session, player_id)
+        centroid, used_count, unused_paths = _compute_recompute_result(player_folder, embed, None, min_sample_similarity, min_samples)
+        removed_outliers: tuple[str, ...] = ()
+        if should_clean_audio and unused_paths:
+            for path in unused_paths:
+                path.unlink(missing_ok=True)
+            removed_outliers = tuple(path.name for path in unused_paths)
+        _apply_centroid(player, centroid, used_count)
+        session.add(player)
+        session.flush()
 
-    result = ImportResult(imported_count=imported_count, replaced_count=len(prior_clips), rejected_filenames=tuple(rejected))
-    return player, result
+        result = ImportResult(
+            imported_count=imported_count,
+            replaced_count=len(prior_clips),
+            rejected_filenames=tuple(rejected),
+            removed_outlier_filenames=removed_outliers,
+        )
+        log.set(
+            imported_count=imported_count,
+            replaced_count=len(prior_clips),
+            rejected_count=len(rejected),
+            removed_outlier_count=len(removed_outliers),
+        )
+        return player, result

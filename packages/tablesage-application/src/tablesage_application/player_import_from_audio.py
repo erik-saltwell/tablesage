@@ -9,6 +9,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal
 
+import widelog
 from pydantic import BaseModel
 from sqlmodel import Session
 from tablesage_model.settings import EnhanceVoicesSettings, RemoveOutliersSettings, TranscriptionAndDiarizationSettings
@@ -98,7 +99,12 @@ def transcribe_audio_file(
         _report(on_progress, Stage.PUNCTUATING, 1, 1)
         return transcript
 
-    return asyncio.run(_run())
+    with widelog.wide_event(
+        op="transcribe_audio_file", source_audio_path=str(source_audio_path), should_clean_audio=should_clean_audio
+    ) as log:
+        transcript = asyncio.run(_run())
+        log.set(utterance_count=len(transcript.utterances))
+        return transcript
 
 
 # --- Stage 3: per-speaker aggregation, centroids, existing-player match, LLM proposal ---
@@ -211,6 +217,7 @@ def propose_attendees(
     embed: Callable[[Path], Embedding],
     propose_speakers: ProposeSpeakers,
     similarity_margin_threshold: float,
+    enhance_settings: EnhanceVoicesSettings,
     on_progress: OnProgress | None = None,
 ) -> ProposeResult:
     """Aggregate a diarized `Transcript` by speaker, extract each speaker's clips once, and propose an attendee map.
@@ -220,71 +227,93 @@ def propose_attendees(
     The two matching signals are independent and never conflated (see the design doc): the
     existing-player match is skipped entirely, not approximated, when fewer than two existing
     players have a computed centroid (`SimilarityComputer` requires at least two references).
+
+    Only utterances within `enhance_settings`' duration bounds (`min_clip_seconds`/
+    `max_clip_seconds`) are extracted -- the same bounds Stage 5 applies when deciding what to
+    keep as a written voice sample, applied here too so a degenerate (e.g. zero-length)
+    diarized utterance never reaches `extract_clip`/ffmpeg, and Stage 4's review list only
+    ever shows clips that could qualify. A speaker whose every utterance falls outside the
+    bounds gets no centroid and is skipped by the existing-player audio-match signal below
+    (falls back to the LLM's name guess only) rather than crashing `compute_centroid` on an
+    empty clip list.
     """
-    by_speaker = _utterances_by_speaker(transcript)
-    speaker_ids = list(by_speaker)  # dict insertion order == first-appearance order in the transcript
+    with widelog.wide_event(op="propose_attendees") as log:
+        by_speaker = _utterances_by_speaker(transcript)
+        speaker_ids = list(by_speaker)  # dict insertion order == first-appearance order in the transcript
+        log.set(speaker_count=len(speaker_ids))
 
-    total_clips = sum(len(utterances) for utterances in by_speaker.values())
-    completed = 0
-    _report(on_progress, Stage.EXTRACTING_SPEAKER_CLIPS, 0, total_clips)
+        def _duration_valid(utterance: Utterance) -> bool:
+            duration = utterance.end - utterance.start
+            return enhance_settings.min_clip_seconds <= duration <= enhance_settings.max_clip_seconds
 
-    async def _extract_all() -> dict[str, list[SpeakerUtteranceClip]]:
-        nonlocal completed
-        result: dict[str, list[SpeakerUtteranceClip]] = {}
-        for speaker_id in speaker_ids:
-            speaker_clips: list[SpeakerUtteranceClip] = []
-            for index, utterance in enumerate(by_speaker[speaker_id]):
-                clip_path = clip_dir / f"{speaker_id}-{index}.wav"
-                await extract_clip(cleaned_audio_path, clip_path, utterance.start, utterance.end)
-                speaker_clips.append(SpeakerUtteranceClip(utterance=utterance, clip_path=clip_path))
-                completed += 1
-                _report(on_progress, Stage.EXTRACTING_SPEAKER_CLIPS, completed, total_clips)
-            result[speaker_id] = speaker_clips
-        return result
+        total_clips = sum(1 for utterances in by_speaker.values() for utterance in utterances if _duration_valid(utterance))
+        completed = 0
+        _report(on_progress, Stage.EXTRACTING_SPEAKER_CLIPS, 0, total_clips)
 
-    speaker_clips = asyncio.run(_extract_all())
+        async def _extract_all() -> dict[str, list[SpeakerUtteranceClip]]:
+            nonlocal completed
+            result: dict[str, list[SpeakerUtteranceClip]] = {}
+            for speaker_id in speaker_ids:
+                speaker_clips: list[SpeakerUtteranceClip] = []
+                for index, utterance in enumerate(by_speaker[speaker_id]):
+                    if not _duration_valid(utterance):
+                        continue
+                    clip_path = clip_dir / f"{speaker_id}-{index}.wav"
+                    await extract_clip(cleaned_audio_path, clip_path, utterance.start, utterance.end)
+                    speaker_clips.append(SpeakerUtteranceClip(utterance=utterance, clip_path=clip_path))
+                    completed += 1
+                    _report(on_progress, Stage.EXTRACTING_SPEAKER_CLIPS, completed, total_clips)
+                result[speaker_id] = speaker_clips
+            return result
 
-    speaker_centroids: dict[str, Embedding] = {
-        speaker_id: compute_centroid([clip.clip_path for clip in speaker_clips[speaker_id]], embed).centroid for speaker_id in speaker_ids
-    }
+        speaker_clips = asyncio.run(_extract_all())
 
-    matches: dict[str, tuple[uuid.UUID, str]] = {}
-    if len(existing_player_centroids) >= 2:
-        player_ids = list(existing_player_centroids)
-        computer = SimilarityComputer(tuple(existing_player_centroids[player_id][1] for player_id in player_ids))
-        for speaker_id in speaker_ids:
-            result = computer.compute_similarity(speaker_centroids[speaker_id])
-            if result.margin >= similarity_margin_threshold:
-                matched_id = player_ids[result.best_match_index]
-                matches[speaker_id] = (matched_id, existing_player_centroids[matched_id][0])
+        speaker_centroids: dict[str, Embedding] = {
+            speaker_id: compute_centroid([clip.clip_path for clip in speaker_clips[speaker_id]], embed).centroid
+            for speaker_id in speaker_ids
+            if speaker_clips[speaker_id]
+        }
+        log.set(speakers_without_centroid=sum(1 for speaker_id in speaker_ids if speaker_id not in speaker_centroids))
 
-    speaker_texts: dict[str, str] = {
-        speaker_id: " ".join(utterance.punctuated_text or utterance.text for utterance in by_speaker[speaker_id])
-        for speaker_id in speaker_ids
-    }
+        matches: dict[str, tuple[uuid.UUID, str]] = {}
+        if len(existing_player_centroids) >= 2:
+            player_ids = list(existing_player_centroids)
+            computer = SimilarityComputer(tuple(existing_player_centroids[player_id][1] for player_id in player_ids))
+            for speaker_id in speaker_ids:
+                if speaker_id not in speaker_centroids:
+                    continue
+                result = computer.compute_similarity(speaker_centroids[speaker_id])
+                if result.margin >= similarity_margin_threshold:
+                    matched_id = player_ids[result.best_match_index]
+                    matches[speaker_id] = (matched_id, existing_player_centroids[matched_id][0])
 
-    _report(on_progress, Stage.PROPOSING_ATTENDEES, 0, 0)
-    guesses = {guess.speaker_label: guess for guess in propose_speakers([(sid, speaker_texts[sid]) for sid in speaker_ids], candidates)}
-    _report(on_progress, Stage.PROPOSING_ATTENDEES, 1, 1)
+        speaker_texts: dict[str, str] = {
+            speaker_id: " ".join(utterance.punctuated_text or utterance.text for utterance in by_speaker[speaker_id])
+            for speaker_id in speaker_ids
+        }
 
-    proposals = tuple(
-        SpeakerProposal(
-            speaker_id=speaker_id,
-            utterance_count=len(by_speaker[speaker_id]),
-            transcript_text=speaker_texts[speaker_id],
-            suggested_name=_suggested_name(speaker_id, guesses),
-            suggested_confidence=guesses[speaker_id].confidence if speaker_id in guesses else None,
-            matched_player_id=matches[speaker_id][0] if speaker_id in matches else None,
-            matched_player_name=matches[speaker_id][1] if speaker_id in matches else None,
+        _report(on_progress, Stage.PROPOSING_ATTENDEES, 0, 0)
+        guesses = {guess.speaker_label: guess for guess in propose_speakers([(sid, speaker_texts[sid]) for sid in speaker_ids], candidates)}
+        _report(on_progress, Stage.PROPOSING_ATTENDEES, 1, 1)
+
+        proposals = tuple(
+            SpeakerProposal(
+                speaker_id=speaker_id,
+                utterance_count=len(by_speaker[speaker_id]),
+                transcript_text=speaker_texts[speaker_id],
+                suggested_name=_suggested_name(speaker_id, guesses),
+                suggested_confidence=guesses[speaker_id].confidence if speaker_id in guesses else None,
+                matched_player_id=matches[speaker_id][0] if speaker_id in matches else None,
+                matched_player_name=matches[speaker_id][1] if speaker_id in matches else None,
+            )
+            for speaker_id in speaker_ids
         )
-        for speaker_id in speaker_ids
-    )
 
-    return ProposeResult(
-        proposals=proposals,
-        speaker_clips={speaker_id: tuple(speaker_clips[speaker_id]) for speaker_id in speaker_ids},
-        speaker_centroids=speaker_centroids,
-    )
+        return ProposeResult(
+            proposals=proposals,
+            speaker_clips={speaker_id: tuple(speaker_clips[speaker_id]) for speaker_id in speaker_ids},
+            speaker_centroids=speaker_centroids,
+        )
 
 
 # --- Stage 5/6: build/enhance players from the human-confirmed attendee map ---
@@ -347,65 +376,70 @@ def build_players_from_audio(
 
     Reuses `speaker_clips`' already-extracted files by copy (never re-extracts). The
     post-review clip-quality gate (comparing each candidate clip against this run's own
-    finalized speaker centroids) only runs when at least two speakers were confirmed this
-    run -- with exactly one, there is no sibling to disambiguate against, so every
-    duration-valid clip is kept (see the design doc's below-floor fallback). Filenames use a
+    finalized speaker centroids) only runs when at least two *centroid-bearing* speakers
+    were confirmed this run -- with exactly one (or a resolved speaker whose Stage 3
+    centroid is missing because every one of their utterances fell outside the duration
+    bounds), there is no sibling to disambiguate against, so every duration-valid clip is
+    kept (see the design doc's below-floor fallback). Filenames use a
     `diarized-<player_slug>-<sourcehash8>-<uuid4>.wav` convention, matching directory
     import's `import-...` and "enhance from session"'s `session-...` conventions
     (`find_clips_by_hash_segment`); re-running against the same source file replaces that
     file's prior contribution to each player as a unit -- copy-then-delete, so a bad rerun
     never leaves a player with fewer samples than before.
     """
-    source_hash = clips.hash8(str(source_audio_path.resolve()))
+    with widelog.wide_event(op="build_players_from_audio", resolved_count=len(resolved)) as log:
+        source_hash = clips.hash8(str(source_audio_path.resolve()))
 
-    gate_computer: SimilarityComputer | None = None
-    speaker_index: dict[str, int] = {}
-    if len(resolved) >= 2:
-        speaker_index = {attendee.speaker_id: index for index, attendee in enumerate(resolved)}
-        gate_computer = SimilarityComputer(tuple(speaker_centroids[attendee.speaker_id] for attendee in resolved))
+        gate_computer: SimilarityComputer | None = None
+        speaker_index: dict[str, int] = {}
+        centroid_bearing = [attendee for attendee in resolved if attendee.speaker_id in speaker_centroids]
+        if len(centroid_bearing) >= 2:
+            speaker_index = {attendee.speaker_id: index for index, attendee in enumerate(centroid_bearing)}
+            gate_computer = SimilarityComputer(tuple(speaker_centroids[attendee.speaker_id] for attendee in centroid_bearing))
 
-    total_candidates = sum(len(speaker_clips.get(attendee.speaker_id, ())) for attendee in resolved)
-    completed = 0
-    written_counts: dict[uuid.UUID, int] = {}
-    _report(on_progress, Stage.WRITING_CLIPS, 0, total_candidates)
+        total_candidates = sum(len(speaker_clips.get(attendee.speaker_id, ())) for attendee in resolved)
+        completed = 0
+        written_counts: dict[uuid.UUID, int] = {}
+        _report(on_progress, Stage.WRITING_CLIPS, 0, total_candidates)
 
-    for attendee in resolved:
-        folder = player_folders[attendee.player_id]
-        folder.mkdir(parents=True, exist_ok=True)
-        prior_clips = clips.find_clips_by_hash_segment(folder, "diarized", source_hash)
+        for attendee in resolved:
+            folder = player_folders[attendee.player_id]
+            folder.mkdir(parents=True, exist_ok=True)
+            prior_clips = clips.find_clips_by_hash_segment(folder, "diarized", source_hash)
 
-        written = 0
-        for candidate in speaker_clips.get(attendee.speaker_id, ()):
-            duration = candidate.utterance.end - candidate.utterance.start
-            qualifies = enhance_settings.min_clip_seconds <= duration <= enhance_settings.max_clip_seconds
-            if qualifies and gate_computer is not None:
-                result = gate_computer.compute_similarity(embed(candidate.clip_path))
-                qualifies = result.best_match_index == speaker_index[attendee.speaker_id]
-                qualifies = qualifies and result.margin >= enhance_settings.min_margin_for_voice_sample
+            written = 0
+            for candidate in speaker_clips.get(attendee.speaker_id, ()):
+                duration = candidate.utterance.end - candidate.utterance.start
+                qualifies = enhance_settings.min_clip_seconds <= duration <= enhance_settings.max_clip_seconds
+                if qualifies and gate_computer is not None and attendee.speaker_id in speaker_index:
+                    result = gate_computer.compute_similarity(embed(candidate.clip_path))
+                    qualifies = result.best_match_index == speaker_index[attendee.speaker_id]
+                    qualifies = qualifies and result.margin >= enhance_settings.min_margin_for_voice_sample
 
-            completed += 1
-            _report(on_progress, Stage.WRITING_CLIPS, completed, total_candidates)
-            if not qualifies:
-                continue
+                completed += 1
+                _report(on_progress, Stage.WRITING_CLIPS, completed, total_candidates)
+                if not qualifies:
+                    continue
 
-            filename = _generated_diarized_filename(attendee.player_name, source_hash)
-            shutil.copyfile(candidate.clip_path, folder / filename)
-            written += 1
+                filename = _generated_diarized_filename(attendee.player_name, source_hash)
+                shutil.copyfile(candidate.clip_path, folder / filename)
+                written += 1
 
-        for old_clip in prior_clips:
-            old_clip.unlink(missing_ok=True)
+            for old_clip in prior_clips:
+                old_clip.unlink(missing_ok=True)
 
-        written_counts[attendee.player_id] = written
+            written_counts[attendee.player_id] = written
 
-    for index, attendee in enumerate(resolved, start=1):
-        folder = player_folders[attendee.player_id]
-        clips.recompute_centroid(
-            session, attendee.player_id, folder, embed, None, outlier_settings.min_sample_similarity, outlier_settings.min_samples
+        for index, attendee in enumerate(resolved, start=1):
+            folder = player_folders[attendee.player_id]
+            clips.recompute_centroid(
+                session, attendee.player_id, folder, embed, None, outlier_settings.min_sample_similarity, outlier_settings.min_samples
+            )
+            _report(on_progress, Stage.RECOMPUTING_CENTROIDS, index, len(resolved))
+
+        affected_player_count = sum(1 for count in written_counts.values() if count > 0)
+        summary = tuple(
+            AttendeeSummary(player_name=attendee.player_name, clip_count=written_counts[attendee.player_id]) for attendee in resolved
         )
-        _report(on_progress, Stage.RECOMPUTING_CENTROIDS, index, len(resolved))
-
-    affected_player_count = sum(1 for count in written_counts.values() if count > 0)
-    summary = tuple(
-        AttendeeSummary(player_name=attendee.player_name, clip_count=written_counts[attendee.player_id]) for attendee in resolved
-    )
-    return ImportFromAudioResult(affected_player_count=affected_player_count, clip_count=sum(written_counts.values()), summary=summary)
+        log.set(affected_player_count=affected_player_count, clip_count=sum(written_counts.values()))
+        return ImportFromAudioResult(affected_player_count=affected_player_count, clip_count=sum(written_counts.values()), summary=summary)

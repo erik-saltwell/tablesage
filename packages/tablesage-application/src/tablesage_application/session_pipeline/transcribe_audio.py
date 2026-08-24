@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+import widelog
 from sqlmodel import Session
 from tablesage_model.model import Player
 from tablesage_model.settings import SpeakerIdentificationSettings, TranscriptionAndDiarizationSettings
@@ -110,7 +111,13 @@ def transcribe_audio(
             _report(on_progress, Stage.IDENTIFYING_SPEAKERS, completed, total)
 
         transcript = await identify_speakers(
-            transcript, audio_path, centroids, embed, speaker_id_settings.similarity_margin_threshold, _identify_progress
+            transcript,
+            audio_path,
+            centroids,
+            embed,
+            speaker_id_settings.similarity_margin_threshold,
+            _identify_progress,
+            log_diagnostics=speaker_id_settings.log_diagnostics,
         )
 
         _report(on_progress, Stage.PUNCTUATING, 0, 0)
@@ -119,13 +126,17 @@ def transcribe_audio(
 
         return transcript
 
-    transcript = asyncio.run(_run())
+    with widelog.wide_event(op="transcribe_audio", session_folder=str(session_folder), speaker_count=len(centroids)) as log:
+        transcript = asyncio.run(_run())
 
-    transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
-    (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(_render_transcript_text(transcript), encoding="utf-8")
+        transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+        (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(
+            _render_transcript_text(transcript), encoding="utf-8"
+        )
 
-    unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
-    return TranscriptionResult(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
+        unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
+        log.set(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
+        return TranscriptionResult(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
 
 
 def _report(on_progress: OnProgress | None, stage: Stage, completed: int, total: int) -> None:

@@ -15,6 +15,7 @@ def _application(*, campaigns: list | None = None, last_session_dates: dict | No
     return MagicMock(
         list_campaigns=MagicMock(return_value=campaigns or []),
         last_session_dates=MagicMock(return_value=last_session_dates or {}),
+        campaign_folder_exists=MagicMock(return_value=False),
     )
 
 
@@ -201,6 +202,34 @@ async def test_new_campaign_duplicate_name_shows_error() -> None:
         await pilot.press("enter")
         await pilot.pause()
 
+        assert isinstance(pilot.app.screen, CampaignListScreen)
+
+
+@pytest.mark.anyio
+async def test_new_campaign_folder_collision_prompts_then_deletes_and_creates() -> None:
+    created = Campaign(name="Iron Pact")
+    application = _application()
+    application.campaign_folder_exists = MagicMock(return_value=True)
+    application.delete_orphan_campaign_folder = MagicMock()
+    application.create_campaign = MagicMock(return_value=created)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Iron Pact"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.create_campaign.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_orphan_campaign_folder.assert_called_once_with("Iron Pact")
+        application.create_campaign.assert_called_once()
         assert isinstance(pilot.app.screen, CampaignListScreen)
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 import wave
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 from sqlmodel import Session
@@ -33,8 +34,16 @@ async def _async_stub_clean_clip(source: Path, target: Path, *, normalize: bool 
     _stub_clean_clip(source, target, normalize=normalize)
 
 
-def _import_audio(application: Application, session_id: uuid.UUID, source: Path, *, normalize_volume: bool = False) -> None:
-    session_pipeline.import_audio.import_audio(source, application.session_folder(session_id), normalize_volume)
+async def _async_stub_convert_to_16k_mono(source: Path, target: Path) -> None:
+    _stub_clean_clip(source, target)
+
+
+def _import_audio(
+    application: Application, session_id: uuid.UUID, source: Path, *, normalize_volume: bool = False, should_clean_audio: bool = True
+) -> None:
+    session_pipeline.import_audio.import_audio(
+        source, application.session_folder(session_id), normalize_volume, should_clean_audio=should_clean_audio
+    )
 
 
 def test_session_artifacts_reflect_filesystem_state(tmp_path: Path) -> None:
@@ -67,6 +76,38 @@ def test_import_session_audio_copies_file_under_fixed_name(tmp_path: Path, monke
     _import_audio(application, game_session.id, source)
 
     assert application.session_artifacts(game_session.id)[ArtifactName.INPUT_AUDIO]
+
+
+def test_import_session_audio_skips_cleaning_for_wav_when_declined(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    clean_clip = MagicMock(side_effect=AssertionError("clean_clip should not run when should_clean_audio=False"))
+    monkeypatch.setattr(session_pipeline.import_audio, "clean_clip", clean_clip)
+    monkeypatch.setattr(session_pipeline.import_audio, "convert_to_16k_mono", _async_stub_convert_to_16k_mono)
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    source = tmp_path / "recording.wav"
+    _write_wav(source)
+
+    _import_audio(application, game_session.id, source, should_clean_audio=False)
+
+    assert application.session_artifacts(game_session.id)[ArtifactName.INPUT_AUDIO]
+    clean_clip.assert_not_called()
+
+
+def test_import_session_audio_forces_cleaning_for_non_wav_even_when_declined(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(session_pipeline.import_audio, "clean_clip", _async_stub_clean_clip)
+    convert_to_16k_mono = MagicMock(side_effect=AssertionError("convert_to_16k_mono should not run for a non-wav source"))
+    monkeypatch.setattr(session_pipeline.import_audio, "convert_to_16k_mono", convert_to_16k_mono)
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    source = tmp_path / "recording.mp3"
+    source.write_bytes(b"fake audio bytes")
+
+    _import_audio(application, game_session.id, source, should_clean_audio=False)
+
+    assert application.session_artifacts(game_session.id)[ArtifactName.INPUT_AUDIO]
+    convert_to_16k_mono.assert_not_called()
 
 
 def test_import_session_audio_raises_for_missing_file(tmp_path: Path) -> None:
@@ -118,7 +159,7 @@ def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_pa
     assert not artifacts[ArtifactName.INPUT_AUDIO]
     assert artifacts[ArtifactName.PROCESSED_SESSION]
     assert artifacts[ArtifactName.SUMMARY]
-    assert list(folder.glob("*.tmp")) == []
+    assert list(folder.glob(".*")) == []
 
 
 def test_validate_import_audio_source_rejects_unrecognized_extension(tmp_path: Path) -> None:

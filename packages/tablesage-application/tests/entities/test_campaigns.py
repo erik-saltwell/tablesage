@@ -117,6 +117,27 @@ def test_delete_campaign_cascades_to_roster_and_glossary(tmp_path: Path) -> None
     assert application.get_player(player.id).name == "Alice"
 
 
+def test_campaign_folder_exists_reflects_disk_state(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    assert application.campaign_folder_exists("Iron Pact") is False
+
+    application.create_campaign(Campaign(name="Iron Pact"))
+    assert application.campaign_folder_exists("Iron Pact") is True
+
+
+def test_delete_orphan_campaign_folder_clears_a_stray_folder_left_by_delete(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    application.delete_campaign(campaign.id)
+    assert application.campaign_folder_exists("Iron Pact") is True
+
+    application.delete_orphan_campaign_folder("Iron Pact")
+
+    assert application.campaign_folder_exists("Iron Pact") is False
+    # the collision is now cleared, so re-creating with the same name succeeds
+    application.create_campaign(Campaign(name="Iron Pact"))
+
+
 def test_cleanup_orphan_campaign_dirs_removes_only_unknown_folders(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))

@@ -94,15 +94,30 @@ class PlayerDetailScreen(TableSageScreen):
             input_widget.value = self._player_name
             return
 
-        try:
-            renamed = self.application.rename_player(self._player_id, new_name)
-        except ValueError as exc:
-            self.notify(str(exc), severity="error")
-            input_widget.value = self._player_name
-            return
+        def proceed() -> None:
+            try:
+                renamed = self.application.rename_player(self._player_id, new_name)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                input_widget.value = self._player_name
+                return
+            self._player_name = renamed.name
+            self.query_one(TableSageHeader).campaign = self._player_name
 
-        self._player_name = renamed.name
-        self.query_one(TableSageHeader).campaign = self._player_name
+        def on_cancel() -> None:
+            input_widget.value = self._player_name
+
+        self.run_with_folder_collision_check(
+            title="Player Folder Exists",
+            prompt=(
+                f"A player folder named '{new_name}' already exists on disk. "
+                "This may be left over from a previously deleted player. Delete it and continue?"
+            ),
+            exists=lambda: self.application.player_folder_exists(new_name),
+            delete_existing=lambda: self.application.delete_orphan_player_folder(new_name),
+            proceed=proceed,
+            on_cancel=on_cancel,
+        )
 
     def action_pop_screen(self) -> None:
         focused = self.focused
@@ -237,21 +252,17 @@ class PlayerDetailScreen(TableSageScreen):
                 self.notify(str(exc), severity="error")
                 return
 
-            prior_clips = self.application.find_prior_import_clips(self._player_id, source_dir)
-            if not prior_clips:
-                self._run_directory_import(source_dir)
-                return
-
-            def on_confirm(confirmed: bool | None) -> None:
-                if confirmed:
-                    self._run_directory_import(source_dir)
+            def on_clean_choice(should_clean_audio: bool | None) -> None:
+                if should_clean_audio is None:
+                    return
+                self._confirm_directory_import(source_dir, should_clean_audio)
 
             self.app.push_screen(
                 ConfirmationDialog(
-                    title="Replace Prior Import",
-                    prompt=f"This will replace {len(prior_clips)} clip(s) previously imported from this directory.",
+                    title="Clean Audio",
+                    prompt="Clean these audio files (denoise, format) before importing them?",
                 ),
-                on_confirm,
+                on_clean_choice,
             )
 
         self.app.push_screen(
@@ -259,11 +270,34 @@ class PlayerDetailScreen(TableSageScreen):
             on_picked,
         )
 
-    def _run_directory_import(self, source_dir: Path) -> None:
+    def _confirm_directory_import(self, source_dir: Path, should_clean_audio: bool) -> None:
+        prior_clips = self.application.find_prior_import_clips(self._player_id, source_dir)
+        if not prior_clips:
+            self._run_directory_import(source_dir, should_clean_audio)
+            return
+
+        def on_confirm(confirmed: bool | None) -> None:
+            if confirmed:
+                self._run_directory_import(source_dir, should_clean_audio)
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Replace Prior Import",
+                prompt=f"This will replace {len(prior_clips)} clip(s) previously imported from this directory.",
+            ),
+            on_confirm,
+        )
+
+    def _run_directory_import(self, source_dir: Path, should_clean_audio: bool) -> None:
+        message = f"Importing voice clips from '{source_dir}'…"
+        if should_clean_audio:
+            message = f"Cleaning and importing voice clips from '{source_dir}'…"
         self.run_with_progress(
             title="Importing Voice Clips",
-            message=f"Importing voice clips from '{source_dir}'…",
-            work=lambda: self.application.import_voice_clips(self._player_id, source_dir, self.report_progress),
+            message=message,
+            work=lambda: self.application.import_voice_clips(
+                self._player_id, source_dir, self.report_progress, should_clean_audio=should_clean_audio
+            ),
             on_success=self._after_import_from_directory,
         )
 
@@ -277,4 +311,6 @@ class PlayerDetailScreen(TableSageScreen):
             message += f" Replaced {import_result.replaced_count} prior clip(s)."
         if import_result.rejected_filenames:
             message += f" Skipped {len(import_result.rejected_filenames)} (couldn't embed)."
+        if import_result.removed_outlier_filenames:
+            message += f" Removed {len(import_result.removed_outlier_filenames)} outlier clip(s)."
         self.notify(message)

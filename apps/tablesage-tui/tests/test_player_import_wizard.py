@@ -344,6 +344,30 @@ async def test_transcript_view_plays_selected_clip(monkeypatch: pytest.MonkeyPat
 
 
 @pytest.mark.anyio
+async def test_transcript_view_play_button_plays_selected_clip(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The `P` keybinding has no other visible affordance in this dialog -- a "Play Clip" button
+    must exist so playback is discoverable without knowing the key (see every other dialog's
+    button-only actions)."""
+    played: list[Path] = []
+    monkeypatch.setattr(ClipPlayer, "play", lambda self, path: played.append(path))
+    run = _run_with_proposal()
+    assert run.propose_result is not None
+    clip = run.propose_result.speaker_clips["speaker_0"][0]
+
+    async with TableSageApp(_application()).run_test() as pilot:
+        pilot.app.push_screen(PlayerImportReviewScreen(run))
+        await pilot.pause()
+
+        await pilot.press("t")
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#transcript-view-play", Button).press()
+        await pilot.pause()
+
+        assert played == [clip.clip_path]
+
+
+@pytest.mark.anyio
 async def test_review_edit_row_updates_resolution() -> None:
     run = _run_with_proposal()
     application = _application()

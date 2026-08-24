@@ -18,6 +18,12 @@ session_audio_import:
   # on top of that cleaning.
   normalize_volume: false
 
+audio_cleaning:
+  # Player Detail's "Folder Imp" (F) asks whether to clean each wav through
+  # the audio-cleaning pipeline before importing it; this toggles loudness
+  # normalization on top of that cleaning, same as session_audio_import above.
+  normalize_volume: false
+
 transcription_and_diarization:
   # Session Detail's "Transcribe" (T) sends the session's input audio to
   # ElevenLabs Scribe for transcription and speaker diarization.
@@ -31,6 +37,13 @@ speaker_identification:
   # players' centroids; a match whose margin over the runner-up falls below
   # this threshold is left as "Unassigned Speaker" rather than guessed.
   similarity_margin_threshold: 0.1
+  # When true, "Transcribe" (T) writes one line per utterance to
+  # .tablesage/logs/speaker_identification.log -- best/second-best speaker
+  # match, the full per-speaker similarity vector, and why the utterance
+  # landed where it did. Off by default: verbose (one line per utterance,
+  # not one per operation like the rest of tablesage.log), meant for digging
+  # into unexpectedly high Unassigned Speaker counts, not routine runs.
+  log_diagnostics: false
 
 enhance_voices:
   # Players List's "From Session" (S) pulls high-confidence voice clips out

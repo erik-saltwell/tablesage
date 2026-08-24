@@ -140,15 +140,30 @@ class CampaignDetailScreen(TableSageScreen):
             input_widget.value = self._campaign_name
             return
 
-        try:
-            renamed = self.application.rename_campaign(self._campaign_id, new_name)
-        except ValueError as exc:
-            self.notify(str(exc), severity="error")
-            input_widget.value = self._campaign_name
-            return
+        def proceed() -> None:
+            try:
+                renamed = self.application.rename_campaign(self._campaign_id, new_name)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                input_widget.value = self._campaign_name
+                return
+            self._campaign_name = renamed.name
+            self.query_one(TableSageHeader).campaign = self._campaign_name
 
-        self._campaign_name = renamed.name
-        self.query_one(TableSageHeader).campaign = self._campaign_name
+        def on_cancel() -> None:
+            input_widget.value = self._campaign_name
+
+        self.run_with_folder_collision_check(
+            title="Campaign Folder Exists",
+            prompt=(
+                f"A campaign folder named '{new_name}' already exists on disk. "
+                "This may be left over from a previously deleted campaign. Delete it and continue?"
+            ),
+            exists=lambda: self.application.campaign_folder_exists(new_name),
+            delete_existing=lambda: self.application.delete_orphan_campaign_folder(new_name),
+            proceed=proceed,
+            on_cancel=on_cancel,
+        )
 
     def _commit_description_and_game_system(self) -> None:
         description = self.query_one("#campaign-description-input", CommittingInput).value.strip() or None
@@ -297,12 +312,25 @@ class CampaignDetailScreen(TableSageScreen):
         def on_dismiss(name: str | None) -> None:
             if name is None:
                 return
-            try:
-                created = self.application.create_session(self._campaign_id, name)
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
-            self.app.push_screen(SessionDetailScreen(created.id))
+
+            def proceed() -> None:
+                try:
+                    created = self.application.create_session(self._campaign_id, name)
+                except ValueError as exc:
+                    self.notify(str(exc), severity="error")
+                    return
+                self.app.push_screen(SessionDetailScreen(created.id))
+
+            self.run_with_folder_collision_check(
+                title="Session Folder Exists",
+                prompt=(
+                    "A session folder already exists in this campaign's next slot on disk. "
+                    "This may be left over from a previously deleted session. Delete it and continue?"
+                ),
+                exists=lambda: self.application.session_folder_would_collide(self._campaign_id),
+                delete_existing=lambda: self.application.delete_colliding_session_folder(self._campaign_id),
+                proceed=proceed,
+            )
 
         self.app.push_screen(
             TextInputDialog(title="New Session", prompt="Enter a name", placeholder="Session name", submit_label="Create Session"),

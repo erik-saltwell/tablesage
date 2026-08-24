@@ -272,6 +272,73 @@ def test_import_voice_clips_replaces_prior_import_of_same_directory(tmp_path: Pa
     assert first_import_names.isdisjoint(second_import_names)
 
 
+def test_import_voice_clips_cleans_audio_when_requested(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_application.voice_clips import clips as clips_module
+
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    source_dir = tmp_path / "source"
+    _write_wav(source_dir / "a.wav", num_frames=16000)
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    cleaned_sources: list[Path] = []
+
+    async def fake_clean_clip(source: Path, target: Path, *, normalize: bool = False) -> None:
+        cleaned_sources.append(source)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+
+    monkeypatch.setattr(clips_module, "clean_clip", fake_clean_clip)
+
+    updated, result = application.import_voice_clips(player.id, source_dir, should_clean_audio=True)
+
+    assert cleaned_sources == [source_dir / "a.wav"]
+    assert result.imported_count == 1
+    assert updated.sample_count == 1
+
+
+def test_import_voice_clips_with_clean_audio_removes_outliers_from_disk(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_application.voice_clips import clips as clips_module
+
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    source_dir = tmp_path / "source"
+    _write_wav(source_dir / "a.wav", num_frames=16000)
+    _write_wav(source_dir / "b.wav", num_frames=16000)  # identical bytes -> duplicate outlier
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    async def fake_clean_clip(source: Path, target: Path, *, normalize: bool = False) -> None:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+
+    monkeypatch.setattr(clips_module, "clean_clip", fake_clean_clip)
+
+    updated, result = application.import_voice_clips(player.id, source_dir, should_clean_audio=True)
+
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    assert result.imported_count == 2
+    assert len(result.removed_outlier_filenames) == 1
+    assert len(list(folder.glob("import-*.wav"))) == 1
+    assert updated.sample_count == 1
+
+
+def test_import_voice_clips_without_clean_audio_keeps_outliers_on_disk(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    application = Application(tmp_path)
+    player = application.create_player(Player(name="Alice"))
+    source_dir = tmp_path / "source"
+    _write_wav(source_dir / "a.wav", num_frames=16000)
+    _write_wav(source_dir / "b.wav", num_frames=16000)  # identical bytes -> duplicate outlier
+    monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
+
+    updated, result = application.import_voice_clips(player.id, source_dir)
+
+    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    assert result.imported_count == 2
+    assert result.removed_outlier_filenames == ()
+    assert len(list(folder.glob("import-*.wav"))) == 2
+    assert updated.sample_count == 1
+
+
 def test_find_prior_import_clips_survives_player_rename(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))

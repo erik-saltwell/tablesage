@@ -11,6 +11,7 @@ from textual.screen import Screen
 from textual.widgets import Footer
 from textual.worker import Worker, WorkerState
 
+from ..dialogs.generic import ConfirmationDialog
 from ..dialogs.progress import ProgressDialog
 from ..widgets.tablesage_header import TableSageHeader
 
@@ -67,6 +68,40 @@ class TableSageScreen(Screen[None]):
 
     def refresh_data(self) -> None:
         """Reload the data this screen displays. No-op by default; override in screens that show live data."""
+
+    def run_with_folder_collision_check(
+        self,
+        *,
+        title: str,
+        prompt: str,
+        exists: Callable[[], bool],
+        delete_existing: Callable[[], None],
+        proceed: Callable[[], None],
+        on_cancel: Callable[[], None] | None = None,
+    ) -> None:
+        """Guard a create/rename that's about to claim an on-disk folder against a stray orphan already sitting there.
+
+        `exists`/`delete_existing`/`proceed` are the three ends the caller
+        wires up (an existence check, a deletion, and the actual create/rename);
+        this owns the shared middle -- no collision runs `proceed` straight
+        away, a collision prompts "delete and continue?" and only calls
+        `delete_existing` then `proceed` on confirmation. Cancelling always
+        aborts outright (consistent with every other confirmation dialog in
+        the app) rather than looping back to retry -- `on_cancel`, if given, is
+        for cosmetic cleanup only (e.g. resetting an input field), not a retry.
+        """
+        if not exists():
+            proceed()
+            return
+
+        def on_confirm(confirmed: bool | None) -> None:
+            if confirmed:
+                delete_existing()
+                proceed()
+            elif on_cancel is not None:
+                on_cancel()
+
+        self.app.push_screen(ConfirmationDialog(title=title, prompt=prompt), on_confirm)
 
     def run_with_progress(self, *, title: str, message: str, work: Callable[[], ResultT], on_success: Callable[[ResultT], None]) -> None:
         """Run `work` on a background thread behind a cancel-less `ProgressDialog`.

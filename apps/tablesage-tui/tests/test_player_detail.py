@@ -25,6 +25,7 @@ def _application(*, player: Player | None = None, clips: list[VoiceClip] | None 
         list_voice_clips=MagicMock(return_value=clips or []),
         validate_import_source=MagicMock(return_value=None),
         find_prior_import_clips=MagicMock(return_value=[]),
+        player_folder_exists=MagicMock(return_value=False),
     )
 
 
@@ -176,6 +177,57 @@ async def test_rename_duplicate_shows_error_and_reverts() -> None:
         await pilot.press("enter")
         await pilot.pause()
 
+        assert name_input.value == "Alice"
+
+
+@pytest.mark.anyio
+async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> None:
+    player = Player(name="Alice")
+    application = _application(player=player)
+    application.player_folder_exists = MagicMock(return_value=True)
+    application.delete_orphan_player_folder = MagicMock()
+    application.rename_player = MagicMock(return_value=Player(id=player.id, name="Bob"))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        name_input.focus()
+        name_input.value = "Bob"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.rename_player.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_orphan_player_folder.assert_called_once_with("Bob")
+        application.rename_player.assert_called_once_with(player.id, "Bob")
+
+
+@pytest.mark.anyio
+async def test_rename_folder_collision_cancelled_reverts_input() -> None:
+    player = Player(name="Alice")
+    application = _application(player=player)
+    application.player_folder_exists = MagicMock(return_value=True)
+    application.rename_player = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        name_input.focus()
+        name_input.value = "Bob"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        await pilot.press("escape")
+        await pilot.pause()
+
+        application.rename_player.assert_not_called()
         assert name_input.value == "Alice"
 
 
@@ -486,14 +538,19 @@ async def test_directory_import_without_prior_clips_imports_directly(tmp_path: P
         picker = pilot.app.screen
         assert isinstance(picker, SelectDirectory)
 
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
         with patch.object(PlayerDetailScreen, "notify") as notify:
-            picker.dismiss(tmp_path)
+            await pilot.press("tab", "enter")
             await pilot.pause()
             await _wait_for_progress_worker(pilot)
 
         assert isinstance(pilot.app.screen, PlayerDetailScreen)
         application.import_voice_clips.assert_called_once()
         assert application.import_voice_clips.call_args.args[:2] == (player.id, tmp_path)
+        assert application.import_voice_clips.call_args.kwargs["should_clean_audio"] is False
         assert pilot.app.screen.query_one("#player-sample-count-value", Static).render() == "3"
         notify.assert_called_once_with("Imported 3 clip(s).")
 
@@ -521,6 +578,10 @@ async def test_directory_import_with_prior_clips_confirms_first(tmp_path: Path) 
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
+        await pilot.press("tab", "enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
         application.import_voice_clips.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
@@ -528,6 +589,7 @@ async def test_directory_import_with_prior_clips_confirms_first(tmp_path: Path) 
         await _wait_for_progress_worker(pilot)
 
         application.import_voice_clips.assert_called_once()
+        assert application.import_voice_clips.call_args.kwargs["should_clean_audio"] is False
         assert isinstance(pilot.app.screen, PlayerDetailScreen)
 
 
@@ -572,12 +634,50 @@ async def test_directory_import_reports_rejected_and_replaced_counts(tmp_path: P
         picker = pilot.app.screen
         assert isinstance(picker, SelectDirectory)
 
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
         with patch.object(PlayerDetailScreen, "notify") as notify:
-            picker.dismiss(tmp_path)
+            await pilot.press("tab", "enter")
             await pilot.pause()
             await _wait_for_progress_worker(pilot)
 
         notify.assert_called_once_with("Imported 1 clip(s). Replaced 2 prior clip(s). Skipped 1 (couldn't embed).")
+
+
+@pytest.mark.anyio
+async def test_directory_import_clean_audio_confirmed_passes_flag_and_reports_outliers(tmp_path: Path) -> None:
+    player = Player(name="Alice")
+    updated_player = Player(id=player.id, name="Alice", sample_count=2)
+    application = _application(player=player)
+    application.import_voice_clips = MagicMock(
+        return_value=(
+            updated_player,
+            ImportResult(imported_count=3, replaced_count=0, rejected_filenames=(), removed_outlier_filenames=("dup.wav",)),
+        )
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, SelectDirectory)
+
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
+        with patch.object(PlayerDetailScreen, "notify") as notify:
+            await pilot.press("tab", "tab", "enter")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        application.import_voice_clips.assert_called_once()
+        assert application.import_voice_clips.call_args.kwargs["should_clean_audio"] is True
+        notify.assert_called_once_with("Imported 3 clip(s). Removed 1 outlier clip(s).")
 
 
 @pytest.mark.anyio

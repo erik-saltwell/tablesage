@@ -96,12 +96,25 @@ class CampaignListScreen(TableSageScreen):
         def on_dismiss(name: str | None) -> None:
             if not name:
                 return
-            try:
-                self.application.create_campaign(Campaign(name=name))
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
-            self._reload_campaigns()
+
+            def proceed() -> None:
+                try:
+                    self.application.create_campaign(Campaign(name=name))
+                except ValueError as exc:
+                    self.notify(str(exc), severity="error")
+                    return
+                self._reload_campaigns()
+
+            self.run_with_folder_collision_check(
+                title="Campaign Folder Exists",
+                prompt=(
+                    f"A campaign folder named '{name}' already exists on disk. "
+                    "This may be left over from a previously deleted campaign. Delete it and continue?"
+                ),
+                exists=lambda: self.application.campaign_folder_exists(name),
+                delete_existing=lambda: self.application.delete_orphan_campaign_folder(name),
+                proceed=proceed,
+            )
 
         self.app.push_screen(
             TextInputDialog(

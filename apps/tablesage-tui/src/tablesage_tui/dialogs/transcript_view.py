@@ -10,6 +10,7 @@ from textual.screen import ModalScreen
 from textual.widgets import Button, DataTable
 
 from ..audio_playback import ClipPlayer
+from ..widgets import EqualWidthButtonRow
 
 
 def _format_timestamp(seconds: float) -> str:
@@ -22,10 +23,11 @@ class TranscriptViewDialog(ModalScreen[None]):
 
     There's no way to reassign or exclude an individual utterance here (see
     `.documentation/import_players_from_audio_file.md` -- editing stays speaker-ID
-    level), but pressing `P` plays the selected row's clip to help judge it, since
-    transcript text alone doesn't always settle "is this really who I think it is."
-    Playback is bound to a dedicated key, not row selection, so browsing the table
-    with the cursor never triggers audio by accident.
+    level), but pressing `P` (or the "Play Clip" button -- every other action in this app
+    is reachable without memorizing a key, so this one is too) plays the selected row's
+    clip to help judge it, since transcript text alone doesn't always settle "is this
+    really who I think it is." Playback is bound to a dedicated key, not row selection,
+    so browsing the table with the cursor never triggers audio by accident.
     """
 
     BINDINGS = [
@@ -49,7 +51,9 @@ class TranscriptViewDialog(ModalScreen[None]):
                 text = clip.utterance.punctuated_text if clip.utterance.punctuated_text is not None else clip.utterance.text
                 table.add_row(_format_timestamp(clip.utterance.start), text or "(no dialogue captured)", key=str(index))
             yield table
-            yield Button("Close", id="transcript-view-close")
+            with EqualWidthButtonRow(classes="dialog-actions"):
+                yield Button("Play Clip", id="transcript-view-play")
+                yield Button("Close", id="transcript-view-close")
 
     def action_play_selected(self) -> None:
         if not self._clips:
@@ -64,7 +68,9 @@ class TranscriptViewDialog(ModalScreen[None]):
         self._player.play(clip.clip_path)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "transcript-view-close":
+        if event.button.id == "transcript-view-play":
+            self.action_play_selected()
+        elif event.button.id == "transcript-view-close":
             self.dismiss(None)
 
     def action_close(self) -> None:

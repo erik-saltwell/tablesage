@@ -22,6 +22,23 @@ def create_named_entity_folder(root: Path, name: str, *, kind: str) -> None:
         raise ValueError(f"A {kind} folder named '{name}' already exists on disk.") from exc
 
 
+def named_entity_folder_exists(root: Path, name: str) -> bool:
+    """Preflight check for `create_named_entity_folder`/a rename target -- is `root/name` already on disk?
+
+    Used to detect a stray orphan folder (left behind by the soft-delete
+    pattern -- see `cleanup_orphan_dirs`) before it would otherwise cause a
+    create or rename to fail, so the caller can offer to delete it first.
+    """
+    return (root / name).is_dir()
+
+
+def delete_named_entity_folder(root: Path, name: str) -> None:
+    """Delete `root/name` outright -- for clearing a stray orphan folder a caller already confirmed with the user."""
+    folder = root / name
+    if folder.is_dir():
+        shutil.rmtree(folder)
+
+
 def rename_named_entity(session: Session, entity: _NamedEntity, new_name: str, root: Path, *, kind: str) -> None:
     """Rename ``entity.name`` in the DB and its on-disk folder as one operation.
 

@@ -94,12 +94,25 @@ class PlayersListScreen(TableSageScreen):
         def on_dismiss(name: str | None) -> None:
             if not name:
                 return
-            try:
-                self.application.create_player(Player(name=name))
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
-            self._reload_players()
+
+            def proceed() -> None:
+                try:
+                    self.application.create_player(Player(name=name))
+                except ValueError as exc:
+                    self.notify(str(exc), severity="error")
+                    return
+                self._reload_players()
+
+            self.run_with_folder_collision_check(
+                title="Player Folder Exists",
+                prompt=(
+                    f"A player folder named '{name}' already exists on disk. "
+                    "This may be left over from a previously deleted player. Delete it and continue?"
+                ),
+                exists=lambda: self.application.player_folder_exists(name),
+                delete_existing=lambda: self.application.delete_orphan_player_folder(name),
+                proceed=proceed,
+            )
 
         self.app.push_screen(
             TextInputDialog(

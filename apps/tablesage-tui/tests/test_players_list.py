@@ -26,6 +26,7 @@ def _application(*, players: list | None = None) -> MagicMock:
         list_campaigns=MagicMock(return_value=[]),
         audio_import_extensions=MagicMock(return_value=frozenset({".wav", ".mp3"})),
         validate_import_audio_source=MagicMock(),
+        player_folder_exists=MagicMock(return_value=False),
     )
 
 
@@ -239,6 +240,59 @@ async def test_new_player_cancelled_does_not_create() -> None:
         await pilot.press("escape")
         await pilot.pause()
 
+        application.create_player.assert_not_called()
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_new_player_folder_collision_prompts_then_deletes_and_creates() -> None:
+    created = Player(name="Alice")
+    application = _application()
+    application.player_folder_exists = MagicMock(return_value=True)
+    application.delete_orphan_player_folder = MagicMock()
+    application.create_player = MagicMock(return_value=created)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.create_player.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_orphan_player_folder.assert_called_once_with("Alice")
+        application.create_player.assert_called_once()
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_new_player_folder_collision_cancelled_does_not_create() -> None:
+    application = _application()
+    application.player_folder_exists = MagicMock(return_value=True)
+    application.delete_orphan_player_folder = MagicMock()
+    application.create_player = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        await pilot.press("escape")
+        await pilot.pause()
+
+        application.delete_orphan_player_folder.assert_not_called()
         application.create_player.assert_not_called()
         assert isinstance(pilot.app.screen, PlayersListScreen)
 

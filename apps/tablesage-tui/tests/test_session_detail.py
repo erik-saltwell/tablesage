@@ -228,10 +228,16 @@ async def test_import_audio_no_downstream_artifacts_imports_directly(tmp_path: P
 
             picker.dismiss(source)
             await pilot.pause()
+
+            assert isinstance(pilot.app.screen, ConfirmationDialog)
+            await pilot.press("tab", "tab", "enter")
+            await pilot.pause()
             await _wait_for_progress_worker(pilot)
 
             application.validate_import_audio_source.assert_called_once_with(source)
-            import_audio.assert_called_once_with(source, session_folder, application.settings.session_audio_import.normalize_volume)
+            import_audio.assert_called_once_with(
+                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
+            )
             assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
@@ -280,13 +286,76 @@ async def test_import_audio_with_downstream_artifacts_confirms_first(tmp_path: P
             await pilot.pause()
 
             assert isinstance(pilot.app.screen, ConfirmationDialog)
+            await pilot.press("tab", "tab", "enter")
+            await pilot.pause()
+
+            assert isinstance(pilot.app.screen, ConfirmationDialog)
             import_audio.assert_not_called()
 
             await pilot.press("tab", "tab", "enter")
             await pilot.pause()
             await _wait_for_progress_worker(pilot)
 
-            import_audio.assert_called_once_with(source, session_folder, application.settings.session_audio_import.normalize_volume)
+            import_audio.assert_called_once_with(
+                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
+            )
+
+
+@pytest.mark.anyio
+async def test_import_audio_wav_skip_cleaning_declined(tmp_path: Path) -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    session_folder = tmp_path / "session"
+    application = _application(session=session, session_folder=session_folder)
+    application.validate_import_audio_source = MagicMock()
+    source = tmp_path / "recording.wav"
+
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
+        async with TableSageApp(application).run_test() as pilot:
+            await _open_session_detail(pilot, session.id)
+
+            await pilot.press("i")
+            await pilot.pause()
+            picker = pilot.app.screen
+            assert isinstance(picker, FileOpen)
+
+            picker.dismiss(source)
+            await pilot.pause()
+
+            assert isinstance(pilot.app.screen, ConfirmationDialog)
+            await pilot.press("tab", "enter")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+            import_audio.assert_called_once_with(
+                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=False
+            )
+
+
+@pytest.mark.anyio
+async def test_import_audio_non_wav_skips_clean_prompt(tmp_path: Path) -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    session_folder = tmp_path / "session"
+    application = _application(session=session, session_folder=session_folder)
+    application.validate_import_audio_source = MagicMock()
+    source = tmp_path / "recording.m4a"
+
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
+        async with TableSageApp(application).run_test() as pilot:
+            await _open_session_detail(pilot, session.id)
+
+            await pilot.press("i")
+            await pilot.pause()
+            picker = pilot.app.screen
+            assert isinstance(picker, FileOpen)
+
+            picker.dismiss(source)
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+            import_audio.assert_called_once_with(
+                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
+            )
+            assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio

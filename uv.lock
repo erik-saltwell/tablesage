@@ -4260,18 +4260,18 @@ source = { editable = "packages/tablesage-application" }
 dependencies = [
     { name = "jinja2" },
     { name = "sqlmodel" },
-    { name = "structlog" },
     { name = "tablesage-model" },
     { name = "tablesage-tools" },
+    { name = "widelog-py" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "jinja2", specifier = ">=3.1.0" },
     { name = "sqlmodel", specifier = ">=0.0.39" },
-    { name = "structlog", specifier = ">=25.1.0" },
     { name = "tablesage-model", editable = "packages/tablesage-model" },
     { name = "tablesage-tools", editable = "packages/tablesage-tools" },
+    { name = "widelog-py", specifier = ">=2026.7.2" },
 ]
 
 [[package]]
@@ -4335,9 +4335,9 @@ dependencies = [
     { name = "modelscope", extra = ["framework"] },
     { name = "punctuators" },
     { name = "pydantic" },
-    { name = "structlog" },
     { name = "torch" },
     { name = "torchaudio" },
+    { name = "widelog-py" },
 ]
 
 [package.metadata]
@@ -4351,9 +4351,9 @@ requires-dist = [
     { name = "modelscope", extras = ["framework"], specifier = ">=1.36.3" },
     { name = "punctuators", specifier = ">=0.0.7" },
     { name = "pydantic", specifier = ">=2.12.5" },
-    { name = "structlog", specifier = ">=25.1.0" },
     { name = "torch", specifier = "==2.10.0" },
     { name = "torchaudio", specifier = "==2.10.0" },
+    { name = "widelog-py", specifier = ">=2026.7.2" },
 ]
 
 [[package]]
@@ -5047,6 +5047,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/b6/b9afed2afadddaf5ebb2afa801abf4b0868f42f8539bfe4b071b5266c9fe/websockets-16.0-cp314-cp314t-win32.whl", hash = "sha256:5a4b4cc550cb665dd8a47f868c8d04c8230f857363ad3c9caf7a0c3bf8c61ca6", size = 178085, upload-time = "2026-01-10T09:23:33.816Z" },
     { url = "https://files.pythonhosted.org/packages/9f/3e/28135a24e384493fa804216b79a6a6759a38cc4ff59118787b9fb693df93/websockets-16.0-cp314-cp314t-win_amd64.whl", hash = "sha256:b14dc141ed6d2dde437cddb216004bcac6a1df0935d79656387bd41632ba0bbd", size = 178531, upload-time = "2026-01-10T09:23:35.016Z" },
     { url = "https://files.pythonhosted.org/packages/6f/28/258ebab549c2bf3e64d2b0217b973467394a9cea8c42f70418ca2c5d0d2e/websockets-16.0-py3-none-any.whl", hash = "sha256:1637db62fad1dc833276dded54215f2c7fa46912301a24bd94d45d46a011ceec", size = 171598, upload-time = "2026-01-10T09:23:45.395Z" },
+]
+
+[[package]]
+name = "widelog-py"
+version = "2026.7.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/46/8968fb2bbe7f6f60f734920007e57e5732508fa1ca4a63d68b72f0765fbd/widelog_py-2026.7.2.tar.gz", hash = "sha256:6a13e107c8df919d43287c687910ca6f6146553d21930bab1815467957b112eb", size = 23654, upload-time = "2026-07-30T07:36:43.624Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/91/de623dff9efe6ee1aed148f3f146740b2f837d3c588f2deb3a6202916fdc/widelog_py-2026.7.2-py3-none-any.whl", hash = "sha256:41d8adcba37b0e27fee64b4e0a57627e904c7199b8d9a1f50ef4ee702ac7fb17", size = 13798, upload-time = "2026-07-30T07:36:42.24Z" },
 ]
 
 [[package]]

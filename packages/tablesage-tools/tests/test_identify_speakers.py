@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import importlib
+import math
 from pathlib import Path
 from typing import cast
+from unittest.mock import MagicMock
 
 import pytest
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
@@ -92,3 +94,63 @@ async def test_transcript_round_trips_similarity_margin(tmp_path: Path) -> None:
 def test_transcript_defaults_similarity_margin_to_none() -> None:
     utterance = _transcript().utterances[0]
     assert utterance.similarity_margin is None
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_skips_embedding_for_too_short_utterance(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def _fail_if_called(input_path: Path, output_wav: Path, start: float, end: float) -> None:
+        raise AssertionError("extract_clip should not run for a too-short utterance")
+
+    monkeypatch.setattr(identify_speakers_module, "extract_clip", _fail_if_called)
+
+    transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 0.01)])
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([])
+
+    result = await identify_speakers(transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+
+    assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
+    assert result.utterances[0].similarity_margin == pytest.approx(0.0)
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_leaves_unassigned_on_nan_embedding(tmp_path: Path) -> None:
+    """A candidate embedding that comes back NaN (a model/data bug, not a bad match) must
+    still leave the utterance unassigned, with a NaN margin rather than a misleading number."""
+    transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 1.0)])
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([Embedding(root=(float("nan"), float("nan")))])
+
+    result = await identify_speakers(transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+
+    assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
+    assert result.utterances[0].similarity_margin is not None
+    assert math.isnan(result.utterances[0].similarity_margin)
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_does_not_log_diagnostics_by_default(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log_diagnostic = MagicMock()
+    monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
+
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
+
+    await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+
+    log_diagnostic.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_logs_diagnostics_with_threshold_when_enabled(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log_diagnostic = MagicMock()
+    monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
+
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
+
+    await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, log_diagnostics=True)
+
+    assert log_diagnostic.call_count == 2
+    for call in log_diagnostic.call_args_list:
+        assert call.kwargs["similarity_margin_threshold"] == 0.1

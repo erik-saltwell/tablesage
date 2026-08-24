@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
 import pytest
@@ -108,3 +109,37 @@ def test_similarity_computer_returns_best_match_index() -> None:
     assert result.mean_similarity == pytest.approx(0.5)
     assert result.margin == pytest.approx(1.0)
     assert result.best_match_similarity == pytest.approx(1.0)
+    assert result.second_best_index == 0
+    assert result.second_best_similarity == pytest.approx(0.0, abs=1e-6)
+    assert result.similarities == pytest.approx((0.0, 1.0), abs=1e-6)
+
+
+def test_similarity_computer_pushes_nan_reference_to_the_bottom() -> None:
+    """A single corrupt reference centroid shouldn't poison the margin for every candidate --
+    only a NaN candidate embedding (propagating to every comparison) should do that."""
+    references = (
+        Embedding(root=(1.0, 0.0)),
+        Embedding(root=(0.0, 1.0)),
+        Embedding(root=(float("nan"), float("nan"))),
+    )
+    computer = SimilarityComputer(references=references)
+
+    result = computer.compute_similarity(Embedding(root=(1.0, 0.0)))
+
+    assert result.best_match_index == 0
+    assert result.second_best_index == 1
+    assert math.isnan(result.similarities[2])
+    assert not math.isnan(result.margin)
+
+
+def test_similarity_computer_reports_nan_margin_for_nan_candidate() -> None:
+    references = (
+        Embedding(root=(1.0, 0.0)),
+        Embedding(root=(0.0, 1.0)),
+    )
+    computer = SimilarityComputer(references=references)
+
+    result = computer.compute_similarity(Embedding(root=(float("nan"), float("nan"))))
+
+    assert math.isnan(result.margin)
+    assert all(math.isnan(s) for s in result.similarities)

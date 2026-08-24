@@ -155,6 +155,7 @@ def test_propose_attendees_aggregates_by_speaker_in_first_appearance_order(tmp_p
         embed=lambda path: _unit_embedding(1.0, 0.0),
         propose_speakers=propose_speakers,
         similarity_margin_threshold=0.1,
+        enhance_settings=_ENHANCE_SETTINGS,
     )
 
     assert [p.speaker_id for p in result.proposals] == ["speaker_0", "speaker_1"]
@@ -165,6 +166,90 @@ def test_propose_attendees_aggregates_by_speaker_in_first_appearance_order(tmp_p
     assert result.proposals[0].matched_player_id is None
     assert set(result.speaker_clips) == {"speaker_0", "speaker_1"}
     assert len(result.speaker_clips["speaker_0"]) == 1
+
+
+def test_propose_attendees_skips_degenerate_duration_utterances_without_extracting_them(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A zero-length utterance (e.g. a diarization rounding artifact) must never reach extract_clip/ffmpeg.
+
+    Regression test: extract_clip previously received every utterance's raw start/end
+    unconditionally, so a start == end utterance produced an ffmpeg `-ss`/`-to` range ffmpeg
+    refuses to open, crashing the whole run.
+    """
+    extracted: list[tuple[float, float]] = []
+
+    async def _tracking_extract_clip(input_path: Path, output_wav: Path, start: float, end: float) -> None:
+        extracted.append((start, end))
+        _write_wav(output_wav)
+
+    monkeypatch.setattr(pia_module, "extract_clip", _tracking_extract_clip)
+
+    def _utterance(speaker: str, start: float, end: float) -> Utterance:
+        return Utterance(speaker=speaker, start=start, end=end, words=[_word("word", speaker, start, end)])
+
+    transcript = Transcript(
+        utterances=[
+            _utterance("speaker_0", 0.0, 2.0),
+            _utterance("speaker_0", 2.0, 2.0),  # degenerate: zero duration
+            _utterance("speaker_1", 3.0, 4.0),
+        ]
+    )
+
+    def propose_speakers(utterance_texts: list[tuple[str, str]], candidates: list[SpeakerCandidate]) -> list[SpeakerGuess]:
+        return [SpeakerGuess(speaker_label=sid, player=sid, confidence="low") for sid, _text in utterance_texts]
+
+    result = propose_attendees(
+        tmp_path / "cleaned.wav",
+        tmp_path,
+        transcript,
+        candidates=[],
+        existing_player_centroids={},
+        embed=lambda path: _unit_embedding(1.0, 0.0),
+        propose_speakers=propose_speakers,
+        similarity_margin_threshold=0.1,
+        enhance_settings=_ENHANCE_SETTINGS,
+    )
+
+    assert extracted == [(0.0, 2.0), (3.0, 4.0)]
+    assert len(result.speaker_clips["speaker_0"]) == 1
+    assert result.proposals[0].utterance_count == 2  # counts every utterance, not just duration-qualifying ones
+
+
+def test_propose_attendees_speaker_with_no_qualifying_clips_skips_audio_match(tmp_path: Path) -> None:
+    """A speaker whose every utterance is outside the duration bounds gets no centroid and no audio match --
+    `compute_centroid` must never be called with an empty clip list."""
+    alice_id, bob_id = uuid.uuid4(), uuid.uuid4()
+
+    def _utterance(speaker: str, start: float, end: float) -> Utterance:
+        return Utterance(speaker=speaker, start=start, end=end, words=[_word("word", speaker, start, end)])
+
+    transcript = Transcript(
+        utterances=[
+            _utterance("speaker_0", 0.0, 2.0),
+            _utterance("speaker_1", 5.0, 5.0),  # degenerate: only utterance for speaker_1
+        ]
+    )
+
+    def propose_speakers(utterance_texts: list[tuple[str, str]], candidates: list[SpeakerCandidate]) -> list[SpeakerGuess]:
+        return [SpeakerGuess(speaker_label=sid, player=sid, confidence="low") for sid, _text in utterance_texts]
+
+    result = propose_attendees(
+        tmp_path / "cleaned.wav",
+        tmp_path,
+        transcript,
+        candidates=[],
+        existing_player_centroids={alice_id: ("Alice", _unit_embedding(1.0, 0.0)), bob_id: ("Bob", _unit_embedding(0.0, 1.0))},
+        embed=lambda path: _unit_embedding(1.0, 0.0),
+        propose_speakers=propose_speakers,
+        similarity_margin_threshold=0.1,
+        enhance_settings=_ENHANCE_SETTINGS,
+    )
+
+    assert result.speaker_clips["speaker_1"] == ()
+    assert "speaker_1" not in result.speaker_centroids
+    by_speaker = {p.speaker_id: p for p in result.proposals}
+    assert by_speaker["speaker_1"].matched_player_id is None
 
 
 def test_propose_attendees_skips_existing_player_match_below_two_references(tmp_path: Path) -> None:
@@ -182,6 +267,7 @@ def test_propose_attendees_skips_existing_player_match_below_two_references(tmp_
         embed=lambda path: _unit_embedding(1.0, 0.0),
         propose_speakers=propose_speakers,
         similarity_margin_threshold=0.1,
+        enhance_settings=_ENHANCE_SETTINGS,
     )
 
     assert all(p.matched_player_id is None for p in result.proposals)
@@ -210,6 +296,7 @@ def test_propose_attendees_matches_existing_player_above_margin_threshold(tmp_pa
         embed=embed,
         propose_speakers=propose_speakers,
         similarity_margin_threshold=0.1,
+        enhance_settings=_ENHANCE_SETTINGS,
     )
 
     by_speaker = {p.speaker_id: p for p in result.proposals}

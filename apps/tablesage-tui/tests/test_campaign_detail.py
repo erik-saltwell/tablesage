@@ -36,6 +36,8 @@ def _application(
         can_generate_summary=MagicMock(return_value=(False, "Process the session first.")),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
         can_export_artifacts=MagicMock(return_value=(False, "No artifacts to export yet.")),
+        campaign_folder_exists=MagicMock(return_value=False),
+        session_folder_would_collide=MagicMock(return_value=False),
     )
 
 
@@ -179,6 +181,36 @@ async def test_duplicate_rename_shows_error_and_resets_value() -> None:
         await pilot.pause()
 
         assert name_input.value == "Iron Pact"
+
+
+@pytest.mark.anyio
+async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    application.campaign_folder_exists = MagicMock(return_value=True)
+    application.delete_orphan_campaign_folder = MagicMock()
+    application.rename_campaign = MagicMock(return_value=Campaign(id=campaign.id, name="Ashen Crown"))
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
+        name_input.focus()
+        await pilot.pause()
+        name_input.value = "Ashen Crown"
+
+        await pilot.press("tab")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.rename_campaign.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_orphan_campaign_folder.assert_called_once_with("Ashen Crown")
+        application.rename_campaign.assert_called_once_with(campaign.id, "Ashen Crown")
 
 
 @pytest.mark.anyio
@@ -465,6 +497,61 @@ async def test_new_session_creates_and_opens_session_detail() -> None:
 
         application.create_session.assert_called_once_with(campaign.id, "Session One")
         assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -> None:
+    campaign = Campaign(name="Iron Pact")
+    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    application = _application(campaign=campaign)
+    application.session_folder_would_collide = MagicMock(return_value=True)
+    application.delete_colliding_session_folder = MagicMock()
+    application.create_session = MagicMock(return_value=created)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        application.create_session.assert_not_called()
+
+        await pilot.press("tab", "tab", "enter")
+        await pilot.pause()
+
+        application.delete_colliding_session_folder.assert_called_once_with(campaign.id)
+        application.create_session.assert_called_once_with(campaign.id, "Session One")
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_new_session_folder_collision_cancelled_does_not_create() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    application.session_folder_would_collide = MagicMock(return_value=True)
+    application.create_session = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+        await pilot.press("escape")
+        await pilot.pause()
+
+        application.create_session.assert_not_called()
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
 
 
 @pytest.mark.anyio

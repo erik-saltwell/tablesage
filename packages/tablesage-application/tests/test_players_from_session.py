@@ -70,9 +70,8 @@ def _setup_session(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[App
     application.add_player_to_campaign(campaign.id, alice.id, GAME_MASTER_ROLE)
     application.add_player_to_campaign(campaign.id, bob.id, "Bob's Character")
 
+    # roster membership predates session creation, so both are auto-seeded as attendees
     game_session = application.create_session(campaign.id, "Session One")
-    application.add_attendance(game_session.id, alice.id)
-    application.add_attendance(game_session.id, bob.id)
 
     session_folder = application.session_folder(game_session.id)
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")

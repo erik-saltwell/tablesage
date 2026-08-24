@@ -3,6 +3,8 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+import widelog
+
 from ..paths import ARTIFACTS, ArtifactName
 
 
@@ -28,4 +30,7 @@ def can_export_artifacts(session_folder: Path) -> tuple[bool, str | None]:
 
 def export_artifact(session_folder: Path, artifact_name: ArtifactName, destination: Path) -> None:
     """Copy `artifact_name`'s file to `destination`. The source is untouched -- this is a plain copy, never a move."""
-    shutil.copyfile(session_folder / ARTIFACTS[artifact_name].filename, destination)
+    with widelog.wide_event(
+        op="export_artifact", session_folder=str(session_folder), artifact_name=artifact_name.value, destination=str(destination)
+    ):
+        shutil.copyfile(session_folder / ARTIFACTS[artifact_name].filename, destination)

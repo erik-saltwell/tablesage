@@ -7,6 +7,7 @@ from collections.abc import Callable, Mapping, Sequence
 from datetime import date
 from pathlib import Path
 
+import widelog
 from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
@@ -16,9 +17,9 @@ from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 
 from . import paths, player_import_from_audio, players_from_session
+from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
-from .observability import wide_event
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
 from .voice_clips import clips
 
@@ -83,6 +84,14 @@ class Application:
         with Session(self._engine) as session:
             return campaigns.cleanup_orphan_campaign_dirs(session, paths.campaigns_root(self._cwd))
 
+    def campaign_folder_exists(self, name: str) -> bool:
+        """Preflight check for `create_campaign`/`rename_campaign` -- would `name` collide with a stray orphan folder?"""
+        return named_entity_folder_exists(paths.campaigns_root(self._cwd), name)
+
+    def delete_orphan_campaign_folder(self, name: str) -> None:
+        """Delete a stray campaign folder the user already confirmed clearing, so `create_campaign`/`rename_campaign` can proceed."""
+        delete_named_entity_folder(paths.campaigns_root(self._cwd), name)
+
     # Players
 
     def create_player(self, player: Player) -> Player:
@@ -91,6 +100,14 @@ class Application:
             session.commit()
             session.refresh(result)
             return result
+
+    def player_folder_exists(self, name: str) -> bool:
+        """Preflight check for `create_player`/`rename_player` -- would `name` collide with a stray orphan folder?"""
+        return named_entity_folder_exists(paths.players_root(self._cwd), name)
+
+    def delete_orphan_player_folder(self, name: str) -> None:
+        """Delete a stray player folder the user already confirmed clearing, so `create_player`/`rename_player` can proceed."""
+        delete_named_entity_folder(paths.players_root(self._cwd), name)
 
     def list_players(self) -> list[Player]:
         with Session(self._engine) as session:
@@ -167,7 +184,12 @@ class Application:
             return clips.find_prior_import_clips(folder, source_dir)
 
     def import_voice_clips(
-        self, player_id: uuid.UUID, source_dir: Path, on_progress: Callable[[int, int], None] | None = None
+        self,
+        player_id: uuid.UUID,
+        source_dir: Path,
+        on_progress: Callable[[int, int], None] | None = None,
+        *,
+        should_clean_audio: bool = False,
     ) -> tuple[Player, clips.ImportResult]:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
@@ -183,6 +205,8 @@ class Application:
                 on_progress,
                 outliers.min_sample_similarity,
                 outliers.min_samples,
+                should_clean_audio=should_clean_audio,
+                normalize_volume=self._settings.audio_cleaning.normalize_volume,
             )
             session.commit()
             session.refresh(result)
@@ -257,9 +281,35 @@ class Application:
             if campaign is None:
                 raise ValueError("Campaign not found.")
             result = sessions.create_session(session, campaign_id, name, session_date, paths.campaign_folder(self._cwd, campaign.name))
+            sessions.seed_attendance_from_previous_session_or_roster(session, campaign_id, result.id)
             session.commit()
             session.refresh(result)
             return result
+
+    def session_folder_would_collide(self, campaign_id: uuid.UUID) -> bool:
+        """Preflight check for `create_session` -- does a stray orphan folder already occupy the next session slot?
+
+        Unlike `player_folder_exists`/`campaign_folder_exists`, the colliding
+        name (a zero-padded sequence number, e.g. "001") is never something
+        the user typed or sees -- it's computed the same way `create_session`
+        itself computes it (`sessions.next_sequence_number`), so both agree
+        on which on-disk slot is about to be used.
+        """
+        with Session(self._engine) as session:
+            campaign = session.get(Campaign, campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
+            next_sequence = sessions.next_sequence_number(session, campaign_id)
+            return named_entity_folder_exists(paths.campaign_folder(self._cwd, campaign.name), f"{next_sequence:03d}")
+
+    def delete_colliding_session_folder(self, campaign_id: uuid.UUID) -> None:
+        """Delete the stray session folder the user already confirmed clearing, so `create_session` can proceed."""
+        with Session(self._engine) as session:
+            campaign = session.get(Campaign, campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
+            next_sequence = sessions.next_sequence_number(session, campaign_id)
+            delete_named_entity_folder(paths.campaign_folder(self._cwd, campaign.name), f"{next_sequence:03d}")
 
     def list_sessions(self, campaign_id: uuid.UUID) -> list[GameSession]:
         with Session(self._engine) as session:
@@ -421,7 +471,6 @@ class Application:
 
     # Import players from audio (Players List's "From Audio", F)
 
-    @wide_event
     def import_players_from_audio_transcribe(
         self,
         source_audio_path: Path,
@@ -441,7 +490,6 @@ class Application:
             should_clean_audio=should_clean_audio,
         )
 
-    @wide_event
     def import_players_from_audio_propose(
         self,
         cleaned_audio_path: Path,
@@ -465,28 +513,30 @@ class Application:
             self._embed_clip,
             self._propose_speakers,
             self._settings.speaker_identification.similarity_margin_threshold,
+            self._settings.enhance_voices,
             on_progress,
         )
 
-    @wide_event
     def _propose_speakers(
         self, utterance_texts: list[tuple[str, str]], candidates: list[player_import_from_audio.SpeakerCandidate]
     ) -> list[player_import_from_audio.SpeakerGuess]:
-        template_data = player_import_from_audio.SpeakerProposalPromptData(
-            speakers=[{"speaker_id": speaker_id, "transcript": text} for speaker_id, text in utterance_texts],
-            candidates=[{"name": candidate.name, "role": ", ".join(candidate.roles)} for candidate in candidates],
-        )
-        raw = asyncio.run(
-            call_llm_with_prompt(
-                PromptName.PROPOSE_SPEAKERS,
-                template_data,
-                self._settings.llm_model,
-                response_model=player_import_from_audio.SpeakerGuesses,
+        with widelog.wide_event(op="propose_speakers", speaker_count=len(utterance_texts)) as log:
+            template_data = player_import_from_audio.SpeakerProposalPromptData(
+                speakers=[{"speaker_id": speaker_id, "transcript": text} for speaker_id, text in utterance_texts],
+                candidates=[{"name": candidate.name, "role": ", ".join(candidate.roles)} for candidate in candidates],
             )
-        )
-        return player_import_from_audio.SpeakerGuesses.model_validate_json(raw).speakers
+            raw = asyncio.run(
+                call_llm_with_prompt(
+                    PromptName.PROPOSE_SPEAKERS,
+                    template_data,
+                    self._settings.llm_model,
+                    response_model=player_import_from_audio.SpeakerGuesses,
+                )
+            )
+            guesses = player_import_from_audio.SpeakerGuesses.model_validate_json(raw).speakers
+            log.set(guess_count=len(guesses))
+            return guesses
 
-    @wide_event
     def import_players_from_audio_build(
         self,
         source_audio_path: Path,
