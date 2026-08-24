@@ -52,6 +52,7 @@ def _application(
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
+        session_player_roles=MagicMock(return_value={}),
         embedding_factory=MagicMock(),
         settings=AppSettings(),
     )
@@ -397,9 +398,12 @@ async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path:
             transcribe.assert_called_once_with(
                 session_folder,
                 {},
+                {},
                 application.embedding_factory.return_value,
                 application.settings.transcription_and_diarization,
                 application.settings.speaker_identification,
+                application.settings.remove_backchannels,
+                application.settings.llm_model_lite,
                 on_progress=screen._on_transcribe_progress,
             )
             notify.assert_called_once_with("Transcribed. 3 of 10 utterances need speaker review.")

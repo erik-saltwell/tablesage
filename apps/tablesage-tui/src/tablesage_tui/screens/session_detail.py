@@ -27,6 +27,7 @@ _STAGE_LABELS = {
     transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
     transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
     transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
+    transcribe_audio.Stage.REMOVING_BACKCHANNELS: "Removing backchannels…",
 }
 
 
@@ -278,6 +279,7 @@ class SessionDetailScreen(TableSageScreen):
     def action_transcribe_audio(self) -> None:
         session_folder = self.application.session_folder(self._session_id)
         centroids = self.application.session_player_centroids(self._session_id)
+        role_names = self.application.session_player_roles(self._session_id)
         settings = self.application.settings
 
         def work() -> transcribe_audio.TranscriptionResult:
@@ -289,14 +291,18 @@ class SessionDetailScreen(TableSageScreen):
             return transcribe_audio.transcribe_audio(
                 session_folder,
                 centroids,
+                role_names,
                 embed,
                 settings.transcription_and_diarization,
                 settings.speaker_identification,
+                settings.remove_backchannels,
+                settings.llm_model_lite,
                 on_progress=self._on_transcribe_progress,
             )
 
-        # No invalidation guard: transcribe_audio only ever (over)writes transcript.json/.md,
-        # never touches processed_session.json/summary.md, so there's nothing to warn about.
+        # No invalidation guard: transcribe_audio only ever (over)writes transcript.json/.md
+        # and transcript_roles.md, never touches processed_session.json/summary.md, so
+        # there's nothing to warn about.
         self.run_with_progress(
             title="Transcribe",
             message=_STAGE_LABELS[transcribe_audio.Stage.TRANSCRIBING],

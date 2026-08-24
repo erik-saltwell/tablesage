@@ -36,12 +36,19 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
     max_clip_seconds: float = 8.0
 
 
+class RemoveBackchannelsSettings(BaseModel, frozen=True):
+    enabled: bool = False
+    max_words: PositiveInt = 3
+
+
 class AppSettings(BaseModel, frozen=True):
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
     remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
     enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
+    remove_backchannels: RemoveBackchannelsSettings = Field(default_factory=RemoveBackchannelsSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"
+    llm_model_lite: str = "anthropic/claude-haiku-4-5"
     clean_clips_on_import: bool = False
     session_audio_import: SessionAudioImportSettings = Field(default_factory=SessionAudioImportSettings)

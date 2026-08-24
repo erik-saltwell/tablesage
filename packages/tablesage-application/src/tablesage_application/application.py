@@ -379,6 +379,18 @@ class Application:
                     centroids[player.name] = Embedding.model_validate(json.loads(player.centroid_embedding))
             return centroids
 
+    def session_player_roles(self, session_id: uuid.UUID) -> dict[str, str]:
+        """Attending players' first (alphabetically) role name that session, keyed by player name.
+
+        `transcribe_audio`'s role-transcript input.
+        """
+        with Session(self._engine) as session:
+            role_names: dict[str, str] = {}
+            for attendee in sessions.list_attendance(session, session_id):
+                if attendee.roles:
+                    role_names[attendee.player_name] = attendee.roles[0]
+            return role_names
+
     def validate_import_audio_source(self, source_path: Path) -> None:
         import_audio.validate_import_source(source_path)
 

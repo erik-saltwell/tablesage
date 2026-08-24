@@ -1,0 +1,8 @@
+{% for candidate in candidates %}
+candidate_id: {{ candidate.candidate_id }}
+previous_utterance: {{ candidate.previous_utterance }}
+utterance: {{ candidate.utterance }}
+
+{% endfor %}
+For each candidate above, decide whether "utterance" answers a question posed in
+"previous_utterance".

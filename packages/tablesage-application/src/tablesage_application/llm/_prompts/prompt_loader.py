@@ -11,6 +11,7 @@ class PromptName(StrEnum):
 
     SUMMARIZE_SESSION = "summarize_session"
     PROPOSE_SPEAKERS = "propose_speakers"
+    CLASSIFY_BACKCHANNELS = "classify_backchannels"
 
 
 def read_system_prompt(name: PromptName) -> str:

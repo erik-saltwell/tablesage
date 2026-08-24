@@ -1,0 +1,49 @@
+# One backchannel phrase per line, already in the normalized form
+# `clean_text_for_evaluation` produces (lowercase, punctuation removed,
+# whitespace collapsed) -- e.g. "uh-huh" -> "uhhuh", "mm-hmm" -> "mmhmm".
+# Blank lines and lines starting with # are ignored.
+
+ah
+all right
+cool
+exactly
+excellent
+finally
+for real
+go on
+good
+got it
+gotcha
+great
+hm
+hmm
+huh
+i see
+interesting
+makes sense
+mhm
+mm
+mmhmm
+nice
+no
+no way
+oh
+oh okay
+ok
+okay
+really
+right
+so
+sure
+totally
+true
+uhhuh
+um
+wow
+yea
+yeah
+yeah yeah
+yeah yeah yeah
+yep
+yes
+yup

@@ -14,6 +14,7 @@ class ArtifactName(Enum):
     SUMMARY = "summary"
     TRANSCRIPT = "transcript"
     TRANSCRIPT_TEXT = "transcript_text"
+    TRANSCRIPT_ROLES_TEXT = "transcript_roles_text"
 
 
 class ArtifactCategory(Enum):
@@ -54,6 +55,9 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ),
     ArtifactName.TRANSCRIPT_TEXT: ArtifactSpec(
         "transcript.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=True, display_name="Transcript"
+    ),
+    ArtifactName.TRANSCRIPT_ROLES_TEXT: ArtifactSpec(
+        "transcript_roles.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (Roles)"
     ),
     ArtifactName.PROCESSED_SESSION: ArtifactSpec(
         "processed_session.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Processed Session"

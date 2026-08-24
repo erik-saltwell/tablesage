@@ -71,6 +71,7 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     result = transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
+        {"Alice": "Wizard"},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
@@ -79,10 +80,31 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     assert result == TranscriptionResult(utterance_count=2, unassigned_speaker_count=0)
     transcript_json = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
     transcript_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename
+    transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
     assert transcript_json.is_file()
     assert transcript_text.is_file()
+    assert transcript_roles_text.is_file()
     assert "Alice" in transcript_text.read_text()
     assert "hello." in transcript_text.read_text()
+    assert "Wizard" in transcript_roles_text.read_text()
+    assert "Alice" not in transcript_roles_text.read_text()
+
+
+def test_transcribe_audio_role_transcript_falls_back_to_speaker_when_role_missing(tmp_path: Path) -> None:
+    session_folder = tmp_path
+    (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+
+    transcribe_audio(
+        session_folder,
+        {"Alice": _fake_embedding()},
+        {},
+        embed=_NO_EMBED,
+        transcription_settings=_TRANSCRIPTION_SETTINGS,
+        speaker_id_settings=_SPEAKER_ID_SETTINGS,
+    )
+
+    transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+    assert "Alice" in transcript_roles_text.read_text()
 
 
 def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
@@ -93,6 +115,7 @@ def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
+        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
@@ -120,6 +143,7 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
         transcribe_audio(
             session_folder,
             {"Alice": _fake_embedding()},
+            {},
             embed=_NO_EMBED,
             transcription_settings=_TRANSCRIPTION_SETTINGS,
             speaker_id_settings=_SPEAKER_ID_SETTINGS,
@@ -127,6 +151,7 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
 
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).exists()
+    assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).exists()
 
 
 def _fake_embedding() -> Embedding:

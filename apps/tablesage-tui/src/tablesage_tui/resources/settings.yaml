@@ -56,3 +56,22 @@ enhance_voices:
   min_clip_seconds: 1.0
   # Utterances longer than this are likely a mis-segmented run-on; excluded.
   max_clip_seconds: 8.0
+
+remove_backchannels:
+  # Session Detail's "Transcribe" (T) can drop pure backchannels ("yeah",
+  # "mhm", "right", ...) after punctuation. A candidate utterance (short and
+  # wordlist-matching) is confirmed by a cheap LLM call (llm_model_lite
+  # below) before removal, so a real short answer to a question ("Yeah.")
+  # isn't mistaken for an acknowledgment. Off by default.
+  enabled: true
+  # An utterance longer than this many words is never considered a
+  # backchannel candidate, regardless of wordlist match.
+  max_words: 3
+
+# The default model for high-confidence LLM calls (e.g. proposing speaker
+# identities from a transcript).
+llm_model: anthropic/claude-sonnet-4-5
+# A cheaper/faster model for lightweight LLM calls that don't need
+# llm_model's full capability (e.g. remove_backchannels' candidate
+# disambiguation above).
+llm_model_lite: anthropic/claude-haiku-4-5
