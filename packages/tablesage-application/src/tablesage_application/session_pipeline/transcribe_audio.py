@@ -18,8 +18,8 @@ from tablesage_tools.speakers import UNASSIGNED_SPEAKER, identify_speakers
 from tablesage_tools.transcription import transcribe_and_diarize
 
 from ..entities.sessions import list_attendance
-from ..paths import ARTIFACTS, ArtifactName
-from .artifacts import session_artifacts
+from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
+from .artifacts import invalidate_category, session_artifacts
 from .remove_backchannels import remove_backchannels
 
 
@@ -93,8 +93,8 @@ def transcribe_audio(
     Reads `input_audio.wav` from `session_folder` and writes `transcript.json`
     (the tablesage_tools `Transcript`, machine-readable), `transcript.md` (a
     timestamped, speaker-labeled script for humans), and `transcript_roles.md`
-    (the same script with each speaker's name swapped for their in-session
-    role, for LLM consumption) there, only once every stage has succeeded --
+    (an untimestamped script with each speaker's name swapped for their
+    in-session role, for LLM consumption) there, only once every stage has succeeded --
     a failure partway through leaves no artifacts behind, matching
     `import_audio`'s all-or-nothing contract. `centroids` should be scoped to
     the session's attendees; its size is passed through to diarization as the
@@ -155,6 +155,7 @@ def transcribe_audio(
         (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).write_text(
             _render_transcript_text(transcript, role_names), encoding="utf-8"
         )
+        invalidate_category(session_folder, ArtifactCategory.FROM_LOG)
 
         unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
         log.set(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
@@ -175,6 +176,8 @@ def _render_utterance(utterance: Utterance, role_names: dict[str, str] | None = 
     speaker = utterance.speaker
     if role_names is not None and speaker != UNASSIGNED_SPEAKER:
         speaker = role_names.get(speaker, speaker)
+    if role_names is not None:
+        return f"**{speaker}** - {text}"
     return f"[{_format_timestamp(utterance.start)}] **{speaker}:** {text}"
 
 

@@ -14,6 +14,7 @@ from tablesage_tools.embeddings import Embedding
 
 PROCESSED_SESSION_FILENAME = ARTIFACTS[ArtifactName.PROCESSED_SESSION].filename
 SESSION_SUMMARY_FILENAME = ARTIFACTS[ArtifactName.SUMMARY].filename
+TRANSCRIPT_ROLES_FILENAME = ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
 
 
 def _write_wav(path: Path, *, num_frames: int = 16000, framerate: int = 16000) -> None:
@@ -230,17 +231,17 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     assert reason is None
 
 
-def test_can_generate_summary_requires_processed_session(tmp_path: Path) -> None:
+def test_can_generate_summary_requires_role_transcript(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert not enabled
-    assert reason == "Process the session first."
+    assert reason == "Transcribe the session first."
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / TRANSCRIPT_ROLES_FILENAME).write_text("**Wizard** - Hello.\n")
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert enabled

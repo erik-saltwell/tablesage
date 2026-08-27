@@ -188,23 +188,13 @@ This corresponds to "Process a session" / "Reprocess a session" in
 
 ## Summary generation (`_actions/transcription/generate_summary.py`, ported prompt logic)
 
-The prompt-assembly logic (previously `tablesage_model/_tools/llm/summary.py`,
-now intentionally *not* in `tablesage-tools` — see `system_architecture.md`'s
-rule that tools stay domain-agnostic) needs to be rebuilt in
-`tablesage-application` when summaries are reimplemented. Its rules:
-
-- Glossary is rendered as a block (`"Proper nouns in this campaign:\n- term: description"`
-  per line) and **omitted entirely** if the glossary is empty — no empty
-  "Proper nouns" header.
-- Discourse is rendered as `"{speaker}: {text}"` per utterance, one per
-  line, in utterance order.
-- Final instruction line explicitly tells the model to use glossary terms
-  "exactly as spelled" — glossary terms are meant to correct/anchor proper
-  noun spelling in the output, not just provide vague context.
-- The generated markdown becomes a new `Summary` artifact; no diffing or
-  merging with a prior summary — full replace, matching the "replaces or
-  versions the summary while preserving the transcript" rule in the use-case
-  doc.
+Summary generation lives in `tablesage-application`, keeping
+`tablesage-tools` domain-agnostic. Its current rules are captured in
+`generate_summary.md`: it reads the role transcript, always supplies an
+alphabetized campaign-glossary section, and requests plain Markdown through
+the shared application prompt helper without structured output. A successful
+run atomically replaces the prior summary; a failed or empty response preserves
+it.
 
 ## Cross-cutting notes for the rebuild
 

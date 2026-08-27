@@ -44,11 +44,10 @@ session are also managed here, since processing depends on them.
   intended shape, not current behavior), and the artifact is hidden from the
   indicator panel (`should_show_in_ui=False`) since nothing surfaces it to the
   user yet.
-- **Session summary** — a generated output derived from the processed session
-  (i.e. the canonical log, not the raw transcript) and the campaign glossary.
-  The first of what may become a family of "outputs generated from the
-  canonical format," but the only one designed today. Not yet implemented
-  (`G` is still a stub).
+- **Session summary** — a generated Markdown output derived today from the
+  role-attributed transcript and the campaign glossary. The application owns
+  that source selection so a future canonical log can replace it without
+  changing the prompt layer. See `generate_summary.md`.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
   an NPC, or a role changing after a character death).
@@ -101,7 +100,24 @@ session are also managed here, since processing depends on them.
 5. Running Transcribe again (a rerun) is the same action/binding — it
    overwrites both transcript files wholesale. No confirmation dialog: unlike
    Import/attendance edits, transcribing doesn't invalidate anything else
-   (Process, once implemented, will need to re-check its own inputs).
+   (Process, once implemented, will need to re-check its own inputs). The one
+   exception: if a human has hand-corrected speaker labels via Speaker Review
+   (see below), a rerun would silently discard them, so this specific case
+   does get a confirmation naming the count — see Speaker Review's own flow.
+
+### Review speakers
+
+1. Available (`S` enabled) only when `transcript.json` exists — no attendee
+   or centroid precondition, since this reviews whatever the transcript
+   already has, correct or not.
+2. Opens `SpeakerReviewScreen`, a fast, keyboard-first tool for hand-verifying
+   or correcting each utterance's speaker label into ground truth. See
+   `.documentation/speaker_review_screen.md` for the full design.
+3. Corrections overwrite `Utterance.speaker` in `transcript.json` directly and
+   are saved after every assignment; `Utterance.adjusted` marks which ones a
+   human actually changed. Re-running Transcribe (`T`) with any adjusted
+   utterances present now asks for confirmation first, naming the count, per
+   the note above.
 
 ### Process a session
 
@@ -124,11 +140,11 @@ from before that removal, not current behavior.
    summary, deletes the stale summary file first).
 
 ### Generate summary
-1. Available (`G` enabled) only when a processed session exists.
-2. Progress modal opens; summary is generated from the processed session plus
+1. Available (`G` enabled) only when `transcript_roles.md` exists.
+2. Progress modal opens; summary is generated from that role transcript plus
    the current campaign glossary.
-3. Written via the same temp-then-rename pattern; overwrites any existing
-   summary file.
+3. Written via a temp-then-rename pattern; overwrites any existing summary
+   only after generation succeeds.
 
 ### Manage attendance
 1. `N` (add) and `E`/Enter (edit) both open the same `AttendeeDialog` -- one
@@ -177,8 +193,8 @@ from before that removal, not current behavior.
   above). `session_pipeline.processing.can_process_session` still exists and
   is tested at that layer, but `Application` no longer exposes a wrapping
   method for it, since nothing on the TUI side calls it.
-- **Generate summary (`G`) gating**: disabled unless the processed session
-  file exists.
+- **Generate summary (`G`) gating**: disabled unless the role transcript file
+  exists.
 - **Invalidation deletes files immediately, driven by the artifact registry.**
   Any action the business rules treat as destructive — adding/removing an
   attendee, editing roles, rerunning Process — deletes every artifact whose
@@ -265,8 +281,8 @@ from before that removal, not current behavior.
      stages report `total=0` (indeterminate) on entry and `(1, 1)` on
      completion, only `IDENTIFYING_SPEAKERS` reports real per-utterance
      counts. Nothing is written to disk until the whole pipeline succeeds.
-     `process_session`/`generate_summary` (Process/Generate) are not yet
-     implemented — still stubbed on the TUI side.
+     `process_session` remains deferred; Generate Summary is implemented from
+     the role transcript and campaign glossary.
    - `Application` gained: `session_folder(session_id) -> Path` (a public
      resolver, replacing one-wrapper-per-pipeline-operation methods —
      `import_session_audio` was removed since its only job was DI-wrapping

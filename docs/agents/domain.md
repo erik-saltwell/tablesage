@@ -25,6 +25,9 @@ some other repositories use.
   list (no `VoiceSample` table), centroid recompute/auto-recompute rules, and zero-sample centroid
   clearing. Supersedes the relevant parts of the "Player Detail" section in
   `tablesage_tui_screens.md`.
+- `.documentation/speaker_review_screen.md` — the Speaker Review screen design: fast, keyboard-first
+  correction of per-utterance speaker labels into hand-verified ground truth, auto/manual playback
+  modes, single-player-mode filtering, and the `adjusted` field/re-transcribe guard.
 
 Before architecture, diagnosis, TDD, PRD, or triage work:
 

@@ -62,9 +62,7 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ArtifactName.PROCESSED_SESSION: ArtifactSpec(
         "processed_session.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Processed Session"
     ),
-    # Today's `can_generate_summary` gate reads `has_processed_session`, so this is FROM_AUDIO --
-    # it'll move to FROM_LOG once `generate_summary` is rewired to read the canonical log instead.
-    ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=True, display_name="Summary"),
+    ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),
 }
 
 AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})

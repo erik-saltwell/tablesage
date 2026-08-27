@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import jinja2
@@ -12,8 +12,8 @@ from tablesage_application.llm._prompts import read_prompt_template, read_system
 
 @dataclass
 class _SummaryPromptData:
-    discourse: str
-    glossary: str = ""
+    transcript: str
+    glossary: list[dict[str, str | None]] = field(default_factory=list)
 
 
 class _SummaryResult(BaseModel):
@@ -24,8 +24,8 @@ def test_read_system_prompt_and_template_for_summarize_session() -> None:
     system_prompt = read_system_prompt(PromptName.SUMMARIZE_SESSION)
     template = read_prompt_template(PromptName.SUMMARIZE_SESSION)
 
-    assert "summariz" in system_prompt.lower()
-    assert "{{ discourse }}" in template
+    assert "placeholder" in system_prompt.lower()
+    assert "{{ transcript }}" in template
 
 
 @pytest.mark.anyio
@@ -43,7 +43,7 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
 
     result = await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
-        _SummaryPromptData(discourse="Alice: Hello.\nBob: Hi."),
+        _SummaryPromptData(transcript="Alice: Hello.\nBob: Hi."),
         model="anthropic/claude-sonnet-4-5",
         response_model=_SummaryResult,
     )
@@ -52,15 +52,15 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
     assert captured["model"] == "anthropic/claude-sonnet-4-5"
     assert captured["response_format"] is _SummaryResult
     assert "Alice: Hello." in captured["user_prompt"]
-    assert "Proper nouns" not in captured["user_prompt"]  # empty glossary omitted
+    assert "Glossary:" in captured["user_prompt"]  # glossary section is present even when empty
     assert captured["system_prompt"] == read_system_prompt(PromptName.SUMMARIZE_SESSION)
 
 
 @pytest.mark.anyio
 async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: pytest.MonkeyPatch) -> None:
     class _PydanticPromptData(BaseModel):
-        discourse: str
-        glossary: str = ""
+        transcript: str
+        glossary: list[dict[str, str | None]]
 
     captured: dict[str, Any] = {}
 
@@ -72,10 +72,18 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
 
     await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
-        _PydanticPromptData(discourse="Alice: Hello.", glossary="Eldoria: a kingdom"),
+        _PydanticPromptData(
+            transcript="Alice: Hello.",
+            glossary=[
+                {"term": "Aldor", "description": None},
+                {"term": "Eldoria", "description": "a kingdom"},
+            ],
+        ),
     )
 
+    assert "- Aldor\n" in captured["user_prompt"]
     assert "Eldoria: a kingdom" in captured["user_prompt"]
+    assert "None" not in captured["user_prompt"]
 
 
 @pytest.mark.anyio
@@ -88,7 +96,7 @@ async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.Monke
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
 
-    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(discourse="x"))
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(transcript="x"))
 
     assert captured["model"] == DEFAULT_LLM_MODEL
 

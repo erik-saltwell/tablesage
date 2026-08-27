@@ -5,12 +5,20 @@ from pathlib import Path
 
 import widelog
 
-from ..paths import ARTIFACTS, ArtifactName
+from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
 
 
 def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
     """What exists on disk for a session -- drives the indicator panel and the P/G/T gates."""
     return {name: (session_folder / spec.filename).is_file() for name, spec in ARTIFACTS.items()}
+
+
+def invalidate_category(session_folder: Path, category: ArtifactCategory) -> None:
+    """Delete every existing session artifact in *category*."""
+    with widelog.wide_event(op="invalidate_artifact_category", session_folder=str(session_folder), category=category.value):
+        for spec in ARTIFACTS.values():
+            if spec.category is category:
+                (session_folder / spec.filename).unlink(missing_ok=True)
 
 
 def exportable_artifacts(session_folder: Path) -> list[ArtifactName]:

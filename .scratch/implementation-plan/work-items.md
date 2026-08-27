@@ -26,10 +26,12 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 8 | Session Detail screen | Implemented | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | `0f4284a` |
 | 9 | Import player from file system | Implemented | [`.documentation/import_player_from_filesystem.md`](../../.documentation/import_player_from_filesystem.md) | `6842595` |
 | 11 | Process session | Implemented | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | `15f52b8` |
-| 12 | Generate summary | Designed | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | — |
+| 12 | Generate summary | Designed | [`.documentation/generate_summary.md`](../../.documentation/generate_summary.md) | — |
 | 13 | Player Detail cleanup (unused samples) | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `36d6d05` |
 | 14 | Import players from audio file | Implemented | [`.documentation/import_players_from_audio_file.md`](../../.documentation/import_players_from_audio_file.md) | `f01c5c1` |
 | 15 | Enhance players from session | Implemented | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | `e478ad2` |
 | 16 | Punctuated transcript as its own artifact | Implemented | — | `15f52b8` |
 | 17 | Export artifact command | Implemented | [`.documentation/export_artifact.md`](../../.documentation/export_artifact.md) | `a242a0a` |
 | 18 | Move to textual-fspicker for file/directory picking | Implemented | — | `c741008` |
+| 19 | Deepen Summary generation module | Designed | [`.documentation/deepen_summary_generation_module.md`](../../.documentation/deepen_summary_generation_module.md) | — |
+| 20 | Speaker Review screen | Designed | [`.documentation/speaker_review_screen.md`](../../.documentation/speaker_review_screen.md) | — |

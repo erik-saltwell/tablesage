@@ -148,8 +148,8 @@ two distinct work items, tracked separately in
 
 ## Phase 12 — Generate summary
 
-- Wires Session Detail's `G` binding (stubbed in Phase 8) to real summary generation from the processed session plus the current campaign glossary, same temp-then-rename write pattern as Phase 11.
-- `G` gating: processed session file present.
+- Wires Session Detail's `G` binding (stubbed in Phase 8) to summary generation from `transcript_roles.md` plus the current campaign glossary, with atomic temp-then-rename replacement.
+- `G` gating: role transcript file present.
 - Shares the progress-modal and toast+banner failure handling built in Phase 11.
 
 ## Phase 13 — Player Detail cleanup (unused voice samples) — done

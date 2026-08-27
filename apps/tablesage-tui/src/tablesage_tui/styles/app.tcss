@@ -1314,6 +1314,44 @@ SessionDetailScreen {
 }
 
 /* ******************************** */
+/*      speaker review screen       */
+/* ******************************** */
+
+SpeakerReviewScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #speaker-review-panel {
+        width: 1fr;
+        height: 1fr;
+        layout: vertical;
+    }
+
+    #speaker-review-status {
+        height: 1;
+        margin: 0 0 1 0;
+
+        Static {
+            width: auto;
+            margin: 0 3 0 0;
+            color: $fg-accent;
+            text-style: bold;
+        }
+    }
+
+    #speaker-review-legend {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-muted;
+    }
+
+    #speaker-review-table {
+        height: 1fr;
+    }
+}
+
+/* ******************************** */
 /*  player import from audio wizard */
 /* ******************************** */
 

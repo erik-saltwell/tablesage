@@ -1,9 +1,6 @@
-{% if glossary %}
-Proper nouns in this campaign:
-{{ glossary }}
-
-{% endif %}
+Glossary:
+{% for entry in glossary -%}
+- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
+{% endfor %}
 Transcript:
-{{ discourse }}
-
-Summarize the session above. If any proper nouns from the glossary appear, use them exactly as spelled.
+{{ transcript }}

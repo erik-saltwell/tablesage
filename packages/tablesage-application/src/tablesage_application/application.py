@@ -20,7 +20,8 @@ from . import paths, player_import_from_audio, players_from_session
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
-from .session_pipeline import artifacts, import_audio, processing, transcribe_audio
+from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
+from .session_pipeline import generate_summary as generate_summary_pipeline
 from .voice_clips import clips
 
 
@@ -402,10 +403,59 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return processing.can_generate_summary(self._session_folder(session, game_session))
 
+    def generate_summary(self, session_id: uuid.UUID) -> None:
+        """Generate and atomically replace a session's Markdown summary."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            transcript_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+            if not transcript_path.is_file():
+                raise ValueError("Transcribe the session first.")
+
+            entries = sorted(glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold())
+            prompt_glossary = [
+                generate_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
+            ]
+            transcript = transcript_path.read_text(encoding="utf-8")
+
+        with widelog.wide_event(op="generate_summary", session_id=str(session_id), glossary_entry_count=len(prompt_glossary)):
+            summary = asyncio.run(generate_summary_pipeline.generate_summary(transcript, prompt_glossary, self._settings.llm_model))
+            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.SUMMARY].filename
+            temp_target = target.with_name(f".{target.stem}.tmp{target.suffix}")
+            try:
+                temp_target.write_text(summary, encoding="utf-8")
+                temp_target.replace(target)
+            except Exception:
+                temp_target.unlink(missing_ok=True)
+                raise
+
     def can_transcribe_audio(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return transcribe_audio.can_transcribe_audio(session, session_id, self._session_folder(session, game_session))
+
+    # Speaker review -- see `.documentation/speaker_review_screen.md`.
+
+    def extract_review_clips(self, session_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return transcript_review.extract_review_clips(self._session_folder(session, game_session), on_progress)
+
+    def discard_review_clips(self, session_id: uuid.UUID) -> None:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            transcript_review.discard_review_clips(self._session_folder(session, game_session))
+
+    def save_transcript(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            transcript.save(session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT].filename)
+
+    def count_adjusted_utterances(self, session_id: uuid.UUID) -> int:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return transcript_review.count_adjusted_utterances(self._session_folder(session, game_session))
 
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:

@@ -19,6 +19,7 @@ from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
+from .speaker_review import SpeakerReviewScreen
 
 if TYPE_CHECKING:
     from tablesage_application.entities.sessions import Attendee
@@ -43,6 +44,7 @@ class SessionDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
+        Binding("s,S", "review_speakers", "Review Speakers", key_display="S"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
         Binding("x,X", "export_artifacts", "Export Artifact", key_display="X"),
     ]
@@ -183,6 +185,8 @@ class SessionDetailScreen(TableSageScreen):
         if action == "transcribe_audio":
             enabled, _ = self.application.can_transcribe_audio(self._session_id)
             return True if enabled else None
+        if action == "review_speakers":
+            return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate_summary":
             enabled, _ = self.application.can_generate_summary(self._session_id)
             return True if enabled else None
@@ -277,6 +281,31 @@ class SessionDetailScreen(TableSageScreen):
     # Transcribe
 
     def action_transcribe_audio(self) -> None:
+        # No generic invalidation guard: a successful transcription replaces its transcript
+        # artifacts and invalidates FROM_LOG outputs; a failed one preserves them. But if a
+        # human has hand-corrected speaker labels via Speaker Review (S), rerunning here would
+        # silently discard them -- guarded separately, by count, rather than folded into
+        # `_with_invalidation_guard`'s generic wording.
+        adjusted_count = self.application.count_adjusted_utterances(self._session_id)
+        if adjusted_count:
+            plural = "" if adjusted_count == 1 else "s"
+
+            def on_confirm(confirmed: bool | None) -> None:
+                if confirmed:
+                    self._do_transcribe_audio()
+
+            self.app.push_screen(
+                ConfirmationDialog(
+                    title="This Will Discard Hand-Corrected Speaker Labels",
+                    prompt=f"This will discard {adjusted_count} hand-corrected speaker label{plural}. Continue?",
+                ),
+                on_confirm,
+            )
+            return
+
+        self._do_transcribe_audio()
+
+    def _do_transcribe_audio(self) -> None:
         session_folder = self.application.session_folder(self._session_id)
         centroids = self.application.session_player_centroids(self._session_id)
         role_names = self.application.session_player_roles(self._session_id)
@@ -300,9 +329,6 @@ class SessionDetailScreen(TableSageScreen):
                 on_progress=self._on_transcribe_progress,
             )
 
-        # No invalidation guard: transcribe_audio only ever (over)writes transcript.json/.md
-        # and transcript_roles.md, never touches processed_session.json/summary.md, so
-        # there's nothing to warn about.
         self.run_with_progress(
             title="Transcribe",
             message=_STAGE_LABELS[transcribe_audio.Stage.TRANSCRIBING],
@@ -320,11 +346,24 @@ class SessionDetailScreen(TableSageScreen):
         else:
             self.notify("Transcribed.")
 
-    # Generate -- gated (see check_action), but the pipeline itself is
-    # stubbed until Phase 12.
+    # Review speakers -- gated on the transcript artifact existing (see check_action).
+
+    def action_review_speakers(self) -> None:
+        self.app.push_screen(SpeakerReviewScreen(self._session_id))
+
+    # Generate -- gated by the role-transcript artifact (see check_action).
 
     def action_generate_summary(self) -> None:
-        self.notify("Generating a summary is coming soon.")
+        self.run_with_progress(
+            title="Generate Summary",
+            message="Generating summary…",
+            work=lambda: self.application.generate_summary(self._session_id),
+            on_success=self._after_generate_summary,
+        )
+
+    def _after_generate_summary(self, _result: None) -> None:
+        self._refresh_indicators()
+        self.notify("Summary generated.")
 
     # Export -- gated (see check_action).
 

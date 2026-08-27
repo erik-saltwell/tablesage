@@ -86,8 +86,8 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     assert transcript_roles_text.is_file()
     assert "Alice" in transcript_text.read_text()
     assert "hello." in transcript_text.read_text()
-    assert "Wizard" in transcript_roles_text.read_text()
-    assert "Alice" not in transcript_roles_text.read_text()
+    assert "[00:00:00] **Alice:** hello." in transcript_text.read_text()
+    assert transcript_roles_text.read_text() == "**Wizard** - hello.\n\n**Wizard** - world.\n"
 
 
 def test_transcribe_audio_role_transcript_falls_back_to_speaker_when_role_missing(tmp_path: Path) -> None:
@@ -130,6 +130,27 @@ def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
     assert calls[-1] == (Stage.PUNCTUATING, 1, 1)
 
 
+def test_successful_transcription_invalidates_from_log_artifacts(tmp_path: Path) -> None:
+    session_folder = tmp_path
+    (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
+    processed_path = session_folder / ARTIFACTS[ArtifactName.PROCESSED_SESSION].filename
+    summary_path.write_text("stale summary")
+    processed_path.write_text("{}")
+
+    transcribe_audio(
+        session_folder,
+        {"Alice": _fake_embedding()},
+        {},
+        embed=_NO_EMBED,
+        transcription_settings=_TRANSCRIPTION_SETTINGS,
+        speaker_id_settings=_SPEAKER_ID_SETTINGS,
+    )
+
+    assert not summary_path.exists()
+    assert processed_path.exists()
+
+
 def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     async def _failing_punctuate(transcript: Transcript) -> Transcript:
         raise RuntimeError("model exploded")
@@ -138,6 +159,8 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
 
     session_folder = tmp_path
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
+    summary_path.write_text("existing summary")
 
     with pytest.raises(RuntimeError, match="model exploded"):
         transcribe_audio(
@@ -152,6 +175,7 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).exists()
+    assert summary_path.read_text() == "existing summary"
 
 
 def _fake_embedding() -> Embedding:

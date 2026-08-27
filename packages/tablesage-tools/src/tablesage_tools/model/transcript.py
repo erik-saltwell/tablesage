@@ -29,6 +29,11 @@ class Utterance(BaseModel):
     # comparison against attendee centroids -- set for every utterance (assigned or
     # UNASSIGNED_SPEAKER), None only for a transcript produced before this field existed.
     similarity_margin: float | None = None
+    # True once a human has changed this utterance's `speaker` via the Speaker Review
+    # screen (see `.documentation/speaker_review_screen.md`). Narrower than "reviewed" --
+    # confirming an already-correct label, or auto-playing past it untouched, never sets
+    # this. Drives the "discard N hand-corrected labels" guard before a re-transcribe.
+    adjusted: bool = False
 
     @computed_field
     @property
