@@ -33,5 +33,5 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 16 | Punctuated transcript as its own artifact | Implemented | — | `15f52b8` |
 | 17 | Export artifact command | Implemented | [`.documentation/export_artifact.md`](../../.documentation/export_artifact.md) | `a242a0a` |
 | 18 | Move to textual-fspicker for file/directory picking | Implemented | — | `c741008` |
-| 19 | Deepen Summary generation module | Designed | [`.documentation/deepen_summary_generation_module.md`](../../.documentation/deepen_summary_generation_module.md) | — |
+| 19 | Deepen Summary generation module | Implemented | [`.documentation/deepen_summary_generation_module.md`](../../.documentation/deepen_summary_generation_module.md) | `903d6da` |
 | 20 | Speaker Review screen | Implemented | [`.documentation/speaker_review_screen.md`](../../.documentation/speaker_review_screen.md) | `903d6da` |
