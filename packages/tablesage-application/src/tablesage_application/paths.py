@@ -15,6 +15,7 @@ class ArtifactName(Enum):
     TRANSCRIPT = "transcript"
     TRANSCRIPT_TEXT = "transcript_text"
     TRANSCRIPT_ROLES_TEXT = "transcript_roles_text"
+    TRANSCRIPT_BENCHMARK = "transcript_benchmark"
 
 
 class ArtifactCategory(Enum):
@@ -58,6 +59,15 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ),
     ArtifactName.TRANSCRIPT_ROLES_TEXT: ArtifactSpec(
         "transcript_roles.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (Roles)"
+    ),
+    # A benchmark-only derivative of TRANSCRIPT with too-short-to-identify utterances stripped
+    # (see `session_pipeline.transcript_review.generate_benchmark_transcript`) -- generated on
+    # demand, never hand-edited, never read back by any other pipeline step. FROM_AUDIO so it's
+    # deleted (not silently left stale) alongside the transcript itself on audio re-import or an
+    # attendance edit; a re-transcribe alone doesn't delete it -- like TRANSCRIPT's own siblings,
+    # it's simply stale until regenerated on demand.
+    ArtifactName.TRANSCRIPT_BENCHMARK: ArtifactSpec(
+        "transcript_benchmark.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (Benchmark)"
     ),
     ArtifactName.PROCESSED_SESSION: ArtifactSpec(
         "processed_session.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Processed Session"

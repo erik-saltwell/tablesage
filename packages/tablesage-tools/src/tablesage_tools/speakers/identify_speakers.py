@@ -25,8 +25,11 @@ UNASSIGNED_SPEAKER: Final[str] = "Unassigned Speaker"
 # than ~110ms even though fbank succeeds -- a 2026-08-24 production run showed a hard
 # cliff, every clip <=0.10s NaN, every clip >=0.11s fine. This floor is set clear of that
 # cliff, not just fbank's, so those clips are skipped as too-short instead of reaching the
-# model at all.
-_MIN_UTTERANCE_DURATION_SECONDS: Final[float] = 0.15
+# model at all. Public (not module-private): a benchmark that scores this function's output
+# against hand-corrected ground truth needs the identical floor to exclude utterances this
+# function could never have judged in the first place -- see
+# `session_pipeline.transcript_review.generate_benchmark_transcript`.
+MIN_UTTERANCE_DURATION_SECONDS: Final[float] = 0.15
 
 # Per-utterance diagnostics live outside widelog's one-line-per-operation model: a single
 # transcribe run can carry hundreds of utterances, and root-causing a specific
@@ -73,20 +76,28 @@ async def identify_speakers(
     on_progress: Callable[[int, int], None] | None = None,
     *,
     log_diagnostics: bool = False,
+    allow_unassigned: bool = True,
 ) -> Transcript:
     """Relabel each utterance's speaker with the best-matching player name, or UNASSIGNED_SPEAKER.
 
     For each utterance, extracts its audio clip from `audio_path`, embeds it, and compares it
     against every player's centroid in `centroids`. If the margin between the best and
     second-best match is below `similarity_margin_threshold`, the utterance is left as
-    UNASSIGNED_SPEAKER rather than guessed. Raises ValueError if `centroids` has fewer than 2
-    entries (see SimilarityComputer).
+    UNASSIGNED_SPEAKER rather than guessed -- unless `allow_unassigned` is False, in which case
+    that check is skipped and the best match is always taken, regardless of how close the
+    runner-up was. Raises ValueError if `centroids` has fewer than 2 entries (see
+    SimilarityComputer).
+
+    `allow_unassigned=False` only disables the margin-confidence check; an utterance too short
+    to embed at all is still left UNASSIGNED_SPEAKER either way, since there's no embedding-based
+    judgment to skip there -- there's simply nothing to compare.
 
     `log_diagnostics=True` additionally writes one line per utterance to the
     "tablesage.speaker_identification" logger (see module docstring comment above
     `_diagnostics_logger`) -- a plain value, not an `AppSettings` object, per
     `tablesage-tools`' settings-agnostic boundary; the caller reads the toggle from
-    `AppSettings.speaker_identification.log_diagnostics`.
+    `AppSettings.speaker_identification.log_diagnostics` (and `allow_unassigned` from
+    `AppSettings.speaker_identification.allow_unassigned`).
     """
     names = list(centroids)
     similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
@@ -116,13 +127,14 @@ async def identify_speakers(
         utterance_count=total,
         speaker_names=names,
         similarity_margin_threshold=similarity_margin_threshold,
-        min_utterance_duration_seconds=_MIN_UTTERANCE_DURATION_SECONDS,
+        allow_unassigned=allow_unassigned,
+        min_utterance_duration_seconds=MIN_UTTERANCE_DURATION_SECONDS,
     ) as log:
         with TemporaryDirectory() as tmpdir:
             tmp_file = Path(tmpdir) / "tmp.wav"
             for index, utterance in enumerate(transcript.utterances):
                 duration = utterance.end - utterance.start
-                if duration < _MIN_UTTERANCE_DURATION_SECONDS:
+                if duration < MIN_UTTERANCE_DURATION_SECONDS:
                     # Too short for the embedding model's feature extractor to run on at all --
                     # leave it unassigned rather than crashing the whole transcription run.
                     too_short_count += 1
@@ -156,7 +168,7 @@ async def identify_speakers(
                         reason = "nan_similarity"
                     else:
                         margins.append(result.margin)
-                        if result.margin < similarity_margin_threshold:
+                        if allow_unassigned and result.margin < similarity_margin_threshold:
                             below_threshold_count += 1
                             speaker = UNASSIGNED_SPEAKER
                             reason = "below_margin_threshold"

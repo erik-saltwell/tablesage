@@ -132,6 +132,7 @@ def transcribe_audio(
             speaker_id_settings.similarity_margin_threshold,
             _identify_progress,
             log_diagnostics=speaker_id_settings.log_diagnostics,
+            allow_unassigned=speaker_id_settings.allow_unassigned,
         )
 
         _report(on_progress, Stage.PUNCTUATING, 0, 0)

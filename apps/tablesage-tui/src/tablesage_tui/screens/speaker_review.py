@@ -140,7 +140,7 @@ class SpeakerReviewScreen(TableSageScreen):
 
     def on_mount(self) -> None:
         self._session_folder = self.application.session_folder(self._session_id)
-        attendees = self.application.list_attendance(self._session_id)
+        attendees = sorted(self.application.list_attendance(self._session_id), key=lambda attendee: attendee.player_name.casefold())
         self._attendee_names = [attendee.player_name for attendee in attendees[:_MAX_ASSIGNABLE_ATTENDEES]]
         self.query_one("#speaker-review-legend", Static).update(self._legend_text())
 
@@ -250,11 +250,19 @@ class SpeakerReviewScreen(TableSageScreen):
     # Playback
 
     def _play(self, index: int) -> None:
+        """Play row `index`'s clip -- a no-op (not an error) if it has none.
+
+        A handful of utterances per real session have no clip: `extract_review_clips` skips
+        extraction for one whose `end` isn't strictly after its `start` (see that function's
+        docstring). Such a row is still reviewable and assignable from its text alone.
+        """
         assert self._transcript is not None and self._session_folder is not None
         utterance = self._transcript.utterances[index]
         self._clip_started_at = time.monotonic()
         self._current_duration = max(0.0, utterance.end - utterance.start)
-        self._player.play(transcript_review.clip_path(self._session_folder, index))
+        clip = transcript_review.clip_path(self._session_folder, index)
+        if clip.is_file():
+            self._player.play(clip)
         self._reschedule_auto_advance()
 
     def _reschedule_auto_advance(self) -> None:

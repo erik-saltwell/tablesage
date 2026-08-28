@@ -119,6 +119,27 @@ session are also managed here, since processing depends on them.
    utterances present now asks for confirmation first, naming the count, per
    the note above.
 
+### Generate benchmark transcript
+
+1. Available (`B` enabled) only when `transcript.json` exists — same
+   precondition as `S`.
+2. Writes `transcript_benchmark.json`: a copy of `transcript.json` with every
+   utterance under `MIN_UTTERANCE_DURATION_SECONDS`
+   (`tablesage_tools.speakers`) dropped. `identify_speakers` never attempts a
+   judgment on an utterance that short — it always leaves it
+   `UNASSIGNED_SPEAKER` regardless of what a human later assigned it from
+   context alone in Speaker Review — so scoring predictions against
+   hand-corrected ground truth that still includes them would measure the
+   too-short guard, not identification accuracy.
+3. Synchronous, no progress modal — this is in-memory filtering plus one
+   file write, not a pipeline stage. A toast reports how many utterances
+   were kept vs. excluded.
+4. This is a derived, disposable, on-demand artifact: never read by any
+   other pipeline step, never hand-edited, always regenerated wholesale
+   from whatever `transcript.json` currently contains when `B` is pressed.
+   Nothing keeps it in sync automatically — re-run `B` after any further
+   correction or re-transcribe, immediately before scoring.
+
 ### Process a session
 
 **Not currently reachable from this screen.** The `P` binding has been removed

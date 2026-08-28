@@ -83,9 +83,11 @@ changes) without introducing a second file to keep in sync.
 
 ### Assigning a speaker
 
-- `1`–`9` assign the current row to the corresponding attendee, in
-  `Application.list_attendance` order — the same order already shown in
-  Session Detail's attendance table. `0` assigns `UNASSIGNED_SPEAKER`.
+- `1`–`9` assign the current row to the corresponding attendee, sorted
+  alphabetically by player name (case-insensitive) — not attendance-table
+  order, so the same set of attendees always maps to the same numbers
+  across sessions, rather than shifting with attendance-record insertion
+  order. `0` assigns `UNASSIGNED_SPEAKER`.
 - Assignment updates `Utterance.speaker`; `Utterance.adjusted` becomes `True`
   only if the value actually changed (see Key Concepts), and once `True`
   stays `True` for that utterance even if later edits change the value
@@ -144,7 +146,7 @@ changes) without introducing a second file to keep in sync.
 | `Up` / `Down` | Move playhead one row (skips non-focus rows in single-player mode); forces Manual mode |
 | Mouse click on a row | Select that row (disabled on greyed-out rows in single-player mode); forces Manual mode |
 | `Space` | Toggle Auto ⇄ Manual |
-| `1`–`9` | Assign row to the Nth attendee (attendance order); advance playhead; mode unchanged |
+| `1`–`9` | Assign row to the Nth attendee (alphabetical order); advance playhead; mode unchanged |
 | `0` | Assign row to Unassigned Speaker; advance playhead; mode unchanged |
 | `Ctrl+1`–`Ctrl+9` | Toggle/switch single-player mode focus to the Nth attendee |
 | `R` | Replay the current row's clip |
@@ -164,6 +166,13 @@ changes) without introducing a second file to keep in sync.
   >9-attendee overflow handling.
 - Playback has no seek/scrub — only whole-clip play (`ClipPlayer`, already
   used elsewhere in the app) and whole-clip replay.
+- **A row can have no clip.** A small number of utterances per real session
+  come back from the transcription provider with a zero-duration word (start
+  equals end); `extract_review_clips` skips extraction for these (ffmpeg's
+  `-to` is an absolute timestamp, so `-ss X -to X` aborts) rather than
+  failing the whole extraction pass. Landing on such a row plays nothing —
+  no error, no notification — but the row is still fully reviewable and
+  assignable from its text.
 
 ## Out of Scope
 
@@ -241,8 +250,9 @@ changes) without introducing a second file to keep in sync.
    - Reuses `ClipPlayer` (`audio_playback.py`) as-is for play/replay — it
      already stops prior playback on a new `.play()` call.
    - A small always-visible legend (static text/side panel) listing the
-     current `1`–`9` → attendee-name mapping (from `list_attendance`) plus
-     `0` → Unassigned, so the number keys never require memorization.
+     current `1`–`9` → attendee-name mapping (`list_attendance`, sorted
+     alphabetically by name) plus `0` → Unassigned, so the number keys
+     never require memorization.
    - Auto-play's 250ms post-clip delay via `set_timer`, cancelled if the mode
      changes or the row changes before it fires.
    - Screen exit (`Escape`/pop): stop `ClipPlayer`, call

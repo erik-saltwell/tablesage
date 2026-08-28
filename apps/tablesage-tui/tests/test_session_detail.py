@@ -7,6 +7,7 @@ import pytest
 from tablesage_application.entities.sessions import Attendee
 from tablesage_application.paths import ArtifactName
 from tablesage_application.session_pipeline.transcribe_audio import TranscriptionResult
+from tablesage_application.session_pipeline.transcript_review import BenchmarkTranscriptResult
 from tablesage_model.model import CampaignPlayer, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
@@ -106,6 +107,31 @@ async def test_rename_commits_on_enter() -> None:
         await pilot.pause()
 
         application.update_session.assert_called_once_with(session.id, "Renamed", None)
+
+
+@pytest.mark.anyio
+async def test_shortcut_keys_work_again_after_committing_name_with_enter() -> None:
+    """Regression test: `Input` doesn't blur itself on Enter, so without an explicit focus
+    move after committing, the name field would keep focus indefinitely and every single-letter
+    binding (T, S, B, G, X, N, E, D) would silently type into it instead of firing."""
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(input_audio=True), can_transcribe=(True, None))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        name_input = pilot.app.screen.query_one("#session-name-input", Input)
+        name_input.focus()
+        name_input.value = "Renamed"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        with patch.object(SessionDetailScreen, "action_transcribe_audio") as action:
+            await pilot.press("t")
+            await pilot.pause()
+
+        action.assert_called_once()
+        assert name_input.value == "Renamed"  # the "t" fired the binding, it wasn't typed into the field
 
 
 @pytest.mark.anyio
@@ -512,6 +538,38 @@ async def test_review_speakers_opens_screen_when_transcript_exists() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, SpeakerReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_generate_benchmark_transcript_disabled_without_transcript() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(transcript=False))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("b")
+        await pilot.pause()
+
+        application.generate_benchmark_transcript.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_generate_benchmark_transcript_reports_counts() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(transcript=True))
+    application.generate_benchmark_transcript = MagicMock(return_value=BenchmarkTranscriptResult(kept_count=262, excluded_count=8))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            await pilot.press("b")
+            await pilot.pause()
+
+        application.generate_benchmark_transcript.assert_called_once_with(session.id)
+        notify.assert_called_once_with("Benchmark transcript written: 262 kept, 8 excluded (too short).")
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio

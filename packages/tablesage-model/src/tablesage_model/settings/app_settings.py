@@ -13,6 +13,12 @@ class RemoveOutliersSettings(BaseModel, frozen=True):
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
     similarity_margin_threshold: float = 0.1
     log_diagnostics: bool = False
+    # When False, an utterance is never left UNASSIGNED_SPEAKER just because its best-vs-runner-up
+    # similarity margin fell below similarity_margin_threshold -- the best match is taken
+    # regardless of confidence. Utterances too short to embed at all are unaffected: they're
+    # still assigned UNASSIGNED_SPEAKER either way, since there's no embedding-based judgment to
+    # skip there in the first place.
+    allow_unassigned: bool = True
 
 
 class AudioCleaningSettings(BaseModel, frozen=True):

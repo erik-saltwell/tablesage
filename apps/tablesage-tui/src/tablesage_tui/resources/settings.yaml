@@ -37,6 +37,11 @@ speaker_identification:
   # players' centroids; a match whose margin over the runner-up falls below
   # this threshold is left as "Unassigned Speaker" rather than guessed.
   similarity_margin_threshold: 0.1
+  # When false, that margin check above is skipped entirely -- the best-matching player is
+  # always assigned, however close the runner-up was. Utterances too short to embed at all are
+  # unaffected either way; they're still left "Unassigned Speaker" since there's no similarity
+  # comparison to make for them in the first place.
+  allow_unassigned: true
   # When true, "Transcribe" (T) writes one line per utterance to
   # .tablesage/logs/speaker_identification.log -- best/second-best speaker
   # match, the full per-speaker similarity vector, and why the utterance

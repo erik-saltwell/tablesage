@@ -556,6 +556,43 @@ async def test_directory_import_without_prior_clips_imports_directly(tmp_path: P
 
 
 @pytest.mark.anyio
+async def test_directory_import_table_shows_new_clips_without_pressing_f5(tmp_path: Path) -> None:
+    """Regression test: the voice-clips table must reflect a folder import immediately, with no
+    manual refresh -- `list_voice_clips` here mirrors the real app's filesystem-is-source-of-truth
+    behavior (returns whatever was most recently "imported"), unlike other tests in this file
+    where it's a fixed return value that can't distinguish stale from fresh."""
+    player = Player(name="Alice")
+    imported_clips = [VoiceClip(filename="new1.wav", duration_seconds=1.5), VoiceClip(filename="new2.wav", duration_seconds=2.0)]
+    clips_on_disk: list[VoiceClip] = []
+    application = _application(player=player)
+    application.list_voice_clips = MagicMock(side_effect=lambda _player_id: list(clips_on_disk))
+
+    def _do_import(*args: object, **kwargs: object) -> tuple[Player, ImportResult]:
+        clips_on_disk[:] = imported_clips
+        return Player(id=player.id, name="Alice", sample_count=2), ImportResult(imported_count=2, replaced_count=0, rejected_filenames=())
+
+    application.import_voice_clips = MagicMock(side_effect=_do_import)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+        assert pilot.app.screen.query_one("#voice-clips-table", DataTable).row_count == 0
+
+        await pilot.press("f")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, SelectDirectory)
+        picker.dismiss(tmp_path)
+        await pilot.pause()
+        await pilot.press("tab", "enter")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        table = pilot.app.screen.query_one("#voice-clips-table", DataTable)
+        assert table.row_count == 2
+        assert {str(cell) for cell in table.get_column("filename")} == {"new1.wav", "new2.wav"}
+
+
+@pytest.mark.anyio
 async def test_directory_import_with_prior_clips_confirms_first(tmp_path: Path) -> None:
     player = Player(name="Alice")
     application = _application(player=player)

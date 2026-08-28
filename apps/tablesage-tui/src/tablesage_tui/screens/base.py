@@ -109,7 +109,10 @@ class TableSageScreen(Screen[None]):
         `on_success` runs once `work` finishes, after the dialog is popped --
         never as the continuation of an awaited coroutine (a prior rendering
         bug traced list mutations that happened that way), always as a plain
-        `on_worker_state_changed` event-handler callback instead.
+        `on_worker_state_changed` event-handler callback instead. That callback
+        is itself deferred via `call_after_refresh` (see `on_worker_state_changed`)
+        so any widget mutation it makes (e.g. reloading a list) lands after the
+        dialog-pop's own screen transition has rendered, not racing it.
         """
         self._progress_on_success = on_success
         dialog = ProgressDialog(title=title, message=message)
@@ -168,4 +171,10 @@ class TableSageScreen(Screen[None]):
             return
 
         if on_success is not None:
-            on_success(event.worker.result)
+            # Deferred, not called inline: popping the ProgressDialog above schedules its own
+            # screen-transition render; calling straight into `on_success` here can mutate the
+            # revealed screen's widgets (e.g. reloading a table) before that transition has
+            # rendered, so the mutation loses the race and the screen shows stale content until
+            # something else (e.g. F5) forces a further repaint. `call_after_refresh` runs the
+            # callback only once the pop's own refresh has gone out.
+            self.call_after_refresh(on_success, event.worker.result)

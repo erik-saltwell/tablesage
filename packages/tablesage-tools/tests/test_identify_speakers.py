@@ -78,6 +78,54 @@ async def test_identify_speakers_leaves_unassigned_but_still_stores_margin(tmp_p
 
 
 @pytest.mark.anyio
+async def test_allow_unassigned_false_assigns_best_match_below_threshold(tmp_path: Path) -> None:
+    """With allow_unassigned=False, a low-margin match is assigned to the best candidate instead
+    of UNASSIGNED_SPEAKER -- the margin check is skipped entirely, not just its threshold relaxed."""
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    ambiguous = Embedding(root=(0.70710678, 0.70710678))
+    embed = _fake_embed([ambiguous, ambiguous])
+
+    result = await identify_speakers(
+        _transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+    )
+
+    assert all(u.speaker != UNASSIGNED_SPEAKER for u in result.utterances)
+    assert all(u.speaker in centroids for u in result.utterances)
+    # The margin is still recorded even though it wasn't used to gate the assignment.
+    assert result.utterances[0].similarity_margin == pytest.approx(0.0, abs=1e-6)
+
+
+@pytest.mark.anyio
+async def test_allow_unassigned_false_still_leaves_too_short_utterance_unassigned(tmp_path: Path) -> None:
+    """allow_unassigned only disables the margin-confidence check -- an utterance too short to
+    embed at all has no comparison to make in the first place, so it's still unassigned."""
+    transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 0.01)])
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([])
+
+    result = await identify_speakers(
+        transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+    )
+
+    assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
+
+
+@pytest.mark.anyio
+async def test_allow_unassigned_false_still_leaves_nan_embedding_unassigned(tmp_path: Path) -> None:
+    """allow_unassigned only disables the margin-confidence check -- a NaN candidate embedding
+    (a model/data bug) has no valid comparison to make, so it's still unassigned."""
+    transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 1.0)])
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed([Embedding(root=(math.nan, math.nan))])
+
+    result = await identify_speakers(
+        transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+    )
+
+    assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
+
+
+@pytest.mark.anyio
 async def test_transcript_round_trips_similarity_margin(tmp_path: Path) -> None:
     centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])

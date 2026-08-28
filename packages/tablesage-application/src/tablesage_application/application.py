@@ -457,6 +457,11 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return transcript_review.count_adjusted_utterances(self._session_folder(session, game_session))
 
+    def generate_benchmark_transcript(self, session_id: uuid.UUID) -> transcript_review.BenchmarkTranscriptResult:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return transcript_review.generate_benchmark_transcript(self._session_folder(session, game_session))
+
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:
             return sessions.list_attendance(session, session_id)

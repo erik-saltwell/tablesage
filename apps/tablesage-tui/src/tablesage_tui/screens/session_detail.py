@@ -45,6 +45,7 @@ class SessionDetailScreen(TableSageScreen):
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
         Binding("s,S", "review_speakers", "Review Speakers", key_display="S"),
+        Binding("b,B", "generate_benchmark_transcript", "Benchmark Transcript", key_display="B"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
         Binding("x,X", "export_artifacts", "Export Artifact", key_display="X"),
     ]
@@ -116,6 +117,11 @@ class SessionDetailScreen(TableSageScreen):
         if isinstance(event.input, CommittingInput):
             event.stop()
             self._commit_metadata(event.input)
+            # `Input` doesn't blur itself on Enter (unlike losing focus, which is what actually
+            # triggers `CommittingInput.Committed` -- see its docstring), so without this the
+            # field would keep focus indefinitely, silently swallowing every single-letter
+            # binding below (I/T/S/B/G/X, N/E/D) as plain text instead of firing them.
+            self.query_one("#attendance-table", DataTable).focus()
 
     def _commit_metadata(self, input_widget: CommittingInput) -> None:
         if input_widget.id == "session-name-input":
@@ -186,6 +192,8 @@ class SessionDetailScreen(TableSageScreen):
             enabled, _ = self.application.can_transcribe_audio(self._session_id)
             return True if enabled else None
         if action == "review_speakers":
+            return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
+        if action == "generate_benchmark_transcript":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate_summary":
             enabled, _ = self.application.can_generate_summary(self._session_id)
@@ -350,6 +358,13 @@ class SessionDetailScreen(TableSageScreen):
 
     def action_review_speakers(self) -> None:
         self.app.push_screen(SpeakerReviewScreen(self._session_id))
+
+    # Benchmark transcript -- gated on the transcript artifact existing (see check_action).
+    # Fast, in-memory, synchronous: no progress dialog, unlike the pipeline actions above.
+
+    def action_generate_benchmark_transcript(self) -> None:
+        result = self.application.generate_benchmark_transcript(self._session_id)
+        self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
     # Generate -- gated by the role-transcript artifact (see check_action).
 

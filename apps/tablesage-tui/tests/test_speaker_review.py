@@ -35,11 +35,29 @@ def _attendee(name: str) -> Attendee:
     return Attendee(attendance_id=uuid.uuid4(), player_id=uuid.uuid4(), player_name=name, roles=("Player",))
 
 
-def _application(*, transcript: Transcript | None = None, attendees: list[Attendee] | None = None) -> MagicMock:
+def _application(
+    *,
+    session_folder: Path,
+    transcript: Transcript | None = None,
+    attendees: list[Attendee] | None = None,
+    missing_clip_indices: set[int] | None = None,
+) -> MagicMock:
+    """Writes real (dummy-content) clip files for every utterance except `missing_clip_indices`,
+    mirroring what `extract_review_clips` actually leaves on disk -- `SpeakerReviewScreen._play`
+    checks `Path.is_file()`, so a mocked path with nothing on disk would make every playback
+    assertion pass for the wrong reason (there's simply never a file to find)."""
+    transcript = transcript or _transcript()
+    missing_clip_indices = missing_clip_indices or set()
+    clip_dir = session_folder / "speaker_review_clips"
+    clip_dir.mkdir(parents=True, exist_ok=True)
+    for index in range(len(transcript.utterances)):
+        if index not in missing_clip_indices:
+            (clip_dir / f"{index:04d}.wav").write_bytes(b"fake clip")
+
     application = MagicMock(
-        session_folder=MagicMock(return_value=Path("/tmp/session")),
+        session_folder=MagicMock(return_value=session_folder),
         list_attendance=MagicMock(return_value=attendees if attendees is not None else [_attendee("Alice"), _attendee("Bob")]),
-        extract_review_clips=MagicMock(return_value=(transcript or _transcript(), Path("/tmp/session/speaker_review_clips"))),
+        extract_review_clips=MagicMock(return_value=(transcript, clip_dir)),
         save_transcript=MagicMock(),
         discard_review_clips=MagicMock(),
     )
@@ -62,8 +80,8 @@ def _stub_playback(monkeypatch: pytest.MonkeyPatch) -> list[Path]:
 
 
 @pytest.mark.anyio
-async def test_table_renders_marker_speaker_and_text_columns() -> None:
-    application = _application()
+async def test_table_renders_marker_speaker_and_text_columns(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -75,18 +93,52 @@ async def test_table_renders_marker_speaker_and_text_columns() -> None:
 
 
 @pytest.mark.anyio
-async def test_row_zero_plays_on_open(_stub_playback: list[Path]) -> None:
-    application = _application()
+async def test_number_keys_map_to_attendees_alphabetically_not_attendance_order(tmp_path: Path) -> None:
+    """Regression test: attendees must be numbered alphabetically (case-insensitive) rather than
+    in `list_attendance`'s own order, so the same attendees always get the same numbers across
+    sessions regardless of attendance-record insertion order."""
+    application = _application(session_folder=tmp_path, attendees=[_attendee("bob"), _attendee("Alice"), _attendee("Carol")])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        assert _stub_playback == [Path("/tmp/session/speaker_review_clips/0000.wav")]
+        legend = pilot.app.screen.query_one("#speaker-review-legend", Static)
+        assert str(legend.render()) == "1: Alice   2: bob   3: Carol   0: Unassigned"
+
+        await pilot.press("1")  # should assign "Alice", the alphabetically-first attendee
+        await pilot.pause()
+
+        saved = application.save_transcript.call_args[0][1]
+        assert saved.utterances[0].speaker == "Alice"
 
 
 @pytest.mark.anyio
-async def test_assigning_a_different_speaker_saves_and_marks_adjusted() -> None:
-    application = _application()
+async def test_row_zero_plays_on_open(tmp_path: Path, _stub_playback: list[Path]) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        assert _stub_playback == [tmp_path / "speaker_review_clips" / "0000.wav"]
+
+
+@pytest.mark.anyio
+async def test_row_with_no_clip_file_does_not_play(tmp_path: Path, _stub_playback: list[Path]) -> None:
+    """Regression test: a handful of utterances per real session have no clip (see
+    `extract_review_clips`'s docstring -- a zero-duration utterance ffmpeg can't extract).
+    Landing on such a row must not error, and must simply play nothing."""
+    application = _application(session_folder=tmp_path, missing_clip_indices={0})
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        assert _stub_playback == []
+        assert isinstance(pilot.app.screen, SpeakerReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_assigning_a_different_speaker_saves_and_marks_adjusted(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
     session_id = uuid.uuid4()
 
     async with TableSageApp(application).run_test() as pilot:
@@ -107,8 +159,8 @@ async def test_assigning_a_different_speaker_saves_and_marks_adjusted() -> None:
 
 
 @pytest.mark.anyio
-async def test_assigning_the_same_speaker_does_not_mark_adjusted() -> None:
-    application = _application()
+async def test_assigning_the_same_speaker_does_not_mark_adjusted(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -122,8 +174,8 @@ async def test_assigning_the_same_speaker_does_not_mark_adjusted() -> None:
 
 
 @pytest.mark.anyio
-async def test_zero_key_assigns_unassigned_speaker() -> None:
-    application = _application()
+async def test_zero_key_assigns_unassigned_speaker(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -137,8 +189,8 @@ async def test_zero_key_assigns_unassigned_speaker() -> None:
 
 
 @pytest.mark.anyio
-async def test_space_toggles_mode_indicator() -> None:
-    application = _application()
+async def test_space_toggles_mode_indicator(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -155,8 +207,8 @@ async def test_space_toggles_mode_indicator() -> None:
 
 
 @pytest.mark.anyio
-async def test_arrow_key_forces_manual_mode() -> None:
-    application = _application()
+async def test_arrow_key_forces_manual_mode(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -175,8 +227,8 @@ async def test_arrow_key_forces_manual_mode() -> None:
 
 
 @pytest.mark.anyio
-async def test_replay_plays_the_current_row_again(_stub_playback: list[Path]) -> None:
-    application = _application()
+async def test_replay_plays_the_current_row_again(tmp_path: Path, _stub_playback: list[Path]) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -185,12 +237,12 @@ async def test_replay_plays_the_current_row_again(_stub_playback: list[Path]) ->
         await pilot.press("r")
         await pilot.pause()
 
-        assert _stub_playback == [Path("/tmp/session/speaker_review_clips/0000.wav")] * 2
+        assert _stub_playback == [tmp_path / "speaker_review_clips" / "0000.wav"] * 2
 
 
 @pytest.mark.anyio
-async def test_escape_discards_clips_and_pops_screen() -> None:
-    application = _application()
+async def test_escape_discards_clips_and_pops_screen(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
     session_id = uuid.uuid4()
 
     async with TableSageApp(application).run_test() as pilot:
@@ -204,8 +256,8 @@ async def test_escape_discards_clips_and_pops_screen() -> None:
 
 
 @pytest.mark.anyio
-async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off() -> None:
-    application = _application()
+async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -228,8 +280,8 @@ async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off() 
 
 
 @pytest.mark.anyio
-async def test_single_player_mode_with_no_utterances_notifies_instead_of_toggling() -> None:
-    application = _application(attendees=[_attendee("Alice"), _attendee("Bob"), _attendee("Carol")])
+async def test_single_player_mode_with_no_utterances_notifies_instead_of_toggling(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path, attendees=[_attendee("Alice"), _attendee("Bob"), _attendee("Carol")])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -244,8 +296,8 @@ async def test_single_player_mode_with_no_utterances_notifies_instead_of_togglin
 
 
 @pytest.mark.anyio
-async def test_arrow_key_skips_rows_outside_single_player_focus() -> None:
-    application = _application()
+async def test_arrow_key_skips_rows_outside_single_player_focus(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -261,8 +313,8 @@ async def test_arrow_key_skips_rows_outside_single_player_focus() -> None:
 
 
 @pytest.mark.anyio
-async def test_reassigning_the_focused_row_updates_membership_live() -> None:
-    application = _application()
+async def test_reassigning_the_focused_row_updates_membership_live(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
@@ -279,8 +331,8 @@ async def test_reassigning_the_focused_row_updates_membership_live() -> None:
 
 
 @pytest.mark.anyio
-async def test_mouse_click_on_a_filtered_row_bounces_back() -> None:
-    application = _application()
+async def test_mouse_click_on_a_filtered_row_bounces_back(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
