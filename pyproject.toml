@@ -64,7 +64,7 @@ select = [
 ]
 
 [tool.ty]
-environment.root = ["./packages", "./apps"]
+environment.root = ["./packages", "./apps", "./benchmarks"]
 
 [tool.ty.rules]
 unused-ignore-comment = "warn"
