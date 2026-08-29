@@ -38,17 +38,26 @@ class Embedder(Protocol):
 
 
 class Matcher(Protocol):
-    """`(utterance embeddings, centroids) -> per-utterance speaker label`.
+    """`(utterance embeddings, centroids, durations) -> per-utterance speaker label`.
 
     Takes every scored utterance's embedding at once (not one at a time) so a matcher is free to
     use cross-utterance information if it wants to -- nothing in this harness requires it, and
     today's baseline matcher (see `matchers.py`) judges each utterance independently, same as
     production `identify_speakers`.
+
+    `durations` (utterance index -> seconds) is optional metadata the harness always passes, for
+    matchers that want it (experiment #7: duration-conditioned decision rules) -- a matcher that
+    doesn't need it just ignores the parameter.
     """
 
     name: str
 
-    def match(self, embeddings: Mapping[int, Embedding], centroids: Mapping[str, Embedding]) -> Mapping[int, str]: ...
+    def match(
+        self,
+        embeddings: Mapping[int, Embedding],
+        centroids: Mapping[str, Embedding],
+        durations: Mapping[int, float] | None = None,
+    ) -> Mapping[int, str]: ...
 
 
 @dataclass(frozen=True)

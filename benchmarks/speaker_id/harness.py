@@ -65,7 +65,8 @@ def run_candidate(candidate: Candidate, sessions: list[GroundTruthSession], cach
     for session in sessions:
         centroids = build_centroids(session.attendees, players_root(REPO_ROOT), candidate.embedder, cache)
         embeddings = asyncio.run(_embed_utterances(session, candidate.embedder, cache))
-        predictions = candidate.matcher.match(embeddings, centroids)
+        durations = {index: utterance.end - utterance.start for index, utterance in enumerate(session.transcript.utterances)}
+        predictions = candidate.matcher.match(embeddings, centroids, durations)
         ground_truth = {
             index: (utterance.speaker, utterance.end - utterance.start) for index, utterance in enumerate(session.transcript.utterances)
         }

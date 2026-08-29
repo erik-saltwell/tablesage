@@ -6,7 +6,7 @@ list in code rather than a CLI.
 from __future__ import annotations
 
 from .embedders import Eres2NetV2Embedder, WeSpeakerResNet34Embedder
-from .matchers import MarginThresholdMatcher
+from .matchers import MarginAndSimilarityMatcher, MarginThresholdMatcher
 from .types import Candidate
 
 # Shared across candidates that use the same embedder so their utterance/reference embeddings
@@ -38,5 +38,17 @@ CANDIDATES: list[Candidate] = [
         name="eres2netv2-baseline",
         embedder=_eres2netv2,
         matcher=MarginThresholdMatcher(similarity_margin_threshold=0.07, allow_unassigned=True),
+    ),
+    # Experiment #7 (.scratch/speaker-id-experiments/07-richer-decision-rule.md): the robust grid
+    # winner tightens the margin for short utterances and relaxes it for >=1s utterances. The
+    # absolute-best-similarity OR-gate improved the pooled score but added errors, so the retained
+    # benchmark candidate deliberately omits it. This is not yet ported to production.
+    Candidate(
+        name="margin-duration-robust",
+        embedder=_wespeaker_resnet34,
+        matcher=MarginAndSimilarityMatcher(
+            margin_threshold=0.10,
+            duration_overrides=((1.0, 0.04),),
+        ),
     ),
 ]

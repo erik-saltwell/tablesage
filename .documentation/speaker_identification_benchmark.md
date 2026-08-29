@@ -30,9 +30,11 @@ Three stages per candidate run, two of them pluggable:
    swapping the embedder does not require a new centroid-builder. Risk to watch, not solved here:
    outlier-trim thresholds are tuned for `eres2netv2`'s distance distribution and may need retuning
    as a per-embedder constant if a structurally different model's distances are scaled differently.
-3. **Matcher** (pluggable) — `(utterance embeddings, centroids) -> per-utterance speaker label |
-   UNASSIGNED_SPEAKER`. Same shape as today's `identify_speakers`: a margin-threshold matcher is
-   one implementation, not the only one.
+3. **Matcher** (pluggable) — `(utterance embeddings, centroids, durations) -> per-utterance speaker
+   label | UNASSIGNED_SPEAKER`. The harness supplies utterance duration as optional metadata so a
+   matcher may condition its confidence rule on the amount of audio evidence (experiment #7);
+   matchers that do not need it ignore it. A margin-threshold matcher is one implementation, not
+   the only one.
 
 The same embedder must be used for both reference-clip and utterance-clip embedding within one
 candidate run — centroids and utterance embeddings from different models are not comparable.
