@@ -15,15 +15,16 @@ _wespeaker_resnet34 = WeSpeakerResNet34Embedder()
 _eres2netv2 = Eres2NetV2Embedder()
 
 CANDIDATES: list[Candidate] = [
-    # Matches apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml's shipped defaults
-    # (similarity_margin_threshold: 0.08, allow_unassigned: true) -- the permanent baseline every
-    # other candidate is compared against. wespeaker-resnet34 @ 0.08 replaced eres2netv2 @ 0.07
-    # per .scratch/speaker-id-experiments/03-wespeaker-resnet34-embedder.md and
-    # 05-threshold-sweep-leaders.md (experiments #3 and #5).
+    # Matches apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml's shipped defaults --
+    # experiment #7's duration-conditioned margin rule on the WeSpeaker embedder. This is the
+    # permanent baseline every later candidate is compared against.
     Candidate(
         name="production",
         embedder=_wespeaker_resnet34,
-        matcher=MarginThresholdMatcher(similarity_margin_threshold=0.08, allow_unassigned=True),
+        matcher=MarginAndSimilarityMatcher(
+            margin_threshold=0.10,
+            duration_overrides=((1.0, 0.04),),
+        ),
     ),
     # Same embedder and threshold, but never abstains -- demonstrates the allow_unassigned=False
     # knob against the same data, for comparison against "production" above.
@@ -39,16 +40,10 @@ CANDIDATES: list[Candidate] = [
         embedder=_eres2netv2,
         matcher=MarginThresholdMatcher(similarity_margin_threshold=0.07, allow_unassigned=True),
     ),
-    # Experiment #7 (.scratch/speaker-id-experiments/07-richer-decision-rule.md): the robust grid
-    # winner tightens the margin for short utterances and relaxes it for >=1s utterances. The
-    # absolute-best-similarity OR-gate improved the pooled score but added errors, so the retained
-    # benchmark candidate deliberately omits it. This is not yet ported to production.
+    # Historical production baseline before experiment #7's duration-conditioned rule.
     Candidate(
-        name="margin-duration-robust",
+        name="pre-experiment-7-margin-only",
         embedder=_wespeaker_resnet34,
-        matcher=MarginAndSimilarityMatcher(
-            margin_threshold=0.10,
-            duration_overrides=((1.0, 0.04),),
-        ),
+        matcher=MarginThresholdMatcher(similarity_margin_threshold=0.08, allow_unassigned=True),
     ),
 ]

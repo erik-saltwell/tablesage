@@ -143,8 +143,8 @@ leave-one-session-out check is weak evidence, not a substitute for new data.
   from `speaker_identification` settings and unpacked into plain values at the application/tools
   boundary. The packaged and active `.tablesage/settings.yaml` use 0.10 below 1.0s and 0.04 at or
   above 1.0s, with `allow_unassigned: true`.
-- Keep the robust rule registered in the benchmark as `margin-duration-robust` so future sessions
-  can test it without repeating the implementation.
+- Keep the robust rule registered as the benchmark's `production` candidate; the old margin-only
+  rule remains as `pre-experiment-7-margin-only` for historical comparison.
 - Re-run the fixed rule—without retuning—after adding more hand-corrected sessions. Adoption should
   be revisited if the per-session improvement and non-increasing error count do not hold out of
   sample.
