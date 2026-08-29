@@ -4,6 +4,7 @@ from .app_settings import (
     EnhanceVoicesSettings,
     RemoveBackchannelsSettings,
     RemoveOutliersSettings,
+    SpeakerIdentificationDurationOverrideSettings,
     SpeakerIdentificationSettings,
     TranscriptionAndDiarizationSettings,
 )
@@ -14,6 +15,7 @@ __all__ = [
     "EnhanceVoicesSettings",
     "RemoveBackchannelsSettings",
     "RemoveOutliersSettings",
+    "SpeakerIdentificationDurationOverrideSettings",
     "SpeakerIdentificationSettings",
     "TranscriptionAndDiarizationSettings",
 ]

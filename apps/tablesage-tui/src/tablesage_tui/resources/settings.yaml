@@ -33,11 +33,17 @@ transcription_and_diarization:
   model_id: scribe_v2
 
 speaker_identification:
-  # After diarization, each utterance's voice is compared against attending
-  # players' centroids; a match whose margin over the runner-up falls below
-  # this threshold is left as "Unassigned Speaker" rather than guessed.
-  similarity_margin_threshold: 0.08
-  # When false, that margin check above is skipped entirely -- the best-matching player is
+  # For utterances shorter than duration_override.min_seconds, a match whose margin over the
+  # runner-up falls below this threshold is left as "Unassigned Speaker" rather than guessed.
+  similarity_margin_threshold: 0.10
+  # Experiment #7 found that longer clips contain enough voice evidence to use a lower margin.
+  duration_override:
+    min_seconds: 1.0
+    similarity_margin_threshold: 0.04
+  # Players List's "From Audio" compares a whole diarized-speaker centroid to existing players,
+  # so it keeps its own non-duration-conditioned recommendation threshold.
+  existing_player_match_similarity_margin_threshold: 0.08
+  # When false, both margin checks above are skipped entirely -- the best-matching player is
   # always assigned, however close the runner-up was. Utterances too short to embed at all are
   # unaffected either way; they're still left "Unassigned Speaker" since there's no similarity
   # comparison to make for them in the first place.
@@ -53,7 +59,7 @@ speaker_identification:
 enhance_voices:
   # Players List's "From Session" (S) pulls high-confidence voice clips out
   # of a transcribed session's utterances. This is a stricter bar than
-  # speaker_identification's own threshold above -- an utterance can be
+  # speaker_identification's own duration-conditioned assignment rule above -- an utterance can be
   # confident enough to attribute to a player without being confident enough
   # to bank as a new training sample for that player's voice profile.
   min_margin_for_voice_sample: 0.15

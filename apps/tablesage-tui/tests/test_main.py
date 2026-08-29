@@ -17,6 +17,11 @@ def test_packaged_settings_yaml_deploys_and_loads_with_expected_defaults(tmp_pat
     assert (tmp_path / ".tablesage" / "settings.yaml").exists()
     assert settings.remove_outliers.min_sample_similarity == 0.6
     assert settings.remove_outliers.min_samples == 5
+    assert settings.speaker_identification.similarity_margin_threshold == 0.1
+    assert settings.speaker_identification.duration_override.min_seconds == 1.0
+    assert settings.speaker_identification.duration_override.similarity_margin_threshold == 0.04
+    assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
+    assert settings.speaker_identification.allow_unassigned is True
 
 
 def test_packaged_settings_yaml_is_not_redeployed_over_user_edits(tmp_path: Path) -> None:

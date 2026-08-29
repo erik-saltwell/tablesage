@@ -576,7 +576,7 @@ class Application:
             existing_centroids,
             self._embed_clip,
             self._propose_speakers,
-            self._settings.speaker_identification.similarity_margin_threshold,
+            self._settings.speaker_identification.existing_player_match_similarity_margin_threshold,
             self._settings.enhance_voices,
             on_progress,
         )

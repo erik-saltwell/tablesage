@@ -78,6 +78,47 @@ async def test_identify_speakers_leaves_unassigned_but_still_stores_margin(tmp_p
 
 
 @pytest.mark.anyio
+async def test_identify_speakers_uses_lower_margin_threshold_after_duration_override(tmp_path: Path) -> None:
+    transcript = Transcript.from_words(
+        [
+            _word("short", "speaker_0", 0.0, 0.5),
+            _word("long", "speaker_1", 1.0, 2.0),
+        ]
+    )
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    # alice≈0.743, bob≈0.669: margin≈0.074, between the 0.10 base and 0.04 override.
+    between_thresholds = Embedding(root=(1.0, 0.9))
+    embed = _fake_embed([between_thresholds, between_thresholds])
+
+    result = await identify_speakers(
+        transcript,
+        tmp_path / "input.wav",
+        centroids,
+        embed,
+        similarity_margin_threshold=0.10,
+        duration_override_min_seconds=1.0,
+        duration_override_similarity_margin_threshold=0.04,
+    )
+
+    assert [utterance.speaker for utterance in result.utterances] == [UNASSIGNED_SPEAKER, "Alice"]
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_requires_both_duration_override_values(tmp_path: Path) -> None:
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+
+    with pytest.raises(ValueError, match="must either both be set or both be omitted"):
+        await identify_speakers(
+            _transcript(),
+            tmp_path / "input.wav",
+            centroids,
+            _fake_embed([]),
+            similarity_margin_threshold=0.10,
+            duration_override_min_seconds=1.0,
+        )
+
+
+@pytest.mark.anyio
 async def test_allow_unassigned_false_assigns_best_match_below_threshold(tmp_path: Path) -> None:
     """With allow_unassigned=False, a low-margin match is assigned to the best candidate instead
     of UNASSIGNED_SPEAKER -- the margin check is skipped entirely, not just its threshold relaxed."""
@@ -202,3 +243,23 @@ async def test_identify_speakers_logs_diagnostics_with_threshold_when_enabled(tm
     assert log_diagnostic.call_count == 2
     for call in log_diagnostic.call_args_list:
         assert call.kwargs["similarity_margin_threshold"] == 0.1
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_logs_effective_duration_override_threshold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    log_diagnostic = MagicMock()
+    monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+
+    await identify_speakers(
+        Transcript.from_words([_word("long", "speaker_0", 0.0, 1.0)]),
+        tmp_path / "input.wav",
+        centroids,
+        _fake_embed([Embedding(root=(1.0, 0.9))]),
+        similarity_margin_threshold=0.10,
+        duration_override_min_seconds=1.0,
+        duration_override_similarity_margin_threshold=0.04,
+        log_diagnostics=True,
+    )
+
+    assert log_diagnostic.call_args.kwargs["effective_similarity_margin_threshold"] == 0.04

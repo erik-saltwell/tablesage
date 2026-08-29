@@ -1,6 +1,6 @@
 # Experiment 7 — richer speaker-assignment decision rule
 
-Status: Tried. Result: **Success, small and not yet adopted** — duration contains useful decision
+Status: Tried. Result: **Success, small and adopted** — duration contains useful decision
 signal beyond cosine-similarity margin, but the absolute-best-similarity gate is less reliable than
 the preliminary replay suggested. A conservative duration-conditioned rule improves both frozen
 sessions and reduces the pooled wrong-label count by one; the unconstrained pooled winner improves
@@ -138,10 +138,15 @@ leave-one-session-out check is weak evidence, not a substitute for new data.
 
 ## Decision and next steps
 
+- **Adopted in production.** `tablesage-tools.speakers.identify_speakers` applies the robust
+  duration-conditioned rule. The base threshold, duration cutoff, and override threshold are read
+  from `speaker_identification` settings and unpacked into plain values at the application/tools
+  boundary. The packaged and active `.tablesage/settings.yaml` use 0.10 below 1.0s and 0.04 at or
+  above 1.0s, with `allow_unassigned: true`.
 - Keep the robust rule registered in the benchmark as `margin-duration-robust` so future sessions
   can test it without repeating the implementation.
-- Do **not** port it to `tablesage-tools.speakers.identify_speakers` or add production settings yet.
 - Re-run the fixed rule—without retuning—after adding more hand-corrected sessions. Adoption should
-  require the per-session improvement and non-increasing error count to hold out of sample.
+  be revisited if the per-session improvement and non-increasing error count do not hold out of
+  sample.
 - Treat the absolute-best OR-gate as not supported for production by this experiment. If revisited,
   prefer a calibrated/normalized score or a learned rule evaluated on separate validation data.

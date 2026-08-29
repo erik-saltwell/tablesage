@@ -8,7 +8,11 @@ import pytest
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import transcribe_audio as transcribe_audio_module
 from tablesage_application.session_pipeline.transcribe_audio import Stage, TranscriptionResult, transcribe_audio
-from tablesage_model.settings import SpeakerIdentificationSettings, TranscriptionAndDiarizationSettings
+from tablesage_model.settings import (
+    SpeakerIdentificationDurationOverrideSettings,
+    SpeakerIdentificationSettings,
+    TranscriptionAndDiarizationSettings,
+)
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 
@@ -45,6 +49,8 @@ def _stub_pipeline(monkeypatch: pytest.MonkeyPatch) -> None:
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,
         *,
+        duration_override_min_seconds: float | None = None,
+        duration_override_similarity_margin_threshold: float | None = None,
         log_diagnostics: bool = False,
         allow_unassigned: bool = True,
     ) -> Transcript:
@@ -142,6 +148,8 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,
         *,
+        duration_override_min_seconds: float | None = None,
+        duration_override_similarity_margin_threshold: float | None = None,
         log_diagnostics: bool = False,
         allow_unassigned: bool = True,
     ) -> Transcript:
@@ -163,6 +171,53 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
     )
 
     assert captured["allow_unassigned"] is False
+
+
+def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    async def _capturing_identify_speakers(
+        transcript: Transcript,
+        audio_path: Path,
+        centroids: dict[str, Embedding],
+        embed: EmbeddingFactory,
+        threshold: float,
+        on_progress: Callable[[int, int], None] | None = None,
+        *,
+        duration_override_min_seconds: float | None = None,
+        duration_override_similarity_margin_threshold: float | None = None,
+        log_diagnostics: bool = False,
+        allow_unassigned: bool = True,
+    ) -> Transcript:
+        captured["threshold"] = threshold
+        captured["duration_override_min_seconds"] = duration_override_min_seconds
+        captured["duration_override_similarity_margin_threshold"] = duration_override_similarity_margin_threshold
+        return transcript
+
+    monkeypatch.setattr(transcribe_audio_module, "identify_speakers", _capturing_identify_speakers)
+    session_folder = tmp_path
+    (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+
+    transcribe_audio(
+        session_folder,
+        {"Alice": _fake_embedding()},
+        {},
+        embed=_NO_EMBED,
+        transcription_settings=_TRANSCRIPTION_SETTINGS,
+        speaker_id_settings=SpeakerIdentificationSettings(
+            similarity_margin_threshold=0.11,
+            duration_override=SpeakerIdentificationDurationOverrideSettings(
+                min_seconds=1.5,
+                similarity_margin_threshold=0.05,
+            ),
+        ),
+    )
+
+    assert captured == {
+        "threshold": 0.11,
+        "duration_override_min_seconds": 1.5,
+        "duration_override_similarity_margin_threshold": 0.05,
+    }
 
 
 def test_successful_transcription_invalidates_from_log_artifacts(tmp_path: Path) -> None:

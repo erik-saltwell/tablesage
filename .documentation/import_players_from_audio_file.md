@@ -289,8 +289,9 @@ from an already-*processed* Session. This work item instead:
     and whether to clean the audio are both per-run wizard inputs, not
     settings (same reasoning as Phase 9's `clean_clips` decision).
   - `llm_model` — Stage 3.
-  - `speaker_identification.similarity_margin_threshold` — Stage 3's
-    pre-review existing-player recommendation.
+  - `speaker_identification.existing_player_match_similarity_margin_threshold` — Stage 3's
+    pre-review existing-player recommendation. This remains independent from session
+    transcription's duration-conditioned per-utterance thresholds.
   - `enhance_voices` (margin + duration bounds) — Stage 5's post-review
     clip-quality gate.
   - `remove_outliers` — Stage 6's centroid recompute.

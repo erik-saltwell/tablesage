@@ -38,6 +38,19 @@ def test_ensure_settings_loads_existing_file_without_overwriting(tmp_path: Path)
     assert (settings_path / "settings.yaml").read_text(encoding="utf-8") != _DEFAULT_YAML
 
 
+def test_speaker_identification_duration_override_defaults_for_existing_settings_file(tmp_path: Path) -> None:
+    settings_path = tmp_path / ".tablesage"
+    settings_path.mkdir(parents=True)
+    (settings_path / "settings.yaml").write_text("speaker_identification:\n  allow_unassigned: true\n", encoding="utf-8")
+
+    settings = setup.ensure_settings(tmp_path, _DEFAULT_YAML)
+
+    assert settings.speaker_identification.similarity_margin_threshold == 0.1
+    assert settings.speaker_identification.duration_override.min_seconds == 1.0
+    assert settings.speaker_identification.duration_override.similarity_margin_threshold == 0.04
+    assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
+
+
 def test_ensure_settings_is_a_noop_on_second_call(tmp_path: Path) -> None:
     setup.ensure_settings(tmp_path, _DEFAULT_YAML)
     settings_path = tmp_path / ".tablesage" / "settings.yaml"

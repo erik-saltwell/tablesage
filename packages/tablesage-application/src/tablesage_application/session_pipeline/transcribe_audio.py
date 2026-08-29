@@ -131,6 +131,8 @@ def transcribe_audio(
             embed,
             speaker_id_settings.similarity_margin_threshold,
             _identify_progress,
+            duration_override_min_seconds=speaker_id_settings.duration_override.min_seconds,
+            duration_override_similarity_margin_threshold=(speaker_id_settings.duration_override.similarity_margin_threshold),
             log_diagnostics=speaker_id_settings.log_diagnostics,
             allow_unassigned=speaker_id_settings.allow_unassigned,
         )

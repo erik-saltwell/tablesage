@@ -173,11 +173,12 @@ This corresponds to "Process a session" / "Reprocess a session" in
   based matching with only one reference) — raises otherwise.
 - For each utterance: extract its audio clip, embed it, compare against
   every attendee's centroid via `SimilarityComputer`.
-- **Assignment rule**: if the margin between best and second-best match is
-  `< similarity_margin_threshold` (default **0.1**), the utterance is left
-  as `UnassignedSpeaker` rather than force-assigned to the best match — a
-  close call is treated as no call. Otherwise assign to the best-matching
-  attendee's name.
+- **Assignment rule**: if the margin between best and second-best match is below its effective
+  threshold, the utterance is left as `UnassignedSpeaker` rather than force-assigned to the best
+  match — a close call is treated as no call. Experiment #7's production rule uses margin
+  **0.10** for utterances shorter than **1.0 second**, and margin **0.04** at or above 1.0 second;
+  longer clips carry more voice evidence and can use the lower bar. Otherwise assign to the
+  best-matching attendee's name. Setting `allow_unassigned: false` bypasses both thresholds.
 - Every utterance gets its computed embedding and margin stored back onto
   it (not discarded after the decision) — this is what later lets
   `enhance_voices` filter by `similarity_margin` without recomputing

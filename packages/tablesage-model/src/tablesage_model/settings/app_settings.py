@@ -10,8 +10,19 @@ class RemoveOutliersSettings(BaseModel, frozen=True):
     min_samples: PositiveInt = 5
 
 
+class SpeakerIdentificationDurationOverrideSettings(BaseModel, frozen=True):
+    min_seconds: float = Field(default=1.0, gt=0)
+    similarity_margin_threshold: float = Field(default=0.04, ge=0, le=2)
+
+
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
-    similarity_margin_threshold: float = 0.1
+    # Experiment #7's robust rule uses this base bar for utterances shorter than the duration
+    # override, then the override's lower bar once enough audio evidence is available.
+    similarity_margin_threshold: float = Field(default=0.1, ge=0, le=2)
+    duration_override: SpeakerIdentificationDurationOverrideSettings = Field(default_factory=SpeakerIdentificationDurationOverrideSettings)
+    # "From Audio" compares a whole diarized-speaker centroid, not one duration-varying utterance.
+    # Keep its pre-experiment threshold independent from the duration-conditioned production rule.
+    existing_player_match_similarity_margin_threshold: float = Field(default=0.08, ge=0, le=2)
     log_diagnostics: bool = False
     # When False, an utterance is never left UNASSIGNED_SPEAKER just because its best-vs-runner-up
     # similarity margin fell below similarity_margin_threshold -- the best match is taken

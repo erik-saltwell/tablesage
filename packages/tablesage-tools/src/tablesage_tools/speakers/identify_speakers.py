@@ -75,6 +75,8 @@ async def identify_speakers(
     similarity_margin_threshold: float,
     on_progress: Callable[[int, int], None] | None = None,
     *,
+    duration_override_min_seconds: float | None = None,
+    duration_override_similarity_margin_threshold: float | None = None,
     log_diagnostics: bool = False,
     allow_unassigned: bool = True,
 ) -> Transcript:
@@ -82,11 +84,13 @@ async def identify_speakers(
 
     For each utterance, extracts its audio clip from `audio_path`, embeds it, and compares it
     against every player's centroid in `centroids`. If the margin between the best and
-    second-best match is below `similarity_margin_threshold`, the utterance is left as
-    UNASSIGNED_SPEAKER rather than guessed -- unless `allow_unassigned` is False, in which case
-    that check is skipped and the best match is always taken, regardless of how close the
-    runner-up was. Raises ValueError if `centroids` has fewer than 2 entries (see
-    SimilarityComputer).
+    second-best match is below its effective threshold, the utterance is left as
+    UNASSIGNED_SPEAKER rather than guessed. The effective threshold is
+    `similarity_margin_threshold` unless both duration-override values are supplied and the
+    utterance is at least `duration_override_min_seconds` long, in which case
+    `duration_override_similarity_margin_threshold` applies. Unless `allow_unassigned` is False,
+    in which case the confidence check is skipped and the best match is always taken. Raises
+    ValueError if `centroids` has fewer than 2 entries (see SimilarityComputer).
 
     `allow_unassigned=False` only disables the margin-confidence check; an utterance too short
     to embed at all is still left UNASSIGNED_SPEAKER either way, since there's no embedding-based
@@ -96,11 +100,15 @@ async def identify_speakers(
     "tablesage.speaker_identification" logger (see module docstring comment above
     `_diagnostics_logger`) -- a plain value, not an `AppSettings` object, per
     `tablesage-tools`' settings-agnostic boundary; the caller reads the toggle from
-    `AppSettings.speaker_identification.log_diagnostics` (and `allow_unassigned` from
-    `AppSettings.speaker_identification.allow_unassigned`).
+    `AppSettings.speaker_identification.log_diagnostics` and unpacks the other plain values from
+    the same settings section.
     """
     names = list(centroids)
     similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
+
+    if (duration_override_min_seconds is None) != (duration_override_similarity_margin_threshold is None):
+        msg = "Duration override minimum and threshold must either both be set or both be omitted."
+        raise ValueError(msg)
 
     # A corrupted reference centroid (NaN component) poisons every comparison against that
     # one speaker for the whole run -- check once, up front, rather than only discovering it
@@ -112,6 +120,8 @@ async def identify_speakers(
                 event="corrupt_reference_centroid",
                 speaker_names=nan_reference_names,
                 similarity_margin_threshold=similarity_margin_threshold,
+                duration_override_min_seconds=duration_override_min_seconds,
+                duration_override_similarity_margin_threshold=duration_override_similarity_margin_threshold,
             )
 
     total = len(transcript.utterances)
@@ -127,6 +137,8 @@ async def identify_speakers(
         utterance_count=total,
         speaker_names=names,
         similarity_margin_threshold=similarity_margin_threshold,
+        duration_override_min_seconds=duration_override_min_seconds,
+        duration_override_similarity_margin_threshold=duration_override_similarity_margin_threshold,
         allow_unassigned=allow_unassigned,
         min_utterance_duration_seconds=MIN_UTTERANCE_DURATION_SECONDS,
     ) as log:
@@ -162,13 +174,18 @@ async def identify_speakers(
                     # (see SimilarityComputer.compute_similarity) and doesn't affect the
                     # decision, but is still visible below via `similarities`.
                     nan_margin = math.isnan(result.margin)
+                    effective_similarity_margin_threshold = similarity_margin_threshold
+                    if duration_override_min_seconds is not None and duration >= duration_override_min_seconds:
+                        # Paired-argument validation above proves the override threshold is set.
+                        assert duration_override_similarity_margin_threshold is not None
+                        effective_similarity_margin_threshold = duration_override_similarity_margin_threshold
                     if nan_margin:
                         nan_margin_count += 1
                         speaker = UNASSIGNED_SPEAKER
                         reason = "nan_similarity"
                     else:
                         margins.append(result.margin)
-                        if allow_unassigned and result.margin < similarity_margin_threshold:
+                        if allow_unassigned and result.margin < effective_similarity_margin_threshold:
                             below_threshold_count += 1
                             speaker = UNASSIGNED_SPEAKER
                             reason = "below_margin_threshold"
@@ -187,6 +204,9 @@ async def identify_speakers(
                             "reason": reason,
                             "assigned": speaker != UNASSIGNED_SPEAKER,
                             "similarity_margin_threshold": similarity_margin_threshold,
+                            "effective_similarity_margin_threshold": effective_similarity_margin_threshold,
+                            "duration_override_min_seconds": duration_override_min_seconds,
+                            "duration_override_similarity_margin_threshold": duration_override_similarity_margin_threshold,
                             "best_speaker": names[result.best_match_index],
                             "best_similarity": result.best_match_similarity,
                             "second_speaker": names[result.second_best_index],
