@@ -40,6 +40,23 @@ speaker_identification:
   duration_override:
     min_seconds: 1.0
     similarity_margin_threshold: 0.04
+  # Experiment #9 gives short clips more speaker evidence by concatenating only nearby speech
+  # from the same ElevenLabs diarization cluster. The original duration still selects the margin
+  # threshold above; widening never activates the looser duration override by itself.
+  short_utterance_widening:
+    enabled: true
+    max_original_duration_seconds: 0.75
+    target_duration_seconds: 1.0
+    max_neighbor_gap_seconds: 2.0
+  # Experiment #8 independently labels each diarization cluster from pooled, sufficiently long
+  # utterance embeddings, then uses that label only to rescue short per-utterance abstentions.
+  cluster_propagation:
+    enabled: true
+    evidence_min_duration_seconds: 0.5
+    max_utterance_duration_seconds: 0.5
+    cluster_margin_threshold: 0.0
+    # Keep an abstention when its own embedding favors another player by at least this margin.
+    contradiction_veto_margin_threshold: 0.02
   # Players List's "From Audio" compares a whole diarized-speaker centroid to existing players,
   # so it keeps its own non-duration-conditioned recommendation threshold.
   existing_player_match_similarity_margin_threshold: 0.08
@@ -48,12 +65,12 @@ speaker_identification:
   # unaffected either way; they're still left "Unassigned Speaker" since there's no similarity
   # comparison to make for them in the first place.
   allow_unassigned: true
-  # When true, "Transcribe" (T) writes one line per utterance to
+  # When true, "Transcribe" (T) writes an initial-match line per utterance to
   # .tablesage/logs/speaker_identification.log -- best/second-best speaker
   # match, the full per-speaker similarity vector, and why the utterance
-  # landed where it did. Off by default: verbose (one line per utterance,
-  # not one per operation like the rest of tablesage.log), meant for digging
-  # into unexpectedly high Unassigned Speaker counts, not routine runs.
+  # landed where it did. Cluster-propagated utterances get a second override
+  # line. Off by default: verbose, meant for digging into unexpectedly high
+  # Unassigned Speaker counts, not routine runs.
   log_diagnostics: false
 
 enhance_voices:

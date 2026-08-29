@@ -48,6 +48,15 @@ def test_speaker_identification_duration_override_defaults_for_existing_settings
     assert settings.speaker_identification.similarity_margin_threshold == 0.1
     assert settings.speaker_identification.duration_override.min_seconds == 1.0
     assert settings.speaker_identification.duration_override.similarity_margin_threshold == 0.04
+    assert settings.speaker_identification.short_utterance_widening.enabled is True
+    assert settings.speaker_identification.short_utterance_widening.max_original_duration_seconds == 0.75
+    assert settings.speaker_identification.short_utterance_widening.target_duration_seconds == 1.0
+    assert settings.speaker_identification.short_utterance_widening.max_neighbor_gap_seconds == 2.0
+    assert settings.speaker_identification.cluster_propagation.enabled is True
+    assert settings.speaker_identification.cluster_propagation.evidence_min_duration_seconds == 0.5
+    assert settings.speaker_identification.cluster_propagation.max_utterance_duration_seconds == 0.5
+    assert settings.speaker_identification.cluster_propagation.cluster_margin_threshold == 0.0
+    assert settings.speaker_identification.cluster_propagation.contradiction_veto_margin_threshold == 0.02
     assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
 
 

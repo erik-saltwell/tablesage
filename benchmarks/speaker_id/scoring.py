@@ -16,6 +16,17 @@ CORRECT_COST: float = 0.0
 UNASSIGNED_COST: float = 0.4
 WRONG_COST: float = 1.0
 
+# Kept stable so every experiment exposes the short-duration failure modes that motivated
+# experiment #9 instead of allowing a pooled score to hide them.
+DURATION_BUCKETS: tuple[tuple[str, float, float], ...] = (
+    ("<0.30s", 0.0, 0.3),
+    ("0.30-0.50s", 0.3, 0.5),
+    ("0.50-0.75s", 0.5, 0.75),
+    ("0.75-1.00s", 0.75, 1.0),
+    ("1.00-2.00s", 1.0, 2.0),
+    (">=2.00s", 2.0, float("inf")),
+)
+
 
 @dataclass
 class SessionScore:
@@ -29,6 +40,8 @@ class SessionScore:
     misattributed_seconds: float
     # (actual, predicted) -> count, wrong assignments only -- who gets mistaken for whom.
     confusion: Counter[tuple[str, str]] = field(default_factory=Counter)
+    # bucket label -> outcome -> count. Outcome is correct, unassigned, or wrong.
+    duration_buckets: dict[str, Counter[str]] = field(default_factory=dict)
 
     @property
     def score(self) -> float:
@@ -60,20 +73,26 @@ def score_session(
     total_cost = 0.0
     misattributed_seconds = 0.0
     confusion: Counter[tuple[str, str]] = Counter()
+    duration_buckets = {label: Counter() for label, _lower, _upper in DURATION_BUCKETS}
 
     for index, (actual, duration) in ground_truth.items():
         predicted = predictions[index]
         if predicted == actual:
+            outcome = "correct"
             correct += 1
             total_cost += CORRECT_COST
         elif predicted == UNASSIGNED_SPEAKER:
+            outcome = "unassigned"
             unassigned += 1
             total_cost += UNASSIGNED_COST
         else:
+            outcome = "wrong"
             wrong += 1
             total_cost += WRONG_COST
             misattributed_seconds += duration
             confusion[(actual, predicted)] += 1
+        bucket = next(label for label, lower, upper in DURATION_BUCKETS if lower <= duration < upper)
+        duration_buckets[bucket][outcome] += 1
 
     return SessionScore(
         session_name=session_name,
@@ -85,14 +104,18 @@ def score_session(
         total_cost=total_cost,
         misattributed_seconds=misattributed_seconds,
         confusion=confusion,
+        duration_buckets=duration_buckets,
     )
 
 
 def pool(scores: Sequence[SessionScore], candidate_name: str) -> SessionScore:
     """Combine several sessions' scores for one candidate into a single pooled total."""
     confusion: Counter[tuple[str, str]] = Counter()
+    duration_buckets = {label: Counter() for label, _lower, _upper in DURATION_BUCKETS}
     for s in scores:
         confusion.update(s.confusion)
+        for label, counts in s.duration_buckets.items():
+            duration_buckets[label].update(counts)
     return SessionScore(
         session_name="pooled",
         candidate_name=candidate_name,
@@ -103,11 +126,14 @@ def pool(scores: Sequence[SessionScore], candidate_name: str) -> SessionScore:
         total_cost=sum(s.total_cost for s in scores),
         misattributed_seconds=sum(s.misattributed_seconds for s in scores),
         confusion=confusion,
+        duration_buckets=duration_buckets,
     )
 
 
-_ROW = "{:<28}{:<16}{:>6}{:>8}{:>10}{:>12}{:>10}{:>14}"
+_ROW = "{:<32}{:<16}{:>6}{:>8}{:>10}{:>12}{:>10}{:>14}"
 _HEADER = _ROW.format("candidate", "session", "N", "score", "accuracy", "unassigned%", "error%", "misattrib.s")
+_BUCKET_ROW = "{:<30}{:<14}{:>6}{:>10}{:>12}{:>8}"
+_BUCKET_HEADER = _BUCKET_ROW.format("candidate", "duration", "N", "correct", "unassigned", "wrong")
 
 
 def print_report(scores_by_candidate: Mapping[str, list[SessionScore]]) -> None:
@@ -140,4 +166,24 @@ def print_report(scores_by_candidate: Mapping[str, list[SessionScore]]) -> None:
         print(f"{candidate_name} -- confusion (actual -> predicted):")
         for (actual, predicted), count in pooled.confusion.most_common():
             print(f"  {actual} -> {predicted}: {count}")
+        print()
+
+    print("duration buckets (pooled):")
+    print(_BUCKET_HEADER)
+    print("-" * len(_BUCKET_HEADER))
+    for candidate_name, session_scores in scores_by_candidate.items():
+        pooled = pool(session_scores, candidate_name)
+        for label, _lower, _upper in DURATION_BUCKETS:
+            counts = pooled.duration_buckets[label]
+            utterance_count = sum(counts.values())
+            print(
+                _BUCKET_ROW.format(
+                    candidate_name,
+                    label,
+                    utterance_count,
+                    counts["correct"],
+                    counts["unassigned"],
+                    counts["wrong"],
+                )
+            )
         print()

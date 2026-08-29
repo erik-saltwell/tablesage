@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import math
@@ -17,17 +18,24 @@ from ..embeddings.similarity import SimilarityComputer, SimilarityResult
 from ..embeddings.types import Embedding
 from ..embeddings.wespeaker import EmbeddingFactory
 from ..model.transcript import Transcript, Utterance
+from .strategies import (
+    ClusterPropagationConfig,
+    ShortUtteranceWideningConfig,
+    choose_widening_spans,
+    diarization_cluster_id,
+    propagate_cluster_labels,
+    write_audio_spans,
+)
 
 UNASSIGNED_SPEAKER: Final[str] = "Unassigned Speaker"
 
 # fbank itself only needs >=25ms (window_size=400 samples at 16kHz) to produce a single
-# frame, but empirically ERes2NetV2's downstream layers return NaN for anything shorter
-# than ~110ms even though fbank succeeds -- a 2026-08-24 production run showed a hard
-# cliff, every clip <=0.10s NaN, every clip >=0.11s fine. This floor is set clear of that
-# cliff, not just fbank's, so those clips are skipped as too-short instead of reaching the
-# model at all. Public (not module-private): a benchmark that scores this function's output
-# against hand-corrected ground truth needs the identical floor to exclude utterances this
-# function could never have judged in the first place -- see
+# frame, but empirically both the old ERes2NetV2 model and production's WeSpeaker model return
+# non-finite embeddings for clips through 100ms even though fbank succeeds. Experiment #9 found
+# WeSpeaker becomes finite at 125ms but remains weak there, so this floor stays at 150ms. Those
+# clips are skipped as too-short instead of reaching the model at all. Public (not module-private):
+# a benchmark that scores this function's output against hand-corrected ground truth needs the
+# identical floor to exclude utterances this function could never have judged in the first place -- see
 # `session_pipeline.transcript_review.generate_benchmark_transcript`.
 MIN_UTTERANCE_DURATION_SECONDS: Final[float] = 0.15
 
@@ -77,34 +85,48 @@ async def identify_speakers(
     *,
     duration_override_min_seconds: float | None = None,
     duration_override_similarity_margin_threshold: float | None = None,
+    short_utterance_widening: ShortUtteranceWideningConfig | None = None,
+    cluster_propagation: ClusterPropagationConfig | None = None,
     log_diagnostics: bool = False,
     allow_unassigned: bool = True,
 ) -> Transcript:
     """Relabel each utterance's speaker with the best-matching player name, or UNASSIGNED_SPEAKER.
 
     For each utterance, extracts its audio clip from `audio_path`, embeds it, and compares it
-    against every player's centroid in `centroids`. If the margin between the best and
+    against every player's centroid in `centroids`. When `short_utterance_widening` is supplied,
+    short clips are first concatenated with nearby speech from the same original diarization
+    cluster. If the margin between the best and
     second-best match is below its effective threshold, the utterance is left as
     UNASSIGNED_SPEAKER rather than guessed. The effective threshold is
     `similarity_margin_threshold` unless both duration-override values are supplied and the
     utterance is at least `duration_override_min_seconds` long, in which case
     `duration_override_similarity_margin_threshold` applies. Unless `allow_unassigned` is False,
     in which case the confidence check is skipped and the best match is always taken. Raises
-    ValueError if `centroids` has fewer than 2 entries (see SimilarityComputer).
+    ValueError if `centroids` has fewer than 2 entries (see SimilarityComputer). When
+    `cluster_propagation` is supplied, the function then pools sufficiently long utterance
+    embeddings per diarization cluster and conservatively applies that cluster label to eligible
+    per-utterance abstentions.
 
     `allow_unassigned=False` only disables the margin-confidence check; an utterance too short
     to embed at all is still left UNASSIGNED_SPEAKER either way, since there's no embedding-based
     judgment to skip there -- there's simply nothing to compare.
 
-    `log_diagnostics=True` additionally writes one line per utterance to the
+    `log_diagnostics=True` additionally writes one initial-match line per utterance to the
     "tablesage.speaker_identification" logger (see module docstring comment above
     `_diagnostics_logger`) -- a plain value, not an `AppSettings` object, per
     `tablesage-tools`' settings-agnostic boundary; the caller reads the toggle from
     `AppSettings.speaker_identification.log_diagnostics` and unpacks the other plain values from
-    the same settings section.
+    the same settings section. A cluster-propagated utterance gets a second, explicit override
+    event so the final label remains reconstructable from the diagnostics.
     """
     names = list(centroids)
     similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
+    durations = {index: utterance.end - utterance.start for index, utterance in enumerate(transcript.utterances)}
+    cluster_ids = (
+        {index: diarization_cluster_id(utterance) for index, utterance in enumerate(transcript.utterances)}
+        if short_utterance_widening is not None or cluster_propagation is not None
+        else {}
+    )
 
     if (duration_override_min_seconds is None) != (duration_override_similarity_margin_threshold is None):
         msg = "Duration override minimum and threshold must either both be set or both be omitted."
@@ -130,7 +152,10 @@ async def identify_speakers(
     below_threshold_count = 0
     assigned_count = 0
     nan_margin_count = 0
+    cluster_propagated_count = 0
     margins: list[float] = []
+    embeddings: dict[int, Embedding] = {}
+    similarity_results: dict[int, SimilarityResult] = {}
 
     with widelog.wide_event(
         op="identify_speakers",
@@ -141,11 +166,13 @@ async def identify_speakers(
         duration_override_similarity_margin_threshold=duration_override_similarity_margin_threshold,
         allow_unassigned=allow_unassigned,
         min_utterance_duration_seconds=MIN_UTTERANCE_DURATION_SECONDS,
+        short_utterance_widening=short_utterance_widening,
+        cluster_propagation=cluster_propagation,
     ) as log:
         with TemporaryDirectory() as tmpdir:
             tmp_file = Path(tmpdir) / "tmp.wav"
             for index, utterance in enumerate(transcript.utterances):
-                duration = utterance.end - utterance.start
+                duration = durations[index]
                 if duration < MIN_UTTERANCE_DURATION_SECONDS:
                     # Too short for the embedding model's feature extractor to run on at all --
                     # leave it unassigned rather than crashing the whole transcription run.
@@ -153,6 +180,7 @@ async def identify_speakers(
                     new_utterances.append(utterance.model_copy(update={"speaker": UNASSIGNED_SPEAKER, "similarity_margin": 0.0}))
                     if log_diagnostics:
                         _log_diagnostic(
+                            event="initial_match",
                             utterance_index=index,
                             start=utterance.start,
                             end=utterance.end,
@@ -162,10 +190,23 @@ async def identify_speakers(
                             similarity_margin_threshold=similarity_margin_threshold,
                         )
                 else:
-                    await extract_clip(audio_path, tmp_file, utterance.start, utterance.end)
+                    widened_spans = None
+                    embedding_audio_duration = duration
+                    if short_utterance_widening is not None and duration < short_utterance_widening.max_original_duration_seconds:
+                        widened_spans = choose_widening_spans(
+                            transcript.utterances,
+                            index,
+                            cluster_ids,
+                            short_utterance_widening,
+                        )
+                        embedding_audio_duration = await asyncio.to_thread(write_audio_spans, audio_path, tmp_file, widened_spans)
+                    else:
+                        await extract_clip(audio_path, tmp_file, utterance.start, utterance.end)
 
                     embedding = await embed.extract_async(tmp_file)
                     result: SimilarityResult = similarity_computer.compute_similarity(embedding)
+                    embeddings[index] = embedding
+                    similarity_results[index] = result
 
                     # `margin` is NaN exactly when the best and/or second-best similarity is
                     # NaN -- which only happens if fewer than 2 references produced a real
@@ -197,10 +238,13 @@ async def identify_speakers(
 
                     if log_diagnostics:
                         diagnostic_fields: dict[str, Any] = {
+                            "event": "initial_match",
                             "utterance_index": index,
                             "start": utterance.start,
                             "end": utterance.end,
                             "duration": duration,
+                            "embedding_audio_duration": embedding_audio_duration,
+                            "widened": widened_spans is not None,
                             "reason": reason,
                             "assigned": speaker != UNASSIGNED_SPEAKER,
                             "similarity_margin_threshold": similarity_margin_threshold,
@@ -221,6 +265,32 @@ async def identify_speakers(
                 if on_progress is not None:
                     on_progress(index + 1, total)
 
+        if cluster_propagation is not None:
+            current_labels = {index: utterance.speaker for index, utterance in enumerate(new_utterances)}
+            propagation = propagate_cluster_labels(
+                current_labels,
+                embeddings,
+                similarity_results,
+                centroids,
+                durations,
+                cluster_ids,
+                cluster_propagation,
+                UNASSIGNED_SPEAKER,
+            )
+            cluster_propagated_count = len(propagation.propagated_indices)
+            for index in propagation.propagated_indices:
+                assignment = propagation.assignments[cluster_ids[index]]
+                new_utterances[index] = new_utterances[index].model_copy(update={"speaker": propagation.labels[index]})
+                if log_diagnostics:
+                    _log_diagnostic(
+                        event="cluster_propagation",
+                        utterance_index=index,
+                        diarization_cluster=cluster_ids[index],
+                        assigned_speaker=assignment.speaker,
+                        cluster_margin=assignment.margin,
+                        contradiction_veto_margin_threshold=(cluster_propagation.contradiction_veto_margin_threshold),
+                    )
+
         # Distinguishes *why* utterances ended up unassigned -- too short to embed at all,
         # embedded but the best/second-best match was too close to trust, or a NaN
         # similarity (a corrupt candidate embedding) -- since all three look identical from
@@ -228,8 +298,10 @@ async def identify_speakers(
         # to) is in the "tablesage.speaker_identification" diagnostics log, not here.
         log.set(
             too_short_count=too_short_count,
-            below_margin_threshold_count=below_threshold_count,
-            assigned_count=assigned_count,
+            below_margin_threshold_count=below_threshold_count - cluster_propagated_count,
+            direct_assigned_count=assigned_count,
+            cluster_propagated_count=cluster_propagated_count,
+            assigned_count=assigned_count + cluster_propagated_count,
             nan_margin_count=nan_margin_count,
             margin_min=min(margins) if margins else None,
             margin_max=max(margins) if margins else None,

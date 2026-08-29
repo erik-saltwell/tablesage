@@ -10,7 +10,10 @@ from dataclasses import dataclass, field
 
 from tablesage_tools.embeddings.similarity import SimilarityComputer
 from tablesage_tools.embeddings.types import Embedding
-from tablesage_tools.speakers import UNASSIGNED_SPEAKER
+from tablesage_tools.speakers import UNASSIGNED_SPEAKER, ClusterPropagationConfig
+from tablesage_tools.speakers.strategies import propagate_cluster_labels
+
+from .types import Matcher
 
 
 @dataclass
@@ -33,6 +36,7 @@ class MarginThresholdMatcher:
         embeddings: Mapping[int, Embedding],
         centroids: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
+        clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]:
         names = list(centroids)
         similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
@@ -101,6 +105,7 @@ class MarginAndSimilarityMatcher:
         embeddings: Mapping[int, Embedding],
         centroids: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
+        clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]:
         names = list(centroids)
         similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
@@ -121,3 +126,39 @@ class MarginAndSimilarityMatcher:
             else:
                 labels[index] = UNASSIGNED_SPEAKER
         return labels
+
+
+@dataclass
+class ClusterPropagationMatcher:
+    """Experiment #8's production cluster pass wrapped around an ordinary matcher."""
+
+    base_matcher: Matcher
+    config: ClusterPropagationConfig
+    name: str = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.name = f"{self.base_matcher.name} cluster-propagation"
+
+    def match(
+        self,
+        embeddings: Mapping[int, Embedding],
+        centroids: Mapping[str, Embedding],
+        durations: Mapping[int, float] | None = None,
+        clusters: Mapping[int, str] | None = None,
+    ) -> Mapping[int, str]:
+        if durations is None or clusters is None:
+            raise ValueError("Cluster propagation requires durations and diarization cluster IDs.")
+        baseline = self.base_matcher.match(embeddings, centroids, durations, clusters)
+        names = list(centroids)
+        computer = SimilarityComputer(tuple(centroids[name] for name in names))
+        evidence = {index: computer.compute_similarity(embedding) for index, embedding in embeddings.items()}
+        return propagate_cluster_labels(
+            baseline,
+            embeddings,
+            evidence,
+            centroids,
+            durations,
+            clusters,
+            self.config,
+            UNASSIGNED_SPEAKER,
+        ).labels

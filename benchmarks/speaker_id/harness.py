@@ -14,8 +14,14 @@ from tablesage_application.paths import players_root
 from tablesage_tools.audio.ffmpeg import extract_clip
 from tablesage_tools.embeddings.types import Embedding
 from tablesage_tools.model import Transcript
+from tablesage_tools.speakers import ShortUtteranceWideningConfig
+from tablesage_tools.speakers.strategies import (
+    choose_widening_spans,
+    diarization_cluster_id,
+    write_audio_spans,
+)
 
-from .cache import EmbeddingCache, utterance_cache_key
+from .cache import EmbeddingCache, utterance_cache_key, widened_utterance_cache_key
 from .centroid import build_centroids
 from .scoring import SessionScore, print_report, score_session
 from .types import Candidate, Embedder
@@ -43,17 +49,43 @@ def load_sessions(data_root: Path = DATA_ROOT) -> list[GroundTruthSession]:
     return sessions
 
 
-async def _embed_utterances(session: GroundTruthSession, embedder: Embedder, cache: EmbeddingCache) -> dict[int, Embedding]:
+async def _embed_utterances(
+    session: GroundTruthSession,
+    embedder: Embedder,
+    cache: EmbeddingCache,
+    short_utterance_widening: ShortUtteranceWideningConfig | None = None,
+) -> dict[int, Embedding]:
     embeddings: dict[int, Embedding] = {}
+    cluster_ids = {index: diarization_cluster_id(utterance) for index, utterance in enumerate(session.transcript.utterances)}
     with TemporaryDirectory() as tmpdir:
         tmp_file = Path(tmpdir) / "tmp.wav"
         for index, utterance in enumerate(session.transcript.utterances):
-            key = utterance_cache_key(embedder, session.name, index)
+            spans = None
+            duration = utterance.end - utterance.start
+            if short_utterance_widening is not None and duration < short_utterance_widening.max_original_duration_seconds:
+                spans = choose_widening_spans(
+                    session.transcript.utterances,
+                    index,
+                    cluster_ids,
+                    short_utterance_widening,
+                )
+                key = widened_utterance_cache_key(
+                    embedder,
+                    session.name,
+                    index,
+                    short_utterance_widening,
+                    spans,
+                )
+            else:
+                key = utterance_cache_key(embedder, session.name, index)
             cached = cache.get(key)
             if cached is not None:
                 embeddings[index] = cached
                 continue
-            await extract_clip(session.audio_path, tmp_file, utterance.start, utterance.end)
+            if spans is not None:
+                write_audio_spans(session.audio_path, tmp_file, spans)
+            else:
+                await extract_clip(session.audio_path, tmp_file, utterance.start, utterance.end)
             embedding = embedder.embed(tmp_file)
             cache.set(key, embedding)
             embeddings[index] = embedding
@@ -64,9 +96,17 @@ def run_candidate(candidate: Candidate, sessions: list[GroundTruthSession], cach
     scores = []
     for session in sessions:
         centroids = build_centroids(session.attendees, players_root(REPO_ROOT), candidate.embedder, cache)
-        embeddings = asyncio.run(_embed_utterances(session, candidate.embedder, cache))
+        embeddings = asyncio.run(
+            _embed_utterances(
+                session,
+                candidate.embedder,
+                cache,
+                candidate.short_utterance_widening,
+            )
+        )
         durations = {index: utterance.end - utterance.start for index, utterance in enumerate(session.transcript.utterances)}
-        predictions = candidate.matcher.match(embeddings, centroids, durations)
+        clusters = {index: diarization_cluster_id(utterance) for index, utterance in enumerate(session.transcript.utterances)}
+        predictions = candidate.matcher.match(embeddings, centroids, durations, clusters)
         ground_truth = {
             index: (utterance.speaker, utterance.end - utterance.start) for index, utterance in enumerate(session.transcript.utterances)
         }

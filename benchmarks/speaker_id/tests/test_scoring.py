@@ -26,6 +26,8 @@ def test_score_session_costs_correct_unassigned_wrong_as_specified() -> None:
     assert score.misattributed_seconds == 3.0 + 4.0
     assert score.confusion[("bob", "alice")] == 1
     assert score.confusion[("bob", "carol")] == 1
+    assert score.duration_buckets["1.00-2.00s"] == {"correct": 1}
+    assert score.duration_buckets[">=2.00s"] == {"unassigned": 1, "wrong": 2}
 
 
 def test_two_unassigned_cost_less_than_one_wrong() -> None:
@@ -59,3 +61,4 @@ def test_pool_sums_across_sessions() -> None:
     assert pooled.unassigned_count == 1
     assert pooled.wrong_count == 1
     assert pooled.session_name == "pooled"
+    assert pooled.duration_buckets["1.00-2.00s"] == {"correct": 1, "unassigned": 1, "wrong": 1}

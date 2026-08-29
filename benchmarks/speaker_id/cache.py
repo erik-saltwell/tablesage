@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 
 from tablesage_tools.embeddings.types import Embedding
+from tablesage_tools.speakers import ShortUtteranceWideningConfig
+from tablesage_tools.speakers.strategies import AudioSpan
 
 from .types import Embedder
 
@@ -39,6 +41,20 @@ def utterance_cache_key(embedder: Embedder, session_name: str, utterance_index: 
     session name and utterance index alone are a stable key -- no need to hash the clip.
     """
     return f"utt:{embedder.cache_key}:{session_name}:{utterance_index}"
+
+
+def widened_utterance_cache_key(
+    embedder: Embedder,
+    session_name: str,
+    utterance_index: int,
+    config: ShortUtteranceWideningConfig,
+    spans: tuple[AudioSpan, ...],
+) -> str:
+    """Cache key for experiment #9's production clip composition."""
+    span_spec = ",".join(f"{span.utterance_index}:{span.start:.5f}:{span.end:.5f}" for span in spans)
+    config_spec = f"{config.max_original_duration_seconds}:{config.target_duration_seconds}:{config.max_neighbor_gap_seconds}"
+    digest = hashlib.sha256(f"{config_spec}|{span_spec}".encode()).hexdigest()[:20]
+    return f"utt-widened:{embedder.cache_key}:{session_name}:{utterance_index}:{digest}"
 
 
 def reference_cache_key(embedder: Embedder, clip_path: Path) -> str:

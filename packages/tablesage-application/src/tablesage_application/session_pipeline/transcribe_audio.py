@@ -14,7 +14,12 @@ from tablesage_model.settings import RemoveBackchannelsSettings, SpeakerIdentifi
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.punctuation import punctuate_transcript
-from tablesage_tools.speakers import UNASSIGNED_SPEAKER, identify_speakers
+from tablesage_tools.speakers import (
+    UNASSIGNED_SPEAKER,
+    ClusterPropagationConfig,
+    ShortUtteranceWideningConfig,
+    identify_speakers,
+)
 from tablesage_tools.transcription import transcribe_and_diarize
 
 from ..entities.sessions import list_attendance
@@ -133,6 +138,25 @@ def transcribe_audio(
             _identify_progress,
             duration_override_min_seconds=speaker_id_settings.duration_override.min_seconds,
             duration_override_similarity_margin_threshold=(speaker_id_settings.duration_override.similarity_margin_threshold),
+            short_utterance_widening=(
+                ShortUtteranceWideningConfig(
+                    max_original_duration_seconds=(speaker_id_settings.short_utterance_widening.max_original_duration_seconds),
+                    target_duration_seconds=(speaker_id_settings.short_utterance_widening.target_duration_seconds),
+                    max_neighbor_gap_seconds=(speaker_id_settings.short_utterance_widening.max_neighbor_gap_seconds),
+                )
+                if speaker_id_settings.short_utterance_widening.enabled
+                else None
+            ),
+            cluster_propagation=(
+                ClusterPropagationConfig(
+                    evidence_min_duration_seconds=(speaker_id_settings.cluster_propagation.evidence_min_duration_seconds),
+                    max_utterance_duration_seconds=(speaker_id_settings.cluster_propagation.max_utterance_duration_seconds),
+                    cluster_margin_threshold=(speaker_id_settings.cluster_propagation.cluster_margin_threshold),
+                    contradiction_veto_margin_threshold=(speaker_id_settings.cluster_propagation.contradiction_veto_margin_threshold),
+                )
+                if speaker_id_settings.cluster_propagation.enabled
+                else None
+            ),
             log_diagnostics=speaker_id_settings.log_diagnostics,
             allow_unassigned=speaker_id_settings.allow_unassigned,
         )

@@ -19,6 +19,7 @@ dependencies = [
     "litellm>=1.83.0",
     "mathspell>=0.1.0",
     "modelscope[framework]>=1.36.3",
+    "numpy>=1.26.4",
     "pydantic>=2.12.5",
     "punctuators>=0.0.7",
     "soundfile>=0.12.1",

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Protocol
 
 from tablesage_tools.embeddings.types import Embedding
+from tablesage_tools.speakers import ShortUtteranceWideningConfig
 
 
 def derive_cache_key(module: str, qualname: str, version: int) -> str:
@@ -38,16 +39,17 @@ class Embedder(Protocol):
 
 
 class Matcher(Protocol):
-    """`(utterance embeddings, centroids, durations) -> per-utterance speaker label`.
+    """`(utterance embeddings, centroids, durations, clusters) -> speaker labels`.
 
     Takes every scored utterance's embedding at once (not one at a time) so a matcher is free to
     use cross-utterance information if it wants to -- nothing in this harness requires it, and
     today's baseline matcher (see `matchers.py`) judges each utterance independently, same as
     production `identify_speakers`.
 
-    `durations` (utterance index -> seconds) is optional metadata the harness always passes, for
-    matchers that want it (experiment #7: duration-conditioned decision rules) -- a matcher that
-    doesn't need it just ignores the parameter.
+    `durations` (utterance index -> seconds) and `clusters` (utterance index -> original
+    diarization cluster) are optional metadata the harness always passes, for matchers that want
+    them (experiment #7: duration-conditioned decisions; experiment #8: cluster propagation) -- a
+    matcher that doesn't need them just ignores the parameters.
     """
 
     name: str
@@ -57,13 +59,15 @@ class Matcher(Protocol):
         embeddings: Mapping[int, Embedding],
         centroids: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
+        clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]: ...
 
 
 @dataclass(frozen=True)
 class Candidate:
-    """One registered strategy: a name for reporting, plus its embedder and matcher."""
+    """A named embedder/matcher strategy with optional short-clip composition."""
 
     name: str
     embedder: Embedder
     matcher: Matcher
+    short_utterance_widening: ShortUtteranceWideningConfig | None = None

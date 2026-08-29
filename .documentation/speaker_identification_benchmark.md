@@ -20,21 +20,24 @@ to answer "which algorithm/parameters work best," not to run inside the product 
 
 Three stages per candidate run, two of them pluggable:
 
-1. **Embedder** (pluggable) — `clip -> Embedding`. Cached by `(session, utterance span, embedder
-   cache key)`, where the cache key is derived automatically (hash of the embedder's module path +
-   a version constant), not hand-set by the plugin author, so two strategies sharing an embedder
-   always share cache entries and a model swap can never silently hit stale cross-model cache.
+1. **Embedder** (pluggable) — `clip -> Embedding`. A candidate may optionally widen a short clip
+   with nearby speech from the same diarization cluster before embedding it (experiment #9).
+   Embeddings are cached by the selected audio spans and embedder cache key, where the embedder
+   key is derived automatically (hash of the module path + a version constant), not hand-set by
+   the plugin author. Two strategies sharing an embedder and spans therefore share cache entries,
+   while a model or span-selection change cannot silently hit stale cache data.
 2. **Centroid builder** (fixed, not pluggable) — `Sequence[Embedding] -> Embedding`, currently mean
    + outlier-trim, matching production's `remove_outliers` precedent. This is generic over any
    embedder's vector space (any embedder producing comparable fixed-dimension vectors works), so
    swapping the embedder does not require a new centroid-builder. Risk to watch, not solved here:
    outlier-trim thresholds are tuned for `eres2netv2`'s distance distribution and may need retuning
    as a per-embedder constant if a structurally different model's distances are scaled differently.
-3. **Matcher** (pluggable) — `(utterance embeddings, centroids, durations) -> per-utterance speaker
-   label | UNASSIGNED_SPEAKER`. The harness supplies utterance duration as optional metadata so a
-   matcher may condition its confidence rule on the amount of audio evidence (experiment #7);
-   matchers that do not need it ignore it. A margin-threshold matcher is one implementation, not
-   the only one.
+3. **Matcher** (pluggable) — `(utterance embeddings, centroids, durations, diarization clusters)
+   -> per-utterance speaker label | UNASSIGNED_SPEAKER`. The harness supplies original utterance
+   duration and cluster ID as optional metadata. Matchers can condition confidence on duration
+   (experiment #7) or use cross-utterance cluster evidence (experiment #8); matchers that do not
+   need the metadata ignore it. A margin-threshold matcher is one implementation, not the only
+   one.
 
 The same embedder must be used for both reference-clip and utterance-clip embedding within one
 candidate run — centroids and utterance embeddings from different models are not comparable.
@@ -85,7 +88,9 @@ error (1.0), matching the requirement to penalize unassigned output but penalize
 
 Every run also reports, per session and pooled: raw accuracy / unassigned-rate / error-rate, a
 per-speaker confusion matrix (which speaker gets mistaken for whom), and total misattributed
-seconds as a secondary, non-headline stat.
+seconds as a secondary, non-headline stat. Pooled correct/unassigned/wrong counts are additionally
+reported in fixed duration buckets so regressions on short utterances cannot hide in the aggregate
+(experiment #9).
 
 ## Workflow
 

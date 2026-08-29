@@ -15,11 +15,28 @@ class SpeakerIdentificationDurationOverrideSettings(BaseModel, frozen=True):
     similarity_margin_threshold: float = Field(default=0.04, ge=0, le=2)
 
 
+class ShortUtteranceWideningSettings(BaseModel, frozen=True):
+    enabled: bool = True
+    max_original_duration_seconds: float = Field(default=0.75, gt=0)
+    target_duration_seconds: float = Field(default=1.0, gt=0)
+    max_neighbor_gap_seconds: float = Field(default=2.0, ge=0)
+
+
+class ClusterPropagationSettings(BaseModel, frozen=True):
+    enabled: bool = True
+    evidence_min_duration_seconds: float = Field(default=0.5, gt=0)
+    max_utterance_duration_seconds: float = Field(default=0.5, gt=0)
+    cluster_margin_threshold: float = Field(default=0.0, ge=0, le=2)
+    contradiction_veto_margin_threshold: float = Field(default=0.02, ge=0, le=2)
+
+
 class SpeakerIdentificationSettings(BaseModel, frozen=True):
     # Experiment #7's robust rule uses this base bar for utterances shorter than the duration
     # override, then the override's lower bar once enough audio evidence is available.
     similarity_margin_threshold: float = Field(default=0.1, ge=0, le=2)
     duration_override: SpeakerIdentificationDurationOverrideSettings = Field(default_factory=SpeakerIdentificationDurationOverrideSettings)
+    short_utterance_widening: ShortUtteranceWideningSettings = Field(default_factory=ShortUtteranceWideningSettings)
+    cluster_propagation: ClusterPropagationSettings = Field(default_factory=ClusterPropagationSettings)
     # "From Audio" compares a whole diarized-speaker centroid, not one duration-varying utterance.
     # Keep its pre-experiment threshold independent from the duration-conditioned production rule.
     existing_player_match_similarity_margin_threshold: float = Field(default=0.08, ge=0, le=2)

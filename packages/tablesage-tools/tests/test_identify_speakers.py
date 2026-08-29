@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import math
+from collections.abc import Sequence
 from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock
@@ -9,7 +10,13 @@ from unittest.mock import MagicMock
 import pytest
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
-from tablesage_tools.speakers import UNASSIGNED_SPEAKER, identify_speakers
+from tablesage_tools.speakers import (
+    UNASSIGNED_SPEAKER,
+    ClusterPropagationConfig,
+    ShortUtteranceWideningConfig,
+    identify_speakers,
+)
+from tablesage_tools.speakers.strategies import AudioSpan
 
 # `tablesage_tools.speakers.__init__` re-exports the function `identify_speakers` under the
 # same name as its submodule, shadowing the submodule as a package attribute -- import it via
@@ -101,6 +108,82 @@ async def test_identify_speakers_uses_lower_margin_threshold_after_duration_over
     )
 
     assert [utterance.speaker for utterance in result.utterances] == [UNASSIGNED_SPEAKER, "Alice"]
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_widens_short_audio_but_uses_original_duration_threshold(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    transcript = Transcript.from_words(
+        [
+            _word("short", "cluster-a", 0.0, 0.3),
+            _word("other", "cluster-b", 0.3, 1.1),
+            _word("more", "cluster-a", 1.2, 2.2),
+        ]
+    )
+    written_spans: list[tuple[tuple[int, float, float], ...]] = []
+
+    def _fake_write_audio_spans(source_path: Path, destination_path: Path, spans: Sequence[AudioSpan]) -> float:
+        selected = tuple((span.utterance_index, span.start, span.end) for span in spans)
+        written_spans.append(selected)
+        destination_path.write_bytes(b"fake widened clip")
+        return sum(end - start for _index, start, end in selected)
+
+    monkeypatch.setattr(identify_speakers_module, "write_audio_spans", _fake_write_audio_spans)
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    # The widened short clip's margin is between the 0.10 base and 0.04 long-clip threshold.
+    embed = _fake_embed(
+        [
+            Embedding(root=(1.0, 0.9)),
+            Embedding(root=(0.0, 1.0)),
+            Embedding(root=(1.0, 0.0)),
+        ]
+    )
+
+    result = await identify_speakers(
+        transcript,
+        tmp_path / "input.wav",
+        centroids,
+        embed,
+        similarity_margin_threshold=0.10,
+        duration_override_min_seconds=1.0,
+        duration_override_similarity_margin_threshold=0.04,
+        short_utterance_widening=ShortUtteranceWideningConfig(),
+    )
+
+    assert written_spans == [((0, 0.0, 0.3), (2, 1.2, 1.9))]
+    assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
+
+
+@pytest.mark.anyio
+async def test_identify_speakers_propagates_cluster_label_to_short_abstention(tmp_path: Path) -> None:
+    transcript = Transcript.from_words(
+        [
+            _word("alice", "cluster-a", 0.0, 1.0),
+            _word("bob", "cluster-b", 1.0, 2.0),
+            _word("brief", "cluster-a", 2.0, 2.3),
+        ]
+    )
+    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    embed = _fake_embed(
+        [
+            Embedding(root=(1.0, 0.0)),
+            Embedding(root=(0.0, 1.0)),
+            Embedding(root=(1.0, 0.98)),
+        ]
+    )
+
+    result = await identify_speakers(
+        transcript,
+        tmp_path / "input.wav",
+        centroids,
+        embed,
+        similarity_margin_threshold=0.1,
+        cluster_propagation=ClusterPropagationConfig(),
+    )
+
+    assert [utterance.speaker for utterance in result.utterances] == ["Alice", "Bob", "Alice"]
 
 
 @pytest.mark.anyio

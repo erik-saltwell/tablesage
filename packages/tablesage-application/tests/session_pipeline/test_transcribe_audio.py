@@ -15,6 +15,7 @@ from tablesage_model.settings import (
 )
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
+from tablesage_tools.speakers import ClusterPropagationConfig, ShortUtteranceWideningConfig
 
 _TRANSCRIPTION_SETTINGS = TranscriptionAndDiarizationSettings()
 _SPEAKER_ID_SETTINGS = SpeakerIdentificationSettings()
@@ -51,6 +52,8 @@ def _stub_pipeline(monkeypatch: pytest.MonkeyPatch) -> None:
         *,
         duration_override_min_seconds: float | None = None,
         duration_override_similarity_margin_threshold: float | None = None,
+        short_utterance_widening: ShortUtteranceWideningConfig | None = None,
+        cluster_propagation: ClusterPropagationConfig | None = None,
         log_diagnostics: bool = False,
         allow_unassigned: bool = True,
     ) -> Transcript:
@@ -150,6 +153,8 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
         *,
         duration_override_min_seconds: float | None = None,
         duration_override_similarity_margin_threshold: float | None = None,
+        short_utterance_widening: ShortUtteranceWideningConfig | None = None,
+        cluster_propagation: ClusterPropagationConfig | None = None,
         log_diagnostics: bool = False,
         allow_unassigned: bool = True,
     ) -> Transcript:
@@ -186,12 +191,16 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
         *,
         duration_override_min_seconds: float | None = None,
         duration_override_similarity_margin_threshold: float | None = None,
+        short_utterance_widening: ShortUtteranceWideningConfig | None = None,
+        cluster_propagation: ClusterPropagationConfig | None = None,
         log_diagnostics: bool = False,
         allow_unassigned: bool = True,
     ) -> Transcript:
         captured["threshold"] = threshold
         captured["duration_override_min_seconds"] = duration_override_min_seconds
         captured["duration_override_similarity_margin_threshold"] = duration_override_similarity_margin_threshold
+        captured["short_utterance_widening"] = short_utterance_widening
+        captured["cluster_propagation"] = cluster_propagation
         return transcript
 
     monkeypatch.setattr(transcribe_audio_module, "identify_speakers", _capturing_identify_speakers)
@@ -217,6 +226,8 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
         "threshold": 0.11,
         "duration_override_min_seconds": 1.5,
         "duration_override_similarity_margin_threshold": 0.05,
+        "short_utterance_widening": ShortUtteranceWideningConfig(),
+        "cluster_propagation": ClusterPropagationConfig(),
     }
 
 
