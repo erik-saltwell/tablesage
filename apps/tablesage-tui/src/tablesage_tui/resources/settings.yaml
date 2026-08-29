@@ -36,7 +36,7 @@ speaker_identification:
   # After diarization, each utterance's voice is compared against attending
   # players' centroids; a match whose margin over the runner-up falls below
   # this threshold is left as "Unassigned Speaker" rather than guessed.
-  similarity_margin_threshold: 0.07
+  similarity_margin_threshold: 0.08
   # When false, that margin check above is skipped entirely -- the best-matching player is
   # always assigned, however close the runner-up was. Utterances too short to embed at all are
   # unaffected either way; they're still left "Unassigned Speaker" since there's no similarity

@@ -13,9 +13,9 @@ from typing import Any, Final
 import widelog
 
 from ..audio.ffmpeg import extract_clip
-from ..embeddings.eres2netv2 import EmbeddingFactory
 from ..embeddings.similarity import SimilarityComputer, SimilarityResult
 from ..embeddings.types import Embedding
+from ..embeddings.wespeaker import EmbeddingFactory
 from ..model.transcript import Transcript, Utterance
 
 UNASSIGNED_SPEAKER: Final[str] = "Unassigned Speaker"

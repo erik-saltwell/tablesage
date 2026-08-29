@@ -14,14 +14,17 @@ dependencies = [
     # time -- not a normal PyPI package, so it needs a direct wheel reference or `uv sync`
     # silently prunes it (it did, once, at commit d0a2e7e -- see that commit's message).
     "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "huggingface-hub>=1.14.0",
     "jiwer>=3.1.0",
     "litellm>=1.83.0",
     "mathspell>=0.1.0",
     "modelscope[framework]>=1.36.3",
     "pydantic>=2.12.5",
     "punctuators>=0.0.7",
+    "soundfile>=0.12.1",
     "torch==2.10.0",
     "torchaudio==2.10.0",
+    "wespeaker-unofficial>=0.0.2",
     "widelog-py>=2026.7.2",
 ]
 

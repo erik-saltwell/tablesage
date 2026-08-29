@@ -324,10 +324,13 @@ from an already-*processed* Session. This work item instead:
   list is plain free text; the review step's existing-vs-new choice is a
   `Select` + sentinel option, not a fuzzy-matching combo box.
 - GPU-memory flushing between cleaning and embedding stages. Nothing in
-  this flow has ever been observed to OOM back-to-back Mossformer2/ERes2NetV2
+  this flow has ever been observed to OOM back-to-back Mossformer2/embedding
   runs; `_utils.flush_gpu_memory()` exists but has no call site anywhere in
   the app today, and adding a speculative one here isn't warranted absent
-  an actual failure.
+  an actual failure. Production's embedder (WeSpeaker ResNet34-LM, replacing
+  ERes2NetV2 per `.scratch/speaker-id-experiments/03-wespeaker-resnet34-embedder.md`)
+  runs on CPU, not GPU, making this concern even less relevant than when
+  written.
 
 ## Implementation Approach
 
@@ -386,7 +389,7 @@ orchestration, not new ML/audio work)
    orchestrating Stages 2–6 as plain functions with injected callables for
    the async/ML tool calls (mirroring `players_from_session.py`'s
    `asyncio.run(...)`-inside-a-sync-function shape, so this stays
-   unit-testable without invoking ffmpeg/ElevenLabs/litellm/ModelScope).
+   unit-testable without invoking ffmpeg/ElevenLabs/litellm/WeSpeaker).
    Needs: the per-speaker utterance-aggregation helper (grouping an already
    speaker-labeled `Transcript.utterances` by `.speaker` — not the deeper
    word-to-utterance grouping, which `Transcript.from_words` already does),

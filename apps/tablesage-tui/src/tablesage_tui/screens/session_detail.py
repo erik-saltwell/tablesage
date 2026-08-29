@@ -320,10 +320,10 @@ class SessionDetailScreen(TableSageScreen):
         settings = self.application.settings
 
         def work() -> transcribe_audio.TranscriptionResult:
-            # `embedding_factory()` loads the ERes2NetV2 model on first use (multi-second,
-            # possibly downloading it) -- called here, on the progress dialog's background
-            # thread, rather than before `run_with_progress`, so that cost is covered by the
-            # dialog instead of stalling the UI before it can even appear.
+            # `embedding_factory()` loads the WeSpeaker ResNet34-LM model on first use
+            # (multi-second, possibly downloading it) -- called here, on the progress dialog's
+            # background thread, rather than before `run_with_progress`, so that cost is covered
+            # by the dialog instead of stalling the UI before it can even appear.
             embed = self.application.embedding_factory()
             return transcribe_audio.transcribe_audio(
                 session_folder,

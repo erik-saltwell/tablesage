@@ -215,10 +215,7 @@ class Application:
 
     def embedding_factory(self) -> EmbeddingFactory:
         if self._embedding_factory is None:
-            import torch
-
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-            self._embedding_factory = EmbeddingFactory(device=device)
+            self._embedding_factory = EmbeddingFactory()
         return self._embedding_factory
 
     def _embed_clip(self, path: Path) -> Embedding:
