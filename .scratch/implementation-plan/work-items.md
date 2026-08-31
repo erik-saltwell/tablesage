@@ -36,4 +36,4 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 19 | Deepen Summary generation module | Implemented | [`.documentation/deepen_summary_generation_module.md`](../../.documentation/deepen_summary_generation_module.md) | `903d6da` |
 | 20 | Manual Review screen | Implemented | [`.documentation/speaker_review_screen.md`](../../.documentation/speaker_review_screen.md) | `903d6da` |
 | 21 | Speaker identification benchmark harness | Implemented | [`.documentation/speaker_identification_benchmark.md`](../../.documentation/speaker_identification_benchmark.md) | `7c9d4d5` |
-| 22 | Generate Ledger | Designed | [`.documentation/generate_ledger.md`](../../.documentation/generate_ledger.md) | — |
+| 22 | Generate Ledger | Implemented | [`.documentation/generate_ledger.md`](../../.documentation/generate_ledger.md) | `11b2eb8` |
