@@ -131,8 +131,9 @@ two distinct work items, tracked separately in
   review). Lives on Players List (`F`, "From Audio").
 - **Work item 15** — "Enhance players from session"
   (`.documentation/enhance_players_from_session.md`, implemented): pull
-  high-confidence voice clips for a session's *existing* attendees, fully
-  automatic, no review step. Lives on Players List (`S`, "From Session") —
+  voice clips for a session's *existing* attendees. A completed reviewed transcript is trusted
+  and imports all assigned utterances; otherwise the machine transcript is margin/duration
+  filtered. There is no import-time review step. Lives on Players List (`S`, "From Session") —
   not Player Detail's `s` binding as originally sketched here, which has
   been removed. Decoupled from Phase 11 (Process): it reads `transcript.json`
   (Phase 8's Transcribe output) directly rather than waiting on the
@@ -140,6 +141,10 @@ two distinct work items, tracked separately in
   attributes every utterance to an attendee (or leaves it unassigned).
 
 ## Phase 11 — Process session
+
+**Historical scope note:** the Transcribe portion of this phase was implemented, but its canonical
+Processed Session output was later removed pending redesign. Phase 22 supersedes that output and
+the retired `P` action with the Ledger and Generate Ledger action.
 
 - Wires Session Detail's `P` binding (stubbed in Phase 8) to the real pipeline: invalidate-then-recompute (deletes stale downstream files first, so reprocessing is idempotent), clean audio → transcribe/diarize → identify speakers → write the canonical processed-session file via temp-file-then-rename.
 - `P` gating (enabled/disabled, not just attempt-and-fail): input audio present, at least 2 attendees, every attendee has a computed centroid.
@@ -156,6 +161,15 @@ two distinct work items, tracked separately in
 
 - Selection algorithm: `tablesage_tools.embeddings.compute_centroid` now dedupes clips by file-content hash (first-seen kept) and prunes similarity outliers (iterative worst-sample-at-a-time, per `application_business_rules.md`'s "Outlier removal"), returning the unused paths alongside the centroid.
 - Player Detail's `C` binding is wired to `players.cleanup_voice_clips` (shares a compute core with `recompute_centroid`, but additionally deletes each unused path from disk before writing the new centroid), following the existing cleanup pattern (`ConfirmationDialog` first, real disk/DB mutation after) used by Campaigns List, Players List, and Campaign Detail's Sessions tab.
+
+## Phase 22 — Generate Ledger — done
+
+- Implement the v3 Pydantic Ledger and structured-output response models in `tablesage-application`, following `.documentation/canonical_ledger_format_v3.md` and `.documentation/generate_ledger.md`.
+- Generate from the completed Reviewed Transcript when present, otherwise the machine Transcript; render Session roles in memory and send the complete transcript in one structured-output call per attempt.
+- Support the optional Recap and Character Introductions Preamble plus the five discriminated regular utterance types. Preserve chronology through list order; do not emit offsets, sequence numbers, IDs, or transcript provenance.
+- Retry malformed or role-warning responses at most twice, select the structurally valid candidate with the fewest warnings (earliest wins ties), and fail without replacement only when all attempts are structurally invalid.
+- Replace the unused Processed Session artifact with visible/exportable `ledger.json`, add Session Detail's `L` Generate Ledger action, and preserve any prior Ledger when generation fails.
+- Cover schema invariants, source selection, metadata injection, retry selection, atomic persistence, invalidation, TUI gating/indicator behavior, and export in tests.
 
 ## Explicitly deferred (not in this plan)
 

@@ -601,6 +601,7 @@ GlossaryEntryDialog,
 ProgressDialog,
 AttendeeDialog,
 SessionFromCampaignPickerDialog,
+ManualReviewUtteranceDialog,
 SpeakerResolutionDialog,
 TranscriptViewDialog {
     align: center middle;
@@ -614,6 +615,7 @@ TranscriptViewDialog {
     #progress-dialog,
     #attendee-dialog,
     #session-picker-dialog,
+    #manual-review-utterance-dialog,
     #speaker-resolution-dialog,
     #transcript-view-dialog {
         width: 60;
@@ -630,8 +632,22 @@ TranscriptViewDialog {
 
     #attendee-dialog,
     #session-picker-dialog,
+    #manual-review-utterance-dialog,
     #speaker-resolution-dialog {
         width: 90;
+    }
+
+    #manual-review-utterance-dialog .field-row {
+        height: 3;
+        align: left middle;
+
+        .field-label {
+            width: 12;
+        }
+
+        Select {
+            width: 1fr;
+        }
     }
 
     #transcript-view-dialog {
@@ -640,6 +656,7 @@ TranscriptViewDialog {
 
     #confirmation-prompt,
     #text-input-prompt,
+    #session-enhancement-scope-prompt,
     #role-picker-prompt,
     #player-picker-empty,
     #attendee-empty,
@@ -1314,21 +1331,21 @@ SessionDetailScreen {
 }
 
 /* ******************************** */
-/*      speaker review screen       */
+/*       manual review screen       */
 /* ******************************** */
 
-SpeakerReviewScreen {
+ManualReviewScreen {
     .screen-body {
         padding: 1 2;
     }
 
-    #speaker-review-panel {
+    #manual-review-panel {
         width: 1fr;
         height: 1fr;
         layout: vertical;
     }
 
-    #speaker-review-status {
+    #manual-review-status {
         height: 1;
         margin: 0 0 1 0;
 
@@ -1340,14 +1357,23 @@ SpeakerReviewScreen {
         }
     }
 
-    #speaker-review-legend {
+    #manual-review-legend {
         height: 1;
         margin: 0 0 1 0;
         color: $fg-muted;
     }
 
-    #speaker-review-table {
+    #manual-review-table {
         height: 1fr;
+    }
+
+    #manual-review-actions {
+        height: auto;
+        margin: 1 0 0 0;
+
+        Button {
+            margin: 0 0 0 1;
+        }
     }
 }
 

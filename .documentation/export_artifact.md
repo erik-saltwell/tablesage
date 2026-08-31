@@ -4,7 +4,7 @@
 
 This is work item 17 (`.scratch/implementation-plan/work-items.md`): a new
 `X` binding on Session Detail that lets the user copy one of that session's
-user-facing artifacts (input audio, transcript, summary) out to a
+user-facing artifacts (input audio, transcript, reviewed transcript, Ledger, summary) out to a
 filesystem location of their choosing. Purely a convenience copy — the
 source artifact is untouched, nothing is deleted, and no new artifact type
 or metadata is introduced.
@@ -22,7 +22,7 @@ lives entirely on Session Detail, not as a standalone top-level screen.
    `should_show_in_ui=True` and currently exists on disk.
 2. A new pushed `Screen`, `ArtifactExportScreen(session_id)`, lists every
    qualifying artifact as one row (`display_name` only — "Input Audio",
-   "Transcript", "Summary") using the same filter as the indicator panel:
+   "Transcript", "Reviewed Transcript", "Summary") using the same filter as the indicator panel:
    `ARTIFACTS[name].should_show_in_ui and session_artifacts(session_folder)[name]`.
 3. `Enter`/`E` on the selected row opens `textual_fspicker.FileSave`:
    `location=Path.home()` (same default `FileOpen` uses for Import Audio),
@@ -64,12 +64,13 @@ lives entirely on Session Detail, not as a standalone top-level screen.
   column), wired to `SessionDetailScreen`'s new `X` binding; reuses
   `textual_fspicker.FileSave`/`Filters` directly, no new dialog wrapper
   (same precedent as Import Audio's `FileOpen`).
-- No new `AppSettings` fields, no changes to `ARTIFACTS` or `ArtifactSpec`.
+- No new `AppSettings` fields. New user-facing artifacts become exportable by registering them
+  in `ARTIFACTS`; the reviewed transcript uses this existing extension point.
 
 ## Out of Scope
 
-- Exporting artifacts with `should_show_in_ui=False` (`transcript.json`,
-  `processed_session.json`) — would require deliberately flipping that flag,
+- Exporting artifacts with `should_show_in_ui=False` (such as the machine `transcript.json`) —
+  would require deliberately flipping that flag,
   not a special case in this screen.
 - Multi-select / export-all-in-one-action — one row, one export, repeatable.
 - Player-level exports (voice clips) — `ARTIFACTS` doesn't cover players;

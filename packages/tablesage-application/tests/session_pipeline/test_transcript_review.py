@@ -10,9 +10,12 @@ from tablesage_application.session_pipeline.transcript_review import (
     clip_path,
     count_adjusted_utterances,
     discard_review_clips,
+    edit_utterance,
     extract_review_clips,
     generate_benchmark_transcript,
+    load_review_transcript,
     review_clips_folder,
+    save_reviewed_transcript,
 )
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 from tablesage_tools.speakers import MIN_UTTERANCE_DURATION_SECONDS
@@ -56,6 +59,17 @@ def test_extract_review_clips_writes_one_file_per_utterance_and_reports_progress
     assert clip_path(session_folder, 0).is_file()
     assert clip_path(session_folder, 1).is_file()
     assert progress == [(1, 2), (2, 2)]
+
+
+def test_extract_review_clips_resumes_from_completed_review_when_present(tmp_path: Path) -> None:
+    machine = _stub_transcript()
+    reviewed = edit_utterance(machine, 0, "Bob", "Edited hello")
+    machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    reviewed.save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
+
+    loaded, _ = extract_review_clips(tmp_path)
+
+    assert loaded == reviewed
 
 
 def test_extract_review_clips_skips_zero_duration_utterance_without_erroring(
@@ -136,10 +150,51 @@ def test_assign_speaker_stays_adjusted_once_set_even_if_reverted() -> None:
     assert reverted.utterances[0].adjusted is True
 
 
+def test_edit_utterance_updates_speaker_and_text_without_mutating_source() -> None:
+    transcript = _stub_transcript()
+
+    updated = edit_utterance(transcript, 0, "Bob", "Edited hello")
+
+    assert updated.utterances[0].speaker == "Bob"
+    assert updated.utterances[0].punctuated_text == "Edited hello"
+    assert updated.utterances[0].adjusted is True
+    assert transcript.utterances[0].speaker == "Alice"
+    assert transcript.utterances[0].punctuated_text is None
+
+
+def test_edit_utterance_leaves_adjusted_false_when_values_are_unchanged() -> None:
+    transcript = _stub_transcript()
+
+    updated = edit_utterance(transcript, 0, "Alice", "hello")
+
+    assert updated.utterances[0].adjusted is False
+
+
+def test_save_reviewed_transcript_creates_separate_artifact_without_changing_machine_transcript(tmp_path: Path) -> None:
+    machine = _stub_transcript()
+    reviewed = edit_utterance(machine, 0, "Bob", "Edited hello")
+    machine_path = tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
+    machine.save(machine_path)
+    stale_derivatives = (
+        ArtifactName.TRANSCRIPT_ROLES_TEXT,
+        ArtifactName.TRANSCRIPT_BENCHMARK,
+        ArtifactName.LEDGER,
+        ArtifactName.SUMMARY,
+    )
+    for name in stale_derivatives:
+        (tmp_path / ARTIFACTS[name].filename).write_text("stale")
+
+    save_reviewed_transcript(tmp_path, reviewed)
+
+    assert Transcript.load(machine_path) == machine
+    assert load_review_transcript(tmp_path) == reviewed
+    assert all(not (tmp_path / ARTIFACTS[name].filename).exists() for name in stale_derivatives)
+
+
 def test_count_adjusted_utterances(tmp_path: Path) -> None:
     session_folder = tmp_path
     transcript = assign_speaker(_stub_transcript(), 0, "Bob")
-    (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).write_text(transcript.model_dump_json())
+    (session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename).write_text(transcript.model_dump_json())
 
     assert count_adjusted_utterances(session_folder) == 1
 
@@ -149,6 +204,13 @@ def test_count_adjusted_utterances_is_zero_for_a_fresh_transcript(tmp_path: Path
     (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).write_text(_stub_transcript().model_dump_json())
 
     assert count_adjusted_utterances(session_folder) == 0
+
+
+def test_count_adjusted_utterances_ignores_adjustments_in_machine_transcript(tmp_path: Path) -> None:
+    adjusted_machine = assign_speaker(_stub_transcript(), 0, "Bob")
+    adjusted_machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+
+    assert count_adjusted_utterances(tmp_path) == 0
 
 
 def test_count_adjusted_utterances_is_zero_when_no_transcript_exists_yet(tmp_path: Path) -> None:
@@ -188,3 +250,16 @@ def test_generate_benchmark_transcript_does_not_modify_the_source_transcript(tmp
 
     reloaded = Transcript.load(transcript_path)
     assert len(reloaded.utterances) == 2
+
+
+def test_generate_benchmark_transcript_prefers_completed_review(tmp_path: Path) -> None:
+    machine = _stub_transcript()
+    reviewed = edit_utterance(machine, 0, "Bob", "Reviewed words")
+    machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    reviewed.save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
+
+    generate_benchmark_transcript(tmp_path)
+
+    benchmark = Transcript.load(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename)
+    assert benchmark.utterances[0].speaker == "Bob"
+    assert benchmark.utterances[0].punctuated_text == "Reviewed words"

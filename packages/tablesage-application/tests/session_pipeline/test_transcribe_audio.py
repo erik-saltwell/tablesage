@@ -7,7 +7,12 @@ from typing import cast
 import pytest
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import transcribe_audio as transcribe_audio_module
-from tablesage_application.session_pipeline.transcribe_audio import Stage, TranscriptionResult, transcribe_audio
+from tablesage_application.session_pipeline.transcribe_audio import (
+    Stage,
+    TranscriptionResult,
+    render_role_transcript_text,
+    transcribe_audio,
+)
 from tablesage_model.settings import (
     SpeakerIdentificationDurationOverrideSettings,
     SpeakerIdentificationSettings,
@@ -81,7 +86,6 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     result = transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {"Alice": "Wizard"},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
@@ -93,28 +97,46 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
     assert transcript_json.is_file()
     assert transcript_text.is_file()
-    assert transcript_roles_text.is_file()
+    assert not transcript_roles_text.exists()
     assert "Alice" in transcript_text.read_text()
     assert "hello." in transcript_text.read_text()
     assert "[00:00:00] **Alice:** hello." in transcript_text.read_text()
-    assert transcript_roles_text.read_text() == "**Wizard** - hello.\n\n**Wizard** - world.\n"
 
 
-def test_transcribe_audio_role_transcript_falls_back_to_speaker_when_role_missing(tmp_path: Path) -> None:
+def test_role_transcript_renderer_uses_machine_transcript_when_no_review_exists(tmp_path: Path) -> None:
     session_folder = tmp_path
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
 
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
     )
 
-    transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
-    assert "Alice" in transcript_roles_text.read_text()
+    assert render_role_transcript_text(session_folder, {"Alice": "Wizard"}) == "**Wizard** - hello.\n\n**Wizard** - world.\n"
+
+
+def test_role_transcript_renderer_prefers_reviewed_transcript(tmp_path: Path) -> None:
+    machine = _stub_transcript()
+    reviewed_utterances = [
+        utterance.model_copy(update={"speaker": "Alice", "punctuated_text": f"reviewed {utterance.text}."})
+        for utterance in machine.utterances
+    ]
+    machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    Transcript(utterances=reviewed_utterances).save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
+
+    rendered = render_role_transcript_text(tmp_path, {"Alice": "Wizard"})
+
+    assert rendered == "**Wizard** - reviewed hello.\n\n**Wizard** - reviewed world.\n"
+
+
+def test_role_transcript_renderer_falls_back_to_player_name_when_role_missing(tmp_path: Path) -> None:
+    transcript = Transcript(utterances=[utterance.model_copy(update={"speaker": "Alice"}) for utterance in _stub_transcript().utterances])
+    transcript.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+
+    assert "Alice" in render_role_transcript_text(tmp_path, {})
 
 
 def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
@@ -125,7 +147,6 @@ def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
@@ -169,7 +190,6 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=SpeakerIdentificationSettings(allow_unassigned=False),
@@ -210,7 +230,6 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=SpeakerIdentificationSettings(
@@ -231,25 +250,33 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
     }
 
 
-def test_successful_transcription_invalidates_from_log_artifacts(tmp_path: Path) -> None:
+def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp_path: Path) -> None:
     session_folder = tmp_path
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    processed_path = session_folder / ARTIFACTS[ArtifactName.PROCESSED_SESSION].filename
+    ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
+    reviewed_path = session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
+    benchmark_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename
+    role_transcript_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
     summary_path.write_text("stale summary")
-    processed_path.write_text("{}")
+    ledger_path.write_text("{}")
+    reviewed_path.write_text("{}")
+    benchmark_path.write_text("{}")
+    role_transcript_path.write_text("stale role transcript")
 
     transcribe_audio(
         session_folder,
         {"Alice": _fake_embedding()},
-        {},
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
     )
 
     assert not summary_path.exists()
-    assert processed_path.exists()
+    assert not reviewed_path.exists()
+    assert not benchmark_path.exists()
+    assert not role_transcript_path.exists()
+    assert not ledger_path.exists()
 
 
 def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -267,7 +294,6 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
         transcribe_audio(
             session_folder,
             {"Alice": _fake_embedding()},
-            {},
             embed=_NO_EMBED,
             transcription_settings=_TRANSCRIPTION_SETTINGS,
             speaker_id_settings=_SPEAKER_ID_SETTINGS,

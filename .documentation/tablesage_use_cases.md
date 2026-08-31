@@ -123,12 +123,16 @@ Players are top-level records, independent of any single campaign — a player's
 
 ### Enhance profiles from an identified session
 
-**Description:** Add high-confidence utterances from a processed session to existing player profiles.
+**Description:** Add utterances from a transcribed session to existing player profiles.
 
 **Goal:** Improve future automatic identification while avoiding feedback from weak or mixed segments.
 
 - The session has cleaned audio, a transcript/discourse, attendees, and existing voice profiles for the relevant players.
-- The app selects only utterances assigned to a player with enough identification margin and an acceptable duration.
+- If a reviewed transcript exists, the app trusts it and imports every utterance assigned to a
+  known player without margin or duration filtering.
+- Otherwise the app uses the machine transcript and requires enough identification margin and an
+  acceptable duration.
+- Unassigned utterances are skipped in both cases.
 - The app extracts those portions of cleaned audio and embeds them.
 - The app stores them as session-enhancement samples linked to the source session and utterance.
 - The app recomputes the profile and may flag or exclude embedding outliers for review.
@@ -211,7 +215,7 @@ Players are top-level records, independent of any single campaign — a player's
 - The user confirms the action.
 - A separate destructive maintenance action can permanently remove local media and derived artifacts.
 
-## Transcript, speaker review, and summaries
+## Transcript, manual review, Ledgers, and summaries
 
 ### Review and correct speaker attribution
 
@@ -226,6 +230,20 @@ Players are top-level records, independent of any single campaign — a player's
 - The app records whether an assignment was automatic or user-reviewed.
 - The app can offer selected reviewed utterances as candidate voice clips for profile seeding/enhancement.
 - The app marks summaries stale when a speaker correction materially changes their content.
+
+### Generate a Ledger
+
+**Description:** Condense the current Session transcript into the structured v3 Ledger format.
+
+**Goal:** Produce a chronological, machine-usable record of meaningful campaign events without treating the Transcript as a lossless canonical record.
+
+- The user requests Ledger generation for a Session with a Transcript.
+- The app uses the completed Reviewed Transcript when present, otherwise the machine Transcript, and presents speakers to the generator as their Session roles.
+- Explicitly framed pre-session material becomes an optional Preamble containing a Recap, Character Introductions, or both.
+- Regular content becomes ordered Narration, Action, Speech, Expression, and Correction entries. The Ledger may omit, rephrase, combine, or split transcript utterances and carries no offsets or provenance links.
+- The app validates structured output, retries malformed or unknown-role results up to twice, and selects the best structurally valid candidate without silently fuzzy-matching names.
+- A successful run atomically replaces `ledger.json`, which is visible and exportable. A failed run preserves any prior Ledger.
+- Rebuilding or completing the source Transcript, re-importing audio, or changing attendance/roles invalidates the Ledger.
 
 ### View and regenerate a summary
 

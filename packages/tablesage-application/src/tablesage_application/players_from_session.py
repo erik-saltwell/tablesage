@@ -48,12 +48,12 @@ def select_enhancement_utterances(
     min_seconds: float,
     max_seconds: float,
 ) -> list[Utterance]:
-    """Utterances attributed to `player_name` that are confident and well-sized enough to bank as a voice sample.
+    """Select high-certainty utterances attributed to `player_name` for session enhancement.
 
     Comparing `utterance.speaker == player_name` already excludes every other attendee's
     utterances and `UNASSIGNED_SPEAKER` (never a real player name) in one check. A `None`
-    `similarity_margin` (only possible for a transcript produced before that field existed)
-    fails the filter rather than passing it -- see `.documentation/enhance_players_from_session.md`.
+    margin fails the filter rather than passing it -- see
+    `.documentation/enhance_players_from_session.md`.
     """
     selected = []
     for utterance in utterances:
@@ -66,6 +66,11 @@ def select_enhancement_utterances(
             continue
         selected.append(utterance)
     return selected
+
+
+def select_assigned_utterances(utterances: list[Utterance], player_name: str) -> list[Utterance]:
+    """Select every utterance assigned to `player_name`, without confidence or duration checks."""
+    return [utterance for utterance in utterances if utterance.speaker == player_name]
 
 
 def _generated_session_filename(player_name: str, campaign_name: str, session_name: str, session_hash: str) -> str:
@@ -90,7 +95,11 @@ def enhance_players_from_session(
     outlier_settings: RemoveOutliersSettings,
     on_progress: OnProgress | None = None,
 ) -> EnhanceResult:
-    """Pull high-confidence voice clips for every attendee out of the session's transcript.
+    """Pull voice clips for every attendee out of the best available session transcript.
+
+    A completed Manual Review is trusted as human ground truth, so every utterance assigned
+    to an attendee is imported without similarity-margin or duration filtering. Without that
+    artifact, the machine transcript retains the configured confidence and duration filters.
 
     For each attendee: capture their prior clips from this session (by filename hash
     segment), extract fresh qualifying clips from the transcript, then delete the
@@ -101,18 +110,25 @@ def enhance_players_from_session(
     Every attendee's centroid is recomputed afterward, regardless of whether they got new
     clips, since a zero-new-clips attendee may still have had stale clips retracted.
     """
-    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    reviewed_path = session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
+    has_reviewed_transcript = reviewed_path.is_file()
+    transcript_path = reviewed_path if has_reviewed_transcript else session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
+    transcript = Transcript.load(transcript_path)
     input_audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
     session_hash = clips.hash8(str(session_id))
 
     attendees = list_attendance(session, session_id)
     utterances_by_player: dict[uuid.UUID, list[Utterance]] = {
-        attendee.player_id: select_enhancement_utterances(
-            transcript.utterances,
-            attendee.player_name,
-            enhance_settings.min_margin_for_voice_sample,
-            enhance_settings.min_clip_seconds,
-            enhance_settings.max_clip_seconds,
+        attendee.player_id: (
+            select_assigned_utterances(transcript.utterances, attendee.player_name)
+            if has_reviewed_transcript
+            else select_enhancement_utterances(
+                transcript.utterances,
+                attendee.player_name,
+                enhance_settings.min_margin_for_voice_sample,
+                enhance_settings.min_clip_seconds,
+                enhance_settings.max_clip_seconds,
+            )
         )
         for attendee in attendees
     }

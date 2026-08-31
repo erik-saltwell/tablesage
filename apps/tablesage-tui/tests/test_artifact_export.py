@@ -25,14 +25,14 @@ async def _open_export_screen(pilot: Pilot, session_id: uuid.UUID) -> None:
 
 @pytest.mark.anyio
 async def test_table_lists_only_exportable_artifacts() -> None:
-    application = _application(exportable=[ArtifactName.INPUT_AUDIO, ArtifactName.SUMMARY])
+    application = _application(exportable=[ArtifactName.INPUT_AUDIO, ArtifactName.LEDGER, ArtifactName.SUMMARY])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_export_screen(pilot, uuid.uuid4())
 
         table = pilot.app.screen.query_one("#artifact-export-table", DataTable)
         rows = [str(cell) for row_index in range(table.row_count) for cell in table.get_row_at(row_index)]
-        assert rows == ["Input Audio", "Summary"]
+        assert rows == ["Input Audio", "Ledger", "Summary"]
 
 
 @pytest.mark.anyio

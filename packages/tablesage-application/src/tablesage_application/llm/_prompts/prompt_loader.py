@@ -10,6 +10,7 @@ class PromptName(StrEnum):
     """Each member names a subdirectory of `_prompts/` holding a `system.md` + `template.j2` pair."""
 
     SUMMARIZE_SESSION = "summarize_session"
+    GENERATE_LEDGER = "generate_ledger"
     PROPOSE_SPEAKERS = "propose_speakers"
     CLASSIFY_BACKCHANNELS = "classify_backchannels"
 

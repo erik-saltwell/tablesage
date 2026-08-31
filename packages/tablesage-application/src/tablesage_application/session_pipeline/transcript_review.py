@@ -28,10 +28,21 @@ def clip_path(session_folder: Path, utterance_index: int) -> Path:
     return review_clips_folder(session_folder) / _clip_filename(utterance_index)
 
 
-def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
-    """Load `transcript.json` and pre-extract every utterance's audio into `speaker_review_clips/`.
+def _artifact_path(session_folder: Path, name: ArtifactName) -> Path:
+    return session_folder / ARTIFACTS[name].filename
 
-    Runs entirely up front (behind a progress dialog, per the caller) so Speaker Review's
+
+def load_review_transcript(session_folder: Path) -> Transcript:
+    """Load the last completed review when present, otherwise the machine transcript."""
+    reviewed_path = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
+    source = reviewed_path if reviewed_path.is_file() else _artifact_path(session_folder, ArtifactName.TRANSCRIPT)
+    return Transcript.load(source)
+
+
+def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
+    """Load the review source and pre-extract every utterance's audio into `speaker_review_clips/`.
+
+    Runs entirely up front (behind a progress dialog, per the caller) so Manual Review's
     table -- linear playback or a mouse click straight to an arbitrary row -- never waits
     on ffmpeg mid-session. Re-extracting is idempotent: existing clips are overwritten.
 
@@ -41,11 +52,11 @@ def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int],
     from the transcription provider with an identical start/end on their one word (seen, e.g., a
     zero-duration "Yeah."). `identify_speakers` already routes around this at transcribe time via
     its own too-short-to-embed floor, so it only surfaces here, where every utterance (not just
-    embeddable ones) needs a clip. `SpeakerReviewScreen` skips playback for a row with no clip
+    embeddable ones) needs a clip. `ManualReviewScreen` skips playback for a row with no clip
     file rather than erroring -- there's nothing to play, but the utterance is still reviewable
     and assignable from its text.
     """
-    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    transcript = load_review_transcript(session_folder)
     clip_dir = review_clips_folder(session_folder)
     clip_dir.mkdir(parents=True, exist_ok=True)
 
@@ -71,7 +82,7 @@ def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int],
 
 
 def discard_review_clips(session_folder: Path) -> None:
-    """Delete the review clip cache -- called when Speaker Review closes. Never persists across screen opens."""
+    """Delete the review clip cache -- called when Manual Review closes. Never persists across screen opens."""
     shutil.rmtree(review_clips_folder(session_folder), ignore_errors=True)
 
 
@@ -90,6 +101,47 @@ def assign_speaker(transcript: Transcript, utterance_index: int, speaker: str) -
     return Transcript(utterances=new_utterances)
 
 
+def edit_utterance(transcript: Transcript, utterance_index: int, speaker: str, text: str) -> Transcript:
+    """Return a copy with an utterance's speaker and displayed text edited together.
+
+    Like the number-key speaker assignment, an actual change marks the utterance adjusted and
+    that marker remains sticky across later edits. The caller validates that `text` is nonblank.
+    """
+    utterance = transcript.utterances[utterance_index]
+    current_text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
+    changed = speaker != utterance.speaker or text != current_text
+    updated = utterance.model_copy(
+        update={
+            "speaker": speaker,
+            "punctuated_text": text,
+            "adjusted": utterance.adjusted or changed,
+        }
+    )
+    new_utterances = list(transcript.utterances)
+    new_utterances[utterance_index] = updated
+    return Transcript(utterances=new_utterances)
+
+
+def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> None:
+    """Atomically replace the completed review, then discard artifacts derived from its source."""
+    target = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
+    temporary = target.with_name(f".{target.stem}.tmp{target.suffix}")
+    try:
+        transcript.save(temporary)
+        temporary.replace(target)
+    except Exception:
+        temporary.unlink(missing_ok=True)
+        raise
+
+    for name in (
+        ArtifactName.TRANSCRIPT_ROLES_TEXT,
+        ArtifactName.TRANSCRIPT_BENCHMARK,
+        ArtifactName.LEDGER,
+        ArtifactName.SUMMARY,
+    ):
+        _artifact_path(session_folder, name).unlink(missing_ok=True)
+
+
 @dataclass(frozen=True)
 class BenchmarkTranscriptResult:
     """The outcome of `generate_benchmark_transcript`, for the caller to report to the user."""
@@ -99,7 +151,7 @@ class BenchmarkTranscriptResult:
 
 
 def generate_benchmark_transcript(session_folder: Path) -> BenchmarkTranscriptResult:
-    """Write `transcript_benchmark.json` -- a copy of `transcript.json` with every utterance under
+    """Write `transcript_benchmark.json` from the completed review (or machine transcript) with every utterance under
     `MIN_UTTERANCE_DURATION_SECONDS` dropped.
 
     Scoring `identify_speakers`' output against hand-corrected ground truth that still includes
@@ -110,12 +162,12 @@ def generate_benchmark_transcript(session_folder: Path) -> BenchmarkTranscriptRe
 
     This is a derived, disposable, on-demand artifact, not a second source of truth: it is never
     read by any other pipeline step, never hand-edited, and always regenerated wholesale from
-    whatever `transcript.json` currently contains -- the canonical transcript (including the
-    short utterances) stays exactly what `T` writes and what Speaker Review reviews. A benchmark
+    the completed review when it exists, otherwise from `transcript.json`. The canonical
+    transcript (including the short utterances) stays exactly what `T` writes. A benchmark
     script should always regenerate this immediately before scoring rather than trusting an old
     copy, since nothing keeps it in sync with `transcript.json` automatically.
     """
-    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    transcript = load_review_transcript(session_folder)
     kept = [utterance for utterance in transcript.utterances if utterance.end - utterance.start >= MIN_UTTERANCE_DURATION_SECONDS]
     excluded_count = len(transcript.utterances) - len(kept)
 
@@ -137,7 +189,7 @@ def count_adjusted_utterances(session_folder: Path) -> int:
     (before `transcript.json` exists at all) -- no file trivially means nothing has been
     hand-corrected yet, not an error.
     """
-    transcript_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
+    transcript_path = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
     if not transcript_path.is_file():
         return 0
     transcript = Transcript.load(transcript_path)

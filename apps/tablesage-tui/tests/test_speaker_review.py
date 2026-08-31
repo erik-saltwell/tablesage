@@ -9,11 +9,12 @@ from rich.text import Text
 from tablesage_application.entities.sessions import Attendee
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 from tablesage_tui.audio_playback import ClipPlayer
+from tablesage_tui.dialogs import ManualReviewUtteranceDialog
 from tablesage_tui.screens.main_app import TableSageApp
-from tablesage_tui.screens.speaker_review import SpeakerReviewScreen
+from tablesage_tui.screens.speaker_review import ManualReviewScreen
 from textual.coordinate import Coordinate
 from textual.pilot import Pilot
-from textual.widgets import DataTable, Static
+from textual.widgets import DataTable, Input, Select, Static
 
 
 def _word(text: str, speaker: str, start: float, end: float) -> TranscriptionWord:
@@ -43,7 +44,7 @@ def _application(
     missing_clip_indices: set[int] | None = None,
 ) -> MagicMock:
     """Writes real (dummy-content) clip files for every utterance except `missing_clip_indices`,
-    mirroring what `extract_review_clips` actually leaves on disk -- `SpeakerReviewScreen._play`
+    mirroring what `extract_review_clips` actually leaves on disk -- `ManualReviewScreen._play`
     checks `Path.is_file()`, so a mocked path with nothing on disk would make every playback
     assertion pass for the wrong reason (there's simply never a file to find)."""
     transcript = transcript or _transcript()
@@ -58,14 +59,14 @@ def _application(
         session_folder=MagicMock(return_value=session_folder),
         list_attendance=MagicMock(return_value=attendees if attendees is not None else [_attendee("Alice"), _attendee("Bob")]),
         extract_review_clips=MagicMock(return_value=(transcript, clip_dir)),
-        save_transcript=MagicMock(),
+        save_reviewed_transcript=MagicMock(),
         discard_review_clips=MagicMock(),
     )
     return application
 
 
 async def _open_review_screen(pilot: Pilot, session_id: uuid.UUID) -> None:
-    pilot.app.push_screen(SpeakerReviewScreen(session_id))
+    pilot.app.push_screen(ManualReviewScreen(session_id))
     await pilot.pause()
     await pilot.app.workers.wait_for_complete()
     await pilot.pause()
@@ -86,7 +87,7 @@ async def test_table_renders_marker_speaker_and_text_columns(tmp_path: Path) -> 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert table.row_count == 3
         assert list(table.get_row_at(0)) == ["", "Alice", "hi"]
         assert list(table.get_row_at(1)) == ["", "Bob", "yo"]
@@ -102,14 +103,17 @@ async def test_number_keys_map_to_attendees_alphabetically_not_attendance_order(
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        legend = pilot.app.screen.query_one("#speaker-review-legend", Static)
+        legend = pilot.app.screen.query_one("#manual-review-legend", Static)
         assert str(legend.render()) == "1: Alice   2: bob   3: Carol   0: Unassigned"
 
         await pilot.press("1")  # should assign "Alice", the alphabetically-first attendee
         await pilot.pause()
 
-        saved = application.save_transcript.call_args[0][1]
-        assert saved.utterances[0].speaker == "Alice"
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].speaker == "Alice"
+        application.save_reviewed_transcript.assert_not_called()
 
 
 @pytest.mark.anyio
@@ -133,11 +137,11 @@ async def test_row_with_no_clip_file_does_not_play(tmp_path: Path, _stub_playbac
         await _open_review_screen(pilot, uuid.uuid4())
 
         assert _stub_playback == []
-        assert isinstance(pilot.app.screen, SpeakerReviewScreen)
+        assert isinstance(pilot.app.screen, ManualReviewScreen)
 
 
 @pytest.mark.anyio
-async def test_assigning_a_different_speaker_saves_and_marks_adjusted(tmp_path: Path) -> None:
+async def test_assigning_a_different_speaker_updates_working_copy_and_marks_adjusted(tmp_path: Path) -> None:
     application = _application(session_folder=tmp_path)
     session_id = uuid.uuid4()
 
@@ -147,13 +151,14 @@ async def test_assigning_a_different_speaker_saves_and_marks_adjusted(tmp_path: 
         await pilot.press("2")  # assign row 0 to Bob (was Alice)
         await pilot.pause()
 
-        application.save_transcript.assert_called_once()
-        called_session_id, saved = application.save_transcript.call_args[0]
-        assert called_session_id == session_id
-        assert saved.utterances[0].speaker == "Bob"
-        assert saved.utterances[0].adjusted is True
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].speaker == "Bob"
+        assert screen._transcript.utterances[0].adjusted is True
+        application.save_reviewed_transcript.assert_not_called()
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert table.cursor_coordinate == Coordinate(1, 0)
         assert table.get_cell("0", "adjusted") == "✓"
 
@@ -168,9 +173,11 @@ async def test_assigning_the_same_speaker_does_not_mark_adjusted(tmp_path: Path)
         await pilot.press("1")  # row 0 is already Alice
         await pilot.pause()
 
-        saved = application.save_transcript.call_args[0][1]
-        assert saved.utterances[0].speaker == "Alice"
-        assert saved.utterances[0].adjusted is False
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].speaker == "Alice"
+        assert screen._transcript.utterances[0].adjusted is False
 
 
 @pytest.mark.anyio
@@ -183,9 +190,78 @@ async def test_zero_key_assigns_unassigned_speaker(tmp_path: Path) -> None:
         await pilot.press("0")
         await pilot.pause()
 
-        saved = application.save_transcript.call_args[0][1]
-        assert saved.utterances[0].speaker == "Unassigned Speaker"
-        assert saved.utterances[0].adjusted is True
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].speaker == "Unassigned Speaker"
+        assert screen._transcript.utterances[0].adjusted is True
+
+
+@pytest.mark.anyio
+async def test_complete_saves_separate_reviewed_transcript_and_closes(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+    session_id = uuid.uuid4()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, session_id)
+        await pilot.press("2")
+        await pilot.pause()
+
+        await pilot.click("#manual-review-complete")
+        await pilot.pause()
+
+        application.save_reviewed_transcript.assert_called_once()
+        called_session_id, saved = application.save_reviewed_transcript.call_args.args
+        assert called_session_id == session_id
+        assert saved.utterances[0].speaker == "Bob"
+        application.discard_review_clips.assert_called_once_with(session_id)
+        assert not isinstance(pilot.app.screen, ManualReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_cancel_button_discards_working_changes_without_saving(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+    session_id = uuid.uuid4()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, session_id)
+        await pilot.press("2")
+        await pilot.pause()
+
+        await pilot.click("#manual-review-cancel")
+        await pilot.pause()
+
+        application.save_reviewed_transcript.assert_not_called()
+        application.discard_review_clips.assert_called_once_with(session_id)
+        assert not isinstance(pilot.app.screen, ManualReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_double_click_row_opens_modal_and_can_edit_speaker_and_text(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.click("#manual-review-table", offset=(10, 1), times=2)
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ManualReviewUtteranceDialog)
+        pilot.app.screen.query_one("#manual-review-speaker", Select).value = "Bob"
+        pilot.app.screen.query_one("#manual-review-text", Input).value = "Edited greeting"
+        await pilot.click("#manual-review-edit-save")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].speaker == "Bob"
+        assert screen._transcript.utterances[0].punctuated_text == "Edited greeting"
+        assert screen._transcript.utterances[0].adjusted is True
+        table = screen.query_one("#manual-review-table", DataTable)
+        assert table.get_cell("0", "speaker") == "Bob"
+        assert table.get_cell("0", "text") == "Edited greeting"
+        application.save_reviewed_transcript.assert_not_called()
 
 
 @pytest.mark.anyio
@@ -194,7 +270,7 @@ async def test_space_toggles_mode_indicator(tmp_path: Path) -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
-        mode = pilot.app.screen.query_one("#speaker-review-mode", Static)
+        mode = pilot.app.screen.query_one("#manual-review-mode", Static)
         assert str(mode.render()) == "Mode: Manual"
 
         await pilot.press("space")
@@ -215,14 +291,14 @@ async def test_arrow_key_forces_manual_mode(tmp_path: Path) -> None:
 
         await pilot.press("space")  # -> Auto
         await pilot.pause()
-        mode = pilot.app.screen.query_one("#speaker-review-mode", Static)
+        mode = pilot.app.screen.query_one("#manual-review-mode", Static)
         assert str(mode.render()) == "Mode: Auto"
 
         await pilot.press("down")
         await pilot.pause()
 
         assert str(mode.render()) == "Mode: Manual"
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert table.cursor_coordinate == Coordinate(1, 0)
 
 
@@ -252,7 +328,8 @@ async def test_escape_discards_clips_and_pops_screen(tmp_path: Path) -> None:
         await pilot.pause()
 
         application.discard_review_clips.assert_called_once_with(session_id)
-        assert not isinstance(pilot.app.screen, SpeakerReviewScreen)
+        application.save_reviewed_transcript.assert_not_called()
+        assert not isinstance(pilot.app.screen, ManualReviewScreen)
 
 
 @pytest.mark.anyio
@@ -265,10 +342,10 @@ async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off(tm
         await pilot.press("ctrl+2")  # focus Bob
         await pilot.pause()
 
-        focus = pilot.app.screen.query_one("#speaker-review-focus", Static)
+        focus = pilot.app.screen.query_one("#manual-review-focus", Static)
         assert str(focus.render()) == "Focus: Bob"
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert isinstance(table.get_cell("0", "speaker"), Text)  # Alice's row, not the focus -- dimmed
         assert not isinstance(table.get_cell("1", "speaker"), Text)  # Bob's row -- normal
 
@@ -286,12 +363,12 @@ async def test_single_player_mode_with_no_utterances_notifies_instead_of_togglin
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        with patch.object(SpeakerReviewScreen, "notify") as notify:
+        with patch.object(ManualReviewScreen, "notify") as notify:
             await pilot.press("ctrl+3")  # Carol has no utterances in this transcript
             await pilot.pause()
 
         notify.assert_called_once_with("No utterances currently assigned to Carol.", severity="warning")
-        focus = pilot.app.screen.query_one("#speaker-review-focus", Static)
+        focus = pilot.app.screen.query_one("#manual-review-focus", Static)
         assert str(focus.render()) == "Focus: All players"
 
 
@@ -308,7 +385,7 @@ async def test_arrow_key_skips_rows_outside_single_player_focus(tmp_path: Path) 
         await pilot.press("down")
         await pilot.pause()
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert table.cursor_coordinate == Coordinate(2, 0)  # row 1 (Bob) skipped
 
 
@@ -325,7 +402,7 @@ async def test_reassigning_the_focused_row_updates_membership_live(tmp_path: Pat
         await pilot.press("2")  # reassign row 0 to Bob -- leaves the Alice focus set
         await pilot.pause()
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         assert isinstance(table.get_cell("0", "speaker"), Text)  # now dimmed -- no longer Alice
         assert table.cursor_coordinate == Coordinate(2, 0)  # advanced to the next Alice row
 
@@ -340,7 +417,7 @@ async def test_mouse_click_on_a_filtered_row_bounces_back(tmp_path: Path) -> Non
         await pilot.press("ctrl+1")  # focus Alice, playhead on row 0
         await pilot.pause()
 
-        table = pilot.app.screen.query_one("#speaker-review-table", DataTable)
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
         table.cursor_coordinate = Coordinate(1, 0)  # simulate a mouse click straight onto Bob's (disabled) row
         await pilot.pause()
 

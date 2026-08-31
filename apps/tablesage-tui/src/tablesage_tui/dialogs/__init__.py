@@ -1,6 +1,7 @@
 from .attendee_editor import AttendeeDialog, AttendeeResult
 from .generic import ConfirmationDialog, TextInputDialog
 from .glossary_entry import GlossaryEntryDialog
+from .manual_review import ManualReviewUtteranceDialog, ManualReviewUtteranceResult
 from .progress import ProgressDialog
 from .roster import PlayerPickerDialog, RolePickerDialog
 from .session_picker import SessionFromCampaignPickerDialog
@@ -13,6 +14,8 @@ __all__ = [
     "ConfirmationDialog",
     "TextInputDialog",
     "GlossaryEntryDialog",
+    "ManualReviewUtteranceDialog",
+    "ManualReviewUtteranceResult",
     "PlayerPickerDialog",
     "ProgressDialog",
     "RolePickerDialog",

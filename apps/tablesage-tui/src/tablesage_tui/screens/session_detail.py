@@ -19,7 +19,7 @@ from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
-from .speaker_review import SpeakerReviewScreen
+from .speaker_review import ManualReviewScreen
 
 if TYPE_CHECKING:
     from tablesage_application.entities.sessions import Attendee
@@ -44,8 +44,9 @@ class SessionDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
         Binding("i,I", "import_audio", "Import Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
-        Binding("s,S", "review_speakers", "Review Speakers", key_display="S"),
+        Binding("s,S", "manual_review", "Manual Review", key_display="S"),
         Binding("b,B", "generate_benchmark_transcript", "Benchmark Transcript", key_display="B"),
+        Binding("l,L", "generate_ledger", "Generate Ledger", key_display="L"),
         Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
         Binding("x,X", "export_artifacts", "Export Artifact", key_display="X"),
     ]
@@ -94,6 +95,9 @@ class SessionDetailScreen(TableSageScreen):
 
     def on_mount(self) -> None:
         self.refresh_data()
+
+    def on_screen_resume(self) -> None:
+        self._refresh_indicators()
 
     def refresh_data(self) -> None:
         game_session = self.application.get_session(self._session_id)
@@ -191,10 +195,13 @@ class SessionDetailScreen(TableSageScreen):
         if action == "transcribe_audio":
             enabled, _ = self.application.can_transcribe_audio(self._session_id)
             return True if enabled else None
-        if action == "review_speakers":
+        if action == "manual_review":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate_benchmark_transcript":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
+        if action == "generate_ledger":
+            enabled, _ = self.application.can_generate_ledger(self._session_id)
+            return True if enabled else None
         if action == "generate_summary":
             enabled, _ = self.application.can_generate_summary(self._session_id)
             return True if enabled else None
@@ -223,7 +230,7 @@ class SessionDetailScreen(TableSageScreen):
         self.app.push_screen(
             ConfirmationDialog(
                 title="This Will Invalidate Processing",
-                prompt="This change will delete the existing processed session and/or summary. Continue?",
+                prompt="This change will delete existing derived artifacts. Continue?",
             ),
             on_confirm,
         )
@@ -291,7 +298,7 @@ class SessionDetailScreen(TableSageScreen):
     def action_transcribe_audio(self) -> None:
         # No generic invalidation guard: a successful transcription replaces its transcript
         # artifacts and invalidates FROM_LOG outputs; a failed one preserves them. But if a
-        # human has hand-corrected speaker labels via Speaker Review (S), rerunning here would
+        # human has hand-corrected the transcript via Manual Review (S), rerunning here would
         # silently discard them -- guarded separately, by count, rather than folded into
         # `_with_invalidation_guard`'s generic wording.
         adjusted_count = self.application.count_adjusted_utterances(self._session_id)
@@ -304,8 +311,8 @@ class SessionDetailScreen(TableSageScreen):
 
             self.app.push_screen(
                 ConfirmationDialog(
-                    title="This Will Discard Hand-Corrected Speaker Labels",
-                    prompt=f"This will discard {adjusted_count} hand-corrected speaker label{plural}. Continue?",
+                    title="This Will Discard Manual Review Changes",
+                    prompt=f"This will discard changes to {adjusted_count} reviewed utterance{plural}. Continue?",
                 ),
                 on_confirm,
             )
@@ -316,7 +323,6 @@ class SessionDetailScreen(TableSageScreen):
     def _do_transcribe_audio(self) -> None:
         session_folder = self.application.session_folder(self._session_id)
         centroids = self.application.session_player_centroids(self._session_id)
-        role_names = self.application.session_player_roles(self._session_id)
         settings = self.application.settings
 
         def work() -> transcribe_audio.TranscriptionResult:
@@ -328,7 +334,6 @@ class SessionDetailScreen(TableSageScreen):
             return transcribe_audio.transcribe_audio(
                 session_folder,
                 centroids,
-                role_names,
                 embed,
                 settings.transcription_and_diarization,
                 settings.speaker_identification,
@@ -350,14 +355,14 @@ class SessionDetailScreen(TableSageScreen):
     def _after_transcribe_audio(self, result: transcribe_audio.TranscriptionResult) -> None:
         self._refresh_indicators()
         if result.unassigned_speaker_count:
-            self.notify(f"Transcribed. {result.unassigned_speaker_count} of {result.utterance_count} utterances need speaker review.")
+            self.notify(f"Transcribed. {result.unassigned_speaker_count} of {result.utterance_count} utterances need manual review.")
         else:
             self.notify("Transcribed.")
 
-    # Review speakers -- gated on the transcript artifact existing (see check_action).
+    # Manual review -- gated on the transcript artifact existing (see check_action).
 
-    def action_review_speakers(self) -> None:
-        self.app.push_screen(SpeakerReviewScreen(self._session_id))
+    def action_manual_review(self) -> None:
+        self.app.push_screen(ManualReviewScreen(self._session_id))
 
     # Benchmark transcript -- gated on the transcript artifact existing (see check_action).
     # Fast, in-memory, synchronous: no progress dialog, unlike the pipeline actions above.
@@ -366,7 +371,21 @@ class SessionDetailScreen(TableSageScreen):
         result = self.application.generate_benchmark_transcript(self._session_id)
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
-    # Generate -- gated by the role-transcript artifact (see check_action).
+    # Generate Ledger -- gated by the machine transcript (see check_action).
+
+    def action_generate_ledger(self) -> None:
+        self.run_with_progress(
+            title="Generate Ledger",
+            message="Generating Ledger…",
+            work=lambda: self.application.generate_ledger(self._session_id),
+            on_success=self._after_generate_ledger,
+        )
+
+    def _after_generate_ledger(self, _result: None) -> None:
+        self._refresh_indicators()
+        self.notify("Ledger generated.")
+
+    # Generate Summary -- gated by the role-transcript artifact (see check_action).
 
     def action_generate_summary(self) -> None:
         self.run_with_progress(

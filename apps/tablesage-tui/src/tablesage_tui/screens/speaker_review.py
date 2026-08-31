@@ -14,10 +14,12 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.timer import Timer
-from textual.widgets import DataTable, Static
+from textual.widgets import Button, DataTable, Static
 from textual.widgets.data_table import CursorType
 
 from ..audio_playback import ClipPlayer
+from ..dialogs import ManualReviewUtteranceDialog, ManualReviewUtteranceResult
+from ..widgets import EqualWidthButtonRow
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
@@ -38,7 +40,7 @@ class _ReviewTable(DataTable[object]):
 
     Mouse clicks aren't filtered here -- `DataTable` has no per-row disabled/unclickable
     concept, so a click on a filtered row is instead caught and bounced back by
-    `SpeakerReviewScreen.on_data_table_row_highlighted`, which can tell the two apart
+    `ManualReviewScreen.on_data_table_row_highlighted`, which can tell the two apart
     because keyboard-driven moves are guaranteed valid by this override.
     """
 
@@ -75,19 +77,18 @@ class _ReviewTable(DataTable[object]):
             self.move_cursor(row=candidate)
 
 
-class SpeakerReviewScreen(TableSageScreen):
-    """Fast, keyboard-first correction of per-utterance speaker labels into hand-verified ground truth.
+class ManualReviewScreen(TableSageScreen):
+    """Review speaker labels and utterance text in a working copy of the transcript.
 
-    See `.documentation/speaker_review_screen.md` for the full design. Corrections overwrite
-    `Utterance.speaker` in `transcript.json` directly and are saved after every assignment --
-    there is no separate save step and no persisted resume position (the screen always opens
-    at row 0; a mouse click is the way back to the middle of a session reviewed before).
+    Edits stay in memory until Complete writes the separate reviewed-transcript artifact.
+    Cancel (including Escape) discards this visit's working copy and leaves both the machine
+    transcript and any previously completed review unchanged.
     """
 
     section = "session detail"
 
     BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
         Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
         Binding("r,R", "replay", "Replay", key_display="R"),
         Binding("0", "assign_speaker(0)", "Unassigned", key_display="0"),
@@ -106,6 +107,7 @@ class SpeakerReviewScreen(TableSageScreen):
         self._session_id = session_id
         self._session_folder: Path | None = None
         self._transcript: Transcript | None = None
+        self._all_attendee_names: list[str] = []
         self._attendee_names: list[str] = []
         self._player = ClipPlayer()
         self._mode = PlaybackMode.MANUAL
@@ -118,16 +120,16 @@ class SpeakerReviewScreen(TableSageScreen):
         self._current_duration = 0.0
 
     def compose_content(self) -> ComposeResult:
-        with Vertical(id="speaker-review-panel", classes="panel surface-2") as panel:
-            panel.border_title = " review speakers "
+        with Vertical(id="manual-review-panel", classes="panel surface-2") as panel:
+            panel.border_title = " manual review "
 
-            with Horizontal(id="speaker-review-status"):
-                yield Static("Mode: Manual", id="speaker-review-mode")
-                yield Static("Focus: All players", id="speaker-review-focus")
-            yield Static("", id="speaker-review-legend")
+            with Horizontal(id="manual-review-status"):
+                yield Static("Mode: Manual", id="manual-review-mode")
+                yield Static("Focus: All players", id="manual-review-focus")
+            yield Static("", id="manual-review-legend")
 
             table = _ReviewTable(
-                id="speaker-review-table",
+                id="manual-review-table",
                 cursor_type="row",
                 zebra_stripes=True,
                 classes="tablesage-table",
@@ -137,19 +139,23 @@ class SpeakerReviewScreen(TableSageScreen):
             table.add_column("Speaker", key="speaker")
             table.add_column("Text", key="text")
             yield table
+            with EqualWidthButtonRow(id="manual-review-actions"):
+                yield Button("Cancel", id="manual-review-cancel")
+                yield Button("Complete", id="manual-review-complete", variant="primary")
 
     def on_mount(self) -> None:
         self._session_folder = self.application.session_folder(self._session_id)
         attendees = sorted(self.application.list_attendance(self._session_id), key=lambda attendee: attendee.player_name.casefold())
-        self._attendee_names = [attendee.player_name for attendee in attendees[:_MAX_ASSIGNABLE_ATTENDEES]]
-        self.query_one("#speaker-review-legend", Static).update(self._legend_text())
+        self._all_attendee_names = [attendee.player_name for attendee in attendees]
+        self._attendee_names = self._all_attendee_names[:_MAX_ASSIGNABLE_ATTENDEES]
+        self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
         def work() -> tuple[Transcript, Path]:
             assert self._session_folder is not None
             return self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
 
         self.run_with_progress(
-            title="Review Speakers",
+            title="Manual Review",
             message="Extracting clips…",
             work=work,
             on_success=self._after_extract,
@@ -194,6 +200,11 @@ class SpeakerReviewScreen(TableSageScreen):
             return marker, utterance.speaker, text
         return Text(marker, style=_DIM_STYLE), Text(utterance.speaker, style=_DIM_STYLE), Text(text, style=_DIM_STYLE)
 
+    def _utterance_text(self, index: int) -> str:
+        assert self._transcript is not None
+        utterance = self._transcript.utterances[index]
+        return utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
+
     def _refresh_row(self, index: int) -> None:
         marker, speaker, text = self._row_cell_values(index)
         table = self.query_one(_ReviewTable)
@@ -232,6 +243,36 @@ class SpeakerReviewScreen(TableSageScreen):
             self._mode = PlaybackMode.MANUAL
             self._update_mode_indicator()
         self._play(index)
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """A second click on the selected row (or Enter) opens the utterance editor."""
+        event.stop()
+        if not self._table_ready or self._transcript is None:
+            return
+        index = event.cursor_row
+        if not self._is_row_enabled(index):
+            return
+
+        def on_saved(result: ManualReviewUtteranceResult | None) -> None:
+            if result is None or self._transcript is None:
+                return
+            self._transcript = transcript_review.edit_utterance(
+                self._transcript,
+                index,
+                result.speaker,
+                result.text,
+            )
+            self._refresh_row(index)
+
+        utterance = self._transcript.utterances[index]
+        self.app.push_screen(
+            ManualReviewUtteranceDialog(
+                attendee_names=self._all_attendee_names,
+                speaker=utterance.speaker,
+                text=self._utterance_text(index),
+            ),
+            on_saved,
+        )
 
     def _next_enabled_row(self, start: int, step: int) -> int | None:
         assert self._transcript is not None
@@ -296,11 +337,11 @@ class SpeakerReviewScreen(TableSageScreen):
 
     def _update_mode_indicator(self) -> None:
         label = "Auto" if self._mode is PlaybackMode.AUTO else "Manual"
-        self.query_one("#speaker-review-mode", Static).update(f"Mode: {label}")
+        self.query_one("#manual-review-mode", Static).update(f"Mode: {label}")
 
     def _update_focus_indicator(self) -> None:
         label = self._focus_speaker if self._focus_speaker is not None else "All players"
-        self.query_one("#speaker-review-focus", Static).update(f"Focus: {label}")
+        self.query_one("#manual-review-focus", Static).update(f"Focus: {label}")
 
     # Assignment
 
@@ -315,7 +356,6 @@ class SpeakerReviewScreen(TableSageScreen):
             speaker = self._attendee_names[number - 1]
 
         self._transcript = transcript_review.assign_speaker(self._transcript, self._playhead, speaker)
-        self.application.save_transcript(self._session_id, self._transcript)
         self._refresh_row(self._playhead)
 
         next_index = self._next_enabled_row(self._playhead, 1)
@@ -350,9 +390,26 @@ class SpeakerReviewScreen(TableSageScreen):
             assert next_index is not None
             self._move_to(next_index)
 
-    # Exit
+    # Complete / cancel
 
-    def action_pop_screen(self) -> None:
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        event.stop()
+        if event.button.id == "manual-review-complete":
+            self.action_complete()
+        elif event.button.id == "manual-review-cancel":
+            self.action_cancel()
+
+    def action_complete(self) -> None:
+        if self._transcript is None:
+            return
+        self.application.save_reviewed_transcript(self._session_id, self._transcript)
+        self.notify("Reviewed transcript saved.")
+        self._close()
+
+    def action_cancel(self) -> None:
+        self._close()
+
+    def _close(self) -> None:
         self._player.stop()
         if self._advance_timer is not None:
             self._advance_timer.stop()

@@ -21,6 +21,7 @@ from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
+from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .voice_clips import clips
 
@@ -380,7 +381,7 @@ class Application:
     def session_player_roles(self, session_id: uuid.UUID) -> dict[str, str]:
         """Attending players' first (alphabetically) role name that session, keyed by player name.
 
-        `transcribe_audio`'s role-transcript input.
+        Used by Ledger generation's role-name rendering step.
         """
         with Session(self._engine) as session:
             role_names: dict[str, str] = {}
@@ -394,6 +395,45 @@ class Application:
 
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
+
+    def can_generate_ledger(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return generate_ledger_pipeline.can_generate_ledger(self._session_folder(session, game_session))
+
+    def generate_ledger(self, session_id: uuid.UUID) -> None:
+        """Generate and atomically replace a Session's structured Ledger artifact."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = generate_ledger_pipeline.can_generate_ledger(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot generate Ledger.")
+
+            attendees = sessions.list_attendance(session, session_id)
+            role_names = {attendee.player_name: attendee.roles[0] for attendee in attendees if attendee.roles}
+            known_roles = tuple(sorted({role for attendee in attendees for role in attendee.roles}))
+            role_transcript = transcribe_audio.render_role_transcript_text(session_folder, role_names)
+            session_name = game_session.name
+
+        with widelog.wide_event(op="generate_session_ledger", session_id=str(session_id), known_role_count=len(known_roles)):
+            generated = asyncio.run(generate_ledger_pipeline.generate_ledger(role_transcript, known_roles, self._settings.llm_model))
+            ledger = generate_ledger_pipeline.Ledger(
+                version=3,
+                session_id=session_id,
+                session_name=session_name,
+                preamble=generated.preamble,
+                utterances=generated.utterances,
+            )
+            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
+            temporary = target.with_name(f".{target.stem}.tmp{target.suffix}")
+            try:
+                ledger.save(temporary)
+                temporary.replace(target)
+            except Exception:
+                temporary.unlink(missing_ok=True)
+                raise
+            artifacts.invalidate_category(session_folder, paths.ArtifactCategory.FROM_LOG)
 
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -431,7 +471,7 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return transcribe_audio.can_transcribe_audio(session, session_id, self._session_folder(session, game_session))
 
-    # Speaker review -- see `.documentation/speaker_review_screen.md`.
+    # Manual review -- see `.documentation/speaker_review_screen.md`.
 
     def extract_review_clips(self, session_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
         with Session(self._engine) as session:
@@ -443,11 +483,11 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             transcript_review.discard_review_clips(self._session_folder(session, game_session))
 
-    def save_transcript(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+    def save_reviewed_transcript(self, session_id: uuid.UUID, transcript: Transcript) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
-            transcript.save(session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT].filename)
+            transcript_review.save_reviewed_transcript(session_folder, transcript)
 
     def count_adjusted_utterances(self, session_id: uuid.UUID) -> int:
         with Session(self._engine) as session:
@@ -505,7 +545,7 @@ class Application:
     def enhance_players_from_session(
         self, session_id: uuid.UUID, on_progress: players_from_session.OnProgress | None = None
     ) -> players_from_session.EnhanceResult:
-        """Players List's "From Session" (S): pull high-confidence voice clips out of a transcribed session."""
+        """Players List's "From Session" (S): pull voice clips out of a transcribed session."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             campaign = session.get(Campaign, game_session.campaign_id)

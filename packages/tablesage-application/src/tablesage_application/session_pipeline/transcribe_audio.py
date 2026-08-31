@@ -26,6 +26,7 @@ from ..entities.sessions import list_attendance
 from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
 from .artifacts import invalidate_category, session_artifacts
 from .remove_backchannels import remove_backchannels
+from .transcript_review import load_review_transcript
 
 
 class Stage(Enum):
@@ -85,7 +86,6 @@ def _player_has_centroid(session: Session, player_id: uuid.UUID) -> bool:
 def transcribe_audio(
     session_folder: Path,
     centroids: dict[str, Embedding],
-    role_names: dict[str, str],
     embed: EmbeddingFactory,
     transcription_settings: TranscriptionAndDiarizationSettings,
     speaker_id_settings: SpeakerIdentificationSettings,
@@ -96,18 +96,16 @@ def transcribe_audio(
     """Transcribe, diarize, identify speakers, punctuate, and (optionally) remove backchannels from a session's input audio.
 
     Reads `input_audio.wav` from `session_folder` and writes `transcript.json`
-    (the tablesage_tools `Transcript`, machine-readable), `transcript.md` (a
-    timestamped, speaker-labeled script for humans), and `transcript_roles.md`
-    (an untimestamped script with each speaker's name swapped for their
-    in-session role, for LLM consumption) there, only once every stage has succeeded --
-    a failure partway through leaves no artifacts behind, matching
+    (the tablesage_tools `Transcript`, machine-readable) and `transcript.md` (a
+    timestamped, speaker-labeled script for humans) there, only once every stage has
+    succeeded -- a failure partway through leaves no artifacts behind, matching
     `import_audio`'s all-or-nothing contract. `centroids` should be scoped to
     the session's attendees; its size is passed through to diarization as the
     expected speaker count, since `identify_speakers` already assumes exactly
-    that correspondence. `role_names` maps each attendee's player name to
-    their first (alphabetically) role name that session; a speaker missing
-    from it (including `UNASSIGNED_SPEAKER`) is left as-is in
-    `transcript_roles.md`. When `backchannel_settings.enabled` is false (the
+    that correspondence. Role-name rendering is deliberately not part of transcription;
+    `render_role_transcript_text` preserves that transformation for Ledger generation
+    build and selects the reviewed transcript when one exists. When
+    `backchannel_settings.enabled` is false (the
     default), the REMOVING_BACKCHANNELS stage is skipped entirely --
     `on_progress` never fires for it and `llm_model_lite` is never called.
     """
@@ -179,9 +177,7 @@ def transcribe_audio(
         (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(
             _render_transcript_text(transcript), encoding="utf-8"
         )
-        (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).write_text(
-            _render_transcript_text(transcript, role_names), encoding="utf-8"
-        )
+        invalidate_category(session_folder, ArtifactCategory.FROM_TRANSCRIPT)
         invalidate_category(session_folder, ArtifactCategory.FROM_LOG)
 
         unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
@@ -194,18 +190,31 @@ def _report(on_progress: OnProgress | None, stage: Stage, completed: int, total:
         on_progress(stage, completed, total)
 
 
-def _render_transcript_text(transcript: Transcript, role_names: dict[str, str] | None = None) -> str:
-    return "\n\n".join(_render_utterance(utterance, role_names) for utterance in transcript.utterances) + "\n"
+def _render_transcript_text(transcript: Transcript) -> str:
+    return "\n\n".join(_render_utterance(utterance) for utterance in transcript.utterances) + "\n"
 
 
-def _render_utterance(utterance: Utterance, role_names: dict[str, str] | None = None) -> str:
+def render_role_transcript_text(session_folder: Path, role_names: dict[str, str]) -> str:
+    """Render role-named text from the reviewed transcript when present, otherwise the machine transcript.
+
+    This is kept separate from `transcribe_audio` for Ledger generation. It returns
+    text without writing an artifact, leaving that future caller to own its output transaction.
+    """
+    transcript = load_review_transcript(session_folder)
+    return "\n\n".join(_render_role_utterance(utterance, role_names) for utterance in transcript.utterances) + "\n"
+
+
+def _render_utterance(utterance: Utterance) -> str:
+    text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
+    return f"[{_format_timestamp(utterance.start)}] **{utterance.speaker}:** {text}"
+
+
+def _render_role_utterance(utterance: Utterance, role_names: dict[str, str]) -> str:
     text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
     speaker = utterance.speaker
-    if role_names is not None and speaker != UNASSIGNED_SPEAKER:
+    if speaker != UNASSIGNED_SPEAKER:
         speaker = role_names.get(speaker, speaker)
-    if role_names is not None:
-        return f"**{speaker}** - {text}"
-    return f"[{_format_timestamp(utterance.start)}] **{speaker}:** {text}"
+    return f"**{speaker}** - {text}"
 
 
 def _format_timestamp(seconds: float) -> str:

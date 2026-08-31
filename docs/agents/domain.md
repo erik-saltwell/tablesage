@@ -25,9 +25,13 @@ some other repositories use.
   list (no `VoiceSample` table), centroid recompute/auto-recompute rules, and zero-sample centroid
   clearing. Supersedes the relevant parts of the "Player Detail" section in
   `tablesage_tui_screens.md`.
-- `.documentation/speaker_review_screen.md` — the Speaker Review screen design: fast, keyboard-first
+- `.documentation/speaker_review_screen.md` — the Manual Review screen design: fast, keyboard-first
   correction of per-utterance speaker labels into hand-verified ground truth, auto/manual playback
   modes, single-player-mode filtering, and the `adjusted` field/re-transcribe guard.
+- `.documentation/canonical_ledger_format_v3.md` — the version-3 Ledger format: optional pre-session
+  context plus the five regular move types and their semantics.
+- `.documentation/generate_ledger.md` — the implemented Session-to-Ledger generation flow, structured
+  Pydantic boundary, retry selection, artifact behavior, and acceptance coverage.
 
 Before architecture, diagnosis, TDD, PRD, or triage work:
 

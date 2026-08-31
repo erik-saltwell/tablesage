@@ -16,21 +16,28 @@ from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, TextInputD
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
-from tablesage_tui.screens.speaker_review import SpeakerReviewScreen
+from tablesage_tui.screens.speaker_review import ManualReviewScreen
 from textual.pilot import Pilot
 from textual.widgets import Button, DataTable, Input, Select, Static
 from textual_fspicker import FileOpen
 
 
 def _artifacts(
-    *, input_audio: bool = False, transcript: bool = False, processed: bool = False, summary: bool = False
+    *,
+    input_audio: bool = False,
+    transcript: bool = False,
+    reviewed_transcript: bool = False,
+    ledger: bool = False,
+    summary: bool = False,
 ) -> dict[ArtifactName, bool]:
     return {
         ArtifactName.INPUT_AUDIO: input_audio,
         ArtifactName.TRANSCRIPT: transcript,
         ArtifactName.TRANSCRIPT_TEXT: transcript,
         ArtifactName.TRANSCRIPT_ROLES_TEXT: transcript,
-        ArtifactName.PROCESSED_SESSION: processed,
+        ArtifactName.TRANSCRIPT_BENCHMARK: False,
+        ArtifactName.REVIEWED_TRANSCRIPT: reviewed_transcript,
+        ArtifactName.LEDGER: ledger,
         ArtifactName.SUMMARY: summary,
     }
 
@@ -41,6 +48,7 @@ def _application(
     attendees: list[Attendee] | None = None,
     artifacts: dict[ArtifactName, bool] | None = None,
     can_generate: tuple[bool, str | None] = (False, "Transcribe the session first."),
+    can_generate_ledger: tuple[bool, str | None] = (False, "Transcribe the session first."),
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
     can_export: tuple[bool, str | None] = (False, "No artifacts to export yet."),
     session_folder: Path | None = None,
@@ -52,6 +60,7 @@ def _application(
         list_attendance=MagicMock(return_value=attendees or []),
         session_artifacts=MagicMock(return_value=artifacts or _artifacts()),
         can_generate_summary=MagicMock(return_value=can_generate),
+        can_generate_ledger=MagicMock(return_value=can_generate_ledger),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
         can_export_artifacts=MagicMock(return_value=can_export),
         exportable_artifacts=MagicMock(return_value=[]),
@@ -113,7 +122,7 @@ async def test_rename_commits_on_enter() -> None:
 async def test_shortcut_keys_work_again_after_committing_name_with_enter() -> None:
     """Regression test: `Input` doesn't blur itself on Enter, so without an explicit focus
     move after committing, the name field would keep focus indefinitely and every single-letter
-    binding (T, S, B, G, X, N, E, D) would silently type into it instead of firing."""
+    binding (T, S, B, L, G, X, N, E, D) would silently type into it instead of firing."""
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(input_audio=True), can_transcribe=(True, None))
 
@@ -198,7 +207,7 @@ async def test_attendance_table_shows_players_and_roles() -> None:
 @pytest.mark.anyio
 async def test_indicators_reflect_artifact_state() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(input_audio=True))
+    application = _application(session=session, artifacts=_artifacts(input_audio=True, reviewed_transcript=True))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -208,6 +217,8 @@ async def test_indicators_reflect_artifact_state() -> None:
         indicators = screen._indicators
         input_audio = indicators[ArtifactName.INPUT_AUDIO]
         transcript = indicators[ArtifactName.TRANSCRIPT_TEXT]
+        reviewed_transcript = indicators[ArtifactName.REVIEWED_TRANSCRIPT]
+        ledger = indicators[ArtifactName.LEDGER]
         summary = indicators[ArtifactName.SUMMARY]
 
         assert "●" in str(input_audio.render())
@@ -216,12 +227,18 @@ async def test_indicators_reflect_artifact_state() -> None:
         assert "○" in str(transcript.render())
         assert transcript.has_class("artifact-missing")
 
+        assert str(reviewed_transcript.render()) == "● Reviewed Transcript"
+        assert not reviewed_transcript.has_class("artifact-missing")
+
+        assert str(ledger.render()) == "○ Ledger"
+        assert ledger.has_class("artifact-missing")
+
         assert "○" in str(summary.render())
         assert summary.has_class("artifact-missing")
 
         # Confirm the indicators are actually laid out on screen, not just
         # present in the DOM but clipped/zero-sized.
-        for indicator in (input_audio, transcript, summary):
+        for indicator in (input_audio, transcript, reviewed_transcript, ledger, summary):
             assert indicator.region.width > 0
             assert indicator.region.height > 0
 
@@ -258,6 +275,39 @@ async def test_generate_summary_enabled_runs_and_refreshes() -> None:
         application.generate_summary.assert_called_once_with(session.id)
         assert application.session_artifacts.call_count >= 2
         notify.assert_called_once_with("Summary generated.")
+
+
+@pytest.mark.anyio
+async def test_generate_ledger_disabled_without_transcript() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, can_generate_ledger=(False, "Transcribe the session first."))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("l")
+        await pilot.pause()
+
+        application.generate_ledger.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_generate_ledger_enabled_runs_and_refreshes() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, can_generate_ledger=(True, None))
+    application.generate_ledger = MagicMock(return_value=None)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            await pilot.press("l")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        application.generate_ledger.assert_called_once_with(session.id)
+        assert application.session_artifacts.call_count >= 2
+        notify.assert_called_once_with("Ledger generated.")
 
 
 @pytest.mark.anyio
@@ -320,7 +370,7 @@ async def test_import_audio_validation_error_shows_notify_and_stops(tmp_path: Pa
 async def test_import_audio_with_downstream_artifacts_confirms_first(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     session_folder = tmp_path / "session"
-    application = _application(session=session, artifacts=_artifacts(input_audio=True, processed=True), session_folder=session_folder)
+    application = _application(session=session, artifacts=_artifacts(input_audio=True, ledger=True), session_folder=session_folder)
     application.validate_import_audio_source = MagicMock()
     source = tmp_path / "recording.wav"
 
@@ -448,7 +498,6 @@ async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path:
             transcribe.assert_called_once_with(
                 session_folder,
                 {},
-                {},
                 application.embedding_factory.return_value,
                 application.settings.transcription_and_diarization,
                 application.settings.speaker_identification,
@@ -456,7 +505,8 @@ async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path:
                 application.settings.llm_model_lite,
                 on_progress=screen._on_transcribe_progress,
             )
-            notify.assert_called_once_with("Transcribed. 3 of 10 utterances need speaker review.")
+            application.session_player_roles.assert_not_called()
+            notify.assert_called_once_with("Transcribed. 3 of 10 utterances need manual review.")
 
 
 @pytest.mark.anyio
@@ -482,7 +532,7 @@ async def test_transcribe_with_adjusted_utterances_asks_for_confirmation_first()
 
             dialog = pilot.app.screen
             assert isinstance(dialog, ConfirmationDialog)
-            assert "3 hand-corrected speaker labels" in str(dialog.query_one("#confirmation-prompt", Static).render())
+            assert "changes to 3 reviewed utterances" in str(dialog.query_one("#confirmation-prompt", Static).render())
             transcribe.assert_not_called()
 
             await pilot.click("#confirmation-yes")
@@ -512,7 +562,7 @@ async def test_transcribe_confirmation_declined_does_not_transcribe() -> None:
 
 
 @pytest.mark.anyio
-async def test_review_speakers_disabled_without_transcript() -> None:
+async def test_manual_review_disabled_without_transcript() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(transcript=False))
 
@@ -526,7 +576,7 @@ async def test_review_speakers_disabled_without_transcript() -> None:
 
 
 @pytest.mark.anyio
-async def test_review_speakers_opens_screen_when_transcript_exists() -> None:
+async def test_manual_review_opens_screen_when_transcript_exists() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(transcript=True))
     application.extract_review_clips = MagicMock(return_value=(Transcript(utterances=[]), Path("/tmp/clips")))
@@ -537,7 +587,7 @@ async def test_review_speakers_opens_screen_when_transcript_exists() -> None:
         await pilot.press("s")
         await pilot.pause()
 
-        assert isinstance(pilot.app.screen, SpeakerReviewScreen)
+        assert isinstance(pilot.app.screen, ManualReviewScreen)
 
 
 @pytest.mark.anyio

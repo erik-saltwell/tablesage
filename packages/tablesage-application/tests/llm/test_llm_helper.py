@@ -28,6 +28,15 @@ def test_read_system_prompt_and_template_for_summarize_session() -> None:
     assert "{{ transcript }}" in template
 
 
+def test_read_system_prompt_and_template_for_generate_ledger() -> None:
+    system_prompt = read_system_prompt(PromptName.GENERATE_LEDGER)
+    template = read_prompt_template(PromptName.GENERATE_LEDGER)
+
+    assert "Ledger Format v3" in system_prompt
+    assert "{% for role in known_roles %}" in template
+    assert "{{ transcript }}" in template
+
+
 @pytest.mark.anyio
 async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, Any] = {}

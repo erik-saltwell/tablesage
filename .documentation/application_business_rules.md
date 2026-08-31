@@ -64,13 +64,14 @@ rule in `tablesage_data_model.md`'s "Required relationship rules".
   `SESSION_ENHANCEMENT` samples for the attendee (and their backing files),
   identical replace-as-a-unit semantics to directory import, then compute
   fresh selections and add them.
-- **Selection criteria** (`select_enhancement_utterances`) — an utterance
-  qualifies as enhancement material only if *all* of:
-  - it's attributed to this attendee by name,
-  - `similarity_margin >= min_margin_for_voice_sample` (default **0.15**),
-  - clip duration is between `min_clip_seconds` (default **1.0s**) and
-    `max_clip_seconds` (default **8.0s**), inclusive of neither being
-    violated.
+- **Transcript source and selection** — selection is automatic:
+  - If `transcript_reviewed.json` exists, it is treated as human ground truth. Every utterance
+    attributed to the attendee by name is imported, with no similarity or duration check.
+  - Otherwise `transcript.json` is used and an utterance qualifies only when it is attributed to
+    the attendee, `similarity_margin >= min_margin_for_voice_sample` (default **0.15**), and its
+    duration is between `min_clip_seconds` (default **1.0s**) and `max_clip_seconds` (default
+    **8.0s**).
+  - `Unassigned Speaker` is not an attendee name and is excluded from both paths.
 - After saving the updated sample set, immediately runs outlier removal
   (below) on that player — enhancement always ends with a prune pass.
 

@@ -12,9 +12,10 @@ from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
 from tablesage_tools.embeddings import Embedding
 
-PROCESSED_SESSION_FILENAME = ARTIFACTS[ArtifactName.PROCESSED_SESSION].filename
+LEDGER_FILENAME = ARTIFACTS[ArtifactName.LEDGER].filename
 SESSION_SUMMARY_FILENAME = ARTIFACTS[ArtifactName.SUMMARY].filename
 TRANSCRIPT_ROLES_FILENAME = ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+REVIEWED_TRANSCRIPT_FILENAME = ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
 
 
 def _write_wav(path: Path, *, num_frames: int = 16000, framerate: int = 16000) -> None:
@@ -54,14 +55,14 @@ def test_session_artifacts_reflect_filesystem_state(tmp_path: Path) -> None:
 
     artifacts = application.session_artifacts(game_session.id)
     assert not artifacts[ArtifactName.INPUT_AUDIO]
-    assert not artifacts[ArtifactName.PROCESSED_SESSION]
+    assert not artifacts[ArtifactName.LEDGER]
     assert not artifacts[ArtifactName.SUMMARY]
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
 
     artifacts = application.session_artifacts(game_session.id)
-    assert artifacts[ArtifactName.PROCESSED_SESSION]
+    assert artifacts[ArtifactName.LEDGER]
     assert not artifacts[ArtifactName.INPUT_AUDIO]
     assert not artifacts[ArtifactName.SUMMARY]
 
@@ -126,8 +127,9 @@ def test_import_session_audio_invalidates_stale_downstream_artifacts(tmp_path: P
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+    (folder / REVIEWED_TRANSCRIPT_FILENAME).write_text("{}")
 
     source = tmp_path / "recording.wav"
     source.write_bytes(b"fake audio bytes")
@@ -135,8 +137,9 @@ def test_import_session_audio_invalidates_stale_downstream_artifacts(tmp_path: P
 
     artifacts = application.session_artifacts(game_session.id)
     assert artifacts[ArtifactName.INPUT_AUDIO]
-    assert not artifacts[ArtifactName.PROCESSED_SESSION]
+    assert not artifacts[ArtifactName.LEDGER]
     assert not artifacts[ArtifactName.SUMMARY]
+    assert not artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
 
 
 def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -148,8 +151,9 @@ def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_pa
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+    (folder / REVIEWED_TRANSCRIPT_FILENAME).write_text("{}")
 
     source = tmp_path / "recording.wav"
     source.write_bytes(b"fake audio bytes")
@@ -158,8 +162,9 @@ def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_pa
 
     artifacts = application.session_artifacts(game_session.id)
     assert not artifacts[ArtifactName.INPUT_AUDIO]
-    assert artifacts[ArtifactName.PROCESSED_SESSION]
+    assert artifacts[ArtifactName.LEDGER]
     assert artifacts[ArtifactName.SUMMARY]
+    assert artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
     assert list(folder.glob(".*")) == []
 
 
@@ -294,11 +299,10 @@ def test_can_export_artifacts_requires_a_user_facing_artifact(tmp_path: Path) ->
     assert reason == "No artifacts to export yet."
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    # PROCESSED_SESSION exists but isn't should_show_in_ui -- must not count.
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
     enabled, reason = application.can_export_artifacts(game_session.id)
-    assert not enabled
-    assert reason == "No artifacts to export yet."
+    assert enabled
+    assert reason is None
 
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
     enabled, reason = application.can_export_artifacts(game_session.id)
@@ -311,10 +315,15 @@ def test_exportable_artifacts_excludes_non_ui_artifacts(tmp_path: Path) -> None:
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+    (folder / REVIEWED_TRANSCRIPT_FILENAME).write_text("{}")
 
-    assert application.exportable_artifacts(game_session.id) == [ArtifactName.SUMMARY]
+    assert application.exportable_artifacts(game_session.id) == [
+        ArtifactName.REVIEWED_TRANSCRIPT,
+        ArtifactName.LEDGER,
+        ArtifactName.SUMMARY,
+    ]
 
 
 def test_export_artifact_copies_file_without_deleting_source(tmp_path: Path) -> None:
@@ -353,11 +362,13 @@ def test_attendance_mutation_invalidates_stale_downstream_artifacts(tmp_path: Pa
     application.add_player_to_campaign(campaign.id, player.id, "Zaria")
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / PROCESSED_SESSION_FILENAME).write_text("{}")
+    (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
+    (folder / REVIEWED_TRANSCRIPT_FILENAME).write_text("{}")
 
     application.add_attendance(game_session.id, player.id)
 
     artifacts = application.session_artifacts(game_session.id)
-    assert not artifacts[ArtifactName.PROCESSED_SESSION]
+    assert not artifacts[ArtifactName.LEDGER]
     assert not artifacts[ArtifactName.SUMMARY]
+    assert not artifacts[ArtifactName.REVIEWED_TRANSCRIPT]

@@ -7,7 +7,7 @@ import pytest
 import tablesage_application.players_from_session as players_from_session_module
 from tablesage_application import Application
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_application.players_from_session import Stage, select_enhancement_utterances
+from tablesage_application.players_from_session import Stage, select_assigned_utterances, select_enhancement_utterances
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
 from tablesage_tools.embeddings import Embedding
 from tablesage_tools.model import Transcript, Utterance
@@ -45,6 +45,19 @@ def test_select_enhancement_utterances_boundary_values_are_inclusive() -> None:
     selected = select_enhancement_utterances(utterances, "Alice", min_margin=0.1, min_seconds=1.0, max_seconds=8.0)
 
     assert selected == utterances
+
+
+def test_select_assigned_utterances_ignores_margin_and_duration() -> None:
+    utterances = [
+        _utterance("Alice", 0.0, 0.05, margin=None),
+        _utterance("Alice", 1.0, 20.0, margin=0.0),
+        _utterance("Bob", 20.0, 22.0, margin=0.9),
+        _utterance("Unassigned Speaker", 22.0, 24.0, margin=0.9),
+    ]
+
+    selected = select_assigned_utterances(utterances, "Alice")
+
+    assert selected == utterances[:2]
 
 
 # --- Application.enhance_players_from_session (orchestration) ---
@@ -109,6 +122,23 @@ def test_enhance_players_from_session_extracts_qualifying_clips_and_recomputes_c
     updated_bob = application.get_player(bob.id)
     assert updated_alice.centroid_embedding is not None
     assert updated_bob.centroid_embedding is not None
+
+
+def test_enhance_players_from_session_uses_all_assigned_utterances_from_reviewed_transcript(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    application, session_id, _alice, _bob = _setup_session(tmp_path, monkeypatch)
+    session_folder = application.session_folder(session_id)
+    machine_transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    machine_transcript.save(session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
+
+    result = application.enhance_players_from_session(session_id)
+
+    assert result.enhanced_player_count == 2
+    assert result.clip_count == 4
+    assert len(list((tmp_path / ".tablesage" / "players" / "Alice").glob("session-*.wav"))) == 3
+    assert len(list((tmp_path / ".tablesage" / "players" / "Bob").glob("session-*.wav"))) == 1
 
 
 def test_enhance_players_from_session_reports_staged_progress(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

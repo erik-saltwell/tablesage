@@ -10,24 +10,27 @@ class ArtifactName(Enum):
     that's what makes it show up in `session_artifacts()` and in `invalidate_downstream()`."""
 
     INPUT_AUDIO = "input_audio"
-    PROCESSED_SESSION = "processed_session"
+    LEDGER = "ledger"
     SUMMARY = "summary"
     TRANSCRIPT = "transcript"
     TRANSCRIPT_TEXT = "transcript_text"
     TRANSCRIPT_ROLES_TEXT = "transcript_roles_text"
     TRANSCRIPT_BENCHMARK = "transcript_benchmark"
+    REVIEWED_TRANSCRIPT = "reviewed_transcript"
 
 
 class ArtifactCategory(Enum):
     """How an artifact is produced, for `invalidate_downstream()` to decide what a change makes stale.
 
     IMPORTED artifacts are never invalidated -- they're the source, not a derivative. FROM_AUDIO
-    artifacts are derived (directly or transitively) from the input audio. FROM_LOG artifacts are
-    derived from the canonical session log (not yet built -- see `.documentation` when it exists).
+    artifacts are derived (directly or transitively) from the input audio. FROM_TRANSCRIPT
+    artifacts are derived from the current transcript. FROM_LOG artifacts are derived from the
+    Ledger.
     """
 
     IMPORTED = "imported"
     FROM_AUDIO = "from_audio"
+    FROM_TRANSCRIPT = "from_transcript"
     FROM_LOG = "from_log"
 
 
@@ -58,20 +61,34 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         "transcript.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=True, display_name="Transcript"
     ),
     ArtifactName.TRANSCRIPT_ROLES_TEXT: ArtifactSpec(
-        "transcript_roles.md", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (Roles)"
+        # Legacy Summary-generation input. Transcription no longer creates this artifact;
+        # a transcript rebuild still invalidates any older copy. Ledger generation renders
+        # the preferred transcript to role-attributed Markdown in memory instead.
+        "transcript_roles.md",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Transcript (Roles)",
     ),
     # A benchmark-only derivative of TRANSCRIPT with too-short-to-identify utterances stripped
     # (see `session_pipeline.transcript_review.generate_benchmark_transcript`) -- generated on
-    # demand, never hand-edited, never read back by any other pipeline step. FROM_AUDIO so it's
-    # deleted (not silently left stale) alongside the transcript itself on audio re-import or an
-    # attendance edit; a re-transcribe alone doesn't delete it -- like TRANSCRIPT's own siblings,
-    # it's simply stale until regenerated on demand.
+    # demand, never hand-edited, never read back by any other pipeline step. It is invalidated
+    # alongside the reviewed transcript whenever the source transcript is rebuilt.
     ArtifactName.TRANSCRIPT_BENCHMARK: ArtifactSpec(
-        "transcript_benchmark.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Transcript (Benchmark)"
+        "transcript_benchmark.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Transcript (Benchmark)",
     ),
-    ArtifactName.PROCESSED_SESSION: ArtifactSpec(
-        "processed_session.json", ArtifactCategory.FROM_AUDIO, should_show_in_ui=False, display_name="Processed Session"
+    # A completed Manual Review. It is deliberately separate from the machine-produced
+    # transcript and is invalidated whenever that source transcript is rebuilt or the audio
+    # (or attendance that influences speaker identification) changes.
+    ArtifactName.REVIEWED_TRANSCRIPT: ArtifactSpec(
+        "transcript_reviewed.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=True,
+        display_name="Reviewed Transcript",
     ),
+    ArtifactName.LEDGER: ArtifactSpec("ledger.json", ArtifactCategory.FROM_TRANSCRIPT, should_show_in_ui=True, display_name="Ledger"),
     ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),
 }
 
