@@ -1,0 +1,16 @@
+Attendees and assigned roles:
+{% if attendees %}
+{% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
+{% endfor %}
+{% else %}(none)
+{% endif %}
+
+Current campaign glossary:
+{% if glossary %}
+{% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
+{% endfor %}
+{% else %}(empty)
+{% endif %}
+
+Role Transcript:
+{{ transcript }}

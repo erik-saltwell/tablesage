@@ -133,6 +133,21 @@ Screen {
     scrollbar-corner-color: $surface-2-bg;
 }
 
+/* ******************************** */
+/*       glossary review screen     */
+/* ******************************** */
+
+GlossaryReviewScreen {
+    .screen-body {
+        padding: 1 2;
+    }
+
+    #glossary-review-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+}
+
 /* Widget's own DEFAULT_CSS gives every widget an explicit scrollbar-* value
    (Textual's built-in $scrollbar* theme tokens), so the Screen-level rule
    above never actually cascades down -- DataTable (the only scrollable

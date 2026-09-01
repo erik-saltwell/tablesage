@@ -35,6 +35,7 @@ def _application(
         session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
         next_generation_step=MagicMock(return_value=None),
+        can_extract_glossary=MagicMock(return_value=(False, "Generate the Role Transcript first.")),
         can_export_artifacts=MagicMock(return_value=(False, "No artifacts to export yet.")),
         campaign_folder_exists=MagicMock(return_value=False),
         session_folder_would_collide=MagicMock(return_value=False),

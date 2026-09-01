@@ -22,6 +22,7 @@ from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
+from .session_pipeline import extract_glossary as extract_glossary_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .voice_clips import clips
@@ -272,6 +273,80 @@ class Application:
         with Session(self._engine) as session:
             glossary.delete_glossary_entry(session, campaign_id, entry_id)
             session.commit()
+
+    def can_extract_glossary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return extract_glossary_pipeline.can_extract_glossary(self._session_folder(session, game_session))
+
+    def extract_glossary(self, session_id: uuid.UUID) -> list[extract_glossary_pipeline.GlossaryProposal]:
+        """Propose new glossary entries from a Session's Role Transcript."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = extract_glossary_pipeline.can_extract_glossary(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot extract glossary terms.")
+
+            attendees = tuple(
+                extract_glossary_pipeline.AttendeePromptEntry(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sessions.list_attendance(session, session_id)
+            )
+            entries = sorted(glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold())
+            prompt_glossary = tuple(
+                extract_glossary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
+            )
+            transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
+
+        with widelog.wide_event(
+            op="extract_glossary",
+            session_id=str(session_id),
+            attendee_count=len(attendees),
+            existing_glossary_count=len(prompt_glossary),
+        ) as log:
+            proposals = asyncio.run(
+                extract_glossary_pipeline.extract_glossary(transcript, attendees, prompt_glossary, self._settings.llm_model)
+            )
+            filtered = extract_glossary_pipeline.filter_existing_terms(proposals, [entry.term for entry in prompt_glossary])
+            log.set(proposal_count=len(proposals), filtered_proposal_count=len(filtered))
+            return sorted(filtered, key=lambda proposal: proposal.term.casefold())
+
+    def complete_glossary_extraction(
+        self, session_id: uuid.UUID, proposals: Sequence[extract_glossary_pipeline.GlossaryProposal]
+    ) -> extract_glossary_pipeline.GlossaryCommitResult:
+        """Atomically add unique reviewed proposals to the Session's campaign glossary."""
+        normalized_proposals: list[extract_glossary_pipeline.GlossaryProposal] = []
+        for proposal in proposals:
+            term = proposal.term.strip()
+            if not term:
+                raise ValueError("Glossary terms cannot be blank.")
+            description = proposal.description.strip() if proposal.description else None
+            normalized_proposals.append(extract_glossary_pipeline.GlossaryProposal(term=term, description=description or None))
+
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            existing = glossary.list_glossary_entries(session, game_session.campaign_id)
+            seen = {extract_glossary_pipeline.normalize_term(entry.term) for entry in existing}
+            accepted: list[GlossaryEntry] = []
+            skipped_count = 0
+            for proposal in normalized_proposals:
+                normalized_term = extract_glossary_pipeline.normalize_term(proposal.term)
+                if normalized_term in seen:
+                    skipped_count += 1
+                    continue
+                seen.add(normalized_term)
+                accepted.append(
+                    GlossaryEntry(
+                        campaign_id=game_session.campaign_id,
+                        term=proposal.term,
+                        description=proposal.description,
+                    )
+                )
+
+            session.add_all(accepted)
+            session.commit()
+
+        return extract_glossary_pipeline.GlossaryCommitResult(added_count=len(accepted), skipped_duplicate_count=skipped_count)
 
     # Sessions
 

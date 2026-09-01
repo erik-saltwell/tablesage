@@ -8,6 +8,7 @@ import pytest
 from tablesage_application.entities.sessions import Attendee
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.artifacts import GenerationStep
+from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_application.session_pipeline.transcribe_audio import TranscriptionResult
 from tablesage_application.session_pipeline.transcript_review import BenchmarkTranscriptResult
 from tablesage_model.model import CampaignPlayer, Player
@@ -16,6 +17,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.model import Transcript
 from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, TextInputDialog
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
+from tablesage_tui.screens.glossary_review import GlossaryReviewScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from tablesage_tui.screens.speaker_review import ManualReviewScreen
@@ -54,6 +56,7 @@ def _application(
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
     next_generation_step: GenerationStep | None = None,
     can_export: tuple[bool, str | None] = (False, "No artifacts to export yet."),
+    can_extract_glossary: tuple[bool, str | None] = (False, "Generate the Role Transcript first."),
     session_folder: Path | None = None,
     adjusted_count: int = 0,
 ) -> MagicMock:
@@ -65,6 +68,7 @@ def _application(
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
         next_generation_step=MagicMock(return_value=next_generation_step),
         can_export_artifacts=MagicMock(return_value=can_export),
+        can_extract_glossary=MagicMock(return_value=can_extract_glossary),
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
@@ -101,6 +105,7 @@ def test_binding_keys_and_footer_labels() -> None:
             "generate_benchmark_transcript",
             "clean_transcript",
             "generate",
+            "extract_glossary",
             "export_artifacts",
         )
     } == {
@@ -113,6 +118,7 @@ def test_binding_keys_and_footer_labels() -> None:
         "generate_benchmark_transcript": ("b,B", "Benchmark", "B"),
         "clean_transcript": ("c,C", "Clean Transcript", "C"),
         "generate": ("g,G", "Generate", "G"),
+        "extract_glossary": ("l,L", "Extract Glossary", "L"),
         "export_artifacts": ("x,X", "Export", "X"),
     }
 
@@ -437,6 +443,41 @@ async def test_generate_summary_step_confirms_and_runs() -> None:
         application.generate_summary.assert_called_once_with(session.id)
         assert application.session_artifacts.call_count >= 2
         notify.assert_called_once_with("Summary generated.")
+
+
+@pytest.mark.anyio
+async def test_extract_glossary_opens_review_with_proposals() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    proposals = [GlossaryProposal(term="Veyra", description="An envoy.")]
+    application = _application(session=session, can_extract_glossary=(True, None))
+    application.extract_glossary = MagicMock(return_value=proposals)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+        await pilot.press("l")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+
+        application.extract_glossary.assert_called_once_with(session.id)
+        assert isinstance(pilot.app.screen, GlossaryReviewScreen)
+
+
+@pytest.mark.anyio
+async def test_extract_glossary_empty_result_stays_on_session_detail() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, can_extract_glossary=(True, None))
+    application.extract_glossary = MagicMock(return_value=[])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            await pilot.press("l")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+        notify.assert_called_once_with("No new glossary terms found.")
 
 
 @pytest.mark.anyio

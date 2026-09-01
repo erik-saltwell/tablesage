@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from tablesage_application.paths import ARTIFACTS, ArtifactCategory, ArtifactName
 from tablesage_application.session_pipeline import clean_transcript, import_audio, transcribe_audio
 from tablesage_application.session_pipeline.artifacts import GenerationStep
+from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -20,6 +21,7 @@ from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
+from .glossary_review import GlossaryReviewScreen
 from .speaker_review import ManualReviewScreen
 
 if TYPE_CHECKING:
@@ -60,6 +62,7 @@ class SessionDetailScreen(TableSageScreen):
         Binding("b,B", "generate_benchmark_transcript", "Benchmark", key_display="B"),
         Binding("c,C", "clean_transcript", "Clean Transcript", key_display="C"),
         Binding("g,G", "generate", "Generate", key_display="G"),
+        Binding("l,L", "extract_glossary", "Extract Glossary", key_display="L"),
         Binding("x,X", "export_artifacts", "Export", key_display="X"),
     ]
 
@@ -225,6 +228,9 @@ class SessionDetailScreen(TableSageScreen):
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate":
             return True if self.application.next_generation_step(self._session_id) is not None else None
+        if action == "extract_glossary":
+            enabled, _ = self.application.can_extract_glossary(self._session_id)
+            return True if enabled else None
         if action == "export_artifacts":
             enabled, _ = self.application.can_export_artifacts(self._session_id)
             return True if enabled else None
@@ -478,6 +484,22 @@ class SessionDetailScreen(TableSageScreen):
     def _after_generate_summary(self, _result: None) -> None:
         self._refresh_indicators()
         self.notify("Summary generated.")
+
+    # Extract Glossary -- independent of Generate and gated on a Role Transcript.
+
+    def action_extract_glossary(self) -> None:
+        self.run_with_progress(
+            title="Extract Glossary",
+            message="Extracting glossary terms…",
+            work=lambda: self.application.extract_glossary(self._session_id),
+            on_success=self._after_extract_glossary,
+        )
+
+    def _after_extract_glossary(self, proposals: list[GlossaryProposal]) -> None:
+        if not proposals:
+            self.notify("No new glossary terms found.")
+            return
+        self.app.push_screen(GlossaryReviewScreen(self._session_id, proposals))
 
     # Export -- gated (see check_action).
 

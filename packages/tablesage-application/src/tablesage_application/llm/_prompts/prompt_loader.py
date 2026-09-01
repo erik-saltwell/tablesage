@@ -13,6 +13,7 @@ class PromptName(StrEnum):
     GENERATE_LEDGER = "generate_ledger"
     PROPOSE_SPEAKERS = "propose_speakers"
     CLASSIFY_BACKCHANNELS = "classify_backchannels"
+    EXTRACT_GLOSSARY = "extract_glossary"
 
 
 def read_system_prompt(name: PromptName) -> str:
