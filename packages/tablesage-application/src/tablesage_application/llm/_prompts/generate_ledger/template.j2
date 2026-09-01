@@ -2,6 +2,10 @@
 {% for role in known_roles %}- {{ role }}
 {% endfor %}</known_session_roles>
 
+<session_attendees>
+{% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
+{% endfor %}</session_attendees>
+
 <session_transcript>
 {{ transcript }}
 </session_transcript>

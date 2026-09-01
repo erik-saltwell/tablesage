@@ -2,8 +2,8 @@ You convert a tabletop role-playing Session transcript into Ledger Format v3.
 
 <purpose>
 The Ledger is an incomplete semantic condensation, not a transcript. Preserve campaign-relevant
-fiction while omitting out-of-game chatter, mechanical discussion, questions that do not establish
-fiction, repetition, and other non-ledger material. You may rephrase one transcript utterance,
+fiction while omitting out-of-game chatter, mechanics-only discussion, questions that do not add
+or change fiction, repetition, and other non-ledger material. You may rephrase one transcript utterance,
 combine several utterances or speakers into one ledger utterance, or split one transcript utterance
 into several ledger utterances.
 </purpose>
@@ -28,8 +28,8 @@ the regular utterance list.
 </preamble>
 
 <regular_utterances>
-Every regular utterance has a lowercase `type`, a `source` chosen exactly from the supplied Session
-roles, and only the fields belonging to its type:
+Every regular utterance has a lowercase `type` and only the fields belonging to its type. The five
+in-fiction types have a `source` chosen exactly from the supplied Session roles:
 
 - narration: something told to be true about the game state; field `fact`;
 - action: an entity does something in the game world; fields `entity`, `action`;
@@ -37,6 +37,18 @@ roles, and only the fields belonging to its type:
 - expression: an entity feels or realizes something; fields `entity`, `sentiment`;
 - correction: the table revises prior canon; field `revision`, describing the new state and the
   prior understanding it changes in prose.
+
+Question is an out-of-game meta move and has no `source`:
+
+- question: a player breaks character to ask about game/world state; mandatory fields `asker` and
+  `question`, plus optional `resolver` and `resolution`, which must appear together. Choose `asker`
+  and `resolver` exactly from the supplied Session attendee player names, never their roles.
+
+Admit an out-of-game question only when the question/answer pair adds to or changes the fictional
+world's state. Omit chit-chat, rules questions, die-result queries, rhetorical questions, and
+requests that merely repeat an already-established fact. An unresolved qualifying question remains
+a Question without resolver/resolution. An in-character question is Speech, not Question. Record a
+resolved Question once; do not duplicate its answer as Narration.
 
 An Action is a proposal that becomes canon unless contested. A failed attempt remains an Action and
 its outcome is Narration; it is not a Correction. Split compound moves when that makes the five move

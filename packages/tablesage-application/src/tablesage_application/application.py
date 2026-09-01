@@ -530,15 +530,22 @@ class Application:
 
             attendees = sessions.list_attendance(session, session_id)
             known_roles = tuple(sorted({role for attendee in attendees for role in attendee.roles}))
+            ledger_attendees = tuple(
+                generate_ledger_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
+            )
             role_transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
             session_name = game_session.name
 
         with widelog.wide_event(op="generate_session_ledger", session_id=str(session_id), known_role_count=len(known_roles)):
-            generated = asyncio.run(generate_ledger_pipeline.generate_ledger(role_transcript, known_roles, self._settings.llm_model))
+            generated = asyncio.run(
+                generate_ledger_pipeline.generate_ledger(role_transcript, known_roles, ledger_attendees, self._settings.llm_model)
+            )
             ledger = generate_ledger_pipeline.Ledger(
                 version=3,
                 session_id=session_id,
                 session_name=session_name,
+                attendees=ledger_attendees,
                 preamble=generated.preamble,
                 utterances=generated.utterances,
             )

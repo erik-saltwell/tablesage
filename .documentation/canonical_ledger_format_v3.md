@@ -27,7 +27,7 @@ v3 resolves the hybrid in favor of format. To the extent the type system happens
 This is a stricter test than v2's, and it is a *reader-context* test, not a truth test. Two corollaries:
 
 - A distinction recoverable from adjacency or content, that does not change the reading protocol, does not earn a type (this killed Assert vs. Resolve — see §7).
-- The type list itself is documentation. A newcomer reading the five type names should come away knowing what can be done at an RPG table.
+- The type list itself is documentation. A newcomer reading the six type names should come away knowing what can be done at an RPG table.
 
 ## 2. What v3 classifies
 
@@ -41,11 +41,12 @@ Every regular ledger entry is an **utterance**. The ledger is an incomplete sema
 
 Regular utterances form a chronological list in the order their content appeared during the session. Array order is authoritative; entries have no time offsets or explicit sequence numbers. Each utterance carries:
 
-- `type` — one of the five lowercase discriminators defined below;
-- `source` — the role or character associated with the move, not the human player at the table; and
+- `type` — one of the six lowercase discriminators defined below;
+- for the five in-fiction types, `source` — the role or character associated with the move, not
+  the human player at the table; Question instead carries player-name `asker`/`resolver` fields; and
 - the fields belonging to its type.
 
-`source` is a reusable string in the format itself. An application with a known Session role list may check it against those roles, but that contextual check does not narrow the portable schema to a session-specific enum.
+For the five types that carry it, `source` is a reusable string in the format itself. An application with a known Session role list may check it against those roles, but that contextual check does not narrow the portable schema to a session-specific enum.
 
 **Terminology redefinition, on the record:** v2's terminology section rejected "utterance" as an entry name because it pointed at raw pre-gate speech, OOG chatter included. v3 explicitly redefines it as the post-gate base type. The upstream gate still filters OOG chit-chat and mechanical talk, but query utterances are no longer blanket-excluded — see §5a, Question, and the gate's three-way split.
 
@@ -68,7 +69,7 @@ The Ledger must contain meaningful content in at least one place: a Recap, a Cha
 
 ### Preamble
 
-The Preamble captures two independently optional kinds of material that may occur before play begins. Neither, either, or both may be present. They remain outside the regular five-type utterance list because they are pre-session framing rather than in-session moves.
+The Preamble captures two independently optional kinds of material that may occur before play begins. Neither, either, or both may be present. They remain outside the regular six-type utterance list because they are pre-session framing rather than in-session moves.
 
 #### Recap
 
@@ -178,7 +179,7 @@ The v2 admission tests carry forward — a field must be **universal within its 
 
 - **"Intent" as the action type's name** — the provisionality it gestured at is real but belongs in the type definition (proposal/uptake), not the name. "Action" names the move as the type list should teach it.
 
-- **Searle-lite illocutionary types** (Declaration/Directive/Expressive/Assertive…) — importing another discipline's ontology into a format-first project; built to be true about language, not to compress RPG tables; several categories would sit empty. The *spirit* of speech-act theory, run through the format admission test, yields the five types instead.
+- **Searle-lite illocutionary types** (Declaration/Directive/Expressive/Assertive…) — importing another discipline's ontology into a format-first project; built to be true about language, not to compress RPG tables; several categories would sit empty. The *spirit* of speech-act theory, run through the format admission test, yields the six types instead.
 
 - **Radical two-type minimum** (Move/Canon) — the far endpoint that clarified the real question: how many reading protocols exist at the table? Answer: more than two, fewer than six.
 

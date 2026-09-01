@@ -12,6 +12,7 @@ from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import generate_ledger as generate_ledger_module
 from tablesage_application.session_pipeline.generate_ledger import (
     Action,
+    Attendee,
     CharacterIntroduction,
     Correction,
     Expression,
@@ -19,6 +20,7 @@ from tablesage_application.session_pipeline.generate_ledger import (
     LedgerGenerationResponse,
     Narration,
     Preamble,
+    Question,
     Recap,
     Speech,
 )
@@ -27,7 +29,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 
 
-def _response(*, source: str = "Zaria", character: str = "Zaria") -> LedgerGenerationResponse:
+def _response(*, source: str = "Zaria", character: str = "Zaria", asker: str = "Alice", resolver: str = "Bob") -> LedgerGenerationResponse:
     return LedgerGenerationResponse(
         scratchpad="Classified the campaign-relevant moves.",
         preamble=Preamble(
@@ -42,6 +44,13 @@ def _response(*, source: str = "Zaria", character: str = "Zaria") -> LedgerGener
             Speech(type="speech", source=source, entity="Zaria", statement="We should leave before dawn."),
             Expression(type="expression", source=source, entity="Zaria", sentiment="Fears the riders will return."),
             Correction(type="correction", source=source, revision="The riders came from the east, not the north."),
+            Question(
+                type="question",
+                asker=asker,
+                question="Is the eastern road flooded?",
+                resolver=resolver,
+                resolution="Yes, the bridge is underwater.",
+            ),
         ],
     )
 
@@ -58,6 +67,7 @@ def test_ledger_schema_supports_preamble_and_all_discriminated_utterance_types()
         version=3,
         session_id=session_id,
         session_name="  Session One  ",
+        attendees=(Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=("Game Master",))),
         preamble=generated.preamble,
         utterances=generated.utterances,
     )
@@ -75,7 +85,12 @@ def test_ledger_schema_supports_preamble_and_all_discriminated_utterance_types()
         "speech",
         "expression",
         "correction",
+        "question",
     ]
+    assert reparsed.attendees[0].player_name == "Alice"
+    question = reparsed.utterances[-1]
+    assert isinstance(question, Question)
+    assert question.resolution == "Yes, the bridge is underwater."
 
 
 def test_ledger_schema_rejects_empty_content_empty_preamble_duplicate_introductions_and_extra_fields() -> None:
@@ -96,6 +111,25 @@ def test_ledger_schema_rejects_empty_content_empty_preamble_duplicate_introducti
 
     with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
         Narration.model_validate({"type": "narration", "source": "Zaria", "fact": "It rains.", "entity": "Zaria"})
+
+    with pytest.raises(ValidationError, match="both be set or both be absent"):
+        Question(type="question", asker="Alice", question="Is it locked?", resolver="Bob", resolution=None)
+
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        Question.model_validate(
+            {"type": "question", "asker": "Alice", "question": "Is it locked?", "resolver": None, "resolution": None, "source": "Zaria"}
+        )
+
+
+def test_question_allows_unresolved_exchange_and_attendee_warnings_are_separate_from_roles() -> None:
+    response = LedgerGenerationResponse(
+        scratchpad="",
+        preamble=None,
+        utterances=[Question(type="question", asker="Unknown", question="Is it locked?", resolver=None, resolution=None)],
+    )
+
+    assert generate_ledger_module._role_warning_count(response, frozenset({"Zaria"})) == 0
+    assert generate_ledger_module._attendee_warning_count(response, frozenset({"Alice"})) == 1
 
 
 def test_ledger_allows_no_regular_utterances_when_preamble_has_content() -> None:
@@ -130,15 +164,21 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
     result = await generate_ledger_module.generate_ledger(
         "**Zaria** - We should leave.\n",
         ["Game Master", "Zaria"],
+        [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=("Game Master",))],
         "test-model",
     )
 
+    assert isinstance(result.utterances[0], Narration)
     assert result.utterances[0].source == "Zaria"
     assert captured["prompt"] is PromptName.GENERATE_LEDGER
     assert captured["model"] == "test-model"
     assert captured["response_model"] is LedgerGenerationResponse
     assert captured["template_data"].transcript == "**Zaria** - We should leave.\n"
     assert captured["template_data"].known_roles == ("Game Master", "Zaria")
+    assert captured["template_data"].attendees == (
+        Attendee(player_name="Alice", roles=("Zaria",)),
+        Attendee(player_name="Bob", roles=("Game Master",)),
+    )
 
 
 @pytest.mark.anyio
@@ -161,10 +201,40 @@ async def test_generate_ledger_retries_malformed_and_unknown_role_responses_then
 
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
 
-    result = await generate_ledger_module.generate_ledger("transcript", ["Zaria"], "test-model")
+    result = await generate_ledger_module.generate_ledger(
+        "transcript",
+        ["Zaria"],
+        [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        "test-model",
+    )
 
     assert call_count == 3
     assert result.utterances[0].source == "Zaria"
+
+
+@pytest.mark.anyio
+async def test_generate_ledger_retries_unknown_question_attendee(monkeypatch: pytest.MonkeyPatch) -> None:
+    responses = iter([_response(asker="Unknown Player").model_dump_json(), _response().model_dump_json()])
+    call_count = 0
+
+    async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
+        nonlocal call_count
+        call_count += 1
+        return next(responses)
+
+    monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
+
+    result = await generate_ledger_module.generate_ledger(
+        "transcript",
+        ["Zaria"],
+        [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        "test-model",
+    )
+
+    assert call_count == 2
+    question = result.utterances[-1]
+    assert isinstance(question, Question)
+    assert question.asker == "Alice"
 
 
 @pytest.mark.anyio
@@ -181,8 +251,14 @@ async def test_generate_ledger_selects_fewest_warnings_and_earliest_candidate_on
 
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
 
-    result = await generate_ledger_module.generate_ledger("transcript", ["Zaria"], "test-model")
+    result = await generate_ledger_module.generate_ledger(
+        "transcript",
+        ["Zaria"],
+        [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        "test-model",
+    )
 
+    assert isinstance(result.utterances[0], Narration)
     assert result.utterances[0].source == "Unknown First"
 
 
@@ -194,7 +270,9 @@ async def test_generate_ledger_fails_when_all_three_responses_are_structurally_i
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
 
     with pytest.raises(ValueError, match="no structurally valid response"):
-        await generate_ledger_module.generate_ledger("transcript", ["Zaria"], "test-model")
+        await generate_ledger_module.generate_ledger(
+            "transcript", ["Zaria"], [Attendee(player_name="Alice", roles=("Zaria",))], "test-model"
+        )
 
 
 def test_application_can_generate_ledger_requires_role_transcript(tmp_path: Path) -> None:
@@ -236,9 +314,14 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     summary_path.write_text("stale summary\n", encoding="utf-8")
     captured: dict[str, object] = {}
 
-    async def _stub_generate_ledger(transcript: str, known_roles: list[str] | tuple[str, ...], model: str) -> LedgerGenerationResponse:
-        captured.update(transcript=transcript, known_roles=known_roles, model=model)
-        return _response(source="Narrator")
+    async def _stub_generate_ledger(
+        transcript: str,
+        known_roles: list[str] | tuple[str, ...],
+        attendees: tuple[Attendee, ...],
+        model: str,
+    ) -> LedgerGenerationResponse:
+        captured.update(transcript=transcript, known_roles=known_roles, attendees=attendees, model=model)
+        return _response(source="Narrator", asker="Alice", resolver="Alice")
 
     monkeypatch.setattr(generate_ledger_module, "generate_ledger", _stub_generate_ledger)
 
@@ -249,9 +332,11 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     assert ledger.version == 3
     assert ledger.session_id == game_session.id
     assert ledger.session_name == "Session One"
+    assert ledger.attendees == (Attendee(player_name="Alice", roles=("Narrator", "Zaria")),)
     assert captured == {
         "transcript": "**Narrator** - Reviewed opening.\n",
         "known_roles": ("Narrator", "Zaria"),
+        "attendees": (Attendee(player_name="Alice", roles=("Narrator", "Zaria")),),
         "model": "test-model",
     }
     assert not summary_path.exists()

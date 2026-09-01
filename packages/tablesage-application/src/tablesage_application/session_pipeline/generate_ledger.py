@@ -81,7 +81,21 @@ class Correction(_LedgerUtterance):
     revision: NonEmptyText = Field(description="The revised canonical state, including what prior understanding it changes.")
 
 
-LedgerUtterance = Annotated[Narration | Action | Speech | Expression | Correction, Field(discriminator="type")]
+class Question(_StrictModel):
+    type: Literal["question"]
+    asker: NonEmptyText = Field(description="The player asking, by name, not the in-fiction character or role.")
+    question: NonEmptyText = Field(description="What was asked.")
+    resolver: NonEmptyText | None = Field(description="The player who resolved it, by name, if resolved.")
+    resolution: NonEmptyText | None = Field(description="The resolving answer, if resolved.")
+
+    @model_validator(mode="after")
+    def _resolver_and_resolution_together(self) -> Self:
+        if (self.resolver is None) != (self.resolution is None):
+            raise ValueError("Question.resolver and Question.resolution must both be set or both be absent.")
+        return self
+
+
+LedgerUtterance = Annotated[Narration | Action | Speech | Expression | Correction | Question, Field(discriminator="type")]
 
 
 def _require_meaningful_content(preamble: Preamble | None, utterances: list[LedgerUtterance]) -> None:
@@ -89,10 +103,16 @@ def _require_meaningful_content(preamble: Preamble | None, utterances: list[Ledg
         raise ValueError("Ledger must contain meaningful content in its preamble or regular utterances.")
 
 
+class Attendee(_StrictModel):
+    player_name: NonEmptyText
+    roles: tuple[NonEmptyText, ...]
+
+
 class Ledger(_StrictModel):
     version: Literal[3] = 3
     session_id: uuid.UUID
     session_name: NonEmptyText
+    attendees: tuple[Attendee, ...] = ()
     preamble: Preamble | None
     utterances: list[LedgerUtterance]
 
@@ -124,6 +144,7 @@ class LedgerGenerationResponse(_StrictModel):
 class LedgerPromptData:
     transcript: str
     known_roles: tuple[str, ...]
+    attendees: tuple[Attendee, ...]
 
 
 @dataclass(frozen=True)
@@ -140,13 +161,26 @@ def can_generate_ledger(session_folder: Path) -> tuple[bool, str | None]:
 
 
 def _role_warning_count(response: LedgerGenerationResponse, known_roles: frozenset[str]) -> int:
-    warning_count = sum(utterance.source not in known_roles for utterance in response.utterances)
+    warning_count = sum(utterance.source not in known_roles for utterance in response.utterances if isinstance(utterance, _LedgerUtterance))
     if response.preamble is not None and response.preamble.character_introductions is not None:
         warning_count += sum(introduction.character not in known_roles for introduction in response.preamble.character_introductions)
     return warning_count
 
 
-async def generate_ledger(transcript: str, known_roles: Sequence[str], model: str) -> LedgerGenerationResponse:
+def _attendee_warning_count(response: LedgerGenerationResponse, known_players: frozenset[str]) -> int:
+    warning_count = 0
+    for utterance in response.utterances:
+        if not isinstance(utterance, Question):
+            continue
+        warning_count += utterance.asker not in known_players
+        if utterance.resolver is not None:
+            warning_count += utterance.resolver not in known_players
+    return warning_count
+
+
+async def generate_ledger(
+    transcript: str, known_roles: Sequence[str], attendees: Sequence[Attendee], model: str
+) -> LedgerGenerationResponse:
     """Generate the best structurally valid whole-session Ledger content in at most three attempts.
 
     Structurally invalid responses are unavailable as candidates. Unknown regular sources and
@@ -155,11 +189,24 @@ async def generate_ledger(transcript: str, known_roles: Sequence[str], model: st
     """
     normalized_roles = tuple(sorted({role.strip() for role in known_roles if role.strip()}))
     known_role_set = frozenset(normalized_roles)
-    prompt_data = LedgerPromptData(transcript=transcript, known_roles=normalized_roles)
+    normalized_attendees = tuple(
+        sorted(
+            (
+                Attendee(
+                    player_name=attendee.player_name.strip(),
+                    roles=tuple(sorted({role.strip() for role in attendee.roles if role.strip()})),
+                )
+                for attendee in attendees
+            ),
+            key=lambda attendee: attendee.player_name.casefold(),
+        )
+    )
+    known_player_set = frozenset(attendee.player_name for attendee in normalized_attendees)
+    prompt_data = LedgerPromptData(transcript=transcript, known_roles=normalized_roles, attendees=normalized_attendees)
     candidates: list[_Candidate] = []
     last_error: Exception | None = None
 
-    with widelog.wide_event(op="generate_ledger", known_role_count=len(normalized_roles)) as log:
+    with widelog.wide_event(op="generate_ledger", known_role_count=len(normalized_roles), attendee_count=len(normalized_attendees)) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             try:
                 raw = await call_llm_with_prompt(
@@ -173,7 +220,7 @@ async def generate_ledger(transcript: str, known_roles: Sequence[str], model: st
                 last_error = exc
                 continue
 
-            warning_count = _role_warning_count(response, known_role_set)
+            warning_count = _role_warning_count(response, known_role_set) + _attendee_warning_count(response, known_player_set)
             candidate = _Candidate(response=response, warning_count=warning_count, attempt=attempt)
             candidates.append(candidate)
             if warning_count == 0:
