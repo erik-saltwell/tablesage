@@ -50,4 +50,4 @@ glossary only on Complete. Existing terms win; trimmed, case-insensitive duplica
 
 ## Triage state
 
-`ready-for-agent` — design: [03-design.md](03-design.md).
+`complete` — design: [03-design.md](03-design.md), implemented in commit `9c49dfa`.
