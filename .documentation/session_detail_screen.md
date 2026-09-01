@@ -42,8 +42,9 @@ session are also managed here, since processing depends on them.
   from the machine transcript. It is shown in the artifact panel, exportable, and deleted when
   the transcript is rebuilt or input audio/attendance changes.
 - **Role transcript** — `role_transcript.json`, the first of the three Generate (`G`) outputs: the
-  preferred transcript (reviewed, otherwise machine) with backchannel utterances removed and
-  every assigned speaker's name replaced by their Session role. It is its own shown, exportable
+  preferred transcript (reviewed, otherwise machine — both already backchannel-cleaned by
+  Transcribe's pre-review pass) with any leftover still-unassigned backchannels dropped and every
+  assigned speaker's name replaced by their Session role. It is its own shown, exportable
   artifact, and is what Ledger generation reads directly — Ledger no longer builds its own
   role-rendered text. See Generate below.
 - **Ledger** — `ledger.json`, an LLM-generated, machine-usable semantic condensation of the
@@ -87,18 +88,26 @@ session are also managed here, since processing depends on them.
    centroid per attendee, and a missing one should block before the slow,
    billed transcription call runs, not surface as a failure after it.
 2. A progress modal opens showing which stage is running — Transcribing,
-   Identifying speakers, Punctuating — since the whole run can take minutes
-   and a frozen-looking bar during an opaque API call would read as a stall.
-   Identifying speakers is the one stage with real per-utterance progress;
-   the other two show a stage label without a moving bar.
+   Identifying speakers, Punctuating, Removing backchannels — since the whole run can take
+   minutes and a frozen-looking bar during an opaque API call would read as a stall.
+   Identifying speakers and Removing backchannels report real progress (per utterance, per LLM
+   batch respectively); the other two show a stage label without a moving bar.
 3. Pipeline runs: transcribe+diarize → identify speakers (against attending
-   players' centroids) → punctuate. Nothing is written until all three
-   succeed — a mid-pipeline failure leaves the session exactly as it was
-   (no partial transcript), matching Import's all-or-nothing contract.
-4. On success, only `transcript.json` and `transcript.md` are written. If any
-   utterances came back "Unassigned Speaker," a toast reports how many need
-   review; otherwise a plain success toast.
-5. Running Transcribe again overwrites the machine transcript files and invalidates transcript
+   players' centroids) → punctuate → remove backchannels (pre-review pass, unconditional, no
+   settings toggle). Nothing is written until all four succeed — a mid-pipeline failure leaves the
+   session exactly as it was (no partial transcript), matching Import's all-or-nothing contract.
+4. Backchannel removal here judges every wordlist-matched candidate via a batched, concurrent
+   LLM call ("was the previous utterance a question?"), regardless of speaker — automatic speaker
+   assignment isn't human-confirmed yet at this point, so it isn't a trustworthy signal to
+   shortcut on. This directly and permanently shrinks `transcript.json`; there is no raw,
+   pre-removal copy kept anywhere (an accepted trade-off — see `remove_backchannels.py` and
+   `.scratch/pipeline-work-items/01-design.md` for the full rationale, including its effect on
+   the speaker-ID benchmark harness's ground-truth coverage). A separate, much simpler
+   post-review pass still runs later, inside Generate's Role Transcript step — see Generate below.
+5. On success, only `transcript.json` and `transcript.md` are written. A toast reports how many
+   utterances came back "Unassigned Speaker" (if any need manual review) and how many
+   backchannels were removed (if any); a plain "Transcribed." toast otherwise.
+6. Running Transcribe again overwrites the machine transcript files and invalidates transcript
    derivatives (`transcript_reviewed.json`, the role transcript, the benchmark, and the Ledger) and Ledger derivatives. If the completed
    review contains adjusted utterances, a confirmation first names that count. A failed run
    preserves all existing artifacts.
@@ -165,19 +174,18 @@ Transcript; Ledger and Summary each need the Role Transcript.
 2. Pressing `G` computes the next missing step and opens a `ConfirmationDialog` naming it
    ("Generate the Role Transcript?" / "Generate the Ledger?" / "Generate the Summary?").
 3. On confirmation, Session Detail runs exactly that step:
-   - **Role Transcript**: a progress modal shows Removing backchannels / Assigning roles.
-     Backchannel removal reads the preferred transcript (`transcript_reviewed.json` if present,
-     otherwise `transcript.json`) and drops pure backchannel utterances ("yeah", "mhm", "right",
-     ...) using two rules: a candidate spoken by the Unassigned speaker is removed outright;
-     every other candidate is confirmed by a batched LLM call (`llm_model_lite`, with
-     `remove_backchannels.question_check_timeout` seconds to run) that judges only whether the
-     utterance immediately before it was a question — a real short answer to a real question is
-     kept, everything else is removed. Role assignment then replaces every remaining assigned
-     utterance's speaker with that attendee's Session role (falling back to the player name when
-     they have none); the Unassigned speaker is never renamed. The result is written as
-     `role_transcript.json`, invalidating any Ledger and Summary derived from the previous copy.
-     Neither `transcript.json` nor `transcript_reviewed.json` is modified. A toast reports how
-     many backchannels were removed.
+   - **Role Transcript**: a progress modal shows Removing leftover backchannels / Assigning
+     roles. This is the *post-review* backchannel pass — purely mechanical, no LLM call: it reads
+     the preferred transcript (`transcript_reviewed.json` if present, otherwise `transcript.json`,
+     itself already backchannel-cleaned by Transcribe's pre-review pass) and drops a
+     wordlist-matched candidate only if it's *still* Unassigned Speaker after a human had the
+     chance to fix it — the "was the previous utterance a question?" judgment already happened
+     pre-review, so re-asking it here would be redundant. Role assignment then replaces every
+     remaining assigned utterance's speaker with that attendee's Session role (falling back to
+     the player name when they have none); the Unassigned speaker is never renamed. The result is
+     written as `role_transcript.json`, invalidating any Ledger and Summary derived from the
+     previous copy. Neither `transcript.json` nor `transcript_reviewed.json` is modified. A toast
+     reports how many (leftover) backchannels were removed.
    - **Ledger**: see `generate_ledger.md`. A progress modal runs one whole-session
      structured-output attempt, plus up to two retries. The application reads
      `role_transcript.json` directly and renders it to text — Ledger generation no longer builds
@@ -308,25 +316,33 @@ Transcript; Ledger and Summary each need the Role Transcript.
      objects) since the settings-agnostic boundary is `tablesage-tools` only,
      not `tablesage-application` (see CLAUDE.md's Settings section).
    - `session_pipeline/transcribe_audio.py`: `transcribe_audio(session_folder,
-     centroids, embed, transcription_settings, speaker_id_settings,
-     on_progress=None) -> TranscriptionResult`. A single sync function
+     centroids, embed, transcription_settings, speaker_id_settings, backchannel_settings,
+     llm_model_lite, on_progress=None) -> TranscriptionResult`. A single sync function
      wrapping one `asyncio.run` around an inner coroutine that awaits
-     transcribe-and-diarize → identify-speakers → punctuate in sequence
-     (three separate `asyncio.run` calls would spin up three event loops and
+     transcribe-and-diarize → identify-speakers → punctuate → remove-backchannels in sequence
+     (separate `asyncio.run` calls would spin up separate event loops and
      break punctuation's lazily-loaded ONNX model). `on_progress`, if given,
      is `Callable[[Stage, int, int], None]` — `Stage` is
-     `TRANSCRIBING | IDENTIFYING_SPEAKERS | PUNCTUATING`; the two opaque
+     `TRANSCRIBING | IDENTIFYING_SPEAKERS | PUNCTUATING | REMOVING_BACKCHANNELS`; the two opaque
      stages report `total=0` (indeterminate) on entry and `(1, 1)` on
-     completion, only `IDENTIFYING_SPEAKERS` reports real per-utterance
-     counts. Nothing is written to disk until the whole pipeline succeeds.
-     Backchannel removal and role rendering are not Transcribe responsibilities — both live in
-     `session_pipeline/clean_transcript.py` instead.
+     completion, `IDENTIFYING_SPEAKERS` reports real per-utterance counts, and
+     `REMOVING_BACKCHANNELS` reports real per-LLM-batch counts (or never fires at all if the
+     heuristic finds no candidates — no artificial bookending). Nothing is written to disk until
+     the whole pipeline succeeds. This is the *pre-review* backchannel pass: unconditional (no
+     settings toggle), judges every wordlist-matched candidate via `remove_backchannels.py`
+     regardless of speaker (assignment isn't human-confirmed yet), batched into
+     `remove_backchannels.batch_size`-sized groups run with up to
+     `remove_backchannels.max_concurrent_batches` LLM calls in flight, each independently
+     fail-open on its own timeout/error (partial fail-open — one batch's failure doesn't discard
+     another's successful removals). Role rendering is not a Transcribe responsibility — see
+     `session_pipeline/clean_transcript.py`.
    - `session_pipeline/clean_transcript.py`: `clean_transcript(session_folder, max_words,
-     question_timeout, llm_model_lite, role_names, on_progress=None) -> CleanTranscriptResult`.
-     Reads the preferred transcript (`transcript_review.load_review_transcript`), removes
-     backchannels via `remove_backchannels.py`'s two rules (Unassigned-speaker candidates dropped
-     without an LLM call; every other candidate confirmed by a batched "is the previous utterance
-     a question?" call), then replaces each assigned utterance's speaker with its Session role.
+     role_names, on_progress=None) -> CleanTranscriptResult`. This is the *post-review* pass and
+     makes no LLM call at all (unlike Transcribe's pre-review pass): reads the preferred
+     transcript (`transcript_review.load_review_transcript`), drops a wordlist-matched candidate
+     only if it's still `UNASSIGNED_SPEAKER` (inlined directly here, not in
+     `remove_backchannels.py` — nothing left to share between the two passes' implementations),
+     then replaces each assigned utterance's speaker with its Session role.
      Writes `role_transcript.json` (temp-then-rename) and invalidates Ledger/Summary.
      `render_role_transcript_text(session_folder)` renders the completed `role_transcript.json` to
      Markdown in memory for Ledger generation to consume — no role lookup happens there anymore,

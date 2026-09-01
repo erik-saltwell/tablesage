@@ -71,12 +71,27 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
 
 
 class RemoveBackchannelsSettings(BaseModel, frozen=True):
+    # Shared candidate-detection threshold: an utterance longer than this many words is never
+    # considered a backchannel candidate, regardless of wordlist match. Used both by the
+    # pre-review pass (Transcribe) and the post-review pass (Clean Transcript's role-transcript
+    # step).
     max_words: PositiveInt = 3
-    # Timeout (seconds) for the batched "is the previous utterance a question?" LLM call that
-    # Clean Transcript makes to disambiguate backchannel candidates whose speaker is known. A
-    # large session can propose hundreds of candidates in one batch, which can run past litellm's
-    # 600-second default.
-    question_check_timeout: PositiveInt = 1200
+    # The following three apply only to the pre-review pass (Transcribe), which is the only one
+    # that makes an LLM call -- the post-review pass is a purely mechanical unassigned-speaker
+    # filter with no LLM involved.
+    #
+    # Candidates needing an "is the previous utterance a question?" judgment are split into
+    # batches of this size rather than sent as one call -- a large session can propose hundreds of
+    # candidates, and one big call is what caused a real production timeout (`candidate_count=569`
+    # in a single call, `litellm.Timeout` at 600s, nothing removed).
+    batch_size: PositiveInt = 50
+    # How many batches run concurrently. Sequential batching would trade "one call that might time
+    # out" for "many calls that reliably take longer in total" -- concurrency keeps overall wait
+    # roughly similar to (or better than) the old single call.
+    max_concurrent_batches: PositiveInt = 4
+    # Timeout (seconds) per batch (not per whole pass) -- a batch is a small fraction of the old
+    # worst-case candidate count, so it doesn't need anywhere near as long as one giant call did.
+    question_check_timeout: PositiveInt = 120
 
 
 class AppSettings(BaseModel, frozen=True):

@@ -435,8 +435,6 @@ class Application:
         return clean_transcript_pipeline.clean_transcript(
             session_folder,
             self._settings.remove_backchannels.max_words,
-            self._settings.remove_backchannels.question_check_timeout,
-            self._settings.llm_model_lite,
             role_names,
             on_progress=on_progress,
         )

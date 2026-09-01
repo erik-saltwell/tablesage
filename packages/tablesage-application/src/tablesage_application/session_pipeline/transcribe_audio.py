@@ -10,7 +10,7 @@ from pathlib import Path
 import widelog
 from sqlmodel import Session
 from tablesage_model.model import Player
-from tablesage_model.settings import SpeakerIdentificationSettings, TranscriptionAndDiarizationSettings
+from tablesage_model.settings import RemoveBackchannelsSettings, SpeakerIdentificationSettings, TranscriptionAndDiarizationSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.punctuation import punctuate_transcript
@@ -25,6 +25,7 @@ from tablesage_tools.transcription import transcribe_and_diarize
 from ..entities.sessions import list_attendance
 from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
 from .artifacts import invalidate_category, session_artifacts
+from .remove_backchannels import remove_backchannels
 
 
 class Stage(Enum):
@@ -32,13 +33,14 @@ class Stage(Enum):
 
     TRANSCRIBING and PUNCTUATING are each a single opaque call -- `on_progress` fires with
     `total=0` on entry (indeterminate: show the stage label, not a moving bar) and `(1, 1)` on
-    completion. IDENTIFYING_SPEAKERS is itemized per utterance and reports real `(completed,
-    total)` throughout.
+    completion. IDENTIFYING_SPEAKERS and REMOVING_BACKCHANNELS are each itemized (per utterance,
+    per LLM batch respectively) and report real `(completed, total)` throughout.
     """
 
     TRANSCRIBING = "transcribing"
     IDENTIFYING_SPEAKERS = "identifying_speakers"
     PUNCTUATING = "punctuating"
+    REMOVING_BACKCHANNELS = "removing_backchannels"
 
 
 OnProgress = Callable[[Stage, int, int], None]
@@ -50,6 +52,7 @@ class TranscriptionResult:
 
     utterance_count: int
     unassigned_speaker_count: int
+    removed_backchannel_count: int
 
 
 def can_transcribe_audio(session: Session, session_id: uuid.UUID, session_folder: Path) -> tuple[bool, str | None]:
@@ -85,9 +88,11 @@ def transcribe_audio(
     embed: EmbeddingFactory,
     transcription_settings: TranscriptionAndDiarizationSettings,
     speaker_id_settings: SpeakerIdentificationSettings,
+    backchannel_settings: RemoveBackchannelsSettings,
+    llm_model_lite: str,
     on_progress: OnProgress | None = None,
 ) -> TranscriptionResult:
-    """Transcribe, diarize, identify speakers, and punctuate a session's input audio.
+    """Transcribe, diarize, identify speakers, punctuate, and remove backchannels from a session's input audio.
 
     Reads `input_audio.wav` from `session_folder` and writes `transcript.json`
     (the tablesage_tools `Transcript`, machine-readable) and `transcript.md` (a
@@ -96,12 +101,17 @@ def transcribe_audio(
     `import_audio`'s all-or-nothing contract. `centroids` should be scoped to
     the session's attendees; its size is passed through to diarization as the
     expected speaker count, since `identify_speakers` already assumes exactly
-    that correspondence. Backchannel removal and role-name rendering are deliberately not part of
-    transcription -- see `session_pipeline.clean_transcript`, its own user-triggered pipeline step.
+    that correspondence.
+
+    Backchannel removal here is the pre-review pass -- unconditional, no settings toggle, since
+    easier Manual Review applies to every session. It judges every wordlist-matched candidate via
+    a batched LLM call regardless of speaker (see `remove_backchannels.py`); the post-review pass
+    (`session_pipeline.clean_transcript`) is a separate, simpler, LLM-free mechanical filter.
+    Role-name rendering is not part of transcription either -- see `clean_transcript`.
     """
     audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
 
-    async def _run() -> Transcript:
+    async def _run() -> tuple[Transcript, int]:
         _report(on_progress, Stage.TRANSCRIBING, 0, 0)
         transcript = await transcribe_and_diarize(
             audio_path,
@@ -152,10 +162,26 @@ def transcribe_audio(
         transcript = await punctuate_transcript(transcript)
         _report(on_progress, Stage.PUNCTUATING, 1, 1)
 
-        return transcript
+        pre_backchannel_count = len(transcript.utterances)
+
+        def _backchannel_progress(completed: int, total: int) -> None:
+            _report(on_progress, Stage.REMOVING_BACKCHANNELS, completed, total)
+
+        transcript = await remove_backchannels(
+            transcript,
+            backchannel_settings.max_words,
+            llm_model_lite,
+            backchannel_settings.question_check_timeout,
+            backchannel_settings.batch_size,
+            backchannel_settings.max_concurrent_batches,
+            on_progress=_backchannel_progress,
+        )
+        removed_backchannel_count = pre_backchannel_count - len(transcript.utterances)
+
+        return transcript, removed_backchannel_count
 
     with widelog.wide_event(op="transcribe_audio", session_folder=str(session_folder), speaker_count=len(centroids)) as log:
-        transcript = asyncio.run(_run())
+        transcript, removed_backchannel_count = asyncio.run(_run())
 
         transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
         (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(
@@ -165,8 +191,16 @@ def transcribe_audio(
         invalidate_category(session_folder, ArtifactCategory.FROM_LOG)
 
         unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
-        log.set(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
-        return TranscriptionResult(utterance_count=len(transcript.utterances), unassigned_speaker_count=unassigned_count)
+        log.set(
+            utterance_count=len(transcript.utterances),
+            unassigned_speaker_count=unassigned_count,
+            removed_backchannel_count=removed_backchannel_count,
+        )
+        return TranscriptionResult(
+            utterance_count=len(transcript.utterances),
+            unassigned_speaker_count=unassigned_count,
+            removed_backchannel_count=removed_backchannel_count,
+        )
 
 
 def _report(on_progress: OnProgress | None, stage: Stage, completed: int, total: int) -> None:

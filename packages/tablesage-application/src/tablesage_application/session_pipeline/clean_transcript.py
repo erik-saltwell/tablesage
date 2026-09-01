@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
 import widelog
+from tablesage_tools.backchannels import find_backchannel_candidates
 from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..paths import ARTIFACTS, ArtifactName
-from .remove_backchannels import remove_backchannels
 from .transcript_review import load_review_transcript
 
 
@@ -19,7 +18,9 @@ class Stage(Enum):
     """A `clean_transcript` pipeline stage, reported to `on_progress`.
 
     Both stages are single opaque calls -- `on_progress` fires with `total=0` on entry
-    (indeterminate: show the stage label, not a moving bar) and `(1, 1)` on completion.
+    (indeterminate: show the stage label, not a moving bar) and `(1, 1)` on completion. Neither
+    stage makes an LLM call (that judgment already happened in the pre-review pass, see
+    `remove_backchannels.py`), so both complete essentially instantly.
     """
 
     REMOVING_BACKCHANNELS = "removing_backchannels"
@@ -46,6 +47,23 @@ def can_clean_transcript(session_folder: Path) -> tuple[bool, str | None]:
 def _report(on_progress: OnProgress | None, stage: Stage, completed: int, total: int) -> None:
     if on_progress is not None:
         on_progress(stage, completed, total)
+
+
+def _remove_unassigned_backchannels(transcript: Transcript, max_words: int) -> Transcript:
+    """Drop a wordlist-matched candidate only if it is still `UNASSIGNED_SPEAKER`.
+
+    This is the post-review pass: a human has already had the chance to assign a real speaker to
+    (or delete) every utterance, so anything still unassigned and backchannel-shaped is very
+    likely genuine noise -- no LLM judgment needed. Every candidate whose speaker *was* resolved
+    already went through the pre-review pass's "is the previous utterance a question?" check (see
+    `remove_backchannels.py`); re-asking that here would be redundant.
+    """
+    candidate_indices = find_backchannel_candidates(transcript, max_words)
+    to_remove = {index for index in candidate_indices if transcript.utterances[index].speaker == UNASSIGNED_SPEAKER}
+    if not to_remove:
+        return transcript
+    kept = [utterance for index, utterance in enumerate(transcript.utterances) if index not in to_remove]
+    return Transcript(utterances=kept)
 
 
 def _apply_roles(transcript: Transcript, role_names: dict[str, str]) -> Transcript:
@@ -83,30 +101,27 @@ def _render_utterance(utterance: Utterance) -> str:
 def clean_transcript(
     session_folder: Path,
     max_words: int,
-    question_timeout: float,
-    llm_model_lite: str,
     role_names: dict[str, str],
     on_progress: OnProgress | None = None,
 ) -> CleanTranscriptResult:
-    """Remove backchannels from and assign roles to a session's preferred transcript, writing `role_transcript.json`.
+    """Remove leftover backchannels from and assign roles to a session's preferred transcript, writing `role_transcript.json`.
 
     Reads the completed Manual Review when present, otherwise the machine transcript (see
     `load_review_transcript`) -- neither source is modified. The result is a new, independent
     artifact: `transcript.json` and `transcript_reviewed.json` are untouched by this step.
     Regenerating `role_transcript.json` invalidates any Ledger and Summary built from the previous
     copy, since both are derived from it.
+
+    Unlike the pre-review pass (`remove_backchannels.py`, run automatically during Transcribe),
+    this step makes no LLM call -- see `_remove_unassigned_backchannels`.
     """
     transcript = load_review_transcript(session_folder)
     original_count = len(transcript.utterances)
 
-    async def _run() -> Transcript:
-        _report(on_progress, Stage.REMOVING_BACKCHANNELS, 0, 0)
-        cleaned = await remove_backchannels(transcript, max_words, llm_model_lite, question_timeout)
-        _report(on_progress, Stage.REMOVING_BACKCHANNELS, 1, 1)
-        return cleaned
-
     with widelog.wide_event(op="clean_transcript", session_folder=str(session_folder)) as log:
-        cleaned = asyncio.run(_run())
+        _report(on_progress, Stage.REMOVING_BACKCHANNELS, 0, 0)
+        cleaned = _remove_unassigned_backchannels(transcript, max_words)
+        _report(on_progress, Stage.REMOVING_BACKCHANNELS, 1, 1)
 
         _report(on_progress, Stage.ASSIGNING_ROLES, 0, 0)
         role_transcript = _apply_roles(cleaned, role_names)

@@ -629,7 +629,7 @@ async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path:
     )
 
     with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=3)
+        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=3, removed_backchannel_count=2)
 
         async with TableSageApp(application).run_test() as pilot:
             await _open_session_detail(pilot, session.id)
@@ -647,10 +647,12 @@ async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path:
                 application.embedding_factory.return_value,
                 application.settings.transcription_and_diarization,
                 application.settings.speaker_identification,
+                application.settings.remove_backchannels,
+                application.settings.llm_model_lite,
                 on_progress=screen._on_transcribe_progress,
             )
             application.session_player_roles.assert_not_called()
-            notify.assert_called_once_with("Transcribed. 3 of 10 utterances need manual review.")
+            notify.assert_called_once_with("Transcribed. 3 of 10 utterances need manual review. 2 backchannels removed.")
 
 
 @pytest.mark.anyio
@@ -666,7 +668,7 @@ async def test_transcribe_with_adjusted_utterances_asks_for_confirmation_first()
     )
 
     with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=0)
+        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=0, removed_backchannel_count=0)
 
         async with TableSageApp(application).run_test() as pilot:
             await _open_session_detail(pilot, session.id)

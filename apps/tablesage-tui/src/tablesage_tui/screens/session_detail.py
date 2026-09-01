@@ -29,10 +29,11 @@ _STAGE_LABELS = {
     transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
     transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
     transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
+    transcribe_audio.Stage.REMOVING_BACKCHANNELS: "Removing backchannels (this may take a while)…",
 }
 
 _CLEAN_STAGE_LABELS = {
-    clean_transcript.Stage.REMOVING_BACKCHANNELS: "Removing backchannels (this may take a while)…",
+    clean_transcript.Stage.REMOVING_BACKCHANNELS: "Removing leftover backchannels…",
     clean_transcript.Stage.ASSIGNING_ROLES: "Assigning roles…",
 }
 
@@ -356,6 +357,8 @@ class SessionDetailScreen(TableSageScreen):
                 embed,
                 settings.transcription_and_diarization,
                 settings.speaker_identification,
+                settings.remove_backchannels,
+                settings.llm_model_lite,
                 on_progress=self._on_transcribe_progress,
             )
 
@@ -371,10 +374,13 @@ class SessionDetailScreen(TableSageScreen):
 
     def _after_transcribe_audio(self, result: transcribe_audio.TranscriptionResult) -> None:
         self._refresh_indicators()
+        message = "Transcribed."
         if result.unassigned_speaker_count:
-            self.notify(f"Transcribed. {result.unassigned_speaker_count} of {result.utterance_count} utterances need manual review.")
-        else:
-            self.notify("Transcribed.")
+            message += f" {result.unassigned_speaker_count} of {result.utterance_count} utterances need manual review."
+        if result.removed_backchannel_count:
+            plural = "" if result.removed_backchannel_count == 1 else "s"
+            message += f" {result.removed_backchannel_count} backchannel{plural} removed."
+        self.notify(message)
 
     # Manual review -- gated on the transcript artifact existing (see check_action).
 

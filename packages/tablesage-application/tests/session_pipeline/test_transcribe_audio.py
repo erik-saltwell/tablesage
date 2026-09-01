@@ -6,6 +6,7 @@ from typing import cast
 
 import pytest
 from tablesage_application.paths import ARTIFACTS, ArtifactName
+from tablesage_application.session_pipeline import remove_backchannels as remove_backchannels_module
 from tablesage_application.session_pipeline import transcribe_audio as transcribe_audio_module
 from tablesage_application.session_pipeline.transcribe_audio import (
     Stage,
@@ -13,6 +14,7 @@ from tablesage_application.session_pipeline.transcribe_audio import (
     transcribe_audio,
 )
 from tablesage_model.settings import (
+    RemoveBackchannelsSettings,
     SpeakerIdentificationDurationOverrideSettings,
     SpeakerIdentificationSettings,
     TranscriptionAndDiarizationSettings,
@@ -23,6 +25,8 @@ from tablesage_tools.speakers import ClusterPropagationConfig, ShortUtteranceWid
 
 _TRANSCRIPTION_SETTINGS = TranscriptionAndDiarizationSettings()
 _SPEAKER_ID_SETTINGS = SpeakerIdentificationSettings()
+_BACKCHANNEL_SETTINGS = RemoveBackchannelsSettings()
+_LLM_MODEL_LITE = "anthropic/claude-haiku-4-5"
 # `identify_speakers` is stubbed in every test here, so it never actually touches this --
 # a real EmbeddingFactory would require a downloaded ML model just to construct.
 _NO_EMBED = cast(EmbeddingFactory, None)
@@ -33,6 +37,8 @@ def _word(text: str, speaker: str, start: float, end: float) -> TranscriptionWor
 
 
 def _stub_transcript() -> Transcript:
+    # Neither word matches the backchannel wordlist, so `remove_backchannels` finds no candidates
+    # and returns unchanged without ever calling the LLM -- no stub needed for most tests here.
     return Transcript.from_words(
         [
             _word("hello", "speaker_0", 0.0, 1.0),
@@ -88,9 +94,11 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
     )
 
-    assert result == TranscriptionResult(utterance_count=2, unassigned_speaker_count=0)
+    assert result == TranscriptionResult(utterance_count=2, unassigned_speaker_count=0, removed_backchannel_count=0)
     transcript_json = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
     transcript_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename
     transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
@@ -113,6 +121,8 @@ def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
         on_progress=lambda stage, completed, total: calls.append((stage, completed, total)),
     )
 
@@ -120,8 +130,52 @@ def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
     assert calls[1] == (Stage.TRANSCRIBING, 1, 1)
     assert (Stage.IDENTIFYING_SPEAKERS, 1, 2) in calls
     assert (Stage.IDENTIFYING_SPEAKERS, 2, 2) in calls
-    assert calls[-2] == (Stage.PUNCTUATING, 0, 0)
-    assert calls[-1] == (Stage.PUNCTUATING, 1, 1)
+    assert (Stage.PUNCTUATING, 0, 0) in calls
+    assert (Stage.PUNCTUATING, 1, 1) in calls
+    # No backchannel candidates in the stub transcript -- REMOVING_BACKCHANNELS never fires,
+    # matching `IDENTIFYING_SPEAKERS`' style of real (not artificially bookended) progress.
+    assert not any(stage is Stage.REMOVING_BACKCHANNELS for stage, _completed, _total in calls)
+
+
+def test_transcribe_audio_reports_backchannel_batch_progress_when_there_are_candidates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def _stub_transcribe_and_diarize_with_backchannel(*args: object, **kwargs: object) -> Transcript:
+        return Transcript.from_words(
+            [
+                _word("Are", "speaker_0", 0.0, 0.3),
+                _word("you", "speaker_0", 0.3, 0.6),
+                _word("coming", "speaker_0", 0.6, 0.9),
+                _word("Yeah", "speaker_1", 0.9, 1.2),
+            ]
+        )
+
+    monkeypatch.setattr(transcribe_audio_module, "transcribe_and_diarize", _stub_transcribe_and_diarize_with_backchannel)
+
+    async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
+        from tablesage_application.session_pipeline.remove_backchannels import BackchannelJudgment, BackchannelJudgments
+
+        return BackchannelJudgments(scratchpad="", judgments=[BackchannelJudgment(candidate_id=1, is_question=False)]).model_dump_json()
+
+    monkeypatch.setattr(remove_backchannels_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
+
+    session_folder = tmp_path
+    (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+
+    calls: list[tuple[Stage, int, int]] = []
+    result = transcribe_audio(
+        session_folder,
+        {"Alice": _fake_embedding()},
+        embed=_NO_EMBED,
+        transcription_settings=_TRANSCRIPTION_SETTINGS,
+        speaker_id_settings=_SPEAKER_ID_SETTINGS,
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
+        on_progress=lambda stage, completed, total: calls.append((stage, completed, total)),
+    )
+
+    assert result.removed_backchannel_count == 1
+    assert (Stage.REMOVING_BACKCHANNELS, 1, 1) in calls
 
 
 def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -156,6 +210,8 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=SpeakerIdentificationSettings(allow_unassigned=False),
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
     )
 
     assert captured["allow_unassigned"] is False
@@ -202,6 +258,8 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
                 similarity_margin_threshold=0.05,
             ),
         ),
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
     )
 
     assert captured == {
@@ -235,6 +293,8 @@ def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp
         embed=_NO_EMBED,
         transcription_settings=_TRANSCRIPTION_SETTINGS,
         speaker_id_settings=_SPEAKER_ID_SETTINGS,
+        backchannel_settings=_BACKCHANNEL_SETTINGS,
+        llm_model_lite=_LLM_MODEL_LITE,
     )
 
     assert not summary_path.exists()
@@ -263,6 +323,8 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
             embed=_NO_EMBED,
             transcription_settings=_TRANSCRIPTION_SETTINGS,
             speaker_id_settings=_SPEAKER_ID_SETTINGS,
+            backchannel_settings=_BACKCHANNEL_SETTINGS,
+            llm_model_lite=_LLM_MODEL_LITE,
         )
 
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).exists()

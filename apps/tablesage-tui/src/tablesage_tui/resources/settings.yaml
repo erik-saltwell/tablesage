@@ -86,20 +86,36 @@ enhance_voices:
   max_clip_seconds: 8.0
 
 remove_backchannels:
-  # Session Detail's "Clean" (C) step can drop pure backchannels ("yeah",
-  # "mhm", "right", ...) from the preferred transcript. A candidate utterance
-  # (short and wordlist-matching) spoken by the Unassigned speaker is dropped
-  # outright; every other candidate is confirmed by a cheap LLM call
-  # (llm_model_lite below) that judges whether the utterance right before it
-  # was a question, so a real short answer to a question ("Yeah.") isn't
-  # mistaken for an acknowledgment.
+  # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):
+  #   - Pre-review, automatic as part of Transcribe (T): speaker assignment
+  #     isn't human-confirmed yet, so every wordlist-matching candidate is
+  #     judged the same way regardless of speaker, via a batched LLM call
+  #     (llm_model_lite below) asking whether the utterance right before it
+  #     was a question -- a real short answer ("Yeah.") isn't mistaken for an
+  #     acknowledgment.
+  #   - Post-review, part of Session Detail's Generate (G) Role Transcript
+  #     step: purely mechanical, no LLM call -- a candidate is dropped only if
+  #     it's still Unassigned Speaker after a human had the chance to fix it.
+  #
   # An utterance longer than this many words is never considered a
-  # backchannel candidate, regardless of wordlist match.
+  # backchannel candidate, regardless of wordlist match. Shared by both
+  # passes.
   max_words: 3
-  # Timeout (seconds) for the batched "was the previous utterance a
-  # question?" LLM call above. A large session can propose hundreds of
-  # candidates in one batch, which can run past a shorter timeout.
-  question_check_timeout: 1200
+  # The rest apply only to the pre-review pass -- the post-review pass makes
+  # no LLM call at all.
+  #
+  # Candidates needing a question-check judgment are split into batches of
+  # this size rather than sent as one call -- a large session can propose
+  # hundreds of candidates, and one big call is what caused a real production
+  # timeout (candidate_count=569 in a single call, timed out at 600s).
+  batch_size: 50
+  # How many batches run concurrently. Sequential batching would trade "one
+  # call that might time out" for "many calls that reliably take longer in
+  # total."
+  max_concurrent_batches: 4
+  # Timeout (seconds) per batch (not per whole pass) -- a batch is a small
+  # fraction of the old worst-case candidate count.
+  question_check_timeout: 120
 
 # The default model for high-confidence LLM calls (e.g. proposing speaker
 # identities from a transcript).
