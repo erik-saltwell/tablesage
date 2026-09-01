@@ -534,12 +534,25 @@ class Application:
                 generate_ledger_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
                 for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
             )
+            glossary_entries = sorted(
+                glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold()
+            )
+            ledger_glossary = tuple(
+                generate_ledger_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in glossary_entries
+            )
             role_transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
             session_name = game_session.name
 
-        with widelog.wide_event(op="generate_session_ledger", session_id=str(session_id), known_role_count=len(known_roles)):
+        with widelog.wide_event(
+            op="generate_session_ledger",
+            session_id=str(session_id),
+            known_role_count=len(known_roles),
+            glossary_count=len(ledger_glossary),
+        ):
             generated = asyncio.run(
-                generate_ledger_pipeline.generate_ledger(role_transcript, known_roles, ledger_attendees, self._settings.llm_model)
+                generate_ledger_pipeline.generate_ledger(
+                    role_transcript, known_roles, ledger_attendees, ledger_glossary, self._settings.llm_model
+                )
             )
             ledger = generate_ledger_pipeline.Ledger(
                 version=3,

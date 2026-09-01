@@ -6,6 +6,10 @@
 {% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
 {% endfor %}</session_attendees>
 
+<glossary>
+{% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
+{% endfor %}</glossary>
+
 <session_transcript>
 {{ transcript }}
 </session_transcript>

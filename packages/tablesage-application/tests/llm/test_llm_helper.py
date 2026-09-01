@@ -35,6 +35,7 @@ def test_read_system_prompt_and_template_for_generate_ledger() -> None:
     assert "Ledger Format v3" in system_prompt
     assert "{% for role in known_roles %}" in template
     assert "{% for attendee in attendees %}" in template
+    assert "{% for entry in glossary %}" in template
     assert "{{ transcript }}" in template
 
 

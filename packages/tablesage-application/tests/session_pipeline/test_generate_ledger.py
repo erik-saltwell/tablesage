@@ -16,6 +16,7 @@ from tablesage_application.session_pipeline.generate_ledger import (
     CharacterIntroduction,
     Correction,
     Expression,
+    GlossaryPromptEntry,
     Ledger,
     LedgerGenerationResponse,
     Narration,
@@ -24,7 +25,7 @@ from tablesage_application.session_pipeline.generate_ledger import (
     Recap,
     Speech,
 )
-from tablesage_model.model import Campaign, Player
+from tablesage_model.model import Campaign, GlossaryEntry, Player
 from tablesage_model.settings import AppSettings
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 
@@ -165,6 +166,7 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
         "**Zaria** - We should leave.\n",
         ["Game Master", "Zaria"],
         [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=("Game Master",))],
+        [GlossaryPromptEntry(term="Ashmoor", description="The blighted moorland.")],
         "test-model",
     )
 
@@ -179,6 +181,7 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
         Attendee(player_name="Alice", roles=("Zaria",)),
         Attendee(player_name="Bob", roles=("Game Master",)),
     )
+    assert captured["template_data"].glossary == (GlossaryPromptEntry(term="Ashmoor", description="The blighted moorland."),)
 
 
 @pytest.mark.anyio
@@ -205,6 +208,7 @@ async def test_generate_ledger_retries_malformed_and_unknown_role_responses_then
         "transcript",
         ["Zaria"],
         [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        [],
         "test-model",
     )
 
@@ -228,6 +232,7 @@ async def test_generate_ledger_retries_unknown_question_attendee(monkeypatch: py
         "transcript",
         ["Zaria"],
         [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        [],
         "test-model",
     )
 
@@ -255,6 +260,7 @@ async def test_generate_ledger_selects_fewest_warnings_and_earliest_candidate_on
         "transcript",
         ["Zaria"],
         [Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())],
+        [],
         "test-model",
     )
 
@@ -271,7 +277,7 @@ async def test_generate_ledger_fails_when_all_three_responses_are_structurally_i
 
     with pytest.raises(ValueError, match="no structurally valid response"):
         await generate_ledger_module.generate_ledger(
-            "transcript", ["Zaria"], [Attendee(player_name="Alice", roles=("Zaria",))], "test-model"
+            "transcript", ["Zaria"], [Attendee(player_name="Alice", roles=("Zaria",))], [], "test-model"
         )
 
 
@@ -297,6 +303,7 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Alice"))
     application.add_player_to_campaign(campaign.id, player.id, "Zaria")
+    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ashmoor", description="The blighted moorland."))
     game_session = application.create_session(campaign.id, "Session One")
     attendee = application.list_attendance(game_session.id)[0]
     application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria", "Narrator"])
@@ -318,9 +325,10 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
         transcript: str,
         known_roles: list[str] | tuple[str, ...],
         attendees: tuple[Attendee, ...],
+        glossary: tuple[GlossaryPromptEntry, ...],
         model: str,
     ) -> LedgerGenerationResponse:
-        captured.update(transcript=transcript, known_roles=known_roles, attendees=attendees, model=model)
+        captured.update(transcript=transcript, known_roles=known_roles, attendees=attendees, glossary=glossary, model=model)
         return _response(source="Narrator", asker="Alice", resolver="Alice")
 
     monkeypatch.setattr(generate_ledger_module, "generate_ledger", _stub_generate_ledger)
@@ -337,6 +345,7 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
         "transcript": "**Narrator** - Reviewed opening.\n",
         "known_roles": ("Narrator", "Zaria"),
         "attendees": (Attendee(player_name="Alice", roles=("Narrator", "Zaria")),),
+        "glossary": (GlossaryPromptEntry(term="Ashmoor", description="The blighted moorland."),),
         "model": "test-model",
     }
     assert not summary_path.exists()

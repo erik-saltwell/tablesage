@@ -141,10 +141,17 @@ class LedgerGenerationResponse(_StrictModel):
 
 
 @dataclass(frozen=True)
+class GlossaryPromptEntry:
+    term: str
+    description: str | None
+
+
+@dataclass(frozen=True)
 class LedgerPromptData:
     transcript: str
     known_roles: tuple[str, ...]
     attendees: tuple[Attendee, ...]
+    glossary: tuple[GlossaryPromptEntry, ...]
 
 
 @dataclass(frozen=True)
@@ -179,7 +186,11 @@ def _attendee_warning_count(response: LedgerGenerationResponse, known_players: f
 
 
 async def generate_ledger(
-    transcript: str, known_roles: Sequence[str], attendees: Sequence[Attendee], model: str
+    transcript: str,
+    known_roles: Sequence[str],
+    attendees: Sequence[Attendee],
+    glossary: Sequence[GlossaryPromptEntry],
+    model: str,
 ) -> LedgerGenerationResponse:
     """Generate the best structurally valid whole-session Ledger content in at most three attempts.
 
@@ -202,11 +213,18 @@ async def generate_ledger(
         )
     )
     known_player_set = frozenset(attendee.player_name for attendee in normalized_attendees)
-    prompt_data = LedgerPromptData(transcript=transcript, known_roles=normalized_roles, attendees=normalized_attendees)
+    prompt_data = LedgerPromptData(
+        transcript=transcript, known_roles=normalized_roles, attendees=normalized_attendees, glossary=tuple(glossary)
+    )
     candidates: list[_Candidate] = []
     last_error: Exception | None = None
 
-    with widelog.wide_event(op="generate_ledger", known_role_count=len(normalized_roles), attendee_count=len(normalized_attendees)) as log:
+    with widelog.wide_event(
+        op="generate_ledger",
+        known_role_count=len(normalized_roles),
+        attendee_count=len(normalized_attendees),
+        glossary_count=len(glossary),
+    ) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             try:
                 raw = await call_llm_with_prompt(
