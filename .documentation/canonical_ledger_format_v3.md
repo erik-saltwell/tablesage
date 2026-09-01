@@ -47,7 +47,7 @@ Regular utterances form a chronological list in the order their content appeared
 
 `source` is a reusable string in the format itself. An application with a known Session role list may check it against those roles, but that contextual check does not narrow the portable schema to a session-specific enum.
 
-**Terminology redefinition, on the record:** v2's terminology section rejected "utterance" as an entry name because it pointed at raw pre-gate speech, OOG chatter included. v3 explicitly redefines it as the post-gate base type. The upstream gate is unchanged — OOG, mechanical talk, and query utterances still never enter the ledger — so post-gate, "utterance" is unambiguous.
+**Terminology redefinition, on the record:** v2's terminology section rejected "utterance" as an entry name because it pointed at raw pre-gate speech, OOG chatter included. v3 explicitly redefines it as the post-gate base type. The upstream gate still filters OOG chit-chat and mechanical talk, but query utterances are no longer blanket-excluded — see §5a, Question, and the gate's three-way split.
 
 **"Declaration" is reserved.** It remains the theory-layer word for the defining move of RPGs ("open-ended declaration of what happens in the fiction"), where it describes *every* move type, not one. *Utterance* is the format-layer word for a ledger entry. The two words never cross layers. (This also permanently closes the v2-era collision in which the generic entry term blocked its use as a type name.)
 
@@ -60,6 +60,7 @@ A Ledger has the following top-level fields:
 | `version` | literal integer `3` | Format version |
 | `session_id` | UUID | Identity of the Session represented |
 | `session_name` | non-empty string | Display name of that Session |
+| `attendees` | list of `{player_name, roles}` | The session's human roster, sourced from Session attendance. Exists so `Question.asker`/`resolver` (player names) can be cross-checked and resolved without a database round-trip. |
 | `preamble` | optional Preamble | Explicitly framed pre-session context |
 | `utterances` | ordered list of ledger utterances | Regular session moves |
 
@@ -89,9 +90,9 @@ An introduction spanning multiple transcript utterances is consolidated into one
 
 Recaps and Character Introductions are emitted only when the transcript explicitly frames early material that way. Similar-looking opening narration or dialogue is not enough to infer a Preamble.
 
-## 5. The five types
+## 5. The six types
 
-Every type includes the universal `source` field from §3 plus the payload fields shown below. Serialized `type` discriminators are lowercase: `narration`, `action`, `speech`, `expression`, and `correction`.
+The first five types share the universal `source` field from §3 plus the payload fields shown below. The sixth, Question (§5a), is a meta type with no `source` — see §5a for why. Serialized `type` discriminators are lowercase: `narration`, `action`, `speech`, `expression`, `correction`, and `question`.
 
 | Type | The move | Fields | Reading protocol |
 |---|---|---|---|
@@ -100,8 +101,9 @@ Every type includes the universal `source` field from §3 plus the payload field
 | **Speech** | An entity says something in the world | `entity`, `statement` | Append to canon |
 | **Expression** | An entity feels something | `entity`, `sentiment` | Append to canon |
 | **Correction** | The game state is adjusted or corrected | `revision` | **Revise** — locate and amend prior canon |
+| **Question** | A player asks about game/world state, OOG | `asker`, `question`, `resolver`?, `resolution`? | Append as proposal; canonizes only if resolved |
 
-Read as a list of moves: **what's told, what's done, what's said, what's felt, what's revised.** That list is the claimed universe of table-moves, and its legibility is a design goal, not a side effect.
+Read as a list of moves: **what's told, what's done, what's said, what's felt, what's revised, what's asked.** That list is the claimed universe of table-moves, and its legibility is a design goal, not a side effect.
 
 ### Narration
 
@@ -134,6 +136,27 @@ An adjustment to prior game state: retcons, walked-back-then-revised facts, GM r
 **Scope, strictly:** a Correction is an entry the table treats as revising prior canon. A failed climb needs no Correction — the attempt is canon, the outcome is Narration, nothing is revised.
 
 **`revision` holds the new state as prose;** what is being corrected is referenced in prose, not by link. A formal `corrects` pointer was considered and fails heavy-lifting: it would require stable entry IDs, which the format deliberately does not have, and prose reference serves human and LLM readers fine. *Reconsider if* programmatic supersession-resolution becomes a real query.
+
+## 5a. Question: a meta type, not a sixth peer
+
+Question is structurally different from the other five, and that difference is deliberate, not an oversight to be normalized away.
+
+**Question has no `source`.** The other five types are in-fiction moves, so `source` (a role or character) is the natural subject. Question is the opposite: a player breaking character to ask about game/world state. There is no in-fiction entity making this move — attributing it to a role or character would misrepresent what happened at the table. Question instead carries `asker` and, when resolved, `resolver` — both **player names**, not roles or characters. This is the one deliberate reversal of the v2→v3 decision to strip human identity from the ledger (§9's migration note); it is scoped to this single type, not a reopening of `source`'s contract elsewhere.
+
+**Fields:** `asker` (who asked), `question` (what was asked), `resolver` (who answered, if answered), `resolution` (the answer, if answered). `resolver` and `resolution` are both-or-neither — an entry can't have one without the other.
+
+**The move: proposal/uptake, OOG.** Question mirrors Action's proposal/uptake pattern (§5) one layer up: Action proposes a deed that auto-canonizes unless contested; Question proposes an inquiry that becomes canon only if resolved. An unresolved Question is still a valid entry — it records that the ask happened, with no new world-fact yet attached.
+
+**Admission test — does the exchange add to or change the fictional world's state?** This is the same "does it establish fiction" bar the gate already applies (§3), narrowed to OOG questions specifically:
+
+- Included: "How old is this guy?" → "Maybe sixty." "Does he look like he trusts me?" → "Hard to tell." Both produce new world-fact, regardless of how conclusive the answer is.
+- Excluded: rules questions ("what's my modifier?"), die-result queries ("was that a 19?"), and rehashes of already-established information ("did you just say the door was locked?"). None of these add or change fiction.
+- A rhetorical question needs no special-casing: it fails the test on its own, since there's no plausible world-fact answer to attach.
+- A question answered in the same breath is a single Question entry with `resolver`/`resolution` filled immediately — not two entries.
+
+**Question vs. Speech.** An in-fiction question, spoken in voice by a character to another character ("What's behind the door?" asked as Bran), is Speech, not Question — the type discriminator tracks *who's speaking* (in-fiction voice vs. player breaking it), not sentence form. Phrasing a line as a question never by itself makes it a Question.
+
+**No duplicate Narration.** A resolved Question that establishes world-fact is recorded once, in the Question entry, not also written out as a separate Narration. A reader reconstructing settled canon walks Actions *and* Questions, the same "derived world-state" cost already accepted for Action (§8) — extended here rather than paid twice via redundant entries. Duplicating into Narration was considered and rejected as the "Assert vs. Resolve" mistake in miniature (§7): recoverable from adjacency, no new reading protocol.
 
 ## 6. Field design
 
@@ -169,6 +192,8 @@ The v2 admission tests carry forward — a field must be **universal within its 
 
 - **`content` as the Narration/Correction payload name** — generic bucket; broke the role-flavored naming pattern.
 
+- **Duplicating a resolved Question's world-fact into a separate Narration entry** — considered so a reader could find all world-fact by walking Narrations alone. Rejected as the Assert/Resolve mistake in miniature: the fact is recoverable from the adjacent Question entry, no new reading protocol results, and it doubles every world-state-bearing Question for no compression gain.
+
 ## 8. Known seams and open questions
 
 - **Correction boundary decidability.** Is "the tavern is actually on the *east* road" a Correction, or a Narration whose classifier doesn't remember it contradicts something? Working answer: *Correction only when the table treats the utterance as revising* — the classification tracks the move made, not a global consistency check. Wants counterexample testing against real transcripts before ratification hardens.
@@ -177,13 +202,15 @@ The v2 admission tests carry forward — a field must be **universal within its 
 
 - **Compound utterances.** "Tom flies into a rage and flips the table" spans Expression and Action. Presumed handling carries forward from v2: split into multiple entries. Still not formally ruled.
 
-- **Derived world-state.** With Actions auto-canonizing and Corrections revising, "current settled canon" is a derived view over the ledger, not a stored artifact. Fine for the format; a query layer that materializes it is future work.
+- **Derived world-state.** With Actions auto-canonizing, Corrections revising, and Questions canonizing on resolution, "current settled canon" is a derived view over the ledger, not a stored artifact. Fine for the format; a query layer that materializes it is future work.
+
+- **Question's gate boundary.** "Adds to or changes fiction" is a judgment call for the same category of ambiguous cases §3's original blanket exclusion was built to avoid ("is this really mechanics or does it carry world-fact?"). Wants the same counterexample testing against real transcripts as the Correction boundary before this is considered settled.
 
 - **Conversion prompt.** The v2 conversion prompt is invalidated by this schema. v3 conversion is one structured-output call over the complete role-rendered transcript. The prompt owns nuanced classification, condensation, explicit-Preamble recognition, and chronological-order instructions; the schema supplies concise field/type meanings and structural constraints.
 
 ## 9. Migration note
 
-v3 is not field-compatible with v2. Approximate mapping for any existing v2 ledgers: Speech Event → Speech (drop `verbatim`); External Event and External State → Narration or Action by whether an entity performs it; Internal Event and Internal State → Expression; Bond State → Narration (parties fold into `fact` prose). Corrections have no v2 source type; none will exist in migrated data. Migration must also replace human `speaker` metadata with role/character `source`, discard offsets and containment, and add the v3 Ledger envelope.
+v3 is not field-compatible with v2. Approximate mapping for any existing v2 ledgers: Speech Event → Speech (drop `verbatim`); External Event and External State → Narration or Action by whether an entity performs it; Internal Event and Internal State → Expression; Bond State → Narration (parties fold into `fact` prose). Corrections have no v2 source type; none will exist in migrated data. Migration must also replace human `speaker` metadata with role/character `source`, discard offsets and containment, and add the v3 Ledger envelope. Questions and the envelope's `attendees` list have no v2 or early-v3 source; existing ledgers predating this addition simply have no Question entries and an empty `attendees` list.
 
 ---
 

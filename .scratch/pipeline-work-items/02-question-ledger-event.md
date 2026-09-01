@@ -41,4 +41,4 @@ distinctly.
 
 ## Triage state
 
-`ready-for-agent`.
+`ready-for-agent` — design: [02-design.md](02-design.md).

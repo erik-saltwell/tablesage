@@ -6,7 +6,7 @@ the Clean Transcript / Generate (`G`) rework in `session_detail_screen.md`.
 | # | Item | Triage state |
 | --- | --- | --- |
 | 01 | [Re-add pre-review backchannel removal, batched](01-pre-review-backchannel-removal-batched.md) | `complete` — design: [01-design.md](01-design.md), commit `bc8fcf5` |
-| 02 | [New "Question" Ledger event type](02-question-ledger-event.md) | `ready-for-agent` |
+| 02 | [New "Question" Ledger event type](02-question-ledger-event.md) | `ready-for-agent` — design: [02-design.md](02-design.md) |
 | 03 | [Glossary extraction](03-glossary-extraction.md) | `needs-info` |
 | 04 | [Collapse Role Transcript / Ledger / Summary generation into one action](04-single-action-generate.md) | `ready-for-agent` |
 | 05 | [Finish Ledger generation](05-finish-ledger-generation.md) | `needs-info` |
