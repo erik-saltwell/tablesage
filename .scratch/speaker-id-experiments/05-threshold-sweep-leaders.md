@@ -7,10 +7,10 @@ experiments #3 and #4 survives per-embedder threshold tuning, and narrows it fur
 
 Experiments #3 (`wespeaker-resnet34`, pooled score 0.902) and #4 (`titanet-large`, 0.906) were both
 run at `similarity_margin_threshold: 0.07` — tuned for `eres2netv2` in experiment #1, not for
-either of these embedders. Swept 0.00–0.40 (step 0.01) for each, via
-[`threshold_sweep_leaders.py`](threshold_sweep_leaders.py), reusing the harness's existing stages
-as a library — same method as experiment #1, not a first-class sweep mode (see that experiment's
-doc for why). Embeddings for both models at threshold 0.07 were already cached from experiments #3
+either of these embedders. Swept 0.00–0.40 (step 0.01) for each, via `threshold_sweep_leaders.py`
+(since removed along with `TitanetLargeEmbedder` once `wespeaker-resnet34` was adopted -- the CSV
+results below are the surviving record), reusing the harness's existing stages as a library — same
+method as experiment #1, not a first-class sweep mode (see that experiment's doc for why). Embeddings for both models at threshold 0.07 were already cached from experiments #3
 and #4, so only the uncached thresholds needed fresh matching + scoring.
 
 ## Results

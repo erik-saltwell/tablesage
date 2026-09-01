@@ -18,14 +18,14 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "benchmarks"))
 
-from benchmarks.speaker_id.cache import EmbeddingCache  # noqa: E402
-from benchmarks.speaker_id.embedders import Eres2NetV2Embedder, WeSpeakerResNet34Embedder  # noqa: E402
-from benchmarks.speaker_id.harness import load_sessions, run_candidate  # noqa: E402
-from benchmarks.speaker_id.matchers import MarginThresholdMatcher  # noqa: E402
-from benchmarks.speaker_id.scoring import print_report  # noqa: E402
-from benchmarks.speaker_id.types import Candidate  # noqa: E402
+from speaker_id.cache import EmbeddingCache  # noqa: E402
+from speaker_id.embedders import Eres2NetV2Embedder, WeSpeakerResNet34Embedder  # noqa: E402
+from speaker_id.harness import load_sessions, run_candidate  # noqa: E402
+from speaker_id.matchers import MarginThresholdMatcher  # noqa: E402
+from speaker_id.scoring import print_report  # noqa: E402
+from speaker_id.types import Candidate  # noqa: E402
 
 LOCAL_ERES2NETV2_DIR = Path.home() / ".cache/modelscope/hub/models/iic/speech_eres2netv2_sv_zh-cn_16k-common"
 

@@ -22,17 +22,17 @@ from pathlib import Path
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(WORKSPACE_ROOT))
+sys.path.insert(0, str(WORKSPACE_ROOT / "benchmarks"))
 
+from speaker_id.cache import EmbeddingCache  # noqa: E402
+from speaker_id.centroid import build_centroids  # noqa: E402
+from speaker_id.embedders import WeSpeakerResNet34Embedder  # noqa: E402
+from speaker_id.harness import REPO_ROOT, GroundTruthSession, _embed_utterances, load_sessions  # noqa: E402
+from speaker_id.matchers import MarginAndSimilarityMatcher, MarginThresholdMatcher  # noqa: E402
+from speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
+from speaker_id.types import Embedder, Matcher  # noqa: E402
 from tablesage_application.paths import players_root  # noqa: E402
 from tablesage_tools.embeddings.types import Embedding  # noqa: E402
-
-from benchmarks.speaker_id.cache import EmbeddingCache  # noqa: E402
-from benchmarks.speaker_id.centroid import build_centroids  # noqa: E402
-from benchmarks.speaker_id.embedders import WeSpeakerResNet34Embedder  # noqa: E402
-from benchmarks.speaker_id.harness import REPO_ROOT, GroundTruthSession, _embed_utterances, load_sessions  # noqa: E402
-from benchmarks.speaker_id.matchers import MarginAndSimilarityMatcher, MarginThresholdMatcher  # noqa: E402
-from benchmarks.speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
-from benchmarks.speaker_id.types import Embedder, Matcher  # noqa: E402
 
 MARGIN_THRESHOLDS = [0.06, 0.07, 0.08, 0.09, 0.10]
 BEST_SIMILARITY_THRESHOLDS = [None, 0.30, 0.325, 0.35, 0.375, 0.40, 0.425, 0.45]

@@ -24,16 +24,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "benchmarks"))
 
+from speaker_id.cache import EmbeddingCache  # noqa: E402
+from speaker_id.centroid import build_centroids  # noqa: E402
+from speaker_id.embedders import Eres2NetV2Embedder  # noqa: E402
+from speaker_id.harness import REPO_ROOT as HARNESS_REPO_ROOT  # noqa: E402
+from speaker_id.harness import _embed_utterances, load_sessions  # noqa: E402
+from speaker_id.matchers import MarginThresholdMatcher  # noqa: E402
+from speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
 from tablesage_application.paths import players_root  # noqa: E402
-
-from benchmarks.speaker_id.cache import EmbeddingCache  # noqa: E402
-from benchmarks.speaker_id.centroid import build_centroids  # noqa: E402
-from benchmarks.speaker_id.embedders import Eres2NetV2Embedder  # noqa: E402
-from benchmarks.speaker_id.harness import REPO_ROOT as HARNESS_REPO_ROOT  # noqa: E402
-from benchmarks.speaker_id.harness import _embed_utterances, load_sessions  # noqa: E402
-from benchmarks.speaker_id.matchers import MarginThresholdMatcher  # noqa: E402
-from benchmarks.speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
 
 THRESHOLDS = [round(0.02 * i, 2) for i in range(26)]  # 0.00 .. 0.50 step 0.02
 OUTPUT_CSV = Path(__file__).resolve().parent / "threshold-sweep-results.csv"

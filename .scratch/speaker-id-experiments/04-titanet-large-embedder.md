@@ -10,9 +10,10 @@ Added `TitanetLargeEmbedder` to `benchmarks/speaker_id/embedders.py`, wrapping N
 VoxCeleb1+2, LibriSpeech). Loaded via `nemo.collections.asr.models.EncDecSpeakerLabelModel`, which
 has a convenience `get_embedding(path)` API — no manual audio loading needed, unlike experiment #3.
 Registered as the `titanet-large` candidate in `benchmarks/speaker_id/candidates.py`, at the same
-`similarity_margin_threshold: 0.07` as `production`. Ran via
-[`run_experiment_4.py`](run_experiment_4.py) alongside `production`, for the same
-modelscope.cn-network-workaround reason as experiments #1–3.
+`similarity_margin_threshold: 0.07` as `production`. Ran via `run_experiment_4.py` alongside
+`production`, for the same modelscope.cn-network-workaround reason as experiments #1–3. That
+script and `TitanetLargeEmbedder` were later removed once `wespeaker-resnet34` was adopted as
+production's embedder (see experiment #5) -- this doc is a historical record, not runnable.
 
 `nemo_toolkit[asr]` is a heavy dependency (added to root `pyproject.toml`'s dev group) and needed
 one real conflict resolved, not just an environment shim: its resolved `ml-dtypes==0.4.1` doesn't
