@@ -49,4 +49,9 @@ trade-off (losing benchmark-harness ground-truth coverage on removed utterances)
 
 ## Triage state
 
-`ready-for-agent`.
+`complete` — implemented in commit
+[`bc8fcf5`](https://github.com/erik-saltwell/tablesage/commit/bc8fcf5) ("Re-add pre-review
+batched backchannel removal, simplify post-review pass"). Full test suite (473 tests), ruff, and
+`ty check` all pass. `.tablesage/settings.yaml` (local install) and the packaged default
+`settings.yaml` both updated with the new `batch_size`/`max_concurrent_batches` knobs and the
+shrunk per-batch `question_check_timeout`.
