@@ -15,20 +15,26 @@ We want an LLM-driven extraction step: given a session's role transcript (and, i
 existing glossary entries to avoid duplicates), propose new glossary terms + descriptions for the
 user to review and accept/reject/edit before they're written to the campaign Glossary.
 
-## Open questions (why this is `needs-info`)
+## Accepted design
 
-- **Trigger**: automatic as part of Generate (a fourth step after Role Transcript / Ledger /
-  Summary), a separate on-demand action, or run against the Ledger instead of the raw
-  role-transcript (the Ledger is already a condensation — might be a cheaper/cleaner extraction
-  source)?
-- **Review UI**: does the user get a proposal screen (accept/reject/edit each candidate, à la
-  `SpeakerResolutionDialog`'s pattern) before anything is written, or does it write directly with
-  dedup-by-term silently skipping collisions?
-- **Scope**: per-session extraction only, or does it also need a "scan every session in the
-  campaign" backfill mode?
-- **Dedup**: how are near-duplicate terms handled (case variants, "the Sundered Vale" vs "Sundered
-  Vale")? Exact-term uniqueness is already DB-enforced (`IntegrityError` on duplicate `term`), but
-  extraction can't rely on the DB catching everything before the LLM call.
+See [03-design.md](03-design.md). Extraction is a separate per-session action over the Role
+Transcript. Its LLM proposals are edited in a temporary review table and written to the campaign
+glossary only on Complete. Existing terms win; trimmed, case-insensitive duplicates are dropped.
+
+## Acceptance criteria
+
+- Session Detail offers `L` — Extract Glossary when the Role Transcript exists.
+- The LLM receives the Role Transcript, attendees and assigned roles, and current campaign
+  glossary, and returns structured term/optional-description proposals.
+- Attendee and player-character names are excluded while NPC names remain eligible.
+- Existing-glossary duplicates are filtered before review; an empty result produces a notification
+  without opening the review screen.
+- Review supports standard New, Edit, Delete, Complete, and Cancel behavior plus global Find &
+  Replace across terms and descriptions.
+- Complete atomically adds valid unique entries, repeats duplicate checking against the current
+  glossary, and reports added and skipped counts.
+- Cancel and extraction failures leave the campaign glossary unchanged.
+- Completion neither records source-session provenance nor invalidates Ledger or Summary artifacts.
 
 ## Implementation context
 
@@ -44,5 +50,4 @@ user to review and accept/reject/edit before they're written to the campaign Glo
 
 ## Triage state
 
-`needs-info` — resolve trigger point, review UI, and scope questions above before writing
-acceptance criteria.
+`ready-for-agent` — design: [03-design.md](03-design.md).
