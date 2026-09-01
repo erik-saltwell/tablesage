@@ -74,7 +74,10 @@ LedgerGenerationResponse
   utterances: ordered list[Narration | Action | Speech | Expression | Correction]
 ```
 
-The five utterance models form a Pydantic discriminated union on `type`. The reusable format keeps `source` and `character` as strings. Known-role checks occur at the application boundary because the valid role list varies by Session.
+The utterance models form a Pydantic discriminated union on `type`. The reusable format keeps
+`source` and `character` as strings. A regular `source` may be any non-empty string and is not
+checked against the Session role list. Candidate warnings still check Character Introduction names
+against known roles and Question `asker`/`resolver` values against Session attendees.
 
 The application, not the LLM, supplies `version`, `session_id`, and `session_name` when constructing the persisted `Ledger`. `scratchpad` exists only in the structured generation response, appears before the generated content, and is discarded after candidate selection.
 

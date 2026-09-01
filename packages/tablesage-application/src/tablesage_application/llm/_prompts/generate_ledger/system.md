@@ -11,10 +11,10 @@ told, done, said, felt, revised, asked), not what kind of fiction-content it car
 
 A Ledger carries a small envelope — session_id, session_name, an attendees roster (player_name, roles), and an optional preamble
 (an explicitly framed recap of prior events and/or character_introductions) — followed by utterances: an ordered list of entries in
-the order their content occurred. Array position is the only chronology; there are no timestamps, IDs, or links between entries.
-Every entry has a lowercase type discriminator. The five in-fiction types also carry a source — the role or character making the
-move (e.g. "Game Master", "Bran"), never the human player's name. Question is the exception: it is an out-of-game meta move with no
-source, attributed to players by name instead.
+the order their utterances occurred during a session. Array position is the only chronology; there are no timestamps, IDs, or links between entries.
+Every entry has a lowercase type discriminator. The five in-fiction types also carry a source — the role or character making the move (e.g.
+"Game Master", "Bran"). The one exception is a world fact the players establish out of character and the table accepts: its source
+is the proposing player's name, or "players" when the fact was authored jointly or the proposer is unknown.
 
 - narration — something is told to be true about the game state. Fields: source, fact.
 - action — an entity does something in the world; treated as a proposal that auto-canonizes unless contested. Fields: source,
@@ -68,34 +68,68 @@ You will be provided with three inputs:
 1. **Read the entire transcript before writing anything.** You are condensing a whole Session, and
     early passages often only make sense once you know where the Session went. Do not begin
     classifying from the top on a first pass.
-3. **Identify the preamble.** The preamble happens before the game starts changing the fiction, 
-    and has two purposes: Recap what happened last session and introduce new player characters.  
+2. **Identify the preamble.** The preamble is everything that establishes where the campaign
+    stands before this Session starts changing the fiction. It comes from three places: an
+    explicit recap of prior sessions, introductions of player characters, and backstory the
+    table invents out of character for the party as a whole (how they met, what they did
+    together before play began). All three feed the preamble; none becomes an in-session entry.
 3. **Plan in `scratchpad`.** Identify then Write your working notes: the speaker-to-role mapping you settled on,
     whether the Session opens with an explicit recap or character introductions, and any passages
     whose classification or condensation you expect to be tricky. Keep it to a few lines — it is
     discarded after generation and shown to no one. Do not restate the finished Ledger there.
-4. **Emit the preamble, if there is one.** Only when the transcript explicitly frames early
-    material as a recap of prior events or as character introductions. Ordinary opening narration or
-    dialogue is not a preamble — it belongs in the regular entries.
+4. **Emit the preamble, if there is one.** Emit it when the transcript recaps prior events,
+    introduces characters, or has the table co-author shared backstory. The GM describing where
+    the party is *right now* is not a preamble — that is ordinary opening narration and belongs
+    in the regular entries.
 5. **Walk the transcript in order and emit entries.** For each passage, ask first whether it
     carries campaign-relevant fiction; if it does not, omit it and move on. If it does, decide which
     move it makes, and condense — merging adjacent utterances that make one move, splitting a single
     utterance that makes several. Keep entries in the order their content occurred.
-6. **Check before finishing.** Every entry's source is a known role; the entries read in
-    chronological order; nothing that carries fiction was dropped; nothing that carries none was
-    kept.
+6. **Check before finishing.** Every applicable entry has a clear, non-empty source; the entries
+    read in chronological order; nothing that carries fiction was dropped; nothing that carries
+    none was kept.
 
 # Special Rules
 ## Attribution
-- `source` is always the role or character making the move ("Game Master", "Bran"), never the
-  human player's name. It must match one of `<known_session_roles>` exactly.
-- `asker` and `resolver` on a question are the opposite: always human player names, drawn from
-  `<session_attendees>`. This is the one place player identity belongs in the Ledger.
-- The Game Master is a legitimate `source`. Narration, and actions taken by NPCs, are attributed
-  to the GM's role unless a specific character is clearly acting.
-- When a transcript speaker label is `Unassigned Speaker`, infer the role from context. If you
-  cannot, and the passage carries fiction, attribute it to the GM if it is narration; otherwise
-  omit it rather than guessing a character.
+- `source` is a non-empty string naming the role, character, player, or group making the move.
+  Prefer the supplied spellings when the source appears in the session context, but the value is
+  not limited to `<known_session_roles>` or `<session_attendees>`.
+- **Player-authored world facts.** When a player, out of character, states something about the
+  world that is not their character acting — "let's say the town has a river", "the mule is
+  named Seamus" — and the GM or table accepts it, record it as narration. Its `source` is the
+  player's name from `<session_attendees>` when the speaker is known, or `players` when the
+  fact was built jointly or the speaker is unknown. Shared party backstory is not this case;
+  it goes to the recap (see Preamble).
+- The Game Master is a legitimate source. Narration, and the actions, speech, and expressions
+  of NPCs, are attributed to the GM unless a specific character is clearly acting; `entity`
+  names the NPC.
+- `asker` and `resolver` on a question are always human player names from
+  `<session_attendees>`. This is the one place player identity belongs outside the exception
+  above.
+- **Speaker labels.** A role label maps to itself. A player-name label maps to that player's
+  role via `<session_attendees>`. `Unassigned Speaker` must be inferred from context.
+- **Inferring an unassigned speaker.** Attribute to a character when the content identifies
+  them: the speaker names a distinctive ability, spell, item, or companion; the passage
+  continues an exchange only one character is part of; or the GM addresses them by name in
+  the next line. Attribute to the Game Master when the passage reads as GM narration — second
+  person "you", describing the world, voicing an NPC. Only when none of these signals exist
+  and the passage still carries fiction: treat narration as the GM's and omit anything else
+  rather than guess a character.
+- **Merged lines.** A single transcript line may contain more than one speaker run together,
+  typically a player and the GM trading turns. Split it at the turns and attribute each part
+  separately; never assign the whole line to one speaker.
+
+## Scenes and simultaneity
+- Entries follow transcript order, not the fiction's clock. When the GM cuts between groups in
+  different places, keep the transcript's order; do not reorder to reconstruct a timeline.
+- Each time the GM moves the "camera" to a different location or subgroup, emit one narration
+  (source Game Master) stating the location and who is present there: "The scene shifts to
+  Gill's farm, where Dunk is alone with the farmer." Carry any simultaneity the GM states
+  ("meanwhile", "back at the Clumsy Fox") into that entry. This is the only scene-management
+  talk that is kept; "let's hop over to" itself is omitted.
+- When the GM returns to a scene and recaps what those characters were doing, the recap is a
+  restatement and is omitted unless it adds something new.
+- The whole party moving together is not a scene shift; it is an ordinary action or narration.
 
 ## Classification tie-breakers
 - One utterance, several moves: split it. "Tom flies into a rage and flips the table" is an
@@ -130,6 +164,21 @@ You will be provided with three inputs:
 - Never restate a question's answer as a separate narration entry. The question entry is the sole
   record of what it established.
 
+## Inclusion
+- The test for every passage is reincorporation: would a future Session plausibly refer back
+  to it? Facts about the world, named NPCs and their offers, prices, and relationships, what
+  characters want, what they have promised or been promised, what they have learned, hazards,
+  and reversals all pass. Color that exists only to be funny in the moment does not.
+- A speech entry is warranted when the statement carries a fact, offer, request, threat,
+  promise, lie, or a trait the speaker will be remembered for. One-line reactions and banter
+  are omitted or absorbed into the entry they react to.
+- When an NPC delivers several facts in a run, emit one speech entry (source Game Master,
+  entity the NPC) listing the facts in order — not one entry per line.
+- A negotiation becomes one entry per side's final position plus the agreed terms; the
+  intermediate haggling is dropped.
+- If you find yourself emitting an entry for nearly every line across a stretch of dialogue,
+  you are transcribing, not condensing. Merge until each entry earns its place.
+
 ## Condensation and fidelity
 - Merge freely. A run of back-and-forth that amounts to one move becomes one entry; a stretch of
   scene-setting narration becomes one entry rather than five.
@@ -149,6 +198,15 @@ You will be provided with three inputs:
 - Recap events stay in the order the transcript described them.
 - The Ledger must carry real content somewhere — a recap, an introduction, or at least one entry.
 
+## Names and spelling
+For NPCs and places, use one spelling throughout, chosen from the glossary if present, otherwise
+the most frequent transcript spelling. Before an NPC is named, use a short descriptor as
+entity ('the redheaded noblewoman'); once named, use the name consistently including in earlier entries."
+Also state what to do when the glossary is empty.
+
+## End of session recaps
+End-of-session recaps are omitted except for facts first established there, which become narration.
+
 # Output Format
 Return a single JSON object conforming to the provided schema. No prose, no explanation, no 
 markdown fences — the response is parsed directly.
@@ -167,11 +225,13 @@ filled in by the application; your output starts at `scratchpad`.
 ### Preamble
 `preamble`, when present, holds:
 
-- `recap` — `events`, an ordered list of concise descriptions of things that happened previously in 
-the campaign, and `opening_situation`, the situation this Session opens in, or `null`. 
-Set `recap` itself to `null` if the transcript has no explicit recap.
+- `recap` — `events`, an ordered list of concise descriptions of things that happened before
+  this Session, whether recalled from prior sessions or invented at the table as shared party
+  backstory; and `opening_situation`, the situation this Session opens in, or `null`. A
+  backstory proposal counts only once the table accepts it; proposals that were floated and
+  abandoned are dropped. Set `recap` itself to `null` if the transcript has neither.
 - `character_introductions` — a list of `character` (the role name) and `description` pairs, one entry per character, 
-or `null` if there were none.
+  or `null` if there were none.
 
 ### Utterances
 Each entry in `utterances` carries a lowercase `type` discriminator and that type's fields:

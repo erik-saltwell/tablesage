@@ -129,7 +129,7 @@ def test_question_allows_unresolved_exchange_and_attendee_warnings_are_separate_
         utterances=[Question(type="question", asker="Unknown", question="Is it locked?", resolver=None, resolution=None)],
     )
 
-    assert generate_ledger_module._role_warning_count(response, frozenset({"Zaria"})) == 0
+    assert generate_ledger_module._introduction_warning_count(response, frozenset({"Zaria"})) == 0
     assert generate_ledger_module._attendee_warning_count(response, frozenset({"Alice"})) == 1
 
 
@@ -185,14 +185,13 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
 
 
 @pytest.mark.anyio
-async def test_generate_ledger_retries_malformed_and_unknown_role_responses_then_returns_clean_candidate(
+async def test_generate_ledger_retries_malformed_response_but_accepts_unknown_source(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     responses = iter(
         [
             "not json",
             _response(source="Unknown Wanderer").model_dump_json(),
-            _response(source="Zaria").model_dump_json(),
         ]
     )
     call_count = 0
@@ -212,8 +211,8 @@ async def test_generate_ledger_retries_malformed_and_unknown_role_responses_then
         "test-model",
     )
 
-    assert call_count == 3
-    assert result.utterances[0].source == "Zaria"
+    assert call_count == 2
+    assert result.utterances[0].source == "Unknown Wanderer"
 
 
 @pytest.mark.anyio
@@ -246,9 +245,9 @@ async def test_generate_ledger_retries_unknown_question_attendee(monkeypatch: py
 async def test_generate_ledger_selects_fewest_warnings_and_earliest_candidate_on_tie(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    first = _response(source="Unknown First")
-    second = _response(source="Unknown Second")
-    third = _response(source="Unknown Third", character="Unknown Character")
+    first = _response(character="Unknown First")
+    second = _response(character="Unknown Second")
+    third = _response(character="Unknown Third", asker="Unknown Player")
     responses = iter([first.model_dump_json(), second.model_dump_json(), third.model_dump_json()])
 
     async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
@@ -264,8 +263,9 @@ async def test_generate_ledger_selects_fewest_warnings_and_earliest_candidate_on
         "test-model",
     )
 
-    assert isinstance(result.utterances[0], Narration)
-    assert result.utterances[0].source == "Unknown First"
+    assert result.preamble is not None
+    assert result.preamble.character_introductions is not None
+    assert result.preamble.character_introductions[0].character == "Unknown First"
 
 
 @pytest.mark.anyio

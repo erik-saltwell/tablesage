@@ -167,8 +167,8 @@ def can_generate_ledger(session_folder: Path) -> tuple[bool, str | None]:
     return True, None
 
 
-def _role_warning_count(response: LedgerGenerationResponse, known_roles: frozenset[str]) -> int:
-    warning_count = sum(utterance.source not in known_roles for utterance in response.utterances if isinstance(utterance, _LedgerUtterance))
+def _introduction_warning_count(response: LedgerGenerationResponse, known_roles: frozenset[str]) -> int:
+    warning_count = 0
     if response.preamble is not None and response.preamble.character_introductions is not None:
         warning_count += sum(introduction.character not in known_roles for introduction in response.preamble.character_introductions)
     return warning_count
@@ -194,9 +194,10 @@ async def generate_ledger(
 ) -> LedgerGenerationResponse:
     """Generate the best structurally valid whole-session Ledger content in at most three attempts.
 
-    Structurally invalid responses are unavailable as candidates. Unknown regular sources and
-    introduced characters are warnings: they trigger another attempt, but after the final attempt
-    the parseable candidate with the fewest warnings is returned (earliest wins ties).
+    Structurally invalid responses are unavailable as candidates. Unknown introduced characters
+    and Question attendees are warnings: they trigger another attempt, but after the final attempt
+    the parseable candidate with the fewest warnings is returned (earliest wins ties). Regular
+    `source` values are intentionally unrestricted beyond the schema's non-empty-string rule.
     """
     normalized_roles = tuple(sorted({role.strip() for role in known_roles if role.strip()}))
     known_role_set = frozenset(normalized_roles)
@@ -238,7 +239,7 @@ async def generate_ledger(
                 last_error = exc
                 continue
 
-            warning_count = _role_warning_count(response, known_role_set) + _attendee_warning_count(response, known_player_set)
+            warning_count = _introduction_warning_count(response, known_role_set) + _attendee_warning_count(response, known_player_set)
             candidate = _Candidate(response=response, warning_count=warning_count, attempt=attempt)
             candidates.append(candidate)
             if warning_count == 0:
