@@ -603,7 +603,8 @@ AttendeeDialog,
 SessionFromCampaignPickerDialog,
 ManualReviewUtteranceDialog,
 SpeakerResolutionDialog,
-TranscriptViewDialog {
+TranscriptViewDialog,
+FindReplaceDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -617,7 +618,8 @@ TranscriptViewDialog {
     #session-picker-dialog,
     #manual-review-utterance-dialog,
     #speaker-resolution-dialog,
-    #transcript-view-dialog {
+    #transcript-view-dialog,
+    #find-replace-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -648,6 +650,23 @@ TranscriptViewDialog {
         Select {
             width: 1fr;
         }
+    }
+
+    #find-replace-dialog .field-row {
+        height: 3;
+        align: left middle;
+
+        .field-label {
+            width: 12;
+        }
+
+        Input {
+            width: 1fr;
+        }
+    }
+
+    #find-replace-dialog Checkbox {
+        margin: 0 0 1 0;
     }
 
     #transcript-view-dialog {

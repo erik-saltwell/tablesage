@@ -83,7 +83,6 @@ class CampaignDetailScreen(TableSageScreen):
                     sessions_table.add_column("#", key="sequence")
                     sessions_table.add_column("Name", key="name")
                     sessions_table.add_column("Date", key="date")
-                    sessions_table.add_column("Status", key="status")
                     yield sessions_table
                 with Vertical(id="glossary-tab"):
                     glossary_table: DataTable[str] = DataTable(
@@ -304,7 +303,6 @@ class CampaignDetailScreen(TableSageScreen):
                 f"{session.sequence_number:03d}",
                 session.name,
                 str(session.session_date) if session.session_date else "",
-                session.status,
                 key=str(session.id),
             )
 

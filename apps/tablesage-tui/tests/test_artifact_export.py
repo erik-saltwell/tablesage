@@ -57,6 +57,40 @@ async def test_export_selected_copies_to_chosen_destination(tmp_path: Path) -> N
 
 
 @pytest.mark.anyio
+async def test_enter_on_row_exports() -> None:
+    application = _application(exportable=[ArtifactName.SUMMARY])
+    session_id = uuid.uuid4()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_export_screen(pilot, session_id)
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, FileSave)
+
+
+@pytest.mark.anyio
+async def test_double_click_row_exports(tmp_path: Path) -> None:
+    application = _application(exportable=[ArtifactName.SUMMARY])
+    session_id = uuid.uuid4()
+    destination = tmp_path / "summary.md"
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_export_screen(pilot, session_id)
+
+        await pilot.click("#artifact-export-table", offset=(5, 1), times=2)
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FileSave)
+
+        picker.dismiss(destination)
+        await pilot.pause()
+
+        application.export_artifact.assert_called_once_with(session_id, ArtifactName.SUMMARY, destination)
+
+
+@pytest.mark.anyio
 async def test_export_cancelled_does_not_call_export() -> None:
     application = _application(exportable=[ArtifactName.SUMMARY])
 

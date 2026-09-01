@@ -22,6 +22,7 @@ async def call_llm_with_prompt(
     template_data: object,
     model: str = DEFAULT_LLM_MODEL,
     response_model: type[BaseModel] | None = None,
+    timeout: float | None = None,
 ) -> str:
     """Render *prompt*'s template with *template_data* and send it to *model* alongside its system prompt.
 
@@ -30,9 +31,10 @@ async def call_llm_with_prompt(
 
     If *response_model* is given, it is forwarded to `tablesage_tools.call_llm` as a schema-constrained
     output request. This function always returns plain text -- coercing it into *response_model*
-    (e.g. via `response_model.model_validate_json(result)`) is left to the caller.
+    (e.g. via `response_model.model_validate_json(result)`) is left to the caller. *timeout* is
+    forwarded as-is; `None` leaves `tablesage_tools.call_llm`'s own default in effect.
     """
     system_prompt = read_system_prompt(prompt)
     template = jinja2.Template(read_prompt_template(prompt), undefined=jinja2.StrictUndefined)
     user_prompt = template.render(**_template_variables(template_data))
-    return await call_llm(system_prompt, user_prompt, model, response_format=response_model)
+    return await call_llm(system_prompt, user_prompt, model, response_format=response_model, timeout=timeout)

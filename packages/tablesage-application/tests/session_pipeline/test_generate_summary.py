@@ -11,6 +11,11 @@ from tablesage_application.session_pipeline import generate_summary as generate_
 from tablesage_application.session_pipeline.generate_summary import GlossaryPromptEntry
 from tablesage_model.model import Campaign, GlossaryEntry
 from tablesage_model.settings import AppSettings
+from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
+
+
+def _word(text: str, speaker: str) -> TranscriptionWord:
+    return TranscriptionWord(text=text, type=SpeechType.WORD, start=0.0, end=1.0, speaker=speaker)
 
 
 @pytest.mark.anyio
@@ -60,8 +65,9 @@ def test_application_generate_summary_reads_role_transcript_sorts_glossary_and_r
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Aldor", description=None))
 
     session_folder = application.session_folder(game_session.id)
-    transcript = "**Game Master** - The gate opens.\n"
-    (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).write_text(transcript, encoding="utf-8")
+    role_transcript = Transcript.from_words([_word("gate opens.", "Game Master")])
+    role_transcript.save(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
+    expected_transcript_text = "**Game Master** - gate opens.\n"
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
     summary_path.write_text("old summary\n", encoding="utf-8")
     captured: dict[str, object] = {}
@@ -75,7 +81,7 @@ def test_application_generate_summary_reads_role_transcript_sorts_glossary_and_r
     application.generate_summary(game_session.id)
 
     assert summary_path.read_text(encoding="utf-8") == "new summary\n"
-    assert captured["source"] == transcript
+    assert captured["source"] == expected_transcript_text
     captured_glossary = cast(list[GlossaryPromptEntry], captured["glossary"])
     assert [entry.term for entry in captured_glossary] == ["Aldor", "Zaria"]
     assert captured["model"] == "test-model"
@@ -87,7 +93,7 @@ def test_application_generate_summary_preserves_existing_summary_on_failure(tmp_
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     session_folder = application.session_folder(game_session.id)
-    (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).write_text("**Wizard** - Hello.\n", encoding="utf-8")
+    Transcript.from_words([_word("Hello.", "Wizard")]).save(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
     summary_path.write_text("old summary\n", encoding="utf-8")
 

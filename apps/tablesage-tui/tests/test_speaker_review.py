@@ -9,12 +9,12 @@ from rich.text import Text
 from tablesage_application.entities.sessions import Attendee
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 from tablesage_tui.audio_playback import ClipPlayer
-from tablesage_tui.dialogs import ManualReviewUtteranceDialog
+from tablesage_tui.dialogs import FindReplaceDialog, ManualReviewUtteranceDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.speaker_review import ManualReviewScreen
 from textual.coordinate import Coordinate
 from textual.pilot import Pilot
-from textual.widgets import DataTable, Input, Select, Static
+from textual.widgets import Checkbox, DataTable, Input, Select, Static
 
 
 def _word(text: str, speaker: str, start: float, end: float) -> TranscriptionWord:
@@ -195,6 +195,171 @@ async def test_zero_key_assigns_unassigned_speaker(tmp_path: Path) -> None:
         assert screen._transcript is not None
         assert screen._transcript.utterances[0].speaker == "Unassigned Speaker"
         assert screen._transcript.utterances[0].adjusted is True
+
+
+@pytest.mark.anyio
+async def test_delete_key_removes_row_and_plays_next_utterances_original_clip(tmp_path: Path, _stub_playback: list[Path]) -> None:
+    """Deleting row 0 must not just relabel it (unlike assignment) -- it drops it from the working
+    copy entirely, and playback for the new row 0 (originally row 1's "Bob" utterance) must still
+    find its original clip file, not a nonexistent "0000.wav" re-derived from the new position."""
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("d")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Bob", "Alice"]
+
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
+        assert table.row_count == 2
+        assert list(table.get_row_at(0)) == ["", "Bob", "yo"]
+
+        assert _stub_playback[-1] == tmp_path / "speaker_review_clips" / "0001.wav"
+
+
+@pytest.mark.anyio
+async def test_delete_key_on_last_row_moves_playhead_back(tmp_path: Path, _stub_playback: list[Path]) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        table = pilot.app.screen.query_one("#manual-review-table", DataTable)
+        table.move_cursor(row=2)
+        await pilot.pause()
+
+        await pilot.press("d")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Alice", "Bob"]
+        assert screen._playhead == 1
+        assert _stub_playback[-1] == tmp_path / "speaker_review_clips" / "0001.wav"
+
+
+@pytest.mark.anyio
+async def test_delete_does_not_save_an_artifact(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("d")
+        await pilot.pause()
+
+        application.save_reviewed_transcript.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_find_replace_replaces_matches_across_every_utterance(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("f")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, FindReplaceDialog)
+        dialog.query_one("#find-replace-find", Input).value = "hi"
+        dialog.query_one("#find-replace-replace", Input).value = "hello"
+        await pilot.pause()
+        await pilot.click("#find-replace-submit")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].punctuated_text == "hello"
+        assert screen._transcript.utterances[0].adjusted is True
+        assert screen._transcript.utterances[1].punctuated_text is None
+        table = screen.query_one("#manual-review-table", DataTable)
+        assert table.get_cell("0", "text") == "hello"
+        application.save_reviewed_transcript.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_find_replace_case_insensitive_keeps_replacements_own_case(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("f")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, FindReplaceDialog)
+        dialog.query_one("#find-replace-find", Input).value = "HI"
+        dialog.query_one("#find-replace-replace", Input).value = "Hello"
+        dialog.query_one("#find-replace-case-sensitive", Checkbox).value = False
+        await pilot.pause()
+        await pilot.click("#find-replace-submit")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].punctuated_text == "Hello"
+
+
+@pytest.mark.anyio
+async def test_find_replace_case_sensitive_default_does_not_match_different_case(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("f")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, FindReplaceDialog)
+        assert dialog.query_one("#find-replace-case-sensitive", Checkbox).value is True
+        dialog.query_one("#find-replace-find", Input).value = "HI"
+        dialog.query_one("#find-replace-replace", Input).value = "Hello"
+        await pilot.pause()
+
+        with patch.object(ManualReviewScreen, "notify") as notify:
+            await pilot.click("#find-replace-submit")
+            await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].punctuated_text is None
+        notify.assert_called_once_with("No matches found.", severity="warning")
+
+
+@pytest.mark.anyio
+async def test_find_replace_cancel_leaves_transcript_unchanged(tmp_path: Path) -> None:
+    application = _application(session_folder=tmp_path)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_review_screen(pilot, uuid.uuid4())
+
+        await pilot.press("f")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, FindReplaceDialog)
+        dialog.query_one("#find-replace-find", Input).value = "hi"
+        await pilot.pause()
+        await pilot.click("#find-replace-cancel")
+        await pilot.pause()
+
+        screen = pilot.app.screen
+        assert isinstance(screen, ManualReviewScreen)
+        assert screen._transcript is not None
+        assert screen._transcript.utterances[0].punctuated_text is None
 
 
 @pytest.mark.anyio

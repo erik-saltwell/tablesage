@@ -33,6 +33,6 @@ def _player_has_centroid(session: Session, player_id: uuid.UUID) -> bool:
 
 
 def can_generate_summary(session_folder: Path) -> tuple[bool, str | None]:
-    if not session_artifacts(session_folder)[ArtifactName.TRANSCRIPT_ROLES_TEXT]:
-        return False, "Transcribe the session first."
+    if not session_artifacts(session_folder)[ArtifactName.ROLE_TRANSCRIPT]:
+        return False, "Clean the transcript first."
     return True, None

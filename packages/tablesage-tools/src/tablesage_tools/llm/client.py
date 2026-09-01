@@ -8,12 +8,15 @@ async def call_llm(
     user_prompt: str,
     model: str,
     response_format: type[BaseModel] | None = None,
+    timeout: float | None = None,
 ) -> str:
     """Send a single-turn system+user prompt to *model* via litellm and return its text response.
 
     If *response_format* is given, it is forwarded to litellm as a schema-constrained output
     request; the caller is responsible for parsing the returned text (e.g. via
     ``response_format.model_validate_json(result)``) -- this function always returns plain text.
+    *timeout* is forwarded to litellm as-is; `None` (the default) leaves litellm's own default
+    (600 seconds) in effect.
     """
     import litellm
 
@@ -21,5 +24,5 @@ async def call_llm(
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    response = await litellm.acompletion(model=model, messages=messages, response_format=response_format)
+    response = await litellm.acompletion(model=model, messages=messages, response_format=response_format, timeout=timeout)
     return response["choices"][0]["message"]["content"]

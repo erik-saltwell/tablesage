@@ -35,25 +35,30 @@ session are also managed here, since processing depends on them.
   speaker-labeled script for humans to skim or spot-check against the audio).
   Utterances whose speaker couldn't be confidently matched are labeled
   "Unassigned Speaker" rather than guessed.
+- **Last Transcribed** — a read-only Session Detail value derived from `transcript.json`'s
+  filesystem modification time, displayed in local time as `YYYY-MM-DD HH:MM`. It is blank when
+  `transcript.json` does not exist and refreshes with the artifact indicators.
 - **Reviewed transcript** — `transcript_reviewed.json`, a completed Manual Review held separately
   from the machine transcript. It is shown in the artifact panel, exportable, and deleted when
   the transcript is rebuilt or input audio/attendance changes.
+- **Role transcript** — `role_transcript.json`, the first of the three Generate (`G`) outputs: the
+  preferred transcript (reviewed, otherwise machine) with backchannel utterances removed and
+  every assigned speaker's name replaced by their Session role. It is its own shown, exportable
+  artifact, and is what Ledger generation reads directly — Ledger no longer builds its own
+  role-rendered text. See Generate below.
 - **Ledger** — `ledger.json`, an LLM-generated, machine-usable semantic condensation of the
-  current role-rendered transcript. Its v3 format and generation behavior are defined in
-  `canonical_ledger_format_v3.md` and `generate_ledger.md`. Session Detail generates it with `L`.
-- **Session summary** — a generated Markdown output derived today from the
-  role-attributed transcript and the campaign glossary. Transcription no longer creates that
-  intermediate; role rendering is now reserved for Ledger generation and prefers the reviewed
-  transcript when present. See
+  role transcript. Its v3 format and generation behavior are defined in
+  `canonical_ledger_format_v3.md` and `generate_ledger.md`. It is Generate's second output.
+- **Session summary** — a generated Markdown output derived from the role-attributed transcript
+  (`role_transcript.json`) and the campaign glossary. It is Generate's third and final output. See
   `generate_summary.md`.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
   an NPC, or a role changing after a character death).
 - **Indicators** — the status readout, driven by `ARTIFACTS`' `should_show_in_ui`
-  flag: Input Audio / Transcript / Reviewed Transcript / Ledger / Summary are shown (Transcript's
-  `.json` twin and other internal artifacts are hidden). This replaces most of `Session.status`; only `processing` (a run is
-  in flight) and `failed` (the last run errored) survive as system-managed
-  state.
+  flag: Input Audio / Transcript / Reviewed Transcript / Role Transcript / Ledger / Summary are
+  shown (Transcript's `.json` twin and other internal artifacts are hidden). The stored
+  `Session.status` is not shown on Session Detail or in Campaign Detail's Sessions table.
 
 ## Flows
 
@@ -100,7 +105,7 @@ session are also managed here, since processing depends on them.
 
 ### Manual review
 
-1. Available (`S` enabled) only when `transcript.json` exists — no attendee
+1. Available (`R` enabled) only when `transcript.json` exists — no attendee
    or centroid precondition, since this reviews whatever the transcript
    already has, correct or not.
 2. Opens `ManualReviewScreen`, a fast, keyboard-first tool for correcting each utterance's
@@ -114,7 +119,7 @@ session are also managed here, since processing depends on them.
 ### Generate benchmark transcript
 
 1. Available (`B` enabled) only when `transcript.json` exists — same
-   precondition as `S`.
+   precondition as `R`.
 2. Writes `transcript_benchmark.json`: a copy of the reviewed transcript when present (otherwise
    `transcript.json`) with every
    utterance under `MIN_UTTERANCE_DURATION_SECONDS`
@@ -133,27 +138,56 @@ session are also managed here, since processing depends on them.
    Nothing keeps it in sync automatically — re-run `B` after any further
    correction or re-transcribe, immediately before scoring.
 
-### Generate Ledger
+### Clean Transcript
 
-See `generate_ledger.md` for the complete generation and validation behavior.
+Destructive, not generative -- despite the name, `C` no longer produces anything. It deletes the
+machine transcript and everything derived from it, so the session can be transcribed and
+generated again from scratch without touching the raw input audio.
 
-1. Available (`L` enabled) when `transcript.json` exists.
-2. A progress modal opens while one whole-session structured-output attempt, plus up to two
-   retries, runs.
-3. The application prefers `transcript_reviewed.json`, otherwise uses `transcript.json`, and
-   renders player names as Session roles in memory.
-4. The selected valid candidate becomes `ledger.json`; a temp-file rename makes replacement
-   atomic, and a failure preserves any existing Ledger.
-5. The visible Ledger indicator and artifact export refresh after success.
+1. Available (`C` enabled) only when `transcript.json` exists — same precondition as `R`/`B`.
+2. A `ConfirmationDialog` ("Delete Transcript") names what will be lost: the transcript itself,
+   plus Reviewed Transcript, Role Transcript, benchmark, Ledger, and Summary. This is the one
+   confirmation in this screen that isn't a side effect of some other edit — deleting is the whole
+   point of pressing the binding.
+3. On confirmation, every artifact whose category is `from_audio`, `from_transcript`, or
+   `from_log` is deleted (i.e. everything except the raw, `imported`-category input audio).
+   Synchronous, no progress modal. A toast confirms the deletion and indicators refresh.
 
-### Generate summary
-1. Available (`G` enabled) only when `transcript_roles.md` exists.
-2. Progress modal opens; summary is generated from that role transcript plus
-   the current campaign glossary.
-3. Written via a temp-then-rename pattern; overwrites any existing summary
-   only after generation succeeds.
-4. Transcribe no longer produces `transcript_roles.md`; a fresh session remains gated pending a
-   separate Summary-source redesign. Legacy files continue to work until invalidated.
+### Generate
+
+One binding produces all three generated-only outputs -- Role Transcript, Ledger, and Summary --
+in a fixed dependency order the user cannot pick around: Role Transcript needs the machine
+Transcript; Ledger and Summary each need the Role Transcript.
+
+1. Available (`G` enabled) whenever there is a next step to generate — i.e. `transcript.json`
+   exists and at least one of Role Transcript / Ledger / Summary is still missing. Fully done
+   (all three present) or not yet transcribed both disable it.
+2. Pressing `G` computes the next missing step and opens a `ConfirmationDialog` naming it
+   ("Generate the Role Transcript?" / "Generate the Ledger?" / "Generate the Summary?").
+3. On confirmation, Session Detail runs exactly that step:
+   - **Role Transcript**: a progress modal shows Removing backchannels / Assigning roles.
+     Backchannel removal reads the preferred transcript (`transcript_reviewed.json` if present,
+     otherwise `transcript.json`) and drops pure backchannel utterances ("yeah", "mhm", "right",
+     ...) using two rules: a candidate spoken by the Unassigned speaker is removed outright;
+     every other candidate is confirmed by a batched LLM call (`llm_model_lite`, with
+     `remove_backchannels.question_check_timeout` seconds to run) that judges only whether the
+     utterance immediately before it was a question — a real short answer to a real question is
+     kept, everything else is removed. Role assignment then replaces every remaining assigned
+     utterance's speaker with that attendee's Session role (falling back to the player name when
+     they have none); the Unassigned speaker is never renamed. The result is written as
+     `role_transcript.json`, invalidating any Ledger and Summary derived from the previous copy.
+     Neither `transcript.json` nor `transcript_reviewed.json` is modified. A toast reports how
+     many backchannels were removed.
+   - **Ledger**: see `generate_ledger.md`. A progress modal runs one whole-session
+     structured-output attempt, plus up to two retries. The application reads
+     `role_transcript.json` directly and renders it to text — Ledger generation no longer builds
+     its own role-rendered transcript or looks up roles itself. The selected valid candidate
+     becomes `ledger.json` via a temp-file rename; a failure preserves any existing Ledger.
+   - **Summary**: see `generate_summary.md`. A progress modal runs while the summary is generated
+     from `role_transcript.json`'s rendered text plus the current campaign glossary, written via
+     a temp-then-rename pattern that only overwrites an existing summary after success.
+4. The visible indicator for whichever artifact was produced, and artifact export, refresh after
+   success.
 
 ### Manage attendance
 1. `N` (add) and `E`/Enter (edit) both open the same `AttendeeDialog` -- one
@@ -184,8 +218,10 @@ See `generate_ledger.md` for the complete generation and validation behavior.
 ## Behaviors & Rules
 
 - **Screen shape**: `composite`, no tabs. Inline metadata form (name, date,
-  read-only status label) at top; below it, two columns — attendance list on
+  read-only Last Transcribed value) at top; below it, two columns — attendance list on
   the left, artifact indicators on the right.
+- **Footer bindings**: `N` New, `E` Edit, `D` Delete, `I` Imp Audio, `T` Transcribe,
+  `R` Review, `B` Benchmark, `C` Clean Transcript, `G` Generate, and `X` Export.
 - **No `session_artifact` table use**: artifact existence and "current" state
   are not tracked in the database for this screen. One file per artifact type,
   always overwritten in place.
@@ -194,15 +230,18 @@ See `generate_ledger.md` for the complete generation and validation behavior.
   (zero attendees also fails this, vacuously). The speaker-ID step tolerates a single
   attendee (`identify_speakers` needs ≥2 *centroids*, but a solo session with
   0 identified speakers is still a valid, if degenerate, transcription).
-- **Generate Ledger (`L`)**: enabled when the machine Transcript exists. It produces the visible,
-  exportable `ledger.json` described above.
-- **Generate summary (`G`) gating**: disabled unless the role transcript file
-  exists.
+- **Clean Transcript (`C`) gating**: disabled unless the machine Transcript exists — same
+  precondition as Review/Benchmark. Destructive: deletes the transcript and every artifact
+  derived from it (see Clean Transcript above), never produces anything.
+- **Generate (`G`) gating**: disabled unless there is a next step to generate -- `transcript.json`
+  must exist, and at least one of Role Transcript / Ledger / Summary must still be missing. The
+  three outputs form a strict chain (Role Transcript → Ledger, Role Transcript → Summary); the
+  user cannot choose which one runs, only confirm or decline the one Generate computes.
 - **Invalidation deletes files immediately, driven by the artifact registry.**
   Any action the business rules treat as destructive — adding/removing an
   attendee or editing roles — deletes every artifact whose
   `ARTIFACTS[...].category` is not `imported` (currently including transcript,
-  Reviewed Transcript, Ledger, and summary) right away (after confirmation for
+  Reviewed Transcript, Role Transcript, Ledger, and summary) right away (after confirmation for
   user-initiated destructive edits), rather than waiting for the next
   generation step to overwrite them. This keeps the indicator panel always
   accurate, since existence is the only signal it has, and means a new
@@ -223,10 +262,9 @@ See `generate_ledger.md` for the complete generation and validation behavior.
 - **Failure handling**: a failed Ledger or Summary generation run shows an error toast
   (matching existing toast styling) and leaves a persistent "last run failed"
   banner near the indicators until the next successful run of that action.
-- **Status field**: narrowed from the full `draft/ready/processing/processed/
-  needs_review/failed` enum to effectively just `processing` (drives the
-  progress modal) and `failed` (drives the persistent banner). Read-only,
-  system-managed — never user-editable.
+- **Last Transcribed**: read directly from `transcript.json`'s modification time rather than a
+  database field. Missing Transcript means a blank value; recreating or removing the Transcript
+  changes the value on the next artifact refresh.
 - **Session deletion** (the whole `Session` row) is not an action on this
   screen; it stays on Campaign Detail's Sessions tab (`D`, already a real hard
   delete per the data model), consistent with Player Detail not owning its own
@@ -241,7 +279,8 @@ See `generate_ledger.md` for the complete generation and validation behavior.
 - Viewing/reading generated file contents from this screen (transcript or
   Ledger/summary review is deferred to a future dedicated screen). Files can be
   opened externally.
-- A generic output-generator picker; Ledger and Summary remain explicit actions.
+- A picker letting the user choose which of Role Transcript / Ledger / Summary to generate;
+  Generate (`G`) always runs the next one in dependency order.
 - A per-import toggle for cleaning or normalization — cleaning is always on;
   normalization is a `settings.yaml` knob
   (`session_audio_import.normalize_volume`), not a per-invocation choice, per
@@ -251,10 +290,8 @@ See `generate_ledger.md` for the complete generation and validation behavior.
 
 1. **Model**: no schema changes required for artifact tracking (per the
    filesystem-is-source-of-truth decision, `session_artifact` stays unused
-   here). `Session.status` usage narrows in application logic to just
-   `processing`/`failed` transitions; confirm whether the existing enum
-   values (`draft`, `ready`, `needs_review`) become dead code to remove or are
-   left for possible future use.
+   here). The existing `Session.status` column remains in the data model but is not presented on
+   Session Detail or the Campaign Detail Sessions table.
 2. **Application layer** (`tablesage-application`), as actually built:
    - `paths.py`: an `ArtifactName` enum and an `ARTIFACTS: dict[ArtifactName,
      ArtifactSpec]` registry (`filename` + `category`), the single source of
@@ -282,9 +319,23 @@ See `generate_ledger.md` for the complete generation and validation behavior.
      stages report `total=0` (indeterminate) on entry and `(1, 1)` on
      completion, only `IDENTIFYING_SPEAKERS` reports real per-utterance
      counts. Nothing is written to disk until the whole pipeline succeeds.
-     Role rendering is no longer a Transcribe responsibility.
-     `render_role_transcript_text(session_folder, role_names)` is called by Ledger generation,
-     returns Markdown in memory, and prefers `transcript_reviewed.json` over `transcript.json`.
+     Backchannel removal and role rendering are not Transcribe responsibilities — both live in
+     `session_pipeline/clean_transcript.py` instead.
+   - `session_pipeline/clean_transcript.py`: `clean_transcript(session_folder, max_words,
+     question_timeout, llm_model_lite, role_names, on_progress=None) -> CleanTranscriptResult`.
+     Reads the preferred transcript (`transcript_review.load_review_transcript`), removes
+     backchannels via `remove_backchannels.py`'s two rules (Unassigned-speaker candidates dropped
+     without an LLM call; every other candidate confirmed by a batched "is the previous utterance
+     a question?" call), then replaces each assigned utterance's speaker with its Session role.
+     Writes `role_transcript.json` (temp-then-rename) and invalidates Ledger/Summary.
+     `render_role_transcript_text(session_folder)` renders the completed `role_transcript.json` to
+     Markdown in memory for Ledger generation to consume — no role lookup happens there anymore,
+     since the speaker field already holds the role name. `session_pipeline/artifacts.py` gained
+     `GenerationStep` (`ROLE_TRANSCRIPT | LEDGER | SUMMARY`) and `next_generation_step(session_folder)
+     -> GenerationStep | None`, which walks that order against `session_artifacts()` -- the single
+     source of truth for what Generate (`G`) runs next -- plus `delete_transcript_and_dependents
+     (session_folder)`, which invalidates every category except `imported`, backing Clean
+     Transcript (`C`).
    - `Application` gained: `session_folder(session_id) -> Path` (a public
      resolver, replacing one-wrapper-per-pipeline-operation methods —
      `import_session_audio` was removed since its only job was DI-wrapping

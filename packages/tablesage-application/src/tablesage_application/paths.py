@@ -17,6 +17,7 @@ class ArtifactName(Enum):
     TRANSCRIPT_ROLES_TEXT = "transcript_roles_text"
     TRANSCRIPT_BENCHMARK = "transcript_benchmark"
     REVIEWED_TRANSCRIPT = "reviewed_transcript"
+    ROLE_TRANSCRIPT = "role_transcript"
 
 
 class ArtifactCategory(Enum):
@@ -87,6 +88,15 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=True,
         display_name="Reviewed Transcript",
+    ),
+    # Backchannel-cleaned, role-attributed transcript written by the Clean Transcript step (see
+    # `session_pipeline.clean_transcript`). Ledger generation reads this directly instead of
+    # rendering its own role-attributed text.
+    ArtifactName.ROLE_TRANSCRIPT: ArtifactSpec(
+        "role_transcript.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=True,
+        display_name="Role Transcript",
     ),
     ArtifactName.LEDGER: ArtifactSpec("ledger.json", ArtifactCategory.FROM_TRANSCRIPT, should_show_in_ui=True, display_name="Ledger"),
     ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),

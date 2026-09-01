@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+from enum import Enum
 from pathlib import Path
 
 import widelog
@@ -19,6 +20,52 @@ def invalidate_category(session_folder: Path, category: ArtifactCategory) -> Non
         for spec in ARTIFACTS.values():
             if spec.category is category:
                 (session_folder / spec.filename).unlink(missing_ok=True)
+
+
+def delete_transcript_and_dependents(session_folder: Path) -> None:
+    """Delete the machine transcript and everything derived from it.
+
+    Deletes every category except `IMPORTED` -- `FROM_AUDIO` (the transcript itself),
+    `FROM_TRANSCRIPT` (Reviewed Transcript, Role Transcript, benchmark, Ledger), and `FROM_LOG`
+    (Summary). The raw input audio is untouched.
+    """
+    with widelog.wide_event(op="delete_transcript_and_dependents", session_folder=str(session_folder)):
+        for category in (ArtifactCategory.FROM_AUDIO, ArtifactCategory.FROM_TRANSCRIPT, ArtifactCategory.FROM_LOG):
+            invalidate_category(session_folder, category)
+
+
+class GenerationStep(Enum):
+    """One of the three outputs Session Detail's Generate (`G`) action can produce, in the
+    dependency order `next_generation_step` walks: Role Transcript needs a machine Transcript;
+    Ledger and Summary both need the Role Transcript.
+    """
+
+    ROLE_TRANSCRIPT = "role_transcript"
+    LEDGER = "ledger"
+    SUMMARY = "summary"
+
+
+_GENERATION_ORDER: tuple[tuple[GenerationStep, ArtifactName], ...] = (
+    (GenerationStep.ROLE_TRANSCRIPT, ArtifactName.ROLE_TRANSCRIPT),
+    (GenerationStep.LEDGER, ArtifactName.LEDGER),
+    (GenerationStep.SUMMARY, ArtifactName.SUMMARY),
+)
+
+
+def next_generation_step(session_folder: Path) -> GenerationStep | None:
+    """The next missing step in `_GENERATION_ORDER`, or `None` if there's no machine Transcript
+    yet (nothing can be generated) or every step already exists (nothing left to generate).
+
+    The user cannot pick which output Generate produces -- each depends on the one before it, so
+    there is always exactly one next step, not a choice.
+    """
+    existing = session_artifacts(session_folder)
+    if not existing[ArtifactName.TRANSCRIPT]:
+        return None
+    for step, artifact_name in _GENERATION_ORDER:
+        if not existing[artifact_name]:
+            return step
+    return None
 
 
 def exportable_artifacts(session_folder: Path) -> list[ArtifactName]:

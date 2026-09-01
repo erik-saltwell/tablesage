@@ -21,6 +21,7 @@ from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
+from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .voice_clips import clips
@@ -396,6 +397,50 @@ class Application:
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
 
+    def next_generation_step(self, session_id: uuid.UUID) -> artifacts.GenerationStep | None:
+        """The next of Role Transcript / Ledger / Summary this session is missing, in dependency
+        order -- `None` if there's no machine Transcript yet, or every step is already done. Drives
+        Session Detail's Generate (`G`) action, which cannot be aimed at a specific output."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return artifacts.next_generation_step(self._session_folder(session, game_session))
+
+    def delete_transcript(self, session_id: uuid.UUID) -> None:
+        """Delete the machine transcript and everything derived from it (Reviewed Transcript,
+        Role Transcript, benchmark, Ledger, Summary) -- everything except the raw input audio.
+
+        Backs Session Detail's Clean Transcript (`C`) action, always behind a confirmation since
+        it's destructive and, unlike every other invalidation in this screen, not a side effect of
+        some other edit -- it's the whole point of pressing the binding.
+        """
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+        artifacts.delete_transcript_and_dependents(session_folder)
+
+    def clean_transcript(
+        self,
+        session_id: uuid.UUID,
+        on_progress: Callable[[clean_transcript_pipeline.Stage, int, int], None] | None = None,
+    ) -> clean_transcript_pipeline.CleanTranscriptResult:
+        """Remove backchannels from and assign roles to a session's preferred transcript, writing `role_transcript.json`."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = clean_transcript_pipeline.can_clean_transcript(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot clean transcript.")
+
+        role_names = self.session_player_roles(session_id)
+        return clean_transcript_pipeline.clean_transcript(
+            session_folder,
+            self._settings.remove_backchannels.max_words,
+            self._settings.remove_backchannels.question_check_timeout,
+            self._settings.llm_model_lite,
+            role_names,
+            on_progress=on_progress,
+        )
+
     def can_generate_ledger(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
@@ -411,9 +456,8 @@ class Application:
                 raise ValueError(reason or "Cannot generate Ledger.")
 
             attendees = sessions.list_attendance(session, session_id)
-            role_names = {attendee.player_name: attendee.roles[0] for attendee in attendees if attendee.roles}
             known_roles = tuple(sorted({role for attendee in attendees for role in attendee.roles}))
-            role_transcript = transcribe_audio.render_role_transcript_text(session_folder, role_names)
+            role_transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
             session_name = game_session.name
 
         with widelog.wide_event(op="generate_session_ledger", session_id=str(session_id), known_role_count=len(known_roles)):
@@ -445,15 +489,15 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
-            transcript_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
-            if not transcript_path.is_file():
-                raise ValueError("Transcribe the session first.")
+            enabled, reason = processing.can_generate_summary(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot generate summary.")
 
             entries = sorted(glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold())
             prompt_glossary = [
                 generate_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
             ]
-            transcript = transcript_path.read_text(encoding="utf-8")
+            transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
 
         with widelog.wide_event(op="generate_summary", session_id=str(session_id), glossary_entry_count=len(prompt_glossary)):
             summary = asyncio.run(generate_summary_pipeline.generate_summary(transcript, prompt_glossary, self._settings.llm_model))

@@ -71,8 +71,12 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
 
 
 class RemoveBackchannelsSettings(BaseModel, frozen=True):
-    enabled: bool = False
     max_words: PositiveInt = 3
+    # Timeout (seconds) for the batched "is the previous utterance a question?" LLM call that
+    # Clean Transcript makes to disambiguate backchannel candidates whose speaker is known. A
+    # large session can propose hundreds of candidates in one batch, which can run past litellm's
+    # 600-second default.
+    question_check_timeout: PositiveInt = 1200
 
 
 class AppSettings(BaseModel, frozen=True):

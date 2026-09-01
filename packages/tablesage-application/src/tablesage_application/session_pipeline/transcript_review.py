@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import shutil
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -122,6 +123,55 @@ def edit_utterance(transcript: Transcript, utterance_index: int, speaker: str, t
     return Transcript(utterances=new_utterances)
 
 
+def delete_utterance(transcript: Transcript, utterance_index: int) -> Transcript:
+    """Return a copy of `transcript` with `utterances[utterance_index]` removed entirely.
+
+    Unlike `assign_speaker`/`edit_utterance`, this drops the utterance from the transcript rather
+    than relabeling it -- for a genuine mis-segmentation (a stray noise blip transcribed as a
+    word, a duplicate split) rather than a wrong speaker or wrong text.
+    """
+    new_utterances = list(transcript.utterances)
+    del new_utterances[utterance_index]
+    return Transcript(utterances=new_utterances)
+
+
+@dataclass(frozen=True)
+class ReplaceTextResult:
+    """The outcome of `replace_text`, for the caller to report to the user."""
+
+    utterance_count: int
+    occurrence_count: int
+
+
+def replace_text(transcript: Transcript, find: str, replacement: str, case_sensitive: bool) -> tuple[Transcript, ReplaceTextResult]:
+    """Return a copy of `transcript` with every occurrence of `find` in each utterance's displayed
+    text replaced by `replacement`, across the whole transcript.
+
+    Matching is literal, not a regex -- `find` is escaped before use. `case_sensitive` controls
+    only how a match is found; `replacement` is always inserted exactly as given, regardless of
+    what case the matched text had. An utterance with no match is left completely untouched
+    (including its `adjusted` flag); one with at least one match gets its displayed text updated
+    and `adjusted` set, sticky like every other edit here. An empty `find` matches nothing.
+    """
+    if not find:
+        return transcript, ReplaceTextResult(utterance_count=0, occurrence_count=0)
+
+    pattern = re.compile(re.escape(find), 0 if case_sensitive else re.IGNORECASE)
+    new_utterances = list(transcript.utterances)
+    utterance_count = 0
+    occurrence_count = 0
+    for index, utterance in enumerate(transcript.utterances):
+        current_text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
+        new_text, count = pattern.subn(lambda _match: replacement, current_text)
+        if not count:
+            continue
+        utterance_count += 1
+        occurrence_count += count
+        new_utterances[index] = utterance.model_copy(update={"punctuated_text": new_text, "adjusted": True})
+
+    return Transcript(utterances=new_utterances), ReplaceTextResult(utterance_count=utterance_count, occurrence_count=occurrence_count)
+
+
 def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> None:
     """Atomically replace the completed review, then discard artifacts derived from its source."""
     target = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
@@ -136,6 +186,7 @@ def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> No
     for name in (
         ArtifactName.TRANSCRIPT_ROLES_TEXT,
         ArtifactName.TRANSCRIPT_BENCHMARK,
+        ArtifactName.ROLE_TRANSCRIPT,
         ArtifactName.LEDGER,
         ArtifactName.SUMMARY,
     ):

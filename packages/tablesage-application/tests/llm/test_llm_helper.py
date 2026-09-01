@@ -41,7 +41,9 @@ def test_read_system_prompt_and_template_for_generate_ledger() -> None:
 async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, Any] = {}
 
-    async def fake_call_llm(system_prompt: str, user_prompt: str, model: str, response_format: Any = None) -> str:
+    async def fake_call_llm(
+        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+    ) -> str:
         captured["system_prompt"] = system_prompt
         captured["user_prompt"] = user_prompt
         captured["model"] = model
@@ -73,7 +75,9 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
 
     captured: dict[str, Any] = {}
 
-    async def fake_call_llm(system_prompt: str, user_prompt: str, model: str, response_format: Any = None) -> str:
+    async def fake_call_llm(
+        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+    ) -> str:
         captured["user_prompt"] = user_prompt
         return "ok"
 
@@ -99,7 +103,9 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
 async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, Any] = {}
 
-    async def fake_call_llm(system_prompt: str, user_prompt: str, model: str, response_format: Any = None) -> str:
+    async def fake_call_llm(
+        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+    ) -> str:
         captured["model"] = model
         return "ok"
 
@@ -108,6 +114,23 @@ async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.Monke
     await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(transcript="x"))
 
     assert captured["model"] == DEFAULT_LLM_MODEL
+
+
+@pytest.mark.anyio
+async def test_call_llm_with_prompt_forwards_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, Any] = {}
+
+    async def fake_call_llm(
+        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+    ) -> str:
+        captured["timeout"] = timeout
+        return "ok"
+
+    monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
+
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(transcript="x"), timeout=1200)
+
+    assert captured["timeout"] == 1200
 
 
 def test_missing_template_variable_raises() -> None:

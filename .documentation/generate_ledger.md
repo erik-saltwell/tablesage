@@ -8,8 +8,8 @@ The format itself is defined in [Ledger Format v3](canonical_ledger_format_v3.md
 
 ## Key Concepts
 
-- **Source transcript** — the completed Reviewed Transcript when one exists; otherwise the machine Transcript.
-- **Role transcript** — an in-memory rendering of the source transcript that replaces player names with their Session role names. It is generation input, not a persisted artifact.
+- **Source transcript** — `role_transcript.json`, the persisted output of the Generate (`G`) action's Role Transcript step. It already has backchannels removed and player names replaced by Session roles, so Ledger generation reads it as-is.
+- **Role transcript** — `role_transcript.json` itself, rendered to Markdown in memory for the generation call. Unlike before, it is a persisted, shown, exportable artifact -- not something Ledger generation builds itself.
 - **Ledger** — the persisted, strict Pydantic model stored as `ledger.json`.
 - **Preamble** — optional pre-session context containing a Recap, Character Introductions, or both.
 - **Ledger utterance** — one of Narration, Action, Speech, Expression, or Correction.
@@ -97,9 +97,11 @@ The application, not the LLM, supplies `version`, `session_id`, and `session_nam
 
 ## Generation Flow
 
-1. The user requests Ledger generation for a Session with a machine Transcript.
+1. The user requests Ledger generation for a Session with a `role_transcript.json` (produced by
+   Generate's (`G`) Role Transcript step, which removes backchannels and assigns Session roles).
 2. The application loads the Session, its attendees and roles, and the Session folder.
-3. It selects `transcript_reviewed.json` when present, otherwise `transcript.json`, then renders player speakers as Session roles in memory.
+3. It reads `role_transcript.json` directly and renders it to text -- speakers are already Session
+   roles by this point, so no reviewed-vs-machine selection or role lookup happens here.
 4. One LLM call receives the complete role transcript and requests `LedgerGenerationResponse` as structured output.
 5. Pydantic performs structural validation. The application separately reports one warning for each regular `source` or introduced `character` not found in the Session's known roles.
 6. A structurally invalid response or a response with role warnings triggers up to two retries. Parseable candidates are retained across attempts.
@@ -114,7 +116,7 @@ Generation is whole-session and single-call per attempt. It is not batched or fo
 - The artifact is called **Ledger** throughout the application and UI and is stored as `ledger.json`.
 - Ledger replaces the unused Processed Session artifact concept and registry entry.
 - Ledger is derived from the Transcript, shown in Session Detail, and available through artifact export.
-- Session Detail exposes a **Generate Ledger** action. It is enabled when the machine Transcript exists; the Reviewed Transcript is preferred automatically and is not required.
+- Session Detail's unified **Generate** (`G`) action produces the Ledger once `role_transcript.json` exists -- it is the second of Generate's three dependency-ordered steps (Role Transcript, then Ledger, then Summary).
 - A successful Transcript rebuild, completed Manual Review, audio re-import, or attendance/role change invalidates the Ledger through the artifact-category rules.
 - A failed generation preserves any existing Ledger. Successful replacement invalidates artifacts derived from the prior Ledger.
 - Summary generation from Ledger is a separate feature; this work does not reinterpret the Summary schema or prompt.

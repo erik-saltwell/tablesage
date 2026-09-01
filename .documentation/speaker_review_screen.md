@@ -30,7 +30,7 @@ The reviewed transcript is a user-facing session artifact. It appears in Session
 
 ## Entry and completion
 
-1. `S` (**Manual Review**) on `SessionDetailScreen` is enabled whenever `transcript.json`
+1. `R` (**Review**) on `SessionDetailScreen` is enabled whenever `transcript.json`
    exists.
 2. A progress dialog loads the reviewed transcript if present (otherwise `transcript.json`) and
    pre-extracts one audio clip per non-zero-duration utterance.
@@ -52,6 +52,21 @@ The table contains adjusted-marker, Speaker, and Text columns.
 - Cancel closes the dialog without changing the row.
 - `Utterance.adjusted` becomes true when either the speaker or displayed text actually changes.
   The flag is sticky within later edits. Confirming unchanged values does not set it.
+- `D` (or `Delete`/`Backspace`) deletes the playhead row entirely, removing that utterance from
+  the working copy -- unlike every other row action, which relabels or edits the utterance in
+  place. Like assignment, deletion only changes the in-memory working copy; it is saved (or
+  discarded) exactly like any other edit, via Complete/Cancel. The table is rebuilt after a
+  delete, and the playhead moves to the row now at the same position (or the last row, if the
+  deleted row was last). Playback for rows after the deleted one still finds their original
+  audio clip -- clip files are keyed by their extraction-time index, not their current row
+  position.
+- `F` opens **Find & Replace**, a bulk edit across every utterance's displayed text (not just the
+  playhead row). The modal asks for a find string, a replacement string, and a "Case sensitive"
+  checkbox (checked by default). On submit, every utterance whose displayed text contains a
+  match has that text updated and is marked adjusted; the replacement is always inserted with
+  its own case exactly as typed, regardless of what case the matched text had. A run that matches
+  nothing shows a warning toast and changes nothing. Like every other row edit, this only changes
+  the working copy -- it is saved or discarded via Complete/Cancel.
 
 ## Existing playback and assignment affordances
 
@@ -87,8 +102,11 @@ when no reviewed transcript exists.
 - `session_pipeline.transcript_review`: source selection, clip extraction, pure utterance edits,
   atomic reviewed-artifact save, and benchmark source selection.
 - `screens/speaker_review.py`: `ManualReviewScreen`, working-copy controls, playback, assignment,
-  and row-editor launch.
+  deletion, find & replace, and row-editor launch.
 - `dialogs/manual_review.py`: the speaker/text editor modal.
+- `dialogs/find_replace.py`: the Find & Replace modal (`FindReplaceDialog`/`FindReplaceResult`).
+- `session_pipeline.transcript_review.replace_text`: the pure find/replace transform applied
+  across every utterance's displayed text.
 - `session_pipeline.transcribe_audio`: successful transcript rebuild invalidates transcript
   derivatives.
 - `players_from_session.py`: automatic reviewed-vs-machine source and filtering behavior.

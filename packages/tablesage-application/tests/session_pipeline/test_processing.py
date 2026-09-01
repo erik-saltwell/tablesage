@@ -14,7 +14,7 @@ from tablesage_tools.embeddings import Embedding
 
 LEDGER_FILENAME = ARTIFACTS[ArtifactName.LEDGER].filename
 SESSION_SUMMARY_FILENAME = ARTIFACTS[ArtifactName.SUMMARY].filename
-TRANSCRIPT_ROLES_FILENAME = ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+ROLE_TRANSCRIPT_FILENAME = ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
 REVIEWED_TRANSCRIPT_FILENAME = ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
 
 
@@ -243,10 +243,10 @@ def test_can_generate_summary_requires_role_transcript(tmp_path: Path) -> None:
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert not enabled
-    assert reason == "Transcribe the session first."
+    assert reason == "Clean the transcript first."
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
-    (folder / TRANSCRIPT_ROLES_FILENAME).write_text("**Wizard** - Hello.\n")
+    (folder / ROLE_TRANSCRIPT_FILENAME).write_text("{}")
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert enabled

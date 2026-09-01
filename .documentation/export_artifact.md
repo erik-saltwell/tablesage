@@ -24,7 +24,11 @@ lives entirely on Session Detail, not as a standalone top-level screen.
    qualifying artifact as one row (`display_name` only — "Input Audio",
    "Transcript", "Reviewed Transcript", "Summary") using the same filter as the indicator panel:
    `ARTIFACTS[name].should_show_in_ui and session_artifacts(session_folder)[name]`.
-3. `Enter`/`E` on the selected row opens `textual_fspicker.FileSave`:
+3. `E`, `Enter` on the selected row, or a double-click on a row all open
+   `textual_fspicker.FileSave`. Enter and the double-click both arrive as `DataTable`'s
+   `RowSelected` message (`on_data_table_row_selected`) rather than the screen-level `enter`
+   binding -- `DataTable` owns its own `enter` binding and shadows the screen's while the table
+   has focus, so `RowSelected` is what actually needs handling for both gestures:
    `location=Path.home()` (same default `FileOpen` uses for Import Audio),
    `default_file=ARTIFACTS[name].filename`, `can_overwrite=True` (no extra
    confirmation step — this is a plain "Save As" over a user-owned

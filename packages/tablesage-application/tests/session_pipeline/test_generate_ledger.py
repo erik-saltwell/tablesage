@@ -197,19 +197,21 @@ async def test_generate_ledger_fails_when_all_three_responses_are_structurally_i
         await generate_ledger_module.generate_ledger("transcript", ["Zaria"], "test-model")
 
 
-def test_application_can_generate_ledger_requires_machine_transcript(tmp_path: Path) -> None:
+def test_application_can_generate_ledger_requires_role_transcript(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
 
-    assert application.can_generate_ledger(game_session.id) == (False, "Transcribe the session first.")
+    assert application.can_generate_ledger(game_session.id) == (False, "Clean the transcript first.")
 
-    Transcript.from_words([_word("Hello")]).save(application.session_folder(game_session.id) / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    Transcript.from_words([_word("Hello")]).save(
+        application.session_folder(game_session.id) / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
+    )
 
     assert application.can_generate_ledger(game_session.id) == (True, None)
 
 
-def test_application_generate_ledger_prefers_reviewed_transcript_injects_metadata_and_replaces_atomically(
+def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_replaces_atomically(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -222,10 +224,14 @@ def test_application_generate_ledger_prefers_reviewed_transcript_injects_metadat
     application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria", "Narrator"])
     session_folder = application.session_folder(game_session.id)
 
-    machine = Transcript.from_words([_word("machine")])
-    machine.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
-    reviewed = Transcript(utterances=[machine.utterances[0].model_copy(update={"punctuated_text": "Reviewed opening."})])
-    reviewed.save(session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
+    role_transcript = Transcript(
+        utterances=[
+            Transcript.from_words([_word("opening", speaker="Narrator")])
+            .utterances[0]
+            .model_copy(update={"punctuated_text": "Reviewed opening."})
+        ]
+    )
+    role_transcript.save(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
     summary_path.write_text("stale summary\n", encoding="utf-8")
     captured: dict[str, object] = {}
@@ -257,7 +263,7 @@ def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     session_folder = application.session_folder(game_session.id)
-    Transcript.from_words([_word("Hello")]).save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    Transcript.from_words([_word("Hello")]).save(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
     old_ledger = Ledger(
         version=3,

@@ -6,14 +6,17 @@ import pytest
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import transcript_review as transcript_review_module
 from tablesage_application.session_pipeline.transcript_review import (
+    ReplaceTextResult,
     assign_speaker,
     clip_path,
     count_adjusted_utterances,
+    delete_utterance,
     discard_review_clips,
     edit_utterance,
     extract_review_clips,
     generate_benchmark_transcript,
     load_review_transcript,
+    replace_text,
     review_clips_folder,
     save_reviewed_transcript,
 )
@@ -162,6 +165,78 @@ def test_edit_utterance_updates_speaker_and_text_without_mutating_source() -> No
     assert transcript.utterances[0].punctuated_text is None
 
 
+def test_delete_utterance_removes_it_and_leaves_others_untouched() -> None:
+    transcript = _stub_transcript()
+
+    updated = delete_utterance(transcript, 0)
+
+    assert [utterance.speaker for utterance in updated.utterances] == ["Bob"]
+    assert len(transcript.utterances) == 2  # original is untouched
+
+
+def test_replace_text_replaces_matching_utterances_and_marks_adjusted() -> None:
+    transcript = _stub_transcript()
+
+    updated, result = replace_text(transcript, "hello", "hi", case_sensitive=True)
+
+    assert result == ReplaceTextResult(utterance_count=1, occurrence_count=1)
+    assert updated.utterances[0].punctuated_text == "hi"
+    assert updated.utterances[0].adjusted is True
+    assert updated.utterances[1].punctuated_text is None  # untouched, including adjusted
+    assert updated.utterances[1].adjusted is False
+
+
+def test_replace_text_case_sensitive_does_not_match_different_case() -> None:
+    transcript = _stub_transcript()
+
+    updated, result = replace_text(transcript, "HELLO", "hi", case_sensitive=True)
+
+    assert result == ReplaceTextResult(utterance_count=0, occurrence_count=0)
+    assert updated == transcript
+
+
+def test_replace_text_case_insensitive_matches_but_uses_replacements_own_case() -> None:
+    transcript = _stub_transcript()
+
+    updated, result = replace_text(transcript, "HELLO", "Hi There", case_sensitive=False)
+
+    assert result == ReplaceTextResult(utterance_count=1, occurrence_count=1)
+    assert updated.utterances[0].punctuated_text == "Hi There"
+
+
+def test_replace_text_counts_every_occurrence_within_an_utterance() -> None:
+    transcript = Transcript.from_words([_word("la", "Alice", 0.0, 0.1), _word("la", "Alice", 0.1, 0.2), _word("la", "Alice", 0.2, 0.3)])
+
+    updated, result = replace_text(transcript, "la", "da", case_sensitive=True)
+
+    assert result == ReplaceTextResult(utterance_count=1, occurrence_count=3)
+    assert updated.utterances[0].punctuated_text == "da da da"
+
+
+def test_replace_text_empty_find_is_a_no_op() -> None:
+    transcript = _stub_transcript()
+
+    updated, result = replace_text(transcript, "", "hi", case_sensitive=True)
+
+    assert result == ReplaceTextResult(utterance_count=0, occurrence_count=0)
+    assert updated == transcript
+
+
+def test_replace_text_operates_on_punctuated_text_when_present() -> None:
+    transcript = _stub_transcript()
+    transcript = Transcript(
+        utterances=[
+            transcript.utterances[0].model_copy(update={"punctuated_text": "Hello there."}),
+            transcript.utterances[1],
+        ]
+    )
+
+    updated, result = replace_text(transcript, "there", "world", case_sensitive=True)
+
+    assert result == ReplaceTextResult(utterance_count=1, occurrence_count=1)
+    assert updated.utterances[0].punctuated_text == "Hello world."
+
+
 def test_edit_utterance_leaves_adjusted_false_when_values_are_unchanged() -> None:
     transcript = _stub_transcript()
 
@@ -178,6 +253,7 @@ def test_save_reviewed_transcript_creates_separate_artifact_without_changing_mac
     stale_derivatives = (
         ArtifactName.TRANSCRIPT_ROLES_TEXT,
         ArtifactName.TRANSCRIPT_BENCHMARK,
+        ArtifactName.ROLE_TRANSCRIPT,
         ArtifactName.LEDGER,
         ArtifactName.SUMMARY,
     )

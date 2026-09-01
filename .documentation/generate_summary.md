@@ -6,7 +6,7 @@ Generate a Markdown summary of a session from its role-attributed transcript and
 
 ## Key Concepts
 
-- **Role transcript** — the LLM-facing transcript, with `**Role** - text` entries separated by blank lines and no timestamps.
+- **Role transcript** — `role_transcript.json`, the output of the Clean Transcript step, rendered to `**Role** - text` entries separated by blank lines and no timestamps for the LLM-facing prompt.
 - **Glossary** — the campaign's terms and optional descriptions, always included as a prompt section.
 - **Summary** — unstructured Markdown returned by the LLM and stored as `summary.md`.
 - **Log-derived artifact** — output invalidated when a successful transcription replaces its source material.
@@ -34,5 +34,6 @@ Generate a Markdown summary of a session from its role-attributed transcript and
 
 ## Current Integration Constraints
 
-- The application use case owns reading `transcript_roles.md`; the summary prompt layer receives plain transcript and glossary data without knowing their storage location.
+- The application use case owns reading and rendering `role_transcript.json` (via `session_pipeline.clean_transcript.render_role_transcript_text`); the summary prompt layer receives plain transcript and glossary data without knowing their storage location.
 - Summary generation uses `tablesage_application.llm.call_llm_with_prompt` with no response model.
+- Session Detail no longer exposes Summary as its own binding -- it's produced by the unified Generate (`G`) action once Role Transcript and Ledger both exist. See `session_detail_screen.md`.

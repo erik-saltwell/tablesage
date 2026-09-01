@@ -52,6 +52,13 @@ class ArtifactExportScreen(TableSageScreen):
         row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
         return ArtifactName(row_key) if row_key else None
 
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        # `DataTable` posts this for both `Enter` on a row and a double-click -- it also owns its
+        # own `enter` binding, which shadows the screen-level one below while the table has
+        # focus, so this is what actually makes Enter (and a double-click) export the row.
+        event.stop()
+        self.action_export_selected()
+
     def action_export_selected(self) -> None:
         artifact_name = self._selected_artifact()
         if artifact_name is None:

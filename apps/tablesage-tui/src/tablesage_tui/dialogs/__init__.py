@@ -1,4 +1,5 @@
 from .attendee_editor import AttendeeDialog, AttendeeResult
+from .find_replace import FindReplaceDialog, FindReplaceResult
 from .generic import ConfirmationDialog, TextInputDialog
 from .glossary_entry import GlossaryEntryDialog
 from .manual_review import ManualReviewUtteranceDialog, ManualReviewUtteranceResult
@@ -13,6 +14,8 @@ __all__ = [
     "AttendeeResult",
     "ConfirmationDialog",
     "TextInputDialog",
+    "FindReplaceDialog",
+    "FindReplaceResult",
     "GlossaryEntryDialog",
     "ManualReviewUtteranceDialog",
     "ManualReviewUtteranceResult",

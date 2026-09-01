@@ -33,9 +33,8 @@ def _application(
         get_session=MagicMock(return_value=GameSession(campaign_id=campaign.id, sequence_number=1, name="Session")),
         list_attendance=MagicMock(return_value=[]),
         session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
-        can_generate_ledger=MagicMock(return_value=(False, "Transcribe the session first.")),
-        can_generate_summary=MagicMock(return_value=(False, "Transcribe the session first.")),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
+        next_generation_step=MagicMock(return_value=None),
         can_export_artifacts=MagicMock(return_value=(False, "No artifacts to export yet.")),
         campaign_folder_exists=MagicMock(return_value=False),
         session_folder_would_collide=MagicMock(return_value=False),
@@ -470,10 +469,11 @@ async def test_sessions_table_shows_sessions_sorted_by_sequence() -> None:
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#sessions-table", DataTable)
+        assert [str(column.label) for column in table.columns.values()] == ["#", "Name", "Date"]
         rows = [tuple(str(cell) for cell in table.get_row_at(i)) for i in range(table.row_count)]
         assert rows == [
-            ("001", "First", "2026-01-01", "draft"),
-            ("002", "Second", "2026-02-01", "draft"),
+            ("001", "First", "2026-01-01"),
+            ("002", "Second", "2026-02-01"),
         ]
 
 

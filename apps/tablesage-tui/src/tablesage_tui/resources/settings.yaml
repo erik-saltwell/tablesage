@@ -86,15 +86,20 @@ enhance_voices:
   max_clip_seconds: 8.0
 
 remove_backchannels:
-  # Session Detail's "Transcribe" (T) can drop pure backchannels ("yeah",
-  # "mhm", "right", ...) after punctuation. A candidate utterance (short and
-  # wordlist-matching) is confirmed by a cheap LLM call (llm_model_lite
-  # below) before removal, so a real short answer to a question ("Yeah.")
-  # isn't mistaken for an acknowledgment. Off by default.
-  enabled: true
+  # Session Detail's "Clean" (C) step can drop pure backchannels ("yeah",
+  # "mhm", "right", ...) from the preferred transcript. A candidate utterance
+  # (short and wordlist-matching) spoken by the Unassigned speaker is dropped
+  # outright; every other candidate is confirmed by a cheap LLM call
+  # (llm_model_lite below) that judges whether the utterance right before it
+  # was a question, so a real short answer to a question ("Yeah.") isn't
+  # mistaken for an acknowledgment.
   # An utterance longer than this many words is never considered a
   # backchannel candidate, regardless of wordlist match.
   max_words: 3
+  # Timeout (seconds) for the batched "was the previous utterance a
+  # question?" LLM call above. A large session can propose hundreds of
+  # candidates in one batch, which can run past a shorter timeout.
+  question_check_timeout: 1200
 
 # The default model for high-confidence LLM calls (e.g. proposing speaker
 # identities from a transcript).

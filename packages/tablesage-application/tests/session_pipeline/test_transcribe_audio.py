@@ -10,7 +10,6 @@ from tablesage_application.session_pipeline import transcribe_audio as transcrib
 from tablesage_application.session_pipeline.transcribe_audio import (
     Stage,
     TranscriptionResult,
-    render_role_transcript_text,
     transcribe_audio,
 )
 from tablesage_model.settings import (
@@ -101,42 +100,6 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     assert "Alice" in transcript_text.read_text()
     assert "hello." in transcript_text.read_text()
     assert "[00:00:00] **Alice:** hello." in transcript_text.read_text()
-
-
-def test_role_transcript_renderer_uses_machine_transcript_when_no_review_exists(tmp_path: Path) -> None:
-    session_folder = tmp_path
-    (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
-
-    transcribe_audio(
-        session_folder,
-        {"Alice": _fake_embedding()},
-        embed=_NO_EMBED,
-        transcription_settings=_TRANSCRIPTION_SETTINGS,
-        speaker_id_settings=_SPEAKER_ID_SETTINGS,
-    )
-
-    assert render_role_transcript_text(session_folder, {"Alice": "Wizard"}) == "**Wizard** - hello.\n\n**Wizard** - world.\n"
-
-
-def test_role_transcript_renderer_prefers_reviewed_transcript(tmp_path: Path) -> None:
-    machine = _stub_transcript()
-    reviewed_utterances = [
-        utterance.model_copy(update={"speaker": "Alice", "punctuated_text": f"reviewed {utterance.text}."})
-        for utterance in machine.utterances
-    ]
-    machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
-    Transcript(utterances=reviewed_utterances).save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
-
-    rendered = render_role_transcript_text(tmp_path, {"Alice": "Wizard"})
-
-    assert rendered == "**Wizard** - reviewed hello.\n\n**Wizard** - reviewed world.\n"
-
-
-def test_role_transcript_renderer_falls_back_to_player_name_when_role_missing(tmp_path: Path) -> None:
-    transcript = Transcript(utterances=[utterance.model_copy(update={"speaker": "Alice"}) for utterance in _stub_transcript().utterances])
-    transcript.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
-
-    assert "Alice" in render_role_transcript_text(tmp_path, {})
 
 
 def test_transcribe_audio_reports_staged_progress(tmp_path: Path) -> None:
@@ -257,12 +220,14 @@ def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp
     ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
     reviewed_path = session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
     benchmark_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename
-    role_transcript_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+    role_text_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
+    role_transcript_path = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
     summary_path.write_text("stale summary")
     ledger_path.write_text("{}")
     reviewed_path.write_text("{}")
     benchmark_path.write_text("{}")
-    role_transcript_path.write_text("stale role transcript")
+    role_text_path.write_text("stale role transcript")
+    role_transcript_path.write_text("{}")
 
     transcribe_audio(
         session_folder,
@@ -275,6 +240,7 @@ def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp
     assert not summary_path.exists()
     assert not reviewed_path.exists()
     assert not benchmark_path.exists()
+    assert not role_text_path.exists()
     assert not role_transcript_path.exists()
     assert not ledger_path.exists()
 

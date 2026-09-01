@@ -134,8 +134,8 @@ class _Candidate:
 
 
 def can_generate_ledger(session_folder: Path) -> tuple[bool, str | None]:
-    if not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).is_file():
-        return False, "Transcribe the session first."
+    if not (session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename).is_file():
+        return False, "Clean the transcript first."
     return True, None
 
 

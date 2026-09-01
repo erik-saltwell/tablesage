@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Callable
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tablesage_application.paths import ARTIFACTS, ArtifactCategory, ArtifactName
-from tablesage_application.session_pipeline import import_audio, transcribe_audio
+from tablesage_application.session_pipeline import clean_transcript, import_audio, transcribe_audio
+from tablesage_application.session_pipeline.artifacts import GenerationStep
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -28,7 +29,17 @@ _STAGE_LABELS = {
     transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
     transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
     transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
-    transcribe_audio.Stage.REMOVING_BACKCHANNELS: "Removing backchannels…",
+}
+
+_CLEAN_STAGE_LABELS = {
+    clean_transcript.Stage.REMOVING_BACKCHANNELS: "Removing backchannels (this may take a while)…",
+    clean_transcript.Stage.ASSIGNING_ROLES: "Assigning roles…",
+}
+
+_GENERATION_STEP_LABELS = {
+    GenerationStep.ROLE_TRANSCRIPT: "Role Transcript",
+    GenerationStep.LEDGER: "Ledger",
+    GenerationStep.SUMMARY: "Summary",
 }
 
 
@@ -39,16 +50,16 @@ class SessionDetailScreen(TableSageScreen):
     AUTO_FOCUS = ""
     BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
-        Binding("n,N", "new_attendee", "Add Attendee", key_display="N"),
-        Binding("enter,e,E", "edit_attendee", "Edit Attendee", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_attendee", "Remove Attendee", key_display="D"),
-        Binding("i,I", "import_audio", "Import Audio", key_display="I"),
+        Binding("n,N", "new_attendee", "New", key_display="N"),
+        Binding("enter,e,E", "edit_attendee", "Edit", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_attendee", "Delete", key_display="D"),
+        Binding("i,I", "import_audio", "Imp Audio", key_display="I"),
         Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
-        Binding("s,S", "manual_review", "Manual Review", key_display="S"),
-        Binding("b,B", "generate_benchmark_transcript", "Benchmark Transcript", key_display="B"),
-        Binding("l,L", "generate_ledger", "Generate Ledger", key_display="L"),
-        Binding("g,G", "generate_summary", "Generate Summary", key_display="G"),
-        Binding("x,X", "export_artifacts", "Export Artifact", key_display="X"),
+        Binding("r,R", "manual_review", "Review", key_display="R"),
+        Binding("b,B", "generate_benchmark_transcript", "Benchmark", key_display="B"),
+        Binding("c,C", "clean_transcript", "Clean Transcript", key_display="C"),
+        Binding("g,G", "generate", "Generate", key_display="G"),
+        Binding("x,X", "export_artifacts", "Export", key_display="X"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:
@@ -70,8 +81,8 @@ class SessionDetailScreen(TableSageScreen):
                     yield Static("Date", classes="field-label")
                     yield CommittingInput(id="session-date-input", placeholder="YYYY-MM-DD")
                 with Horizontal(classes="field-row"):
-                    yield Static("Status", classes="field-label")
-                    yield Static("", id="session-status-value", classes="field-value")
+                    yield Static("Last Transcribed", classes="field-label")
+                    yield Static("", id="session-last-transcribed-value", classes="field-value")
 
             with Horizontal(id="session-detail-body"):
                 with Vertical(id="session-attendance-column"):
@@ -107,7 +118,6 @@ class SessionDetailScreen(TableSageScreen):
         self.query_one(TableSageHeader).campaign = game_session.name
         self.query_one("#session-name-input", CommittingInput).value = self._session_name
         self.query_one("#session-date-input", CommittingInput).value = str(self._session_date) if self._session_date else ""
-        self.query_one("#session-status-value", Static).update(game_session.status)
 
         self._reload_attendance()
         self._refresh_indicators()
@@ -124,7 +134,7 @@ class SessionDetailScreen(TableSageScreen):
             # `Input` doesn't blur itself on Enter (unlike losing focus, which is what actually
             # triggers `CommittingInput.Committed` -- see its docstring), so without this the
             # field would keep focus indefinitely, silently swallowing every single-letter
-            # binding below (I/T/S/B/G/X, N/E/D) as plain text instead of firing them.
+            # binding below (I/T/R/B/C/G/X, N/E/D) as plain text instead of firing them.
             self.query_one("#attendance-table", DataTable).focus()
 
     def _commit_metadata(self, input_widget: CommittingInput) -> None:
@@ -176,6 +186,7 @@ class SessionDetailScreen(TableSageScreen):
     # Indicators / gating
 
     def _refresh_indicators(self) -> None:
+        self._refresh_last_transcribed()
         session_artifacts = self.application.session_artifacts(self._session_id)
         for name, widget in self._indicators.items():
             present = session_artifacts[name]
@@ -183,6 +194,16 @@ class SessionDetailScreen(TableSageScreen):
             widget.set_class(not present, "artifact-missing")
 
         self.refresh_bindings()
+
+    def _refresh_last_transcribed(self) -> None:
+        transcript_path = self.application.session_folder(self._session_id) / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
+        try:
+            modified_at = datetime.fromtimestamp(transcript_path.stat().st_mtime)
+        except FileNotFoundError:
+            value = ""
+        else:
+            value = modified_at.strftime("%Y-%m-%d %H:%M")
+        self.query_one("#session-last-transcribed-value", Static).update(value)
 
     @staticmethod
     def _indicator_text(label: str, present: bool) -> str:
@@ -199,12 +220,10 @@ class SessionDetailScreen(TableSageScreen):
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate_benchmark_transcript":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
-        if action == "generate_ledger":
-            enabled, _ = self.application.can_generate_ledger(self._session_id)
-            return True if enabled else None
-        if action == "generate_summary":
-            enabled, _ = self.application.can_generate_summary(self._session_id)
-            return True if enabled else None
+        if action == "clean_transcript":
+            return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
+        if action == "generate":
+            return True if self.application.next_generation_step(self._session_id) is not None else None
         if action == "export_artifacts":
             enabled, _ = self.application.can_export_artifacts(self._session_id)
             return True if enabled else None
@@ -298,7 +317,7 @@ class SessionDetailScreen(TableSageScreen):
     def action_transcribe_audio(self) -> None:
         # No generic invalidation guard: a successful transcription replaces its transcript
         # artifacts and invalidates FROM_LOG outputs; a failed one preserves them. But if a
-        # human has hand-corrected the transcript via Manual Review (S), rerunning here would
+        # human has hand-corrected the transcript via Manual Review (R), rerunning here would
         # silently discard them -- guarded separately, by count, rather than folded into
         # `_with_invalidation_guard`'s generic wording.
         adjusted_count = self.application.count_adjusted_utterances(self._session_id)
@@ -337,8 +356,6 @@ class SessionDetailScreen(TableSageScreen):
                 embed,
                 settings.transcription_and_diarization,
                 settings.speaker_identification,
-                settings.remove_backchannels,
-                settings.llm_model_lite,
                 on_progress=self._on_transcribe_progress,
             )
 
@@ -371,29 +388,86 @@ class SessionDetailScreen(TableSageScreen):
         result = self.application.generate_benchmark_transcript(self._session_id)
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
-    # Generate Ledger -- gated by the machine transcript (see check_action).
+    # Clean Transcript -- destructive: deletes the machine transcript and everything derived from
+    # it (Reviewed Transcript, Role Transcript, benchmark, Ledger, Summary), leaving only the raw
+    # input audio. Gated on the machine transcript existing (see check_action). Always confirmed,
+    # since unlike every other invalidation in this screen this isn't a side effect of some other
+    # edit -- it's the whole point of pressing the binding.
 
-    def action_generate_ledger(self) -> None:
-        self.run_with_progress(
-            title="Generate Ledger",
-            message="Generating Ledger…",
-            work=lambda: self.application.generate_ledger(self._session_id),
-            on_success=self._after_generate_ledger,
+    def action_clean_transcript(self) -> None:
+        def on_confirm(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            self.application.delete_transcript(self._session_id)
+            self._refresh_indicators()
+            self.notify("Transcript and dependent artifacts deleted.")
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Delete Transcript",
+                prompt=(
+                    "This will delete the transcript and everything generated from it -- Reviewed "
+                    "Transcript, Role Transcript, benchmark, Ledger, and Summary. Continue?"
+                ),
+            ),
+            on_confirm,
         )
+
+    # Generate -- produces whichever of Role Transcript / Ledger / Summary this session is
+    # missing next, in dependency order (see `next_generation_step`). The user can't choose which
+    # one; a confirmation names the step Generate is about to run. Gated on there being a next
+    # step at all (see check_action).
+
+    def action_generate(self) -> None:
+        step = self.application.next_generation_step(self._session_id)
+        if step is None:
+            return
+
+        def on_confirm(confirmed: bool | None) -> None:
+            if confirmed:
+                self._do_generate(step)
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Generate",
+                prompt=f"Generate the {_GENERATION_STEP_LABELS[step]}?",
+            ),
+            on_confirm,
+        )
+
+    def _do_generate(self, step: GenerationStep) -> None:
+        if step is GenerationStep.ROLE_TRANSCRIPT:
+            self.run_with_progress(
+                title="Generate Role Transcript",
+                message=_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
+                work=lambda: self.application.clean_transcript(self._session_id, on_progress=self._on_clean_progress),
+                on_success=self._after_generate_role_transcript,
+            )
+        elif step is GenerationStep.LEDGER:
+            self.run_with_progress(
+                title="Generate Ledger",
+                message="Generating Ledger…",
+                work=lambda: self.application.generate_ledger(self._session_id),
+                on_success=self._after_generate_ledger,
+            )
+        elif step is GenerationStep.SUMMARY:
+            self.run_with_progress(
+                title="Generate Summary",
+                message="Generating summary…",
+                work=lambda: self.application.generate_summary(self._session_id),
+                on_success=self._after_generate_summary,
+            )
+
+    def _on_clean_progress(self, stage: clean_transcript.Stage, completed: int, total: int) -> None:
+        self.report_stage_progress(_CLEAN_STAGE_LABELS[stage], completed, total)
+
+    def _after_generate_role_transcript(self, result: clean_transcript.CleanTranscriptResult) -> None:
+        self._refresh_indicators()
+        self.notify(f"Role Transcript generated: {result.removed_count} backchannel{'' if result.removed_count == 1 else 's'} removed.")
 
     def _after_generate_ledger(self, _result: None) -> None:
         self._refresh_indicators()
         self.notify("Ledger generated.")
-
-    # Generate Summary -- gated by the role-transcript artifact (see check_action).
-
-    def action_generate_summary(self) -> None:
-        self.run_with_progress(
-            title="Generate Summary",
-            message="Generating summary…",
-            work=lambda: self.application.generate_summary(self._session_id),
-            on_success=self._after_generate_summary,
-        )
 
     def _after_generate_summary(self, _result: None) -> None:
         self._refresh_indicators()

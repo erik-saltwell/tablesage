@@ -107,7 +107,7 @@ not here — this doc holds each phase's scope/narrative only.
 
 ## Phase 8 — Session Detail screen
 
-- New `screens/session_detail.py`, `composite` shape per `.documentation/session_detail_screen.md`: inline metadata form (name, date, read-only status label), no tabs — attendance list on the left, artifact indicators (Input Audio / Processed Session / Session Summary) on the right.
+- New `screens/session_detail.py`, `composite` shape per `.documentation/session_detail_screen.md`: inline metadata form (name, date, read-only Last Transcribed value derived from `transcript.json`'s file date), no tabs — attendance list on the left, artifact indicators on the right. Campaign Detail's Sessions table shows sequence number, name, and date, without the stored status.
 - Attendance: `N` opens a roster-member picker (excludes current attendees), seeds one role translating the `GAME_MASTER_ROLE` magic value to "Game Master" (mirrors the Phase 4 Roster-tab display rule — this finally resolves the "unresolved, revisit when Session Detail is designed" note from `tablesage_tui_screens.md`); `E`/Enter opens a new free-text multi-role editor dialog per attendee; `D` removes an attendee, `ConfirmationDialog` first. New application-layer methods for `session_attendance`/`session_attendance_role` CRUD.
 - `I` Import audio: `TextInputDialog` path entry, validated and copied into the session folder under a fixed filename. If a processed session and/or summary already exist, deletes them immediately (destructive, confirmed) before the new audio lands.
 - Indicators are computed from the filesystem only (no `session_artifact` table use), and gate `P`/`G` — both bindings exist this phase but stay stubbed (notify only) until Phases 11/12.

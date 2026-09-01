@@ -92,7 +92,7 @@ Kind: `editable-root` child list (rows = `campaign_player`).
 
 Kind: `editable-root` child list (rows = `Session`).
 
-- Columns: sequence number, name, date, status.
+- Columns: sequence number, name, date.
 - `N` new — **real**: `TextInputDialog` for a name, creates via `create_session`, opens Session Detail. `E`/Enter open — **real**: opens Session Detail for the selected session. `D` delete — **real**: hard-deletes the `Session` row (DB-only; the on-disk folder is left as an orphan for `C` to clean up later), confirmed via `ConfirmationDialog`.
 - `C` cleanup — **real**: removes session folders on disk (within this campaign's folder) that have no matching `Session` row in the DB. Confirmed via `ConfirmationDialog`.
 - Seeding a new session attendee's `session_attendance_role` from their `campaign_player.default_role_name` translates the `"game-master"` magic value into the human-readable string `"Game Master"` — see `.documentation/session_detail_screen.md`.
