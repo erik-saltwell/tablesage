@@ -1,12 +1,29 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 from tablesage_model.settings import AppSettings
 from tablesage_model.setup import ensure_settings
 from tablesage_tui.resources import load_resource
 from tablesage_tui.screens import main_app
+from textual.app import App
+
+
+def test_error_notifications_do_not_expire() -> None:
+    app = main_app.TableSageApp()
+
+    with patch.object(App, "notify") as notify:
+        app.notify("Something failed", severity="error")
+
+    notify.assert_called_once_with(
+        "Something failed",
+        title="",
+        severity="error",
+        timeout=float("inf"),
+        markup=True,
+    )
 
 
 def test_packaged_settings_yaml_deploys_and_loads_with_expected_defaults(tmp_path: Path) -> None:
@@ -31,6 +48,7 @@ def test_packaged_settings_yaml_deploys_and_loads_with_expected_defaults(tmp_pat
     assert settings.speaker_identification.cluster_propagation.contradiction_veto_margin_threshold == 0.02
     assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
     assert settings.speaker_identification.allow_unassigned is True
+    assert settings.llm_model_high == "anthropic/claude-fable-5"
 
 
 def test_packaged_settings_yaml_is_not_redeployed_over_user_edits(tmp_path: Path) -> None:
