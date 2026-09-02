@@ -295,6 +295,23 @@ def test_can_transcribe_audio_requires_input_audio_and_attendees(tmp_path: Path,
     assert reason is None
 
 
+def test_can_clean_session_requires_any_artifact(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+
+    enabled, reason = application.can_clean_session(game_session.id)
+    assert not enabled
+    assert reason == "No artifacts to delete."
+
+    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    (folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_text("audio")
+
+    enabled, reason = application.can_clean_session(game_session.id)
+    assert enabled
+    assert reason is None
+
+
 def test_can_export_artifacts_requires_a_user_facing_artifact(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))

@@ -483,26 +483,22 @@ class Application:
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
 
-    def next_generation_step(self, session_id: uuid.UUID) -> artifacts.GenerationStep | None:
-        """The next of Role Transcript / Ledger / Summary this session is missing, in dependency
-        order -- `None` if there's no machine Transcript yet, or every step is already done. Drives
-        Session Detail's Generate (`G`) action, which cannot be aimed at a specific output."""
+    def can_clean_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return artifacts.next_generation_step(self._session_folder(session, game_session))
+            return processing.can_clean_session(self._session_folder(session, game_session))
 
-    def delete_transcript(self, session_id: uuid.UUID) -> None:
-        """Delete the machine transcript and everything derived from it (Reviewed Transcript,
-        Role Transcript, benchmark, Ledger, Summary) -- everything except the raw input audio.
+    def clean_session(self, session_id: uuid.UUID) -> None:
+        """Delete every artifact for this session, including the raw input audio.
 
-        Backs Session Detail's Clean Transcript (`C`) action, always behind a confirmation since
+        Backs Session Detail's Clean Session (`C`) action, always behind a confirmation since
         it's destructive and, unlike every other invalidation in this screen, not a side effect of
         some other edit -- it's the whole point of pressing the binding.
         """
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
-        artifacts.delete_transcript_and_dependents(session_folder)
+        artifacts.delete_all_artifacts(session_folder)
 
     def clean_transcript(
         self,

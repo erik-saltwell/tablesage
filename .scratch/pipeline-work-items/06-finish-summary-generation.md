@@ -43,8 +43,10 @@ Implemented 2026-09-02:
 - `packages/tablesage-application/tests/session_pipeline/test_generate_summary.py`,
   `test_processing.py`, `packages/tablesage-application/tests/llm/test_llm_helper.py`.
 
+The user finished writing `summarize_session/system.md`'s real content (Overview, Input
+Description, Summary Description, Output Format), and it landed along with the code in commit
+`678fd8d`.
+
 ## Triage state
 
-`ready-for-human` — code and tests are done (507 tests passing, ruff/ty clean) but uncommitted;
-the user is writing `summarize_session/system.md`'s real content next, and this item shouldn't be
-closed out until that lands and the change is committed.
+`complete` — commit `678fd8d`.

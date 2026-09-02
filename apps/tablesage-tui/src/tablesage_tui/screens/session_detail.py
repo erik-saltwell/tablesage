@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 
 from tablesage_application.paths import ARTIFACTS, ArtifactCategory, ArtifactName
 from tablesage_application.session_pipeline import clean_transcript, import_audio, transcribe_audio
-from tablesage_application.session_pipeline.artifacts import GenerationStep
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -39,29 +38,24 @@ _CLEAN_STAGE_LABELS = {
     clean_transcript.Stage.ASSIGNING_ROLES: "Assigning roles…",
 }
 
-_GENERATION_STEP_LABELS = {
-    GenerationStep.ROLE_TRANSCRIPT: "Role Transcript",
-    GenerationStep.LEDGER: "Ledger",
-    GenerationStep.SUMMARY: "Summary",
-}
+_ATTENDANCE_ACTIONS = frozenset({"new_attendee", "edit_attendee", "delete_attendee"})
 
 
 class SessionDetailScreen(TableSageScreen):
-    """A single session's metadata, attendance, and artifact indicators."""
+    """A single session's metadata, attendance, artifact indicators, and processing errors."""
 
     section = "session detail"
-    AUTO_FOCUS = ""
+    AUTO_FOCUS = "#attendance-table"
     BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
         Binding("n,N", "new_attendee", "New", key_display="N"),
         Binding("enter,e,E", "edit_attendee", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_attendee", "Delete", key_display="D"),
-        Binding("i,I", "import_audio", "Imp Audio", key_display="I"),
-        Binding("t,T", "transcribe_audio", "Transcribe", key_display="T"),
-        Binding("r,R", "manual_review", "Review", key_display="R"),
+        Binding("a,A", "import_audio", "Import Audio", key_display="A"),
+        Binding("r,R", "review_transcript", "Review Transcript", key_display="R"),
         Binding("b,B", "generate_benchmark_transcript", "Benchmark", key_display="B"),
-        Binding("c,C", "clean_transcript", "Clean Transcript", key_display="C"),
-        Binding("g,G", "generate", "Generate", key_display="G"),
+        Binding("g,G", "generate", "Generate Outputs", key_display="G"),
+        Binding("c,C", "clean_session", "Clean Session", key_display="C"),
         Binding("l,L", "extract_glossary", "Extract Glossary", key_display="L"),
         Binding("x,X", "export_artifacts", "Export", key_display="X"),
     ]
@@ -90,13 +84,23 @@ class SessionDetailScreen(TableSageScreen):
 
             with Horizontal(id="session-detail-body"):
                 with Vertical(id="session-attendance-column"):
-                    yield Static("Attendance", classes="section-title")
-                    table: DataTable[str] = DataTable(
-                        id="attendance-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
-                    )
-                    table.add_column("Player", key="player")
-                    table.add_column("Roles", key="roles")
-                    yield table
+                    with Vertical(id="attendance-section"):
+                        yield Static("Attendance", classes="section-title")
+                        attendance_table: DataTable[str] = DataTable(
+                            id="attendance-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+                        )
+                        attendance_table.add_column("Player", key="player")
+                        attendance_table.add_column("Roles", key="roles")
+                        yield attendance_table
+
+                    with Vertical(id="errors-section"):
+                        yield Static("Errors", classes="section-title")
+                        error_table: DataTable[str] = DataTable(
+                            id="error-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+                        )
+                        error_table.add_column("Action", key="action")
+                        error_table.add_column("Error", key="error")
+                        yield error_table
 
                 with Vertical(id="session-indicators-column"):
                     yield Static("Artifacts", classes="section-title")
@@ -138,7 +142,7 @@ class SessionDetailScreen(TableSageScreen):
             # `Input` doesn't blur itself on Enter (unlike losing focus, which is what actually
             # triggers `CommittingInput.Committed` -- see its docstring), so without this the
             # field would keep focus indefinitely, silently swallowing every single-letter
-            # binding below (I/T/R/B/C/G/X, N/E/D) as plain text instead of firing them.
+            # binding below (A/R/B/G/C/X, N/E/D) as plain text instead of firing them.
             self.query_one("#attendance-table", DataTable).focus()
 
     def _commit_metadata(self, input_widget: CommittingInput) -> None:
@@ -217,17 +221,21 @@ class SessionDetailScreen(TableSageScreen):
         return f"{symbol} {label}"
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action == "transcribe_audio":
-            enabled, _ = self.application.can_transcribe_audio(self._session_id)
-            return True if enabled else None
-        if action == "manual_review":
+        if action in _ATTENDANCE_ACTIONS:
+            if self.focused is not self.query_one("#attendance-table", DataTable):
+                return None
+            if action in ("edit_attendee", "delete_attendee") and self._selected_attendee() is None:
+                return None
+            return True
+        if action == "review_transcript":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate_benchmark_transcript":
             return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
-        if action == "clean_transcript":
-            return True if self.application.session_artifacts(self._session_id)[ArtifactName.TRANSCRIPT] else None
         if action == "generate":
-            return True if self.application.next_generation_step(self._session_id) is not None else None
+            return True if self.application.session_artifacts(self._session_id)[ArtifactName.REVIEWED_TRANSCRIPT] else None
+        if action == "clean_session":
+            enabled, _ = self.application.can_clean_session(self._session_id)
+            return True if enabled else None
         if action == "extract_glossary":
             enabled, _ = self.application.can_extract_glossary(self._session_id)
             return True if enabled else None
@@ -236,9 +244,8 @@ class SessionDetailScreen(TableSageScreen):
             return True if enabled else None
         return True
 
-    # Invalidation guard -- shared by every destructive edit (import audio,
-    # add/remove attendee, edit roles): confirm first only if there's
-    # something derived (i.e. not IMPORTED) to lose.
+    # Invalidation guard -- shared by every destructive attendance edit (add/remove attendee,
+    # edit roles): confirm first only if there's something derived (i.e. not IMPORTED) to lose.
 
     def _with_invalidation_guard(self, action: Callable[[], None]) -> None:
         session_artifacts = self.application.session_artifacts(self._session_id)
@@ -261,9 +268,29 @@ class SessionDetailScreen(TableSageScreen):
             on_confirm,
         )
 
-    # Import audio
+    # Errors -- a permanent, table-shaped record of what went wrong the last time Import Audio,
+    # Generate Outputs, or Clean Session ran. Cleared the instant one of those three bindings
+    # fires (before any picker/dialog/validation), then populated with whatever that run
+    # actually encountered. An empty table after a run is itself the "no errors" signal.
+
+    def _clear_errors(self) -> None:
+        self.query_one("#error-table", DataTable).clear()
+
+    def _record_error(self, action_label: str, message: str) -> None:
+        self.query_one("#error-table", DataTable).add_row(action_label, message)
+        self.notify(message, severity="error")
+
+    # Import audio -- combines today's Import and Transcribe into one action. Import always
+    # overwrites input_audio.wav and clears derived artifacts once cleaning succeeds; Transcribe
+    # is then always attempted. If Transcribe's own preconditions (attendees/centroids) aren't
+    # met, that failure is reported as an error rather than blocking Import itself -- the audio
+    # is already imported by that point. The only remaining prompt is "Clean Audio?" for a .wav
+    # file, which is a functional choice (skip cleaning if it's already been cleaned), not a
+    # safety confirmation.
 
     def action_import_audio(self) -> None:
+        self._clear_errors()
+
         def on_picked(source_path: Path | None) -> None:
             if source_path is None:
                 return
@@ -271,19 +298,38 @@ class SessionDetailScreen(TableSageScreen):
             try:
                 self.application.validate_import_audio_source(source_path)
             except ValueError as exc:
-                self.notify(str(exc), severity="error")
+                self._record_error("Import Audio", str(exc))
                 return
 
-            def do_import(*, should_clean_audio: bool) -> None:
+            def do_import_and_transcribe(*, should_clean_audio: bool) -> None:
                 session_folder = self.application.session_folder(self._session_id)
                 normalize_volume = self.application.settings.session_audio_import.normalize_volume
+                centroids = self.application.session_player_centroids(self._session_id)
+                settings = self.application.settings
+
+                def work() -> transcribe_audio.TranscriptionResult:
+                    import_audio.import_audio(source_path, session_folder, normalize_volume, should_clean_audio=should_clean_audio)
+                    enabled, reason = self.application.can_transcribe_audio(self._session_id)
+                    if not enabled:
+                        raise RuntimeError(reason or "Cannot transcribe audio.")
+                    embed = self.application.embedding_factory()
+                    return transcribe_audio.transcribe_audio(
+                        session_folder,
+                        centroids,
+                        embed,
+                        settings.transcription_and_diarization,
+                        settings.speaker_identification,
+                        settings.remove_backchannels,
+                        settings.llm_model_lite,
+                        on_progress=self._on_transcribe_progress,
+                    )
+
                 self.run_with_progress(
                     title="Import Audio",
                     message="Cleaning audio…" if should_clean_audio else "Importing audio…",
-                    work=lambda: import_audio.import_audio(
-                        source_path, session_folder, normalize_volume, should_clean_audio=should_clean_audio
-                    ),
-                    on_success=self._after_import_audio,
+                    work=work,
+                    on_success=self._after_import_and_transcribe,
+                    on_error=lambda exc: self._record_error("Import Audio", str(exc)),
                 )
 
             if source_path.suffix.lower() == ".wav":
@@ -291,7 +337,7 @@ class SessionDetailScreen(TableSageScreen):
                 def on_clean_choice(should_clean_audio: bool | None) -> None:
                     if should_clean_audio is None:
                         return
-                    self._with_invalidation_guard(lambda: do_import(should_clean_audio=should_clean_audio))
+                    do_import_and_transcribe(should_clean_audio=should_clean_audio)
 
                 self.app.push_screen(
                     ConfirmationDialog(
@@ -301,7 +347,7 @@ class SessionDetailScreen(TableSageScreen):
                     on_clean_choice,
                 )
             else:
-                self._with_invalidation_guard(lambda: do_import(should_clean_audio=True))
+                do_import_and_transcribe(should_clean_audio=True)
 
         extensions = self.application.audio_import_extensions()
         audio_filter = Filters(
@@ -315,72 +361,12 @@ class SessionDetailScreen(TableSageScreen):
             on_picked,
         )
 
-    def _after_import_audio(self, _result: None) -> None:
-        self._refresh_indicators()
-        self.notify("Input audio imported.")
-
-    # Transcribe
-
-    def action_transcribe_audio(self) -> None:
-        # No generic invalidation guard: a successful transcription replaces its transcript
-        # artifacts and invalidates FROM_LOG outputs; a failed one preserves them. But if a
-        # human has hand-corrected the transcript via Manual Review (R), rerunning here would
-        # silently discard them -- guarded separately, by count, rather than folded into
-        # `_with_invalidation_guard`'s generic wording.
-        adjusted_count = self.application.count_adjusted_utterances(self._session_id)
-        if adjusted_count:
-            plural = "" if adjusted_count == 1 else "s"
-
-            def on_confirm(confirmed: bool | None) -> None:
-                if confirmed:
-                    self._do_transcribe_audio()
-
-            self.app.push_screen(
-                ConfirmationDialog(
-                    title="This Will Discard Manual Review Changes",
-                    prompt=f"This will discard changes to {adjusted_count} reviewed utterance{plural}. Continue?",
-                ),
-                on_confirm,
-            )
-            return
-
-        self._do_transcribe_audio()
-
-    def _do_transcribe_audio(self) -> None:
-        session_folder = self.application.session_folder(self._session_id)
-        centroids = self.application.session_player_centroids(self._session_id)
-        settings = self.application.settings
-
-        def work() -> transcribe_audio.TranscriptionResult:
-            # `embedding_factory()` loads the WeSpeaker ResNet34-LM model on first use
-            # (multi-second, possibly downloading it) -- called here, on the progress dialog's
-            # background thread, rather than before `run_with_progress`, so that cost is covered
-            # by the dialog instead of stalling the UI before it can even appear.
-            embed = self.application.embedding_factory()
-            return transcribe_audio.transcribe_audio(
-                session_folder,
-                centroids,
-                embed,
-                settings.transcription_and_diarization,
-                settings.speaker_identification,
-                settings.remove_backchannels,
-                settings.llm_model_lite,
-                on_progress=self._on_transcribe_progress,
-            )
-
-        self.run_with_progress(
-            title="Transcribe",
-            message=_STAGE_LABELS[transcribe_audio.Stage.TRANSCRIBING],
-            work=work,
-            on_success=self._after_transcribe_audio,
-        )
-
     def _on_transcribe_progress(self, stage: transcribe_audio.Stage, completed: int, total: int) -> None:
         self.report_stage_progress(_STAGE_LABELS[stage], completed, total)
 
-    def _after_transcribe_audio(self, result: transcribe_audio.TranscriptionResult) -> None:
+    def _after_import_and_transcribe(self, result: transcribe_audio.TranscriptionResult) -> None:
         self._refresh_indicators()
-        message = "Transcribed."
+        message = "Audio imported and transcribed."
         if result.unassigned_speaker_count:
             message += f" {result.unassigned_speaker_count} of {result.utterance_count} utterances need manual review."
         if result.removed_backchannel_count:
@@ -388,9 +374,9 @@ class SessionDetailScreen(TableSageScreen):
             message += f" {result.removed_backchannel_count} backchannel{plural} removed."
         self.notify(message)
 
-    # Manual review -- gated on the transcript artifact existing (see check_action).
+    # Review Transcript -- gated on the machine transcript artifact existing (see check_action).
 
-    def action_manual_review(self) -> None:
+    def action_review_transcript(self) -> None:
         self.app.push_screen(ManualReviewScreen(self._session_id))
 
     # Benchmark transcript -- gated on the transcript artifact existing (see check_action).
@@ -400,90 +386,74 @@ class SessionDetailScreen(TableSageScreen):
         result = self.application.generate_benchmark_transcript(self._session_id)
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
-    # Clean Transcript -- destructive: deletes the machine transcript and everything derived from
-    # it (Reviewed Transcript, Role Transcript, benchmark, Ledger, Summary), leaving only the raw
-    # input audio. Gated on the machine transcript existing (see check_action). Always confirmed,
-    # since unlike every other invalidation in this screen this isn't a side effect of some other
-    # edit -- it's the whole point of pressing the binding.
-
-    def action_clean_transcript(self) -> None:
-        def on_confirm(confirmed: bool | None) -> None:
-            if not confirmed:
-                return
-            self.application.delete_transcript(self._session_id)
-            self._refresh_indicators()
-            self.notify("Transcript and dependent artifacts deleted.")
-
-        self.app.push_screen(
-            ConfirmationDialog(
-                title="Delete Transcript",
-                prompt=(
-                    "This will delete the transcript and everything generated from it -- Reviewed "
-                    "Transcript, Role Transcript, benchmark, Ledger, and Summary. Continue?"
-                ),
-            ),
-            on_confirm,
-        )
-
-    # Generate -- produces whichever of Role Transcript / Ledger / Summary this session is
-    # missing next, in dependency order (see `next_generation_step`). The user can't choose which
-    # one; a confirmation names the step Generate is about to run. Gated on there being a next
-    # step at all (see check_action).
+    # Generate Outputs -- runs Role Transcript (the same post-review backchannel+role pass Clean
+    # Transcript used to expose as its own step), then Ledger, then Summary, in one call with no
+    # intermediate confirmation: every step writes via temp-then-rename, so there's nothing to
+    # lose by running immediately. Gated on a completed Manual Review (see check_action) -- Role
+    # Transcript generation is no longer a separately triggerable step, just an internal part of
+    # this one.
 
     def action_generate(self) -> None:
-        step = self.application.next_generation_step(self._session_id)
-        if step is None:
-            return
+        self._clear_errors()
 
-        def on_confirm(confirmed: bool | None) -> None:
-            if confirmed:
-                self._do_generate(step)
+        def work() -> None:
+            try:
+                self.report_stage_progress(_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS], 0, 0)
+                self.application.clean_transcript(self._session_id, on_progress=self._on_clean_progress)
+            except Exception as exc:
+                raise RuntimeError(f"Role Transcript generation failed: {exc}") from exc
+            try:
+                self.report_stage_progress("Generating Ledger…", 0, 0)
+                self.application.generate_ledger(self._session_id)
+            except Exception as exc:
+                raise RuntimeError(f"Ledger generation failed: {exc}") from exc
+            try:
+                self.report_stage_progress("Generating Summary…", 0, 0)
+                self.application.generate_summary(self._session_id)
+            except Exception as exc:
+                raise RuntimeError(f"Summary generation failed: {exc}") from exc
 
-        self.app.push_screen(
-            ConfirmationDialog(
-                title="Generate",
-                prompt=f"Generate the {_GENERATION_STEP_LABELS[step]}?",
-            ),
-            on_confirm,
+        self.run_with_progress(
+            title="Generate Outputs",
+            message=_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
+            work=work,
+            on_success=self._after_generate,
+            on_error=lambda exc: self._record_error("Generate Outputs", str(exc)),
         )
-
-    def _do_generate(self, step: GenerationStep) -> None:
-        if step is GenerationStep.ROLE_TRANSCRIPT:
-            self.run_with_progress(
-                title="Generate Role Transcript",
-                message=_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
-                work=lambda: self.application.clean_transcript(self._session_id, on_progress=self._on_clean_progress),
-                on_success=self._after_generate_role_transcript,
-            )
-        elif step is GenerationStep.LEDGER:
-            self.run_with_progress(
-                title="Generate Ledger",
-                message="Generating Ledger…",
-                work=lambda: self.application.generate_ledger(self._session_id),
-                on_success=self._after_generate_ledger,
-            )
-        elif step is GenerationStep.SUMMARY:
-            self.run_with_progress(
-                title="Generate Summary",
-                message="Generating summary…",
-                work=lambda: self.application.generate_summary(self._session_id),
-                on_success=self._after_generate_summary,
-            )
 
     def _on_clean_progress(self, stage: clean_transcript.Stage, completed: int, total: int) -> None:
         self.report_stage_progress(_CLEAN_STAGE_LABELS[stage], completed, total)
 
-    def _after_generate_role_transcript(self, result: clean_transcript.CleanTranscriptResult) -> None:
+    def _after_generate(self, _result: None) -> None:
         self._refresh_indicators()
-        self.notify(f"Role Transcript generated: {result.removed_count} backchannel{'' if result.removed_count == 1 else 's'} removed.")
+        self.notify("Outputs generated.")
 
-    def _after_generate_ledger(self, _result: None) -> None:
-        self._refresh_indicators()
-        self.notify("Ledger generated.")
+    # Clean Session -- destructive: deletes every artifact for this session, including the raw
+    # input audio. Gated on there being anything to delete (see check_action). Always confirmed,
+    # since unlike every other invalidation in this screen this isn't a side effect of some other
+    # edit -- it's the whole point of pressing the binding.
 
-    def _after_generate_summary(self, _result: None) -> None:
-        self._refresh_indicators()
-        self.notify("Summary generated.")
+    def action_clean_session(self) -> None:
+        self._clear_errors()
+
+        def on_confirm(confirmed: bool | None) -> None:
+            if not confirmed:
+                return
+            try:
+                self.application.clean_session(self._session_id)
+            except Exception as exc:
+                self._record_error("Clean Session", str(exc))
+                return
+            self._refresh_indicators()
+            self.notify("All artifacts deleted.")
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Clean Session",
+                prompt="This will permanently delete every artifact for this session, including the input audio. Continue?",
+            ),
+            on_confirm,
+        )
 
     # Extract Glossary -- independent of Generate and gated on a Role Transcript.
 

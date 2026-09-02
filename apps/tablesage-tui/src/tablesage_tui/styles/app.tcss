@@ -1336,10 +1336,23 @@ SessionDetailScreen {
         margin: 0 4 0 0;
     }
 
+    #attendance-section {
+        height: 2fr;
+    }
+
+    #errors-section {
+        height: 1fr;
+        margin: 1 0 0 0;
+    }
+
     #attendance-table {
         /* Long, comma-separated role lists should clip, not grow a
            horizontal scrollbar -- there's no way to scroll a DataTable
            column of unbounded width and it's not worth adding one for this. */
+        overflow-x: hidden;
+    }
+
+    #error-table {
         overflow-x: hidden;
     }
 

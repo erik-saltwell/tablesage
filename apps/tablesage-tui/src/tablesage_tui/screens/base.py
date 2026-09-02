@@ -36,6 +36,7 @@ class TableSageScreen(Screen[None]):
     ]
 
     _progress_on_success: Callable[[Any], None] | None = None
+    _progress_on_error: Callable[[BaseException], None] | None = None
     _progress_dialog: ProgressDialog | None = None
 
     def compose(self) -> ComposeResult:
@@ -103,7 +104,15 @@ class TableSageScreen(Screen[None]):
 
         self.app.push_screen(ConfirmationDialog(title=title, prompt=prompt), on_confirm)
 
-    def run_with_progress(self, *, title: str, message: str, work: Callable[[], ResultT], on_success: Callable[[ResultT], None]) -> None:
+    def run_with_progress(
+        self,
+        *,
+        title: str,
+        message: str,
+        work: Callable[[], ResultT],
+        on_success: Callable[[ResultT], None],
+        on_error: Callable[[BaseException], None] | None = None,
+    ) -> None:
         """Run `work` on a background thread behind a cancel-less `ProgressDialog`.
 
         `on_success` runs once `work` finishes, after the dialog is popped --
@@ -113,8 +122,13 @@ class TableSageScreen(Screen[None]):
         is itself deferred via `call_after_refresh` (see `on_worker_state_changed`)
         so any widget mutation it makes (e.g. reloading a list) lands after the
         dialog-pop's own screen transition has rendered, not racing it.
+
+        `on_error`, if given, replaces the default error toast on failure -- for callers that
+        want to route the failure somewhere more durable (e.g. a permanent error table) instead
+        of (or in addition to) a toast. Every other caller keeps today's plain toast.
         """
         self._progress_on_success = on_success
+        self._progress_on_error = on_error
         dialog = ProgressDialog(title=title, message=message)
         self._progress_dialog = dialog
         self.app.push_screen(dialog)
@@ -165,9 +179,15 @@ class TableSageScreen(Screen[None]):
 
         on_success = self._progress_on_success
         self._progress_on_success = None
+        on_error = self._progress_on_error
+        self._progress_on_error = None
 
         if event.state == WorkerState.ERROR:
-            self.notify(str(event.worker.error), severity="error")
+            assert event.worker.error is not None
+            if on_error is not None:
+                on_error(event.worker.error)
+            else:
+                self.notify(str(event.worker.error), severity="error")
             return
 
         if on_success is not None:

@@ -43,6 +43,30 @@ exists, running the action does Ledger then Summary only).
 - `apps/tablesage-tui/tests/test_session_detail.py` — `test_generate_role_transcript_step_*`,
   `test_generate_ledger_step_*`, `test_generate_summary_step_*`.
 
+## Resolution
+
+Implemented 2026-09-02 as part of a broader Session Detail bindings-simplification overhaul, which
+superseded some of the acceptance criteria above:
+
+- `G` runs Role Transcript → Ledger → Summary in one call, as scoped. But it always runs all
+  three (there is no "whichever are still missing" partial-completion logic anymore), it shows
+  **no confirmation dialog** (the user decided, when this landed, that since every step writes
+  via temp-then-rename there's nothing to confirm), and its gate is a direct check on
+  `transcript_reviewed.json` existing rather than `next_generation_step`/`GenerationStep`, which
+  were deleted as dead code -- Role Transcript generation is no longer independently named or
+  reachable, so there was no longer a "how many steps remain" question to answer.
+- The progress-modal-with-per-stage-labels and mid-chain-failure-reports-which-step criteria
+  landed as scoped: `_CLEAN_STAGE_LABELS` reused for the Role Transcript phase, "Generating
+  Ledger…" / "Generating Summary…" for the other two, and each phase's `try/except` re-raises
+  with a step-name prefix.
+- `Application.clean_transcript` / `generate_ledger` / `generate_summary` are unchanged, called
+  directly from `action_generate`'s `work()` closure in the TUI layer, exactly as scoped.
+- `.documentation/session_detail_screen.md`'s Generate section and
+  `test_session_detail.py`'s Generate tests were updated as part of the same change.
+
+See `.documentation/session_detail_screen.md`'s "Generate Outputs" section for the final,
+current behavior.
+
 ## Triage state
 
-`ready-for-agent`.
+`complete`.

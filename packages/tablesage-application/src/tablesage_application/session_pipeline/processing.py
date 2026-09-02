@@ -36,3 +36,9 @@ def can_generate_summary(session_folder: Path) -> tuple[bool, str | None]:
     if not session_artifacts(session_folder)[ArtifactName.LEDGER]:
         return False, "Generate the Ledger first."
     return True, None
+
+
+def can_clean_session(session_folder: Path) -> tuple[bool, str | None]:
+    if not any(session_artifacts(session_folder).values()):
+        return False, "No artifacts to delete."
+    return True, None

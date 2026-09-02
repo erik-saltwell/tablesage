@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from tablesage_application.entities.sessions import Attendee
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_application.session_pipeline.artifacts import GenerationStep
+from tablesage_application.session_pipeline.clean_transcript import CleanTranscriptResult
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_application.session_pipeline.transcribe_audio import TranscriptionResult
 from tablesage_application.session_pipeline.transcript_review import BenchmarkTranscriptResult
@@ -54,11 +54,10 @@ def _application(
     attendees: list[Attendee] | None = None,
     artifacts: dict[ArtifactName, bool] | None = None,
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
-    next_generation_step: GenerationStep | None = None,
+    can_clean_session: tuple[bool, str | None] = (False, "No artifacts to delete."),
     can_export: tuple[bool, str | None] = (False, "No artifacts to export yet."),
     can_extract_glossary: tuple[bool, str | None] = (False, "Generate the Role Transcript first."),
     session_folder: Path | None = None,
-    adjusted_count: int = 0,
 ) -> MagicMock:
     session = session or GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     return MagicMock(
@@ -66,16 +65,16 @@ def _application(
         list_attendance=MagicMock(return_value=attendees or []),
         session_artifacts=MagicMock(return_value=artifacts or _artifacts()),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
-        next_generation_step=MagicMock(return_value=next_generation_step),
+        can_clean_session=MagicMock(return_value=can_clean_session),
         can_export_artifacts=MagicMock(return_value=can_export),
         can_extract_glossary=MagicMock(return_value=can_extract_glossary),
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
         session_player_roles=MagicMock(return_value={}),
+        list_glossary_entries=MagicMock(return_value=[]),
         embedding_factory=MagicMock(),
         settings=AppSettings(),
-        count_adjusted_utterances=MagicMock(return_value=adjusted_count),
     )
 
 
@@ -100,11 +99,10 @@ def test_binding_keys_and_footer_labels() -> None:
             "edit_attendee",
             "delete_attendee",
             "import_audio",
-            "transcribe_audio",
-            "manual_review",
+            "review_transcript",
             "generate_benchmark_transcript",
-            "clean_transcript",
             "generate",
+            "clean_session",
             "extract_glossary",
             "export_artifacts",
         )
@@ -112,12 +110,11 @@ def test_binding_keys_and_footer_labels() -> None:
         "new_attendee": ("n,N", "New", "N"),
         "edit_attendee": ("enter,e,E", "Edit", "E"),
         "delete_attendee": ("d,D,delete,backspace", "Delete", "D"),
-        "import_audio": ("i,I", "Imp Audio", "I"),
-        "transcribe_audio": ("t,T", "Transcribe", "T"),
-        "manual_review": ("r,R", "Review", "R"),
+        "import_audio": ("a,A", "Import Audio", "A"),
+        "review_transcript": ("r,R", "Review Transcript", "R"),
         "generate_benchmark_transcript": ("b,B", "Benchmark", "B"),
-        "clean_transcript": ("c,C", "Clean Transcript", "C"),
-        "generate": ("g,G", "Generate", "G"),
+        "generate": ("g,G", "Generate Outputs", "G"),
+        "clean_session": ("c,C", "Clean Session", "C"),
         "extract_glossary": ("l,L", "Extract Glossary", "L"),
         "export_artifacts": ("x,X", "Export", "X"),
     }
@@ -178,7 +175,7 @@ async def test_rename_commits_on_enter() -> None:
 async def test_shortcut_keys_work_again_after_committing_name_with_enter() -> None:
     """Regression test: `Input` doesn't blur itself on Enter, so without an explicit focus
     move after committing, the name field would keep focus indefinitely and every single-letter
-    binding (T, R, B, C, G, X, N, E, D) would silently type into it instead of firing."""
+    binding (A, R, B, G, C, X, N, E, D) would silently type into it instead of firing."""
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(input_audio=True), can_transcribe=(True, None))
 
@@ -191,12 +188,12 @@ async def test_shortcut_keys_work_again_after_committing_name_with_enter() -> No
         await pilot.press("enter")
         await pilot.pause()
 
-        with patch.object(SessionDetailScreen, "action_transcribe_audio") as action:
-            await pilot.press("t")
+        with patch.object(SessionDetailScreen, "action_import_audio") as action:
+            await pilot.press("a")
             await pilot.pause()
 
         action.assert_called_once()
-        assert name_input.value == "Renamed"  # the "t" fired the binding, it wasn't typed into the field
+        assert name_input.value == "Renamed"  # the "a" fired the binding, it wasn't typed into the field
 
 
 @pytest.mark.anyio
@@ -300,9 +297,24 @@ async def test_indicators_reflect_artifact_state() -> None:
 
 
 @pytest.mark.anyio
-async def test_clean_transcript_disabled_without_transcript() -> None:
+async def test_attendance_and_error_tables_both_have_nonzero_layout_height() -> None:
+    """Both tables must actually be visible, not one growing to squeeze the other to zero."""
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(transcript=False))
+    application = _application(session=session)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        attendance_table = pilot.app.screen.query_one("#attendance-table", DataTable)
+        error_table = pilot.app.screen.query_one("#error-table", DataTable)
+        assert attendance_table.region.height > 0
+        assert error_table.region.height > 0
+
+
+@pytest.mark.anyio
+async def test_clean_session_disabled_without_artifacts() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, can_clean_session=(False, "No artifacts to delete."))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -311,14 +323,14 @@ async def test_clean_transcript_disabled_without_transcript() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, SessionDetailScreen)
-        application.delete_transcript.assert_not_called()
+        application.clean_session.assert_not_called()
 
 
 @pytest.mark.anyio
-async def test_clean_transcript_confirmed_deletes_and_refreshes() -> None:
+async def test_clean_session_confirmed_deletes_and_refreshes() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(transcript=True))
-    application.delete_transcript = MagicMock(return_value=None)
+    application = _application(session=session, artifacts=_artifacts(input_audio=True), can_clean_session=(True, None))
+    application.clean_session = MagicMock(return_value=None)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -327,20 +339,22 @@ async def test_clean_transcript_confirmed_deletes_and_refreshes() -> None:
             await pilot.press("c")
             await pilot.pause()
 
-            assert isinstance(pilot.app.screen, ConfirmationDialog)
+            dialog = pilot.app.screen
+            assert isinstance(dialog, ConfirmationDialog)
+            assert "input audio" in str(dialog.query_one("#confirmation-prompt", Static).render())
             await pilot.click("#confirmation-yes")
             await pilot.pause()
 
-        application.delete_transcript.assert_called_once_with(session.id)
+        application.clean_session.assert_called_once_with(session.id)
         assert application.session_artifacts.call_count >= 2
-        notify.assert_called_once_with("Transcript and dependent artifacts deleted.")
+        notify.assert_called_once_with("All artifacts deleted.")
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_clean_transcript_declined_does_not_delete() -> None:
+async def test_clean_session_declined_does_not_delete() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(transcript=True))
+    application = _application(session=session, artifacts=_artifacts(input_audio=True), can_clean_session=(True, None))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -350,13 +364,34 @@ async def test_clean_transcript_declined_does_not_delete() -> None:
         await pilot.click("#confirmation-no")
         await pilot.pause()
 
-        application.delete_transcript.assert_not_called()
+        application.clean_session.assert_not_called()
 
 
 @pytest.mark.anyio
-async def test_generate_disabled_when_nothing_to_generate() -> None:
+async def test_clean_session_failure_records_error() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, next_generation_step=None)
+    application = _application(session=session, artifacts=_artifacts(input_audio=True), can_clean_session=(True, None))
+    application.clean_session = MagicMock(side_effect=OSError("permission denied"))
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            await pilot.press("c")
+            await pilot.pause()
+            await pilot.click("#confirmation-yes")
+            await pilot.pause()
+
+        notify.assert_called_once_with("permission denied", severity="error")
+        error_table = pilot.app.screen.query_one("#error-table", DataTable)
+        assert error_table.row_count == 1
+        assert error_table.get_row_at(0) == ["Clean Session", "permission denied"]
+
+
+@pytest.mark.anyio
+async def test_generate_disabled_without_reviewed_transcript() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(reviewed_transcript=False))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -368,12 +403,15 @@ async def test_generate_disabled_when_nothing_to_generate() -> None:
 
 
 @pytest.mark.anyio
-async def test_generate_role_transcript_step_confirms_and_runs() -> None:
-    from tablesage_application.session_pipeline.clean_transcript import CleanTranscriptResult
-
+async def test_generate_runs_role_transcript_ledger_and_summary_in_order_with_no_confirmation() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, next_generation_step=GenerationStep.ROLE_TRANSCRIPT)
-    application.clean_transcript = MagicMock(return_value=CleanTranscriptResult(utterance_count=10, removed_count=4))
+    application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
+    call_order: list[str] = []
+    application.clean_transcript = MagicMock(
+        side_effect=lambda *a, **k: call_order.append("clean_transcript") or CleanTranscriptResult(utterance_count=10, removed_count=4)
+    )
+    application.generate_ledger = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_ledger"))
+    application.generate_summary = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_summary"))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -382,67 +420,68 @@ async def test_generate_role_transcript_step_confirms_and_runs() -> None:
             await pilot.press("g")
             await pilot.pause()
 
-            dialog = pilot.app.screen
-            assert isinstance(dialog, ConfirmationDialog)
-            assert "Role Transcript" in str(dialog.query_one("#confirmation-prompt", Static).render())
-            await pilot.click("#confirmation-yes")
-            await pilot.pause()
+            # No confirmation dialog -- straight to the progress modal (or already past it).
+            assert not isinstance(pilot.app.screen, ConfirmationDialog)
             await _wait_for_progress_worker(pilot)
 
-        application.clean_transcript.assert_called_once()
-        assert application.clean_transcript.call_args.args == (session.id,)
-        assert application.session_artifacts.call_count >= 2
-        notify.assert_called_once_with("Role Transcript generated: 4 backchannels removed.")
-
-
-@pytest.mark.anyio
-async def test_generate_ledger_step_confirms_and_runs() -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, next_generation_step=GenerationStep.LEDGER)
-    application.generate_ledger = MagicMock(return_value=None)
-
-    async with TableSageApp(application).run_test() as pilot:
-        await _open_session_detail(pilot, session.id)
-
-        with patch.object(SessionDetailScreen, "notify") as notify:
-            await pilot.press("g")
-            await pilot.pause()
-
-            dialog = pilot.app.screen
-            assert isinstance(dialog, ConfirmationDialog)
-            assert "Ledger" in str(dialog.query_one("#confirmation-prompt", Static).render())
-            await pilot.click("#confirmation-yes")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
+        assert call_order == ["clean_transcript", "generate_ledger", "generate_summary"]
+        assert application.clean_transcript.call_args.args[0] == session.id
         application.generate_ledger.assert_called_once_with(session.id)
+        application.generate_summary.assert_called_once_with(session.id)
         assert application.session_artifacts.call_count >= 2
-        notify.assert_called_once_with("Ledger generated.")
+        notify.assert_called_once_with("Outputs generated.")
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_generate_summary_step_confirms_and_runs() -> None:
+async def test_generate_mid_chain_failure_stops_chain_and_records_which_step_failed() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, next_generation_step=GenerationStep.SUMMARY)
+    application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
+    application.clean_transcript = MagicMock(return_value=CleanTranscriptResult(utterance_count=10, removed_count=4))
+    application.generate_ledger = MagicMock(side_effect=ValueError("provider timed out"))
+    application.generate_summary = MagicMock()
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        with patch.object(SessionDetailScreen, "notify") as notify:
+            await pilot.press("g")
+            await pilot.pause()
+            await _wait_for_progress_worker(pilot)
+
+        application.generate_summary.assert_not_called()
+        notify.assert_called_once_with("Ledger generation failed: provider timed out", severity="error")
+        error_table = pilot.app.screen.query_one("#error-table", DataTable)
+        assert error_table.row_count == 1
+        assert error_table.get_row_at(0) == ["Generate Outputs", "Ledger generation failed: provider timed out"]
+
+
+@pytest.mark.anyio
+async def test_generate_clears_previous_errors_on_a_fresh_press() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
+    application.clean_transcript = MagicMock(side_effect=[ValueError("boom"), CleanTranscriptResult(utterance_count=1, removed_count=0)])
+    application.generate_ledger = MagicMock(return_value=None)
     application.generate_summary = MagicMock(return_value=None)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        with patch.object(SessionDetailScreen, "notify") as notify:
-            await pilot.press("g")
-            await pilot.pause()
+        await pilot.press("g")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-            dialog = pilot.app.screen
-            assert isinstance(dialog, ConfirmationDialog)
-            assert "Summary" in str(dialog.query_one("#confirmation-prompt", Static).render())
-            await pilot.click("#confirmation-yes")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
+        error_table = pilot.app.screen.query_one("#error-table", DataTable)
+        assert error_table.row_count == 1
 
-        application.generate_summary.assert_called_once_with(session.id)
-        assert application.session_artifacts.call_count >= 2
-        notify.assert_called_once_with("Summary generated.")
+        await pilot.press("g")
+        await pilot.pause()
+
+        # cleared the instant the binding fired, before the second run's own outcome lands
+        assert error_table.row_count == 0
+
+        await _wait_for_progress_worker(pilot)
+        assert error_table.row_count == 0
 
 
 @pytest.mark.anyio
@@ -481,66 +520,54 @@ async def test_extract_glossary_empty_result_stays_on_session_detail() -> None:
 
 
 @pytest.mark.anyio
-async def test_generate_declined_does_not_run() -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, next_generation_step=GenerationStep.LEDGER)
-    application.generate_ledger = MagicMock(return_value=None)
-
-    async with TableSageApp(application).run_test() as pilot:
-        await _open_session_detail(pilot, session.id)
-
-        await pilot.press("g")
-        await pilot.pause()
-        await pilot.click("#confirmation-no")
-        await pilot.pause()
-
-        application.generate_ledger.assert_not_called()
-
-
-@pytest.mark.anyio
-async def test_import_audio_no_downstream_artifacts_imports_directly(tmp_path: Path) -> None:
+async def test_import_audio_no_downstream_confirmation_imports_and_transcribes(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     session_folder = tmp_path / "session"
-    application = _application(session=session, session_folder=session_folder)
+    application = _application(
+        session=session, artifacts=_artifacts(input_audio=True, ledger=True), can_transcribe=(True, None), session_folder=session_folder
+    )
     application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.wav"
+    source = tmp_path / "recording.m4a"
 
-    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio_mock:
+        with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe_mock:
+            transcribe_mock.return_value = TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
 
-            await pilot.press("i")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
+            async with TableSageApp(application).run_test() as pilot:
+                await _open_session_detail(pilot, session.id)
 
-            picker.dismiss(source)
-            await pilot.pause()
+                await pilot.press("a")
+                await pilot.pause()
+                picker = pilot.app.screen
+                assert isinstance(picker, FileOpen)
 
-            assert isinstance(pilot.app.screen, ConfirmationDialog)
-            await pilot.press("tab", "tab", "enter")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
+                picker.dismiss(source)
+                await pilot.pause()
 
-            application.validate_import_audio_source.assert_called_once_with(source)
-            import_audio.assert_called_once_with(
-                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
-            )
-            assert isinstance(pilot.app.screen, SessionDetailScreen)
+                # Note: pre-existing derived artifacts (ledger=True here) no longer trigger any
+                # confirmation for Import -- it proceeds straight to the progress modal.
+                assert not isinstance(pilot.app.screen, ConfirmationDialog)
+                await _wait_for_progress_worker(pilot)
+
+                import_audio_mock.assert_called_once_with(
+                    source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
+                )
+                transcribe_mock.assert_called_once()
+                assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_import_audio_validation_error_shows_notify_and_stops(tmp_path: Path) -> None:
+async def test_import_audio_validation_error_records_error_and_stops(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
     application.validate_import_audio_source = MagicMock(side_effect=ValueError("'recording.txt' isn't a recognized audio file."))
     source = tmp_path / "recording.txt"
 
-    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio_mock:
         async with TableSageApp(application).run_test() as pilot:
             await _open_session_detail(pilot, session.id)
 
-            await pilot.press("i")
+            await pilot.press("a")
             await pilot.pause()
             picker = pilot.app.screen
             assert isinstance(picker, FileOpen)
@@ -550,206 +577,141 @@ async def test_import_audio_validation_error_shows_notify_and_stops(tmp_path: Pa
                 await pilot.pause()
 
             notify.assert_called_once_with("'recording.txt' isn't a recognized audio file.", severity="error")
-            import_audio.assert_not_called()
+            import_audio_mock.assert_not_called()
+            error_table = pilot.app.screen.query_one("#error-table", DataTable)
+            assert error_table.row_count == 1
+            assert error_table.get_row_at(0) == ["Import Audio", "'recording.txt' isn't a recognized audio file."]
 
 
 @pytest.mark.anyio
-async def test_import_audio_with_downstream_artifacts_confirms_first(tmp_path: Path) -> None:
+async def test_import_audio_wav_prompts_clean_choice_then_transcribes(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     session_folder = tmp_path / "session"
-    application = _application(session=session, artifacts=_artifacts(input_audio=True, ledger=True), session_folder=session_folder)
+    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
     application.validate_import_audio_source = MagicMock()
     source = tmp_path / "recording.wav"
 
-    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio_mock:
+        with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe_mock:
+            transcribe_mock.return_value = TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
 
-            await pilot.press("i")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
+            async with TableSageApp(application).run_test() as pilot:
+                await _open_session_detail(pilot, session.id)
 
-            picker.dismiss(source)
-            await pilot.pause()
+                await pilot.press("a")
+                await pilot.pause()
+                picker = pilot.app.screen
+                assert isinstance(picker, FileOpen)
 
-            assert isinstance(pilot.app.screen, ConfirmationDialog)
-            await pilot.press("tab", "tab", "enter")
-            await pilot.pause()
+                picker.dismiss(source)
+                await pilot.pause()
 
-            assert isinstance(pilot.app.screen, ConfirmationDialog)
-            import_audio.assert_not_called()
+                dialog = pilot.app.screen
+                assert isinstance(dialog, ConfirmationDialog)
+                assert "noise-cleaning" in str(dialog.query_one("#confirmation-prompt", Static).render())
+                await pilot.click("#confirmation-yes")
+                await pilot.pause()
+                await _wait_for_progress_worker(pilot)
 
-            await pilot.press("tab", "tab", "enter")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-            import_audio.assert_called_once_with(
-                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
-            )
+                import_audio_mock.assert_called_once_with(
+                    source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
+                )
 
 
 @pytest.mark.anyio
 async def test_import_audio_wav_skip_cleaning_declined(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     session_folder = tmp_path / "session"
-    application = _application(session=session, session_folder=session_folder)
+    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
     application.validate_import_audio_source = MagicMock()
     source = tmp_path / "recording.wav"
 
-    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio_mock:
+        with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe_mock:
+            transcribe_mock.return_value = TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
 
-            await pilot.press("i")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
+            async with TableSageApp(application).run_test() as pilot:
+                await _open_session_detail(pilot, session.id)
 
-            picker.dismiss(source)
-            await pilot.pause()
+                await pilot.press("a")
+                await pilot.pause()
+                picker = pilot.app.screen
+                assert isinstance(picker, FileOpen)
 
-            assert isinstance(pilot.app.screen, ConfirmationDialog)
-            await pilot.press("tab", "enter")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
+                picker.dismiss(source)
+                await pilot.pause()
 
-            import_audio.assert_called_once_with(
-                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=False
-            )
-
-
-@pytest.mark.anyio
-async def test_import_audio_non_wav_skips_clean_prompt(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(session=session, session_folder=session_folder)
-    application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.m4a"
-
-    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
-
-            await pilot.press("i")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
-
-            picker.dismiss(source)
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-            import_audio.assert_called_once_with(
-                source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=True
-            )
-            assert isinstance(pilot.app.screen, SessionDetailScreen)
-
-
-@pytest.mark.anyio
-async def test_transcribe_disabled_does_not_run() -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, can_transcribe=(False, "Import input audio first."))
-
-    with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
-
-            await pilot.press("t")
-            await pilot.pause()
-
-            transcribe.assert_not_called()
-
-
-@pytest.mark.anyio
-async def test_transcribe_enabled_runs_and_reports_unassigned_speakers(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(
-        session=session, artifacts=_artifacts(input_audio=True), can_transcribe=(True, None), session_folder=session_folder
-    )
-
-    with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=3, removed_backchannel_count=2)
-
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
-
-            with patch.object(SessionDetailScreen, "notify") as notify:
-                await pilot.press("t")
+                assert isinstance(pilot.app.screen, ConfirmationDialog)
+                await pilot.click("#confirmation-no")
                 await pilot.pause()
                 await _wait_for_progress_worker(pilot)
 
-            screen = pilot.app.screen
-            assert isinstance(screen, SessionDetailScreen)
-            transcribe.assert_called_once_with(
-                session_folder,
-                {},
-                application.embedding_factory.return_value,
-                application.settings.transcription_and_diarization,
-                application.settings.speaker_identification,
-                application.settings.remove_backchannels,
-                application.settings.llm_model_lite,
-                on_progress=screen._on_transcribe_progress,
-            )
-            application.session_player_roles.assert_not_called()
-            notify.assert_called_once_with("Transcribed. 3 of 10 utterances need manual review. 2 backchannels removed.")
+                import_audio_mock.assert_called_once_with(
+                    source, session_folder, application.settings.session_audio_import.normalize_volume, should_clean_audio=False
+                )
 
 
 @pytest.mark.anyio
-async def test_transcribe_with_adjusted_utterances_asks_for_confirmation_first() -> None:
+async def test_import_audio_transcribe_precondition_not_met_records_error_but_import_already_ran(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = Path("/tmp/session")
-    application = _application(
-        session=session,
-        artifacts=_artifacts(input_audio=True),
-        can_transcribe=(True, None),
-        session_folder=session_folder,
-        adjusted_count=3,
-    )
+    session_folder = tmp_path / "session"
+    application = _application(session=session, can_transcribe=(False, "Missing voice profile for: Alice."), session_folder=session_folder)
+    application.validate_import_audio_source = MagicMock()
+    source = tmp_path / "recording.m4a"
 
-    with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        transcribe.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=0, removed_backchannel_count=0)
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio") as import_audio_mock:
+        with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe_mock:
+            async with TableSageApp(application).run_test() as pilot:
+                await _open_session_detail(pilot, session.id)
 
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
+                with patch.object(SessionDetailScreen, "notify") as notify:
+                    await pilot.press("a")
+                    await pilot.pause()
+                    picker = pilot.app.screen
+                    assert isinstance(picker, FileOpen)
+                    picker.dismiss(source)
+                    await pilot.pause()
+                    await _wait_for_progress_worker(pilot)
 
-            await pilot.press("t")
-            await pilot.pause()
-
-            dialog = pilot.app.screen
-            assert isinstance(dialog, ConfirmationDialog)
-            assert "changes to 3 reviewed utterances" in str(dialog.query_one("#confirmation-prompt", Static).render())
-            transcribe.assert_not_called()
-
-            await pilot.click("#confirmation-yes")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-            transcribe.assert_called_once()
-            assert isinstance(pilot.app.screen, SessionDetailScreen)
+                import_audio_mock.assert_called_once()
+                transcribe_mock.assert_not_called()
+                notify.assert_called_once_with("Missing voice profile for: Alice.", severity="error")
+                error_table = pilot.app.screen.query_one("#error-table", DataTable)
+                assert error_table.row_count == 1
+                assert error_table.get_row_at(0) == ["Import Audio", "Missing voice profile for: Alice."]
 
 
 @pytest.mark.anyio
-async def test_transcribe_confirmation_declined_does_not_transcribe() -> None:
+async def test_import_audio_reports_merged_success_message(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, artifacts=_artifacts(input_audio=True), can_transcribe=(True, None), adjusted_count=1)
+    session_folder = tmp_path / "session"
+    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
+    application.validate_import_audio_source = MagicMock()
+    source = tmp_path / "recording.m4a"
 
-    with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe:
-        async with TableSageApp(application).run_test() as pilot:
-            await _open_session_detail(pilot, session.id)
+    with patch("tablesage_tui.screens.session_detail.import_audio.import_audio"):
+        with patch("tablesage_tui.screens.session_detail.transcribe_audio.transcribe_audio") as transcribe_mock:
+            transcribe_mock.return_value = TranscriptionResult(utterance_count=10, unassigned_speaker_count=3, removed_backchannel_count=2)
 
-            await pilot.press("t")
-            await pilot.pause()
-            await pilot.click("#confirmation-no")
-            await pilot.pause()
+            async with TableSageApp(application).run_test() as pilot:
+                await _open_session_detail(pilot, session.id)
 
-            transcribe.assert_not_called()
-            assert isinstance(pilot.app.screen, SessionDetailScreen)
+                with patch.object(SessionDetailScreen, "notify") as notify:
+                    await pilot.press("a")
+                    await pilot.pause()
+                    picker = pilot.app.screen
+                    assert isinstance(picker, FileOpen)
+                    picker.dismiss(source)
+                    await pilot.pause()
+                    await _wait_for_progress_worker(pilot)
+
+                notify.assert_called_once_with(
+                    "Audio imported and transcribed. 3 of 10 utterances need manual review. 2 backchannels removed."
+                )
 
 
 @pytest.mark.anyio
-async def test_manual_review_disabled_without_transcript() -> None:
+async def test_review_transcript_disabled_without_transcript() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(transcript=False))
 
@@ -763,7 +725,7 @@ async def test_manual_review_disabled_without_transcript() -> None:
 
 
 @pytest.mark.anyio
-async def test_manual_review_opens_screen_when_transcript_exists() -> None:
+async def test_review_transcript_opens_screen_when_transcript_exists() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(transcript=True))
     application.extract_review_clips = MagicMock(return_value=(Transcript(utterances=[]), Path("/tmp/clips")))
@@ -848,6 +810,42 @@ async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_a
         await pilot.pause()
 
         application.add_attendance_with_roles.assert_called_once_with(session.id, available_player.id, ["Game Master"])
+
+
+@pytest.mark.anyio
+async def test_new_attendee_disabled_when_attendance_table_not_focused() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        pilot.app.screen.query_one("#session-name-input", Input).focus()
+        await pilot.pause()
+
+        await pilot.press("n")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_edit_and_delete_attendee_disabled_with_no_selection_even_when_focused() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    application = _application(session=session, attendees=[])
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+        # AUTO_FOCUS already puts focus on the (empty) attendance table.
+        assert pilot.app.screen.focused is pilot.app.screen.query_one("#attendance-table", DataTable)
+
+        await pilot.press("e")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+
+        await pilot.press("d")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio

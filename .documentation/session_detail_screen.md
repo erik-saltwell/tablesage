@@ -41,21 +41,29 @@ session are also managed here, since processing depends on them.
 - **Reviewed transcript** — `transcript_reviewed.json`, a completed Manual Review held separately
   from the machine transcript. It is shown in the artifact panel, exportable, and deleted when
   the transcript is rebuilt or input audio/attendance changes.
-- **Role transcript** — `role_transcript.json`, the first of the three Generate (`G`) outputs: the
-  preferred transcript (reviewed, otherwise machine — both already backchannel-cleaned by
-  Transcribe's pre-review pass) with any leftover still-unassigned backchannels dropped and every
-  assigned speaker's name replaced by their Session role. It is its own shown, exportable
-  artifact, and is what Ledger generation reads directly — Ledger no longer builds its own
-  role-rendered text. See Generate below.
+- **Role transcript** — `role_transcript.json`: the preferred transcript (reviewed, otherwise
+  machine — both already backchannel-cleaned by Transcribe's pre-review pass) with any leftover
+  still-unassigned backchannels dropped and every assigned speaker's name replaced by their
+  Session role. It is its own shown, exportable artifact, and is what Ledger generation reads
+  directly. Generating it is no longer a separately triggerable step — it's produced internally,
+  as the first phase of Generate (`G`). See Generate below.
 - **Ledger** — `ledger.json`, an LLM-generated, machine-usable semantic condensation of the
-  role transcript. Its v3 format and generation behavior are defined in
-  `canonical_ledger_format_v3.md` and `generate_ledger.md`. It is Generate's second output.
+  role transcript, plus its human-readable `ledger.md` companion. Its v3 format and generation
+  behavior are defined in `canonical_ledger_format_v3.md` and `generate_ledger.md`. It is
+  Generate's second phase.
 - **Session summary** — a generated Markdown output derived from the Ledger (`ledger.json`), the
-  session's attendees, and the campaign glossary. It is Generate's third and final output. See
+  session's attendees, and the campaign glossary. It is Generate's third and final phase. See
   `generate_summary.md`.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
-  an NPC, or a role changing after a character death).
+  an NPC, or a role changing after a character death). The New/Edit/Delete bindings only fire
+  while the attendance table itself has focus (Edit/Delete additionally need a selected row) —
+  see Manage attendance below.
+- **Errors** — a read-only table below Attendance recording what went wrong the last time Import
+  Audio (`A`), Generate Outputs (`G`), or Clean Session (`C`) ran. Cleared the instant one of
+  those three bindings fires, then populated with whatever that run actually encountered; an
+  empty table after a run is itself the "no errors" signal. Every error shown here also fires the
+  usual toast — the table is the durable record, the toast is immediate feedback.
 - **Indicators** — the status readout, driven by `ARTIFACTS`' `should_show_in_ui`
   flag: Input Audio / Transcript / Reviewed Transcript / Role Transcript / Ledger / Summary are
   shown (Transcript's `.json` twin and other internal artifacts are hidden). The stored
@@ -64,59 +72,55 @@ session are also managed here, since processing depends on them.
 ## Flows
 
 ### Import audio
-1. User triggers `I`.
-2. `FilesystemPickerDialog` (file-mode) opens for the user to browse to and
-   select a single audio file. If any derived artifact already exists, a
-   `ConfirmationDialog` warns that this will invalidate it (see
-   Invalidation below) before anything runs.
-3. The chosen path is validated fast (must be a file with a recognized audio
-   extension — `.wav`/`.mp3`/`.m4a`/`.flac`/`.ogg`) before the slow work
-   starts; an invalid choice shows an error toast and stops here.
-4. A progress modal opens (`run_with_progress`) while the file is cleaned
-   (noise/voice enhancement, plus loudness normalization if
-   `session_audio_import.normalize_volume` is enabled) into a temp file in
-   the session folder.
-5. Only once cleaning succeeds: any stale derived artifacts (transcript,
-   reviewed transcript, Ledger, summary) are deleted, then the cleaned temp file is
-   renamed into place as `input_audio.wav`. If cleaning fails, nothing is
-   deleted and nothing is overwritten — the session is left exactly as it was,
-   with an error toast.
 
-### Transcribe audio
-1. Available (`T` enabled) only when input audio exists, there is at least 1
-   attendee, and every attendee has a computed voice centroid — speaker identification needs a
-   centroid per attendee, and a missing one should block before the slow,
-   billed transcription call runs, not surface as a failure after it.
-2. A progress modal opens showing which stage is running — Transcribing,
-   Identifying speakers, Punctuating, Removing backchannels — since the whole run can take
-   minutes and a frozen-looking bar during an opaque API call would read as a stall.
-   Identifying speakers and Removing backchannels report real progress (per utterance, per LLM
-   batch respectively); the other two show a stage label without a moving bar.
-3. Pipeline runs: transcribe+diarize → identify speakers (against attending
-   players' centroids) → punctuate → remove backchannels (pre-review pass, unconditional, no
-   settings toggle). Nothing is written until all four succeed — a mid-pipeline failure leaves the
-   session exactly as it was (no partial transcript), matching Import's all-or-nothing contract.
-4. Backchannel removal here judges every wordlist-matched candidate via a batched, concurrent
-   LLM call ("was the previous utterance a question?"), regardless of speaker — automatic speaker
+`A` combines what used to be two separate bindings (Import, Transcribe) into one. Import's own
+overwrite/clear behavior is unconditional -- it is no longer confirmed, only the functional
+"Clean Audio?" choice remains. Transcribe is then always attempted; if its own preconditions
+aren't met, that surfaces as an error rather than blocking Import.
+
+1. User triggers `A`. Always available -- there is no precondition on the binding itself.
+2. `FilesystemPickerDialog` (file-mode) opens for the user to browse to and select a single audio
+   file.
+3. The chosen path is validated fast (must be a file with a recognized audio extension —
+   `.wav`/`.mp3`/`.m4a`/`.flac`/`.ogg`) before the slow work starts; an invalid choice records an
+   error (see Errors) and stops here.
+4. If the file is a `.wav`, a `ConfirmationDialog` ("Clean Audio?") asks whether to run it through
+   noise-cleaning first -- a functional choice (skip if it's already been cleaned), not a safety
+   confirmation. Any other extension is always cleaned.
+5. A progress modal opens (`run_with_progress`) while the file is cleaned (noise/voice
+   enhancement, plus loudness normalization if `session_audio_import.normalize_volume` is
+   enabled) into a temp file in the session folder.
+6. Once cleaning succeeds: any stale derived artifacts (transcript, reviewed transcript, Ledger,
+   summary) are deleted, then the cleaned temp file is renamed into place as `input_audio.wav`.
+   If cleaning fails, nothing is deleted and nothing is overwritten -- the session is left exactly
+   as it was, and the failure is recorded as an error.
+7. With the new audio in place, `can_transcribe_audio`'s precondition (at least 1 attendee, every
+   attendee has a computed voice centroid) is checked. If unmet, its reason is recorded as an
+   error and the run stops there -- the audio import has already happened and is not undone.
+8. If the precondition passes, the same progress modal continues into transcription: transcribe
+   +diarize → identify speakers (against attending players' centroids) → punctuate → remove
+   backchannels (pre-review pass, unconditional, no settings toggle), reporting per-stage
+   progress the same way the old Transcribe binding did. Nothing further is written until all
+   four succeed.
+9. Backchannel removal here judges every wordlist-matched candidate via a batched, concurrent LLM
+   call ("was the previous utterance a question?"), regardless of speaker -- automatic speaker
    assignment isn't human-confirmed yet at this point, so it isn't a trustworthy signal to
    shortcut on. This directly and permanently shrinks `transcript.json`; there is no raw,
    pre-removal copy kept anywhere (an accepted trade-off — see `remove_backchannels.py` and
-   `.scratch/pipeline-work-items/01-design.md` for the full rationale, including its effect on
-   the speaker-ID benchmark harness's ground-truth coverage). A separate, much simpler
-   post-review pass still runs later, inside Generate's Role Transcript step — see Generate below.
-5. On success, only `transcript.json` and `transcript.md` are written. A toast reports how many
-   utterances came back "Unassigned Speaker" (if any need manual review) and how many
-   backchannels were removed (if any); a plain "Transcribed." toast otherwise.
-6. Running Transcribe again overwrites the machine transcript files and invalidates transcript
-   derivatives (`transcript_reviewed.json`, the role transcript, the benchmark, and the Ledger) and Ledger derivatives. If the completed
-   review contains adjusted utterances, a confirmation first names that count. A failed run
-   preserves all existing artifacts.
+   `.scratch/pipeline-work-items/01-design.md` for the full rationale). A separate, much simpler
+   post-review pass still runs later, inside Generate's internal Role Transcript phase.
+10. On success, `transcript.json` and `transcript.md` are written and a single toast merges both
+    phases: "Audio imported and transcribed.", plus how many utterances came back "Unassigned
+    Speaker" (if any need manual review) and how many backchannels were removed (if any).
+11. Re-running `A` overwrites the machine transcript files the same way and invalidates
+    transcript derivatives (`transcript_reviewed.json`, the role transcript, the benchmark, the
+    Ledger, and the summary) -- including any completed Manual Review's hand corrections, with no
+    confirmation naming that loss (unlike the old Transcribe binding).
 
-### Manual review
+### Review Transcript
 
-1. Available (`R` enabled) only when `transcript.json` exists — no attendee
-   or centroid precondition, since this reviews whatever the transcript
-   already has, correct or not.
+1. Available (`R` enabled) only when `transcript.json` exists — no attendee or centroid
+   precondition, since this reviews whatever the transcript already has, correct or not.
 2. Opens `ManualReviewScreen`, a fast, keyboard-first tool for correcting each utterance's
    speaker and displayed text in a working copy. See
    `.documentation/speaker_review_screen.md` for the full design.
@@ -147,58 +151,63 @@ session are also managed here, since processing depends on them.
    Nothing keeps it in sync automatically — re-run `B` after any further
    correction or re-transcribe, immediately before scoring.
 
-### Clean Transcript
+### Generate Outputs
 
-Destructive, not generative -- despite the name, `C` no longer produces anything. It deletes the
-machine transcript and everything derived from it, so the session can be transcribed and
-generated again from scratch without touching the raw input audio.
+`G` runs Role Transcript generation, Ledger generation, and Summary generation back to back in
+one call, with no intermediate confirmation and no picker -- every step writes via
+temp-then-rename, so there's nothing to lose by running immediately. Role Transcript generation
+is presented to the user as an internal phase of Generate, not a separately named output the way
+it briefly was; the three artifact indicators it touches (Role Transcript, Ledger, Summary) still
+refresh individually once the whole run finishes.
 
-1. Available (`C` enabled) only when `transcript.json` exists — same precondition as `R`/`B`.
-2. A `ConfirmationDialog` ("Delete Transcript") names what will be lost: the transcript itself,
-   plus Reviewed Transcript, Role Transcript, benchmark, Ledger, and Summary. This is the one
-   confirmation in this screen that isn't a side effect of some other edit — deleting is the whole
-   point of pressing the binding.
-3. On confirmation, every artifact whose category is `from_audio`, `from_transcript`, or
-   `from_log` is deleted (i.e. everything except the raw, `imported`-category input audio).
-   Synchronous, no progress modal. A toast confirms the deletion and indicators refresh.
+1. Available (`G` enabled) only when a completed Manual Review exists (`transcript_reviewed.json`)
+   -- Review is now mandatory before Generate can run at all, rather than an optional step whose
+   absence silently fell back to the machine transcript.
+2. Pressing `G` runs immediately: no confirmation dialog. A progress modal shows which phase is
+   running.
+3. Phase 1, Role Transcript (purely mechanical, no LLM call): reads `transcript_reviewed.json`
+   and drops a wordlist-matched candidate only if it's *still* Unassigned Speaker after Manual
+   Review — the "was the previous utterance a question?" judgment already happened pre-review, so
+   re-asking it here would be redundant. Role assignment then replaces every remaining assigned
+   utterance's speaker with that attendee's Session role (falling back to the player name when
+   they have none); the Unassigned speaker is never renamed. The result is written as
+   `role_transcript.json`, invalidating any Ledger and Summary derived from the previous copy.
+4. Phase 2, Ledger: see `generate_ledger.md`. Runs one whole-session structured-output attempt,
+   plus up to two retries, reading `role_transcript.json` directly. The selected valid candidate
+   becomes `ledger.json` (plus its `ledger.md` companion) via a temp-file rename.
+5. Phase 3, Summary: see `generate_summary.md`. Generated from `ledger.json`'s raw JSON text, the
+   session's attendees, and the current campaign glossary, written via a temp-then-rename pattern.
+6. A failure in any phase stops the chain there: later phases never run, and whatever earlier
+   phases already wrote stays in place (each phase's own write is independently safe). The error
+   names which phase failed (e.g. "Ledger generation failed: ...") and is recorded in the Errors
+   table as well as a toast.
+7. On success, all three indicators and artifact export refresh, and a single "Outputs generated."
+   toast fires -- there's no per-phase success messaging.
 
-### Generate
+### Clean Session
 
-One binding produces all three generated-only outputs -- Role Transcript, Ledger, and Summary --
-in a fixed dependency order the user cannot pick around: Role Transcript needs the machine
-Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
+Destructive: `C` deletes every artifact for this session, including the raw input audio -- the
+full-wipe replacement for the old transcript-only Clean Transcript. There is no longer a way to
+delete just the transcript and its derivatives while keeping the audio; re-running from scratch
+now always starts with re-importing audio too.
 
-1. Available (`G` enabled) whenever there is a next step to generate — i.e. `transcript.json`
-   exists and at least one of Role Transcript / Ledger / Summary is still missing. Fully done
-   (all three present) or not yet transcribed both disable it.
-2. Pressing `G` computes the next missing step and opens a `ConfirmationDialog` naming it
-   ("Generate the Role Transcript?" / "Generate the Ledger?" / "Generate the Summary?").
-3. On confirmation, Session Detail runs exactly that step:
-   - **Role Transcript**: a progress modal shows Removing leftover backchannels / Assigning
-     roles. This is the *post-review* backchannel pass — purely mechanical, no LLM call: it reads
-     the preferred transcript (`transcript_reviewed.json` if present, otherwise `transcript.json`,
-     itself already backchannel-cleaned by Transcribe's pre-review pass) and drops a
-     wordlist-matched candidate only if it's *still* Unassigned Speaker after a human had the
-     chance to fix it — the "was the previous utterance a question?" judgment already happened
-     pre-review, so re-asking it here would be redundant. Role assignment then replaces every
-     remaining assigned utterance's speaker with that attendee's Session role (falling back to
-     the player name when they have none); the Unassigned speaker is never renamed. The result is
-     written as `role_transcript.json`, invalidating any Ledger and Summary derived from the
-     previous copy. Neither `transcript.json` nor `transcript_reviewed.json` is modified. A toast
-     reports how many (leftover) backchannels were removed.
-   - **Ledger**: see `generate_ledger.md`. A progress modal runs one whole-session
-     structured-output attempt, plus up to two retries. The application reads
-     `role_transcript.json` directly and renders it to text — Ledger generation no longer builds
-     its own role-rendered transcript or looks up roles itself. The selected valid candidate
-     becomes `ledger.json` via a temp-file rename; a failure preserves any existing Ledger.
-   - **Summary**: see `generate_summary.md`. A progress modal runs while the summary is generated
-     from `ledger.json`'s raw JSON text, the session's attendees, and the current campaign
-     glossary, written via a temp-then-rename pattern that only overwrites an existing summary
-     after success.
-4. The visible indicator for whichever artifact was produced, and artifact export, refresh after
-   success.
+1. Available (`C` enabled) only when the session has any artifact at all (`can_clean_session`).
+2. A `ConfirmationDialog` ("Clean Session") names what will be lost, including the input audio.
+   This is the one confirmation in this screen that isn't a side effect of some other edit —
+   deleting is the whole point of pressing the binding.
+3. On confirmation, every artifact is deleted, `IMPORTED`-category included -- the one place in
+   the app that touches `input_audio.wav`'s deletion. Synchronous, no progress modal. A toast
+   confirms the deletion and indicators refresh. A failure is recorded as an error rather than a
+   bare toast.
 
 ### Manage attendance
+
+`N`/`E`/`D` (and Enter/double-click for Edit) only fire while the attendance table itself has
+focus -- `check_action` returns disabled otherwise, so these three do nothing (and show disabled
+in the footer) if focus is anywhere else on the screen (a metadata field, say). Edit and Delete
+additionally require a selected row. The screen's `AUTO_FOCUS` puts focus on the attendance table
+on entry, so these work immediately without an extra Tab in the common case.
+
 1. `N` (add) and `E`/Enter (edit) both open the same `AttendeeDialog` -- one
    composite-style modal with a `Select` "combo box" for the player (options
    scoped to the campaign roster; already-attending players are excluded,
@@ -227,25 +236,32 @@ Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
 ## Behaviors & Rules
 
 - **Screen shape**: `composite`, no tabs. Inline metadata form (name, date,
-  read-only Last Transcribed value) at top; below it, two columns — attendance list on
-  the left, artifact indicators on the right.
-- **Footer bindings**: `N` New, `E` Edit, `D` Delete, `I` Imp Audio, `T` Transcribe,
-  `R` Review, `B` Benchmark, `C` Clean Transcript, `G` Generate, and `X` Export.
+  read-only Last Transcribed value) at top; below it, two columns — attendance list and the
+  Errors table stacked on the left, artifact indicators on the right.
+- **Footer bindings**: `N` New, `E` Edit, `D` Delete, `A` Import Audio, `R` Review Transcript,
+  `B` Benchmark, `G` Generate Outputs, `C` Clean Session, `L` Extract Glossary, and `X` Export.
 - **No `session_artifact` table use**: artifact existence and "current" state
   are not tracked in the database for this screen. One file per artifact type,
   always overwritten in place.
-- **Transcribe (`T`) gating**: disabled unless (a) the input audio file
-  exists, and (b) every current attendee has a computed voice centroid
-  (zero attendees also fails this, vacuously). The speaker-ID step tolerates a single
-  attendee (`identify_speakers` needs ≥2 *centroids*, but a solo session with
-  0 identified speakers is still a valid, if degenerate, transcription).
-- **Clean Transcript (`C`) gating**: disabled unless the machine Transcript exists — same
-  precondition as Review/Benchmark. Destructive: deletes the transcript and every artifact
-  derived from it (see Clean Transcript above), never produces anything.
-- **Generate (`G`) gating**: disabled unless there is a next step to generate -- `transcript.json`
-  must exist, and at least one of Role Transcript / Ledger / Summary must still be missing. The
-  three outputs form a strict chain (Role Transcript → Ledger → Summary); the user cannot choose
-  which one runs, only confirm or decline the one Generate computes.
+- **Import Audio (`A`) gating**: always enabled -- there is no precondition on the binding
+  itself. The Transcribe phase it always attempts afterward has its own precondition (input audio
+  exists, every current attendee has a computed voice centroid, zero attendees also fails this
+  vacuously), but an unmet precondition there is reported as an error rather than disabling `A`.
+- **Generate (`G`) gating**: disabled unless a completed Manual Review exists
+  (`transcript_reviewed.json`). No confirmation and no per-step picker -- pressing `G` always runs
+  Role Transcript, then Ledger, then Summary, stopping at the first failure.
+- **Clean Session (`C`) gating**: disabled unless the session has any artifact at all
+  (`can_clean_session`). Destructive: deletes every artifact, including the input audio -- the
+  only action in this screen that touches `IMPORTED`-category files.
+- **Attendance bindings (`N`/`E`/`D`) are focus-scoped**: disabled unless the attendance table
+  itself has focus; `E`/`D` are further disabled with no row selected. See Manage attendance
+  above.
+- **Errors are a permanent, cleared-on-press table, not just a toast.** Import Audio, Generate
+  Outputs, and Clean Session each clear the Errors table the instant they're pressed, then add a
+  row for anything that goes wrong during that run. A toast still fires alongside every recorded
+  error -- the table doesn't replace it, it supplements it with something that outlives the
+  toast's timeout. `TableSageScreen.run_with_progress` grew an optional `on_error` callback for
+  this; every other screen's calls are unaffected and keep the plain default toast.
 - **Invalidation deletes files immediately, driven by the artifact registry.**
   Any action the business rules treat as destructive — adding/removing an
   attendee or editing roles — deletes every artifact whose
@@ -256,21 +272,16 @@ Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
   accurate, since existence is the only signal it has, and means a new
   derived artifact only needs a registry entry to be covered by invalidation
   — no call site has to be taught about it by hand.
-  - **Import audio is the one exception to "immediately."** Because cleaning
+  - **Import Audio is the one exception to "immediately."** Because cleaning
     is a slow, failure-prone step (unlike the other destructive edits, which
-    are instant DB/file operations), invalidation there is deferred until the
-    new cleaned audio has actually landed — see Import audio's flow above. The
-    `ConfirmationDialog` still fires up front, before cleaning starts, so the
-    user isn't surprised by the eventual deletion; only the deletion itself is
-    delayed.
-  - **Transcribe replaces transcript derivatives only after success.** It overwrites its own two
-    transcript files and then invalidates Reviewed Transcript, Ledger, benchmark, and downstream
-    outputs. A rerun has no confirmation unless it would discard adjusted Manual Review work.
-- **Raw input audio is never deleted** by invalidation — only derived
-  (non-`imported`-category) files are.
-- **Failure handling**: a failed Ledger or Summary generation run shows an error toast
-  (matching existing toast styling) and leaves a persistent "last run failed"
-  banner near the indicators until the next successful run of that action.
+    are instant DB/file operations), invalidation is deferred until the
+    new cleaned audio has actually landed — see Import Audio's flow above. Unlike every other
+    destructive path in this screen, there is no confirmation for this deferred deletion at all
+    (see Import audio's flow) -- overwrite-and-clear is unconditional.
+- **Raw input audio is never deleted** by any invalidation path except Clean Session.
+- **Failure handling**: a failed Import Audio, Generate Outputs, or Clean Session run shows an
+  error toast and adds a row to the permanent Errors table; it does not otherwise block further
+  presses of that same binding.
 - **Last Transcribed**: read directly from `transcript.json`'s modification time rather than a
   database field. Missing Transcript means a blank value; recreating or removing the Transcript
   changes the value on the next artifact refresh.
@@ -288,8 +299,6 @@ Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
 - Viewing/reading generated file contents from this screen (transcript or
   Ledger/summary review is deferred to a future dedicated screen). Files can be
   opened externally.
-- A picker letting the user choose which of Role Transcript / Ledger / Summary to generate;
-  Generate (`G`) always runs the next one in dependency order.
 - A per-import toggle for cleaning or normalization — cleaning is always on;
   normalization is a `settings.yaml` knob
   (`session_audio_import.normalize_volume`), not a per-invocation choice, per
@@ -347,12 +356,17 @@ Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
      Writes `role_transcript.json` (temp-then-rename) and invalidates Ledger/Summary.
      `render_role_transcript_text(session_folder)` renders the completed `role_transcript.json` to
      Markdown in memory for Ledger generation to consume — no role lookup happens there anymore,
-     since the speaker field already holds the role name. `session_pipeline/artifacts.py` gained
-     `GenerationStep` (`ROLE_TRANSCRIPT | LEDGER | SUMMARY`) and `next_generation_step(session_folder)
-     -> GenerationStep | None`, which walks that order against `session_artifacts()` -- the single
-     source of truth for what Generate (`G`) runs next -- plus `delete_transcript_and_dependents
-     (session_folder)`, which invalidates every category except `imported`, backing Clean
-     Transcript (`C`).
+     since the speaker field already holds the role name.
+
+     **Superseded by the bindings-simplification overhaul**: `GenerationStep` and
+     `next_generation_step` (which used to compute "which of the three steps runs next" for a
+     per-step `G`) and `delete_transcript_and_dependents` (Clean Transcript's audio-preserving
+     backing) are gone -- Generate now always runs all three phases from the TUI layer directly
+     (see Generate Outputs above), and Clean Session's full wipe replaced Clean Transcript's
+     partial one. `session_pipeline/artifacts.py` instead gained `delete_all_artifacts
+     (session_folder)`, which deletes every `ArtifactName` unconditionally including
+     `IMPORTED`-category files, and `processing.can_clean_session(session_folder) ->
+     tuple[bool, str | None]`, enabled whenever any artifact exists.
    - `Application` gained: `session_folder(session_id) -> Path` (a public
      resolver, replacing one-wrapper-per-pipeline-operation methods —
      `import_session_audio` was removed since its only job was DI-wrapping
@@ -411,6 +425,16 @@ Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
      notify-only) to real behavior: `N` creates via the existing
      `create_session` and opens Session Detail, `E`/Enter opens Session
      Detail, `D` hard-deletes with confirmation.
+   - **Bindings-simplification overhaul, added later**: `N`/`E`/`D` moved from unconditionally
+     enabled to focus-scoped, checked in `check_action` against
+     `self.focused is self.query_one("#attendance-table", DataTable)` (plus a selected-row check
+     for Edit/Delete); `AUTO_FOCUS = "#attendance-table"` keeps them usable without an extra Tab.
+     A second `DataTable` (`#error-table`) was added below Attendance for the permanent Errors
+     record, backed by two screen methods (`_clear_errors`, `_record_error`) rather than any new
+     application-layer state. `TableSageScreen.run_with_progress` (`screens/base.py`) gained an
+     optional `on_error: Callable[[BaseException], None] | None` parameter -- when given, it
+     replaces (rather than supplements) the base class's own default error toast, since Session
+     Detail's `_record_error` already toasts itself; every other caller is unaffected.
 4. **Docs**: update `.documentation/tablesage_tui_screens.md` (currently lists
    Session Detail under "Open items deferred") and
    `.documentation/tablesage_implementation_plan.md` to reflect this design
