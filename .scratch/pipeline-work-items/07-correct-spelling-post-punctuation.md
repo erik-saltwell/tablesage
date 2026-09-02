@@ -154,4 +154,4 @@ utterance) and `F` (find/replace) take over).
 
 ## Triage state
 
-`ready-for-agent`
+`complete` — implemented in commit `f7be8f1`.
