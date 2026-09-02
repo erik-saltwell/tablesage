@@ -29,10 +29,20 @@ is the proposing player's name, or "players" when the fact was authored jointly 
 
 # Input Description
 You will be provided with three inputs: 
-- A list of real human being attendees at the session, along with the roles or characters they played.
-- A list of glossary terms used in the campaign.  These include the term and a short description.
-- The transcript of the session, which is a flat, role-attributed rendering of a single tabletop RPG session's speech.  
-- Each entry in the transcript will take the format: **Speaker** - Utterance text.  Notes"
+You will be provided with four inputs:
+- `<known_session_roles>`: the role and character names in play this session. These, the
+  player names in `<session_attendees>`, and the literal `players` are the only valid values
+  for `source`; the schema enforces this set.
+- `<session_attendees>`: the real human attendees, each paired with the role or character they
+  played. Use it to map player-name speaker labels to roles, and for `asker`/`resolver`.
+- `<glossary>`: proper nouns used in the campaign, each with a short description. Use these
+  spellings for NPCs, places, and items wherever the transcript garbles them. The glossary
+  may be empty; if so, canonicalize spellings yourself as described under Names.   
+  The glossary supplies spellings only. It may describe people, places, and facts the
+  transcript never reaches; never import anything from it that the session did not itself
+  establish.
+- `<session_transcript>`: a flat, role-attributed rendering of the session's speech.
+  - Each entry in the transcript will take the format: **Speaker** - Utterance text.  Notes"
   - Speaker is a role or character name ("Game Master", "Bran"), not the human player's name — roles are substituted in during
     processing. If a speaker was identified but has no assigned role, their player name remains as a fallback.
   - Unassigned Speaker appears wherever automatic speaker identification could not confidently attribute an utterance and no human
@@ -46,6 +56,12 @@ You will be provided with three inputs:
 
 ## Example Input 
 ```
+<known_session_roles>
+- Game Master
+- Kestrel
+- Thorn
+</known_session_roles>
+
 <session_attendees>
 - Alice: Game Master
 - Bob: Kestrel
@@ -73,10 +89,12 @@ You will be provided with three inputs:
     explicit recap of prior sessions, introductions of player characters, and backstory the
     table invents out of character for the party as a whole (how they met, what they did
     together before play began). All three feed the preamble; none becomes an in-session entry.
-3. **Plan in `scratchpad`.** Identify then Write your working notes: the speaker-to-role mapping you settled on,
-    whether the Session opens with an explicit recap or character introductions, and any passages
-    whose classification or condensation you expect to be tricky. Keep it to a few lines — it is
-    discarded after generation and shown to no one. Do not restate the finished Ledger there.
+3. **Plan in `scratchpad`.** Write your working notes: the canonical spelling you settled on
+    for each NPC, place, and item the transcript spells inconsistently; the scene structure
+    (where the party splits and which cuts happen); whether the Session opens with a recap,
+    introductions, or shared backstory; and any passages whose classification or attribution
+    you expect to be tricky. Keep it to a few lines — it is discarded after generation and
+    shown to no one. Do not restate the finished Ledger there.
 4. **Emit the preamble, if there is one.** Emit it when the transcript recaps prior events,
     introduces characters, or has the table co-author shared backstory. The GM describing where
     the party is *right now* is not a preamble — that is ordinary opening narration and belongs
@@ -91,9 +109,10 @@ You will be provided with three inputs:
 
 # Special Rules
 ## Attribution
-- `source` is a non-empty string naming the role, character, player, or group making the move.
-  Prefer the supplied spellings when the source appears in the session context, but the value is
-  not limited to `<known_session_roles>` or `<session_attendees>`.
+- `source` names who made the move at the table. It is a role or character name from
+  `<known_session_roles>` for anything done in the fiction; a player name from
+  `<session_attendees>`, or `players`, only for the player-authored world facts described
+  below. Use the supplied spellings exactly.
 - **Player-authored world facts.** When a player, out of character, states something about the
   world that is not their character acting — "let's say the town has a river", "the mule is
   named Seamus" — and the GM or table accepts it, record it as narration. Its `source` is the
@@ -145,6 +164,25 @@ You will be provided with three inputs:
   realizes the letter is forged" are both expressions.
 - Sentence form never decides type. A character asking another character something, in voice, is
   speech. Only a player stepping outside the fiction to ask about the world is a question.
+- A declared intention that is revised before it resolves ("I'll go to the Golden Egg — no,
+  actually the farm") is one action entry for the final version. Nothing was established, so
+  it is not a correction.
+- An action the GM refuses or the table vetoes before it takes effect is omitted, unless the
+  refusal itself establishes a world fact, in which case that fact is narration.
+- Reported speech. When the GM summarizes what an NPC told a character — "he's told you
+  about his sons," "she tells you the smith is paranoid" — that is speech with `entity` the
+  NPC, condensed the same way in-voice speech is. It is not narration, and it is not a
+  restatement when it is the first time the content appears; the returning-scene recap rule
+  only applies to content the Ledger already holds.
+- Out-of-scene interjection** A player speaking in voice into a scene their character is
+  not present in ("how many sons did you send?", asked from the tavern about the farm) is not
+  their character acting. If the GM answers with new fiction, record the exchange as a
+  question with `asker` the player; the GM's answer is the resolution. If it elicits nothing
+  new, omit it. Never record such a line as the absent character's speech or action.
+- NPC affect. GM description of what an NPC feels, including feelings shown through
+  visible cues — "he looks offended," "she seems startled," "purple rings under his eyes, he
+  looks stressed" — is an expression with `entity` the NPC. Reserve narration for what is
+  true of the world, not of a character's state.
 
 ## Corrections
 - Use a correction only when the table treats the utterance as revising something already
@@ -159,8 +197,8 @@ You will be provided with three inputs:
   "About sixty" qualifies. Rules questions, die-result checks, and requests to repeat something
   already established do not.
 - A question answered in the same breath is one entry with the answer filled in, not two entries.
-- An unanswered question is still valid if the asking itself mattered; leave the answer fields
-  empty. Never fill in one of `resolver`/`resolution` without the other.
+- An unanswered question is still valid if the asking itself mattered; set `resolver` and `resolution` both to `null`. 
+  Never fill in one of `resolver`/`resolution` without the other.
 - Never restate a question's answer as a separate narration entry. The question entry is the sole
   record of what it established.
 
@@ -185,7 +223,12 @@ You will be provided with three inputs:
 - Write clean prose. Strip disfluencies, false starts, and filler — the transcript is raw
   speech-to-text and its verbatim texture is not worth preserving.
 - Correct obvious transcription errors in names when the intended role or character is
-  unambiguous, matching the spellings in `<known_session_roles>`.
+  unambiguous, matching the spellings in `<known_session_roles>`. Where the transcript has
+  stripped apostrophes and punctuation ("Im", "Youve"), restore them in your prose.
+- When a speaker misstates an established fact in passing — the GM calling a Trollkin
+  "Dwarven kin" — and the table does not treat it as a revision, prefer the fact as
+  established in the introductions or earlier entries. Only a revision the table notices is
+  a correction.
 - Never invent content. Every entry must trace to something actually said in the transcript.
   Condensing and rephrasing are expected; extrapolating what "must have" happened is not.
 - When genuinely torn about whether something belongs, ask whether a reader rebuilding the
@@ -197,19 +240,23 @@ You will be provided with three inputs:
   description.
 - Recap events stay in the order the transcript described them.
 - The Ledger must carry real content somewhere — a recap, an introduction, or at least one entry.
+- On a question, `resolver` and `resolution` are both present or both `null`. The schema
+  cannot enforce this pairing; you must.
 
-## Names and spelling
-For NPCs and places, use one spelling throughout, chosen from the glossary if present, otherwise
-the most frequent transcript spelling. Before an NPC is named, use a short descriptor as
-entity ('the redheaded noblewoman'); once named, use the name consistently including in earlier entries."
-Also state what to do when the glossary is empty.
+## Names
+- For NPCs, places, and items, use one spelling throughout. Take it from the glossary when
+  present; otherwise pick the most frequent transcript spelling and apply it everywhere,
+  including in entries that precede the clearest mention.
+- If an NPC's name is established anywhere in the session or the glossary, use it in every
+  entry involving them, including entries before the transcript first says it. Use a short
+  descriptor as `entity` ("the greasy-haired thief") only for NPCs who are never named.
 
 ## End of session recaps
 End-of-session recaps are omitted except for facts first established there, which become narration.
 
 # Output Format
-Return a single JSON object conforming to the provided schema. No prose, no explanation, no 
-markdown fences — the response is parsed directly.
+Return a single JSON object conforming to the JSON schema supplied alongside this prompt via structured output. 
+No prose, no explanation, no markdown fences — the response is parsed directly.
 
 ## Top Level Fields
 The object has exactly three top-level fields, in this order:
@@ -230,8 +277,12 @@ filled in by the application; your output starts at `scratchpad`.
   backstory; and `opening_situation`, the situation this Session opens in, or `null`. A
   backstory proposal counts only once the table accepts it; proposals that were floated and
   abandoned are dropped. Set `recap` itself to `null` if the transcript has neither.
-- `character_introductions` — a list of `character` (the role name) and `description` pairs, one entry per character, 
-  or `null` if there were none.
+- `character_introductions` — one entry per player character (never NPCs), each a `character`
+  (the role name) and a `description`. A round-the-table roll-call at the start of play —
+  the GM asking each player who they are, or players volunteering name, race, class, and
+  background — counts as introductions even without the word "introduce". Descriptions
+  contain in-fiction facts only; real-world inspiration for a name or build is table talk
+  and is dropped. Set to `null` if there were none.
 
 ### Utterances
 Each entry in `utterances` carries a lowercase `type` discriminator and that type's fields:
@@ -285,6 +336,12 @@ question is out-of-character and establishes new world-fact, so it is a question
       "entity": "A Warden's rider",
       "action": "Appears on the ridge behind the party."
     },
+    {
+      "type": "expression",
+      "source": "Game Master",
+      "entity": "The Warden's rider",
+      "sentiment": "Hesitates at the sight of the party, visibly unsure whether to pursue."
+    }
     {
       "type": "question",
       "asker": "Carol",
