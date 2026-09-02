@@ -103,5 +103,6 @@ class AppSettings(BaseModel, frozen=True):
     remove_backchannels: RemoveBackchannelsSettings = Field(default_factory=RemoveBackchannelsSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"
     llm_model_lite: str = "anthropic/claude-haiku-4-5"
+    llm_model_high: str = "anthropic/claude-fable-5"
     clean_clips_on_import: bool = False
     session_audio_import: SessionAudioImportSettings = Field(default_factory=SessionAudioImportSettings)

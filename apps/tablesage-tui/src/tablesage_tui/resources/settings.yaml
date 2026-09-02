@@ -124,3 +124,6 @@ llm_model: anthropic/claude-sonnet-4-5
 # llm_model's full capability (e.g. remove_backchannels' candidate
 # disambiguation above).
 llm_model_lite: anthropic/claude-haiku-4-5
+# A more capable model for the most demanding LLM calls (ledger and summary
+# generation).
+llm_model_high: anthropic/claude-fable-5
