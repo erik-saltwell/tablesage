@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from tablesage_application.paths import ArtifactName
+from tablesage_tui.dialogs import ConfirmationDialog
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from textual.pilot import Pilot
@@ -15,6 +16,7 @@ def _application(*, exportable: list[ArtifactName] | None = None) -> MagicMock:
     return MagicMock(
         exportable_artifacts=MagicMock(return_value=exportable if exportable is not None else [ArtifactName.SUMMARY]),
         export_artifact=MagicMock(),
+        export_ledger_markdown=MagicMock(),
     )
 
 
@@ -68,6 +70,50 @@ async def test_enter_on_row_exports() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, FileSave)
+
+
+@pytest.mark.anyio
+async def test_ledger_export_asks_for_format_then_exports_markdown(tmp_path: Path) -> None:
+    application = _application(exportable=[ArtifactName.LEDGER])
+    session_id = uuid.uuid4()
+    destination = tmp_path / "ledger.md"
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_export_screen(pilot, session_id)
+        await pilot.press("e")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
+
+        await pilot.click("#confirmation-yes")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FileSave)
+        picker.dismiss(destination)
+        await pilot.pause()
+
+        application.export_ledger_markdown.assert_called_once_with(session_id, destination)
+        application.export_artifact.assert_not_called()
+
+
+@pytest.mark.anyio
+async def test_ledger_export_can_choose_json(tmp_path: Path) -> None:
+    application = _application(exportable=[ArtifactName.LEDGER])
+    session_id = uuid.uuid4()
+    destination = tmp_path / "ledger.json"
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_export_screen(pilot, session_id)
+        await pilot.press("e")
+        await pilot.pause()
+        await pilot.click("#confirmation-no")
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FileSave)
+        picker.dismiss(destination)
+        await pilot.pause()
+
+        application.export_artifact.assert_called_once_with(session_id, ArtifactName.LEDGER, destination)
+        application.export_ledger_markdown.assert_not_called()
 
 
 @pytest.mark.anyio

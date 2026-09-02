@@ -50,8 +50,8 @@ session are also managed here, since processing depends on them.
 - **Ledger** — `ledger.json`, an LLM-generated, machine-usable semantic condensation of the
   role transcript. Its v3 format and generation behavior are defined in
   `canonical_ledger_format_v3.md` and `generate_ledger.md`. It is Generate's second output.
-- **Session summary** — a generated Markdown output derived from the role-attributed transcript
-  (`role_transcript.json`) and the campaign glossary. It is Generate's third and final output. See
+- **Session summary** — a generated Markdown output derived from the Ledger (`ledger.json`), the
+  session's attendees, and the campaign glossary. It is Generate's third and final output. See
   `generate_summary.md`.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
@@ -166,7 +166,7 @@ generated again from scratch without touching the raw input audio.
 
 One binding produces all three generated-only outputs -- Role Transcript, Ledger, and Summary --
 in a fixed dependency order the user cannot pick around: Role Transcript needs the machine
-Transcript; Ledger and Summary each need the Role Transcript.
+Transcript; Ledger needs the Role Transcript; Summary needs the Ledger.
 
 1. Available (`G` enabled) whenever there is a next step to generate — i.e. `transcript.json`
    exists and at least one of Role Transcript / Ledger / Summary is still missing. Fully done
@@ -192,8 +192,9 @@ Transcript; Ledger and Summary each need the Role Transcript.
      its own role-rendered transcript or looks up roles itself. The selected valid candidate
      becomes `ledger.json` via a temp-file rename; a failure preserves any existing Ledger.
    - **Summary**: see `generate_summary.md`. A progress modal runs while the summary is generated
-     from `role_transcript.json`'s rendered text plus the current campaign glossary, written via
-     a temp-then-rename pattern that only overwrites an existing summary after success.
+     from `ledger.json`'s raw JSON text, the session's attendees, and the current campaign
+     glossary, written via a temp-then-rename pattern that only overwrites an existing summary
+     after success.
 4. The visible indicator for whichever artifact was produced, and artifact export, refresh after
    success.
 
@@ -243,8 +244,8 @@ Transcript; Ledger and Summary each need the Role Transcript.
   derived from it (see Clean Transcript above), never produces anything.
 - **Generate (`G`) gating**: disabled unless there is a next step to generate -- `transcript.json`
   must exist, and at least one of Role Transcript / Ledger / Summary must still be missing. The
-  three outputs form a strict chain (Role Transcript → Ledger, Role Transcript → Summary); the
-  user cannot choose which one runs, only confirm or decline the one Generate computes.
+  three outputs form a strict chain (Role Transcript → Ledger → Summary); the user cannot choose
+  which one runs, only confirm or decline the one Generate computes.
 - **Invalidation deletes files immediately, driven by the artifact registry.**
   Any action the business rules treat as destructive — adding/removing an
   attendee or editing roles — deletes every artifact whose

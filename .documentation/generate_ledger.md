@@ -11,6 +11,8 @@ The format itself is defined in [Ledger Format v3](canonical_ledger_format_v3.md
 - **Source transcript** — `role_transcript.json`, the persisted output of the Generate (`G`) action's Role Transcript step. It already has backchannels removed and player names replaced by Session roles, so Ledger generation reads it as-is.
 - **Role transcript** — `role_transcript.json` itself, rendered to Markdown in memory for the generation call. Unlike before, it is a persisted, shown, exportable artifact -- not something Ledger generation builds itself.
 - **Ledger** — the persisted, strict Pydantic model stored as `ledger.json`.
+- **Readable Ledger** — the deterministic Markdown view stored as `ledger.md`; it presents the
+  canonical Ledger without a second LLM call or additional interpretation.
 - **Preamble** — optional pre-session context containing a Recap, Character Introductions, or both.
 - **Ledger utterance** — one of Narration, Action, Speech, Expression, or Correction.
 - **Source** — the role or character associated with a regular ledger utterance, not the human player.
@@ -107,10 +109,13 @@ The application, not the LLM, supplies `version`, `session_id`, and `session_nam
    roles by this point, so no reviewed-vs-machine selection or role lookup happens here.
 4. One LLM call receives the complete role transcript and requests `LedgerGenerationResponse` as structured output.
 5. Pydantic performs structural validation. The application separately reports one warning for each regular `source` or introduced `character` not found in the Session's known roles.
-6. A structurally invalid response or a response with role warnings triggers up to two retries. Parseable candidates are retained across attempts.
+6. A structurally invalid response or a response with role warnings triggers up to two retries. Parseable candidates are retained across attempts. Provider and configuration errors fail immediately and retain their original error message; they are not model-output validation failures and retrying the same request cannot repair them.
 7. A warning-free candidate may be accepted immediately. After the final attempt, the application selects the candidate with the fewest warnings; the earliest candidate wins ties. Unknown names in that selected candidate are preserved rather than rejected or fuzzy-matched.
 8. If no attempt produced a structurally valid candidate, generation fails without creating or replacing the Ledger.
 9. The application discards `scratchpad`, injects the known version and Session metadata, and atomically replaces `ledger.json`.
+10. The same successful operation renders and replaces `ledger.md`. The Markdown is derived only
+    from the accepted Ledger, so it cannot restore transcript material that Ledger generation
+    condensed or omitted.
 
 Generation is whole-session and single-call per attempt. It is not batched or followed by a second semantic merge pass.
 
@@ -118,6 +123,19 @@ Generation is whole-session and single-call per attempt. It is not batched or fo
 
 - The artifact is called **Ledger** throughout the application and UI and is stored as `ledger.json`.
 - Ledger replaces the unused Processed Session artifact concept and registry entry.
+- `ledger.json` remains the canonical artifact and controls Ledger existence and pipeline state.
+  `ledger.md` is its generated, read-only companion and shares its invalidation lifecycle.
+- The readable view contains the Session title, a single Attendees line, separate Recap and
+  Character Introduction sections when present, and one continuous numbered Session section, with
+  the Session ID and format version demoted to a closing footer. Each entry is one line: Speech
+  and Action lead with `entity` rather than `source` (`**Entity:** statement` / `**Entity** —
+  action`); Speech is unquoted because the schema does not promise verbatim wording. Narration has
+  no `entity`, so it keeps an inline `source` attribution unless `source` matches the Game Master's
+  display label -- a heuristic string match, since `source` is otherwise unvalidated free text (see
+  Schema, above). Corrections are visually emphasized in chronological position; unresolved
+  Questions show an explicit status.
+- Existing `ledger.json` files gain `ledger.md` lazily when Markdown export is first requested;
+  this does not rerun the LLM. Exporting a Ledger asks the user to choose Markdown or JSON.
 - Ledger is derived from the Transcript, shown in Session Detail, and available through artifact export.
 - Session Detail's unified **Generate** (`G`) action produces the Ledger once `role_transcript.json` exists -- it is the second of Generate's three dependency-ordered steps (Role Transcript, then Ledger, then Summary).
 - A successful Transcript rebuild, completed Manual Review, audio re-import, or attendance/role change invalidates the Ledger through the artifact-category rules.
@@ -129,7 +147,7 @@ Generation is whole-session and single-call per attempt. It is not batched or fo
 - Ledger domain and generation-response models live in `tablesage-application`, alongside the use case that owns structured generation and Session-context validation.
 - The existing role-rendering function remains outside Transcription and is called by Ledger generation.
 - Generation uses the shared application LLM helper and the existing configured LLM model. The two-retry policy is a feature rule, not a new `settings.yaml` knob.
-- Writes use temp-file-then-rename replacement. No partial or raw LLM response is persisted.
+- JSON and Markdown writes use temp-file-then-rename replacement. No partial or raw LLM response is persisted.
 
 ## Acceptance Coverage
 
@@ -137,6 +155,9 @@ Generation is whole-session and single-call per attempt. It is not batched or fo
 - Prompt/generation tests cover Reviewed Transcript preference, role rendering, Session metadata injection, whole-session structured output, and scratchpad removal.
 - Retry tests cover malformed responses, warning-triggered retries, fewest-warning selection, earliest tie-breaking, acceptance with remaining warnings, and all-invalid failure.
 - Artifact tests cover `ledger.json`, atomic replacement, preservation on failure, invalidation, Session Detail visibility, action gating, and export.
+- Renderer tests cover metadata, Preamble sections, numbering, entity-led per-type rendering,
+  emphasized Corrections, unresolved Questions, unquoted Speech, automatic companion creation, and
+  lazy export backfill.
 - Prompt fixtures cover no Preamble, Recap only, Character Introductions only, both sections, consolidated introductions, and duplicated opening-situation Narration.
 
 ## Out of Scope

@@ -10,6 +10,7 @@ from textual.containers import Vertical
 from textual.widgets import DataTable
 from textual_fspicker import FileSave
 
+from ..dialogs import ConfirmationDialog
 from .base import TableSageScreen
 
 
@@ -64,17 +65,37 @@ class ArtifactExportScreen(TableSageScreen):
         if artifact_name is None:
             return
 
+        if artifact_name is ArtifactName.LEDGER:
+            self.app.push_screen(
+                ConfirmationDialog(
+                    title="Export Ledger",
+                    prompt="Choose the Ledger format to export.",
+                    no_label="JSON",
+                    yes_label="Markdown",
+                ),
+                lambda markdown: self._pick_export_destination(artifact_name, markdown=markdown) if markdown is not None else None,
+            )
+            return
+
+        self._pick_export_destination(artifact_name, markdown=False)
+
+    def _pick_export_destination(self, artifact_name: ArtifactName, *, markdown: bool) -> None:
+        default_filename = "ledger.md" if artifact_name is ArtifactName.LEDGER and markdown else ARTIFACTS[artifact_name].filename
+
         def on_picked(destination: Path | None) -> None:
             if destination is None:
                 return
             try:
-                self.application.export_artifact(self._session_id, artifact_name, destination)
+                if artifact_name is ArtifactName.LEDGER and markdown:
+                    self.application.export_ledger_markdown(self._session_id, destination)
+                else:
+                    self.application.export_artifact(self._session_id, artifact_name, destination)
             except OSError as exc:
                 self.notify(str(exc), severity="error")
                 return
             self.notify(f"Exported to {destination}.")
 
         self.app.push_screen(
-            FileSave(location=Path.home(), default_file=ARTIFACTS[artifact_name].filename),
+            FileSave(location=Path.home(), default_file=default_filename),
             on_picked,
         )

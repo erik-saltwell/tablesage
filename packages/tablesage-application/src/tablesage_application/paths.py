@@ -41,6 +41,7 @@ class ArtifactSpec:
     category: ArtifactCategory
     should_show_in_ui: bool
     display_name: str
+    companion_filenames: tuple[str, ...] = ()
 
 
 # Fixed filenames within a session folder -- the filesystem is the only
@@ -98,7 +99,13 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         should_show_in_ui=True,
         display_name="Role Transcript",
     ),
-    ArtifactName.LEDGER: ArtifactSpec("ledger.json", ArtifactCategory.FROM_TRANSCRIPT, should_show_in_ui=True, display_name="Ledger"),
+    ArtifactName.LEDGER: ArtifactSpec(
+        "ledger.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=True,
+        display_name="Ledger",
+        companion_filenames=("ledger.md",),
+    ),
     ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),
 }
 

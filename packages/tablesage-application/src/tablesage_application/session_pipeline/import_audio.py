@@ -7,6 +7,7 @@ import widelog
 from tablesage_tools.audio import clean_clip, convert_to_16k_mono
 
 from ..paths import ARTIFACTS, AUDIO_EXTENSIONS, ArtifactCategory, ArtifactName
+from .artifacts import delete_artifact
 
 
 def invalidate_downstream(session_folder: Path) -> None:
@@ -17,9 +18,9 @@ def invalidate_downstream(session_folder: Path) -> None:
     (in Phase 11) rerunning Process -- all call this directly.
     """
     with widelog.wide_event(op="invalidate_downstream", session_folder=str(session_folder)):
-        for spec in ARTIFACTS.values():
+        for name, spec in ARTIFACTS.items():
             if spec.category is not ArtifactCategory.IMPORTED:
-                (session_folder / spec.filename).unlink(missing_ok=True)
+                delete_artifact(session_folder, name)
 
 
 def validate_import_source(source_path: Path) -> None:

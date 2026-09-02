@@ -24,7 +24,11 @@ lives entirely on Session Detail, not as a standalone top-level screen.
    qualifying artifact as one row (`display_name` only — "Input Audio",
    "Transcript", "Reviewed Transcript", "Summary") using the same filter as the indicator panel:
    `ARTIFACTS[name].should_show_in_ui and session_artifacts(session_folder)[name]`.
-3. `E`, `Enter` on the selected row, or a double-click on a row all open
+3. For Ledger, the app first asks whether to export the human-readable Markdown view or canonical
+   JSON. Markdown selection deterministically creates or refreshes `ledger.md` from `ledger.json`,
+   allowing historical Ledgers to gain the view without another LLM call. Other artifacts proceed
+   directly to file selection.
+4. `E`, `Enter` on the selected row, or a double-click on a row then open
    `textual_fspicker.FileSave`. Enter and the double-click both arrive as `DataTable`'s
    `RowSelected` message (`on_data_table_row_selected`) rather than the screen-level `enter`
    binding -- `DataTable` owns its own `enter` binding and shadows the screen's while the table
@@ -35,7 +39,8 @@ lives entirely on Session Detail, not as a standalone top-level screen.
    destination, not a mutation of anything the app manages, so the
    `ConfirmationDialog` pattern reserved for destructive app-data changes
    doesn't apply here).
-4. On confirm, `Application.export_artifact(session_id, artifact_name, destination)`
+5. On confirm, `Application.export_artifact(session_id, artifact_name, destination)` (or
+   `Application.export_ledger_markdown(...)` for readable Ledger export)
    copies the file. On success: `notify()`, list unchanged, screen stays
    open — repeatable for every other qualifying artifact in the same visit,
    matching how every other list screen in this app stays put after a row
@@ -45,6 +50,8 @@ lives entirely on Session Detail, not as a standalone top-level screen.
 ## Behaviors & Rules
 
 - **Copy, never move.** The source file is never deleted or altered.
+- **Ledger has two export representations.** `ledger.json` remains canonical; `ledger.md` is a
+  reproducible companion that is overwritten from JSON rather than treated as user-authored text.
 - **No confirmation on overwrite.** `can_overwrite=True` on `FileSave`
   silently allows overwriting an existing file at the chosen destination —
   matches native "Save As" dialog behavior, and repeatedly re-exporting the

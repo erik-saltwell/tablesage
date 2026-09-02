@@ -11,6 +11,7 @@ from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..paths import ARTIFACTS, ArtifactName
+from .artifacts import delete_artifact
 from .transcript_review import load_review_transcript
 
 
@@ -137,7 +138,7 @@ def clean_transcript(
             raise
 
         for name in (ArtifactName.LEDGER, ArtifactName.SUMMARY):
-            (session_folder / ARTIFACTS[name].filename).unlink(missing_ok=True)
+            delete_artifact(session_folder, name)
 
         removed_count = original_count - len(cleaned.utterances)
         log.set(utterance_count=len(cleaned.utterances), removed_count=removed_count)

@@ -236,17 +236,23 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     assert reason is None
 
 
-def test_can_generate_summary_requires_role_transcript(tmp_path: Path) -> None:
+def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert not enabled
-    assert reason == "Clean the transcript first."
+    assert reason == "Generate the Ledger first."
 
     folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
     (folder / ROLE_TRANSCRIPT_FILENAME).write_text("{}")
+
+    enabled, reason = application.can_generate_summary(game_session.id)
+    assert not enabled
+    assert reason == "Generate the Ledger first."
+
+    (folder / LEDGER_FILENAME).write_text("{}")
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert enabled

@@ -242,7 +242,9 @@ Players are top-level records, independent of any single campaign — a player's
 - Explicitly framed pre-session material becomes an optional Preamble containing a Recap, Character Introductions, or both.
 - Regular content becomes ordered Narration, Action, Speech, Expression, and Correction entries. The Ledger may omit, rephrase, combine, or split transcript utterances and carries no offsets or provenance links.
 - The app validates structured output, retries malformed or unknown-role results up to twice, and selects the best structurally valid candidate without silently fuzzy-matching names.
-- A successful run atomically replaces `ledger.json`, which is visible and exportable. A failed run preserves any prior Ledger.
+- A successful run atomically replaces canonical `ledger.json` and its deterministic,
+  human-readable `ledger.md` companion. A failed run preserves any prior Ledger. Ledger export asks
+  whether to copy Markdown or JSON; historical JSON-only Ledgers create Markdown lazily on export.
 - Rebuilding or completing the source Transcript, re-importing audio, or changing attendance/roles invalidates the Ledger.
 
 ### View and regenerate a summary

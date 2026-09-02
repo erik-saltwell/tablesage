@@ -9,6 +9,14 @@ import widelog
 from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
 
 
+def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
+    """Delete an artifact's canonical file and every deterministic companion view."""
+    spec = ARTIFACTS[artifact_name]
+    (session_folder / spec.filename).unlink(missing_ok=True)
+    for companion_filename in spec.companion_filenames:
+        (session_folder / companion_filename).unlink(missing_ok=True)
+
+
 def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
     """What exists on disk for a session -- drives the indicator panel and the P/G/T gates."""
     return {name: (session_folder / spec.filename).is_file() for name, spec in ARTIFACTS.items()}
@@ -17,9 +25,9 @@ def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
 def invalidate_category(session_folder: Path, category: ArtifactCategory) -> None:
     """Delete every existing session artifact in *category*."""
     with widelog.wide_event(op="invalidate_artifact_category", session_folder=str(session_folder), category=category.value):
-        for spec in ARTIFACTS.values():
+        for name, spec in ARTIFACTS.items():
             if spec.category is category:
-                (session_folder / spec.filename).unlink(missing_ok=True)
+                delete_artifact(session_folder, name)
 
 
 def delete_transcript_and_dependents(session_folder: Path) -> None:

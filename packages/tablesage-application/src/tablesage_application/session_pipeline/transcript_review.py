@@ -13,6 +13,7 @@ from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import MIN_UTTERANCE_DURATION_SECONDS
 
 from ..paths import ARTIFACTS, ArtifactName
+from .artifacts import delete_artifact
 
 REVIEW_CLIPS_DIRNAME = "speaker_review_clips"
 
@@ -190,7 +191,7 @@ def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> No
         ArtifactName.LEDGER,
         ArtifactName.SUMMARY,
     ):
-        _artifact_path(session_folder, name).unlink(missing_ok=True)
+        delete_artifact(session_folder, name)
 
 
 @dataclass(frozen=True)

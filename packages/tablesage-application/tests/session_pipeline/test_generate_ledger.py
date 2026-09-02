@@ -94,6 +94,38 @@ def test_ledger_schema_supports_preamble_and_all_discriminated_utterance_types()
     assert question.resolution == "Yes, the bridge is underwater."
 
 
+def test_ledger_markdown_is_a_numbered_chronological_human_readable_view() -> None:
+    session_id = uuid.uuid4()
+    generated = _response()
+    generated.utterances[-1] = Question(
+        type="question",
+        asker="Alice",
+        question="Who built the bridge?",
+        resolver=None,
+        resolution=None,
+    )
+    ledger = Ledger(
+        session_id=session_id,
+        session_name="Session One",
+        attendees=(Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())),
+        preamble=generated.preamble,
+        utterances=generated.utterances,
+    )
+
+    markdown = ledger.to_markdown()
+
+    assert markdown.startswith("# Session One\n\n**Attendees:** Alice (Zaria) · Bob (No roles)")
+    assert "## Recap\n\n1. The party escaped the flooded mine." in markdown
+    assert "## Characters\n\n- **Zaria** — A storm-touched elven wizard seeking her sister." in markdown
+    assert "1. Rain falls over the camp. *— Zaria*" in markdown
+    assert "2. **Zaria** — Lights a signal fire." in markdown
+    assert "3. **Zaria:** We should leave before dawn." in markdown
+    assert "5. **⚠ Correction (Zaria):** The riders came from the east, not the north." in markdown
+    assert "6. **? Alice:** Who built the bridge? → *unresolved*" in markdown
+    assert f"*Session `{session_id}` · ledger format 3*" in markdown
+    assert '"We should leave before dawn."' not in markdown
+
+
 def test_ledger_schema_rejects_empty_content_empty_preamble_duplicate_introductions_and_extra_fields() -> None:
     with pytest.raises(ValidationError, match="meaningful content"):
         LedgerGenerationResponse(scratchpad="", preamble=None, utterances=[])
@@ -270,15 +302,43 @@ async def test_generate_ledger_selects_fewest_warnings_and_earliest_candidate_on
 
 @pytest.mark.anyio
 async def test_generate_ledger_fails_when_all_three_responses_are_structurally_invalid(monkeypatch: pytest.MonkeyPatch) -> None:
+    call_count = 0
+
     async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
+        nonlocal call_count
+        call_count += 1
         return "{}"
 
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
 
-    with pytest.raises(ValueError, match="no structurally valid response"):
+    with pytest.raises(ValueError, match="failed structural validation in all 3 attempts") as raised:
         await generate_ledger_module.generate_ledger(
             "transcript", ["Zaria"], [Attendee(player_name="Alice", roles=("Zaria",))], [], "test-model"
         )
+
+    assert call_count == 3
+    assert "scratchpad" in str(raised.value)
+
+
+@pytest.mark.anyio
+async def test_generate_ledger_does_not_retry_or_mask_provider_errors(monkeypatch: pytest.MonkeyPatch) -> None:
+    call_count = 0
+    provider_error = RuntimeError('tool_choice: type "tool" and "any" are not supported for this model.')
+
+    async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
+        nonlocal call_count
+        call_count += 1
+        raise provider_error
+
+    monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
+
+    with pytest.raises(RuntimeError, match="tool_choice") as raised:
+        await generate_ledger_module.generate_ledger(
+            "transcript", ["Zaria"], [Attendee(player_name="Alice", roles=("Zaria",))], [], "test-model"
+        )
+
+    assert raised.value is provider_error
+    assert call_count == 1
 
 
 def test_application_can_generate_ledger_requires_role_transcript(tmp_path: Path) -> None:
@@ -299,7 +359,7 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    application = Application(tmp_path, AppSettings(llm_model="test-model"))
+    application = Application(tmp_path, AppSettings(llm_model_high="test-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Alice"))
     application.add_player_to_campaign(campaign.id, player.id, "Zaria")
@@ -336,6 +396,7 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     application.generate_ledger(game_session.id)
 
     ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
+    ledger_markdown_path = session_folder / "ledger.md"
     ledger = Ledger.model_validate_json(ledger_path.read_text(encoding="utf-8"))
     assert ledger.version == 3
     assert ledger.session_id == game_session.id
@@ -349,7 +410,9 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
         "model": "test-model",
     }
     assert not summary_path.exists()
+    assert ledger_markdown_path.read_text(encoding="utf-8") == ledger.to_markdown()
     assert not (session_folder / ".ledger.tmp.json").exists()
+    assert not (session_folder / ".ledger.tmp.md").exists()
 
 
 def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -381,3 +444,23 @@ def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp
     assert Ledger.model_validate_json(ledger_path.read_text(encoding="utf-8")) == old_ledger
     assert summary_path.read_text(encoding="utf-8") == "old summary\n"
     assert not (session_folder / ".ledger.tmp.json").exists()
+
+
+def test_application_lazily_creates_and_exports_ledger_markdown(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    session_folder = application.session_folder(game_session.id)
+    ledger = Ledger(
+        session_id=game_session.id,
+        session_name=game_session.name,
+        preamble=None,
+        utterances=[Narration(type="narration", source="Game Master", fact="Rain begins.")],
+    )
+    ledger.save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
+    destination = tmp_path / "exported-ledger.md"
+
+    application.export_ledger_markdown(game_session.id, destination)
+
+    assert destination.read_text(encoding="utf-8") == ledger.to_markdown()
+    assert (session_folder / "ledger.md").read_text(encoding="utf-8") == ledger.to_markdown()

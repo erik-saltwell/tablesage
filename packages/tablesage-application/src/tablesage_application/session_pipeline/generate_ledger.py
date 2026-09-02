@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Annotated, Literal, Self
 
 import widelog
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError, model_validator
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
@@ -16,6 +16,14 @@ NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_lengt
 NonEmptyTextList = Annotated[list[NonEmptyText], Field(min_length=1)]
 
 MAX_GENERATION_ATTEMPTS = 3
+LEDGER_MARKDOWN_FILENAME = "ledger.md"
+
+# The human-readable role name seeded for a campaign's GM (mirrors `attendee_editor.py`'s
+# `_GAME_MASTER_LABEL` and `entities/sessions.py`'s equivalent translation of the
+# `GAME_MASTER_ROLE` magic value -- there's no shared constant for this literal today, this
+# module follows the same precedent). `source` is otherwise an unvalidated free-text field
+# (see `generate_ledger.md`), so this match is a heuristic, not a guarantee.
+_GAME_MASTER_LABEL = "Game Master"
 
 
 class _StrictModel(BaseModel):
@@ -124,9 +132,62 @@ class Ledger(_StrictModel):
     def save(self, path: Path) -> None:
         path.write_text(f"{self.model_dump_json(indent=2)}\n", encoding="utf-8")
 
+    def to_markdown(self) -> str:
+        """Render a faithful, human-readable view without changing or reinterpreting Ledger content."""
+        lines = [f"# {self.session_name}", ""]
+        if self.attendees:
+            attendee_line = " · ".join(
+                f"{attendee.player_name} ({', '.join(attendee.roles) if attendee.roles else 'No roles'})" for attendee in self.attendees
+            )
+            lines.append(f"**Attendees:** {attendee_line}")
+        else:
+            lines.append("_No attendees recorded._")
+
+        if self.preamble is not None and self.preamble.recap is not None:
+            lines.extend(["", "## Recap", ""])
+            for index, event in enumerate(self.preamble.recap.events, start=1):
+                lines.append(f"{index}. {event}")
+            if self.preamble.recap.opening_situation is not None:
+                lines.extend(["", f"**Opening:** {self.preamble.recap.opening_situation}"])
+
+        if self.preamble is not None and self.preamble.character_introductions is not None:
+            lines.extend(["", "## Characters", ""])
+            for introduction in self.preamble.character_introductions:
+                lines.append(f"- **{introduction.character}** — {introduction.description}")
+
+        lines.extend(["", "## Session", ""])
+        for index, utterance in enumerate(self.utterances, start=1):
+            lines.append(_render_markdown_utterance(index, utterance))
+            lines.append("")
+
+        lines.extend(["---", "", f"*Session `{self.session_id}` · ledger format {self.version}*"])
+        return "\n".join(lines).rstrip() + "\n"
+
     @classmethod
     def load(cls, path: Path) -> Ledger:
         return cls.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def _render_markdown_utterance(index: int, utterance: LedgerUtterance) -> str:
+    if isinstance(utterance, Question):
+        if utterance.resolver is None:
+            return f"{index}. **? {utterance.asker}:** {utterance.question} → *unresolved*"
+        return f"{index}. **? {utterance.asker}:** {utterance.question} **→ {utterance.resolver}:** {utterance.resolution}"
+
+    if isinstance(utterance, Correction):
+        return f"{index}. **⚠ Correction ({utterance.source}):** {utterance.revision}"
+
+    if isinstance(utterance, Narration):
+        attribution = "" if utterance.source == _GAME_MASTER_LABEL else f" *— {utterance.source}*"
+        return f"{index}. {utterance.fact}{attribution}"
+
+    if isinstance(utterance, Speech):
+        return f"{index}. **{utterance.entity}:** {utterance.statement}"
+
+    if isinstance(utterance, Action):
+        return f"{index}. **{utterance.entity}** — {utterance.action}"
+
+    return f"{index}. **{utterance.entity}** — *{utterance.sentiment}*"
 
 
 class LedgerGenerationResponse(_StrictModel):
@@ -222,20 +283,22 @@ async def generate_ledger(
 
     with widelog.wide_event(
         op="generate_ledger",
+        model=model,
         known_role_count=len(normalized_roles),
         attendee_count=len(normalized_attendees),
         glossary_count=len(glossary),
     ) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
+            log.set(attempt_count=attempt)
+            raw = await call_llm_with_prompt(
+                PromptName.GENERATE_LEDGER,
+                prompt_data,
+                model,
+                response_model=LedgerGenerationResponse,
+            )
             try:
-                raw = await call_llm_with_prompt(
-                    PromptName.GENERATE_LEDGER,
-                    prompt_data,
-                    model,
-                    response_model=LedgerGenerationResponse,
-                )
                 response = LedgerGenerationResponse.model_validate_json(raw)
-            except Exception as exc:
+            except ValidationError as exc:
                 last_error = exc
                 continue
 
@@ -256,7 +319,12 @@ async def generate_ledger(
             )
             return selected.response
 
-        log.set(attempt_count=MAX_GENERATION_ATTEMPTS, failed=True, error=str(last_error) if last_error else None)
+        log.set(
+            attempt_count=MAX_GENERATION_ATTEMPTS,
+            failed=True,
+            failure_kind="structural_validation",
+            last_validation_error=str(last_error) if last_error else None,
+        )
         raise ValueError(
-            f"Ledger generation produced no structurally valid response in {MAX_GENERATION_ATTEMPTS} attempts."
+            f"Ledger generation failed structural validation in all {MAX_GENERATION_ATTEMPTS} attempts. Last validation error: {last_error}"
         ) from last_error

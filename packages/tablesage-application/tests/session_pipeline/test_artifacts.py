@@ -83,6 +83,7 @@ def test_application_delete_transcript_deletes_derived_artifacts_only(tmp_path: 
     _touch(session_folder, ArtifactName.TRANSCRIPT)
     _touch(session_folder, ArtifactName.ROLE_TRANSCRIPT)
     _touch(session_folder, ArtifactName.LEDGER)
+    (session_folder / "ledger.md").write_text("readable")
 
     application.delete_transcript(game_session.id)
 
@@ -90,3 +91,4 @@ def test_application_delete_transcript_deletes_derived_artifacts_only(tmp_path: 
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.LEDGER].filename).exists()
+    assert not (session_folder / "ledger.md").exists()

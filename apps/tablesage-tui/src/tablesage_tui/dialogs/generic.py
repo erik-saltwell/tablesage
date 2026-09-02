@@ -14,11 +14,21 @@ class ConfirmationDialog(ModalScreen[bool | None]):
         Binding("escape", "cancel", "Cancel", show=False),
     ]
 
-    def __init__(self, *, title: str, prompt: str, show_cancel: bool = True) -> None:
+    def __init__(
+        self,
+        *,
+        title: str,
+        prompt: str,
+        show_cancel: bool = True,
+        no_label: str = "No",
+        yes_label: str = "Yes",
+    ) -> None:
         super().__init__()
         self._title = title
         self._prompt = prompt
         self._show_cancel = show_cancel
+        self._no_label = no_label
+        self._yes_label = yes_label
 
     def compose(self) -> ComposeResult:
         with Vertical(id="confirmation-dialog") as dialog:
@@ -27,8 +37,8 @@ class ConfirmationDialog(ModalScreen[bool | None]):
             with EqualWidthButtonRow(classes="dialog-actions"):
                 if self._show_cancel:
                     yield Button("Cancel", id="confirmation-cancel")
-                yield Button("No", id="confirmation-no")
-                yield Button("Yes", id="confirmation-yes", variant="primary")
+                yield Button(self._no_label, id="confirmation-no")
+                yield Button(self._yes_label, id="confirmation-yes", variant="primary")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "confirmation-yes":

@@ -17,8 +17,8 @@ import jinja2
 from tablesage_application import Application
 from tablesage_application.llm import PromptName
 from tablesage_application.llm._prompts import read_prompt_template, read_system_prompt
-from tablesage_application.session_pipeline.clean_transcript import render_role_transcript_text
-from tablesage_application.session_pipeline.generate_summary import GlossaryPromptEntry, SummaryPromptData
+from tablesage_application.paths import ARTIFACTS, ArtifactName
+from tablesage_application.session_pipeline.generate_summary import Attendee, GlossaryPromptEntry, SummaryPromptData
 from tablesage_model.model import Session as GameSession
 
 CAMPAIGN_NAME = "Brandonsford"
@@ -63,8 +63,23 @@ def main() -> None:
         GlossaryPromptEntry(term=entry.term, description=entry.description)
         for entry in sorted(application.list_glossary_entries(campaign.id), key=lambda entry: entry.term.casefold())
     )
-    transcript = render_role_transcript_text(application.session_folder(game_session.id))
-    prompt_data = SummaryPromptData(transcript=transcript, glossary=glossary)
+    attendees = tuple(
+        Attendee(player_name=attendee.player_name, roles=attendee.roles)
+        for attendee in sorted(application.list_attendance(game_session.id), key=lambda attendee: attendee.player_name.casefold())
+    )
+    ledger_path = application.session_folder(game_session.id) / ARTIFACTS[ArtifactName.LEDGER].filename
+    if not ledger_path.is_file():
+        raise SystemExit(f"{ledger_path} does not exist -- generate the Ledger for this session first.")
+    ledger = ledger_path.read_text(encoding="utf-8")
+    session_date = game_session.session_date.isoformat() if game_session.session_date else None
+    prompt_data = SummaryPromptData(
+        ledger=ledger,
+        attendees=attendees,
+        glossary=glossary,
+        campaign_name=campaign.name,
+        session_date=session_date,
+        game_system=campaign.game_system,
+    )
 
     system_prompt = read_system_prompt(PromptName.SUMMARIZE_SESSION)
     template = jinja2.Template(read_prompt_template(PromptName.SUMMARIZE_SESSION), undefined=jinja2.StrictUndefined)

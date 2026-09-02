@@ -12,8 +12,12 @@ from tablesage_application.llm._prompts import read_prompt_template, read_system
 
 @dataclass
 class _SummaryPromptData:
-    transcript: str
+    ledger: str
+    attendees: list[dict[str, object]] = field(default_factory=list)
     glossary: list[dict[str, str | None]] = field(default_factory=list)
+    campaign_name: str = "Iron Pact"
+    session_date: str | None = None
+    game_system: str | None = None
 
 
 class _SummaryResult(BaseModel):
@@ -24,8 +28,10 @@ def test_read_system_prompt_and_template_for_summarize_session() -> None:
     system_prompt = read_system_prompt(PromptName.SUMMARIZE_SESSION)
     template = read_prompt_template(PromptName.SUMMARIZE_SESSION)
 
-    assert "placeholder" in system_prompt.lower()
-    assert "{{ transcript }}" in template
+    assert "# Overview" in system_prompt
+    assert "# Input Description" in system_prompt
+    assert "{{ ledger }}" in template
+    assert "{{ campaign_name }}" in template
 
 
 def test_read_system_prompt_and_template_for_generate_ledger() -> None:
@@ -56,7 +62,7 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
 
     result = await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
-        _SummaryPromptData(transcript="Alice: Hello.\nBob: Hi."),
+        _SummaryPromptData(ledger='{"utterances": []}'),
         model="anthropic/claude-sonnet-4-5",
         response_model=_SummaryResult,
     )
@@ -64,16 +70,23 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
     assert result == "the summary"
     assert captured["model"] == "anthropic/claude-sonnet-4-5"
     assert captured["response_format"] is _SummaryResult
-    assert "Alice: Hello." in captured["user_prompt"]
-    assert "Glossary:" in captured["user_prompt"]  # glossary section is present even when empty
+    assert '{"utterances": []}' in captured["user_prompt"]
+    assert "<glossary>" in captured["user_prompt"]  # glossary section is present even when empty
+    assert "Campaign: Iron Pact" in captured["user_prompt"]
+    assert "Game system: unspecified" in captured["user_prompt"]  # None renders as "unspecified", not the literal "None"
+    assert "Session date: unknown" in captured["user_prompt"]  # None renders as "unknown", not the literal "None"
     assert captured["system_prompt"] == read_system_prompt(PromptName.SUMMARIZE_SESSION)
 
 
 @pytest.mark.anyio
 async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: pytest.MonkeyPatch) -> None:
     class _PydanticPromptData(BaseModel):
-        transcript: str
+        ledger: str
+        attendees: list[dict[str, object]]
         glossary: list[dict[str, str | None]]
+        campaign_name: str
+        session_date: str | None
+        game_system: str | None
 
     captured: dict[str, Any] = {}
 
@@ -88,11 +101,15 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
     await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
         _PydanticPromptData(
-            transcript="Alice: Hello.",
+            ledger='{"utterances": []}',
+            attendees=[{"player_name": "Alice", "roles": ["Zaria"]}],
             glossary=[
                 {"term": "Aldor", "description": None},
                 {"term": "Eldoria", "description": "a kingdom"},
             ],
+            campaign_name="Iron Pact",
+            session_date=None,
+            game_system=None,
         ),
     )
 
@@ -113,7 +130,7 @@ async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.Monke
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
 
-    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(transcript="x"))
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(ledger="x"))
 
     assert captured["model"] == DEFAULT_LLM_MODEL
 
@@ -130,7 +147,7 @@ async def test_call_llm_with_prompt_forwards_timeout(monkeypatch: pytest.MonkeyP
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
 
-    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(transcript="x"), timeout=1200)
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(ledger="x"), timeout=1200)
 
     assert captured["timeout"] == 1200
 

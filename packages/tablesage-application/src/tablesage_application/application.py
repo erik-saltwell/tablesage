@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import shutil
 import uuid
 from collections.abc import Callable, Mapping, Sequence
 from datetime import date
@@ -444,6 +445,16 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             artifacts.export_artifact(self._session_folder(session, game_session), artifact_name, destination)
 
+    def export_ledger_markdown(self, session_id: uuid.UUID, destination: Path) -> None:
+        """Render the canonical Ledger on demand and export its human-readable Markdown view."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+        ledger_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
+        markdown_path = session_folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME
+        markdown_path.write_text(generate_ledger_pipeline.Ledger.load(ledger_path).to_markdown(), encoding="utf-8")
+        shutil.copyfile(markdown_path, destination)
+
     def session_player_centroids(self, session_id: uuid.UUID) -> dict[str, Embedding]:
         """Attending players' voice centroids, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
         with Session(self._engine) as session:
@@ -551,7 +562,7 @@ class Application:
         ):
             generated = asyncio.run(
                 generate_ledger_pipeline.generate_ledger(
-                    role_transcript, known_roles, ledger_attendees, ledger_glossary, self._settings.llm_model
+                    role_transcript, known_roles, ledger_attendees, ledger_glossary, self._settings.llm_model_high
                 )
             )
             ledger = generate_ledger_pipeline.Ledger(
@@ -564,11 +575,16 @@ class Application:
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
             temporary = target.with_name(f".{target.stem}.tmp{target.suffix}")
+            markdown_target = session_folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME
+            markdown_temporary = markdown_target.with_name(f".{markdown_target.stem}.tmp{markdown_target.suffix}")
             try:
                 ledger.save(temporary)
+                markdown_temporary.write_text(ledger.to_markdown(), encoding="utf-8")
                 temporary.replace(target)
+                markdown_temporary.replace(markdown_target)
             except Exception:
                 temporary.unlink(missing_ok=True)
+                markdown_temporary.unlink(missing_ok=True)
                 raise
             artifacts.invalidate_category(session_folder, paths.ArtifactCategory.FROM_LOG)
 
@@ -578,9 +594,12 @@ class Application:
             return processing.can_generate_summary(self._session_folder(session, game_session))
 
     def generate_summary(self, session_id: uuid.UUID) -> None:
-        """Generate and atomically replace a session's Markdown summary."""
+        """Generate and atomically replace a session's Markdown summary from its Ledger."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
+            campaign = session.get(Campaign, game_session.campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
             session_folder = self._session_folder(session, game_session)
             enabled, reason = processing.can_generate_summary(session_folder)
             if not enabled:
@@ -590,10 +609,28 @@ class Application:
             prompt_glossary = [
                 generate_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
             ]
-            transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
+            attendees = sessions.list_attendance(session, session_id)
+            prompt_attendees = tuple(
+                generate_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
+            )
+            ledger_text = (session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
+            campaign_name = campaign.name
+            session_date = game_session.session_date.isoformat() if game_session.session_date else None
+            game_system = campaign.game_system
 
         with widelog.wide_event(op="generate_summary", session_id=str(session_id), glossary_entry_count=len(prompt_glossary)):
-            summary = asyncio.run(generate_summary_pipeline.generate_summary(transcript, prompt_glossary, self._settings.llm_model))
+            summary = asyncio.run(
+                generate_summary_pipeline.generate_summary(
+                    ledger_text,
+                    prompt_attendees,
+                    prompt_glossary,
+                    campaign_name,
+                    session_date,
+                    game_system,
+                    self._settings.llm_model_high,
+                )
+            )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.SUMMARY].filename
             temp_target = target.with_name(f".{target.stem}.tmp{target.suffix}")
             try:
