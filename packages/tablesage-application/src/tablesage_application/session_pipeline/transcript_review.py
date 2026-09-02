@@ -144,6 +144,22 @@ class ReplaceTextResult:
     occurrence_count: int
 
 
+def count_occurrences(transcript: Transcript, find: str, case_sensitive: bool) -> int:
+    """How many times `find` occurs across every utterance's displayed text.
+
+    Same literal (escaped), `punctuated_text`-preferring matching as `replace_text` -- shared so a
+    suggestion's displayed occurrence count and what `replace_text` will actually replace never
+    disagree. An empty `find` matches nothing.
+    """
+    if not find:
+        return 0
+    pattern = re.compile(re.escape(find), 0 if case_sensitive else re.IGNORECASE)
+    return sum(
+        len(pattern.findall(utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text))
+        for utterance in transcript.utterances
+    )
+
+
 def replace_text(transcript: Transcript, find: str, replacement: str, case_sensitive: bool) -> tuple[Transcript, ReplaceTextResult]:
     """Return a copy of `transcript` with every occurrence of `find` in each utterance's displayed
     text replaced by `replacement`, across the whole transcript.

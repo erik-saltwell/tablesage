@@ -1,0 +1,16 @@
+Attendees:
+{% if attendees %}
+{% for name in attendees %}- {{ name }}
+{% endfor %}
+{% else %}(none)
+{% endif %}
+
+Campaign glossary terms:
+{% if glossary %}
+{% for term in glossary %}- {{ term }}
+{% endfor %}
+{% else %}(none)
+{% endif %}
+
+Transcript:
+{{ transcript }}

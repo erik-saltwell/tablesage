@@ -72,7 +72,6 @@ def _application(
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
         session_player_roles=MagicMock(return_value={}),
-        list_glossary_entries=MagicMock(return_value=[]),
         embedding_factory=MagicMock(),
         settings=AppSettings(),
     )

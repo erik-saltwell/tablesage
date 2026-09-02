@@ -6,6 +6,7 @@ from . import (
     generate_summary,
     import_audio,
     processing,
+    suggest_spelling_corrections,
     transcribe_audio,
     transcript_review,
 )
@@ -18,6 +19,7 @@ __all__ = [
     "generate_summary",
     "import_audio",
     "processing",
+    "suggest_spelling_corrections",
     "transcribe_audio",
     "transcript_review",
 ]

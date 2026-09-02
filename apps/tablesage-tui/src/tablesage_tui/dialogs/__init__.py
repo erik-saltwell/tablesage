@@ -7,6 +7,7 @@ from .progress import ProgressDialog
 from .roster import PlayerPickerDialog, RolePickerDialog
 from .session_picker import SessionFromCampaignPickerDialog
 from .speaker_resolution import SpeakerResolutionDialog, SpeakerResolutionResult
+from .spelling_suggestion import SpellingSuggestionDialog, SpellingSuggestionResult
 from .transcript_view import TranscriptViewDialog
 
 __all__ = [
@@ -25,5 +26,7 @@ __all__ = [
     "SessionFromCampaignPickerDialog",
     "SpeakerResolutionDialog",
     "SpeakerResolutionResult",
+    "SpellingSuggestionDialog",
+    "SpellingSuggestionResult",
     "TranscriptViewDialog",
 ]

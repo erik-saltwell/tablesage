@@ -26,6 +26,7 @@ from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
+from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
 from .voice_clips import clips
 
 
@@ -647,6 +648,40 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return transcript_review.extract_review_clips(self._session_folder(session, game_session), on_progress)
+
+    def suggest_spelling_corrections(
+        self, session_id: uuid.UUID, transcript: Transcript
+    ) -> list[suggest_spelling_corrections_pipeline.SpellingSuggestion]:
+        """Propose spelling corrections for *transcript* (Manual Review's working copy) against the campaign glossary and attendees.
+
+        Fail-open on two independent fronts, both simply skipping to an empty result rather than
+        raising: no glossary terms and no attendees (nothing to suggest against, so the LLM is
+        never called), and any failure of the LLM call itself (timeout, error, malformed
+        response) -- this is a convenience layer on top of an already-usable transcript, and
+        Manual Review's entry point must never hard-fail because of it.
+        """
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            attendee_names = [attendee.player_name for attendee in sessions.list_attendance(session, session_id)]
+            glossary_terms = [entry.term for entry in glossary.list_glossary_entries(session, game_session.campaign_id)]
+
+        if not attendee_names and not glossary_terms:
+            return []
+
+        with widelog.wide_event(op="suggest_spelling_corrections", session_id=str(session_id)) as log:
+            try:
+                proposals = asyncio.run(
+                    suggest_spelling_corrections_pipeline.suggest_spelling_corrections(
+                        transcript, glossary_terms, attendee_names, self._settings.llm_model
+                    )
+                )
+            except Exception as exc:
+                log.set(failed=True, error=str(exc), suggestion_count=0)
+                return []
+
+            suggestions = suggest_spelling_corrections_pipeline.filter_and_dedupe_suggestions(proposals, transcript)
+            log.set(failed=False, proposal_count=len(proposals), suggestion_count=len(suggestions))
+            return suggestions
 
     def discard_review_clips(self, session_id: uuid.UUID) -> None:
         with Session(self._engine) as session:

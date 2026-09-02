@@ -1386,6 +1386,25 @@ ManualReviewScreen {
         padding: 1 2;
     }
 
+    #spelling-suggestions-panel {
+        width: 1fr;
+        height: 1fr;
+        layout: vertical;
+    }
+
+    #spelling-suggestions-table {
+        height: 1fr;
+    }
+
+    #spelling-suggestions-actions {
+        height: auto;
+        margin: 1 0 0 0;
+
+        Button {
+            margin: 0 0 0 1;
+        }
+    }
+
     #manual-review-panel {
         width: 1fr;
         height: 1fr;

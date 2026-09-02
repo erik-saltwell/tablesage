@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 import uuid
 from collections.abc import Callable
+from dataclasses import dataclass, replace
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -18,11 +19,19 @@ from textual.widgets import Button, DataTable, Static
 from textual.widgets.data_table import CursorType
 
 from ..audio_playback import ClipPlayer
-from ..dialogs import FindReplaceDialog, FindReplaceResult, ManualReviewUtteranceDialog, ManualReviewUtteranceResult
+from ..dialogs import (
+    FindReplaceDialog,
+    FindReplaceResult,
+    ManualReviewUtteranceDialog,
+    ManualReviewUtteranceResult,
+    SpellingSuggestionDialog,
+    SpellingSuggestionResult,
+)
 from ..widgets import EqualWidthButtonRow
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
+    from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
     from tablesage_tools.model import Transcript
 
 _MAX_ASSIGNABLE_ATTENDEES = 9
@@ -33,6 +42,29 @@ _DIM_STYLE = "dim"
 class PlaybackMode(Enum):
     MANUAL = "manual"
     AUTO = "auto"
+
+
+class Phase(Enum):
+    """Which of `ManualReviewScreen`'s two phases is currently shown.
+
+    SUGGESTIONS (spelling-correction suggestions, reviewed in a table) always runs first when
+    there's anything to suggest; REVIEW (today's speaker/text review) is entered either after
+    SUGGESTIONS completes or immediately, skipping SUGGESTIONS, when there was nothing to
+    suggest. Both phases share this one screen and one in-memory `Transcript` -- nothing is
+    persisted until REVIEW's own Complete, and Cancel at either phase discards everything and
+    exits, uniformly.
+    """
+
+    SUGGESTIONS = "suggestions"
+    REVIEW = "review"
+
+
+@dataclass(frozen=True)
+class _DraftSuggestion:
+    id: uuid.UUID
+    from_text: str
+    to_text: str
+    case_sensitive: bool
 
 
 class _ReviewTable(DataTable[object]):
@@ -78,17 +110,27 @@ class _ReviewTable(DataTable[object]):
 
 
 class ManualReviewScreen(TableSageScreen):
-    """Review speaker labels and utterance text in a working copy of the transcript.
+    """Two-phase review of a working copy of the transcript: spelling-correction suggestions first, then speaker labels and text.
 
-    Edits stay in memory until Complete writes the separate reviewed-transcript artifact.
-    Cancel (including Escape) discards this visit's working copy and leaves both the machine
+    Both phases share one in-memory `Transcript` (see `Phase`). Edits stay in memory until
+    REVIEW's Complete writes the separate reviewed-transcript artifact. Cancel (including Escape),
+    at either phase, discards this visit's working copy entirely and leaves both the machine
     transcript and any previously completed review unchanged.
     """
 
     section = "session detail"
 
+    _SUGGESTIONS_ACTIONS = frozenset({"new_suggestion", "edit_suggestion", "delete_suggestion", "complete_suggestions"})
+    _REVIEW_ACTIONS = frozenset({"toggle_mode", "replay", "delete_utterance", "find_replace", "assign_speaker", "toggle_focus"})
+
     BINDINGS = [
         Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
+        # Suggestions phase.
+        Binding("n,N", "new_suggestion", "New", key_display="N"),
+        Binding("enter,e,E", "edit_suggestion", "Edit", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_suggestion", "Delete", key_display="D"),
+        Binding("c,C", "complete_suggestions", "Apply & Continue", key_display="C"),
+        # Review phase.
         Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
         Binding("r,R", "replay", "Replay", key_display="R"),
         Binding("d,D,delete,backspace", "delete_utterance", "Delete", key_display="D"),
@@ -125,9 +167,27 @@ class ManualReviewScreen(TableSageScreen):
         self._advance_timer: Timer | None = None
         self._clip_started_at = 0.0
         self._current_duration = 0.0
+        self._phase = Phase.SUGGESTIONS
+        self._suggestions: list[_DraftSuggestion] = []
 
     def compose_content(self) -> ComposeResult:
+        with Vertical(id="spelling-suggestions-panel", classes="panel surface-2") as panel:
+            panel.display = False
+            panel.border_title = " spelling suggestions "
+            suggestions_table: DataTable[str] = DataTable(
+                id="spelling-suggestions-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+            )
+            suggestions_table.add_column("From", key="from")
+            suggestions_table.add_column("To", key="to")
+            suggestions_table.add_column("Occurrences", key="occurrences")
+            suggestions_table.add_column("Case Sensitive", key="case_sensitive")
+            yield suggestions_table
+            with EqualWidthButtonRow(id="spelling-suggestions-actions"):
+                yield Button("Cancel", id="spelling-suggestions-cancel")
+                yield Button("Apply & Continue", id="spelling-suggestions-complete", variant="primary")
+
         with Vertical(id="manual-review-panel", classes="panel surface-2") as panel:
+            panel.display = False
             panel.border_title = " manual review "
 
             with Horizontal(id="manual-review-status"):
@@ -150,6 +210,13 @@ class ManualReviewScreen(TableSageScreen):
                 yield Button("Cancel", id="manual-review-cancel")
                 yield Button("Complete", id="manual-review-complete", variant="primary")
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in self._SUGGESTIONS_ACTIONS:
+            return True if self._phase is Phase.SUGGESTIONS else None
+        if action in self._REVIEW_ACTIONS:
+            return True if self._phase is Phase.REVIEW else None
+        return True
+
     def on_mount(self) -> None:
         self._session_folder = self.application.session_folder(self._session_id)
         attendees = sorted(self.application.list_attendance(self._session_id), key=lambda attendee: attendee.player_name.casefold())
@@ -157,9 +224,12 @@ class ManualReviewScreen(TableSageScreen):
         self._attendee_names = self._all_attendee_names[:_MAX_ASSIGNABLE_ATTENDEES]
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
-        def work() -> tuple[Transcript, Path]:
+        def work() -> tuple[Transcript, Path, list[SpellingSuggestion]]:
             assert self._session_folder is not None
-            return self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
+            transcript, clip_dir = self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
+            self.report_stage_progress("Finding spelling suggestions…", 0, 0)
+            suggestions = self.application.suggest_spelling_corrections(self._session_id, transcript)
+            return transcript, clip_dir, suggestions
 
         self.run_with_progress(
             title="Manual Review",
@@ -173,16 +243,38 @@ class ManualReviewScreen(TableSageScreen):
         parts.append("0: Unassigned")
         return "   ".join(parts)
 
-    def _after_extract(self, result: tuple[Transcript, Path]) -> None:
-        transcript, _clip_dir = result
+    def _after_extract(self, result: tuple[Transcript, Path, list[SpellingSuggestion]]) -> None:
+        transcript, _clip_dir, suggestions = result
         self._transcript = transcript
         self._clip_indices = list(range(len(transcript.utterances)))
+
+        if suggestions:
+            self._phase = Phase.SUGGESTIONS
+            self._suggestions = [
+                _DraftSuggestion(id=uuid.uuid4(), from_text=s.from_text, to_text=s.to_text, case_sensitive=s.case_sensitive)
+                for s in suggestions
+            ]
+            self._sort_suggestions()
+            self.query_one("#spelling-suggestions-panel").display = True
+            self._reload_suggestions_table()
+            self.query_one("#spelling-suggestions-table", DataTable).focus()
+            self.refresh_bindings()
+            return
+
+        self._phase = Phase.REVIEW
+        self.query_one("#manual-review-panel").display = True
+        self._enter_review_phase()
+
+    def _enter_review_phase(self) -> None:
+        assert self._transcript is not None
         table = self.query_one(_ReviewTable)
-        for index in range(len(transcript.utterances)):
+        for index in range(len(self._transcript.utterances)):
             marker, speaker, text = self._row_cell_values(index)
             table.add_row(marker, speaker, text, key=str(index))
 
-        if not transcript.utterances:
+        table.focus()
+        self.refresh_bindings()
+        if not self._transcript.utterances:
             return
         self._playhead = 0
         self._mode = PlaybackMode.MANUAL
@@ -190,6 +282,117 @@ class ManualReviewScreen(TableSageScreen):
         self._update_focus_indicator()
         self._table_ready = True
         self._play(0)
+
+    # Spelling suggestions -- phase one. Reviewed the same way `GlossaryReviewScreen` reviews its
+    # own LLM proposals: New/Edit/Delete on an in-memory list, table fully rebuilt on each change.
+    # Occurrence counts are recomputed live (not the snapshot the LLM call produced) so editing a
+    # row's `from_text` or `case_sensitive` immediately shows what Complete would actually do.
+
+    def _sort_suggestions(self) -> None:
+        self._suggestions.sort(key=lambda suggestion: suggestion.from_text.casefold())
+
+    def _selected_suggestion_id(self) -> uuid.UUID | None:
+        table = self.query_one("#spelling-suggestions-table", DataTable)
+        if table.row_count == 0:
+            return None
+        row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
+        return uuid.UUID(row_key) if row_key else None
+
+    def _selected_suggestion(self) -> _DraftSuggestion | None:
+        suggestion_id = self._selected_suggestion_id()
+        return next((suggestion for suggestion in self._suggestions if suggestion.id == suggestion_id), None)
+
+    def _reload_suggestions_table(self, selected_id: uuid.UUID | None = None) -> None:
+        assert self._transcript is not None
+        table = self.query_one("#spelling-suggestions-table", DataTable)
+        selected_id = selected_id or self._selected_suggestion_id()
+        table.clear()
+        restored_row: int | None = None
+        for index, suggestion in enumerate(self._suggestions):
+            occurrence_count = transcript_review.count_occurrences(self._transcript, suggestion.from_text, suggestion.case_sensitive)
+            table.add_row(
+                suggestion.from_text,
+                suggestion.to_text,
+                str(occurrence_count),
+                "✓" if suggestion.case_sensitive else "",
+                key=str(suggestion.id),
+            )
+            if suggestion.id == selected_id:
+                restored_row = index
+        if restored_row is not None:
+            table.move_cursor(row=restored_row)
+
+    def action_new_suggestion(self) -> None:
+        def on_dismiss(result: SpellingSuggestionResult | None) -> None:
+            if result is None:
+                return
+            suggestion = _DraftSuggestion(
+                id=uuid.uuid4(), from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
+            )
+            self._suggestions.append(suggestion)
+            self._sort_suggestions()
+            self._reload_suggestions_table(suggestion.id)
+
+        self.app.push_screen(SpellingSuggestionDialog(title="New Suggestion", submit_label="Add Suggestion"), on_dismiss)
+
+    def action_edit_suggestion(self) -> None:
+        suggestion = self._selected_suggestion()
+        if suggestion is None:
+            return
+
+        def on_dismiss(result: SpellingSuggestionResult | None) -> None:
+            if result is None:
+                return
+            index = self._suggestions.index(suggestion)
+            self._suggestions[index] = replace(
+                suggestion, from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
+            )
+            self._sort_suggestions()
+            self._reload_suggestions_table(suggestion.id)
+
+        self.app.push_screen(
+            SpellingSuggestionDialog(
+                title="Edit Suggestion",
+                submit_label="Save",
+                from_text=suggestion.from_text,
+                to_text=suggestion.to_text,
+                case_sensitive=suggestion.case_sensitive,
+            ),
+            on_dismiss,
+        )
+
+    def action_delete_suggestion(self) -> None:
+        suggestion = self._selected_suggestion()
+        if suggestion is None:
+            return
+        index = self._suggestions.index(suggestion)
+        self._suggestions.remove(suggestion)
+        self._reload_suggestions_table()
+        table = self.query_one("#spelling-suggestions-table", DataTable)
+        if table.row_count:
+            table.move_cursor(row=min(index, table.row_count - 1))
+
+    def action_complete_suggestions(self) -> None:
+        """Apply every surviving suggestion's find/replace, sequentially in table order, then enter the review phase."""
+        assert self._transcript is not None
+        occurrence_total = 0
+        for suggestion in self._suggestions:
+            self._transcript, outcome = transcript_review.replace_text(
+                self._transcript, suggestion.from_text, suggestion.to_text, suggestion.case_sensitive
+            )
+            occurrence_total += outcome.occurrence_count
+
+        if occurrence_total:
+            occurrence_plural = "" if occurrence_total == 1 else "s"
+            suggestion_plural = "" if len(self._suggestions) == 1 else "s"
+            self.notify(
+                f"Applied {len(self._suggestions)} correction{suggestion_plural}, {occurrence_total} occurrence{occurrence_plural}."
+            )
+
+        self._phase = Phase.REVIEW
+        self.query_one("#spelling-suggestions-panel").display = False
+        self.query_one("#manual-review-panel").display = True
+        self._enter_review_phase()
 
     # Row rendering
 
@@ -253,8 +456,11 @@ class ManualReviewScreen(TableSageScreen):
         self._play(index)
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
-        """A second click on the selected row (or Enter) opens the utterance editor."""
+        """A second click on the selected row (or Enter) opens that row's editor -- suggestion or utterance, by phase."""
         event.stop()
+        if self._phase is Phase.SUGGESTIONS:
+            self.action_edit_suggestion()
+            return
         if not self._table_ready or self._transcript is None:
             return
         index = event.cursor_row
@@ -475,7 +681,9 @@ class ManualReviewScreen(TableSageScreen):
         event.stop()
         if event.button.id == "manual-review-complete":
             self.action_complete()
-        elif event.button.id == "manual-review-cancel":
+        elif event.button.id == "spelling-suggestions-complete":
+            self.action_complete_suggestions()
+        elif event.button.id in ("manual-review-cancel", "spelling-suggestions-cancel"):
             self.action_cancel()
 
     def action_complete(self) -> None:

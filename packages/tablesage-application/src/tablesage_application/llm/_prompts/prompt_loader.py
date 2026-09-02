@@ -14,6 +14,7 @@ class PromptName(StrEnum):
     PROPOSE_SPEAKERS = "propose_speakers"
     CLASSIFY_BACKCHANNELS = "classify_backchannels"
     EXTRACT_GLOSSARY = "extract_glossary"
+    SUGGEST_SPELLING_CORRECTIONS = "suggest_spelling_corrections"
 
 
 def read_system_prompt(name: PromptName) -> str:
