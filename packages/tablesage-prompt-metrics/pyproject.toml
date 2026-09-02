@@ -1,0 +1,27 @@
+[project]
+name = "tablesage-prompt-metrics"
+version = "0.1.0"
+description = "Offline Prompt Forge integration and evaluation metrics for TableSage prompts."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "jinja2>=3.1.0",
+    "jsonschema>=4.0",
+    "prompt-model",
+    "pydantic>=2.13.4",
+    "pyyaml>=6.0",
+    "tablesage-application",
+    "tablesage-model",
+]
+
+[project.scripts]
+tablesage-prompt-tools = "tablesage_prompt_metrics.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.2,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+prompt-model = { path = "../../../prompt-forge/packages/prompt-model", editable = true }
+tablesage-application = { workspace = true }
+tablesage-model = { workspace = true }

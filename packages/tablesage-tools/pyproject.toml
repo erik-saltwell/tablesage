@@ -16,7 +16,7 @@ dependencies = [
     "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "huggingface-hub>=1.14.0",
     "jiwer>=3.1.0",
-    "litellm>=1.83.0",
+    "litellm>=1.99.0",
     "mathspell>=0.1.0",
     "modelscope[framework]>=1.36.3",
     "numpy>=1.26.4",
