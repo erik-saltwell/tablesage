@@ -15,12 +15,17 @@ The artifact boundary determines how utterances are selected:
 
 1. If `transcript_reviewed.json` exists, load it. A completed Manual Review is treated as human
    ground truth, so every utterance whose `speaker` exactly matches an attendee name is eligible.
-   Similarity margin and duration are not inspected.
+   Similarity margin and quality-duration bounds (`min_clip_seconds`/`max_clip_seconds`) are not
+   inspected -- but duration is still checked against `enhance_voices.min_embeddable_clip_seconds`,
+   a hard technical floor (the embedding model can't compute a feature window below it), not a
+   quality filter. See Settings below.
 2. Otherwise load `transcript.json`. An utterance is eligible only when:
    - `speaker == attendee.player_name`;
    - `similarity_margin >= enhance_voices.min_margin_for_voice_sample`;
-   - duration is at least `enhance_voices.min_clip_seconds`; and
-   - duration is at most `enhance_voices.max_clip_seconds`.
+   - duration is at least `enhance_voices.min_clip_seconds`;
+   - duration is at most `enhance_voices.max_clip_seconds`; and
+   - duration is at least `enhance_voices.min_embeddable_clip_seconds` (in practice always implied
+     by `min_clip_seconds`'s default, but enforced independently in case that setting is tuned low).
 3. `Unassigned Speaker` never matches an attendee name and is silently skipped in either path.
 
 A missing `similarity_margin` fails the machine-transcript filter. No new similarity calculation
@@ -58,11 +63,13 @@ No new settings are needed. When the machine transcript is used, the flow reuses
 - `enhance_voices.min_margin_for_voice_sample`
 - `enhance_voices.min_clip_seconds`
 - `enhance_voices.max_clip_seconds`
+- `enhance_voices.min_embeddable_clip_seconds`
 - `remove_outliers.min_sample_similarity`
 - `remove_outliers.min_samples`
 
-The reviewed-transcript path intentionally bypasses the three `enhance_voices` selection values,
-but still uses `remove_outliers` during centroid recomputation.
+The reviewed-transcript path intentionally bypasses `min_margin_for_voice_sample`,
+`min_clip_seconds`, and `max_clip_seconds` (see the trust rule above), but still applies
+`min_embeddable_clip_seconds` and uses `remove_outliers` during centroid recomputation.
 
 ## Artifact lifecycle dependency
 

@@ -47,13 +47,17 @@ def select_enhancement_utterances(
     min_margin: float,
     min_seconds: float,
     max_seconds: float,
+    min_embeddable_seconds: float,
 ) -> list[Utterance]:
     """Select high-certainty utterances attributed to `player_name` for session enhancement.
 
     Comparing `utterance.speaker == player_name` already excludes every other attendee's
     utterances and `UNASSIGNED_SPEAKER` (never a real player name) in one check. A `None`
     margin fails the filter rather than passing it -- see
-    `.documentation/enhance_players_from_session.md`.
+    `.documentation/enhance_players_from_session.md`. `min_embeddable_seconds` is a hard
+    technical floor (the embedding model can't compute a feature window below it), not a
+    quality bound like `min_seconds`/`max_seconds` -- in practice `min_seconds` is already
+    configured above it, but this guards against a misconfigured (too-low) `min_seconds` too.
     """
     selected = []
     for utterance in utterances:
@@ -62,15 +66,24 @@ def select_enhancement_utterances(
         if utterance.similarity_margin is None or utterance.similarity_margin < min_margin:
             continue
         duration = utterance.end - utterance.start
-        if duration < min_seconds or duration > max_seconds:
+        if duration < min_seconds or duration > max_seconds or duration < min_embeddable_seconds:
             continue
         selected.append(utterance)
     return selected
 
 
-def select_assigned_utterances(utterances: list[Utterance], player_name: str) -> list[Utterance]:
-    """Select every utterance assigned to `player_name`, without confidence or duration checks."""
-    return [utterance for utterance in utterances if utterance.speaker == player_name]
+def select_assigned_utterances(utterances: list[Utterance], player_name: str, min_embeddable_seconds: float) -> list[Utterance]:
+    """Select every utterance assigned to `player_name`. No confidence or quality-duration
+    checks -- a completed Manual Review is trusted as human ground truth -- but utterances
+    shorter than `min_embeddable_seconds` are still excluded: the voice-embedding model has a
+    hard technical floor below which it can't compute a feature window at all, independent of
+    how confident the human's assignment was.
+    """
+    return [
+        utterance
+        for utterance in utterances
+        if utterance.speaker == player_name and (utterance.end - utterance.start) >= min_embeddable_seconds
+    ]
 
 
 def _generated_session_filename(player_name: str, campaign_name: str, session_name: str, session_hash: str) -> str:
@@ -120,7 +133,7 @@ def enhance_players_from_session(
     attendees = list_attendance(session, session_id)
     utterances_by_player: dict[uuid.UUID, list[Utterance]] = {
         attendee.player_id: (
-            select_assigned_utterances(transcript.utterances, attendee.player_name)
+            select_assigned_utterances(transcript.utterances, attendee.player_name, enhance_settings.min_embeddable_clip_seconds)
             if has_reviewed_transcript
             else select_enhancement_utterances(
                 transcript.utterances,
@@ -128,6 +141,7 @@ def enhance_players_from_session(
                 enhance_settings.min_margin_for_voice_sample,
                 enhance_settings.min_clip_seconds,
                 enhance_settings.max_clip_seconds,
+                enhance_settings.min_embeddable_clip_seconds,
             )
         )
         for attendee in attendees

@@ -31,7 +31,9 @@ def test_select_enhancement_utterances_filters_by_speaker_margin_and_duration() 
         _utterance("Alice", 19.0, 21.0, margin=None),  # missing margin
     ]
 
-    selected = select_enhancement_utterances(utterances, "Alice", min_margin=0.1, min_seconds=1.0, max_seconds=8.0)
+    selected = select_enhancement_utterances(
+        utterances, "Alice", min_margin=0.1, min_seconds=1.0, max_seconds=8.0, min_embeddable_seconds=0.15
+    )
 
     assert selected == [utterances[0]]
 
@@ -42,22 +44,46 @@ def test_select_enhancement_utterances_boundary_values_are_inclusive() -> None:
         _utterance("Alice", 10.0, 18.0, margin=0.1),
     ]
 
-    selected = select_enhancement_utterances(utterances, "Alice", min_margin=0.1, min_seconds=1.0, max_seconds=8.0)
+    selected = select_enhancement_utterances(
+        utterances, "Alice", min_margin=0.1, min_seconds=1.0, max_seconds=8.0, min_embeddable_seconds=0.15
+    )
 
     assert selected == utterances
 
 
-def test_select_assigned_utterances_ignores_margin_and_duration() -> None:
+def test_select_enhancement_utterances_rejects_a_misconfigured_min_seconds_below_the_embeddable_floor() -> None:
+    """`min_seconds` is a quality bound an operator can retune; `min_embeddable_seconds` is a
+    hard technical floor the embedding model imposes regardless -- even if `min_seconds` is
+    configured below it, a too-short-to-embed clip must still be excluded."""
+    utterances = [_utterance("Alice", 0.0, 0.05, margin=0.9)]
+
+    selected = select_enhancement_utterances(
+        utterances, "Alice", min_margin=0.1, min_seconds=0.01, max_seconds=8.0, min_embeddable_seconds=0.15
+    )
+
+    assert selected == []
+
+
+def test_select_assigned_utterances_ignores_margin_and_quality_duration_but_not_the_embeddable_floor() -> None:
     utterances = [
-        _utterance("Alice", 0.0, 0.05, margin=None),
-        _utterance("Alice", 1.0, 20.0, margin=0.0),
+        _utterance("Alice", 0.0, 0.05, margin=None),  # too short to embed, excluded despite "no filtering"
+        _utterance("Alice", 1.0, 1.2, margin=None),  # short but embeddable, no margin needed
+        _utterance("Alice", 2.0, 20.0, margin=0.0),  # long, zero margin still fine
         _utterance("Bob", 20.0, 22.0, margin=0.9),
         _utterance("Unassigned Speaker", 22.0, 24.0, margin=0.9),
     ]
 
-    selected = select_assigned_utterances(utterances, "Alice")
+    selected = select_assigned_utterances(utterances, "Alice", min_embeddable_seconds=0.15)
 
-    assert selected == utterances[:2]
+    assert selected == utterances[1:3]
+
+
+def test_select_assigned_utterances_embeddable_floor_boundary_is_inclusive() -> None:
+    utterances = [_utterance("Alice", 0.0, 0.15, margin=None)]
+
+    selected = select_assigned_utterances(utterances, "Alice", min_embeddable_seconds=0.15)
+
+    assert selected == utterances
 
 
 # --- Application.enhance_players_from_session (orchestration) ---
@@ -136,8 +162,11 @@ def test_enhance_players_from_session_uses_all_assigned_utterances_from_reviewed
     result = application.enhance_players_from_session(session_id)
 
     assert result.enhanced_player_count == 2
-    assert result.clip_count == 4
-    assert len(list((tmp_path / ".tablesage" / "players" / "Alice").glob("session-*.wav"))) == 3
+    # Still 3, not 4: the 0.05s utterance is excluded even from a reviewed transcript's
+    # otherwise-unfiltered selection -- it's below `min_embeddable_clip_seconds`, the
+    # embedding model's hard technical floor, not a confidence/quality bound.
+    assert result.clip_count == 3
+    assert len(list((tmp_path / ".tablesage" / "players" / "Alice").glob("session-*.wav"))) == 2
     assert len(list((tmp_path / ".tablesage" / "players" / "Bob").glob("session-*.wav"))) == 1
 
 

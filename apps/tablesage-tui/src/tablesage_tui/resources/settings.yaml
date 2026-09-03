@@ -84,6 +84,11 @@ enhance_voices:
   min_clip_seconds: 1.0
   # Utterances longer than this are likely a mis-segmented run-on; excluded.
   max_clip_seconds: 8.0
+  # A hard technical floor, not a quality bar: the voice-embedding model can't compute a
+  # feature window on a clip shorter than this and errors out. Unlike min_clip_seconds/
+  # max_clip_seconds above, this also applies when pulling clips from a completed Manual
+  # Review, which otherwise trusts every human-assigned utterance with no duration check.
+  min_embeddable_clip_seconds: 0.15
 
 remove_backchannels:
   # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):

@@ -66,7 +66,9 @@ rule in `tablesage_data_model.md`'s "Required relationship rules".
   fresh selections and add them.
 - **Transcript source and selection** — selection is automatic:
   - If `transcript_reviewed.json` exists, it is treated as human ground truth. Every utterance
-    attributed to the attendee by name is imported, with no similarity or duration check.
+    attributed to the attendee by name is imported, with no similarity or quality-duration check
+    -- but still excluded below `min_embeddable_clip_seconds` (default **0.15s**), a hard
+    technical floor the embedding model imposes, not a quality bound.
   - Otherwise `transcript.json` is used and an utterance qualifies only when it is attributed to
     the attendee, `similarity_margin >= min_margin_for_voice_sample` (default **0.15**), and its
     duration is between `min_clip_seconds` (default **1.0s**) and `max_clip_seconds` (default

@@ -68,6 +68,14 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
     min_margin_for_voice_sample: float = 0.15
     min_clip_seconds: float = 1.0
     max_clip_seconds: float = 8.0
+    # A hard technical floor, not a quality filter: WeSpeaker's fbank feature extraction needs at
+    # least ~125ms of audio to compute a window at all and remains weak just above that, so clips
+    # shorter than this crash or embed poorly regardless of confidence. Unlike min_clip_seconds/
+    # max_clip_seconds (which only ever apply to the unreviewed machine-transcript path), this
+    # applies to a completed Manual Review's assigned utterances too -- the one path that
+    # otherwise applies no duration filtering at all. See `MIN_UTTERANCE_DURATION_SECONDS` in
+    # `tablesage_tools.speakers` for the same floor's rationale in the speaker-ID path.
+    min_embeddable_clip_seconds: float = Field(default=0.15, gt=0)
 
 
 class RemoveBackchannelsSettings(BaseModel, frozen=True):
