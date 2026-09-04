@@ -12,9 +12,9 @@ requires-python = ">=3.12"
 dependencies = [
   "tablesage-application",
   "tablesage-model",
-  "tablesage-prompt-metrics",
   "tablesage-tools",
   "tablesage-tui",
+  "optimize-prompts",
 ]
 
 [tool.uv.workspace]
@@ -26,9 +26,13 @@ members = [
 [tool.uv.sources]
 tablesage-application = { workspace = true }
 tablesage-model = { workspace = true }
-tablesage-prompt-metrics = { workspace = true }
 tablesage-tools = { workspace = true }
 tablesage-tui = { workspace = true }
+optimize-prompts = { workspace = true }
+# optimize-prompts invokes the sibling Prompt Forge CLI package during optimization.
+# Keep both packages editable while the two repositories are developed together.
+prompt-forge = { path = "../prompt-forge/apps/prompt-forge", editable = true }
+prompt-model = { path = "../prompt-forge/packages/prompt-model", editable = true }
 
 [dependency-groups]
 dev = [

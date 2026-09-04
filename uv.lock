@@ -15,9 +15,9 @@ resolution-markers = [
 
 [manifest]
 members = [
+    "optimize-prompts",
     "tablesage-application",
     "tablesage-model",
-    "tablesage-prompt-metrics",
     "tablesage-tools",
     "tablesage-tui",
     "tablesage-workspace",
@@ -437,6 +437,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/58/77/0ed1c398b7d3aa5d02c1b15df32a049e07961339fe41640af1440079c2f7/botocore-1.43.86.tar.gz", hash = "sha256:0e943c77ab6a54aaaf4d57e6026ede5c3dca341af71ce91f71849a6eae9d5dbf", size = 16059433, upload-time = "2026-09-01T19:23:57.72Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/59/eb95d57ea576feaf1693f5e914f9f27ff9961429cf9ecbc85cef610a6d84/botocore-1.43.86-py3-none-any.whl", hash = "sha256:4efc7fbd6e7616edbd55623bb585a044906149b9a5d3d8558420506526e5a5ac", size = 15751556, upload-time = "2026-09-01T19:23:54.013Z" },
+]
+
+[[package]]
+name = "cachetools"
+version = "7.1.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/39/9a4689914dd907915cee74733b95888fc1d8a21aad47a24a0a2deec73ac4/cachetools-7.1.8.tar.gz", hash = "sha256:1221d547a0b24b7f26fa891d40d488b5258beab9aebd8ed68c729be3af849c43", size = 40909, upload-time = "2026-08-31T19:02:53.985Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/3d/9487690d0e937854db587205c66bab3c3cf88d9f00ed380b74cb88cc94ee/cachetools-7.1.8-py3-none-any.whl", hash = "sha256:a81e3844acaa7355b6567f97bd67a94a14ec3a9bc2cbbdae45b9592cc036775b", size = 16842, upload-time = "2026-08-31T19:02:52.554Z" },
 ]
 
 [[package]]
@@ -2614,6 +2623,23 @@ wheels = [
 ]
 
 [[package]]
+name = "optimize-prompts"
+version = "0.1.0"
+source = { editable = "apps/optimize-prompts" }
+dependencies = [
+    { name = "prompt-forge" },
+    { name = "rich" },
+    { name = "typer" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "prompt-forge", editable = "../prompt-forge/apps/prompt-forge" },
+    { name = "rich", specifier = ">=15.0.0" },
+    { name = "typer", specifier = ">=0.23.1" },
+]
+
+[[package]]
 name = "optuna"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2903,6 +2929,27 @@ wheels = [
 ]
 
 [[package]]
+name = "prompt-forge"
+version = "0.1.0"
+source = { editable = "../prompt-forge/apps/prompt-forge" }
+dependencies = [
+    { name = "prompt-model" },
+    { name = "prompt-model-metrics" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "prompt-model", editable = "../prompt-forge/packages/prompt-model" },
+    { name = "prompt-model-metrics", editable = "../prompt-forge/packages/prompt-model-metrics" },
+    { name = "pydantic" },
+    { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "pyyaml" },
+]
+
+[[package]]
 name = "prompt-model"
 version = "0.1.0"
 source = { editable = "../prompt-forge/packages/prompt-model" }
@@ -2921,6 +2968,27 @@ requires-dist = [
     { name = "mdit-py-plugins", specifier = ">=0.6.1" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "structlog", specifier = ">=25.5.0" },
+]
+
+[[package]]
+name = "prompt-model-metrics"
+version = "0.1.0"
+source = { editable = "../prompt-forge/packages/prompt-model-metrics" }
+dependencies = [
+    { name = "cachetools" },
+    { name = "jinja2" },
+    { name = "markdown-it-py" },
+    { name = "prompt-model" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cachetools", specifier = ">=7.1.4" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "markdown-it-py", specifier = ">=4.2.0" },
+    { name = "prompt-model", editable = "../prompt-forge/packages/prompt-model" },
+    { name = "pyyaml", specifier = ">=6.0" },
 ]
 
 [[package]]
@@ -4609,31 +4677,6 @@ requires-dist = [
 ]
 
 [[package]]
-name = "tablesage-prompt-metrics"
-version = "0.1.0"
-source = { editable = "packages/tablesage-prompt-metrics" }
-dependencies = [
-    { name = "jinja2" },
-    { name = "jsonschema" },
-    { name = "prompt-model" },
-    { name = "pydantic" },
-    { name = "pyyaml" },
-    { name = "tablesage-application" },
-    { name = "tablesage-model" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "jinja2", specifier = ">=3.1.0" },
-    { name = "jsonschema", specifier = ">=4.0" },
-    { name = "prompt-model", editable = "../prompt-forge/packages/prompt-model" },
-    { name = "pydantic", specifier = ">=2.13.4" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "tablesage-application", editable = "packages/tablesage-application" },
-    { name = "tablesage-model", editable = "packages/tablesage-model" },
-]
-
-[[package]]
 name = "tablesage-tools"
 version = "0.1.0"
 source = { editable = "packages/tablesage-tools" }
@@ -4710,9 +4753,9 @@ name = "tablesage-workspace"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "optimize-prompts" },
     { name = "tablesage-application" },
     { name = "tablesage-model" },
-    { name = "tablesage-prompt-metrics" },
     { name = "tablesage-tools" },
     { name = "tablesage-tui" },
 ]
@@ -4729,9 +4772,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "optimize-prompts", editable = "apps/optimize-prompts" },
     { name = "tablesage-application", editable = "packages/tablesage-application" },
     { name = "tablesage-model", editable = "packages/tablesage-model" },
-    { name = "tablesage-prompt-metrics", editable = "packages/tablesage-prompt-metrics" },
     { name = "tablesage-tools", editable = "packages/tablesage-tools" },
     { name = "tablesage-tui", editable = "apps/tablesage-tui" },
 ]

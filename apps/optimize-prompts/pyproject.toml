@@ -1,0 +1,22 @@
+[project]
+name = "optimize-prompts"
+version = "0.1.0"
+description = "CLI workflows for optimizing TableSage prompts with Prompt Forge."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "prompt-forge",
+    "rich>=15.0.0",
+    "typer>=0.23.1",
+]
+
+[project.scripts]
+optimize-prompts = "optimize_prompts.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.11.2,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+prompt-forge = { path = "../../../prompt-forge/apps/prompt-forge", editable = true }
+prompt-model = { path = "../../../prompt-forge/packages/prompt-model", editable = true }

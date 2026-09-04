@@ -35,7 +35,6 @@ Thumbs.db
 dev.db
 .tablesage/
 temp/
-prompt-evaluation-bundles/
 
 # Downloaded ML model checkpoints (e.g. MossFormer2 voice enhancement) --
 # fetched at runtime, not source.
