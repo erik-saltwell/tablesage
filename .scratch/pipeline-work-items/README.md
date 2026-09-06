@@ -9,7 +9,7 @@ the Clean Transcript / Generate (`G`) rework in `session_detail_screen.md`.
 | 02 | [New "Question" Ledger event type](02-question-ledger-event.md) | `complete` — design: [02-design.md](02-design.md), commit `6150f88` |
 | 03 | [Glossary extraction](03-glossary-extraction.md) | `complete` — design: [03-design.md](03-design.md), commit `9c49dfa` |
 | 04 | [Collapse Role Transcript / Ledger / Summary generation into one action](04-single-action-generate.md) | `complete` — superseded by the Session Detail bindings-simplification overhaul, 2026-09-02 |
-| 05 | [Finish Ledger generation](05-finish-ledger-generation.md) | `needs-info` |
+| 05 | [Finish Ledger generation](05-finish-ledger-generation.md) | `complete` — closed without implementation: no remaining gap was specified |
 | 06 | [Finish Summary generation](06-finish-summary-generation.md) | `complete` — commit `678fd8d` |
 | 07 | [Spelling-correction suggestions as Manual Review's first phase](07-correct-spelling-post-punctuation.md) | `complete` — design: same doc, commit `f7be8f1` |
 
@@ -19,5 +19,5 @@ the Clean Transcript / Generate (`G`) rework in `session_detail_screen.md`.
 instead of the role transcript) and implemented and committed the same day. 04 shipped 2026-09-02
 as part of a broader Session Detail bindings-simplification overhaul that also repurposed Clean
 Transcript into a full-wipe Clean Session, merged Import/Transcribe into one binding, and added a
-permanent Errors table -- see `.documentation/session_detail_screen.md`. 05 is still `needs-info`:
-the user needs to name the actual remaining gap rather than the terse one-liner it was raised with.
+permanent Errors table -- see `.documentation/session_detail_screen.md`. 05 was closed 2026-09-05
+without implementation because no remaining gap had been specified.

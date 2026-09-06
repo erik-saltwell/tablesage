@@ -7,7 +7,7 @@ end-to-end (`generate_ledger.md`, `canonical_ledger_format_v3.md`, wired to Gene
 step) — this item was raised alongside "finish summary generation" as a pair, implying there's
 known remaining work, but the specific gap wasn't stated.
 
-## Open question (why this is `needs-info`)
+## Previously unscoped gaps
 
 What's left? Candidates that came up in adjacent conversation but aren't confirmed as this item's
 scope:
@@ -23,8 +23,8 @@ scope:
   `.documentation/session_detail_screen.md`'s Out of Scope section explicitly defers "Viewing/
   reading generated file contents from this screen").
 
-Needs the user to say which of these (or something else) is meant before this can be scoped into
-acceptance criteria.
+No concrete gap was selected from these possibilities, so the item is closed without
+implementation.
 
 ## Implementation context
 
@@ -34,4 +34,5 @@ acceptance criteria.
 
 ## Triage state
 
-`needs-info` — get the specific gap(s) from the user before further scoping.
+`complete` — closed 2026-09-05 without implementation because no specific remaining Ledger
+generation gap was provided.

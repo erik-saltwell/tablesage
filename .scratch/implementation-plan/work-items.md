@@ -26,7 +26,7 @@ populated once a phase reaches Implemented — the commit that completed it.
 | 8 | Session Detail screen | Implemented | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | `0f4284a` |
 | 9 | Import player from file system | Implemented | [`.documentation/import_player_from_filesystem.md`](../../.documentation/import_player_from_filesystem.md) | `6842595` |
 | 11 | Process session | Implemented | [`.documentation/session_detail_screen.md`](../../.documentation/session_detail_screen.md) | `15f52b8` |
-| 12 | Generate summary | Designed | [`.documentation/generate_summary.md`](../../.documentation/generate_summary.md) | — |
+| 12 | Generate summary | Implemented | [`.documentation/generate_summary.md`](../../.documentation/generate_summary.md) | `678fd8d` |
 | 13 | Player Detail cleanup (unused samples) | Implemented | [`.documentation/player_detail_screen.md`](../../.documentation/player_detail_screen.md) | `36d6d05` |
 | 14 | Import players from audio file | Implemented | [`.documentation/import_players_from_audio_file.md`](../../.documentation/import_players_from_audio_file.md) | `f01c5c1` |
 | 15 | Enhance players from session | Implemented | [`.documentation/enhance_players_from_session.md`](../../.documentation/enhance_players_from_session.md) | `e478ad2` |
