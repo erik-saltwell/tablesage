@@ -1,0 +1,694 @@
+<session_metadata>
+Campaign: Brandonsford
+Game system: White Box
+Session date: 2026-08-25
+</session_metadata>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- marshall rise: Dunk
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<session_ledger>
+{
+  "version": 3,
+  "session_id": "9ecdadec-9838-4ef8-859c-67580ec3e2f5",
+  "session_name": "the halfling corps",
+  "attendees": [
+    {
+      "player_name": "erik saltwell",
+      "roles": [
+        "Sir Phidipaldi"
+      ]
+    },
+    {
+      "player_name": "jason beaumont",
+      "roles": [
+        "Game Master"
+      ]
+    },
+    {
+      "player_name": "jeff devries",
+      "roles": [
+        "Trout"
+      ]
+    },
+    {
+      "player_name": "marshall rise",
+      "roles": [
+        "Dunk"
+      ]
+    },
+    {
+      "player_name": "rich gredzinski",
+      "roles": [
+        "Dr Uriah"
+      ]
+    }
+  ],
+  "preamble": {
+    "recap": {
+      "events": [
+        "The four met while gambling with a man who turned out to be cheating; they jointly took his treasure map and decided to venture out together.",
+        "Before entering town, Uriah used his once-a-day ability to speak with aquatic animals to talk to Reginald the frog, learning of the Clurichen, a little creature that comes out of the river each night to cause mischief in town.",
+        "The party entered Brandonsford and found two inns facing each other — one lively and warm, the other nearly abandoned — and went into the lively Clumsy Fox Tavern, meeting its halfling owner Bentley, who runs it with his wife and daughters.",
+        "At the Clumsy Fox they met adventurers: the noblewoman Lady Hilda, and Drop Dead Ned, a greasy-haired, rotten-toothed, shifty-eyed thief with a killer wasp in a tiny jar around his neck, who brokered a deal to be hired for 100 gold a week, paying them back every time they let him kill somebody.",
+        "Eric the Reeve, who represents the town's landowner, told of a dragon plaguing the countryside; the town offers 1000 gold to whoever slays it, and he recommended talking to George the hunter, who lost his arm to the dragon.",
+        "They learned the tale of Sir Brandon: hundreds of years ago a dragon terrorized the village, and the young warrior Brandon gathered brave heroes, received a magical sword from a beautiful fairy, slew the beast, was knighted, had the town named after him — and then left town.",
+        "Dunk went off on his own and befriended Farmer Gill, who knows the tale of Sir Brandon by heart, tried to sell Dunk his mule Seamus for 100 gold, and whose sons have left to kill the dragon — he is sure his boys have it handled.",
+        "At the Golden Egg Tavern they met its white-bearded, bony owner Quinn, whose liquor is terrible and ten times the Clumsy Fox's price; convinced that Bentley steals every good shipment of alcohol he receives, Quinn offered 100 gold to catch whoever is stealing his good wine, and the party floated the beginnings of a plan to stage a fake alcohol delivery.",
+        "No shipments have reached town for weeks because of the dragon, and supplies are running low — yet no one has actually seen or heard the dragon except, supposedly, George the hunter.",
+        "Rumors point to places not yet visited: the church; Ingrid, who sells potions and is said to be in love with Warwick the smith; and Warwick's shop, filled with weird lucky charms and holding a beautiful mithril chain shirt he refuses to sell.",
+        "Sir Phidipaldi was thrown out of the Clumsy Fox after failing an etiquette check and challenging the town's reeve to a duel, leaving him to lodge at the Golden Egg."
+      ],
+      "opening_situation": "It is evening in Brandonsford; the party has scouted the town, Dunk is at Farmer Gill's as the sun sets, and the others must decide where to spend the night."
+    },
+    "character_introductions": [
+      {
+        "character": "Dunk",
+        "description": "A trollkin wanderer exiled from his people — very strong but very unlikable. Trollkin are, surprisingly, not related to trolls. Ranger-ish, he knows a great deal about weird trinkets and carries a pack full of odd, occasionally useful junk."
+      },
+      {
+        "character": "Trout",
+        "description": "Trout the Flailing Onshore, a river halfling — a short person who likes the woods, fights with a sling and spear, and can stand all but unseen when unmoving."
+      },
+      {
+        "character": "Sir Phidipaldi",
+        "description": "A human errant fool who lived at court and became enamored with chivalric tales. He is often wrong about what he knows — he wears plate mail even though his class cannot. He carries a two-handed sword named Sir Chumunga and a lance named Lady Isaboob."
+      },
+      {
+        "character": "Dr Uriah",
+        "description": "Uriah Marsh, a Dagonite chaotic metaphysician — a pale, fish-like humanoid with gills who can breathe underwater, speak with aquatic animals once a day, and sense the tides. His twisted mind cannot be confused, and unlike most metaphysicians he can use blades — he likes to cause pain, for science."
+      }
+    ]
+  },
+  "utterances": [
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The session opens at Farmer Gill's farm at sunset, where Dunk has been drinking with the farmer."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Farmer Gill",
+      "statement": "Offers Dunk a free bed for the night — not in the house, which has no room, but out in the barn."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Tries to negotiate Farmer Gill down to 20 gold for Seamus the mule."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Farmer Gill",
+      "statement": "He would go lower, but with his boys gone he can't get work done without the mule; when his sons come back, he'll drop the price."
+    },
+    {
+      "type": "question",
+      "asker": "rich gredzinski",
+      "question": "Who in the party is physically carrying the treasure map?",
+      "resolver": "jason beaumont",
+      "resolution": "Uriah, the bookish one, carries the map."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Plans to secretly make a copy of the treasure map during his downtime that night."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "For the night: Dunk beds down in Gill's barn, Trout takes a room at the Clumsy Fox, and Uriah and Sir Phidipaldi stay at the Golden Egg."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "At the Clumsy Fox's adventurers' table sit Lady Hilda, Drop Dead Ned with his wasp necklace, a thin, big-nosed man dressed like a classical wizard in blue robes and a pointy star-marked hat, and a shifty-eyed halfling with a dirty mop of hair drinking alone at the end of a table."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Lingers unmoving and unnoticed near the table, listening in on the conversations."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The wizard-looking man is a boisterous, whimsical human named Malzazarik the Magnificent; the lone halfling keeps to himself."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Moseys up to the lone halfling and gets chummy with him."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Squints",
+      "statement": "Delighted to meet a fellow river halfling, he introduces himself as Squints; he just got to town looking for his big break and wants to join an adventuring crew — he makes eyes at his sling, boasting he could bullseye little womp rats back home."
+    },
+    {
+      "source": "Trout",
+      "type": "speech",
+      "entity": "Trout",
+      "statement": "Tells Squints to meet him at the tavern tomorrow morning to be introduced to his friends, dodging the question of pay."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Instead of sleeping, heads over to scout Warwick the smith's home-and-shop while it is closed for the night."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Goes to stake out the river, hiding and waiting for the Clurichen to appear so he can follow it."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "Sleeps in the Golden Egg's basement where the alcohol is kept, scattering his bag of marbles across the floor to catch the thief."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Spends the evening spear-fishing at the river, catching several fish while staying all but unseen."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Warwick's shop is covered in lucky charms even outside — horseshoes, dangling rabbit feet, clovers nailed to the walls. Through the window Dunk sees iron daggers, a longsword, mostly junk, and a mithril chain shirt glinting luminously in the moonlight, clearly of magical origin. Warwick snores in his second-story bedroom, its window cracked open."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "A thin, sheepish woman with frazzled hair rounds the corner, spots Dunk by the house, gets spooked, and stiffly diverts as if she hadn't been heading there."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Follows the woman's path."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The scene shifts to the river, where the hidden Trout watches Uriah arrive and take up his own hiding spot."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The Clurichen swims across the river dragging a corked jug behind it, hauls it up the bank, snaps its fingers and turns invisible — leaving only little footprints pressing through the reeds."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout and Uriah",
+      "action": "Both quietly follow the invisible creature's footprints."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The trail leads to the Golden Egg Tavern; its basement door rattles, flings open with no one visible, and closes again."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The scene cuts back to Dunk: the woman heads to a store marked 'Ingrid the Alchemist' — she is Ingrid herself, and outside her home she pretends to do chores, obviously faking it."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Walks up and strikes up a conversation with Ingrid."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Startled, she asks if Dunk is new to town and pitches her wares: mandrake root tea that heals all wounds, witch powder that makes anything magical glow when sprinkled on it, and essence of wolfsbane for those worried about wolves."
+    },
+    {
+      "source": "Dunk",
+      "type": "speech",
+      "entity": "Dunk",
+      "statement": "Asks bluntly what she was doing over at Warwick's when he saw her earlier."
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "Ingrid",
+      "sentiment": "Her face turns bright red with embarrassment at being caught."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Confesses she climbs up at night to leave little gifts on Warwick's windowsill — she is too scared to ever speak to him and likes watching him sleep; since Dunk is so tall, she asks him to place her gift on the sill for her."
+    },
+    {
+      "source": "Dunk",
+      "type": "speech",
+      "entity": "Dunk",
+      "statement": "Counter-offers: she brews a quick potion to calm her nerves, he lifts her up to the window, and in exchange she unlocks Warwick's front door from inside — claiming, when pressed on why he wants in, that he is 'a fan of clovers'."
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "Ingrid",
+      "sentiment": "Grows dubious of Dunk's motives and isn't buying the idea of letting him into the house."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The scene shifts to the Golden Egg basement: marbles go scattering, and the Clurichen lands flat on its back, turning from invisible to visible."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Fully freaked out, asks whether it is a good luck spirit — and if so, whether it might be interested in a game of cards."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Kicks the basement door open and hurls vials of ink over the creature to keep it visible if it turns invisible."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Leaps into the room and throws his bag of fish over the creature, capturing it."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Naggeneen",
+      "statement": "Cries 'Leave Naggeneen alone, I just like to drink!' and offers his pot of gold or a secret in exchange for his freedom."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "Refuses the bribe out of honor and shouts up into the building for Quinn — they've caught his thief."
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "Quinn",
+      "sentiment": "Coming down in his nightcap hoping they'd caught Bentley red-handed, he is bewildered by the tiny ink-stained creature — how could something so small have stolen so much booze?"
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Quinn",
+      "action": "Takes the bagged Naggeneen, saying he knows what he'll do with this one, hangs the bag on a hook behind the bar, and pays out the reward — 33 gold to each of the three."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The scene returns to Dunk and Ingrid outside her shop."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Her greatest fear is that Warwick will wake and learn she has been watching him through his window every night — she would die of shame."
+    },
+    {
+      "source": "Dunk",
+      "type": "speech",
+      "entity": "Dunk",
+      "statement": "Proposes she prove her prowess as a potion-maker: brew a sleeping potion, he'll help her get in and administer it to Warwick, and she can watch him all night without fear of him waking."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "She knows how to make such a potion but needs an ingredient: faun wine from a grove just across the river north of town, where trees bleed red wine instead of sap and the fauns collect it — it makes any creature instantly drunk or asleep. The grove is close enough to reach tomorrow."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Agrees to fetch the faun wine and meet Ingrid tomorrow night, same spot, same time."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Thanks Dunk for keeping her little romance a secret — she owes him."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The next morning Brandonsford bustles, though shipments still haven't come in. At the Golden Egg, Naggeneen's bag still hangs behind Quinn's bar as he makes breakfast; at the Clumsy Fox, Bentley's family gratefully cooks the fish Trout caught, and Lady Hilda, Malzazarik, Drop Dead Ned, and Squints are all present."
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "Squints",
+      "sentiment": "Waits eagerly to meet Trout's friends and is visibly disappointed when told to sit and eat breakfast instead."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party splits for the day: Uriah heads to the church, Sir Phidipaldi to George the hunter's hut, Trout stays to talk with Squints, and Dunk sets off alone toward the Fauns Grove."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The church is the only fully stone building in town and stands completely empty this morning; the priest, Father William, has a huge frown and a gray beard down to his waist, and greets Uriah with a pointed 'Dagonite, huh?' — he is plainly racist toward nonhumans."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Father William",
+      "statement": "There's no need to bother with the dragon — he has sent Brother Dirk to kill it. Dirk first had to go to Brandon's Barrow Mound, about a day's walk away, because you can't kill the dragon without the magic sword, which is of course buried with Brandon."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Father William",
+      "statement": "The church has no books for amateur scholars; for the kind of scrolls 'you people' like, Uriah should talk to that little pagan Ingrid — she and the witch in the woods have a whole coven going, and she couldn't possibly brew her potions herself."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Pulls out the treasure map and asks Father William to mark where the Barrow Mound and the witch's home are."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Father William",
+      "statement": "Asks for a 10 gold donation for the Barrow Mound's upkeep if Uriah intends to visit it."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Father William",
+      "action": "Measures Uriah's hand and feet with a little ruler, checking for webbing, and finds none — muttering that maybe he misheard about Dagonites."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Father William",
+      "action": "Marks the locations of the witch's home and Brandon's Barrow Mound on the party's map."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The scene shifts to the woodsman's hut, where one-armed George is busy tanning hides, cutting meat, and chopping wood to sell around town."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Flatters George's honor and wit and asks about the black dragon he has met."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "George",
+      "statement": "The dragon cannot be killed — he tried, at its lair up north at the foot of the mountains. It can't fly yet, but it will soon, and then everyone is doomed. Its jaws drip with poison — one bite means death, which is why he had to chop off his own arm to stay clean — it spits sulfur that smells of rotten eggs, and nothing pierces its black scales: their arrows and swords all failed, and it killed all his friends."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "George",
+      "statement": "He doubts Eric the Reeve even has the 1000 gold and can't stand the man. The only person ever to kill the dragon's like was Sir Brandon, a thousand or more years ago — schoolchildren are taught a little fairy gave him a magic sword — but no one knows where the sword is now; Farmer Gill knows all those tales."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "George",
+      "statement": "Concedes that a lance is one of the few weapons they never tried against the dragon."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Vows to make sure he brings his lance."
+    },
+    {
+      "source": "Trout",
+      "type": "speech",
+      "entity": "Trout",
+      "statement": "Recruits Squints as 'junior assistant halfling' in the halfling corps of one of the most elite adventuring parties around, which Trout leads: pay is merit-based, Squints gets second pickings of treasure, must fund himself until the first haul, will take orders directly from Trout, should observe quietly and learn — and is limited to three tips a day."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Squints",
+      "statement": "Starry-eyed at his big break, declares 'I'm in' and heads off to get his own gear."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Dunk, wandering the woods, hears mirth, music, and mandolin playing, and finds the Fauns Grove: fauns gallivanting, dancing, and drinking heavily from golden goblets, each wearing a necklace with a little flask attached; the trees around them bleed red wine instead of sap."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The fauns",
+      "statement": "Call out to Dunk to join them and offer him a sip of their wine."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Dunk drinks the faun wine — and to the fauns' utter astonishment stays sober, even after a second sip from an 'emergency' flask; almost every creature they've ever seen gets drunk immediately, and they declare him remarkable."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The fauns",
+      "statement": "They collect sentimental items and would be happy to trade with such a wondrous creature — perhaps a little love letter or a pixie's treasure."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Digs through his pack and produces a crusty little rabbit's foot, salted with tears, that kept a child in his village safe night after night, and offers it in trade."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "A delighted faun calls the trade a steal, takes off her necklace, and hands Dunk her little flask of faun wine."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Uriah finds no secret doors in the church and moves on to Ingrid's shop, where a little bell rings as he enters."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Offers her wares: wolfsbane for five gold, witch's powder for seven, and mandrake root tea for ten."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Gossiping with Uriah, she calls Father William an ignoramus and misogynist; she follows the religion of the forest, and the church represses the secrets of the wood folk. With the dragon around, fairies have been encroaching and coming out of hiding more and more often. Her friend Vivian lives out in the forest — they're trying to reclaim the word 'witch' — and Ingrid makes all her own wares, whatever the priest says."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Buys the wolfsbane and mandrake root tea, skipping the witch's powder."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party reconvenes at the Clumsy Fox: Sir Phidipaldi and Trout sit with Squints, Uriah returns from Ingrid's, and Dunk comes in from the grove, buying a flask of ordinary wine for about a gold piece."
+    },
+    {
+      "source": "Dunk",
+      "type": "speech",
+      "entity": "Dunk",
+      "statement": "Tells the party he has a line on some good armor that might help against the dragon — Warwick's beautiful armor that shimmers in the moonlight — and that he has a plan to get it for them, needing one more night out."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Shares what he learned about the dragon: poison jaws, sulfur breath, and scales nearly impossible to pierce."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "speech",
+      "entity": "Uriah",
+      "statement": "Warns the others that the town priest is a racist who won't like the nonhumans among them."
+    },
+    {
+      "source": "Trout",
+      "type": "speech",
+      "entity": "Trout",
+      "statement": "Notes that Brother Dirk is off toward the barrow trying to fight the dragon — as are Farmer Gill's sons — and proposes the party head north to Brandon's Barrow Mound for the sword."
+    },
+    {
+      "source": "Dunk",
+      "type": "action",
+      "entity": "Dunk",
+      "action": "Mixes a decoy flask of one part faun wine to four parts ordinary wine — still smelling right — and delivers it to Ingrid so she can brew the sleeping potion while he travels."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Ingrid",
+      "statement": "Says she'll go work on the potion — come back tomorrow."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "All four of the party, plus Squints, head north together through the woods toward the Barrow Mound, planning to skirt the witch's house."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "In a clearing they find a cottage three times normal size, built from cyclopean rocks with a tree-bark door and mud-brick chimney; a horrible roaring drones from inside, the chimney belches smoke, and firelight flickers in a high window."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Has Squints boosted up to peek through the high window."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Squints",
+      "statement": "Whispers down: a giant sleeps inside, and next to it a wiggling, human-sized sack is pinned up on the wall — big enough to hold a person."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "The party",
+      "action": "Sets a stealth rescue plan: Squints slips in through the window to free whoever is in the sack; Dunk and Sir Phidipaldi wait at the door to open it for the escape; Uriah stands at the far window ready to smash it as a distraction; Trout perches on the windowsill, sling at the ready."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Squints creaks the window open and lands stealthily inside; the giant stirs once and Squints freezes until it drifts back to sleep, then he pulls the sack from the wall."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "A bound and gagged monk — Brother Dirk — tumbles out of the sack, and the giant bolts upright, awake."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The giant",
+      "statement": "'Who goes there?'"
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Uriah",
+      "action": "Smashes the far window to draw the giant's attention away from the escape."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Squints hauls Dirk upright and the two run easily out the door that Dunk and Sir Phidipaldi throw open."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Slings a stone at the giant's head to cover the escape."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The stone goes wide and strikes Squints in the head as he runs; everyone flees into the field, and the slow-moving giant thunders after them for a while before tiring and giving up."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Brother Dirk",
+      "statement": "Once ungagged — a rosy, soft-faced monk in a brown robe — he thanks them profusely for saving him: the giant was making a stew and was going to eat him. He had been headed toward the Barrow to get the sword and save the town, but now thinks he should just head home."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Tells Dirk the party is also headed to the Barrow and won't hear of him quitting."
+    },
+    {
+      "source": "Trout",
+      "type": "speech",
+      "entity": "Trout",
+      "statement": "Informs Dirk that he'll be reporting to Squints."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Squints levels up from the rescue and gains the grateful Brother Dirk as his follower; the session ends with the group together on the road toward Brandon's Barrow Mound."
+    }
+  ]
+}
+
+</session_ledger>

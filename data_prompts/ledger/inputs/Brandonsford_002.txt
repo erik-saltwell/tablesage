@@ -1,0 +1,3637 @@
+<known_session_roles>
+- Dr Uriah
+- Dunk
+- Game Master
+- Sir Phidipaldi
+- Trout
+</known_session_roles>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- marshall rise: Dunk
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<session_transcript>
+**Dunk** - Hi, my name is Marshall. Uh, I like, Um, I dont know, just like, what what my dude is.
+
+**Trout** - Yeah, yeah, like, were all friends from the gambling place we meet there.
+
+**Dr Uriah** - No, no, no, no, not friends.
+
+**Sir Phidipaldi** - We we were gambling with a dude who ended up cheating.
+
+**Sir Phidipaldi** - And so we all shared, took the treasure map and decided.
+
+**Sir Phidipaldi** - To go.
+
+**Dr Uriah** - Yeah.
+
+**Trout** - So weve met before.
+
+**Dr Uriah** - Cause we cant split that up, right?
+
+**Trout** - Im just wondering what a river halfling is doing with.
+
+**Dr Uriah** - Just drinking youre not the only one.
+
+**Game Master** - Uh yeah, yeah.
+
+**Dr Uriah** - Were a bunch of weirdos.
+
+**Dunk** - Im Im just Im a trollkin named Dunk uh whos a wanderer who was exiled from my other trollkin people, I guess.
+
+**Dunk** - Uh, im very strong, but Im very unlikable.
+
+**Dr Uriah** - But not really.
+
+**Dr Uriah** - You made fast friends with the farmer, though.
+
+**Game Master** - J. Jeff, why dont you say who you are for the record?
+
+**Trout** - Trout, the flailing, flailing onshore.
+
+**Sir Phidipaldi** - Trout flailing onshore, yes.
+
+**Trout** - Very Indian sounding.
+
+**Trout** - Um, I, um, am a short person, and I like the woods.
+
+**Game Master** - There you go, all right, Eric.
+
+**Sir Phidipaldi** - I am Sir Phidipaldi, I am a human errant fool, so I have.
+
+**Unassigned Speaker** - Phidipaldi.
+
+**Sir Phidipaldi** - Yeah, somebody who, um, kind of lived in the court and became very enamored with chivalric tales.
+
+**Trout** - A little bit of bardish.
+
+**Game Master** - But but the key part is that hes often wrong about what he knows.
+
+**Game Master** - So, for instance, hes wearing plate mail.
+
+**Game Master** - Even though his character class is unable to wear plate mail, he gets to wear it.
+
+**Trout** - Hes almost useless and probably gonna die.
+
+**Sir Phidipaldi** - Thats right.
+
+**Sir Phidipaldi** - That that? And he has a twohanded sword named S. Sir Chumunga and a Lance named Lady Isaboob.
+
+**Game Master** - Yeah, wonderful riff.
+
+**Dr Uriah** - Uh, Im Uriah Marsh, a Dagonite.
+
+**Trout** - What?
+
+**Dr Uriah** - Uh, a Dagonite, chaotic met Metaphysician to be specific.
+
+**Game Master** - Lots of optional rules like.
+
+**Trout** - Say that one more time.
+
+**Dr Uriah** - Yeah, uh, and so imagine if, uh, I look like a guy from Inza.
+
+**Game Master** - Yeah, thats what a Dagon would be.
+
+**Dr Uriah** - Yeah, and so I can breathe underwater and I can speak to aquatic animals, uh.
+
+**Game Master** - A lot of preparation, as if we were having an underwater adventure.
+
+**Dr Uriah** - Yeah, yeah, yeah, Im im Im ready for it, Im ready for it. You want to know H what the tide is gonna be? I got tide sense.
+
+**Dr Uriah** - I can tell you what the tide is.
+
+**Dr Uriah** - Yeah, I got twisted, mind you cant confuse me.
+
+**Dr Uriah** - Im already weird, uh, and yeah, and so Im just, uh.
+
+**Game Master** - You are chaotic.
+
+**Dr Uriah** - Im im im yeah im a chaotic uh, so I can use blades unlike most, um, metaphysicians usually cannot, but I like to cause pain.
+
+**Dr Uriah** - For science.
+
+**Game Master** - Just your metaphysician troll like hes a hes a wanderer.
+
+**Unassigned Speaker** - A troll.
+
+**Game Master** - Hes a troll wanderer.
+
+**Dunk** - Yeah, but Trollkin so like.
+
+**Dr Uriah** - Trollkin.
+
+**Unassigned Speaker** - Trollkin is the not the.
+
+**Dunk** - Kind of ran.
+
+**Dunk** - Yeah, sort of Ranger Theyre.
+
+**Dr Uriah** - Not related to trolls.
+
+**Trout** - Yeah, Trollkin.
+
+**Dunk** - Rangerish, but not so much W. He seems its more like, I know lots about weird trinkets and like.
+
+**Trout** - Okay, nice.
+
+**Dr Uriah** - But thats what they said it did say Trollkin surprisingly not related to the trolls.
+
+**Game Master** - Exactly, I was like.
+
+**Game Master** - So you all ventured together and approached the town of Brandosburg. Um, and let me just describe, um, what happened and what youve learned so before entering the town. Um, our, uh, dagonite friend Uriah.
+
+**Game Master** - Um approached the river and used his once a day ability to speak with animals, speak with aquatic animals.
+
+**Dr Uriah** - To talk to a frog.
+
+**Dr Uriah** - A frog debatable, but.
+
+**Game Master** - Talked to a frog to talk to a frog and, uh, learn about what was going on in the village. And there he learned about a creature named The Clurichaun, which is this little guy.
+
+**Unassigned Speaker** - Little guy.
+
+**Game Master** - Who wanders out from the banks? Uh of the river and into the um uh uh, into the town each night. Um, to cause some sort of mischief or explore or something, the frog did not know what, um, the frog did have a name. I cant remember the Frogs name.
+
+**Dr Uriah** - Oh, like from the school kids, Reginald.
+
+**Game Master** - Yeah, Reginald the Frog.
+
+**Unassigned Speaker** - Reginald.
+
+**Game Master** - Reginald the Frog, Um, entering the town, um, they saw that there were two, um, big inns that were facing each other. Okay, and so one inn was lively, filled with people. Um, warm lights kind of coming from inside, and the other one was like the exact opposite, like almost abandoned nobodys in there. So they went into the lively inn, which is called the clumsy Fox Tavern, and there they met the owner, Bentley.
+
+**Dr Uriah** - Bentley.
+
+**Game Master** - Yes, who runs the inn with his, Um Hes, a halfling Um, who runs the inn with his, uh, wife and their daughters?
+
+**Dunk** - Shes in a work she just needs.
+
+**Unassigned Speaker** - Raising a girl, man, you know how it goes, keep on going.
+
+**Game Master** - Exactly, Um, while they were in the inn, um, they met some adventurers, uh, that, um, were hanging out there. One of them was a, um, like a noblewoman.
+
+**Game Master** - Named, Uh, Lady Hilda, Um, and then the the one that you guys liked the most was a guy named Drop Dead. Ned Um, who was a, Um, had greasy hair, rotten teeth, um, and he, uh, was like a shiftyeyed thief he had, um, a killer wasp in a tiny jar around his neck, and he, um, um, brokered a deal with you all that, um, uh, you could hire him. I believe for 100 gold, right?
+
+**Game Master** - And he would adventure with you for a week, um, but then he would pay you back every time you let him kill somebody.
+
+**Dr Uriah** - Well, that, uh, that was the negotiation.
+
+**Dr Uriah** - That was the negotiation.
+
+**Game Master** - Uh, that, uh, uriah did.
+
+**Game Master** - Um, also in the um uh, in the Uh um, Tavern you met like kind of the Its not really the Mayor, its kind of like the one who represents like the, uh um, the landowner, its a reeve. His name was Eric Um, and he talked about a dragon that had been plaguing the countryside. And he said that the town was offering 1000 gold pieces to whoever slaves slays the Dragon. Um, and he recommended that, um, people should talk to George.
+
+**Game Master** - The Hunter, Um, who has lost his arm to the Dragon, uh.
+
+**Trout** - How about the treasure part like, Where does that come in? Like, Why do we have a map that?
+
+**Game Master** - Well, you, you got the map gambling, you dont know where the treasure is. Yeah, you just got, this is the.
+
+**Dr Uriah** - This is like the This is like the established.
+
+**Dr Uriah** - City on the map So youre a good start.
+
+**Trout** - It could be in the Dragons, lair or something.
+
+**Game Master** - Could be, could be, um.
+
+**Dr Uriah** - So the towns named after a guy who killed a dragon.
+
+**Game Master** - Thats right, so part.
+
+**Dr Uriah** - Hundreds of years ago.
+
+**Dr Uriah** - Yeah, long like.
+
+**Game Master** - Yeah, absolutely. So part of what you learned was that the the name Brandonsford came from Brandon, The Tale of Sir Brandon. Hundreds of years ago, a dragon terrorized this village, and a young warrior named Brandon gathered, Um, some brave heroes. Together, they ventured into the wild to slay the beast. Um, and, uh, there, um. They you know, became knighted, and the town was named after him.
+
+**Sir Phidipaldi** - And then he took off.
+
+**Game Master** - And then he took off and he left town, he left after that.
+
+**Game Master** - He didnt quit.
+
+**Game Master** - He was like, he didnt quit, he was like, Im out of here, um, the uh, party. Also, well, Dunk went off on his own for a little bit. He is a wanderer and started hanging out with a farmer named farmer Gil. Um, they became good friends, um, Farmer. Gil tried to sell Dunk his Mule Seamus for 100 gold. Um, Hes the one who knew the tale of Sir Brandon by heart.
+
+**Game Master** - Um, and then he also mentioned that his sons are not around to help on the farm because they have left to go kill the Dragon.
+
+**Unassigned Speaker** - The Dragon.
+
+**Game Master** - And that he doesnt think any of you have to worry about killing the Dragon cause hes pretty sure his kids have gotten it taken care of. Um, and then.
+
+**Unassigned Speaker** - No problem.
+
+**Game Master** - Uh, you.
+
+**Dr Uriah** - We went to the other tavern.
+
+**Game Master** - You went to the other tavern, uh.
+
+**Game Master** - Checked in.
+
+**Game Master** - Yeah, checked in there.
+
+**Dr Uriah** - With our boy, Quinn.
+
+**Game Master** - With, uh, the Quinn, Yeah. The other tavern is the Golden Egg Tavern.
+
+**Game Master** - Which is run by a man, uh, a white bearded, bony uh man named Quinn his. His liquor was terrible, like the opposite.
+
+**Game Master** - Of of the clumsy Fox, and it was 10 times more expensive than the clumsy Fox.
+
+**Trout** - Yeah, the the clumsy Fox was the nice one.
+
+**Game Master** - The Nice Inn.
+
+**Game Master** - Yeah, yeah, hes the golden egg, uh and um, he, uh. Hes convinced that Bentley, the owner of the clumsy Fox, has been sabotaging him.
+
+**Game Master** - By, um, every time that he gets good, a good, um, shipment of alcohol. He claims that, um, Bentley tries to steal it. Um, and, um, so he said he would pay you guys 100 gold to catch whomever is stealing his, um, good wine. And, uh, um, then you guys had like a kind of a halfass idea you didnt really pursue of.
+
+**Game Master** - Maybe you would create a fake delivery.
+
+**Game Master** - Of gold into the of of alcohol into the town.
+
+**Dr Uriah** - Well, I mean, Halfass its its an idea that.
+
+**Game Master** - It was a all right.
+
+**Dr Uriah** - Were were, were discussing it.
+
+**Game Master** - It was the beginnings of an idea, it was the beginnings of an idea.
+
+**Game Master** - It was the beginnings.
+
+**Game Master** - And uh, and and and part of part of the reason. Part of the reason why you would have to do that is because no shipments have come into the town for weeks. Because the Dragons been kind of like harassing, so theres like the town is also kind of like running low on supplies.
+
+**Dunk** - But isnt it, wouldnt it didnt? We also find out that no one has actually seen or heard the Dragon.
+
+**Game Master** - Thats right, thats right, except for, apparently.
+
+**Game Master** - George the Hunter, who lost his arm to it.
+
+**Game Master** - But you havent even chatted with him yet.
+
+**Trout** - So people are just afraid of it.
+
+**Game Master** - Thats right, thats right.
+
+**Trout** - So theyre not.
+
+**Dunk** - So its possible the little Gremlin dude is like.
+
+**Unassigned Speaker** - I mean, yeah, its possible the little Gremlin, dude.
+
+**Game Master** - Right, um, finally, uh, theres a couple things that you, you PE people you havent visited places in town you havent visited yet, but Youve heard about.
+
+**Game Master** - One is a church, um?
+
+**Sir Phidipaldi** - Oh, right.
+
+**Game Master** - That, um, you have yet to visit, Um, and then the other thing is that there is a uh.
+
+**Unassigned Speaker** - A lady.
+
+**Game Master** - The A Lady Who sells potions named Ingrid.
+
+**Game Master** - And uh, uh, the rumor that you heard is that she, um, is in love with, um, the Smith named Warwick.
+
+**Sir Phidipaldi** - And that she is of unpleasant countenance.
+
+**Unassigned Speaker** - Uh.
+
+**Game Master** - Thats right, exactly exactly. And that Warwick?
+
+**Game Master** - Kind of ugly.
+
+**Game Master** - Warwick has a beautiful mithral chain shirt in his shop that he refuses to sell.
+
+**Game Master** - And that his shop is filled with a bunch of weird.
+
+**Game Master** - Lucky charms.
+
+**Game Master** - Lucky charms.
+
+**Dunk** - And he has, like in the the wall, thats in between the two he has like a bunch of like.
+
+**Dunk** - Basically, a bunch of weird.
+
+**Game Master** - Exactly so. I think that covered everything.
+
+**Unassigned Speaker** - Did I miss anything?
+
+**Unassigned Speaker** - I think so.
+
+**Game Master** - Anyone else have anything else in their notes, so.
+
+**Dunk** - Uh, I dont think so, I think we oh. The farmer also told me about, uh, some story about a magic sword that is the sword that was used to kill the DR.
+
+**Unassigned Speaker** - Thats right.
+
+**Dunk** - Or the sword that can kill the Dragon?
+
+**Game Master** - The tale of Sir Brandon.
+
+**Game Master** - And Brandon actually received a magical sword from UH, and and I may have forgotten to say this. But the farmer would have told you cause. He knows the tale by heart that he received a magical sword from a beautiful fairy.
+
+**Unassigned Speaker** - Yeah, he did, too.
+
+**Game Master** - Oh, he did okay, which is what he used to do. Kill the Dragon so youre in this town now its evening. You have scouted out the general kind of thing. Uh, there is, uh, Eric, the mayor, uh, who is offering $1000 to kill the Dragon. There are the two taverns that are at, you know, kind of silent war with each other. Theres Warwick, The Smith.
+
+**Game Master** - Um, George, the Hunter. Then theres a church you have yet to visit, Ingrid, the Alchemist, and then dunk. Why dont we start with you? You are with farmer Jill Gil and the Uh, Sun is setting, uh.
+
+**Dunk** - How many rounds of drinks in all?
+
+**Game Master** - Youve, had you guys, you guys were drinking pretty subtly. Yeah, so, but obviously you could carry your drinks much better than he can. Um, uh, he, uh. He says that hes willing to, uh, create a bed for you for for the evening. Uh, not in the house. He has no room for it.
+
+**Unassigned Speaker** - Yeah, out in the barn.
+
+**Game Master** - Like out in the barn, yeah, no, no charge.
+
+**Dunk** - Yeah, well, maybe ill take him up on that.
+
+**Dunk** - But first ID like to see if were Hes feeling amenable to. Maybe we can negotiate a little on that mule.
+
+**Game Master** - On on Seamus the Mule.
+
+**Dunk** - So hows he thinking about maybe now 20 gold now that hes?
+
+**Game Master** - HIs His thing is, Hes like hes like ID. Be willing to go lower, but its just so hard to get work done without without my.
+
+**Dunk** - Without your boys.
+
+**Game Master** - I dont have my boys here and I dont have a mule, I cant get anything done.
+
+**Game Master** - So, you know, uh, when my boys come back?
+
+**Dunk** - Then, well.
+
+**Game Master** - Ill drop that, Yeah, well, talk ill. Drop that price, yeah.
+
+**Dr Uriah** - Uh, just as who has the map?
+
+**Game Master** - Um, I dont know, how about you?
+
+**Dr Uriah** - Well, I mean, fine by me, but I.
+
+**Game Master** - Are you gonna leave town?
+
+**Dunk** - Yeah, yeah.
+
+**Game Master** - Run off, totally sided with it.
+
+**Sir Phidipaldi** - Sorry, guys, time for a head scroll.
+
+**Dr Uriah** - No, I was just curious, just for sake of role, playing things like, If anybody has, the scroll has the.
+
+**Trout** - This map?
+
+**Dr Uriah** - Yeah, this map, someone has to have it right.
+
+**Dr Uriah** - Its physical someones carrying it.
+
+**Game Master** - Yeah, who do you guys think, has it? Is it, uh?
+
+**Sir Phidipaldi** - Im fine with Rich.
+
+**Game Master** - All right, Uriah.
+
+**Trout** - Hes the one ID play much.
+
+**Dr Uriah** - So then.
+
+**Dunk** - Well, a. And also hes the more bookish of the or you know what I mean like.
+
+**Dr Uriah** - IM the Aquarian.
+
+**Dr Uriah** - Uh, so do I know anything about this map?
+
+**Game Master** - Ooh, good question.
+
+**Dr Uriah** - Using my my skills of.
+
+**Dr Uriah** - History of of IM using tight sense here.
+
+**Game Master** - Yeah, absolutely, so you are a metaphysician.
+
+**Dr Uriah** - Yeah, and so I have, like, I know the the lore of items or the history.
+
+**Dr Uriah** - Of items.
+
+**Game Master** - Thats right, so what Im gonna do is Im gonna ask you to make a metaphysics roll.
+
+**Game Master** - Okay, so youre gonna roll, Oh so, Jeff. The only dice you use in this are D20S and D6 cause thats thats the role of intent of it. Uh, so, um, why dont you roll a D6, and if you get a two or a one, you succeed?
+
+**Game Master** - Roll again.
+
+**Game Master** - You did not so.
+
+**Dr Uriah** - Thats thats like on the opposite end.
+
+**Game Master** - It is on the opposite end.
+
+**Dr Uriah** - Yeah, I know, you know nothing about it, sorry in my downtime.
+
+**Dr Uriah** - Activities what I like to be doing.
+
+**Dr Uriah** - Is making a copy of it?
+
+**Game Master** - Okay, great, great.
+
+**Dr Uriah** - Secretly.
+
+**Game Master** - Yeah, you can, you could do that tonight if you want, you could do that. So so where are you all sleeping? So so Dunk is gonna sleep in the farmers kind of barn.
+
+**Trout** - Hes got both of these Inns
+
+**Game Master** - Yeah, both of these inns. You have the nice one, which is the clumsy fox, and you have kind of the ratty one, which is golden egg.
+
+**Trout** - The ratty one is like kind of a dive and people.
+
+**Game Master** - No, theres, no its like empty. Yeah, like no ones hanging out there.
+
+**Sir Phidipaldi** - AL Also, I got thrown out of the nice one.
+
+**Game Master** - You can only stay in the in the golden egg, rather or somewhere else. Yeah, uh uh, uh, uh, Sir Philip.
+
+**Game Master** - Philipaldi
+
+**Unassigned Speaker** - Alde.
+
+**Game Master** - Phidipaldi, yeah
+
+**Game Master** - Phil Alde, UH, started a fight with the mayor of the town.
+
+**Trout** - Oh, well, thats.
+
+**Game Master** - Yeah, challenged him to A.
+
+**Sir Phidipaldi** - My honor, yeah.
+
+**Game Master** - He failed, he failed his. Uh, uh, what whats your skill called?
+
+**Sir Phidipaldi** - My etiquette check.
+
+**Game Master** - His etiquette check?
+
+**Dr Uriah** - Yeah, so all the all the things so you have like a your class ability is like a a one out of two.
+
+**Sir Phidipaldi** - Yours is forestry at a two.
+
+**Dunk** - Youre trying to roll low.
+
+**Unassigned Speaker** - Thats the throw in the beginning roll and you want a one.
+
+**Unassigned Speaker** - Except on.
+
+**Dr Uriah** - And as you roll?
+
+**Dr Uriah** - Another pop that goes to.
+
+**Game Master** - Oh, youre gonna hit a target of upper above.
+
+**Dr Uriah** - 5050 chance.
+
+**Game Master** - Try to figure out which are your lowest die.
+
+**Dunk** - No Im switching to Call of Cthulhu Dice for Rolling low.
+
+**Game Master** - Rolling low, there you go.
+
+**Dunk** - Got the rolling dice out?
+
+**Trout** - Do you go to the nighttime now?
+
+**Game Master** - Yeah, yeah, yeah, you, I think you all should decide where youre gonna sleep for the night.
+
+**Dr Uriah** - Well, I mean.
+
+**Trout** - Lets go to the ratty place.
+
+**Unassigned Speaker** - Like Itll be quite cheaper.
+
+**Dr Uriah** - Its not.
+
+**Dr Uriah** - Wait, its not cheaper.
+
+**Dr Uriah** - Its much better.
+
+**Trout** - Well, you said that.
+
+**Dr Uriah** - Yeah, yeah, yeah, uh, and its probably not as good, I imagine, combination wise.
+
+**Trout** - Maybe I do not want to stay there.
+
+**Sir Phidipaldi** - Thats fine, thats totally fine.
+
+**Unassigned Speaker** - Im gonna pick Fred.
+
+**Game Master** - All right, so how about the Inn the Clumsy Fox?
+
+**Game Master** - And youre gonna stay in the golden egg.
+
+**Game Master** - Right, so, um, okay, I wont ch, I wont make you account for the 10 silver pieces a night, um, but, uh.
+
+**Dr Uriah** - Well, yeah, yeah.
+
+**Dr Uriah** - Im doing it.
+
+**Game Master** - Okay, fine, then you can do it, you can do it so.
+
+**Dr Uriah** - Im just gonna put a night.
+
+**Dr Uriah** - Like a ill keep track of the nights.
+
+**Game Master** - Um, Trout.
+
+**Game Master** - Uh, before you head upstairs.
+
+**Unassigned Speaker** - Im looking.
+
+**Game Master** - You, um, you take a look at, like the the table where all the adventurers are hanging out.
+
+**Trout** - Oh, sure.
+
+**Game Master** - And, uh, I just wanna describe what youre seeing in case you wanted a scene with any of the people before we left.
+
+**Game Master** - Um, there was one which was Lady Hilda, that was the Uh.
+
+**Unassigned Speaker** - The Noble Lady.
+
+**Game Master** - Chivalric Kind of Noble lady, uh, that we talked to before theres Drop Dead Ned with the, uh, the necklace around.
+
+**Game Master** - The WASP.
+
+**Game Master** - The WASp theres two more that are there. There is a thin, um, bignosed guy with short hair whos dressed like a classical wizard. Hes got blue robes and a pointy hat with a star.
+
+**Game Master** - Um, and then.
+
+**Unassigned Speaker** - Little red.
+
+**Game Master** - And then there is a, um, a shiftyeyed halfling with a dirty mop of hair.
+
+**Sir Phidipaldi** - Its not drop dead, Ned.
+
+**Game Master** - Its not drop dead, Ned.
+
+**Dunk** - shiftyeyed how?
+
+**Game Master** - Yes, yes, these are other people.
+
+**Trout** - Does the halfling pocket your money or just kind of?
+
+**Game Master** - He was there on his own hes in a cups, as they say.
+
+**Dunk** - So to speak.
+
+**Unassigned Speaker** - Yeah, so to speak.
+
+**Trout** - I kind of wanna like, linger nearby. I have my like, If Im not moving, Im very just kind of no one even notices me.
+
+**Game Master** - Yeah, yeah, of course.
+
+**Trout** - Yeah, like, just listen in on conversations, see if anybody says something interesting.
+
+**Game Master** - Yeah, the um, uh, you notice that the, um, the wizard looking guy is very talkative, Hes super boisterous, Um, Hes kind of very jokey, like whimsical with the crowd. You, uh, pick up that his name is Malzazaric, the magnificent.
+
+**Sir Phidipaldi** - Malzazaric.
+
+**Game Master** - Um, but the halfling is is sticking to himself. So, uh, hes kind of all alone at the end of a table.
+
+**Dr Uriah** - Okay, um, and what kind of the mouse, uh, human.
+
+**Game Master** - Uh, he is a human, yes.
+
+**Trout** - A wizard.
+
+**Unassigned Speaker** - Yeah, um, or at least maybe he thinks he is so, um, if theres nothing else happening and and molls, is there cause hes not saying anything interesting?
+
+**Trout** - I do think ill kind of mosey on up to the halfling.
+
+**Trout** - And kind of be kind of a little bit chummy with him.
+
+**Game Master** - Yeah, well, when he sees you, he, uh, his eyes light up, and he is like, Ah, brother, are you a R? Yeah, are. Are you a river halfling?
+
+**Trout** - Well, of course, yes. IM from Bobbidyba.
+
+**Game Master** - Oh, well, what, what? What brought you out this far?
+
+**Unassigned Speaker** - Well, I do have a lot of answers.
+
+**Game Master** - Hes like, Hold on, hes like, Let me introduce myself my I name, my name is Squints.
+
+**Trout** - Squints.
+
+**Trout** - His name?
+
+**Game Master** - Uh, and, uh, hes like, what? What brought you out this far?
+
+**Trout** - Oh, were just kind of new to Brendonspird and, uh, looking for some, uh, some profit and adventure. Um, uh, you know, how long have you been here in town?
+
+**Game Master** - I just got here looking for my big break. Hes like, What Im trying to find is like an adventuring crew to join. And then he he looks down, and you see that hes kind of like making some eyes at it. Cause S Hes got like a little sling on his side.
+
+**Game Master** - And its like.
+
+**Dunk** - MM mm nice.
+
+**Trout** - I happen to have one of those, too.
+
+**Dr Uriah** - You do.
+
+**Trout** - So, uh, yeah, like, uh, what kind of skills do you bring to a an adventuring party besides your sling? Are you, uh, adept at any other? Are you a hun? The slings a thing, the slings a thing.
+
+**Dr Uriah** - He rips Open a Tshirt.
+
+**Game Master** - He says its all right, its all right. Like back home, I could bullseye little womp rats.
+
+**Game Master** - Thats right.
+
+**Trout** - Well, squints, Uh, why dont you, you know, meet us here tomorrow morning and ill introduce you to my friends.
+
+**Game Master** - Great, great, how much you paying.
+
+**Trout** - Um, you know, well, were, uh, still calculating our options there.
+
+**Trout** - So, uh, you know, ill, uh, were pretty too early to be talking about.
+
+**Game Master** - Oh, all right, well, ill, see you in the morning.
+
+**Game Master** - All right, so you all get some sleep.
+
+**Game Master** - Dunk, I assume when you wake up, you head back to the tavern.
+
+**Dunk** - Im not sleeping.
+
+**Game Master** - Oh, youre not sleeping, Oh, thats right?
+
+**Dunk** - Yeah.
+
+**Unassigned Speaker** - All right, what are you doing?
+
+**Dunk** - Were going out with well.
+
+**Dr Uriah** - We have things to do at night.
+
+**Game Master** - First of all, does he have a lantern that I could set fire to?
+
+**Game Master** - Set fire to the town.
+
+**Dunk** - No, I wanted to see if I could maybe go over and try and look around the Smith and, uh.
+
+**Game Master** - Yeah, absolutely okay.
+
+**Dunk** - While while it its nighttime, you know while its closed.
+
+**Game Master** - Yeah, okay, love it, so Dunk heads over to the Smith. Anyone else doing anything?
+
+**Dr Uriah** - Oh, yes.
+
+**Game Master** - What are you doing tonight? Okay, what are you doing tonight?
+
+**Dr Uriah** - Um, I am going to.
+
+**Game Master** - Besides, just Crud.
+
+**Dr Uriah** - I am going.
+
+**Dunk** - Hes had a full rest.
+
+**Dunk** - Hes looking for a frog.
+
+**Dr Uriah** - I am.
+
+**Dr Uriah** - I am I ill? Take a nap until, uh uh, until until I feel my twinge of the ability to speak to animals again.
+
+**Dr Uriah** - Kick back in.
+
+**Dr Uriah** - And then Im gonna go and stake out the river for this little creepout guy to come out of the river, and, uh.
+
+**Game Master** - Ah, Gotcha, okay, okay.
+
+**Dr Uriah** - The clurichen
+
+**Unassigned Speaker** - Yeah, the cleric comes.
+
+**Game Master** - Okay, so you are going to go to sleep, but youre gonna wake up early.
+
+**Trout** - Or are you gonna go out to see when he leaves?
+
+**Dr Uriah** - So, so heres heres my what so Johns, not here, who also is the same race I am.
+
+**Trout** - Dagonite is it?
+
+**Dr Uriah** - Dagonite Yeah.
+
+**Trout** - Its humanoid?
+
+**Game Master** - Yeah, its humanoid.
+
+**Unassigned Speaker** - Its a humanoid, yeah.
+
+**Dr Uriah** - Im a a humanoid halfbred Ive probably got Gills. I can breathe underwater, im lightskinned like.
+
+**Unassigned Speaker** - You need water.
+
+**Unassigned Speaker** - Like, like, like, like an insmouth look type of situation.
+
+**Game Master** - Like Water World.
+
+**Dr Uriah** - But kind of like amphibiouslike.
+
+**Trout** - Like, you could be a fish person.
+
+**Dr Uriah** - Absolutely.
+
+**Game Master** - 100 could be a fish person.
+
+**Dr Uriah** - Absolutely, like, maybe, probably like oily, sweaty.
+
+**Dr Uriah** - All the time, you know, so what? My plan was gonna have, John and I were gonna go out because he definitely still has talk to aquatic animals.
+
+**Game Master** - Oh, he has amused us, yeah.
+
+**Dr Uriah** - Yeah, amused us, assuming that is needed to talk to this fucking thing.
+
+**Dr Uriah** - To come out of the river.
+
+**Dr Uriah** - Um, now, if thats not needed.
+
+**Game Master** - Ill tell you its not needed.
+
+**Dr Uriah** - Uh, okay, then Im then and then Im just going to Im just going to like, stake out, then, Um?
+
+**Game Master** - Youre gonna stake out the river.
+
+**Dr Uriah** - Im gonna stake him out, yeah, Im gonna follow him.
+
+**Dr Uriah** - And see what hes up.
+
+**Game Master** - Great love it, okay?
+
+**Game Master** - Eric, I assume you also have a plan for the evening.
+
+**Sir Phidipaldi** - I do, Um, Im Im gonna go down to where he keeps his alcohol.
+
+**Sir Phidipaldi** - And Im going to sleep down there.
+
+**Game Master** - Ah, thats right.
+
+**Sir Phidipaldi** - Hope, hoping that I can find if somebody.
+
+**Game Master** - Thats right, cause you were stuck in the golden egg.
+
+**Game Master** - Right, yeah.
+
+**Unassigned Speaker** - Thats right.
+
+**Sir Phidipaldi** - Yeah, but hes gonna pay me if I can find who.
+
+**Game Master** - Thats right.
+
+**Unassigned Speaker** - Who who took the booze?
+
+**Game Master** - Thats Right, okay, so youre in the basement of the golden egg.
+
+**Game Master** - You are headed to the river, you are headed to. Warwick, the Smiths. Its its one of those places where its both the shop and the home, you know.
+
+**Game Master** - He lives right, right? Um, Trout, what are you doing?
+
+**Trout** - Well, since IM done talking to Squints.
+
+**Trout** - And its not completely late.
+
+**Trout** - I think Im gonna go over to the river and do a little fishing.
+
+**Game Master** - Ah, thats right, you are a river halfling, right? Yeah, okay, um, so let us were gonna do it, were gonna just go round, Robin.
+
+**Game Master** - And then, uh, so lets start with dunk dunk you. The the town is pretty small, so as you as you leave the bomb house, you can see the Smiths. Um, Homeshop like down in the distance like dirt path, theres like, you know, fifth of a mile down like that, far like, walk at all. Um, as you approach, uh, the shop, you see that its its not just the interior of the shop thats covered with lucky charms, but outside you see horseshoes. Theres like rabbit feet dangling from like the porch. Um, clovers have been, like, nailed to like the walls all over. Um, the store itself is closed, but you can kind of peek in.
+
+**Dunk** - Kind of peek in the window.
+
+**Unassigned Speaker** - Kind of.
+
+**Game Master** - You kind of peek in and see, and you see kind of iron daggers there. Um, a long sword. Theres just like a lot of, like, kind of useless junk. But the thing that you could definitely see glinting from the moonlight is a Mithril chain shirt. Um, and it is its like luminous like you like. The Moonlight hits it, and you can tell that this is something thats of like, magic. Um, origin, Um, you see that on the second story is where he sleeps like thats like his bedroom. And, um, you see that, uh, the window is cracked open and you can hear some snoring. Uh, as youre kind of poking around and looking, you see a, uh, thin, sheepish woman with kind of frazzled hair kind of like round the corner. And she sees that youre by the house. And she kind of gets spooked and she like, stiffens up and starts walking as if she wasnt like coming towards the house. You know what I mean, like?
+
+**Game Master** - Its like, Ah, you know, its like, like, quickly diverts herself so.
+
+**Dunk** - All right, Im guess Im gonna hit her with my battle axe
+
+**Dr Uriah** - You know, gotta.
+
+**Dunk** - No, but uh, can I, um, tell anything, I I cant remember exactly what my travelers trinkets skill.
+
+**Game Master** - Yeah, your travelers trinkets skill is that you like if theres anything.
+
+**Dunk** - As long as I can write down the name and not make it for a while.
+
+**Game Master** - No, no, its like.
+
+**Dr Uriah** - I know thats why I.
+
+**Game Master** - Yes, I will, I will. Yeah, its gonna be weird trying to do it, yeah. A wanderer often picks up various useful pieces of equipment in their travels that are forgotten until the right situation. When the wanderer or their allies need a piece of small, mundane, nonmagical gear that no one has on hand?
+
+**Dunk** - Oh, okay.
+
+**Game Master** - A small metal keel or whatever a small, empty sack, a little small hand tool. The wanderer may spend five rounds looking through their gear to see if they have such an item.
+
+**Dunk** - Okay, okay.
+
+**Game Master** - And and then if you make a saving throw, youre able to produce that. Its there.
+
+**Dunk** - Okay, so its less. Being able to like have a sense of what the all the trinkets actually do.
+
+**Dunk** - Its more that I just have a bunch of useless crap on me.
+
+**Dunk** - Oh yeah, yeah.
+
+**Dr Uriah** - Kind of like blades in the dark kind of thing.
+
+**Game Master** - Yeah, yeah, like IM prepared.
+
+**Game Master** - With that skill, yeah, exactly so.
+
+**Dr Uriah** - Thats cool.
+
+**Dr Uriah** - Actually, its very helpful.
+
+**Dunk** - Well, so the lady saw me right.
+
+**Game Master** - Yeah, yeah, yeah, she definitely have been like it was one of those things where, as soon as she saw you, she acted like.
+
+**Game Master** - She had been going somewhere else, so she didnt like, Linger on you.
+
+**Dunk** - Okay, well, can I just? Im just gonna try and follow her path.
+
+**Game Master** - Yeah, absolutely okay.
+
+**Game Master** - So you start following her, okay, lets move over to, uh, our friend, Trout.
+
+**Dunk** - About to use Doorbreaker to just blast into there?
+
+**Unassigned Speaker** - Just doorbreaker into there.
+
+**Game Master** - Um, uh, you head down to the, uh, the river now.
+
+**Trout** - Right outside of town here, yeah.
+
+**Game Master** - Right outside of town there, um, now the thing is, river halflings, they dont fish with a, uh, line, they fish with a spear.
+
+**Game Master** - Spear fishermen.
+
+**Trout** - Yep, I have.
+
+**Game Master** - Right, um, so what you can do is, um.
+
+**Trout** - Plus two attack on the spear.
+
+**Game Master** - Yeah, but I will just say that you are, um, start catching some fish.
+
+**Game Master** - So you can like, Do what you want with the fish.
+
+**Trout** - Yeah, Im gonna collect a few of them, and Im also just kind of like being super stealthy, quiet, like no one knows IM there.
+
+**Game Master** - Yeah, cause Youre Youre youre. You could be all but unseen, which is as long as the river halfling remains unmoving with something to concealment Youre all but invisible.
+
+**Game Master** - So no one can tell that youre here.
+
+**Trout** - So ill spend, probably like an hour doing that until.
+
+**Trout** - It gets really dark and then Im gonna bring my fish back.
+
+**Game Master** - So WH, so while youre doing that, you see your friend Uriah approaching the river, he doesnt see you, you are unseen.
+
+**Dr Uriah** - Um, I have Darting eyes, and I can sense I can sense secret doors.
+
+**Unassigned Speaker** - Uh.
+
+**Unassigned Speaker** - You can.
+
+**Dr Uriah** - Yeah, its probably just secret doors. I dont think I have anything real.
+
+**Game Master** - Uh, yeah.
+
+**Game Master** - Except for doors.
+
+**Game Master** - Yeah, you can just spot secret or concealed doors, um.
+
+**Dr Uriah** - Not secret or concealed halflings.
+
+**Game Master** - No, not secret or concealed halflings.
+
+**Game Master** - Um, so, uh.
+
+**Dr Uriah** - Youre lucky.
+
+**Game Master** - So Trout is hidden in the river weed, uh.
+
+**Trout** - So its like, Hey, theres that guy again, Im gonna hold off on spearing some more fish and see what hes up to.
+
+**Game Master** - Yeah, there you go, so you see, Um, uh, uriah, approach the water, and, um, you know, youre kind of poking around. You know, youve got a good sense of like where someone would come up and you, Uh, um.
+
+**Dr Uriah** - Im just hiding and waiting for the.
+
+**Game Master** - Just hiding, yeah.
+
+**Dr Uriah** - Waiting for his thing to show up.
+
+**Game Master** - Yeah, and so then you see the little, um.
+
+**Game Master** - Clurichen
+
+**Game Master** - Ill. show you his picture again. Uh uh, pop out, uh, its actually that. He swims across the water from like one side of the bank to another.
+
+**Dr Uriah** - Okay, so hes not coming out of the water.
+
+**Unassigned Speaker** - Yeah, exactly.
+
+**Game Master** - Not like a aquatic creature.
+
+**Game Master** - Um, but, uh, he is, uh, he. He is carrying kind of like a jug with like a cork behind him, hes like swimming across the water.
+
+**Game Master** - And he gets it.
+
+**Dr Uriah** - I wonder where?
+
+**Game Master** - Drags.
+
+**Game Master** - Drags it up and then you see him do this and he disappears.
+
+**Dr Uriah** - Oh, Motherfucker.
+
+**Game Master** - But then.
+
+**Game Master** - Cause, you know, river banks, well, you just see this.
+
+**Game Master** - The The Little.
+
+**Game Master** - Yep, the little you see little, uh, you see little footprints in the Reeds.
+
+**Dr Uriah** - I just I, I do not reveal myself and I just follow the.
+
+**Dr Uriah** - The footprints.
+
+**Trout** - I saw that, too.
+
+**Game Master** - Yeah, you saw it too, yeah.
+
+**Trout** - Im gonna try to follow as well.
+
+**Game Master** - All right, so the two of you are following behind, um, the Clurichen
+
+**Game Master** - And, uh, and it may surprise you to hear that he starts heading towards the Golden Egg Tavern.
+
+**Dr Uriah** - I have, I have, I have an idea, I have an idea where this is going.
+
+**Game Master** - And.
+
+**Dr Uriah** - I think we encounter these.
+
+**Game Master** - And as youre kind of like going, you see, like a little bit of a rustling on the basement door.
+
+**Game Master** - So you also see like Youre there.
+
+**Game Master** - In the dark and the basement door starts kind of clattering.
+
+**Game Master** - You see it kind of fling open.
+
+**Game Master** - Theres no one there.
+
+**Game Master** - Then it closes.
+
+**Game Master** - Okay, and were gonna go back to, Uh, you follow the woman and you see that she is headed towards a, uh, store that says Ingrid, the alchemist on the outside. Um, so your guess is that you have just seen Ingrid and that she is now heading home, you see her walk over to her home.
+
+**Sir Phidipaldi** - Cause shes a lady boner for the The smith
+
+**Game Master** - There you go, so.
+
+**Trout** - And thats the guy with the Mithril Armour?
+
+**Unassigned Speaker** - Thats right, exactly.
+
+**Trout** - Yeah, shes a patron.
+
+**Game Master** - Yeah, yeah, so, um, and she starts like, you know, outside of her house, like acting as if she was like doing some like chores out there. Frightening things up. But its like, you know, obvious, uh, that nothing is, uh, shes not really doing anything, you know, that wasnt her her real plan.
+
+**Dunk** - Um, shes still outside.
+
+**Game Master** - Shes still outside. Yeah, absolutely. Just kind of like, you know, acting like, she doesnt, you know, she hasnt seen you, she just kind of, you know, she saw you back there, but she didnt.
+
+**Game Master** - Know you were following her so.
+
+**Dunk** - I Im gonna come up and talk to her.
+
+**Game Master** - All right, all right.
+
+**Game Master** - So she, she looks a little startled.
+
+**Game Master** - And shes like, Are you, uh, new to town?
+
+**Dunk** - Dunk Wonder what you up to.
+
+**Game Master** - Oh, Im just preparing things for my shop for tomorrow. Um, your name is dunk. That is an adorable little name.
+
+**Dunk** - What is your shop about?
+
+**Game Master** - I sell, I sell.
+
+**Dunk** - Sorry, my charismas, six.
+
+**Game Master** - Yeah, thats okay. Oh, I sell all sorts of things you would like readily.
+
+**Sir Phidipaldi** - See, I do not roll well.
+
+**Game Master** - Uh, I could make you a You know, when my shop is open tomorrow, Im happy to make you a Mandrake root tea. It will heal all of your wounds. Um, and I have a witch powder, which you can, uh, any time anything is magical, you just have to sprinkle it with witch powder and itll glow, and thats how you know its magical. And then I have, um, essence of Wolfsbane, in case Youre worried about Wolves.
+
+**Dunk** - What were you doing over at Warwicks when I saw you earlier?
+
+**Game Master** - Wow, right to it, yeah. Shes like her face, turns like Bright Red and shes like, Oh, the Smith hes a little superstitious for my taste. Dont y wouldnt you say, cause hes clearly being?
+
+**Dunk** - MMHMm Oh, yeah.
+
+**Dunk** - I dont know he D he doesnt seem too superstitious to me in all of my travels.
+
+**Unassigned Speaker** - Oh, youve.
+
+**Unassigned Speaker** - Ive come across.
+
+**Dunk** - Many superstitious fellows.
+
+**Game Master** - Did you, did you talk to him, did he mention me?
+
+**Dunk** - I did talk to him, Yeah, yeah, yeah, yeah.
+
+**Dr Uriah** - Play the card of conscience.
+
+**Game Master** - Lets go easy on him.
+
+**Dunk** - Yeah, yeah, he did mention a, um, beautiful apothecary.
+
+**Unassigned Speaker** - Oh, yes.
+
+**Dunk** - Yeah, uh.
+
+**Game Master** - Did he now?
+
+**Game Master** - Well, well, well, ah, well, um, well, perhaps maybe you could help me with something.
+
+**Dunk** - Perhaps I could, what would you?
+
+**Game Master** - Well, you are very tall, you are much taller than me and Ive been trying to. I climb up at night and I just leave little gifts on his windowsill that just im too scared to talk to him. Its its a way that I could tell him its, a way I could express my love for him. Do you ever read poetry? Do you read poetry dunk?
+
+**Dunk** - I I read poetry, but I really have a hard time, Uh, Ma, retaining it.
+
+**Game Master** - You seem like you have a poets soul, the kind of brusque, romantic soul.
+
+**Game Master** - Its inside of you, right?
+
+**Dunk** - So are you asking for a lift up to his window?
+
+**Game Master** - Well.
+
+**Dunk** - Lets get right to the point.
+
+**Game Master** - I was hoping you could put it up there for me because every time I climb up, Im just, I get nervous. You know, its its hard to climb up. Maybe cause I do this every night, if you wanna come by.
+
+**Dunk** - Well, how about this?
+
+**Game Master** - I do like looking at him.
+
+**Dunk** - How about this?
+
+**Game Master** - I like looking at him.
+
+**Unassigned Speaker** - How about this?
+
+**Game Master** - Yeah.
+
+**Dunk** - You make up a quick potion.
+
+**Dunk** - Its gonna calm your nerves.
+
+**Dunk** - Im gonna lift you up there.
+
+**Dunk** - You come back down ill, be waiting for you by the door.
+
+**Dunk** - Big, brave dunk.
+
+**Dunk** - You unlock the door.
+
+**Game Master** - Wait from in.
+
+**Dunk** - Yeah, come out through the front door.
+
+**Game Master** - I go into his house.
+
+**Dunk** - Yeah, unlock that front door and, well, call it well, call it even.
+
+**Game Master** - Shes like, Well, I like to watch him sleep sometimes Ive never spoken to him.
+
+**Dunk** - You can watch him all night. For all I care, I just need that front door unlocked.
+
+**Dr Uriah** - Someones gotta put their foot with their hand on it.
+
+**Game Master** - Shes like, Why are you one in Warwicks House?
+
+**Dunk** - IM A a fan of Clovers.
+
+**Game Master** - Shes like, Well, theres plenty of CLO. Have you been out in our beautiful countryside? Youre new in town, our, our, our hills are.
+
+**Dunk** - Dont you think.
+
+**Game Master** - Full of clovers.
+
+**Unassigned Speaker** - Clovers.
+
+**Unassigned Speaker** - Falafel.
+
+**Unassigned Speaker** - Falafel.
+
+**Game Master** - What am I trying to say?
+
+**Game Master** - What do horses eat, uh?
+
+**Game Master** - Then something else other than, Uh.
+
+**Dunk** - Yes, now I can only think of it as Falafel, though.
+
+**Unassigned Speaker** - Falafel.
+
+**Dunk** - Yeah, um, well, how about I? How about I? I clear some of those clovers off the wall in between, um, your two shops there.
+
+**Unassigned Speaker** - Well.
+
+**Dunk** - Maybe that may make you a little less nervous.
+
+**Game Master** - Shes Shes getting dubious. Go to you guys, so the two of you follow the cleric. You see him get inside of the basement. Why dont we actually start with, Um, Sir Phillip, Uh Philipali.
+
+**Sir Phidipaldi** - Okay, so heres the thing.
+
+**Dunk** - Youre gonna partner with this guy.
+
+**Sir Phidipaldi** - Um, I in preparation for a thief coming in.
+
+**Unassigned Speaker** - Yes, what have you done?
+
+**Sir Phidipaldi** - Have covered the floor with my bag of marbles.
+
+**Game Master** - Oh yeah, you forgot, Uh, I forgot to tell you, Um, you should look at your equipment, you might be surprised at what you have.
+
+**Dunk** - Some backside.
+
+**Unassigned Speaker** - Yeah, you have a.
+
+**Unassigned Speaker** - I did look, but.
+
+**Trout** - Bedroll and whatcha and a frying pan.
+
+**Sir Phidipaldi** - Yeah, hes a wanderer pack.
+
+**Game Master** - Yeah, yeah, you, yeah, Eric has marbles.
+
+**Sir Phidipaldi** - Yeah, I have marbles and two bottles of wine and two decks of cards.
+
+**Game Master** - Okay, all right, thats good.
+
+**Game Master** - So you hear marbles go scattering.
+
+**Game Master** - He lands flat on his back and turns from invisible to visible.
+
+**Game Master** - Okay, so you see the Little Clurichen
+
+**Game Master** - Hes like hes on his back, hes trying to get up.
+
+**Game Master** - Theres all these fucking marbles underneath him.
+
+**Game Master** - Uh, what, what is?
+
+**Dunk** - People going backwards.
+
+**Sir Phidipaldi** - So, so totally, I have no idea what this is. IM fully freaked out.
+
+**Sir Phidipaldi** - Uh, and I go, Oh, oh, are you a spirit?
+
+**Game Master** - Yes.
+
+**Sir Phidipaldi** - A good luck spirit.
+
+**Sir Phidipaldi** - Oh, a good luck spirit. Well, then, perhaps being a good luck spirit, um, I could interest you in a game of cards.
+
+**Game Master** - Do you do anything you saw the?
+
+**Trout** - So we we didn.t follow him in.
+
+**Game Master** - Youre outside, No youre outside, you saw the the basement door open and close.
+
+**Game Master** - Its like one of those outside, you know what I mean, like the little clattering.
+
+**Trout** - Yeah, well, I probably notice.
+
+**Sir Phidipaldi** - The storm door.
+
+**Trout** - I know Richard and I probably made eye contact or something, or like, well, sneak a look.
+
+**Game Master** - You decide Youre the hidden one, so.
+
+**Dr Uriah** - Yeah, I I dont know, I mean, I dont know, youre following me, Im assuming.
+
+**Dr Uriah** - Unless, like you want me to see, cause you.
+
+**Trout** - So as soon as he goes towards, as soon as he goes to the door, I go and you look, and then like I.
+
+**Dr Uriah** - I cast guidance IM Dead, No.
+
+**Trout** - And then I like, Kinda like, walk over really quickly to join you by were still standing by the door, so.
+
+**Trout** - We just like, ready, like, should we go in?
+
+**Dr Uriah** - Yeah, and we kick the door open and I throw, Uh, Well, uh, I have, uh, some vials of ink. And I throw a bunch of ink down. Uh, as I bust in thinking, Hes gonna be invisible to try to make him visible.
+
+**Trout** - While hes doing that, I have my bag full of fish and Im gonna leap into the room and try to like capture whatevers there.
+
+**Game Master** - Okay, um, I want the three of you to work out the order.
+
+**Dr Uriah** - And then were gonna hit, were gonna hit a bunch of marbles.
+
+**Game Master** - The Order of Operations of how this happens.
+
+**Sir Phidipaldi** - I I think the ink goes first.
+
+**Trout** - I think it all happens.
+
+**Game Master** - And thats what I was wondering. They happen simultaneously. So hes like he gets down like, and then the.
+
+**Trout** - Bag of fish.
+
+**Game Master** - Bag of fish goes over him.
+
+**Trout** - And then ink gets sprayed everywhere.
+
+**Game Master** - And then Ink gets sprayed everywhere, right?
+
+**Trout** - MMHmm.
+
+**Trout** - We need to roll for dice to figure out what the hell.
+
+**Game Master** - No, I dont need to roll anything. No, no, no, and then he goes, so hes a fucking mess at this point, right? And then, Uh, um, he hes in complete panic like hes looking up, um.
+
+**Game Master** - Uh, Phidipaldi, you see your two friends enter this and cause this chaos.
+
+**Game Master** - The three of you are now together. Um, hes, uh, hes on his back trying to like, Get up.
+
+**Game Master** - Um, and uh, uh, what do you all do to him?
+
+**Trout** - Well, first of all, theres an inkstained fish flopping around on the floor.
+
+**Game Master** - Yes, yes.
+
+**Trout** - Just to see some ambience.
+
+**Game Master** - Get some ambience here. Yeah, absolutely.
+
+**Trout** - Um, and so.
+
+**Dr Uriah** - Well, I see you and Im like, Are you okay?
+
+**Sir Phidipaldi** - Yeah, Im like, theres a spirit inside that bag, and I think hes been stealing the taverns alcohol.
+
+**Game Master** - Uh, and you hear this.
+
+**Dr Uriah** - I agree.
+
+**Game Master** - You hear you hear this, leave Naggeneen alone. I just like to drink.
+
+**Game Master** - Na Naggeneen.
+
+**Game Master** - Naggeneen Naggeneen.
+
+**Game Master** - Naggeneen.
+
+**Game Master** - Hes like, I just like to get ripped.
+
+**Trout** - So ill be, you know, he, he said. That ill kind of close the bag again.
+
+**Trout** - Were gonna get our reward.
+
+**Sir Phidipaldi** - Yeah, totally.
+
+**Sir Phidipaldi** - Were gonna get our reward.
+
+**Sir Phidipaldi** - Yeah, I will scream up into the building. Quinn Quinn, Come down here, we got your thief.
+
+**Game Master** - Okay, so you start hearing Buh buh buh buh buh and then Naggeneen goes No, no, no, no leave, let Naggeneen go, let Naggeneen go, I will give you. He takes his his little, Um, uh.
+
+**Trout** - Hes in the bag.
+
+**Game Master** - Oh yeah, hes in the bag.
+
+**Game Master** - Okay, so its like. But he had he had on him. A Um, fucking Jesus Christ, a pot, right?
+
+**Game Master** - Yeah, yeah.
+
+**Game Master** - Yeah, yeah, and hes like, Ill give you me pot of gold or ill tell you a secret if you let me go.
+
+**Trout** - How much of a reward is the reward?
+
+**Sir Phidipaldi** - 100.
+
+**Game Master** - 100 gold.
+
+**Trout** - I dont need his secret.
+
+**Sir Phidipaldi** - No, I yeah, Ive already called for Quinn, I think I.
+
+**Sir Phidipaldi** - Im all Im all honor and chivalry so.
+
+**Game Master** - Yeah, absolutely.
+
+**Game Master** - Quinn Quinn comes down, Quinn is a, you know, white beard, hes all all bones.
+
+**Game Master** - Kinda like awkward coming down, he kind of he has his little candle going.
+
+**Game Master** - And Hes got a little, Um, uh, sleeping hat on.
+
+**Sir Phidipaldi** - Yeah, little nightcap.
+
+**Game Master** - And hes like, Yeah, you know, he comes out the owl, like the cricket is there.
+
+**Game Master** - And hes like, Hes like, Who is it? Have you finally caught Bentley? have you caught him redhanded?
+
+**Sir Phidipaldi** - Uh, I go. We have definitely caught the thief, but I dont think its who you think it is.
+
+**Game Master** - Where is he?
+
+**Sir Phidipaldi** - So, uh, I will point to the bag that, uh, that that trapps holding.
+
+**Trout** - So you can imagine, like he like, puts the candle out in this direction. And then theres like three people covered in ink with marbles all over the floor with fish flopping.
+
+**Dr Uriah** - Its living?
+
+**Trout** - Yeah, and I kind of put the bag forward and go, Heres your culprit.
+
+**Game Master** - He, uh, he grabs it and he looks inside and, like, you know, completely inkstained, like Naggeneen is like looking up at him. Hes like, Let Naggeneen go, I will bring you good luck. Let Naggeneen go. And, uh, Quinns, just like, What is this thing like, what like, how could this have? How could you have been stealing my alcohol like?
+
+**Sir Phidipaldi** - Like hes so small and theres so much booze gone.
+
+**Trout** - And then.
+
+**Trout** - Try to like, reach into the bag and grab a jug.
+
+**Game Master** - Yeah, so you, exactly.
+
+**Unassigned Speaker** - Smell it.
+
+**Game Master** - Yeah, it smells reeks, right? And then, uh, uh, naggeneens like, I just like to drink.
+
+**Dr Uriah** - Its just like, I have a problem, Naggeneen.
+
+**Dr Uriah** - This is now an intervention.
+
+**Game Master** - How I, Just how I unwind for the night.
+
+**Game Master** - Uh, so Quinn, uh. Quinn grabs the bag and he says, I know what Im gonna do with this one. And then hes like, Come on upstairs, let me, Uh um, uh, ill, get you your reward.
+
+**Game Master** - And he invites the three of you up to the main floor.
+
+**Game Master** - Um, he takes the bag, and he kinda puts it on a hook behind the bar, so you just see it kinda like.
+
+**Sir Phidipaldi** - Flailing about.
+
+**Game Master** - You know, flailing around.
+
+**Game Master** - Um, and he parcels out, Um, gold to you all.
+
+**Game Master** - So, um, 33 gold each.
+
+**Sir Phidipaldi** - 33 each.
+
+**Game Master** - Yeah, 33 gold each so.
+
+**Game Master** - Okay, lets go over to, Uh, Ingrid and Dunk. So so Ingrid is kind of not buying the idea that shes gonna let you or or let you into the house, and shes nervous about being seen by him. Shes kind of like, been like admiring him from afar. Shes too nervous to even speak to him, so the odds of her crawling into his house are probably low.
+
+**Dunk** - Let me see what we got.
+
+**Sir Phidipaldi** - Okay, I have a I have a proposal for you.
+
+**Dunk** - Yeah, okay.
+
+**Sir Phidipaldi** - So you offer for her to make a sleeping potion and then you feed it to dunk and then she can have her way with him.
+
+**Game Master** - No, uh, Warwick, feed it to Warwick.
+
+**Sir Phidipaldi** - Or Warwick.
+
+**Sir Phidipaldi** - And then she can have her way with Warwick.
+
+**Dunk** - Oh yeah, that.
+
+**Unassigned Speaker** - Thats a good idea.
+
+**Unassigned Speaker** - Yeah, yeah, I like that.
+
+**Game Master** - Yeah, all right, so.
+
+**Trout** - Likely suspect, but.
+
+**Game Master** - Yeah, yeah, well, you know.
+
+**Unassigned Speaker** - Yeah, true.
+
+**Game Master** - Uh, dunk, how do you? How do you pitch that to Ingrid?
+
+**Dunk** - Um, let me think, Well, is your main is your main concern him finding out.
+
+**Dunk** - Coming to.
+
+**Game Master** - Yes, exactly, yeah, shes a little.
+
+**Game Master** - Shes like, The thing Im most nervous about is that hell wake up and hell know that. Ive been like looking at him through his window every night. If he knows I would, I will die of shame.
+
+**Dunk** - Well, if why dont you prove your prowess as a, um, apothe potion lady?
+
+**Dunk** - Yeah, yeah, exactly.
+
+**Trout** - Put your money where your mouth is.
+
+**Dunk** - Yeah, apothe Potion, yeah, and make. How about you make a sleeping potion and then.
+
+**Dunk** - Um, I can help you get into there and we can administer it.
+
+**Dunk** - To him and then you can just watch him all night without fear of him.
+
+**Sir Phidipaldi** - Which is totally.
+
+**Dunk** - Coming to Yeah, not creepy at all.
+
+**Dunk** - You can videotape it.
+
+**Dunk** - Yeah, yeah, yeah, yeah.
+
+**Sir Phidipaldi** - You could, you could watch him with your hands.
+
+**Dr Uriah** - In my opinion.
+
+**Dr Uriah** - Thats really creepy.
+
+**Dunk** - But then, but then that would help that that should help ease the fear of him.
+
+**Game Master** - Yeah, yeah, so, um, heres what she says, she says. I know how to make such a potion, but I need an ingredient and Im wondering if you can get it for me. Just slightly across the river north of town, in the woods, theres a grove where some fauns live. And there they make the most wonderful wine that can put any creature to sleep, or or it makes any creature drunk. And so I could use that to make him pass out immediately.
+
+**Sir Phidipaldi** - With fawns.
+
+**Game Master** - Fauns faun.
+
+**Dunk** - So what youre telling me is, you dont actually know how to make anything. You just need me to go get a potion that someone else made.
+
+**Game Master** - But thats the key ingredient that I need.
+
+**Dr Uriah** - Okay, all right, all right.
+
+**Unassigned Speaker** - Actually, youre a fake.
+
+**Dunk** - Yeah, wait, whats going on here? Were gonna use the door breaker, were going in.
+
+**Game Master** - Yeah.
+
+**Unassigned Speaker** - Briefcase.
+
+**Dunk** - Yeah, um, Grove with Fauns, uh, drank.
+
+**Dunk** - So whats the actual potion name?
+
+**Game Master** - Uh, it is a, um, wine.
+
+**Unassigned Speaker** - Uh, the the.
+
+**Dr Uriah** - Well, the fauns make the wine.
+
+**Game Master** - I I guess shes the the the, uh. The trees in the Fauns Grove bleed a red wine instead of sap.
+
+**Game Master** - And the fauns collect it. And if you gather some of that wine?
+
+**Game Master** - That is the ingredient that she needs.
+
+**Dunk** - Um, how far away? How far away is the Grove?
+
+**Game Master** - Its actually, its actually pretty close, so if you sent me the map, yeah, yeah, its in like that kind of like, Yeah, exactly like.
+
+**Dunk** - So like, this is.
+
+**Unassigned Speaker** - Like.
+
+**Dunk** - This can be done in a single night.
+
+**Game Master** - You could do it tomorrow, yeah.
+
+**Dunk** - Do it tomorrow.
+
+**Game Master** - You guys can go at 200 in the morning.
+
+**Game Master** - Its getting pretty late at this point.
+
+**Dunk** - All right, okay, well, ill, see what I can do and then well, meet back here tomorrow night.
+
+**Dunk** - The same spot.
+
+**Dunk** - Same time.
+
+**Game Master** - Ill see you here, dunk. Thank you for keeping my little romance a secret I owe you.
+
+**Dunk** - I havent kept it a secret yet.
+
+**Game Master** - Wait, what?
+
+**Dunk** - You just know that.
+
+**Game Master** - You look scared.
+
+**Dunk** - Yeah, yeah, no, no, no.
+
+**Game Master** - All right with that, Im gonna call it a night.
+
+**Game Master** - Okay, great, so you wake up the next day. The town of Brandonsford is bustling. Um, there is still a lack of shipments that have come in.
+
+**Game Master** - Um, uh, but the um, uh, the town is, you know, awake moving around. Um, you wake up Quinn, the bag is still behind Quinn Bar. Uh, and he starts making you some breakfast, um.
+
+**Unassigned Speaker** - Quinn.
+
+**Game Master** - Yeah, Quinn does.
+
+**Unassigned Speaker** - Yep, great.
+
+**Game Master** - But the the two of you are having a far superior breakfast.
+
+**Trout** - Youre cooking up the fish I caught.
+
+**Game Master** - Well, The Hobbit and his wife, gratefully, um, took the fish. Their daughters are serving a bustling tavern thats filled with people eating. You see, Lady Hilda Malzaseric, The Magnificent Drop Dead Ned and Squints are all, Uh, there Squints sees you coming down the stairs and hes like, Where are these friends?
+
+**Trout** - You were gonna introduce me to your friends, sit down and eat breakfast, enjoy your breakfast. Well, talk later.
+
+**Game Master** - So you feel hes like waiting and like, disappointed. Um, uh, uriah, you come down the stairs, Uh, what do you do in the inn? Oh, the, um, the Reeve Erik the Reeve is there as well.
+
+**Game Master** - Ill and ill. Just do a quick thing. Remind you guys theres a general store you Havent visited.
+
+**Game Master** - The Smith You Havent visited the Church, George the Hunter.
+
+**Dr Uriah** - Yep, yep.
+
+**Game Master** - And no ones, like, officially gone into Ingrids, you know.
+
+**Game Master** - Soul right, yeah.
+
+**Dr Uriah** - Uh well, I mean, that.s where I also I would like to go there and there and the church just for my own Antiquarian.
+
+**Dr Uriah** - Curiosities.
+
+**Dr Uriah** - You know, uh, so I dont know, maybe go to the church first.
+
+**Game Master** - Youre gonna head to the church.
+
+**Game Master** - Uh, what, uh, are you gonna do, Sir Phidipaldi?
+
+**Sir Phidipaldi** - Im going to go visit George.
+
+**Game Master** - George The Hunter.
+
+**Unassigned Speaker** - Yeah, uh.
+
+**Trout** - Im gonna talk to Quince.
+
+**Game Master** - Youre gonna talk to Quince or Squince.
+
+**Sir Phidipaldi** - Squints
+
+**Game Master** - Okay, so before those two leave, do you want to introduce Squince to them?
+
+**Game Master** - Or you just no, youre, just no youre holding out you.re gonna youre slow rolling this all right, Gil, You wake up, uh, or dunk, you wake up in gils, Um, you know, Farmhouse, what are you gonna do this morning?
+
+**Dunk** - Um, I mean, I want to go and try and do the go over to get the stuff for the potion, but.
+
+**Dunk** - Im not sure if I should go back to the Um.
+
+**Game Master** - You try to go alone.
+
+**Dunk** - Guardian watching this.
+
+**Game Master** - Yeah, or you could let him know, or you do whatever you want.
+
+**Dunk** - I guess were not at I. I dont know him well enough yet.
+
+**Game Master** - Like a loose band, right?
+
+**Dunk** - Okay, yeah.
+
+**Dunk** - Ill, just go ill, just go for it.
+
+**Unassigned Speaker** - All right, youre gonna head to the.
+
+**Dunk** - Im gonna head towards the faun stuff.
+
+**Game Master** - The fauns grove
+
+**Game Master** - Okay, great, okay, um, why dont we, uh, well, go this way?
+
+**Game Master** - This time, okay, so where do you go first? Youre gonna go to the um?
+
+**Dr Uriah** - The church.
+
+**Game Master** - The church.
+
+**Game Master** - So you head to the church. It is the only stone building in town. Everything else is kind of a mixture of fully stone.
+
+**Game Master** - Everything else is like a mixture of, like, some stone plus, um, the thatchet, you know, that.ch Hut kind of style. This one is like a proper small church. Um, you come in. Its completely empty. Um, doesnt seem to be a very pious crowd this morning. Um, the father, uh, is at the, um, end of the Church. Like inside, like past all the pews, he has a huge frown, gray beard that goes down to his waist. Um, and, uh, he, he sees you, and he goes, Dagonet, huh?
+
+**Dr Uriah** - Indeed.
+
+**Game Master** - Huh, interesting.
+
+**Sir Phidipaldi** - Racist?
+
+**Game Master** - What what brings you to the?
+
+**Dr Uriah** - Yeah, racist.
+
+**Game Master** - Funny, you say that, Eric.
+
+**Game Master** - Literally written down here.
+
+**Game Master** - Racist towards nonhumans?
+
+**Dr Uriah** - Oh, no.
+
+**Dr Uriah** - Look at Gilvis now, Erics, a skilled G.M. He picks up on you. Dagonet, huh?
+
+**Dr Uriah** - Chaotic dagonet as I raise a dagger out of my.
+
+**Game Master** - Yeah, yeah, exactly. So hes like, What brings you to town?
+
+**Dr Uriah** - Um y, I am, you know, a a seeker of knowledge and im just visiting, uh, you know, kind of far off places, from at least where Im from. And you know, this Ive never been here before and Im just checking out the, you know, IM interested in the old stuff, and so Im.
+
+**Unassigned Speaker** - Well, we.
+
+**Dr Uriah** - Coming to the oldest building in town, I think.
+
+**Game Master** - Well, we dont have many for items for amateur scholars here.
+
+**Dr Uriah** - I should hope not.
+
+**Game Master** - And hes like, Let me guess. You were drawn to this town to make money from the rumors of the Dragon that has been circling around town.
+
+**Dr Uriah** - No, I didnt know about the Dragon until I actually got here.
+
+**Dr Uriah** - But I, but but youre not wrong in that I was offered money to go after the Dragon.
+
+**Game Master** - Yeah, no need to try. I have sent Brother Dirk.
+
+**Game Master** - To go get to go kill the dragon, uh.
+
+**Dr Uriah** - Brother Dirk, Huh?
+
+**Game Master** - Brother Dirk.
+
+**Game Master** - So you shouldnt bother.
+
+**Dr Uriah** - When did you send him?
+
+**Game Master** - Well, its been a been a while.
+
+**Dr Uriah** - Well, how long?
+
+**Game Master** - But he had to go to a few places.
+
+**Game Master** - He had to go first to the Barrow Mound, uh, to Brandons Barrow Mound. Cause you know you cant kill the Dragon without the Magic sword.
+
+**Sir Phidipaldi** - Yep, ah, oh, wait and thats in the Barrow Mound.
+
+**Sir Phidipaldi** - Thats what I just heard.
+
+**Game Master** - Well, yes.
+
+**Unassigned Speaker** - Yeah, see.
+
+**Game Master** - Of course, its buried with Brandon.
+
+**Sir Phidipaldi** - Yeah, Im not here yet.
+
+**Dr Uriah** - Sure, uh, oh, is that is that local? Is that like a local cemetery, or is that far from here?
+
+**Game Master** - Eh, its about a days walk.
+
+**Dr Uriah** - Okay, cool.
+
+**Game Master** - But you dont your kind doesnt walk much, you do kind of swim mainly right, like, Do you do you do a lot of walking?
+
+**Dr Uriah** - I mostly walk, actually.
+
+**Game Master** - You mostly walk.
+
+**Game Master** - Thats not what ID heard about your people.
+
+**Dr Uriah** - Yeah, I know Ive Ive, you know, I get it.
+
+**Game Master** - Its cause of the webbed feet, right?
+
+**Dr Uriah** - Yeah, do I have webbed feet?
+
+**Game Master** - No.
+
+**Unassigned Speaker** - Okay, I I, I have a lot of checking into that.
+
+**Dr Uriah** - If these are actually like.
+
+**Dr Uriah** - Stereotypes or not?
+
+**Dr Uriah** - I go, Sir, I dont have webbed feet.
+
+**Game Master** - Hmm, really.
+
+**Dr Uriah** - Its true.
+
+**Sir Phidipaldi** - Yeah, next youre gonna tell us you dont have horns under your Yarmulka.
+
+**Game Master** - Good eye.
+
+**Unassigned Speaker** - Right, right, right, exactly.
+
+**Game Master** - Can I see your feet?
+
+**Dr Uriah** - See my feet.
+
+**Sir Phidipaldi** - I literally I had my my Orthodox rabbi growing up.
+
+**Sir Phidipaldi** - Had a guy on a train.
+
+**Sir Phidipaldi** - Ask him to remove his Yarmulka so that he cause the guy was wanting to see his horns.
+
+**Game Master** - Oh, my God.
+
+**Sir Phidipaldi** - But he was like a nice person.
+
+**Game Master** - Yeah, yeah, yeah, but he just like he was just like, Can I just see?
+
+**Sir Phidipaldi** - And hes like.
+
+**Game Master** - I wanna s I wanna see.
+
+**Sir Phidipaldi** - Yeah, hes a crazy guy.
+
+**Unassigned Speaker** - Yeah, right.
+
+**Dr Uriah** - Uh, I mean, I dont have webbed hands.
+
+**Dr Uriah** - You know.
+
+**Game Master** - H Hold on May I may I touch your hand.
+
+**Dr Uriah** - Sure.
+
+**Game Master** - So he grabs your hand, and with his other hand, he reaches in his pocket and he pulls out like a little ruler.
+
+**Dr Uriah** - Okay, cool.
+
+**Sir Phidipaldi** - The guy got you.
+
+**Dr Uriah** - Phrenology.
+
+**Dr Uriah** - 100 bumps on my head.
+
+**Dr Uriah** - Uh, you know, I mean, sure, I am different, but Im not dangerous.
+
+**Dr Uriah** - Unless I want to be.
+
+**Game Master** - He looks a little bit wideeyed. Hes like, Well, you know, if theres nothing. I I have no books for you. If you are injured, I can heal you, uh.
+
+**Dr Uriah** - Whats his name?
+
+**Game Master** - Uh, his name is Father William.
+
+**Dr Uriah** - William.
+
+**Dr Uriah** - Uh, so you dont theres no, uh, so you dont, have you seen the Dragon?
+
+**Game Master** - The kind of books that you people might like, you should talk to that little pagan Ingrid.
+
+**Dr Uriah** - Oh, yeah.
+
+**Game Master** - She has a bunch of these scrolls around and this is more of a holy place.
+
+**Game Master** - This is for, like worshiping the gods.
+
+**Game Master** - This is what my people do. And you may wanna talk to her. She and like the witch in the woods, they have this whole coven going, and they have all these little scrolls.
+
+**Dr Uriah** - Wait, theres a theres, a coven of witches in the woods.
+
+**Game Master** - Well, of course, how else does she make these potions she cant? Maybe have you met her? Shes not very competent, shes not very competent.
+
+**Dr Uriah** - Yeah, so you think shes getting like, help, like brewing it?
+
+**Game Master** - She cant do things herself.
+
+**Dr Uriah** - Of course not. Shes a woman, right?
+
+**Game Master** - Right.
+
+**Sir Phidipaldi** - You have the map if you want to ask him where the Coven is.
+
+**Dr Uriah** - Oh yeah, thats right, you have the map, right? Uh, I pull out the map and I and I I im like, Could you show me where the Barrow Mound is on this map? And the like where you think this coven might be located at?
+
+**Game Master** - Hes like, Youre, Youre gonna give Peasant or, uh, pennance?
+
+**Dr Uriah** - Yeah, wait, youre, asking me if Im gonna give Pennace?
+
+**Game Master** - Yeah, yeah, yeah, at the Barrow Mound, no at the Barrow Mound.
+
+**Dr Uriah** - Oh, at the Barrow Mound.
+
+**Dr Uriah** - Oh uh, yes, absolutely.
+
+**Game Master** - Hes like, Well, if youre gonna visit the Barrow Mound, um, what I would like is some money for its upkeep.
+
+**Dr Uriah** - Sure, oh, is that part of your your?
+
+**Game Master** - A donation.
+
+**Dr Uriah** - Your, your sure.
+
+**Dr Uriah** - How much?
+
+**Game Master** - 10 gold.
+
+**Dunk** - Could could you just show him your could, you just show him your feet?
+
+**Dr Uriah** - Yeah, exactly.
+
+**Game Master** - Its for A for a subscription.
+
+**Dr Uriah** - How much gold can I show you my feet? All right, okay?
+
+**Game Master** - So you, you show him your feet, he takes out his ruler, and he measures your feet, you know, and he writes it down.
+
+**Dr Uriah** - Yeah, no Web, no.
+
+**Game Master** - No Web thats kind of its. Maybe maybe I misheard.
+
+**Game Master** - Um, okay, I need to find a, uh, keyed map, um, uh, because, um, let me just find it really quick, sorry about that.
+
+**Dr Uriah** - Yeah, no problem, yep.
+
+**Game Master** - I forgot to print out a map for myself. Um, okay, here we go, okay, so he, um. He marks this as where the witch lives.
+
+**Game Master** - Okay, and then he, uh, marks this as the Barrow Mound.
+
+**Dr Uriah** - Barrow Mound Yeah.
+
+**Dr Uriah** - Did you print this out or you just write on here.
+
+**Game Master** - Uh, you just write on it, yeah, I just print it out.
+
+**Unassigned Speaker** - Yeah, so.
+
+**Dr Uriah** - Witch And this is the Barrow Mound.
+
+**Dr Uriah** - Obviously, but.
+
+**Unassigned Speaker** - In case.
+
+**Game Master** - And then and then, like over, here is where Marshalls heading, so yeah.
+
+**Dr Uriah** - And wheres Marshall heading?
+
+**Game Master** - To the Fauns Grove.
+
+**Dr Uriah** - Oh, to the faun.
+
+**Unassigned Speaker** - Yeah, yeah, yeah, okay.
+
+**Dr Uriah** - Wait, let me go back, Im gonna move that there, I noticed.
+
+**Game Master** - All right, lets get back to so we we just did. Um, uriah, Um, sir phidipaldi, what were you doing?
+
+**Sir Phidipaldi** - Im going to the Woodsmans Hut.
+
+**Game Master** - Okay, thats great, okay, so you head over to the Woodsmans Hut.
+
+**Game Master** - And, uh, George the Hunter.
+
+**Game Master** - Um, he its its very much like, Um, like theres like tanning, you know, like hes like.
+
+**Unassigned Speaker** - Sure, yeah.
+
+**Game Master** - You know, hes like skinned things.
+
+**Game Master** - Hes like hes busy, kind of like tanning and like cutting up like, Uh, meat. Hes also got like wood thats being chopped, its very much like hes preparing things.
+
+**Game Master** - That he can like, sell around town.
+
+**Game Master** - And stuff like that, um, hes only got one arm.
+
+**Game Master** - One arm.
+
+**Unassigned Speaker** - Uh, yeah.
+
+**Sir Phidipaldi** - Uh, whoa, you must be George the Woodsman.
+
+**Game Master** - Well, what howd you know the fights back? I only have one arm Im the only guy with one arm. Is that why?
+
+**Sir Phidipaldi** - Exactly so, sir.
+
+**Game Master** - So did they tell you that I only have one arm?
+
+**Sir Phidipaldi** - Yes.
+
+**Game Master** - And you just looked for the guy with one arm.
+
+**Sir Phidipaldi** - You are very observant and of strong wit, I like you.
+
+**Game Master** - What do you want from me?
+
+**Sir Phidipaldi** - Um, I was told that you have met the Black Dragon.
+
+**Game Master** - He looks over at his missing arm and hes like I have.
+
+**Unassigned Speaker** - Uh, um.
+
+**Game Master** - You cant kill it. Its impossible, I tried.
+
+**Sir Phidipaldi** - Oh, and um, where did you run into this dragon?
+
+**Game Master** - Well, in its lair.
+
+**Sir Phidipaldi** - And wheres that?
+
+**Game Master** - Up north.
+
+**Sir Phidipaldi** - Up north, is it in the mountains or?
+
+**Game Master** - Yeah.
+
+**Sir Phidipaldi** - Okay, so.
+
+**Game Master** - At the foot of the mountains.
+
+**Game Master** - You dont have to climb.
+
+**Sir Phidipaldi** - Right, but at the foot of the mountain.
+
+**Game Master** - At the foot.
+
+**Sir Phidipaldi** - Sure, I see.
+
+**Sir Phidipaldi** - Is it by the river or?
+
+**Game Master** - Its cause it cant fly yet.
+
+**Sir Phidipaldi** - Cause its too too little.
+
+**Sir Phidipaldi** - I see, um, its a shame that it.
+
+**Game Master** - But itll fly soon.
+
+**Sir Phidipaldi** - Sure, I get that, uh.
+
+**Game Master** - Then were fucked.
+
+**Sir Phidipaldi** - Is it, is it right be, Was it right by the river, or uh?
+
+**Unassigned Speaker** - No, its up north.
+
+**Sir Phidipaldi** - Okay, all right, great.
+
+**Unassigned Speaker** - By the mountains.
+
+**Sir Phidipaldi** - Okay, excellent, um.
+
+**Game Master** - Do you even know your way around here?
+
+**Sir Phidipaldi** - No Im new here, no, but.
+
+**Game Master** - And then, right away, right away, its like visit, the onearmed freak.
+
+**Sir Phidipaldi** - Yeah, thats right, Uh, I mean, Uh, um, sir, you are clearly of great honor to have fought such a.
+
+**Sir Phidipaldi** - Powerful beast.
+
+**Game Master** - Thats right, thats right.
+
+**Sir Phidipaldi** - Yes, and I it is. I hope that I can learn from your wisdom.
+
+**Sir Phidipaldi** - And that we, um.
+
+**Game Master** - Well, one thing to learn is that you cant kill a dragon.
+
+**Sir Phidipaldi** - Uh uh, how did you come across it?
+
+**Game Master** - I went to its lair to kill it.
+
+**Sir Phidipaldi** - You went to kill it.
+
+**Game Master** - Well, Im a im im A woodsman. I know, I know how to track and kill. Look at all these animals, I kill, I kill animals all the time.
+
+**Sir Phidipaldi** - Yeah, absolutely.
+
+**Game Master** - Im really good at it.
+
+**Sir Phidipaldi** - These look like they were once large and powerful creatures.
+
+**Sir Phidipaldi** - Uh uh, when you came upon it, what did it do?
+
+**Game Master** - It just killed all my friends and then attacked me.
+
+**Sir Phidipaldi** - Ah, I see.
+
+**Game Master** - It it, first of all.
+
+**Game Master** - The first thing thats gonna happen, is it it, it jaws.
+
+**Game Master** - Just drip with poison.
+
+**Dr Uriah** - Ooh, okay.
+
+**Game Master** - So itll bite you, youre dead.
+
+**Game Master** - All right, like I dont know how like that.s why. I had to chop off the arm, I had to get clean.
+
+**Sir Phidipaldi** - Oh, I see, well, that is very good and helpful to know.
+
+**Game Master** - Yeah, well gets worse.
+
+**Game Master** - Spits sulfur at you.
+
+**Game Master** - Smells like rotten eggs, you know what sulfur smells like?
+
+**Sir Phidipaldi** - Uh, not pleasant.
+
+**Dunk** - Worse than poison.
+
+**Dunk** - Its gonna hit you with a fart bomb, youre not even gonna know.
+
+**Game Master** - Hes like Hes never brushed his teeth.
+
+**Sir Phidipaldi** - Right, Im amazed that you were able to escape it, to be honest.
+
+**Game Master** - BAREL Well, it like, took its price. All my friends are dead.
+
+**Sir Phidipaldi** - Yeah, and W, so what? What else are amongst its weapons and powers?
+
+**Game Master** - Well, as far as I can tell, nothing pierces its black scales.
+
+**Game Master** - Its just like, Uh, none of the wea, none of our weapons worked.
+
+**Game Master** - Our arrows didnt work, our swords didnt work, nothing worked.
+
+**Game Master** - Well, why are you so curious about this? Youre not, did Eric tell you hed pay you 1000 gold?
+
+**Game Master** - First of all, I dont think he has 1000 gold.
+
+**Sir Phidipaldi** - I am not surprised that Man is of no honor.
+
+**Game Master** - Thats right.
+
+**Unassigned Speaker** - You dont like him, either.
+
+**Sir Phidipaldi** - I do not, I cannot stand him.
+
+**Unassigned Speaker** - Okay, same.
+
+**Game Master** - Same hes, really, he thinks. Im amazing, though, so I kinda.
+
+**Game Master** - I let it go.
+
+**Game Master** - Uh, but you wont be able to kill it. Its impossible only person who ever was able to kill it is Sir Brandon.
+
+**Unassigned Speaker** - And uh, um.
+
+**Game Master** - That was like 1000 years ago.
+
+**Unassigned Speaker** - Like WH.
+
+**Unassigned Speaker** - Maybe 2000, I dont know.
+
+**Sir Phidipaldi** - How did he kill it?
+
+**Game Master** - Well, you know, you gotta listen, like theres all these fairytales.
+
+**Game Master** - Like FA, Far Farmer Gil knows all this shit, I dont know.
+
+**Game Master** - But like I, I wasnt able to kill it.
+
+**Sir Phidipaldi** - Okay, I see, Um, Uh, uh.
+
+**Game Master** - I mean, what they teach the skil schoolchildren is that a little fairy?
+
+**Game Master** - Gave him a magic sword.
+
+**Game Master** - And then he was able to kill it, but like then, he left, who knows?
+
+**Game Master** - You know, no one knows if whats true or not. That was 1000 years ago.
+
+**Sir Phidipaldi** - And nobody knows where the sword is.
+
+**Game Master** - No, I dont know.
+
+**Sir Phidipaldi** - Okay, um, well, uh, thank you, youve been a great help. Is there anything I can do in return?
+
+**Game Master** - Uh well, I mean, if you kill the Dragon, thatd be great.
+
+**Game Master** - But you wont be able to.
+
+**Sir Phidipaldi** - I, uh, I, I understand.
+
+**Sir Phidipaldi** - You know, I have a Lance, right?
+
+**Game Master** - And I mean, maybe thats the one of the few weapons we didnt try.
+
+**Unassigned Speaker** - Okay, excellent good.
+
+**Unassigned Speaker** - Youre gonna get a whore.
+
+**Sir Phidipaldi** - I will make sure that I bring my Lance.
+
+**Game Master** - All right, we are gonna go now to, Uh, Trout, what is Trout up to? You were talking to Squints.
+
+**Trout** - Squints Yeah, squints.
+
+**Game Master** - Squints was like, when, when am I gonna see my f? when am I gonna meet? Like, who are or like?
+
+**Unassigned Speaker** - So I.
+
+**Game Master** - How many friends do you have here?
+
+**Trout** - I have some good news for you, so I talked to the team.
+
+**Trout** - We have an open position.
+
+**Game Master** - Yeah, yeah, this is yes.
+
+**Trout** - This junior assistant halfling.
+
+**Game Master** - Thats what Im waiting for, this is this is the break.
+
+**Game Master** - Remember how I was telling you I was looking for the big break?
+
+**Trout** - So I want you to understand that this is one of the most elite adventuring parties around.
+
+**Game Master** - Okay, and youre gonna let me apprentice with you.
+
+**Trout** - So you will be joining the Halfling Corps of the Group.
+
+**Trout** - I lead it.
+
+**Game Master** - Okay, he is starryeyed.
+
+**Game Master** - This this is totally working on Squints.
+
+**Trout** - Um, we have a kind of a different approach to the distribution of wealth, though, that I want you to understand.
+
+**Game Master** - Are you Communist?
+
+**Trout** - So, um, its kind of y, you know, its its meritbased.
+
+**Unassigned Speaker** - Thank you.
+
+**Trout** - You know, so you have to kind of, um, really show your your skills and really contribute in battle.
+
+**Trout** - Um, so, um, youll have to kind of survive on your own funding until we, um, get our first treasure. And even then, uh, the elite members of the squad get first pickings.
+
+**Game Master** - What do I get?
+
+**Trout** - Second, pickings.
+
+**Game Master** - Whats the whats the second picking?
+
+**Trout** - Well, let you know it when we get it.
+
+**Game Master** - How many things are we gonna kill?
+
+**Trout** - Um, I think you will be pretty impressed. Uh, were gonna be fighting monsters.
+
+**Game Master** - Monsters.
+
+**Game Master** - All right, thats kind of what I came here for.
+
+**Trout** - Yeah, so, um, were gonna be starting immediately, so I need you to go go get your own gear, and, um.
+
+**Game Master** - All right, I got it.
+
+**Trout** - And then you and me w youll meet me.
+
+**Trout** - Please, oh, man.
+
+**Trout** - With us later and just remember that Youll be sort of taking orders directly from me.
+
+**Game Master** - All right, Im in.
+
+**Dr Uriah** - Oh, hes trying to build an army. Uh, how many, like followers, do you have like, four and a half?
+
+**Sir Phidipaldi** - So I mean, I have a laborer, and then.
+
+**Trout** - I thought I was special with my halfling slingshot.
+
+**Game Master** - Heres heres squints, Uh, heres this character sheet, and here he is.
+
+**Trout** - Hes actually the better guy, so.
+
+**Game Master** - Yeah, Hes hes more experienced than you are, Hes like just completely better than you are.
+
+**Game Master** - You charm one of them over.
+
+**Dr Uriah** - Thats great, yeah, but so you have a laborer. Do you have, uh, two animal buddies?
+
+**Sir Phidipaldi** - So he has one cause Hes got the stout.
+
+**Sir Phidipaldi** - But then I think I have, Uh, you, you m, and maybe you have a stout and you have.
+
+**Trout** - Hes a fighter level two I.m like, Hes way better than us.
+
+**Dr Uriah** - A Level two, yeah.
+
+**Sir Phidipaldi** - Yeah, yeah, no, no, its A Level Two. Oh, and he has a. He has a stout and a hunting dog, and now Hes got a halfling.
+
+**Trout** - There you go.
+
+**Dr Uriah** - Got a little army?
+
+**Trout** - You know, charge squints.
+
+**Dr Uriah** - And maybe as long as he can ride on the hunting dog.
+
+**Trout** - Hes a fighter, so hes not. I thought that he was a.
+
+**Trout** - Well, he says, Oh, hes got a sling and a dagger.
+
+**Dr Uriah** - Well, th this is old school, so its only fighter magic user, uh, and cleric.
+
+**Unassigned Speaker** - Full thing.
+
+**Dr Uriah** - Are the are the original three?
+
+**Dr Uriah** - Theres no thief in original DD.
+
+**Sir Phidipaldi** - But theres optional rules.
+
+**Dr Uriah** - Yeah, optional rules, so thats why hes not a.
+
+**Trout** - A fighter.
+
+**Unassigned Speaker** - Magic user.
+
+**Dr Uriah** - Yeah, exactly. So it wasnt called Wizard, then it was just called Magic User.
+
+**Dr Uriah** - Um, and then so all the other optional things we are, uh, like the metaphysician, the cleric, the Druid. Those are all extras then.
+
+**Trout** - Okay, so squints, youll be following me. I want you to just kind of observe, not talk too much, and, uh, try to really sort of like, learn how I handle situations.
+
+**Game Master** - I can ask you, though, like H Like, can get like tips from you, right?
+
+**Trout** - Oh yeah, yeah, just, but lets limit it to like a cert like, like, three a day.
+
+**Game Master** - Three tips a day.
+
+**Unassigned Speaker** - Gotcha All right, Im in.
+
+**Dr Uriah** - Three tips a day.
+
+**Game Master** - All right, we are gonna go to.
+
+**Unassigned Speaker** - He says.
+
+**Game Master** - Uh, to dunk now dunk. You have been wandering the woods heading in the direction.
+
+**Dunk** - The.
+
+**Game Master** - Of the Fawn Grove.
+
+**Game Master** - Well, like any good wandering troll, Kin would do.
+
+**Game Master** - And, um, sounds as youre going through the woods sounds of like mirth and merriment and music.
+
+**Dunk** - Pan flute.
+
+**Unassigned Speaker** - Like.
+
+**Game Master** - A little like Mandolin playing. You start hearing, and as you get closer and closer, you see a group of fawns gallivanting, playing music, dancing. Um, they all have a um uh, a little, um uh, necklace on with a, uh um, little flask like attached to it, uh.
+
+**Game Master** - And theyre all drinking heavily.
+
+**Dunk** - From the From the Flasks or.
+
+**Game Master** - Uh, theyve got little cups, theyve got little cups as well that theyre drinking from so.
+
+**Dunk** - All right, um?
+
+**Game Master** - They have these, yeah, golden G wine goblets theyre drinking from.
+
+**Dunk** - Trying to think out, Uh, my, my plan, I forgot I was so large
+
+**Unassigned Speaker** - Right here, Norman.
+
+**Unassigned Speaker** - They see you coming.
+
+**Dunk** - Yeah, yeah, Im like thundering through the Brook, yeah, um.
+
+**Game Master** - They look at you and theyre theyre just like, Join us.
+
+**Dunk** - Okay, I think I think I think ill join you guys in your little.
+
+**Dunk** - Your little dancing.
+
+**Game Master** - One of them takes his cup and hes like, Would you like a sip?
+
+**Dunk** - Yes, I would.
+
+**Game Master** - All right, you are going to, Um, save versus poison now, um?
+
+**Dr Uriah** - Dont worry all alcohol is poison take.
+
+**Unassigned Speaker** - True that.
+
+**Dunk** - This isnt anything I have. Resist poison also.
+
+**Game Master** - Yeah, perfect awesome, awesome, so let me see, so you.
+
+**Sir Phidipaldi** - Is that a plus two to your save?
+
+**Game Master** - Something like that.
+
+**Unassigned Speaker** - Yeah, so.
+
+**Dr Uriah** - Well, I resist, uh.
+
+**Game Master** - So you are a troll, kin.
+
+**Dr Uriah** - Plus four.
+
+**Game Master** - Plus four.
+
+**Dr Uriah** - Yeah, plus four on resists cause thats I have resist mind, stuff, mind plus four so.
+
+**Game Master** - So lets see troll, kin and poison resistance. No, its plus two.
+
+**Unassigned Speaker** - Plus two.
+
+**Game Master** - Yeah, yeah. Due to your massive size and hearty nature, you receive a plus two bonus on all saving throws made to resist poison. So, uh, you need to, um, roll.
+
+**Sir Phidipaldi** - 20 or or 6.
+
+**Unassigned Speaker** - Is that what you, uh?
+
+**Dunk** - I dont know, do I need a D or D20?
+
+**Game Master** - Yeah, yeah, yeah, so your saving throw is you are a wanderer, right?
+
+**Unassigned Speaker** - MMHMm Yeah.
+
+**Dr Uriah** - Um, I think all of ours are 15.
+
+**Game Master** - Yeah, yeah, all of yours are 15.
+
+**Dr Uriah** - And then so now he has two. So its What 12 or should be 13?
+
+**Dunk** - Yeah, so mine is 14, so 16 total, right?
+
+**Game Master** - Uh, no, no, its uh youre its gonna go the opposite way. You need to roll 12 or over.
+
+**Sir Phidipaldi** - Right, so you need to roll a 14 or over.
+
+**Sir Phidipaldi** - But you get a plus two to your roll.
+
+**Dunk** - And Im doing it with a D20.
+
+**Game Master** - D20 Yeah.
+
+**Game Master** - Yep, 14 plus 2 16. No problem, all right, so you, you drink, you drink the wine, its delicious, um, and, uh, the fawns kind of like, Look at you and theyre like.
+
+**Unassigned Speaker** - What the fuck.
+
+**Game Master** - What the fuck, like most people get like, ripped as soon as they.
+
+**Game Master** - So theyre like, Well, that that is unexpected, you know, theyre kind of like tittering.
+
+**Game Master** - You know, around and playing their little song, um, like most, almost any creature weve ever seen immediately gets drunk after sipping our wine, except for fawns, of course. Uh, you are remarkable.
+
+**Dunk** - Ive met many fawns in my wandering.
+
+**Game Master** - You, sir.
+
+**Dunk** - Um, what do what do you do? You guys have something maybe a little more powerful in the UH.
+
+**Dunk** - A little neck, pa neck flask or a little something there?
+
+**Game Master** - Some emergency wine its the same wine, so we get it from the trees and, you see, like the trees are like bleeding, like red wine.
+
+**Game Master** - Kind of coming out of them.
+
+**Dunk** - Could I try some of the the emergency wine?
+
+**Game Master** - You could, yeah, its the same wine.
+
+**Dunk** - Do I have to take it from one of them?
+
+**Game Master** - You just gotta roll, Yeah, yeah, you, they they go off and get the right one.
+
+**Dunk** - Okay, lets hope, Im.
+
+**Unassigned Speaker** - Hes Hes.
+
+**Dunk** - Use inhuman grip.
+
+**Unassigned Speaker** - Oh, yeah.
+
+**Game Master** - Push your luck all right, you take a sip.
+
+**Dr Uriah** - Oh yeah, I fear hes not gonna hurt.
+
+**Game Master** - And you immediately fall unconscious, Um, you are going to be unconscious for the next five hours.
+
+**Trout** - Was it part of the plan?
+
+**Dunk** - That was not part of the plan.
+
+**Sir Phidipaldi** - Definitely the plan, definitely, definitely part of the plan.
+
+**Game Master** - First part worked.
+
+**Dunk** - Part, also not part of the plan, was not reading the second line of the Wanderer abilities
+
+**Unassigned Speaker** - Oh, was it?
+
+**Dunk** - It it one one per day reroll, but its.
+
+**Game Master** - You could do that again.
+
+**Dunk** - But its but I think its at plus two versus auto. Wait, hang on, yeah.
+
+**Game Master** - What do you?
+
+**Dunk** - Yeah, no, I I will do, I will do IM confusing myself with my poorly written note here.
+
+**Dr Uriah** - Yeah, yeah, so yeah, its, uh, its still a hard roll, but you know, yeah, take out a drunk. Yeah, yeah, yeah, thats a.
+
+**Dunk** - Tell me that, says 19.
+
+**Game Master** - It says.
+
+**Dunk** - It wasnt the three.
+
+**Unassigned Speaker** - 19.
+
+**Game Master** - So you take a sip of it, no problem.
+
+**Game Master** - They are like, absolutely gobsmacked.
+
+**Dunk** - I got to try and think of how Im gonna, uh, get get some of it away from them.
+
+**Game Master** - Ask em.
+
+**Dunk** - Yeah, could I could? I maybe take a little bit of this on my journeys when Im feeling a little anxious, maybe take a little nip off.
+
+**Game Master** - We like little sentimental items we like to collect. We are happy to trade with a wondrous creature such as yourself, maybe maybe a little love letter or a pixies treasure or.
+
+**Dunk** - Let me look in, let me look in my pack and see what what I may have in here, yeah.
+
+**Unassigned Speaker** - You, you spend five.
+
+**Dunk** - Ive been drawing this church.
+
+**Game Master** - Uh, like, you know about a minute looking through your pack. You now need to make another saving throw, uh, to see if you could produce the items that you think you are.
+
+**Dunk** - Also on a 20.
+
+**Game Master** - Yeah, T20, you have to roll a 14 or higher.
+
+**Dunk** - 19.
+
+**Game Master** - They actually describe the little sentimental treasure that you pull out of your pack and be like and offer it up to them.
+
+**Dunk** - Well, this I, I have this little, uh, rabbits foot that was, um, from a child in my village that, uh.
+
+**Game Master** - And all theyre all like looking at you like, Oh, rabbits foot.
+
+**Dunk** - It it, it, yeah, it kept it it, it kept, uh, it kept that kid safe night after night.
+
+**Dunk** - Uh, its a little crusty, with maybe some salty tears on it, just a.
+
+**Game Master** - This is even better, this is incredible.
+
+**Dunk** - Yeah, but I would gladly trade this for.
+
+**Game Master** - Great, so one of em.
+
+**Dunk** - A little.
+
+**Game Master** - Is like, This is a steal and takes off. Uh, her necklace hands you the little, um, flask of, um, fawn wine.
+
+**Dunk** - Fawn wine, yeah.
+
+**Unassigned Speaker** - Um, Uriah, what do you do, you are you gonna leave this church? just gonna keep hanging out there? I while Im in the church I can. I just make a look around to see if maybe I notice any secret doors. Yeah, theres nothing like that. Okay, yeah, well, I mean, I have the I have the power Im gonna use it everywhere I go. Yeah, yeah, Im gonna find a secret door before this is over. Yeah, um, I mean, I probably just leave and go, Uh, see the, uh, the potion Lady Ingrid Yeah, Ingrid, all right. You head up to Ingrids Shop and, uh, you open the door a little bell, you know, clinkles as you as you open. And she, um, immediately, Uh uh, comes over to you and says, Uh um, can I can I get you anything? I I make Wolfsbane it wards off the wolves, I make witchs powder. You can sprinkle it on an object. Itll tell you if its magic it glows or I can make a little tea for you a little mandrake root tea. What does that do? heals you? And I mentioned it earlier. Yeah, tell me to write down the Wolfsbane. Yeah, yeah, Uh yeah, well, Let me just, uh, you know, look over your, yeah, your wares. Uh yeah, I was just talking with Father William. Oh, that Ignoramus. Absolutely. yes, That guy sucks. I do not like him. He He man up, William, He is he He is. Well, I mean not for me. No, no ObV Well, yeah, misogynistic. At least he does not like women, he doesnt no, but organized religion when I am part of the religion of the forest, religion of the world. Oh, I dont know why you bother. Yeah, Uh, me, me, me personally. Yeah, why did you bother talking to him? Oh, I mean, you know, sure, the church is like shitty and all, but it also old and has a lot of mysteries and secrets and carries a lot of, Uh, yes, its been around a long time, but they repress the secrets. Oh yeah of the wood folk. Oh yeah, you know the wood folk. Well, you know, granted its cause. We are in the woods. Oh sure, sure, uh, but its, you know, been different these days, theres that dragon thats around. Yeah, I and Fairies have been encroaching on territory that they they used to just only stay hidden and theyre coming out more and more often. So youve seen the fairy well, of course, yeah, well, where when I go in the woods, oh you know, all right, commune with nature. Where is is it? Vivian Whos Vivian, my friend who lives in the forest. Oh cool, is she a witch? Well, we dont, I mean, were trying to own the word witch again. Oh, okay, but thats not I I.
+
+**Dr Uriah** - Its someone usually female presenting or female.
+
+**Dr Uriah** - You know what I mean?
+
+**Dr Uriah** - Yeah, thats maybe a more respectful way to put it. Sure, yeah, sure, is it just her in the woods like, Does she hang with anyone? Most most witches do not get married. No, I know, but do they its a solitary life? But sometimes they hang out with other witches. Well, they well. Or an alchemist. Yeah, all right, a friend, yeah, a friend. Nice, yeah, is that is that. Do they make this stuff in here? No, I make all this stuff. Yeah, Im something of an alchemist. Sure, uh, fucking Father William, though hes all. Yeah, hes the worst. Yeah, he says that youre yeah, making this, that youre, you know, youre fronting thats right, thats right. Yeah, Uh yeah, how much are her things, How much are, uh, like her things like the the Oh Wolfsbane Ingrids thing? Oh oh, so Wolfbane would be five gold.
+
+**Game Master** - The witch witch powder would be seven.
+
+**Game Master** - And the Mandrake Tea is 10.
+
+**Dr Uriah** - Okay, Im gonna take some Bane and some Mandrake, I dont think I need the witchs powder.
+
+**Dr Uriah** - I can sell something in the magical mart.
+
+**Game Master** - Mark off the gold on your sheet.
+
+**Game Master** - And, uh, add it so.
+
+**Unassigned Speaker** - All good.
+
+**Unassigned Speaker** - Um, Eric.
+
+**Game Master** - What is Phidipaldi doing right now?
+
+**Sir Phidipaldi** - Um, Im going to go back to the Tavern and I will meet up with Trout
+
+**Game Master** - All right, so you two are together now.
+
+**Game Master** - Um, you have not seen your friend dunk over 24 hours.
+
+**Dunk** - Who knows?
+
+**Unassigned Speaker** - Who knows where he is?
+
+**Dunk** - Hes wandering.
+
+**Game Master** - Dunk What are you doing right now, Are you heading back to town, are you?
+
+**Dunk** - Um yeah, Im headed back to town, but, uh, I need to s um, I need to stop by probably the F, the fiery what the Fox.
+
+**Game Master** - Yeah, the uh, the uh.
+
+**Unassigned Speaker** - Clumsy Fox.
+
+**Unassigned Speaker** - Uh, the clumsy.
+
+**Dunk** - Yeah, the clumsy Fox.
+
+**Unassigned Speaker** - Oh yeah, right, right, thats where they are.
+
+**Dunk** - Um, cause I need to get another little flask of wine.
+
+**Game Master** - Yeah, I know where this is going, so you come into the clumsy Fox and you see your friend. Uh Sir Fittipaldi and, uh, Trout sitting there. But theyre talking to a a halfling that you dont recognize.
+
+**Dunk** - Hey, guys.
+
+**Trout** - Dunk.
+
+**Game Master** - Where have you been?
+
+**Dunk** - Ive been.
+
+**Trout** - Meet, Meet Squint. He just joined up.
+
+**Dunk** - Hey, squint.
+
+**Dunk** - This little guy.
+
+**Unassigned Speaker** - Well, look at you, youre huge.
+
+**Dunk** - Guys, I think I have a line on some good armor for us that might help us with this Dragon, if you know what Im saying.
+
+**Sir Phidipaldi** - Oh, do tell.
+
+**Dunk** - Yeah, uh, our man, Warrick.
+
+**Sir Phidipaldi** - Uhhuh the Smith.
+
+**Dunk** - Yeah, has some really beautiful armor on the wall that shimmers at night in the moonlight.
+
+**Dunk** - And, um, I got a plan for how Im gonna get it for us. So Im gonna SP, Im gonna go out one more night tonight and then ill rejoin with you guys and hopefully, well, have some armor.
+
+**Dunk** - To help us.
+
+**Game Master** - All right, hope you get that.
+
+**Unassigned Speaker** - And then, uh.
+
+**Game Master** - Uh, squints, looking at you, hes like, What are you gonna do?
+
+**Dunk** - I dont know you, little man.
+
+**Dunk** - Um, youll, just have to wait and see. This could be a valuable learning lesson for Squint.
+
+**Dunk** - Yeah, you dont have a choice.
+
+**Dunk** - You guys dont have a Yeah.
+
+**Game Master** - Squints looking at you, hes like, Is that one in your tip?
+
+**Dunk** - Yeah.
+
+**Game Master** - Did I just lose a whole tip?
+
+**Dunk** - Yeah, one of.
+
+**Game Master** - All right, so, um.
+
+**Dunk** - Do I have to buy them? Buy the little flask of wine.
+
+**Game Master** - Uh yeah, he his, uh, his, his, uh, brew its three silver pieces for a pint, so um, dont worry about it, its like, you know.
+
+**Dr Uriah** - Do the conversion.
+
+**Game Master** - Do the conversion.
+
+**Dunk** - Im just gonna do it as one gold piece.
+
+**Game Master** - All right, that sounds good. Uh, okay, so what are the two of you? Whats your plan?
+
+**Trout** - Squint, Go get me a drink.
+
+**Game Master** - Squint goes offscreen.
+
+**Sir Phidipaldi** - So I will share with you what Ive learned about the Dragon.
+
+**Sir Phidipaldi** - That it has poison and it spits sulfur.
+
+**Sir Phidipaldi** - And its got these like impossible to to pierce scales
+
+**Trout** - Sounds sounds dangerous. I mean, like, Is this is this, where were gonna go, This is a.
+
+**Trout** - Bet bet Hes got treasure.
+
+**Sir Phidipaldi** - I mean, yeah, I I mean, like, if we found the Dragon.
+
+**Dr Uriah** - Have we ever even asked anybody about the Pirate Dragon?
+
+**Dunk** - We might be okay, right?
+
+**Sir Phidipaldi** - I, I, I guess it was a 10ton.
+
+**Dr Uriah** - Were doing our side quests.
+
+**Sir Phidipaldi** - You know, I feel like thats important. We always finish the side quests.
+
+**Dunk** - Yeah, we might not come back to this town, we gotta finish this.
+
+**Unassigned Speaker** - Complete.
+
+**Trout** - So, you know, I mean, we gotta wait for him to come back from his, whatever hes doing.
+
+**Sir Phidipaldi** - Yeah, with with that armor.
+
+**Sir Phidipaldi** - Um, uh.
+
+**Dunk** - His weird assault quest?
+
+**Sir Phidipaldi** - So you know about the sword being at the Barrow.
+
+**Trout** - Barrow Yeah.
+
+**Trout** - So I think we should go there.
+
+**Game Master** - Where are you, are you gonna meet up with them?
+
+**Dr Uriah** - Um, Im at the Ingrid Yeah, Uh, yeah.
+
+**Dr Uriah** - Yeah, yeah, yeah, I mean, I, I.
+
+**Unassigned Speaker** - What are we doing?
+
+**Dr Uriah** - Im Im assuming were were like, kinda going out and looking for information.
+
+**Unassigned Speaker** - Going.
+
+**Dr Uriah** - Well, meet, meet back at the bar.
+
+**Dr Uriah** - At like this time.
+
+**Game Master** - So you, you come back and you see your two friends with a halfling.
+
+**Game Master** - That you dont recognize.
+
+**Dr Uriah** - That I dont know, yeah.
+
+**Game Master** - Uh, and then you see, Uh, uh, dunk leaving.
+
+**Game Master** - Or yeah, yeah, like walk it out, so.
+
+**Dr Uriah** - Sure, sure, I just come in, and we just like, compare notes of, like, what weve learned.
+
+**Dr Uriah** - And im like, Well, guys, the priest here is a racist.
+
+**Dr Uriah** - So you guys know so and then not so bad. Much for you, but sorry about you. Uh, hes not gonna like you guys.
+
+**Trout** - Yeah, well, we know that Brother Dirk is off fight fighting the Dragon or trying to.
+
+**Sir Phidipaldi** - And so is.
+
+**Trout** - And Hes headed, headed toward the barrow.
+
+**Sir Phidipaldi** - And so is the sons of the farmer.
+
+**Game Master** - Farmer Gill, yeah
+
+**Trout** - So that seems like a pretty obvious next step. So we we could like, walk out of town, kind of trail him, let him do his thing.
+
+**Trout** - Then all leave together to the north.
+
+**Sir Phidipaldi** - I think dunk your thing is at night, right?
+
+**Dunk** - Yeah, my thing is at night, so I could.
+
+**Sir Phidipaldi** - Dunk could try and walk into the Barrow and then come back and he does his thing.
+
+**Game Master** - Yeah, the its about half a mile.
+
+**Game Master** - Per inch, right? So its what, like a threemile, walk through the forest.
+
+**Unassigned Speaker** - Sure, sure.
+
+**Game Master** - But, you know, five miles.
+
+**Trout** - Or we could just tell him to meet us at the Barrow.
+
+**Game Master** - Yeah, yeah, you could do that.
+
+**Trout** - Just start walking.
+
+**Game Master** - Okay, so why dont you all are gonna head, so youre gonna head up here?
+
+**Trout** - So we havent been to like, like, Whats that is that the witchs House?
+
+**Sir Phidipaldi** - Yeah, we we dont know, no, no, the Witchs house is down here.
+
+**Dr Uriah** - I thought.
+
+**Unassigned Speaker** - The Witchs House.
+
+**Trout** - Lets walk up to here and see if that is on the way.
+
+**Game Master** - So youre gonna avoid the witchs house youre gonna hit this place?
+
+**Game Master** - Absolutely okay, great. And then youre gonna tell Dunk were gonna meet you up here.
+
+**Sir Phidipaldi** - To meet Yeah at the Barrow.
+
+**Unassigned Speaker** - Okay, great.
+
+**Sir Phidipaldi** - Mound, Yep.
+
+**Game Master** - Okay, so, um, so the three of you start walking through the woods.
+
+**Game Master** - Dunk What are you doing while theyre gone?
+
+**Dunk** - Uh, I am very heavily diluting the flask of fine wine. Yeah, um, so im pour im I. Was it wine, or was it Mead that the guy was selling?
+
+**Unassigned Speaker** - Wine wine.
+
+**Dunk** - Wine, Okay?
+
+**Dunk** - So Im, uh.
+
+**Game Master** - Youre like doing like a 5050 mix or youre doing like a.
+
+**Dunk** - Well, do well, do 20 80.
+
+**Game Master** - Okay, all right.
+
+**Game Master** - 20. Vine Wine 80.
+
+**Game Master** - Yeah, okay, Gotcha.
+
+**Dunk** - Um, enough, so it still might smell like it something.
+
+**Dunk** - She didnt recognize it right away.
+
+**Game Master** - Yeah, Gotcha Gotcha.
+
+**Dunk** - Um, but I have to wait till night to meet back up with her, though, right?
+
+**Game Master** - Well, depends on what you want to do. Like she, you could give it to her, she could start working on the potion and then you can leave with them and when you come back.
+
+**Game Master** - Youre, like, were good.
+
+**Dunk** - Lets yeah, okay, yeah, yeah.
+
+**Dunk** - Yeah, yeah, yeah, yeah, yeah, I want to do that, yeah.
+
+**Game Master** - So you give it to her, Shes like, Im gonna go work on this, uh.
+
+**Game Master** - And come back tomorrow.
+
+**Dunk** - Ill see.
+
+**Dunk** - Ill see you tonight.
+
+**Game Master** - All right, and then you guys are all now headed together, all four of you.
+
+**Dunk** - Yeah, okay, yeah.
+
+**Game Master** - So the four of you head north.
+
+**Game Master** - And you, pat, uh, I just wanna make sure Ive got this right, uh.
+
+**Dr Uriah** - Indiana Jones dotted line.
+
+**Dunk** - Yeah, exactly.
+
+**Game Master** - Exactly, Uh you, um, okay, so lets see here as you were walking through the woods. Uh, you see a cottage.
+
+**Unassigned Speaker** - Or.
+
+**Game Master** - Yeah, yeah, you when you reach that cottage.
+
+**Dr Uriah** - The town of Black Dragon, yeah.
+
+**Game Master** - Theres a break in the woods and theres a clearing. And you see a cottage. That is three times the size of a normal house house built from Cyclopean rocks.
+
+**Unassigned Speaker** - CYCL.
+
+**Game Master** - That.
+
+**Dunk** - Here we go.
+
+**Game Master** - Thats all right, make it up, um. Its fitted with a tree bark door, a mud brick chimney and theres a window. And you see, you hear like a horrible roaring sound. Drown. Uh uh, droning in from inside the chimney is belching out a column of smoke. Um, and you see warm, kind of flickering fire light pouring out of the window, um.
+
+**Dr Uriah** - So the door is like three times as big as a door that we know.
+
+**Game Master** - Yeah, exactly, exactly, so, yeah.
+
+**Dr Uriah** - But maybe only two times as big as you.
+
+**Dunk** - I still have to duck
+
+**Dr Uriah** - Yeah, I, I mean, we can bypass it, you know completely, or we can like, check it out with you guys. We can always have him come back also.
+
+**Trout** - So I think, you know, Im small and concealable.
+
+**Game Master** - Yeah, absolutely.
+
+**Trout** - So Im gonna be like, Um, squints, you take that side, Im gonna take this side, were gonna scout it out.
+
+**Trout** - And stay hidden.
+
+**Trout** - And were trying to see through the windows to see what kind of.
+
+**Game Master** - Well, windows are pretty high up, youre youre very small.
+
+**Trout** - Is there anything thats climbable to see in?
+
+**Unassigned Speaker** - Can I do it?
+
+**Game Master** - Yeah, you could, you could try to climb. Yeah, you guys could try to climb up, so whos gonna climb up and look through the window, you or squints?
+
+**Trout** - Were talking, What, uh, Dexterity?
+
+**Trout** - Well, he doesnt have a dexterity, how do you know what his attributes are?
+
+**Game Master** - Well, it might be on the back, No.
+
+**Dunk** - Oh no, its on there, its down here.
+
+**Trout** - Oh, of course, okay.
+
+**Dunk** - Its 14.
+
+**Trout** - Oh yeah, thats not too bad, yeah, so.
+
+**Dr Uriah** - 14 is a plus one.
+
+**Trout** - Squints.
+
+**Trout** - Uh, see if you can see if you can look in the window.
+
+**Unassigned Speaker** - Okay, okay, you lift squints up.
+
+**Dunk** - Yeah, is it? A 14 is a plus one I do too, then.
+
+**Game Master** - Peeks through the window and then he whispers down at you and he goes giant.
+
+**Dr Uriah** - Unless IM wrong, is it 15 plus one, or is it 14 plus one?
+
+**Game Master** - Oh, I dont remember.
+
+**Dr Uriah** - Okay, fine.
+
+**Game Master** - I gotta go look it up next time we do one.
+
+**Dr Uriah** - Yeah, go ahead.
+
+**Game Master** - So, um, he says its.
+
+**Unassigned Speaker** - Not surprising.
+
+**Game Master** - Hes like theres a big sack next to it, its wiggling its up on the up on the wall.
+
+**Trout** - It some of the adventure, maybe, like some of the party that.
+
+**Unassigned Speaker** - Yeah, could be the brother, Daror.
+
+**Trout** - Started.
+
+**Dr Uriah** - Like the sons of the farmer.
+
+**Sir Phidipaldi** - Another Clurichen
+
+**Dr Uriah** - Yeah, I mean, sack size, like, is it human sized sack?
+
+**Game Master** - Uh, yes.
+
+**Dr Uriah** - Okay, or like big enough for.
+
+**Dr Uriah** - A A person.
+
+**Dr Uriah** - Of any kind of race.
+
+**Dr Uriah** - To be in.
+
+**Sir Phidipaldi** - So and wait, so sorry, whats the sack hanging over?
+
+**Game Master** - Uh, its like its pinned to the wall.
+
+**Game Master** - Its Uh, yeah.
+
+**Dr Uriah** - Yeah, just like you know, went from when he wakes up, so.
+
+**Sir Phidipaldi** - So the question is, Do we go and free whoever from the sack?
+
+**Dr Uriah** - Right, right?
+
+**Sir Phidipaldi** - Or do we not?
+
+**Dr Uriah** - Do we have any more of that sleeping potion?
+
+**Dr Uriah** - Cause we can sneak in there and.
+
+**Unassigned Speaker** - Its empty.
+
+**Trout** - So the D hes sleeping so we could try to sneak in and.
+
+**Unassigned Speaker** - MMHMm Yeah.
+
+**Trout** - Do it all stealthy.
+
+**Dr Uriah** - Yeah, I mean, not me. I am not the sneaking kind.
+
+**Sir Phidipaldi** - My dex is five, so.
+
+**Dr Uriah** - My dex is 11, but still not stealthy.
+
+**Dunk** - Could we send the laborer in?
+
+**Sir Phidipaldi** - My laborer.
+
+**Dunk** - First step.
+
+**Trout** - Fighting a giant probably is not a good idea.
+
+**Dr Uriah** - No, this is.
+
+**Dr Uriah** - This is a stealth mission.
+
+**Unassigned Speaker** - For sure.
+
+**Dr Uriah** - Yeah, I would say thats a good idea.
+
+**Dr Uriah** - Yeah, or like, like I said, if we had any of that potion, we could have snuck in there.
+
+**Trout** - Okay, so squints.
+
+**Dr Uriah** - And pour it in his mouth.
+
+**Trout** - This is Squints, this is your moment, this is a chance for you to prove yourself.
+
+**Dr Uriah** - This is it.
+
+**Trout** - The big Test. So we believe based on some intelligence that were privy to that in the sack, are, um, some of the other, uh, people in the adventure party who are gonna go to beat the Dragon, so we want to rescue them.
+
+**Game Master** - Captured.
+
+**Trout** - Yes, so.
+
+**Game Master** - What all what do you want me to do?
+
+**Trout** - Go in.
+
+**Trout** - Get the sack off the wall, get out without being seen by the giant.
+
+**Game Master** - Well, well, well, I, what if he wakes up?
+
+**Trout** - Thats something that youre gonna have to try to avoid.
+
+**Dr Uriah** - Maybe hide, I say.
+
+**Game Master** - But but what if?
+
+**Trout** - Yeah, I think hiding is probably a good idea. You know, I think you, uh, you know, look around, get.
+
+**Game Master** - But like, what if he attacks me?
+
+**Trout** - Um, you die.
+
+**Game Master** - Ill get killed.
+
+**Trout** - No, no, no, no.
+
+**Unassigned Speaker** - You dont think so.
+
+**Trout** - But were gonna be right nearby.
+
+**Unassigned Speaker** - Youre Right, Im im not.
+
+**Dr Uriah** - Hell, probably just capture you, cause hell, probably want to eat you.
+
+**Trout** - Right, so we dont really want to kill this giant if we dont have to want to, you know, Dont have to.
+
+**Trout** - So if you are caught, then we will intervene.
+
+**Game Master** - Okay, all right, how are you going to get squints in the house?
+
+**Trout** - So there theres a window up high.
+
+**Game Master** - Theres a window.
+
+**Trout** - With it unlocked and everything.
+
+**Game Master** - Through.
+
+**Dr Uriah** - Got a chimney? They could easily.
+
+**Dr Uriah** - Theres a theres a chimney.
+
+**Unassigned Speaker** - Easily get down there.
+
+**Game Master** - But but there is.
+
+**Unassigned Speaker** - Smoke, smoke.
+
+**Game Master** - Food cooking underneath it.
+
+**Game Master** - Theres a pot of something being cooked.
+
+**Dr Uriah** - Yeah, something.
+
+**Trout** - So the the UH window or the door, where are the either of them open, like which are both?
+
+**Game Master** - Uh, you could open one of them.
+
+**Game Master** - Are you so you are now getting boosted up by squints so you can?
+
+**Trout** - Squints is IM boosting squints up.
+
+**Game Master** - So youre just saying, like, What, what are you seeing, right?
+
+**Trout** - Yeah, like, try the window.
+
+**Game Master** - Okay, so he so its movable.
+
+**Trout** - Okay, that might be our best option.
+
+**Dr Uriah** - Is there, is there any century security stickers on the window?
+
+**Game Master** - Right, okay, what is Squints Dexterity?
+
+**Trout** - 14.
+
+**Dr Uriah** - Okay, uh.
+
+**Dr Uriah** - Which I which I believe is a plus one.
+
+**Game Master** - Im gonna check Im gonna check just to make sure that I get this right, cause I.
+
+**Game Master** - 14 is a plus zero it couldnt be.
+
+**Dr Uriah** - Oh, my God.
+
+**Game Master** - Its plus one, so 15 to 18 is a plus one so.
+
+**Trout** - Not as good as it.
+
+**Game Master** - It is not as as good as you would hope. Right, so, um.
+
+**Unassigned Speaker** - Later.
+
+**Game Master** - Okay, so we are going to now look up sneaking, uh.
+
+**Trout** - Squints is gonna get squished.
+
+**Game Master** - He might, he might.
+
+**Dr Uriah** - No, no, hes hes hes got hes dexterous hes hes sneaky.
+
+**Trout** - Okay, um, so while hes up there and hes kinda like trying to get through the window, I qui whisper to you guys like, Are we really gonna rescue him if he get if he gets into the house?
+
+**Sir Phidipaldi** - Definitely not.
+
+**Sir Phidipaldi** - We run.
+
+**Game Master** - Uh, actually, wait, youre a rogue right, and I think the.
+
+**Sir Phidipaldi** - No, hes a fighter.
+
+**Trout** - IM a fighter, well, a fighter.
+
+**Game Master** - Oh, hes a fighter.
+
+**Sir Phidipaldi** - I think John was our rogue.
+
+**Game Master** - No, no, no squints.
+
+**Dunk** - S. Squints is a fighter.
+
+**Game Master** - Fuck okay, uh, am I just kinda hoping for the best?
+
+**Dr Uriah** - Yeah.
+
+**Game Master** - Uh.
+
+**Dr Uriah** - I mean, Youre probably sneakier than he is.
+
+**Trout** - But my dex is eight.
+
+**Dr Uriah** - Yeah, but you have like natural s abilities to be.
+
+**Trout** - But Im not.
+
+**Unassigned Speaker** - Hiding.
+
+**Trout** - What am I Im a druid?
+
+**Sir Phidipaldi** - Is he is he also a river halfling?
+
+**Trout** - Yes.
+
+**Sir Phidipaldi** - So then hell also have Jason the same.
+
+**Trout** - He does.
+
+**Sir Phidipaldi** - Dealment.
+
+**Trout** - Yeah, he hes, uh.
+
+**Game Master** - But Squints is not a river halfling.
+
+**Trout** - Squints is indeed.
+
+**Game Master** - Is there, is he, is he really a river?
+
+**Trout** - Oh yeah, he has. All, but unseen is everything.
+
+**Game Master** - Well, yeah, but thats just a halfling ability.
+
+**Trout** - Well, not river halfling.
+
+**Trout** - Halfling.
+
+**Game Master** - Yeah, yeah, so.
+
+**Trout** - Small size poison resistance. Well, yeah, so like, I think if he gets in there and just freezes, he probably could like hide pretty well in the House giant house, you know?
+
+**Game Master** - Okay, uh, okay, I literally dont know how to do it, so Im trying to figure out how to, uh, test this. So okay, so I think what I do is I do A.
+
+**Dr Uriah** - Mariners are beating the Phillies again.
+
+**Game Master** - I saw that, so I guess Im, I probably need to roll. HM I mean, youd think thered be a chapter or something on like a difficulty number?
+
+**Game Master** - Theres nothing like that.
+
+**Sir Phidipaldi** - Um, I. I have been super shocked at how everything is fixed odds.
+
+**Game Master** - Yeah, exactly, it is all that.
+
+**Game Master** - Right, yeah, it is not like.
+
+**Sir Phidipaldi** - Its not like, Oh, well, what youre trying to do is hard or easy.
+
+**Game Master** - No, no, no.
+
+**Game Master** - Theres nothing like that.
+
+**Game Master** - Like, I dont think thats part of the rules, right?
+
+**Dr Uriah** - Is that how is that how old D&D went?
+
+**Game Master** - Yeah.
+
+**Dr Uriah** - Was it, was it like that?
+
+**Game Master** - No.
+
+**Dr Uriah** - It was all fixed odds.
+
+**Game Master** - Yeah, yeah, so, um.
+
+**Game Master** - So Im just trying to think of the way to do this. Okay, so lets see a thief has a specific like sneaking skill. I think, right?
+
+**Sir Phidipaldi** - Do you have Johns character Itll be on Johns character?
+
+**Dunk** - Heres his character sheet.
+
+**Unassigned Speaker** - Yeah, why dont you look?
+
+**Sir Phidipaldi** - Is that the loot one or the other one?
+
+**Unassigned Speaker** - Well, its an assassin. Yeah, that that it would be there under the class abilities.
+
+**Dunk** - So Hes got stealth colon two, so Im assuming thats a plus two to stealth or.
+
+**Unassigned Speaker** - No, its.
+
+**Unassigned Speaker** - Its UH.
+
+**Sir Phidipaldi** - You roll a D6.
+
+**Game Master** - Another one of these D6 things.
+
+**Dunk** - Yeah, yeah, so Hes got stealth is two plus two to surprise attack, um?
+
+**Game Master** - Yeah, I think I just make a ruling
+
+**Dunk** - And thats kind of that.s kind of it.
+
+**Sir Phidipaldi** - Yeah, I think you just make a ruling
+
+**Sir Phidipaldi** - Yeah, totally.
+
+**Game Master** - Okay, so, um, okay.
+
+**Trout** - So this is to to climb into the house, walk over to the wall.
+
+**Trout** - Take the thing off Is this all of it, or just are you gonna bring?
+
+**Game Master** - Yeah, yeah, yeah, no, no, I mean, I, I.
+
+**Dr Uriah** - Now theyre squirming, so theyre awake. And so they need to be like, Hey, shh, while this happens right?
+
+**Game Master** - Okay.
+
+**Dr Uriah** - So theres a little convo.
+
+**Game Master** - Heres what Im gonna do. Whats his dexterity?
+
+**Trout** - 14.
+
+**Game Master** - Okay, Im going to roll a D20.
+
+**Game Master** - And Im going to either hit it or be under it.
+
+**Game Master** - In order to be successful in each of the steps.
+
+**Game Master** - And then, if he fails, then, uh, the giant will stir, and if he fails twice, the giant will wake up.
+
+**Unassigned Speaker** - Sounds wonderful.
+
+**Trout** - If the giant stirs starts to wake up freeze, you know, as a halfling, no one can see you anyway.
+
+**Sir Phidipaldi** - That is, that is two two tips youve given him now.
+
+**Game Master** - Thats right, thats right, yes.
+
+**Dr Uriah** - Should we, should we do anything? In case he wakes up? Like, be staged at, like the window on the other side to smash it to be so he like, looks away from the bag.
+
+**Trout** - What about it?
+
+**Dr Uriah** - Like, like, kinda like a fail, like, not a fail safe.
+
+**Trout** - And then one of you guys could be by the door and we could.
+
+**Game Master** - Open the door.
+
+**Game Master** - Okay, so the plan is, Squints is gonna go in.
+
+**Dr Uriah** - We got the marbles. Lets get those marbles, I love those marbles.
+
+**Sir Phidipaldi** - We still have marbles.
+
+**Trout** - I go out with a slingshot, ready to pop the drag, the guy in the head.
+
+**Game Master** - Okay, lets lets go around the room. All right. Everybody tell me what what youre doing. Okay, so cause what Im gonna say is Im gonna say heres, here are the rolls. Im gonna make Im gonna make one roll. Which is, um, him getting through the window and landing on the other side.
+
+**Sir Phidipaldi** - Yep, get in the building.
+
+**Game Master** - Okay, Im gonna make another roll.
+
+**Game Master** - Which is him, uh, walking by the bed.
+
+**Game Master** - To get to the Um.
+
+**Sir Phidipaldi** - The bag.
+
+**Game Master** - The bag.
+
+**Game Master** - Im gonna make a third roll, which is getting the bag open.
+
+**Game Master** - Without waking him up.
+
+**Game Master** - And then a fourth roll is whomever is in the bag to get like, Theyre gonna run for the door. Okay, so theres gonna be four total rolls.
+
+**Game Master** - Two of two failures wakes the giant.
+
+**Dunk** - So the Step Four is gonna be gone loud.
+
+**Unassigned Speaker** - Yeah, thats right.
+
+**Unassigned Speaker** - Okay, okay.
+
+**Game Master** - Like, like, like, like, if if they well, if they get caught, theyre gonna try to sneak out the door without waking up the giant.
+
+**Dunk** - Oh, okay, okay.
+
+**Unassigned Speaker** - And.
+
+**Dr Uriah** - A friend of Plan, Possibly.
+
+**Dr Uriah** - To start out there really quick, we could s plug the chimney, forcing smoke into the into the room. Have s have our boy already in the room under the bed? Smoke rises. Hell be okay, Giant might wake up coughing, maybe go outside, see what with plug in the the room.
+
+**Game Master** - What about the person in the bag?
+
+**Dr Uriah** - Well, were just gonna have to work quick.
+
+**Dr Uriah** - Theyre in the bag, theyre fine.
+
+**Dr Uriah** - Theyre filtered, they have a they have a natural like pocket of good air.
+
+**Game Master** - Dunk, What are you doing?
+
+**Dunk** - Um, well, I was gonna stand by the door to, Uh.
+
+**Unassigned Speaker** - Yeah, open the door.
+
+**Dunk** - Yeah, open the door.
+
+**Game Master** - Try to open the door.
+
+**Trout** - Yeah, on four or like you will open the door as theyre running out.
+
+**Unassigned Speaker** - Gotcha Okay.
+
+**Game Master** - So that means Youre gonna look through the window.
+
+**Trout** - The window and watch him climb down, Im gonna.
+
+**Trout** - Right, so on the second failure.
+
+**Game Master** - Youre gonna be like on the Windowsill like.
+
+**Trout** - Pop.
+
+**Game Master** - Okay, Gotcha, okay, youre gonna be like.
+
+**Trout** - Just to try to Im trying to distract the giant.
+
+**Trout** - And get him to, like, pick him.
+
+**Trout** - Give us a turn to.
+
+**Game Master** - So youre gonna be at the door, you.re gonna be monitoring everything.
+
+**Unassigned Speaker** - Window.
+
+**Game Master** - Telling everyone whats happening.
+
+**Game Master** - And youre gonna be sling at the ready.
+
+**Unassigned Speaker** - Okay, what is, um?
+
+**Sir Phidipaldi** - Im gonna be standing by dunk so that if shit goes down.
+
+**Sir Phidipaldi** - I can defend dunk.
+
+**Dr Uriah** - I was gonna be on the other side of the other window. Should he wake up? So if he doesnt immediately look like this toward the bag, hell be distracted to look over here.
+
+**Game Master** - Hell, be quite distracted.
+
+**Dr Uriah** - So ill, like stab a staff
+
+**Dr Uriah** - Ill try to smash the window.
+
+**Dr Uriah** - To try to like, just to make him look, which would give me maybe an extra second to, like, get shit done before.
+
+**Dr Uriah** - Hes in that and then and then if he turn, were going.
+
+**Game Master** - All right, all right, so, um, Squints looks at you. He hears everyones plan, he nods, Hes like, well, so he tentatively gets up to the window, he he lifts you up so you can like.
+
+**Game Master** - Youre both sitting on the windowsill, he creaks the window, slowly open and begins crawling through to the other side, okay?
+
+**Trout** - Is that a 12?
+
+**Game Master** - That, yeah.
+
+**Game Master** - Okay, so he lands stealthily on the ground. The giant snores a little bit. Squints looks up at you and he gives you like a thumbs up, then he starts sneaking over to the bag.
+
+**Unassigned Speaker** - Oh, no.
+
+**Game Master** - The giant begins to stir.
+
+**Trout** - Was it a 15?
+
+**Game Master** - First, failure.
+
+**Dunk** - Yeah, that was a 15.
+
+**Game Master** - First failure, right? He begins to stir and Squints freezes. He looks back at you for guidance and approval.
+
+**Trout** - I can tell that the Giants kind of drifting back off to sleep. Im gonna go like, go next, youre good.
+
+**Game Master** - He grabs the bag and begins to pull it off of the wall and as he pulls it off of the wall.
+
+**Dunk** - Yeah, yeah, yeah, yeah, yeah, yeah.
+
+**Game Master** - Uh, you see a bound and gagged monk, uh.
+
+**Sir Phidipaldi** - This is this is brother, whatever.
+
+**Game Master** - Brother Dirk.
+
+**Game Master** - Dirk Yeah.
+
+**Game Master** - Uh, fall out of the bag and then the giant bolts upright.
+
+**Dr Uriah** - Oh, maybe hes eating the fucking sons.
+
+**Game Master** - The giant.
+
+**Unassigned Speaker** - The giant sons.
+
+**Game Master** - The giant bolts upright wakes up and hes like, Who goes there?
+
+**Trout** - So.
+
+**Unassigned Speaker** - Youre going first with the staff.
+
+**Dr Uriah** - Yeah, so then I, I, uh, smash the window just to get him to, you know, look the other way.
+
+**Dr Uriah** - Or maybe even come over to the window.
+
+**Dr Uriah** - Give you guys a shot to run.
+
+**Game Master** - Yeah, okay, uh, then you two are gonna open the door, right?
+
+**Game Master** - So Squints gets gets dirk like kind of bolt upright.
+
+**Game Master** - Right, like kind of gets him sitting up and they both start running towards the door, lets see.
+
+**Game Master** - If they make it to the door.
+
+**Unassigned Speaker** - Okay, yeah.
+
+**Game Master** - They make it easily to the door. You guys open it up, they run outside.
+
+**Game Master** - The the The.
+
+**Trout** - Im gonna shoot.
+
+**Game Master** - The Dirk is kind of, you know, its like, Okay, and then you are gonna now shoot your sling.
+
+**Trout** - Sling at the giant.
+
+**Game Master** - At the giant.
+
+**Trout** - In the head.
+
+**Game Master** - Great, okay, so you are gonna do an attack roll, you are gonna roll a D20. Heres a D20. Can you hand him a D20?
+
+**Game Master** - And then what is your dexterity at what or do you have like a little modifier by your sling over there?
+
+**Dr Uriah** - Its eight.
+
+**Dr Uriah** - Its crazy.
+
+**Unassigned Speaker** - No, it is a Modifier.
+
+**Unassigned Speaker** - Exactly its a negative modifier.
+
+**Dr Uriah** - No, it might not be actually cause negative starts.
+
+**Sir Phidipaldi** - Right, so I think you have with your sling you have a plus zero to hit.
+
+**Trout** - So what am I going for, the other?
+
+**Sir Phidipaldi** - Whats his armor class?
+
+**Game Master** - Uh, the armor class.
+
+**Unassigned Speaker** - Attack him.
+
+**Game Master** - Is, Uh, uh, you are trying to, uh, beat 15.
+
+**Dr Uriah** - So its its its a straight roll. No, no Modifier for you.
+
+**Unassigned Speaker** - So itll be a 13.
+
+**Game Master** - Yeah, its either 15 or over.
+
+**Game Master** - Yeah, thats a one. So now we get to decide whether were gonna so. One of the things we missed last time, guys, every time we hit a possibility of using a, uh, optional rule, uh.
+
+**Trout** - Is this a one? is a.
+
+**Game Master** - We make a decision whether we are going to add it into the optional rule. Okay, so, um, do we want to make one a fumble?
+
+**Sir Phidipaldi** - Yes.
+
+**Game Master** - Uh, actually.
+
+**Dr Uriah** - And what is the definition of a fumble?
+
+**Game Master** - Ah, hold on, hold on. However, characters can fire ranged weapons during melee combat or into active melee combat. When doing so, they suffer. Okay, so if an unmodified one is rolled on their attack roll, they have hit their ally, Um.
+
+**Sir Phidipaldi** - Squints Squints, No.
+
+**Game Master** - So you are gonna hit Squints?
+
+**Dunk** - Wake up Squints.
+
+**Sir Phidipaldi** - So, uh, how much? 1D6 minus one, yes.
+
+**Trout** - Three, so two.
+
+**Game Master** - Okay, why dont you take? Remove some hit points from Squints? Its all part, its all part of the plan.
+
+**Trout** - Part of the training.
+
+**Game Master** - So you aim at trying to, uh, uh, hit the Dragon or the the Giant. And unfortunately, instead of hitting him, you hit squints in the head. Hes trying to run Hes like, Ow, why did you do that? So he comes running out the door. You are all now outside. Im sure you hop off the windowsill.
+
+**Unassigned Speaker** - Yeah, and were all gonna run for it.
+
+**Game Master** - Youre all gonna run for it, youre all gonna run for the field.
+
+**Game Master** - Okay, great, his, um, his dex is quite low, He moves, uh, very slow.
+
+**Game Master** - So, uh, I think youre easily able to outrun the giant, but he is thundering after you.
+
+**Game Master** - For a while before, eventually getting tired.
+
+**Game Master** - Um, after you appease him, I assume you take the gag off.
+
+**Unassigned Speaker** - Off of brother Dirk Yeah.
+
+**Game Master** - Yeah, um, hes in a standard monk dress, um, Brown robe Hes got a rosy, soft face. Um, great and, uh, making a note, and hes like, Thank you so much for saving me. Uh, he wouldve eaten me. Did you see what that he was? He was making a stew. I was gonna be in that stew. Im sure you wouldve been delicious. He was gonna eat me. yeah, well, well, why, why was he gonna eat you? Howd he get you? I was headed towards the Barrow to get the sword to save the town.
+
+**Sir Phidipaldi** - Wonderful. We are also headed towards the barrow.
+
+**Game Master** - Well, I think I should just head home at this point.
+
+**Sir Phidipaldi** - Oh, no.
+
+**Dunk** - No, no, no, no.
+
+**Dr Uriah** - What would Father Williams say?
+
+**Dr Uriah** - He told me he was pretty, very, very adamant that this situation with the Dragon is over because he sent you to deal with it.
+
+**Trout** - So youll be reporting to Squints.
+
+**Game Master** - Yeah, this is your first fucking team. Level up like Squints gets what I get a follower hes like. I guess I did rescue him, and then he was like, Yeah, hes like, Im alive, so get the injury. On that note it is 900. Yeah, we will end our session great and the next session will begin.
+
+</session_transcript>

@@ -1,0 +1,1271 @@
+<known_session_roles>
+- Dr Uriah
+- Dunk
+- Game Master
+- Sir Phidipaldi
+- Waymon Tisdale
+</known_session_roles>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- john schork: Waymon Tisdale
+- marshall rise: Dunk
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<session_transcript>
+**Game Master** - John.
+
+**Waymon Tisdale** - Uh, I named both of my characters after power forwards from the 1986 N.B.A. season, so Waymond Tisdale was from the Indiana Pacers.
+
+**Waymon Tisdale** - And that is my Dagonite assassin.
+
+**Game Master** - All right, uh, Marsh.
+
+**Dunk** - Uh, dunk a Trollkin wanderer.
+
+**Game Master** - Okay, so Marsh is dunk Trollkin wanderer.
+
+**Dunk** - Also of the Indiana Pacers.
+
+**Dunk** - But more The halftime show.
+
+**Game Master** - John, what was your?
+
+**Game Master** - Characters name again.
+
+**Waymon Tisdale** - Waymond, Tisdale.
+
+**Game Master** - WAymOnd Tisdale And he is what?
+
+**Waymon Tisdale** - Uh, dagonite, assassin.
+
+**Game Master** - Dagonite Assassin Okay, uh, Eric.
+
+**Sir Phidipaldi** - Sir Phidipaldi Human errant fool.
+
+**Game Master** - All right, Sir Phidipaldi.
+
+**Game Master** - Fit.
+
+**Sir Phidipaldi** - Uh, phidip.
+
+**Game Master** - Ehidip.
+
+**Sir Phidipaldi** - Aldi?
+
+**Sir Phidipaldi** - Aldi?
+
+**Sir Phidipaldi** - There you, there you go.
+
+**Sir Phidipaldi** - Sir Phidipaldi.
+
+**Game Master** - And you are an errant fool.
+
+**Game Master** - Uh, what race?
+
+**Sir Phidipaldi** - Human.
+
+**Unassigned Speaker** - Human.
+
+**Dr Uriah** - The most foolish of all the races.
+
+**Game Master** - Exactly, and then Rich.
+
+**Dr Uriah** - Uh, its Hes Dagonite Metaphysi, uh Metaphysician, and his name is Uriah Marsh.
+
+**Unassigned Speaker** - How do you spell Uriah?
+
+**Unassigned Speaker** - How do you spell Uriah?
+
+**Dr Uriah** - Uriah.
+
+**Game Master** - URI.
+
+**Sir Phidipaldi** - Sure, yeah, that makes sense.
+
+**Game Master** - He is a hes, a dagonite.
+
+**Dr Uriah** - He is.
+
+**Game Master** - So we have two Dagonites in the party. Okay, how do you all know each other weve got?
+
+**Unassigned Speaker** - W W Were we?
+
+**Game Master** - Yeah, yeah, you all.
+
+**Dr Uriah** - Were we all in this card game?
+
+**Game Master** - You were all, Yeah, you were all doing this gambling thing, and you won this. This treasure map that gets you to this town of Brandinsford. Um, so you are two Dagonites, a human and a trollkin, uh, a wanderer assassin, a metaphysician and a fool.
+
+**Sir Phidipaldi** - Are we going to start in Brandensburg?
+
+**Game Master** - You are, yeah.
+
+**Sir Phidipaldi** - Okay, so maybe we were at a Brandensburg bar or Inn, and we.
+
+**Game Master** - Well, Im gonna say you.
+
+**Game Master** - You were somewhere else, and then the map took you to this city.
+
+**Unassigned Speaker** - You moved it.
+
+**Dr Uriah** - So more or less, we were in another another like.
+
+**Dr Uriah** - Tavern at another city.
+
+**Dr Uriah** - Um, maybe we were all in the same card game and and we like.
+
+**Sir Phidipaldi** - And we had a fourway tie.
+
+**Dr Uriah** - Thats what I was gonna say.
+
+**Dr Uriah** - Like playing five people.
+
+**Dr Uriah** - And and and someone lost, and then it was a fourway tie.
+
+**Waymon Tisdale** - Maybe we discovered that he was cheating.
+
+**Sir Phidipaldi** - Yeah, oh, sure, there you go.
+
+**Game Master** - Yeah, yeah, I love it.
+
+**Game Master** - I love it, okay?
+
+**Dr Uriah** - And then and so we were all there. For whatever reasons, personally, to make money, you know, Im probably just trying to like, get money. Just to further my scholarly work, you know, I gotta pay off to buy some dark secrets.
+
+**Dr Uriah** - And whatever you guys are doing.
+
+**Game Master** - So you go to this so you follow this treasure map to this town called, and you dont know, really like you see that its marked. But you dont know really what those locations are. The only thing you really know is this town of Brandinsford, and you assume the treasure is, you know, probably in one of those places.
+
+**Dr Uriah** - Im assuming were coming from this direction.
+
+**Game Master** - Yeah, exactly.
+
+**Dr Uriah** - So this will be all like kind of unknown land.
+
+**Game Master** - Its unknown land exactly exactly, uh, Brandinsfords, a quiet little town on the edge of the wilderness. Uh, the houses are, uh, mostly thatched roof stone cottages, uh, along with two big plaster and timber inns.
+
+**Game Master** - That, um, are facing each other. So theres one inn that is called the clumsy Fox Tavern.
+
+**Game Master** - And then across from it is the Golden Egg Tavern. Um, and, uh, there, uh, there theres a a an ancient small, ancient stone wall. Uh, let me know if you want me to repeat anything.
+
+**Game Master** - Around the town, uh doesnt really seem to be any, um, guards, or, like proper law enforcement like its, a pretty shitty small little town.
+
+**Game Master** - Um, but the town is protected by a rotating group of ablebodied men on night watch duty.
+
+**Game Master** - And thats, as you approach. One of them calls out to you and asks, Um, who are you like, who approaches?
+
+**Dr Uriah** - Are we are we, is it night?
+
+**Game Master** - It is night, yeah, yeah, the sun is set.
+
+**Dr Uriah** - Gotcha its A sun down town. We better watch out with the hog races.
+
+**Dr Uriah** - Against Dagonites.
+
+**Dr Uriah** - So we look like humans, but were just like, pale as fuck and like, have weird eyes and shit.
+
+**Game Master** - Thats right.
+
+**Game Master** - Thats exactly right.
+
+**Dr Uriah** - But otherwise were just kinda human.
+
+**Game Master** - Yeah, youre like.
+
+**Dr Uriah** - We dont have a tail and shit.
+
+**Game Master** - Yeah, you.re like intimate people.
+
+**Game Master** - Yeah, so, you know, halt, you know who goes there, what business do you have in this town?
+
+**Sir Phidipaldi** - We are ancient travelers who?
+
+**Dr Uriah** - Ancient.
+
+**Game Master** - Keep going, keep going.
+
+**Sir Phidipaldi** - Who, uh, who claim the sacred law of Zeus for hospitality?
+
+**Game Master** - Uh, he nods.
+
+**Game Master** - He says, Youre sus.
+
+**Game Master** - He says, Uh.
+
+**Game Master** - Where where are you coming from? We dont get many visitors.
+
+**Waymon Tisdale** - Ithaca.
+
+**Game Master** - Thats right, um, so he, he, he says, You know, well, you better come in, you know, night is falling. Uh um, you know, we have two inns to choose from. Uh, he points at one, uh, its the clumsy Fox.
+
+**Game Master** - And then he points to the other one across the street from it.
+
+**Game Master** - Uh, called the owner of the Gold or Im Sorry the The Or or just the Golden Egg Tavern.
+
+**Game Master** - Um, the clumsy Fox seems, Um, uh, busy.
+
+**Game Master** - Warm and cozy, the golden egg. Uh, not as much seems like theres a little bit less people there, um, you could also see down the street that there is a general store and a Smith and a small church and an Alchemist shop.
+
+**Dr Uriah** - Ooh.
+
+**Unassigned Speaker** - Whoa.
+
+**Dr Uriah** - Way out here.
+
+**Sir Phidipaldi** - Pretty small town for an alchemy shop.
+
+**Dr Uriah** - Thats interesting.
+
+**Game Master** - Pretty classic DD.
+
+**Dr Uriah** - Shop with two P.S. and an E, obviously.
+
+**Dunk** - Oh, there, yeah, theres theres also.
+
+**Unassigned Speaker** - Shop E.
+
+**Game Master** - Theres also a farm on the the edge of town, too. So, um, where, um, where would you all like to go?
+
+**Unassigned Speaker** - Uh.
+
+**Sir Phidipaldi** - I dont feel like I need to do any shopping.
+
+**Game Master** - You have the clumsy Fox Tavern, the Golden Egg Tavern, the General Store, the Smith.
+
+**Dr Uriah** - Well, I mean, I Im definitely gonna go to the Alchemist shop.
+
+**Dr Uriah** - But before I do that.
+
+**Dr Uriah** - I go to the river and I cast speak with aquatic animals.
+
+**Dr Uriah** - And I ask a fish, What is the best place to stay of the taverns, what is the best or better of the two taverns?
+
+**Game Master** - Yeah, like that, um.
+
+**Dr Uriah** - Or maybe maybe its a frog.
+
+**Unassigned Speaker** - No, no.
+
+**Dr Uriah** - That lives lives on the on the bank.
+
+**Game Master** - I, I will warn you.
+
+**Game Master** - That that is your one use of speak with aquatic animals for the day.
+
+**Dr Uriah** - Until I sleep, its not its nighttime.
+
+**Dunk** - Its sundown.
+
+**Dunk** - Yeah, its sundown.
+
+**Game Master** - Just letting you know.
+
+**Game Master** - Just letting you know, Um, are you gonna make me do the fish?
+
+**Unassigned Speaker** - I mean.
+
+**Dr Uriah** - Yeah, or frog, or like.
+
+**Unassigned Speaker** - Or frog.
+
+**Dr Uriah** - Like, maybe a fish might be more of a transient, maybe if theres like a frog or some other aquatic animal.
+
+**Dr Uriah** - That kind of lives like in the Murk.
+
+**Dr Uriah** - Maybe maybe some sort of like sea slug or some sort of like something that burrows in the like that hears the chatter.
+
+**Dunk** - Maybe stay there permanently.
+
+**Dr Uriah** - And and that has an opinion.
+
+**Dr Uriah** - I look around till I find one who has an opinion on on On Inns.
+
+**Game Master** - So, so you, you meet a, uh, um, you meet a frog.
+
+**Waymon Tisdale** - Frog says What is an inn?
+
+**Game Master** - Exactly its a fucking frog. What are you talking about?
+
+**Sir Phidipaldi** - Im waving people past us. Theres nothing to see here.
+
+**Game Master** - The The Frog says, Um, he doesnt know which Tavern, uh or which place to stay.
+
+**Game Master** - But that he is, um, he warns you.
+
+**Game Master** - That, uh, from the River banks. At night, a little creature called a clurichen, Im gonna show you a picture of the guy comes.
+
+**Game Master** - He he warns you, hes like he, he comes from the river.
+
+**Game Master** - Wait, which this guy?
+
+**Game Master** - This little guy, yeah, exactly.
+
+**Dr Uriah** - All right, love it.
+
+**Game Master** - That that hes like, Uh, hes up to no good. Hes a trickster and he goes into town every night, so wherever it is, he goes, you want to stay away from.
+
+**Dr Uriah** - Already some good info, guys.
+
+**Dr Uriah** - Talking to fucking animals lets go.
+
+**Game Master** - Good job, okay, all right, so you know about the Clurichen.
+
+**Game Master** - Uhhuh, Um, you meet a fro, a frog friend.
+
+**Dr Uriah** - I meet a frog. Does it have a name?
+
+**Game Master** - Yeah, uh, the frog.
+
+**Dr Uriah** - Yeah, why not? Maybe ill come talk to him more.
+
+**Game Master** - Why dont you tell me the name of the frog?
+
+**Dr Uriah** - Oh uh, thats too much, um, Reginald.
+
+**Game Master** - Reginald the Frog.
+
+**Game Master** - Okay, all right.
+
+**Unassigned Speaker** - He.
+
+**Sir Phidipaldi** - Y You can keep that in your notes somewhere.
+
+**Game Master** - Yeah, exactly, Reginald the Frog.
+
+**Dr Uriah** - This is canon guys. No, I know, I know.
+
+**Game Master** - All right, you guys have two taverns, a general store, a smithy.
+
+**Sir Phidipaldi** - Okay, so Sir. Phidiipaldi recommends we go to the busy one, cause thats itll be more likely the high status inn and.
+
+**Sir Phidipaldi** - You know, well, get more rumors there.
+
+**Waymon Tisdale** - Less likely of a food poisoning.
+
+**Game Master** - Absolutely okay.
+
+**Dunk** - Dunk goes sort of, hesitantly, because he prefers to be alone in the wilderness.
+
+**Dunk** - So he likes the lower.
+
+**Unassigned Speaker** - Not the lowest one.
+
+**Dr Uriah** - To the depths.
+
+**Game Master** - Is dunk gonna go to the other one?
+
+**Dunk** - Actually.
+
+**Game Master** - Is he gonna go to the Golden Egg?
+
+**Dunk** - No, uh, but hes hes gonna split off to go, uh, to scavenge at the farm.
+
+**Dunk** - Hopefully at night.
+
+**Game Master** - Awesome, I love it. Okay, so well, do well. Do a scene of the three of you going into the, um, the clumsy Fox.
+
+**Unassigned Speaker** - The clumsy Fox.
+
+**Game Master** - And then we will talk about Dunk and the Farmer.
+
+**Dr Uriah** - Dunk and the Farmer. I love that story.
+
+**Dunk** - Oh yeah, here we go.
+
+**Game Master** - Okay, so the um, so, um, uh, Waymon, Sir Phidipaldi.
+
+**Sir Phidipaldi** - Phidipaldi
+
+**Game Master** - Phidipaldi
+
+**Game Master** - And Uriah?
+
+**Game Master** - Uh, head into the.
+
+**Dr Uriah** - Dr. Uriah.
+
+**Game Master** - Dr. Uriah.
+
+**Dr Uriah** - Im sorry.
+
+**Unassigned Speaker** - Dr. Uriah.
+
+**Sir Phidipaldi** - Dr. Uriah.
+
+**Game Master** - Uh, head into the clumsy Fox Tavern. It is a warm tavern, theres a fire going. This is like your classic like, kind of like fantasy, you know, Tavern, right?
+
+**Game Master** - There behind the bar is a halfling who has glasses a bald head. Um, Hes jovial hes talkative like hes talking to everybody around him, theyre engaging with him, and the bar is hopping. Um, his wife is kind of going back and forth from the kitchen, carrying out like pots of food.
+
+**Game Master** - And his three daughters are, um, servers theyre running around with food.
+
+**Game Master** - Um, in the In the Uh um, Inn, you see not only a bustling bar filled with people. Uh, drinking and chatting. Um, but you see a, um, handful of, um, adventurers that, um, you could also talk to if you want. One of which is, Um, uh, a redheaded, um, what looks like a noble woman. Um, there is a, um, a railthin magician. Uh, there is a.
+
+**Dr Uriah** - MCPS.
+
+**Game Master** - Uh, greasy looking, um, thief, and there is a, uh, shifty eyed little halfling, uh, as well. So, um, what do you wanna do, do you want to, Who do you wanna talk to, What do you wanna do in the Tavern? Why dont we start with, Um, uh, Sir Fittipaldi?
+
+**Sir Phidipaldi** - All right, I will go up to the redhead.
+
+**Sir Phidipaldi** - And I will say, Um, Farethee, well, young maiden thou looks as fine as mine trusty weapon. And I bring out IM carrying my Lance, its huge right and its clearly too big for me.
+
+**Sir Phidipaldi** - Sir Or or sorry, my my weapon "Lady Isaboob"
+
+**Game Master** - She um shes very gentle in her like response, so she has that kind of like unflappable.
+
+**Sir Phidipaldi** - Yep, sure.
+
+**Game Master** - Ness Shes youre not the fool first fool that shes like.
+
+**Sir Phidipaldi** - Shes met, sure.
+
+**Game Master** - Encountered, right.
+
+**Game Master** - And um, she very patiently asks if you, um, would like a A A A drink you you look parched, you.ve just been traveling you.ve come a long way. Would you like to have a?
+
+**Sir Phidipaldi** - Clearly, the laws of Zeus are strong here. Um, and I will Cli kindly accept your offer.
+
+**Sir Phidipaldi** - Thank you.
+
+**Game Master** - She buys a drink, uh, on on her.
+
+**Game Master** - Um, and the two of you drink and she says, Um, what has brought you to? Brandons furt its such a small town and youre such a noble person.
+
+**Sir Phidipaldi** - Oh uh, uh, it is a chivalric quest for we seek, uh, bountiful treasure.
+
+**Game Master** - Okay, all right, uh, so, she says, treasure.
+
+**Game Master** - Uh, and she says, Um, well, you know, there are rumors.
+
+**Game Master** - Uh, in the town of a Dragon.
+
+**Sir Phidipaldi** - In the town.
+
+**Game Master** - Uh uh, uh, around the town.
+
+**Sir Phidipaldi** - Oh, in the in its.
+
+**Unassigned Speaker** - Theres rumors in town.
+
+**Sir Phidipaldi** - In its environments.
+
+**Game Master** - Of a dragon.
+
+**Game Master** - Right up, right up in there, maybe, yeah, um, the local reeve like the the Sheriff kind of.
+
+**Game Master** - Like, not, not really Sheriff, but the um, he kinda like is like the, um, the, uh, landlord of the town, like he controls it for like the.
+
+**Game Master** - Normal people, right?
+
+**Game Master** - Um, she says, you should talk to Eric the Reeve, and she points to a portly, muttonchopped fellow.
+
+**Game Master** - Uh, whos at the other end of the Tavern?
+
+**Sir Phidipaldi** - Uhhuh.
+
+**Game Master** - And shes like Hes been trying to hire somebody to go and kill. Um, uh, the Dragon, shes like, Um, you know, I, I cant do it myself, um? But you know, if you have a party of adventurers, I would join you for some money.
+
+**Sir Phidipaldi** - Oh, um.
+
+**Dr Uriah** - Uh, whats your resume? So give us your stats. Yeah, so, uh, I scan, yeah, so she she has a, you know, chain mail and a shield she looks like, uh, a little bit more seasoned than you all are.
+
+**Game Master** - So, yeah.
+
+**Sir Phidipaldi** - Um, uh, uh, we will go and talk with the mayor and we will come back. And, um, uh, avail ourselves of your services as varied and, um, bountiful as they may be.
+
+**Unassigned Speaker** - All right, could I do? I sense any curses from any of them. You do not sense a curse, um, all right from any of the people, um, but like what you do when you, when you do like, look around trying to sense it, you notice that that kind of like greasyhaired thief, Um, has a little jar around his neck, like on like a necklace mmhmm, and inside theres like a wasp buzzing around inside it. Um, just something something catches your eyes. So could I, uh, can I learn the history of that item? Um? Using metaphysics, Youd have to get youd, have to get a little bit closer to it. Okay, and try to do that. Okay, um, uh, waymon, what are you doing right now?
+
+**Game Master** - Theres the Halfling bar owner.
+
+**Game Master** - Tending bar his wife coming in and out, his daughters kind of being the servers around bunch of adventurers there. And then you just learned about the local reeve, uh, whos like the land owner.
+
+**Waymon Tisdale** - MM uh ill talk to the bar owner.
+
+**Game Master** - Yeah, he introduces himself as Bentley. Uh, he is, uh, happy to see you, uh, and he um says, Im going to give you, uh, my famous Fox Tail brew first ones for free. He pours it and it is, um, absolutely beautiful tasting like it its you take your first sip, its fantastic, he says. Um, I have rooms available only 10 silver pieces a night. Um, you know, make yourself at home is, is is it like 10? is it 100 silver to gold? Yeah, something like that. Yeah, yeah, its just one gold would cover all of you. Yeah, yeah, yeah, rooms for the night.
+
+**Dr Uriah** - So yeah, multiple nights. Actually, yeah, yeah, yeah, exactly.
+
+**Waymon Tisdale** - What, uh, have you have? You always lived here.
+
+**Game Master** - Uh, I have my entire life, uh, you know, but, um, you know, like things have gotten a little bit, you know, downhearted here. Because, um, you know, Im sure Youve heard the rumor of of the Dragon Thats nearby. And, um, uh, we have a, um, you know, my shipment of stuff that was supposed to come in to help me restock the tavern. It was supposed to come in a week ago and it never showed up and.
+
+**Game Master** - Um, you know, its its not just for me, its for this whole town, you know, and weve never had something like this in this town before. Uh, not, not, not until you know, many, many years ago, hundreds of years ago, when, um, Sir Brandon killed the first Dragon.
+
+**Waymon Tisdale** - MM Has anybody gone after the shipment?
+
+**Game Master** - Uh, well, you know, were simple folk here, and he, he points at the adventurers, hes like, You have to pay all of them. And.
+
+**Game Master** - Theyre too much money for any of us. So so then he points at the Reeve, the the muttonchopped guy, and is like Hes been trying to get people to help out.
+
+**Game Master** - Yeah, um, okay, Im gonna go hop out of the tavern.
+
+**Game Master** - Were gonna pull the camera out.
+
+**Game Master** - Were gonna go down the street. Little Sam Raimi style zip over to dunk.
+
+**Game Master** - Our Dwarven kin dunk.
+
+**Dr Uriah** - And the farmer?
+
+**Game Master** - Yeah, as he approaches.
+
+**Dr Uriah** - Friday nights on NBC.
+
+**Game Master** - Yeah, as he approaches a farm, uh, the sun is setting, the farmer is done with his work. He is sitting on his porch, chewing on some straw. Uh, hes packing a pipe and he looks up at dunk and he is like, Fuck me, exactly, Yeah, hes like, Who are you? hes like hes like you ever? You ever get hired onto a farm like you could youd be amazing at it.
+
+**Dunk** - Done a little farm work in my time.
+
+**Unassigned Speaker** - A little farm work.
+
+**Game Master** - All right, well, you know, like, Um, if you ever wanna open up a farm yourself, Im selling my mule, do you wanna see my mule?
+
+**Dunk** - Sure, ID Love to see your mule.
+
+**Game Master** - So he he walks you over to his mule. And it is this, um, like just shitty looking mule like it is not like, like its its a pretty low rent mule and hes like.
+
+**Dunk** - Not much to eat on it.
+
+**Game Master** - Uh, exactly, hes like, I love this is sebu she shebus sebus sebus.
+
+**Dr Uriah** - Seamus.
+
+**Unassigned Speaker** - Seamus.
+
+**Unassigned Speaker** - Seamus.
+
+**Game Master** - This is Seamus, my, my, my, my prize Mule trying to sell him for 100 gold. You could start your own farm with it.
+
+**Dr Uriah** - Ill use the Irish spelling.
+
+**Dunk** - Do you have any, um, could we trade any, maybe any work?
+
+**Game Master** - Well, you know, the big work that we need is to kill this Dragon thats outside of town. Um, you know, Hun, long time ago.
+
+**Sir Phidipaldi** - Nudge, nudge.
+
+**Game Master** - Long time ago.
+
+**Game Master** - There was this guy named Sir Brandon, he killed the Dragon.
+
+**Unassigned Speaker** - Yeah, we heard about that.
+
+**Unassigned Speaker** - Thats why thats why this town is called Brandonsford.
+
+**Sir Phidipaldi** - Oh Brandonsford, yeah.
+
+**Game Master** - They named it after him.
+
+**Unassigned Speaker** - Whoa.
+
+**Game Master** - Um, he lived right here like not, not too, like s right around in this town. And, uh, he had a bunch of friends. And they all went out and they ventured into the woods and they. They killed the DRA, the dragon that was had been terrorizing the town for weeks. They went out there and they killed him and he got a magic sword, um, from a fairy like he was out in the woods. He met a fairy, the fairy gave him a sword, and that that sword just killed the dragon. Uh, anyway, they, uh, we knighted him, but then they all left like they he Brandon died.
+
+**Game Master** - He didnt want to stay here.
+
+**Dr Uriah** - He hit it and quit it, huh?
+
+**Game Master** - So.
+
+**Game Master** - So, um, ID give you work to kill the Dragon. But um, uh, I, I. I saw it not too. Im im Im scared like it saw me and, uh, it wanted nothing to do with me, so I sent my boys off after it. Um, theyre all trying to kill it right now, so I thats the work ID give you. But, um, Im sure they got it, theyll probably bring it back, and then theyll well name the town after them, or me or Seamus.
+
+**Dunk** - Thats Um, thats thats something.
+
+**Dr Uriah** - How many, how many sons did you send out there?
+
+**Game Master** - I got three kids.
+
+**Dr Uriah** - Three.
+
+**Dr Uriah** - Coffins.
+
+**Game Master** - Yeah, theyll be fine, theyll be fine.
+
+**Dunk** - So so did so Brandon Didnt kill the Dragon then, or he did kill the Dragon.
+
+**Game Master** - Well, I dont know how it came back.
+
+**Game Master** - I will just say, like it was dead, we dragged it through the town, we ripped it apart. Uh, that thing was dead. And but that was long time ago, hundreds of years ago, I wasnt alive.
+
+**Dr Uriah** - Thats what I was curious.
+
+**Game Master** - Yeah, I mean, I assume its a different dragon. I dont know where Dragons come from, do you?
+
+**Game Master** - What are you?
+
+**Dunk** - I dont Im not re IM not really sure theres a theres a little.
+
+**Game Master** - Im not sure what you are, either.
+
+**Game Master** - Thats Okay, thats okay.
+
+**Dunk** - When I was just a little dude, I was sent out of my village.
+
+**Dr Uriah** - This is the most mid world farm Ive ever seen.
+
+**Dunk** - Yeah, yeah, I know.
+
+**Game Master** - You know you may.
+
+**Dunk** - Just gonna re reflect next to his freaking rats. But I yeah, could I maybe sleep in the barn tonight and think about it.
+
+**Game Master** - You can sleep in my barn.
+
+**Game Master** - Hes like, Ill make it up. Why, why dont you make yourself at home? I will get us something to drink from my still and you and I will sit out on the porch.
+
+**Dunk** - All right, sounds great.
+
+**Game Master** - All right, we go back to the clumsy Fox Tavern.
+
+**Sir Phidipaldi** - Great, yes.
+
+**Game Master** - And and, uh, Sir Phil Philiapaldi.
+
+**Sir Phidipaldi** - Yes, Fipapaldi.
+
+**Game Master** - Fipapaldi has, um, stopped talking to Lady Helda.
+
+**Game Master** - I believe.
+
+**Game Master** - Uh, and what are you doing now?
+
+**Sir Phidipaldi** - Uh, I will go up to the Reeve.
+
+**Game Master** - You go up to the local Reeve, who introduces himself as a man named Eric.
+
+**Sir Phidipaldi** - Yeah, hi, how does he spell it?
+
+**Game Master** - Yeah, with a c.
+
+**Sir Phidipaldi** - Oh, bastard.
+
+**Game Master** - I know.
+
+**Dr Uriah** - An IC.
+
+**Game Master** - Uh, Eric.
+
+**Unassigned Speaker** - Eric.
+
+**Game Master** - Eric Um Hes Portly. He has these big Mutton chops.
+
+**Game Master** - Purple rings around his eyes and he looks visibly stressed.
+
+**Game Master** - Yeah, and uh, hes like Youre youre new in town, hes like, Whats what brings you here, whats your name?
+
+**Sir Phidipaldi** - We are a chivalrous party in search of adventure. I am Sir Phidipaldi bearing my weapons Lady Isaboob and Sir Chumunga, which is a twohanded sword that I can barely lift.
+
+**Sir Phidipaldi** - Uh, and, uh, we come in search of fame and fortune.
+
+**Game Master** - Well, I, I could do all of that for you I have. Ive got a lot of problems.
+
+**Sir Phidipaldi** - Oh, please go on.
+
+**Game Master** - Well, first of all, theres a dragon.
+
+**Sir Phidipaldi** - We have heard.
+
+**Game Master** - I will give you 1000 gold if you kill that dragon and drag drag its dragons body into town.
+
+**Sir Phidipaldi** - Has anyone seen the Dragon?
+
+**Game Master** - Well, theres a guy named George.
+
+**Game Master** - Hes a woodsman.
+
+**Game Master** - He lives, he just a couple houses down, he might even show up here tonight.
+
+**Game Master** - Um, now you know, I, I George is really capable.
+
+**Game Master** - Um, but hes only got one arm.
+
+**Sir Phidipaldi** - One arm.
+
+**Game Master** - Uh, so I mean, he cant go kill it.
+
+**Game Master** - But he encountered the Dragon like he he he saw, um, and thats how he lost his arm.
+
+**Sir Phidipaldi** - And how would he have described this dragon?
+
+**Game Master** - Well, he told me a lot of stories about it, he says. Its black.
+
+**Sir Phidipaldi** - Black Dragon.
+
+**Game Master** - Yeah, its, uh, its not a big one.
+
+**Game Master** - You know.
+
+**Game Master** - But uh.
+
+**Game Master** - Black Dragon and it, uh, it ripped his arm off, you should tell you, should ask George.
+
+**Sir Phidipaldi** - Recently.
+
+**Game Master** - Yes, you should have George tell you George used to have two arms, I knew him when he had two arms, now he doesnt.
+
+**Game Master** - You should talk to him. He doesnt even have the other arm its gone.
+
+**Sir Phidipaldi** - Okay, I would like to make an etiquette roll.
+
+**Game Master** - Yes, absolutely. Why dont you make an etiquette roll?
+
+**Dr Uriah** - I was waiting for our very first etiquette roll.
+
+**Sir Phidipaldi** - All right, all right, you do it, okay, you do it, you do it, Craig.
+
+**Game Master** - Make the etiquette roll. Uh, you commit a faux pas, what do you do?
+
+**Sir Phidipaldi** - Okay, um, so.
+
+**Dr Uriah** - How did you roll?
+
+**Unassigned Speaker** - You rolled two.
+
+**Sir Phidipaldi** - Heres the thing.
+
+**Dr Uriah** - I thought that was one and two misses.
+
+**Game Master** - His is a one.
+
+**Sir Phidipaldi** - Mines a one, mines a one.
+
+**Dr Uriah** - Oh fuck, I thought you had it.
+
+**Sir Phidipaldi** - I I understand that you guys are local and and that you also know the area and I respect that. But lets be clear, City folk like my friend here, who is a metaphysician and has great understanding of the laws of nature natural philosopher.
+
+**Sir Phidipaldi** - Um, he can tell you that, um, in actuality, there are no such thing as Black Dragons. In fact, the only cases that we found of verified Black Dragons were the fact that sometimes, a creature known as the Clerichen will create illusions of black dragons to scare people off, you guys, Havent happened to seen a a clerichen in the village, have you?
+
+**Game Master** - First of all, what the fuck is a clurichen?
+
+**Sir Phidipaldi** - It is its a short beast. Very small lives in the river comes out at night. Um, and, like I said, casts, illusion, spells, tricks. People sometimes steals their limbs.
+
+**Dr Uriah** - Is this Do I know I is this something I can verify with my lore? Check?
+
+**Game Master** - Absolutely, you can.
+
+**Dr Uriah** - Awesome.
+
+**Game Master** - Yeah, all right, uh, you got a you succeeded.
+
+**Unassigned Speaker** - Uh.
+
+**Dr Uriah** - So do I know if hes bullshitting me?
+
+**Game Master** - Yeah, he hes got it wrong. I got, Yeah, hes got it wrong, hes got it wrong and you know it. And Eric the Reeve, the town reeve knows it too. Um, he looks offe.
+
+**Game Master** - He looks offended and hes like, Listen, hes like Ive known George all my life. Theres no way he wouldve lied about, like, how how did the Clerichen take his arm away? Where would his arm go? He doesnt, he doesnt even know where his arm is.
+
+**Sir Phidipaldi** - I take my glove off.
+
+**Game Master** - He doesnt know where the arm is.
+
+**Sir Phidipaldi** - And I hit him in the face with the glove and say, You offend my honor, sir.
+
+**Dr Uriah** - Wow, he looks.
+
+**Sir Phidipaldi** - I challenge thee to a duel at dawn.
+
+**Game Master** - Okay, he he looks visibly frust, flustered, and he says, Um, you know, well, youre youre obviously much more skilled in adventure than I am. Um, and he doesnt know, like what to say. Hes like lost hes like a.
+
+**Sir Phidipaldi** - Sure, sure.
+
+**Game Master** - Okay were going to hop over to Waymond.
+
+**Unassigned Speaker** - Its getting a little hot in here.
+
+**Game Master** - Waymond You were chatting with Bentley, the owner of the clumsy Fox Tavern you had, uh, drank his brew.
+
+**Game Master** - Um, you chatted a little bit about the town, um.
+
+**Dr Uriah** - Well, did did you use your poison skill?
+
+**Game Master** - Yeah, did you do that?
+
+**Dr Uriah** - There was poison in that.
+
+**Game Master** - Uh, what would you like to do now?
+
+**Waymon Tisdale** - Um, I think ill go talk to the, um, the Reeve.
+
+**Game Master** - The Thats who hes talking to.
+
+**Unassigned Speaker** - Oh yeah, I mean, yeah.
+
+**Sir Phidipaldi** - You can see me and Im slapping him in the face with a leather glove.
+
+**Dr Uriah** - Hes slapping him around.
+
+**Waymon Tisdale** - Um, I dont know if I can diffuse the situation, No.
+
+**Dunk** - You can certainly attempt an assassinationn.
+
+**Dr Uriah** - You can assassinate.
+
+**Dr Uriah** - The stress in the room.
+
+**Sir Phidipaldi** - I backstab the stress.
+
+**Dr Uriah** - Whats the S, Whats the awareness of the stress, does it know?
+
+**Sir Phidipaldi** - Does he have it by surprise?
+
+**Dr Uriah** - Yeah.
+
+**Game Master** - Now you there, so in the tavern is the, um, the bartender, uh, his wife, his daughters. Uh, the adventurers that are out there. Um, and then, yeah, the the the Reeve and that you see getting into an altercation with your friend, um, Sir Fittipaldi.
+
+**Game Master** - Off to the side is your friend, um, Uriah, right? Uriah, right?
+
+**Dunk** - Doctor Doctor, Uriah.
+
+**Game Master** - Who seems to be getting closer and closer to a, um, shifty looking thief? Uh, that is sitting at a bench, uh, because hes trying to get a look at a jar that is on a chain around his neck that has a wasp inside of it. And then your friend, uh, dunk is not in the building.
+
+**Dr Uriah** - Right, um, dunk is getting loaded with a farmer down the road. Sorry, I dont know.
+
+**Game Master** - Thats Okay, thats okay, we are going to go over to, Uh, Uriah.
+
+**Unassigned Speaker** - Uriah.
+
+**Game Master** - You are getting closer, are you, did you?
+
+**Dr Uriah** - Is this guy, is this guy sitting by himself, or is he?
+
+**Game Master** - He is sitting by himself.
+
+**Game Master** - He has greasy hair.
+
+**Game Master** - Rotten teeth.
+
+**Dr Uriah** - Of course.
+
+**Game Master** - Um, hes obviously looking around so.
+
+**Dr Uriah** - Is he is he, is he looking shifty, is he?
+
+**Game Master** - He does look shifty.
+
+**Dr Uriah** - Is he looking furtive?
+
+**Game Master** - He does look a little bit furtive, yeah.
+
+**Dr Uriah** - Um, is he drinking anything?
+
+**Game Master** - He is drinking, yes.
+
+**Dr Uriah** - Whats he drinking?
+
+**Game Master** - Uh, the uh, Fox tail brew.
+
+**Dr Uriah** - I go and get.
+
+**Game Master** - This bar is.
+
+**Dr Uriah** - I go and get two Fox Tail brews.
+
+**Game Master** - Great, you sit down next to him, he um, looks you up and down. And he says, Dagonite, huh?
+
+**Dr Uriah** - Yeah, and I hand him the other beer.
+
+**Game Master** - Hes like, Well, friend, what brings you to this, uh, part of town or w this city at all? This place is a dump.
+
+**Game Master** - By the way, my name is Drop dead, Ned.
+
+**Dr Uriah** - Drop dead Ned Sweet. I I tell him my name is Dr. Uriah March.
+
+**Game Master** - All right, all right.
+
+**Dr Uriah** - Uh uh, you know, probably same reason youre here, you know, just looking for work, just hanging, you know, with my crew.
+
+**Dr Uriah** - Uh, Im a scholar. So Im always just looking out for backwoods. Just learning things cause, you know, you find all kind of crazy, weird folk remedies or lore.
+
+**Dr Uriah** - And kinda out out things. So Im always like poking around here, but ill tell you why I came over here, friend.
+
+**Dr Uriah** - Is, uh, that necklace of yours is very interesting.
+
+**Game Master** - Its pretty cool, isnt it?
+
+**Dr Uriah** - It is cool it.
+
+**Game Master** - Its a killer Wasp.
+
+**Dr Uriah** - No shit.
+
+**Game Master** - Yeah, it fucking kills people.
+
+**Dr Uriah** - Like, you let it out and it kills people.
+
+**Dr Uriah** - And it comes back.
+
+**Sir Phidipaldi** - Its a trained killer, Wasp.
+
+**Dr Uriah** - That is amazing.
+
+**Dr Uriah** - Where did you get that from?
+
+**Game Master** - Uh, its a long story, but, uh.
+
+**Dr Uriah** - Man, two more beers.
+
+**Game Master** - Uh, you know, and, uh, if you want me and the Wasp, uh, we could help you out if you just got enough coin.
+
+**Dr Uriah** - Oh yeah, so youre for hire.
+
+**Game Master** - Oh, yeah.
+
+**Dr Uriah** - Oh, okay, whats? What is the rate?
+
+**Game Master** - 100 gold for the week.
+
+**Dr Uriah** - A whole week.
+
+**Dr Uriah** - Seven days.
+
+**Game Master** - Nice 10 of your treasure.
+
+**Dr Uriah** - Oh, and then 10 on top.
+
+**Game Master** - Yeah, and I dont, I dont give a shit, I will do anything.
+
+**Dr Uriah** - Awesome, awesome.
+
+**Game Master** - Hes like, You just need to let me kill people with this wasp.
+
+**Dr Uriah** - All right, all right, can I, I mean, its really cool, can I like? Just look at it like?
+
+**Game Master** - Yeah, yeah, yeah.
+
+**Dr Uriah** - So so I grab it, and Im just kinda like looking at it.
+
+**Dr Uriah** - Enjoying.
+
+**Dr Uriah** - Im Um, wanting.
+
+**Game Master** - Yeah, its secure around it.
+
+**Dr Uriah** - No, no, Im not gonna take it.
+
+**Game Master** - Yeah, yeah, yeah, yeah.
+
+**Dr Uriah** - Im Im really just analyzing it.
+
+**Game Master** - No, yeah, it is a uh, um, you know, it looks really cool.
+
+**Dr Uriah** - Am I getting any vibes from it, any kinda like?
+
+**Game Master** - No, as you.
+
+**Dr Uriah** - Gut check, like.
+
+**Game Master** - As you look at it, the thing that dropped dead, Ned says to you, and hes like thats that.s thats for things. I wanna kill fast hes like I like to kill things slow.
+
+**Dr Uriah** - I like this guy.
+
+**Dr Uriah** - Aw Oh, so his poisons very effective. Oh, yeah.
+
+**Game Master** - Yeah, well, slowly effective.
+
+**Game Master** - Yeah, I like to watch things die.
+
+**Dr Uriah** - Awesome, awesome, so just just uh for future reference.
+
+**Dr Uriah** - $100 for a week, but what if I told you you were guaranteed to kill at least 10 people?
+
+**Game Master** - A day.
+
+**Dr Uriah** - Well, I mean, over the course of like.
+
+**Game Master** - Over the course of a week.
+
+**Unassigned Speaker** - A Couple night, yeah.
+
+**Game Master** - All right, how about this 100 gold for my fee for the week?
+
+**Dr Uriah** - Sure.
+
+**Game Master** - Every time you let me kill somebody ill give you another five gold.
+
+**Dr Uriah** - Okay, all right, all right, all right, all right, ill think.
+
+**Unassigned Speaker** - If.
+
+**Dr Uriah** - Ill think of, Oh, okay.
+
+**Game Master** - If I get to do what I want with them.
+
+**Dr Uriah** - Oh, do I get to know what that is beforehand?
+
+**Game Master** - Well, just cut em up.
+
+**Game Master** - Just normal stuff.
+
+**Dr Uriah** - Normal stuff, sure, sure, sure, sure.
+
+**Game Master** - All right, so dunk, you are out, yeah. Youre out at the farm where you are sitting out on the patio, getting loaded.
+
+**Unassigned Speaker** - I like it.
+
+**Game Master** - Hes told you all about his sons, and Hes started to tell you a little bit of gossip about the town. Okay, so he um told you about, Um, Eric, the town reeve, who you know the rest of your party. You dont know this, but have met, Um, and then he tells you about a, Uh, the Smith, whose name is Warwick and Hes like, You know, that guy, that guys got like. A. I mean, he barely has anything for sale cause nothings come into town in months. Like Dont, theres theres, theres nothing to buy.
+
+**Game Master** - Um, and its its so weird. His entire store, he keeps adding like lucky charms everywhere, theres a fucking rabbits foot. There is a dream catcher, there are horseshoes. He every day hes adding new things to it, its weird cause. He, you know, most of the stuff he sells is crap. But Hes got like this like beautiful Mithril chain shirt that he just R always refuses to sell, but he has it up on display. It wont fit you, youre too small, but like if you know somebody whos like normal sized IM, I am sorry I didn.t mean to not call you normal, but you.
+
+**Game Master** - Like, like me, right, then, uh.
+
+**Game Master** - Uh um, you know, its probably the best best kind of chain you can get in the world, its incredible but war Warwick. I dont know whats going on. He gets more and more paranoid.
+
+**Dunk** - Well, why dont, why dont you get us a couple more drinks and lets see about tell me more about these trinkets.
+
+**Game Master** - All right, all right, so he goes.
+
+**Game Master** - And he gets some more, Uh uh, drinks and hes like Hes also got clovers, like one of his walls is just clovers and like you, y, have you ever seen a clover?
+
+**Dunk** - Ive seen some clovers, but not on.
+
+**Dunk** - But not on a wall.
+
+**Game Master** - Thats the thing.
+
+**Game Master** - He puts them on his wall to protect his shop. Now what I think is going on is, Do you know who Ingrid is? Have you ever met her?
+
+**Dunk** - Dont know, Ingrid Havent met her.
+
+**Game Master** - Well, she she sells the potions, shes got the hots.
+
+**Dunk** - MM But how does he? What does he think of her?
+
+**Game Master** - I dont know, maybe thats why hes putting up all of the, uh, the charms, cause he wants to keep her away. Hes not that good looking.
+
+**Game Master** - Yeah, but you want potions that thats where you go.
+
+**Dunk** - But why, why dont you get us a couple more drinks unless we think how she looks?
+
+**Game Master** - All right, all right.
+
+**Game Master** - So you see him, hes starting to kinda like, wobble a little bit, but hes having the time of his life talking to dunk so.
+
+**Game Master** - So lets get back into the clumsy fox.
+
+**Dunk** - Gotta use a 17 constitution.
+
+**Game Master** - Its gonna be.
+
+**Game Master** - So, so, Eric.
+
+**Dr Uriah** - I like it, I like it.
+
+**Game Master** - Eric the Town Reeve and, uh uh um, Sir Phidipaldi.
+
+**Game Master** - Are are starting to get more and more heated.
+
+**Game Master** - And Bentley, the owner of the Tavern, comes over. He puts his hand on Sir Phidipaldi shoulder Hes like, Listen, hes like, I dont want any any fighting in here. He looks over at Eric and Hes like, Why dont you all calm down? Hes like Friend Im sorry, you.re new in town I like to host, but your friends can stay here, but you cause some trouble. Youre gonna have to go across the street to the golden egg, youre gonna have to just stay there for the night. I Im just gonna have to escort you out, Im so sorry you, your drink is on me.
+
+**Sir Phidipaldi** - All right, I go.
+
+**Game Master** - Okay, so he, he escorts you out.
+
+**Game Master** - Your all of your weird chain mail and everything is.
+
+**Sir Phidipaldi** - Plate mail.
+
+**Game Master** - Flapping around your plate, mails clanking on you.
+
+**Sir Phidipaldi** - I Plate Mail Are you wearing plate? I am, I cant use it. So it only counts as chain mail but Im wearing plate mail.
+
+**Game Master** - Yeah, great, great. And then why dont you describe what you look like getting kinda pushed out of the, uh, the clumsy Fox Tavern?
+
+**Waymon Tisdale** - Yeah, describe what it sounds like, yeah.
+
+**Dr Uriah** - Jesus its like a cacophony of plates.
+
+**Sir Phidipaldi** - I mean, so. He has a lance and a twohanded sword, and he cant carry both of them at the same time. Well, so hes kinda like holding them in his arms, and hes like the whole time hes just talking about how. Um, uh, Zeus, Law of Courtesy is not honored anymore. And this is gonna, you know, clearly foretell doom on the Tavern of the clumsy Fox.
+
+**Sir Phidipaldi** - Uh, but eventually he goes.
+
+**Sir Phidipaldi** - Hes all bluster, hes not, you know.
+
+**Game Master** - Well, you know that bluster carries into kinda getting pushed out.
+
+**Game Master** - And into the Golden Egg Tavern.
+
+**Game Master** - Which could not be more opposite of what you just experienced at the clumsy Fox.
+
+**Game Master** - No ones there, no ones there, except for this white bearded, bony like Shif, you know, odd looking owner whos like tending bar, no ones hanging out.
+
+**Game Master** - Theres no music.
+
+**Game Master** - Theres no food, and Quinn, like Look, is almost even startled that you came into his bar.
+
+**Game Master** - And he introduces himself Hes like I.M Quinn, the owner. Uh uh, happy to help you. uh I, I, I have a a ale if you want some, uh, costs.
+
+**Sir Phidipaldi** - It I have had a hard day, I will take some ale.
+
+**Game Master** - Okay, uh, its 10 silver pieces.
+
+**Game Master** - So y you notice right away that, unlike Bentley, who was like, kind of freeflowing, you know, hes automatically asking for money.
+
+**Sir Phidipaldi** - For money.
+
+**Dr Uriah** - Yeah, a lot of money, too.
+
+**Game Master** - Yeah, a lot of mon, well, thats.
+
+**Dr Uriah** - That that thats actually pretty expensive for for an ale.
+
+**Game Master** - Its It is three times more expensive than the ale across the street. As soon as you sip it, it is shit.
+
+**Game Master** - It is like completely watered down.
+
+**Game Master** - And uh, and he, uh, he sees.
+
+**Game Master** - You kind of wince a little bit.
+
+**Sir Phidipaldi** - Yeah, sure.
+
+**Game Master** - At your drink.
+
+**Game Master** - Hes like, no matter how much I spend to get in, I get in all the good stuff and its gone the next morning. And so Im sorry, I got it watered down the little bit that I have. Uh, I s. I wish I wish I was able to give you something better.
+
+**Sir Phidipaldi** - I am glad to see that courtesy is not lost in this town. Finally, I can find somebody who who I think really understands me. You know, that other tavern across the street?
+
+**Game Master** - Hate em, hate em.
+
+**Sir Phidipaldi** - Same.
+
+**Unassigned Speaker** - Hate them.
+
+**Sir Phidipaldi** - They have, they have no sense of honor and courtesy.
+
+**Game Master** - So thats whos been stealing my good ale. Hes like every time I get it in, I think Bentley steals it at night, at night, like ill go to bed.
+
+**Game Master** - I will have a fully stocked bar downstairs.
+
+**Game Master** - I will get a the no matter how good my shipment of Ale is. In the next morning I will wake up. And like half of those glasses are empty or theyre knocked over and its Bentley theres. He he look, look at how popular his tavern is, and everyone likes his foxtail brew. He must be stealing it from me.
+
+**Sir Phidipaldi** - UhHuH Um, that is truly awful.
+
+**Game Master** - I know.
+
+**Sir Phidipaldi** - I would love to help you get back at him.
+
+**Game Master** - Well, if you did, ID give you 100 gold.
+
+**Sir Phidipaldi** - Um, thats great. When is your next shipment coming in?
+
+**Game Master** - Well, thats the problem. We havent had any shipments for a while.
+
+**Game Master** - But heres my thinking.
+
+**Game Master** - You could make a fake shipment.
+
+**Sir Phidipaldi** - Ooh, smart.
+
+**Sir Phidipaldi** - Yeah, good brain.
+
+**Game Master** - Right, right?
+
+**Sir Phidipaldi** - Yeah.
+
+**Game Master** - So maybe you could like find some bottles and hide some down some downstairs, like maybe you could like. Cook it up like you were delivering it, and then we could see whats going on.
+
+**Sir Phidipaldi** - Yeah, that sounds great.
+
+**Sir Phidipaldi** - All right, excellent. You bring the bottles up here and well, fill em with water and then ill go out and ill. Make a big show of coming in and delivering you some ale.
+
+**Game Master** - And that is where we will end.
+
+**Game Master** - Tonight, so you, our major characters, you have visited the town of Brandonsford, you visited the clumsy Fox Tavern, the Golden Egg Tavern, you met Erath the Reeve made friends with Farmer Gill.
+
+**Dr Uriah** - Uh, we made friends with Reginald the Frog.
+
+**Game Master** - We friends with Reginald the Frog, Drop Dead, Ned.
+
+**Game Master** - Met Lady Hilda.
+
+**Game Master** - Um, and, uh, the um.
+
+**Sir Phidipaldi** - Whats the name of the owner of the Clumsy Fox?
+
+**Game Master** - The owner of the Clumsy Fox is.
+
+**Game Master** - Bentley.
+
+**Sir Phidipaldi** - Bentley.
+
+**Sir Phidipaldi** - BENTLEY And the name of the farmer is.
+
+**Game Master** - Uh, Gill Gill.
+
+**Sir Phidipaldi** - Uhhuh And the guy who owns the Golden Egg is Quinn.
+
+**Game Master** - Quinn.
+
+**Game Master** - And then the, um, the hunter that has lost his arm.
+
+**Game Master** - His name is George.
+
+**Sir Phidipaldi** - George Yep.
+
+**Game Master** - Yep, but you guys have not yet met him.
+
+**Unassigned Speaker** - Nope.
+
+**Game Master** - And then the Smith that has all the charm.
+
+**Game Master** - His name is Warwick.
+
+**Sir Phidipaldi** - Warwick, Yep, and Ingrid.
+
+**Unassigned Speaker** - Ingrid.
+
+**Game Master** - And then Ingrid is the alchemist.
+
+**Unassigned Speaker** - Yeah, absolutely. And and then we havent gone to the church so we dont know his name.
+
+**Game Master** - You guys havent gone to the church yet, and, uh, yeah.
+
+</session_transcript>

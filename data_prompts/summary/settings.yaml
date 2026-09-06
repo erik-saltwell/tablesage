@@ -1,0 +1,27 @@
+target_llm:
+  model: anthropic/claude-fable-5.1
+
+actor_llm:
+  model: anthropic/claude-sonnet-5
+  temperature: 0.5
+
+judge_llm:
+  model: anthropic/claude-sonnet-5
+
+optimizer:
+  iterations: 1
+  top_k_per_iteration: 1
+  floor: 1
+  ucb_budget: 0
+  seed_warmup_pulls: 1
+  max_children_per_parent: 1
+  early_stop_patience: 1
+  max_llm_concurrency: 1
+  error_budget: 0
+  seed: 1
+
+metric_weights:
+  summary_coverage: 0.35
+  summary_accuracy: 0.35
+  summary_conciseness: 0.20
+  summary_section_structure: 0.10

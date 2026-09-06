@@ -1,8 +1,13 @@
 """Typer commands for prompt-optimization workflows."""
 
+from pathlib import Path
+
 import typer
 from rich.console import Console
 from rich.panel import Panel
+
+from .optimize_ledger import optimize_ledger
+from .optimize_summary import optimize_summary
 
 app = typer.Typer(
     name="optimize-prompts",
@@ -13,7 +18,7 @@ console = Console()
 
 
 @app.command()
-def ledger() -> None:
+def ledger(run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration.")) -> None:
     """Start the Ledger prompt-optimization workflow."""
     console.print(
         Panel(
@@ -22,10 +27,11 @@ def ledger() -> None:
             border_style="cyan",
         )
     )
+    optimize_ledger(Path("data_prompts/ledger"), console, run=run)
 
 
 @app.command()
-def summary() -> None:
+def summary(run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration.")) -> None:
     """Start the summary prompt-optimization workflow."""
     console.print(
         Panel(
@@ -34,3 +40,4 @@ def summary() -> None:
             border_style="cyan",
         )
     )
+    optimize_summary(Path("data_prompts/summary"), console, run=run)

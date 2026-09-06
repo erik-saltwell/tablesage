@@ -8,6 +8,10 @@ dependencies = [
     "prompt-forge",
     "rich>=15.0.0",
     "typer>=0.23.1",
+    "prompt-model",
+    "prompt-model-metrics",
+    "pyyaml>=6",
+    "tablesage-application",
 ]
 
 [project.scripts]
@@ -20,3 +24,5 @@ build-backend = "uv_build"
 [tool.uv.sources]
 prompt-forge = { path = "../../../prompt-forge/apps/prompt-forge", editable = true }
 prompt-model = { path = "../../../prompt-forge/packages/prompt-model", editable = true }
+prompt-model-metrics = { path = "../../../prompt-forge/packages/prompt-model-metrics", editable = true }
+tablesage-application = { workspace = true }

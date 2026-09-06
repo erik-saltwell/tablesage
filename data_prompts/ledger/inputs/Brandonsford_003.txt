@@ -1,0 +1,2579 @@
+<known_session_roles>
+- Dr Uriah
+- Game Master
+- Sir Phidipaldi
+- Trout
+- Waymon Tisdale
+</known_session_roles>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- john schork: Waymon Tisdale
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<session_transcript>
+**Game Master** - Um, Uriah, we were at the clumsy everyone woke up. It was like, kind of like, or no, it was, it was the evening, it was that evening. Sorry, we started.
+
+**Dr Uriah** - Yeah, you tried to make it.
+
+**Game Master** - Yeah, I tried to make you all go to sleep and.
+
+**Dr Uriah** - Were like, What night time?
+
+**Game Master** - Yeah.
+
+**Dr Uriah** - Nighttime activities.
+
+**Game Master** - Uh, Uriah, um, uh, took the treasure map, did some scholarly sleuthing to try to find the, um, origins of it um, and failed Um, uh, and then, um.
+
+**Dr Uriah** - IM also making a copy of it, uh, but IM also making a copy of it and the copy is wrong.
+
+**Game Master** - Right, thats right, exactly exactly right, right? Youre secretly making a copy of it. Um, Trout, our little River halfling friend, Um, was chatting up a halfling named Squints, who you may remember the guy who was looking for his big break. Uh, so you dont remember that, okay, so.
+
+**Trout** - Hes not a Biggie lift character, anyway.
+
+**Game Master** - So Squints, so Squints is an eager, young, halfling guy whos really into his sling. Um, who was sitting at the bar. Uh, hes, uh, hunting for his big break. And, uh, Trout told him to chat with him in the morning that he would, um, gather the group together, and, um, uh, maybe take him on a an adventure, Um. Also noted among the Tavern adventurers was a man named Malzazarik the Magnificent.
+
+**Game Master** - A uh, wizard in, uh, purple robes and a a pointy purple hat with a yellow star on it.
+
+**Game Master** - Um, that night, Um, Phidipaldi.
+
+**Game Master** - Uh, who, um, was, um, kicked out of the good inn and was in the Um.
+
+**Waymon Tisdale** - Oh, good inn.
+
+**Game Master** - The Golden Egg.
+
+**Game Master** - Um, decided to bunker down in the cellar, um, and hide in an attempt to find the liquor thief. I dont know if you remember that little subplot.
+
+**Game Master** - Uh. Meanwhile, Uriah decided to stake out the river to look for the Clurichen to see when he was gonna come out. And he did see him come out, uh, hauling a jug and then turning invisible at the Riverbank. Um, Trout, um, was also at the Riverbank. Um, spearfishing and, uh uh, decided to, um, tail Uriah and the Clurichen back to the, um uh, wherever he was going.
+
+**Waymon Tisdale** - Remind me what the Clurichen is.
+
+**Game Master** - He is the little.
+
+**Sir Phidipaldi** - Hes a leprechaun.
+
+**Game Master** - The little leprechaun that, Uh, the frog told you guys about in the Uh, in the first adventure, Um, he, uh. They follow the Invisible Thief to You guessed it, the outside of the Golden Egg Tavern, where he attempted to get into the, uh, the basement.
+
+**Game Master** - Um, uh. Phidipaldi had laid a bunch of marbles on the ground to make him trip and fall.
+
+**Waymon Tisdale** - Three Ninjas style.
+
+**Game Master** - Yes, and then, uh, Uriah threw ink at him. And, uh, and Trout.
+
+**Dr Uriah** - Look what I got.
+
+**Game Master** - Trout had a fish bag that he used.
+
+**Dr Uriah** - Well, hes invisible, right? So I went and like.
+
+**Game Master** - Right, exactly, yeah, Ink took cover of.
+
+**Game Master** - And then and then, uh, um, Trout had a fish bag that he used to capture him.
+
+**Waymon Tisdale** - It worked for Indiana Jones, dad.
+
+**Game Master** - Yeah, exactly, uh, it turns out the Clurichens name is Naggeneen Naggeneen Naggeneen, who said Quoteunquote, I just like to drink, so he likes to come down and get ripped. He offered his pot of gold or a secret for release. Everyone refused and then called the, Um, the Innkeeper, because there was a reward of 100 gold. Um, I forgot to tell you all, you each get 100 experience points because you got the 100 gold, um.
+
+**Sir Phidipaldi** - Oh, is that what were doing?
+
+**Game Master** - That is how it works in In in original DD. even before.
+
+**Game Master** - Oh yeah, gold was experience, yeah.
+
+**Unassigned Speaker** - Basic dude, gold was experience.
+
+**Game Master** - You didn.t get experience for killing monsters, you just get experience for gold.
+
+**Unassigned Speaker** - Toll size.
+
+**Dr Uriah** - But wait, that.s broken up between us, right? So we we each think it 100.
+
+**Game Master** - We can do 100 each.
+
+**Dr Uriah** - Uh, how much XP till my next level?
+
+**Game Master** - Uh, I will look that up for you once I get done summarizing this, Uh, so who gets the gold? We split it.
+
+**Unassigned Speaker** - We, we split it.
+
+**Game Master** - Uh yeah, we split it, yeah, the party split it. Um, and, uh, the Quinn, the owner of the Golden Egg, Um, put a bag of Naggeneen on a hook behind his bar and said, I know what Im gonna do with this one. And then everyone was like, All right, whatever and left, um.
+
+**Sir Phidipaldi** - And he hung him in a bag over his bar.
+
+**Game Master** - Right, right, so I never got my fish bag back, you never did get your fish bag back because I used my one use.
+
+**Sir Phidipaldi** - Well, fix that.
+
+**Game Master** - Meanwhile, its still evening and dunk. Um, our troll kin, uh was, um, staying, uh uh at the, um, hanging out with the farmer getting drunk as well. And he decided to case, Um, Warwicks Armory or Smithy, because, um, that Mithril chain shirt he heard a rumor about. He could see it through the window, he could see that it was visible and there was. You remember, the luck charms that covered the building and everything else like that. Um, he caught Ingrid the um uh, outmist, Yeah, um, skulking. And he followed her home, where she admitted that she leaves nightl nightly gifts on Warwicks Windowsill and watches him sleep, but has never spoken to him.
+
+**Sir Phidipaldi** - And Im assuming that he wakes up every morning and finds trinkets, and this is why hes trying to cover himself with lucky charms.
+
+**Game Master** - Cause he doesnt know whats going on.
+
+**Game Master** - Hes like, Whats happening?
+
+**Sir Phidipaldi** - Were definitely gonna come back and use that to our advantage to get ourselves a Mithril shirt.
+
+**Game Master** - Yes, so, so Dunk definitely had a plan here. Because he then said, he asked Ingrid to BL brew a sleeping potion that he would, um, give to Warwick in an exchange of. She could sneak into the uh, like the room and and make him fall asleep and then stare at him all night if she wanted.
+
+**Sir Phidipaldi** - Cause she lives to watch.
+
+**Game Master** - Yes, and then, Uh, uh. But then, in exchange, she has to unlock the front door for dunk to come in. At which point hes gonna take the Mithril shirt.
+
+**Game Master** - Um, she got suspicious that he was gonna take the Mithril shirt and dunk, said Im just a fan of Clovers. She was dubious of that, um. The potion required some faun wine faun wine from a grove that she that she mentioned was north of town, where the trees bleed. Wine that instantly fells. Any drinker, um, so Dunk pointedly declares. He promised secrecy about her romance that she loves. Uh, or or she asked, Will you keep it secret? Hes like I Havent promised that yet so.
+
+**Waymon Tisdale** - HM.
+
+**Game Master** - Um, the next morning, the following things happened. Uriah wakes up and goes and visits the church where he meets, Uh, Father William, who is a.
+
+**Dr Uriah** - Racist?
+
+**Game Master** - A racist to nonhumans.
+
+**Sir Phidipaldi** - But also a phrenologist.
+
+**Game Master** - Also a phrenologist.
+
+**Sir Phidipaldi** - So it kinda evens out.
+
+**Waymon Tisdale** - In six of one, half dozen of the other.
+
+**Game Master** - He spent much time measuring Uriah and was convinced that he had webbing on his, uh, feet.
+
+**Unassigned Speaker** - Feet.
+
+**Game Master** - Just wanted to see his feet, wanted to pay, to see his feet.
+
+**Dr Uriah** - So dont go there, fellow fishman.
+
+**Waymon Tisdale** - He might wanna make some money.
+
+**Trout** - Arg is also a fishman, too. Whats your class? By the way, what, uh?
+
+**Waymon Tisdale** - Uh, Assassin.
+
+**Game Master** - Oh, right, Fishman, assassin.
+
+**Sir Phidipaldi** - Hes our combo maker.
+
+**Dr Uriah** - Yeah, Im Im the Thinker Fishman and Hes the Doer Fishman.
+
+**Game Master** - Yeah, yeah, um. Father William mentioned that there was a magic sword buried with Sir Brandon in the barrow mound. Thats about a days walk away. Um, and that was the, um, sword that was used to kill the Dragon a thousand years ago, or whatever.
+
+**Game Master** - And he had already sent a young cleric named Brother Dirk to go get the sword to go slay the Dragon. He marked the barrow mound on the map.
+
+**Unassigned Speaker** - Dustily.
+
+**Game Master** - Uh, dustily and um, and also a wood witchs cottage.
+
+**Game Master** - On the map.
+
+**Dr Uriah** - Vivian.
+
+**Game Master** - Uh, yes, Vivian and Um. And he extracted an agreement for a 10 gold donation for the Barrows Upkeep dismissed Ingrid as a fraud fronting for the witch of Coven. Okay? And then Phidipaldi went to George the Hunter, who has only one arm. Uh, and he says, the Dragons lair sits at the foot of the northern, the northern part. Uh, the foot of the mountains, Um, says the Dragon Cant fly yet, but will soon has a poison bite, sulfur breath, black scales. Um, and he doubts that the Reeve actually has the 1000 gold pieces that he promised everybody. A Lance is among the few weapons he never tried.
+
+**Game Master** - And then Phidipaldi decided, Im gonna bring a Lance and see if that hurts the Dragon.
+
+**Waymon Tisdale** - Yeah, Lady Isaboob.
+
+**Game Master** - Lady Isaboob, right? Meanwhile, at Ingrids Shop, Um uh, Uriah buys, um, Wolf Bane and Healing Mandrake tea passes on a witchs powder. Ingrid names her forest friend, The Witch Vivian, and mentions that fairies have been emerging and encroaching far more than they used to.
+
+**Dr Uriah** - Fairies are coming in.
+
+**Game Master** - Yep, meanwhile, back at the Inn.
+
+**Dr Uriah** - When your fairy understanding.
+
+**Game Master** - Trout is talking to Squintss and recruits him as a quoteunquote junior assistant halfling.
+
+**Sir Phidipaldi** - In the Halfling Corps.
+
+**Game Master** - In the Halfling Corps of Of Your Guys Band, um, he, um, only gets meritbased pay. He gets second pickings on treasure and he is selffunded. Until the first treasure drops, he is allowed to ask, Uh, Trout for three tips a day.
+
+**Sir Phidipaldi** - On how to be a good adventurer.
+
+**Game Master** - On how to be a good adventurer.
+
+**Trout** - Hes also much superior to me in all levels.
+
+**Game Master** - Yeah, hes actually a level two. He has, like better stats, like better equipment.
+
+**Waymon Tisdale** - Hes more confident.
+
+**Game Master** - Yeah, um, he accepted. Um, starryeyed. Meanwhile, dunk walked to the Fauns, Grove, met some fauns, somehow rolled to, Um, resist poison on the wine and.
+
+**Game Master** - Like a drunk.
+
+**Game Master** - Got drunk, Yeah, yes.
+
+**Unassigned Speaker** - He did twice.
+
+**Game Master** - Yes, Um, astonished. The Fauns traded a sentimental rabbits foot for a flask of their wine because the Fauns prize sentimental tokens. And they now regard Dunk as a remarkable trollkin. Um. Meanwhile, the party decides to get together and head north. Um, well, dunk. Meanwhile, back in town, Quote Dunk tells the party that he has a line on quote unquote a line on some good armor. And so then.
+
+**Dr Uriah** - No idea what hes talking about.
+
+**Game Master** - So Dunk is supposed to deliver the faun wine to the alchemist. Um, but he cuts it, uh, before he delivers it at one quart, uh, one quarter of its strength, keeping the rest for himself. Um, doesnt tell her, obviously, um, the party. Plus, Squintss heads north for the barrow mound, deliberately routing around the Witchs cottage.
+
+**Game Master** - Um, but on the way, they stop by and see a Giants cottage.
+
+**Game Master** - And inside was a triple well outside was a. It was a triple scale cottage of Cyclopean Stone sleeping giant inside and a mansized sack wiggling on the wall. There was a stew cooking. Trout sent Squintss in through the window as a test of his, um, adventuring abilities.
+
+**Waymon Tisdale** - Thats a good idea.
+
+**Game Master** - Yeah, the giant stirred once, um Squints froze on trouts signal, then pulls the sack free and out tumbled a bound and gagged monk brother Dirk Um, the giant wakes Uriah smashes the fallen window as a distraction. Um, Duncan and Phidipaldi throw open the door, Squintss and dunk, sprint clear and, uh um, trouts covering Slingshot goes wide, cracks Squintss in the head, the Halfling Corps first.
+
+**Dr Uriah** - Hes out.
+
+**Game Master** - Casualty is friendly fire, um, party outruns the slow giant who gives up the chase. Uh, alive. Robbed of his dinner and sitting on the road between town and the Barrow, Uh, Dirk wants to go home.
+
+**Sir Phidipaldi** - But we didnt let him.
+
+**Game Master** - But we did not let him the party pressured him onward. Um, and then, uh, Trout says that, um, Squintss is now Dirks manager.
+
+**Unassigned Speaker** - Gotta get a cut.
+
+**Game Master** - Exactly so. Now we have a multilevel.
+
+**Trout** - We dont call it a pyramid scheme in this world, we call it a Barrow.
+
+**Sir Phidipaldi** - Right, and then they get three people to go on scheme.
+
+**Game Master** - So all four of, uh, well, all of you. Plus, uh. Squintss and the reluctant brother Dirk are in the woods north of Brandonsford, bound for Brandons, barrow mound and the Magic Sword. Uh, the giant is alive somewhere in the woods.
+
+**Sir Phidipaldi** - Hunting us.
+
+**Game Master** - Uh, hunting you all, um? And Dunk owes Ingrid a return visit to collect the sleeping potion. And, uh.
+
+**Game Master** - Break into Warwicks to get the UH chain. But, uh, but for now, you all have, Um, uh, night is is is sun is setting.
+
+**Game Master** - And Youre outside of the barrow mound.
+
+**Sir Phidipaldi** - So I would like to propose.
+
+**Sir Phidipaldi** - For peoples consideration.
+
+**Sir Phidipaldi** - A retcon.
+
+**Game Master** - Ah, do it.
+
+**Sir Phidipaldi** - So I was thinking about this.
+
+**Sir Phidipaldi** - And I believe that we have already contracted with and are hoping to provide dead bodies to drop dead. Ned.
+
+**Game Master** - Oh, drop dead, Ned being the thief that was back at the Inn.
+
+**Dr Uriah** - Well, thats if we hired him.
+
+**Sir Phidipaldi** - We did.
+
+**Dr Uriah** - No, we didnt.
+
+**Sir Phidipaldi** - Oh, thats what we did. We were gonna pay him 100 GP at the end of the week.
+
+**Dr Uriah** - Well, he gave us a rate, but we never formally hired him, I dont think.
+
+**Game Master** - He wanted to kill people.
+
+**Dr Uriah** - No, I think.
+
+**Dr Uriah** - Hes saying the retcon so we can bring him along.
+
+**Dr Uriah** - To the Barrow, too.
+
+**Sir Phidipaldi** - I want him at the barrow mound.
+
+**Dr Uriah** - Yeah, that thats.
+
+**Dr Uriah** - Which we can still do, but we still have to pay him. Cause we, we, we, we cannot.
+
+**Sir Phidipaldi** - I am totally good with paying him.
+
+**Game Master** - You guys wanna?
+
+**Trout** - How how much does he cost? And thats just the fucking dimension. Squints Is he just free because of Hes here?
+
+**Trout** - Cause he does have a price.
+
+**Game Master** - Oh, I know its high. Yes, yeah, you, you did a good job, you.
+
+**Game Master** - Yeah, no, um, drop dead. Ned would be 100 gold.
+
+**Game Master** - Uh, and if you all, and then and then. But what he offered was every time you let him murder somebody.
+
+**Game Master** - He would pay you 10 gold back.
+
+**Sir Phidipaldi** - And as long as we let him have his way with the body.
+
+**Game Master** - As long as Hes allowed to do whatever he wants.
+
+**Sir Phidipaldi** - So I feel really good about this.
+
+**Game Master** - Yeah, all right, do you guys wanna give up your gold?
+
+**Dr Uriah** - Yeah.
+
+**Dr Uriah** - And this is the guy with the.
+
+**Game Master** - All right, uh, then I am. Yes, Hes got a killer, a little killer wasp with him.
+
+**Trout** - So were giving up 33 gold each.
+
+**Unassigned Speaker** - Well, Im excited about this.
+
+**Sir Phidipaldi** - So I can do 33 gold, for sure.
+
+**Trout** - Cause we had, we had the 33 from the 100.
+
+**Trout** - We didn.t get anything.
+
+**Dr Uriah** - Well, we just got 100 gold.
+
+**Waymon Tisdale** - Oh yeah, sh, yeah, so were trying to youre.
+
+**Unassigned Speaker** - But I only have 33 to me.
+
+**Sir Phidipaldi** - Yeah, yeah, so, so we just zero it back out.
+
+**Game Master** - Erik, I am gonna give you the character sheet for Drop Dead, Ned.
+
+**Sir Phidipaldi** - Oh no, give it to Rich.
+
+**Sir Phidipaldi** - He was definitely richs character.
+
+**Game Master** - All right, all right, give it to rich, Um.
+
+**Waymon Tisdale** - Mariners won, but, uh, Hobie Miller did such a great job. They had to put in Munoz for the last two outs.
+
+**Game Master** - Oh my God, burn him, yeah, okay, um.
+
+**Trout** - And then is Dirk a character sheet that we have?
+
+**Game Master** - Did I not give you his character sheet?
+
+**Sir Phidipaldi** - Ill take ill take brother Dirk.
+
+**Game Master** - You know what, I dont know if he did, let me look, um?
+
+**Game Master** - I, I have Malzahar and.
+
+**Sir Phidipaldi** - Okay, so while hes doing that, I will tell you I have a plan.
+
+**Trout** - For the Barrow?
+
+**Unassigned Speaker** - No for the Dragon.
+
+**Sir Phidipaldi** - Okay, so we know that its.
+
+**Sir Phidipaldi** - Um, okay, so I think we go to the barrow mound, we get the sword well, come back, we do the whatever shenanigans for dunk.
+
+**Sir Phidipaldi** - We, we get the chain mail shirt.
+
+**Sir Phidipaldi** - Also, just to remind you, we have not visited Warwick himself.
+
+**Game Master** - Uh, no, you did.
+
+**Unassigned Speaker** - Did we?
+
+**Game Master** - Well, oh no, no, no, youre right, you did not visit Warwick.
+
+**Game Master** - You visited the hunter. Yeah, yeah, yeah.
+
+**Sir Phidipaldi** - Thats right, and we also have not visited the general store.
+
+**Game Master** - Thats right.
+
+**Sir Phidipaldi** - At all.
+
+**Trout** - Warwicks, the mayor.
+
+**Game Master** - Warwick is the guy whos selling the Mithril chain.
+
+**Sir Phidipaldi** - Hes the Smithy.
+
+**Dr Uriah** - Oh, yeah.
+
+**Dr Uriah** - Yeah, he has a bunch of garbage in his place.
+
+**Trout** - We just never talked to him.
+
+**Trout** - Oh, yeah.
+
+**Sir Phidipaldi** - Um, okay. So if we get the sword, we get the chain shirt, we stop on our way back at the witchs place. We try to get some way to counteract the black dragons, poison from the witch or from the Alchemist. We go back. Weve got brand Sir Brandons Sword Weve shown that were good at what we do. We we strongarm reeve into giving us an advance based on the fact that weve found in the sword.
+
+**Sir Phidipaldi** - We use the advance to pay for Sir Hilda and And.
+
+**Sir Phidipaldi** - And then, with the poison protection and the sword and the shirt and the.
+
+**Sir Phidipaldi** - Henchmen Then we go after the Dragon.
+
+**Trout** - That sounds reasonable to me.
+
+**Trout** - Take a reeve theyll, go get reinforcements, get our armor.
+
+**Waymon Tisdale** - The Sword di Didnt kill the Dragon.
+
+**Game Master** - In the In the tale of, Uh, Sir Brandon, uh, that, um, you missed this last week, Um, uh, that is the sword that killed the Dragon.
+
+**Sir Phidipaldi** - In The In Myth.
+
+**Game Master** - In myth.
+
+**Game Master** - Yes, yes, so, um.
+
+**Sir Phidipaldi** - That he supposedly got from a fairy.
+
+**Game Master** - Thats right, thats right.
+
+**Waymon Tisdale** - But there is a new Dragon, or perhaps.
+
+**Sir Phidipaldi** - Or could be the same one I if the tales are off.
+
+**Game Master** - So the sun is setting you are outside of, uh, the barrow mound.
+
+**Game Master** - Um, this is a there is a, uh, the door for it is a white stone slab, um, set into a mound. Think of this as just a huge kind of barrow mound.
+
+**Game Master** - Most of it is you get in, you go underneath.
+
+**Game Master** - Right, so, um, uh. And theres a faded mural on the surface of the white stone slab that shows a, uh, like a conquering knight. Um, uh, do you all want to try to get into the barrow mound tonight, or are you going to rest for the day it will.
+
+**Dr Uriah** - Yeah, do we wanna go in there at night, or do we wanna come back like?
+
+**Game Master** - It was about a days walk like you left in the morning.
+
+**Game Master** - And you walked most of the day to get to the Barrow.
+
+**Dr Uriah** - Okay, so.
+
+**Game Master** - So you could camp outside of it if you wanted.
+
+**Waymon Tisdale** - Im guessing there probably arent skylights in there, so.
+
+**Trout** - So it doesnt really make a difference unless were tired.
+
+**Trout** - Somehow, but its not really reflected anywhere.
+
+**Dr Uriah** - And its prob, its probably not huge.
+
+**Dr Uriah** - I mean, its a barrow mound.
+
+**Dr Uriah** - You know, so its like.
+
+**Dr Uriah** - A million.
+
+**Game Master** - Yeah, knock it out in a couple hours.
+
+**Waymon Tisdale** - I think we should check for traps.
+
+**Game Master** - Yeah, so you walk up to, Uh, um, the door, uh, Waymond, right?
+
+**Waymon Tisdale** - MMHmm.
+
+**Game Master** - Uh, so Waymond walks up to the door and you notice the dirt below the door has been like, worked, such as, like the door must have, like, opened recently.
+
+**Game Master** - That its like, you know, theres some, like its pushed aside a bit. Um, uh, when you check on the outside you, you, you, nothing, theres nothing that you can see there.
+
+**Sir Phidipaldi** - So I will inquire with brother Dirk, who was supposed to be going to the mound to get the sword.
+
+**Sir Phidipaldi** - What does he know about the mound?
+
+**Game Master** - So he says he, he hes nervous, he starts to stammer a little bit, hes like, Well, what I. What I know most about is Sir Brandon is buried there. But there are these beautiful mosaics.
+
+**Game Master** - Telling the story of Sir Brandon and I have seen these in carvings and in drawings in my books. Um, and, uh, and that Brandon was also he was buried with his fellow, um, adventurers, like as, like the people died.
+
+**Game Master** - That had accompanied him. Uh, hes like, you know, much like all of you with your party when you all die, uh, if you conquer the Dragon, um, youll get buried together. And so his friend Uh Alfred, uh, his other friend Myrddin, and his friend Wyllt.
+
+**Unassigned Speaker** - Wyllt.
+
+**Sir Phidipaldi** - And Myrddin?
+
+**Game Master** - Were buried with him. Yeah, so Alfred is spelled like Alfred.
+
+**Game Master** - WYLLT Uh, so thats all. He really knows about it. He just knows that its like, you know? Brandon was buried there with his sword and then a companion were buried alongside him. Uh, theres a beautiful mural that hes seen, Hes Hes very excited cause hes like I, I Ive Ive heard the story my entire life. I grew up in Brandons, Ford and in the Church. Um, we have replicas of these murals. And so when I was assigned to go visit the barrow mound and collect the sword, I was, um, excited to see these murals.
+
+**Sir Phidipaldi** - Whos got torches?
+
+**Game Master** - Yes, great question.
+
+**Waymon Tisdale** - I dont think I do.
+
+**Sir Phidipaldi** - I have a bottle of wine.
+
+**Dr Uriah** - I have oil.
+
+**Dr Uriah** - We could burn. I have a lantern.
+
+**Waymon Tisdale** - Oh, there you go.
+
+**Trout** - There we go.
+
+**Waymon Tisdale** - Oh yeah, I have a lantern, too.
+
+**Game Master** - All right, so we have two lanterns. Okay, all right, so I assume you guys are going to.
+
+**Trout** - We can make one.
+
+**Trout** - Pretty quickly.
+
+**Dr Uriah** - And if we have a fine set of clothes, we could just burn.
+
+**Game Master** - I assume were gonna start by you two lighting your lanterns, though, right?
+
+**Dr Uriah** - Uh, yeah.
+
+**Dr Uriah** - We all need the warning that the Goroos will be in the thing.
+
+**Game Master** - Okay, and youre gonna go and youre gonna go inside of the um of the of the barrow mound, right?
+
+**Trout** - Was there a The door just opens.
+
+**Dr Uriah** - Yeah, wait, uh, wait.
+
+**Game Master** - Its A its a stone door.
+
+**Dr Uriah** - Its still nighttime, right?
+
+**Game Master** - It is nighttime. Are you guys gonna go in at night? Are you gonna rest? What are you gonna do?
+
+**Trout** - I vote for now.
+
+**Sir Phidipaldi** - Yeah, lets do it.
+
+**Trout** - Works for me.
+
+**Game Master** - You open the door to the barrow mound and inside.
+
+**Game Master** - You see, Um, uh, like a sloping as soon as you open it, its like a little bit of a sloping ramp.
+
+**Game Master** - And as you walk in with your lanterns, it opens up into an antechamber thats about, say, 15 feet by 20 feet. Um, and then, uh, um, along the walls.
+
+**Game Master** - Of the Antechamber are a series of mosaics. Uh, so, um, I just forgot the name of our little friend, our little monk.
+
+**Sir Phidipaldi** - Brother Dirk.
+
+**Game Master** - Brother Dirk gets very excited.
+
+**Game Master** - And he he gathers you around and hes like, Let me show you, and he walks up to the first mosaic. And there you see, Um, uh, a drawing, a beautiful drawing of s of Brandon gathering his men. Its like, um, one of those medieval, um, uh, drawings, where its showing the characters multiple times like its showing, you know, kind of like their journey, like their gathering in the town.
+
+**Game Master** - Theyre walking through the forest.
+
+**Waymon Tisdale** - A little sequential art.
+
+**Game Master** - Sequential Art Its A its a medieval comic book.
+
+**Dr Uriah** - Theres a rabbit like a lance on the back of a turtle fighting something, you know, medieval art.
+
+**Game Master** - Exactly, Um, and then three figures stand out against the Knights that, um, he that are accompanying Brandon and, uh, Dirk points them out. Theres a shaggy giant of a man with a great sword. Hes like thats Alfred, then theres a wizened priest, hes like Thats Myrddin, and then theres a wildeyed man with an ax. Hes like thats Wyllt Um. Dirk then walks over to the second mosaic. And he he ushers you over with a asks you to shine the lantern close to it. Um, because there thats the picture where you see. Brandon slaying the Dragon and the Dragon has his mouth open and Brandon is driving his sword up through the roof of the mouth of the dragon. And then, finally, in the third and final mosaic, Brandon and his men are being knighted by a Queen like the Dragon. Like the body of the Dragons kind of dead at the bottom and its like the end of Star Wars. You know, the Queen is like giving them, you know, a bunch of, uh, medals.
+
+**Sir Phidipaldi** - All all except for the giant Alfred.
+
+**Game Master** - Uh yeah, now, um, uh, as, um, uh, Waymond. As as youre moving your lantern along, a thing that you notice is that all of these mosaics are decorated with real gems.
+
+**Game Master** - Like the color, highlights in the mosaics are all like, you know, gemstones that are kind of like inlaid in there. Um, they kind of glint in the light.
+
+**Trout** - Whyd you say, except for the giant?
+
+**Sir Phidipaldi** - Oh uh, it was a joke about.
+
+**Game Master** - Chewbacca.
+
+**Sir Phidipaldi** - Uh, Chewbacca not getting a medal.
+
+**Dr Uriah** - Thats two.
+
+**Game Master** - Yeah, yeah, so, um. There are hallways that go out to the West and the east from the Antechamber and, um.
+
+**Sir Phidipaldi** - So there were only three murals.
+
+**Game Master** - There were only three murals.
+
+**Sir Phidipaldi** - Okay, Gotcha.
+
+**Game Master** - And in the East, you can hear some kind of like clattering and footsteps.
+
+**Sir Phidipaldi** - Okay, do they sound like they are common?
+
+**Game Master** - Uh, it it, it is a uh, yes.
+
+**Waymon Tisdale** - I think we should probably go investigate the other people that are here.
+
+**Dr Uriah** - Which way is that theyre theyre?
+
+**Unassigned Speaker** - To the East.
+
+**Dr Uriah** - East Yeah, and it, its voices were hearing.
+
+**Game Master** - Uh, yes.
+
+**Dr Uriah** - Or or and but can we make out the language?
+
+**Game Master** - Uh, it does it, it does sound like common.
+
+**Unassigned Speaker** - All right, yeah, okay.
+
+**Trout** - The Halfling Corps will stand back with slings prepared.
+
+**Trout** - Kind of covering.
+
+**Trout** - The hallway.
+
+**Game Master** - All right, so you guys are gonna head to the East and check it out.
+
+**Game Master** - Who is leading the way?
+
+**Dr Uriah** - Well, we should have drop dead. And Ned, well, the the sneaky ones go first.
+
+**Dr Uriah** - I would think.
+
+**Game Master** - So Ned.
+
+**Dr Uriah** - Just because they, you know.
+
+**Waymon Tisdale** - Check for traps.
+
+**Dr Uriah** - Along the way, but also they could, you know?
+
+**Dr Uriah** - Reconnoiter.
+
+**Game Master** - So that would be Ned and Waymond, right?
+
+**Game Master** - Okay, so Ned and Waymond begin slinking along the, uh, short hallway, say, about 10 foot long hallway to, uh, to the East. And, um, uh, you see that this is like a, uh, like an actual crypt like you. You went from kind of like this antechamber where you entered, and then this is like a major crypt. And the thing that you see as youre kind of like getting closer is youre. First of all, before you see anything, youre hearing that theres like just like a heated kind of argument going on. But it sounds. It sounds like the dumbest argument Youve ever heard. Um, there is somebody who.
+
+**Game Master** - Is talking about how they have the stick and that, um, even though they have the theyre, theyre not in charge, cause they have the stick, but that theyre supposed to be speaking because they have the stick.
+
+**Waymon Tisdale** - The speaking stick.
+
+**Game Master** - And then somebody else is talking over them really rapidly about how their new society will have no sticks and that theres no need for sticks.
+
+**Sir Phidipaldi** - Does it feel like there are more than three voices?
+
+**Game Master** - Yeah, you, you hear about four voices, yeah.
+
+**Waymon Tisdale** - Do they sound like adults?
+
+**Game Master** - They sound like almost like, Um, squeaky childlike.
+
+**Dr Uriah** - Are they fairies?
+
+**Waymon Tisdale** - This breeds Lord of the Flies.
+
+**Waymon Tisdale** - Um, well, if theyre, if theyre younglings, I dont think, uh. Trying to assassinate them is probably necessary.
+
+**Game Master** - Right, right?
+
+**Dr Uriah** - I mean, Ned is old.
+
+**Dr Uriah** - Doesnt may maybe doesnt.
+
+**Sir Phidipaldi** - I just want to say thats 40 GP back.
+
+**Game Master** - Right, right?
+
+**Waymon Tisdale** - Um, let me see.
+
+**Trout** - But you are closer to see, you can just hear this still right. I, I missed that part. Do you see anybody?
+
+**Game Master** - Uh, you, you could get a little bit closer, Youre youre sneaking so you could try to try to see them without them seeing you if you want.
+
+**Waymon Tisdale** - Yeah, I would.
+
+**Game Master** - Okay, absolutely. So as you get closer, what you see is, Um, sorry, I just want to look something up really fast.
+
+**Game Master** - Uh, okay, um, its not children. These are four scraggly, thin goblins.
+
+**Game Master** - That are all arguing amongst each other, one of them.
+
+**Sir Phidipaldi** - Does one of us have a thing about Goblins?
+
+**Game Master** - I think, uh.
+
+**Waymon Tisdale** - I think my other character.
+
+**Sir Phidipaldi** - Okay, okay.
+
+**Game Master** - Your other character had like a hatred of them, right?
+
+**Game Master** - So, um, so you s you hear one of them? The one with the stick is saying, Uh, I am not the leader, I hold the stick. Whoever holds the stick talks, that is the purpose of the stick. And the person he is arguing with is saying, Um, uh, you know, everything here belongs to dead men. Uh, dead men are the only ones whose property was never really suited dead men own no property, just like men should own no property.
+
+**Sir Phidipaldi** - Yes, Socialist goblin, um.
+
+**Game Master** - And that is exactly right. Yeah, as you begin listening more, you realize that what theyre arguing about is politics.
+
+**Waymon Tisdale** - Do Are they armed?
+
+**Game Master** - Uh, no, I mean, they they have like crappy like gear on them like you, you theyre like a adventuring party, but not a particularly wellequipped, adventuring party. Um, certainly nothing that you feel like fearful of.
+
+**Sir Phidipaldi** - I walk into the center of them.
+
+**Game Master** - They they, they.
+
+**Sir Phidipaldi** - I am wearing full plate mail.
+
+**Unassigned Speaker** - Thats right.
+
+**Sir Phidipaldi** - I am wielding a twohanded sword.
+
+**Game Master** - Thats right.
+
+**Sir Phidipaldi** - And I walk up to the guy holding the stick.
+
+**Sir Phidipaldi** - I grab the stick out of his hand.
+
+**Game Master** - He stops.
+
+**Game Master** - And gets silent.
+
+**Game Master** - And then the other one of the other ones, like, starts to Li like shakes, his finger at the stick guy.
+
+**Game Master** - And he goes, You cant talk now.
+
+**Game Master** - You dont have the stick and then the stick, Guy says. The stick was just symbolic, the stick was meant to create order. And they they barely recognize you.
+
+**Game Master** - Um, the third theres a the, so let me describe each of them.
+
+**Sir Phidipaldi** - Yeah, okay.
+
+**Game Master** - Okay, so there is one that, um, the one that is, uh, holding the stick.
+
+**Dr Uriah** - Formerly.
+
+**Game Master** - Formerly held the stick, its like a mudcolored Uh goblin uh with, um, the like a peeled kind of white stick or formerly did.
+
+**Game Master** - Um, and then hes talking. The main person hes arguing with is a small, hunched over goblin that has ink stained fingers.
+
+**Waymon Tisdale** - Ooh.
+
+**Game Master** - And like a notched ear.
+
+**Game Master** - Um, and then theres finally, a very young one with like mismatched armor thats kind of covered in paint.
+
+**Game Master** - And then there is a, uh, a female goblin, um.
+
+**Dr Uriah** - A foblin.
+
+**Game Master** - Who, uh, is wearing a black robe?
+
+**Sir Phidipaldi** - Uhhuh.
+
+**Game Master** - And a black eye patch.
+
+**Sir Phidipaldi** - Okay, I put my finger.
+
+**Sir Phidipaldi** - On the guy who used to have the the stick.
+
+**Sir Phidipaldi** - I put my finger on his lips.
+
+**Sir Phidipaldi** - And I go.
+
+**Game Master** - He stops, he stops, and then watok. Uh, sorry, one of the ones says to you.
+
+**Game Master** - Uh, hes like, Um, hes like, Uh, although you are here.
+
+**Sir Phidipaldi** - Ah ah, ah, I have the stick
+
+**Game Master** - They all say.
+
+**Sir Phidipaldi** - If anyone would like to talk, they can raise their hand and I may give them the stick to talk.
+
+**Game Master** - One of them raises his hand.
+
+**Sir Phidipaldi** - Sit down.
+
+**Game Master** - He sits down another one, raises his hand.
+
+**Sir Phidipaldi** - Sit down.
+
+**Game Master** - The third one raises his hand.
+
+**Sir Phidipaldi** - I say, All of you sit down and you may get the stick.
+
+**Game Master** - They all sit down.
+
+**Sir Phidipaldi** - All right, I give the first one I give the lady.
+
+**Sir Phidipaldi** - With the eye patch, I give her the stick.
+
+**Game Master** - She Um, she is the most uninterested in the stick she is quiet and almost scornful of the others. As soon as you give her the s the stick, she just hands it to the person next to her.
+
+**Sir Phidipaldi** - Wonderful.
+
+**Game Master** - Um, and, uh, he looks at you, um, sir Phidipaldi.
+
+**Game Master** - And um, and says, Um, uh, allow us to introduce ourselves, um, we are here to claim this. barrow mound as the first home of the new Free Goblin Society. Um, I am snurk.
+
+**Sir Phidipaldi** - Okay, snurk.
+
+**Game Master** - Uh, this is grimble. Who holds the stick?
+
+**Sir Phidipaldi** - Uhhuh.
+
+**Game Master** - Uh, and this is Watok, the scribbler, and the woman is Peg, who had the torch.
+
+**Sir Phidipaldi** - Okay, so Watok the scribbler.
+
+**Sir Phidipaldi** - Uh, peg.
+
+**Game Master** - Who had the torch?
+
+**Sir Phidipaldi** - Who has the torchs?
+
+**Game Master** - Who had the torch?
+
+**Sir Phidipaldi** - Okay.
+
+**Dr Uriah** - Thats a cool name, yes.
+
+**Sir Phidipaldi** - And and thats thats the female.
+
+**Sir Phidipaldi** - Uh, and then, who are the other two?
+
+**Game Master** - Watok the scribbler.
+
+**Dr Uriah** - Snurk.
+
+**Game Master** - Uh, and then the guy youre talking to is snurk the walkout?
+
+**Sir Phidipaldi** - Okay, snurk the walkout and whos the one who had the stick?
+
+**Game Master** - Grimble Who holds the stick?
+
+**Sir Phidipaldi** - Grimble Okay, does Grimble wanna talk?
+
+**Game Master** - Uh yeah, Grimble absolutely wants to talk.
+
+**Sir Phidipaldi** - All right, I will take the stick and I will hand him the stick.
+
+**Game Master** - Okay, he says. The first thing you need to know, hes like, First, what is your name? hands you the stick.
+
+**Sir Phidipaldi** - Thank you, I am Sir Phidipaldi, the brave son of Brandon the Dragon Slayer, and I am here to reclaim my Fathers heritage. We have no claim on this Barrow and we are happy to give it to the Free Goblin Society. In return for your help in acquiring the goods owned by my father and rightfully, B B bequeathed to me.
+
+**Game Master** - I give him the stick back.
+
+**Sir Phidipaldi** - All right now, I give him the stick.
+
+**Game Master** - Grimble takes the stick and he looks at you and hes like, I have many problems with what you just said. Like, first, we have one, we have no titles here at the Free Mound. There is nobody that can be named, sir. We are to put no man above another man. Second, there is no property here, let alone hereditary property. What sort of property kings have property? We just left a king, now we are here.
+
+**Sir Phidipaldi** - I will put my finger up against his mouth.
+
+**Sir Phidipaldi** - And I will hold my hand out.
+
+**Game Master** - Gives you the stick.
+
+**Sir Phidipaldi** - Did I did I mention that I bring with me a retinue of valiant knights?
+
+**Game Master** - So at this point they look around and they see all of you, and I assume you all come into the room.
+
+**Dr Uriah** - Sure.
+
+**Sir Phidipaldi** - Um, we are firm believers in law of nature, which is that possession is ninetenths of ownership.
+
+**Game Master** - Uh, Watok. The scribbler holds out his hand for the stick.
+
+**Sir Phidipaldi** - Yeah, I give him the stick. Yeah, wait, but.
+
+**Dr Uriah** - No, he hasnt talked yet.
+
+**Sir Phidipaldi** - All right, I give him the stick.
+
+**Game Master** - Watok says You may give us you either pay all of us with goods from here or you pay us nothing. I would prefer nothing. We we do not believe in property. We are trying to settle this land free from King Hogboon to make it a A A collective a place where we can rebuild society. Hands the stick back.
+
+**Sir Phidipaldi** - All right, does anybody else wanna speak?
+
+**Dr Uriah** - No, no, youre doing youre great.
+
+**Sir Phidipaldi** - All right, um, I say, okay, so certainly you can agree that, um, it would be a tragedy for you guys to attempt to build a fresh new society here, only for it to be shattered by the presence of evil.
+
+**Sir Phidipaldi** - That is true.
+
+**Game Master** - Did I give you the stick?
+
+**Unassigned Speaker** - Oh, sorry.
+
+**Sir Phidipaldi** - Um, I say so. We understand that you have goals for a more perfect union and we honor that, and we think that is quite noble. And so we offer here to help you to clear the evil out of this place of death. And in return, you may inhabit it and be free from King Hogboon and.
+
+**Game Master** - Of gloom.
+
+**Sir Phidipaldi** - Did I give you the stick and make you free? From King Hogboon? And, um, and when we see him, we wont even tell him, Youre here, all right, there you go.
+
+**Game Master** - Uh, they agree.
+
+**Game Master** - Um, what precisely are you asking them to do? They are not very useful.
+
+**Sir Phidipaldi** - Yeah, so, uh, they should walk with us.
+
+**Game Master** - Okay.
+
+**Sir Phidipaldi** - As we walk through this place.
+
+**Sir Phidipaldi** - And just make sure everything is on the up and up.
+
+**Sir Phidipaldi** - And in return for our help in doing that as a form of barter, not disgusting. Dirty property or trade, but.
+
+**Sir Phidipaldi** - In return, if you guys were to allow us the gift of my fathers goods, then that would be very meaningful for me personally.
+
+**Game Master** - So watok.
+
+**Game Master** - Uhhuh takes the stick.
+
+**Game Master** - Uh, takes the stick, says like, May we please dispense with the stick?
+
+**Sir Phidipaldi** - Okay.
+
+**Game Master** - Lets be clear, I never agreed to the stick with Grimble, who holds the stick.
+
+**Sir Phidipaldi** - Um, and so I, I look at you guys to see if youre okay with us dispensing of the stick.
+
+**Trout** - You dont need the stick.
+
+**Sir Phidipaldi** - All right, fine.
+
+**Game Master** - Uh, they then they then begin chattering amongst each other, and then they come to a group conclusion that none of them believe in property. So you can take whatever you want.
+
+**Game Master** - And in fact, they point out that there are several things in this very antechamber that they found this crypt.
+
+**Sir Phidipaldi** - Oh, nice.
+
+**Game Master** - That they found, Uh, in this room, um, and so they theres these alcoves.
+
+**Game Master** - That are around theres theres like theres, Uh, uh, four alcoves in the room, one of them is empty. These are just like, little, um, what do they call them in like a church where theres just like the little?
+
+**Trout** - Like Alcove.
+
+**Game Master** - I guess an alcove, yeah, so these little alcoves around it.
+
+**Game Master** - So, um, whos gonna go look at which one theres theres? Four of them, one of them is empty. So I guess tell me, You know, lets tell me A, B and C whos gonna look at each one.
+
+**Waymon Tisdale** - Ill go to a.
+
+**Game Master** - Gonna go to a.
+
+**Waymon Tisdale** - B.
+
+**Game Master** - B.
+
+**Dr Uriah** - C.
+
+**Game Master** - C Okay, lets start with a, um, so waymond. You walk over to A and its really, just like a little bit of, like, kind of like dusty pile of bones. But, um, one of the goblins. Snerk points to the fact that one of the skeletons Thats laying on the ground has a chain mail shirt on it. Its holding a mace.
+
+**Game Master** - So if you want something you could take, if you wanted.
+
+**Game Master** - So um, b is, um, uh, Trout trout, you walk over and, um, notice that this one is actually sealed with a heavy flagstone. So, you know, its like, very symmetrical around the room like these four little alcoves. And this one has like this like heavy kind of stone in front of it and peg the woman. Goblin, whos been very quiet up till now. Um, gets a little bit jittery and shes like, You dont wanna look behind there. We already looked there and thats why we sealed it up.
+
+**Trout** - Whos the biggest among us?
+
+**Sir Phidipaldi** - I mean, it was dunk.
+
+**Game Master** - It was dunk, but I would say, Um, probably at this point.
+
+**Sir Phidipaldi** - I have an 11 strength.
+
+**Waymon Tisdale** - I have a 15.
+
+**Game Master** - Oh, there you go.
+
+**Sir Phidipaldi** - There you go.
+
+**Trout** - Okay, so whats your name again?
+
+**Waymon Tisdale** - Uh, Waymond.
+
+**Trout** - So ill, just say, Hey, Waymond, get over here.
+
+**Trout** - Lets move this thing theres theres treasure behind there.
+
+**Game Master** - All right, what do you do?
+
+**Waymon Tisdale** - Move the thing.
+
+**Game Master** - So Peg gets nervous as you start moving the thing. And, uh, she says, Whoa whoa, okay, before you move it. This is not one of our bylaws were all a little ashamed of this. Um, but there was this gray ooze and it we just didnt think it would be good to live in a barrel mound that had a gray ooze. But we didn.t want to kill it because, uh, no man should cast judgment on another man.
+
+**Game Master** - Um, so we just put it.
+
+**Waymon Tisdale** - Just segregate it from the outlying world.
+
+**Game Master** - We we just put it there, yeah.
+
+**Trout** - Was there anything else there with it?
+
+**Game Master** - I dont remember, we just put it back there.
+
+**Trout** - Hmm, what do you think should we, uh, kill the ooze and see if it has anything cool?
+
+**Waymon Tisdale** - Can ooze talk?
+
+**Game Master** - Uh, ooze cannot talk.
+
+**Dr Uriah** - Are ooze sentient?
+
+**Sir Phidipaldi** - There is a gray, there is a there, there is a type of ooze that is psychic.
+
+**Game Master** - This is a gray ooze.
+
+**Sir Phidipaldi** - And no, Im like, IM so meta gaming at this point, so I will just shut up.
+
+**Game Master** - You, um, by the way, uriah, you walk and you see, Uh, um, an ornamental, jewelencrusted dagger laying here. This is absolutely beautiful.
+
+**Game Master** - So very much like a, uh, ceremonial, um, kind of relic.
+
+**Game Master** - So probably worth quite a bit if you were to sell it.
+
+**Trout** - Interesting, So armor and Mace.
+
+**Unassigned Speaker** - Uh.
+
+**Trout** - Ceremonial dagger.
+
+**Trout** - Ooze.
+
+**Dr Uriah** - Is there anything about its history that might? Might I find interesting?
+
+**Game Master** - Um, we can roll on that as soon as we resolve the, uh, secret of the ooze so.
+
+**Unassigned Speaker** - I dig that.
+
+**Dr Uriah** - I would definitely say that.
+
+**Trout** - I think theyre hiding some treasure.
+
+**Waymon Tisdale** - I think so, too, yeah.
+
+**Trout** - Im gonna pull it aside.
+
+**Game Master** - All right, you pull it aside and, uh, inside is some gray ooze, and it begins slowly moving towards you to attack you.
+
+**Trout** - Halfling forces attack.
+
+**Game Master** - All right, all right, we are gonna do our first combat, okay?
+
+**Sir Phidipaldi** - All right.
+
+**Game Master** - This is how combat worked in, Uh, back in the day, its much simpler than, um, how combat works in every other edition of DD. Um, okay, so, uh, let me just tell you all the combat rules really quickly. And, uh, they take up a total of two pages. Um, so the first thing were gonna do is we are, um, going to see if either side is surprised. So were gonna see. If you are surprised by the ooze attacking you slowly, or if the ooze is surprised by you all, um.
+
+**Dr Uriah** - By attacking it slowly.
+
+**Game Master** - Yes, exactly so. Uh, everybody, everybody should get a D6, uh and um, and anybody that rolls a one or a two is surprised. The ooze is surprised.
+
+**Dr Uriah** - Im surprised.
+
+**Game Master** - Youre surprised.
+
+**Waymon Tisdale** - Im the opposite of surprised cause. I also have a plus two to surprise attack.
+
+**Game Master** - Oh, there you go.
+
+**Sir Phidipaldi** - I am also not surprised.
+
+**Trout** - Not surprised.
+
+**Game Master** - Okay, so both the ooze and, uh, you cant take a, um, an action during the first round of combat, okay?
+
+**Game Master** - Which youre across the room anyway, so youd kind of be running over.
+
+**Dr Uriah** - Oh, can I roll for, Uh, Ned?
+
+**Game Master** - Uh, its okay, so, just, uh, so you guys are gonna kind of get a double attack on the ooze, okay?
+
+**Sir Phidipaldi** - Yep.
+
+**Game Master** - Um, okay, this is how initiative works. Okay, um, so every one players gonna roll a D6 and then Im gonna roll a D6. So who is gonna roll for initiative for all of you?
+
+**Waymon Tisdale** - Ill do it.
+
+**Unassigned Speaker** - Three.
+
+**Game Master** - I got a four, whatd you get?
+
+**Waymon Tisdale** - Six.
+
+**Game Master** - A six Okay, uh, the side that rolls the higher number acts first. Um, and then, um, you all get to decide. Whatever you acted doesnt like every single round you get to pick a new order, you get to do whatever you want.
+
+**Unassigned Speaker** - Yeah, sure.
+
+**Game Master** - So, but its just basically players go, monster goes, player goes, monster goes.
+
+**Waymon Tisdale** - Will the ooze count as an aquatic animal?
+
+**Game Master** - It is not an aquatic animal. No, sorry.
+
+**Game Master** - Uh, okay, so why dont whos gonna go first? On the player side, you guys get double attacks.
+
+**Waymon Tisdale** - Does anybody know anything about ooze?
+
+**Dr Uriah** - Do I know, Uh, do I know anything about ooze?
+
+**Game Master** - I dont, I dont think you know anything about it.
+
+**Dr Uriah** - No, I dont, I mean.
+
+**Waymon Tisdale** - Okay, well, I guess ill attack with my short sword.
+
+**Game Master** - All right here is how attacking works you are going to roll a D20.
+
+**Dr Uriah** - If theyre like undead or particularly evil, I might know something about them.
+
+**Game Master** - You are going to add any bonuses that you, uh, may have. Um, so, um, so these are, um, include maybe your class gets an attack bonus.
+
+**Waymon Tisdale** - I do not.
+
+**Game Master** - Okay, uh, do you have a, um, uh? If youre using a melee weapon you look for, see if you have a strength bonus.
+
+**Waymon Tisdale** - I do.
+
+**Game Master** - Plus one.
+
+**Game Master** - Okay, uh, and then if you were to range attack, itd be dexterity. So youre gonna roll a D20 and you.re gonna add a plus one that is a nine. Hello, and you are trying to beat the armor class of the Um uh meets or exceeds the Defenders armor class. The attack is successful and hits the defender. You hit. Okay, so now you are going to roll the UH.
+
+**Waymon Tisdale** - Damage.
+
+**Game Master** - Um, the damage.
+
+**Sir Phidipaldi** - So because he surprised the ooze.
+
+**Sir Phidipaldi** - And then this is a stretch, Im just asking.
+
+**Dr Uriah** - Yeah, yeah, yeah.
+
+**Sir Phidipaldi** - Does he get his surprise back stab attack?
+
+**Game Master** - Oh, Geez, I dont know.
+
+**Unassigned Speaker** - I dont know.
+
+**Game Master** - What does that do?
+
+**Waymon Tisdale** - Um, uh.
+
+**Dr Uriah** - Plus two to attack roll.
+
+**Waymon Tisdale** - Yeah, it gives me plus two.
+
+**Dr Uriah** - And you hit anyway.
+
+**Sir Phidipaldi** - But does it also do?
+
+**Dr Uriah** - It doubles, doubles the damage.
+
+**Game Master** - Lets do it.
+
+**Game Master** - Well, let him double the damage.
+
+**Dr Uriah** - Well, well, well, you roll twice, so it doesnt double you roll twice.
+
+**Unassigned Speaker** - Do that.
+
+**Waymon Tisdale** - So Im rolling a D6 minus one.
+
+**Waymon Tisdale** - So that wouldve been one, and then that is three.
+
+**Game Master** - Okay, so whats your total?
+
+**Waymon Tisdale** - Four.
+
+**Game Master** - Okay, all right, you, um, what are you attacking with again?
+
+**Waymon Tisdale** - A short sword.
+
+**Game Master** - Okay, your short sword, uh, plunges into the ooze, and, um, uh, yeah, exactly.
+
+**Dr Uriah** - Im gonna need some sound effects.
+
+**Game Master** - All right, whos gonna attack next?
+
+**Trout** - Ill. Just go around ooze, so I get to attack it. IM attacking twice.
+
+**Game Master** - Uh, were just gonna do round one and then, well, do round two.
+
+**Game Master** - Cause cause.
+
+**Dr Uriah** - He attacked twice because he has a backstab.
+
+**Trout** - Got it okay?
+
+**Game Master** - Yeah, yeah.
+
+**Trout** - So I get a two bonus on my spear, so what, Im rolling, what?
+
+**Game Master** - Youre gonna roll a D20, okay?
+
+**Trout** - May I may, I borrow one of those.
+
+**Trout** - And then, um, and again with my.
+
+**Sir Phidipaldi** - And then you add two.
+
+**Game Master** - And youre gonna add two.
+
+**Sir Phidipaldi** - And and I dont think you have a strength bonus.
+
+**Trout** - No negative.
+
+**Game Master** - Oh, so you have to subtract something. Whats your negative negative one?
+
+**Trout** - Yeah.
+
+**Game Master** - Okay, so you add plus two for Spear, minus one for strength, so youre gonna have a plus one.
+
+**Game Master** - Whatd you hit, whatd you roll?
+
+**Trout** - 13.
+
+**Sir Phidipaldi** - Plus one.
+
+**Game Master** - You hit.
+
+**Trout** - 14 Okay, but where does strength come into play, or or just the bonus?
+
+**Dr Uriah** - Its a bonus.
+
+**Game Master** - Its just the bonus. It just adds to you thats how it it it cause youre doing melee its strength.
+
+**Game Master** - If you were doing, range its dex.
+
+**Sir Phidipaldi** - Now in 5E, he would add his strength negative to his damage as well. Does that happen here?
+
+**Dr Uriah** - Uh, I mean, thats that.s crunch.
+
+**Sir Phidipaldi** - Yeah, I also am skeptical that they would do that, yes.
+
+**Game Master** - Uh, lets see if attack, uh, amount of damage inflicted is determined by the weapons damage die. Plus any Modifiers, thats all it says, Uh um. In Melee, combat characters may add their strength modifier.
+
+**Game Master** - So so.
+
+**Sir Phidipaldi** - So you get a minus one to your damage roll.
+
+**Trout** - Thanks, dude.
+
+**Sir Phidipaldi** - Yeah, youre, welcome.
+
+**Trout** - But not my plus two for my spear.
+
+**Sir Phidipaldi** - Its only attack, yeah.
+
+**Trout** - So, but the.
+
+**Dr Uriah** - It doesnt matter.
+
+**Trout** - But why is it like cause its a like 1D6 minus one? I get that its another comp right here, cause I have like my sling is 1d6, minus one.
+
+**Sir Phidipaldi** - And then your spear is 1D6, right?
+
+**Trout** - Yeah.
+
+**Sir Phidipaldi** - Yeah, thats without thats just the base damage of the weapon.
+
+**Unassigned Speaker** - So two.
+
+**Game Master** - Okay, two total damage.
+
+**Game Master** - All right, whos going next?
+
+**Sir Phidipaldi** - I will attack.
+
+**Sir Phidipaldi** - With my twohanded sword.
+
+**Sir Phidipaldi** - Im gonna cleave, some ooze. Cleave, I do a nine.
+
+**Game Master** - Okay, uh, you hit.
+
+**Sir Phidipaldi** - All right, and I.
+
+**Dr Uriah** - Its a lot of ooze.
+
+**Sir Phidipaldi** - I do.
+
+**Game Master** - Theres plenty. Yeah, its not a hard to hit thing.
+
+**Sir Phidipaldi** - I do five damage.
+
+**Dr Uriah** - On a metal slime.
+
+**Game Master** - Uh, you do five damage, all right, you significantly hurt that little guy.
+
+**Sir Phidipaldi** - Sir Chumunga.
+
+**Game Master** - Um, and then rich.
+
+**Waymon Tisdale** - Squintss.
+
+**Game Master** - No Squintss gets skipped.
+
+**Game Master** - Oh, its, it got skipped. Um, okay, Squints.
+
+**Dr Uriah** - And then, you know, ooze is skipped.
+
+**Dr Uriah** - And then youre gonna use it again.
+
+**Trout** - Um, and that would be, Uh, wheres the attack plus one?
+
+**Game Master** - Okay.
+
+**Trout** - So 13.
+
+**Game Master** - Thats okay.
+
+**Trout** - And then this and this attack does get added. No, no, thats right, thats, uh, thatd be a strike.
+
+**Game Master** - Uh, whats his, uh?
+
+**Trout** - Strike 12.
+
+**Game Master** - What did he use to attack?
+
+**Sir Phidipaldi** - A sling.
+
+**Trout** - Sling.
+
+**Game Master** - So thats his dexterity gets added.
+
+**Trout** - 14.
+
+**Game Master** - So is that a plus one?
+
+**Sir Phidipaldi** - Its not.
+
+**Game Master** - It is not.
+
+**Trout** - Three.
+
+**Game Master** - I want you to describe how S. Squintss and his sling kills the gray ooze.
+
+**Trout** - With, like, masterful.
+
+**Trout** - Aiming.
+
+**Trout** - And just like martial prowess.
+
+**Trout** - Like, lets go this kind of jagged looking stone, and it just.
+
+**Trout** - Kind of pierces straight to the heart of the ooze.
+
+**Trout** - And, uh, you can see it kind of there, wobbling in in the ooze as it like, you know, encountered the oozes vital organs.
+
+**Game Master** - Squintss immediately looks to you Uh um, Trout, for approval right after its done.
+
+**Trout** - I give a slight nod and I go, Well done, Apprentice.
+
+**Game Master** - So he, Um, you see him collect some of the ooze and put it in his pocket.
+
+**Sir Phidipaldi** - Gross.
+
+**Game Master** - And say that hes going to show this to the people back home, um.
+
+**Trout** - Does it like eat away at your armor or anything?
+
+**Game Master** - Uh yeah, thatll be coming. Uh, so the uh, so so, uh. The ooze is dead, the goblins are horrified, and they begin arguing amongst each other. And, um, one of them, Uh um, snurg. The walkout walks up to, Um, Squintss and says, How dare you, how dare you take another life of a human you? There are no judges here, there is nobody whos above anyone else. That is why we put the ooze in the alcove.
+
+**Waymon Tisdale** - Are we still doing the stick thing?
+
+**Game Master** - Were holding against the stick thing. The stick is on the ground if you want to grab it.
+
+**Waymon Tisdale** - Uh, no, shut up, man, do you know, do you know what ooze eats? How does how does ooze survive?
+
+**Game Master** - They all talk to each other for a little bit. And then Grimble looks at you and he goes. None of us know how ooze, eats or survives, but that is because.
+
+**Waymon Tisdale** - Because because if you did, you probably wouldnt have sealed it behind in a stone alcove to slowly starve to death. It probably only attacked us and couldnt be reasoned with, because it had been left to die by a bunch of strange goblins.
+
+**Game Master** - You see them all nodding, theyre all nodding, and then they talk to each other, They look at you, they go way.Mond is wise.
+
+**Unassigned Speaker** - That is true.
+
+**Trout** - We also defended your future home from attack.
+
+**Game Master** - We would not have known what to do with the ooze in this way. We have outsourced our violence to somebody else. In order to make ourself feel safe. We need to determine how we feel about this later.
+
+**Trout** - While theres that chatter going on.
+
+**Trout** - Im just gonna look in there to see if the ooze had any, uh, valuables.
+
+**Game Master** - There is nothing of value in there. Im sorry.
+
+**Unassigned Speaker** - Eh?
+
+**Game Master** - Yeah, yeah, um.
+
+**Dr Uriah** - So do I do anything about the providence of this jewel ritual dagger?
+
+**Game Master** - Yeah, why dont we do a roll of your, um?
+
+**Dr Uriah** - Yeah, so its on a one or two, right?
+
+**Game Master** - Yeah, its on a one or two you got a one.
+
+**Game Master** - Okay, um, this is something that was, Um, definitely. um, like you could kind of source that it was, uh, um, of the time period that, um, the Barrow bound was like, created and sealed to put.
+
+**Game Master** - The people in your guess is that its probably worth upwards of 200 gold if you sold it in a major city.
+
+**Sir Phidipaldi** - Now do we get the 2, do we get the 200 XP for it now?
+
+**Game Master** - I think its once you liquidate it.
+
+**Sir Phidipaldi** - Okay, okay.
+
+**Game Master** - Is, I think, the way ill do it?
+
+**Sir Phidipaldi** - No problem.
+
+**Game Master** - So, yeah, so okay, so in this room, um, there is a, uh, obviously a, uh, hallway going back to the West.
+
+**Game Master** - To the Antechamber that you came from, theres also stairs going down.
+
+**Waymon Tisdale** - HM UH should ask the Goblins.
+
+**Trout** - Yeah.
+
+**Waymon Tisdale** - You know, have you explored any of the other rooms?
+
+**Game Master** - Uh, they once again get quiet and they say, Uh, well, there were more than four of us when we came here. And, uh, many of our friends have valiantly, um, passed away, um, down below.
+
+**Waymon Tisdale** - How so?
+
+**Game Master** - Uh, well, um, its a little complicated, um.
+
+**Sir Phidipaldi** - Did you seal seal them behind a stone?
+
+**Game Master** - So, uh, what they say is, um, that, uh, you know how theres these pictures on the wall in the room over there?
+
+**Unassigned Speaker** - Yeah, the one in the West.
+
+**Game Master** - Well, at least one of them is still alive.
+
+**Game Master** - And killed a bunch of our friends.
+
+**Waymon Tisdale** - Is he real big?
+
+**Game Master** - Uh, yes.
+
+**Sir Phidipaldi** - Great, okay.
+
+**Game Master** - He had a huge sword.
+
+**Dr Uriah** - Um, Alfred, then.
+
+**Waymon Tisdale** - Yeah, yep.
+
+**Trout** - Should we, should we finish off this level before we go down?
+
+**Sir Phidipaldi** - Yeah, definitely.
+
+**Trout** - Real quick.
+
+**Waymon Tisdale** - What about the room in to the West?
+
+**Game Master** - Uh yeah, so the room to the West is where you came from. Then theres a R area to the west of that.
+
+**Unassigned Speaker** - West of that.
+
+**Game Master** - Yeah, so if youre gonna go over there.
+
+**Waymon Tisdale** - Well, I was gonna ask them about it.
+
+**Game Master** - Oh um, theyre like theres a bunch of weird statues in there, its strange.
+
+**Trout** - Well, lets take a look.
+
+**Waymon Tisdale** - Well, well, well, go scope it out and well, think about.
+
+**Waymon Tisdale** - Old Alfred, down below.
+
+**Game Master** - Oh okay, all right, Um, uh, really quick. Uh, let me check something okay, uh, you are a metaphysician, right?
+
+**Dr Uriah** - I am.
+
+**Game Master** - Okay, sorry.
+
+**Unassigned Speaker** - Its fine.
+
+**Game Master** - Okay, uh, let me just check Dagonine really quick. I I wanna make sure that Im not, uh.
+
+**Sir Phidipaldi** - Oh, cause you can detect secret doors. Oh, yeah.
+
+**Game Master** - Thats what Im trying to f.
+
+**Game Master** - Figure out.
+
+**Dr Uriah** - Thats right.
+
+**Game Master** - Without giving it away.
+
+**Dr Uriah** - Uh yeah, its like a plus two, uh, but a plus four from actively looking.
+
+**Game Master** - Yeah, there you go.
+
+**Dr Uriah** - I think its A plus two passive and a plus four active, right?
+
+**Game Master** - Well, did you want to actively look for secret doors?
+
+**Dr Uriah** - No, why would you?
+
+**Game Master** - Why would you, yeah, darting eyes, right?
+
+**Game Master** - So so first of all, what I should do is I should just roll a one I. I need to roll a D6 to see if you found one.
+
+**Game Master** - Without L.
+
+**Dr Uriah** - Its A one to four on a D6.
+
+**Dr Uriah** - Searching for a secret one to four on.
+
+**Dr Uriah** - Search for.
+
+**Game Master** - So neither you nor, um, uh, Waymond found it passively.
+
+**Game Master** - But did you now want to look actively okay? Why dont you roll a D6?
+
+**Trout** - So were were in the room.
+
+**Game Master** - No th, this is Youre still in the room with the Goblin.
+
+**Dr Uriah** - Oh, okay, were gonna do this in every room.
+
+**Dr Uriah** - Now for every game.
+
+**Dr Uriah** - Wherever we are, hey, look at that.
+
+**Game Master** - Look at that you found a secret door. Okay? So you find, as you look around the room, there is a, um, rectangular seam in the stone, and when you push on it.
+
+**Sir Phidipaldi** - What direction?
+
+**Game Master** - Uh, this is on the east eastern part of the wall.
+
+**Game Master** - Um, it opens up into a small room where theres a chest of polished dark wood.
+
+**Game Master** - It sits in the middle of the room, theres stone shelves built into the walls, upon which sit thick white candles in golden holders.
+
+**Dr Uriah** - Okay, are the candles on?
+
+**Game Master** - Uh, the handles of the uh of what?
+
+**Dr Uriah** - I said The candles, the candles.
+
+**Unassigned Speaker** - The Candle No, the candles are not lit.
+
+**Trout** - We found a secret room, Richard, HM, before we even left the room. All right, I will take the candle holders.
+
+**Game Master** - Okay, um, you are going to take seven candle holders.
+
+**Sir Phidipaldi** - Seven gold.
+
+**Game Master** - And uh, no seven, yeah, gold candle holders.
+
+**Game Master** - And then just mark, so I dont have to look em up later. Those are worth 50 gold each.
+
+**Trout** - Okay, wow.
+
+**Dr Uriah** - Were gonna go up a level, uh, can we, uh, I, I. I nod at Ned and I tell him to go and look at the chest, like to examine it for traps.
+
+**Game Master** - Yeah, uh, Ned looks at it and is like, Looks fine, boss.
+
+**Dr Uriah** - Okay, great, go ahead and open it.
+
+**Game Master** - The lid is carved with twisting vines, flowers and leaves.
+
+**Game Master** - He opens it up and inside is a quarter staff and monastic robes. And, um.
+
+**Waymon Tisdale** - Makings of a torch.
+
+**Game Master** - Yeah, and uh, and uh.
+
+**Dr Uriah** - The makings for an armor upgrade for people who dont wear armor.
+
+**Game Master** - And, um, Brother Dirk looks at it and says, These are the robes of Saint Arthur.
+
+**Sir Phidipaldi** - Oh, well, I feel like he should put them on.
+
+**Game Master** - Hes like these are too holy to put on, these are, I mean, these are treasures, these are, this is incredible.
+
+**Sir Phidipaldi** - Would you rather, we make them into torches?
+
+**Game Master** - You could not s, you could not have such sacrilege.
+
+**Sir Phidipaldi** - Then put it on.
+
+**Dr Uriah** - Um, do I, um, hold on, hang on.
+
+**Unassigned Speaker** - Does.
+
+**Dr Uriah** - Are these magical?
+
+**Sir Phidipaldi** - Does Uriah know who Saint Arthur is?
+
+**Game Master** - Uh, sure.
+
+**Dr Uriah** - Okay, great.
+
+**Game Master** - Just like a a saint.
+
+**Dr Uriah** - A saint.
+
+**Game Master** - Like a its like, just some God in this world.
+
+**Game Master** - Right, so Saint, like Saint of this world.
+
+**Sir Phidipaldi** - Okay, great.
+
+**Game Master** - Yeah, um.
+
+**Dr Uriah** - Like, Do Do I sense anything on these things? Are they magical, or are they very mundane?
+
+**Game Master** - Um, I believe you bought some powder, didnt you?
+
+**Dr Uriah** - MMHmm.
+
+**Game Master** - That you could sprinkle.
+
+**Dr Uriah** - Oh, that was Witcher powder. No, I didnt I didnt.
+
+**Game Master** - Oh, you didn.t buy it.
+
+**Dr Uriah** - No, I didnt buy it.
+
+**Game Master** - Its a shame.
+
+**Dr Uriah** - Is that Witcher powder that doesnt achieve like the thing? Oh no, thats what I was gonna say.
+
+**Game Master** - Yeah, yeah, yeah, yeah, she said. She said that you could sprinkle it on something, and then if it glowed, uh, that it was magical.
+
+**Sir Phidipaldi** - Ah, all right, so we can wait till we go back to her. Uh, can Uriah wear armor? No, okay, um.
+
+**Game Master** - Do you wanna wear the robes?
+
+**Dr Uriah** - Fuck, yeah.
+
+**Game Master** - Put the robes on.
+
+**Waymon Tisdale** - Well, I have a chain mail vest that I found that I cant wear. Yeah, I cant wear, I cant wear armor.
+
+**Game Master** - You can wear robes.
+
+**Dr Uriah** - Yeah, no, I know, I know.
+
+**Game Master** - Okay, so you gonna put em?
+
+**Dr Uriah** - But I cant wear chain mail.
+
+**Sir Phidipaldi** - Yeah, yeah, are you gonna put it on?
+
+**Dr Uriah** - Oh man, hopefully theyre not. Oh, wait, I can tell if an items cursed.
+
+**Sir Phidipaldi** - Ah, it is not cursed.
+
+**Dr Uriah** - Okay, that that I can like that I can.
+
+**Dr Uriah** - Uh, that I do know.
+
+**Dr Uriah** - Okay, yeah, ill put em on.
+
+**Game Master** - Great, you put on the majestic, the whole robe.
+
+**Dr Uriah** - I mean, are they nice?
+
+**Game Master** - Theyre gorgeous.
+
+**Dr Uriah** - Theyre not like rotten.
+
+**Game Master** - No, no, but like Dirk is like deeply offended.
+
+**Dr Uriah** - Thats fine, Youre. I look at him, I go like, your boss sucks.
+
+**Game Master** - Okay, you, um, theres nothing else to see in this room.
+
+**Unassigned Speaker** - And I guess I take the quarterstaff, too. Any notable effect of him wearing the robes?
+
+**Game Master** - No, nothing notable.
+
+**Game Master** - Great, yeah.
+
+**Dr Uriah** - Cause I already have a staff and maybe its a better one.
+
+**Game Master** - So now you head to the West to go back to that entry antechamber.
+
+**Waymon Tisdale** - I feel like since the sick robe should be a charisma boost.
+
+**Unassigned Speaker** - Uh.
+
+**Dr Uriah** - I got, I got a plus one charisma.
+
+**Game Master** - And now you head to the room to the west of that.
+
+**Sir Phidipaldi** - Yeah, the statue, okay, the statue room.
+
+**Game Master** - Um, in this room, uh, much like the Goblins described, who are kind of trailing along behind you. You guys have quite a big group at this point.
+
+**Game Master** - Um, there are four statues, each of them are about eight feet tall, one in each corner of the room. And each statue is a knight, with a different word etched into the base.
+
+**Trout** - Oh, its the four Knights.
+
+**Sir Phidipaldi** - So is one of them giant?
+
+**Game Master** - Uh, one of them is giant. He is, uh, um, gripping a sword and a shield and underneath, uh, his statue, it says Valor.
+
+**Sir Phidipaldi** - Okay, hold on statues.
+
+**Trout** - So thats Alfred.
+
+**Sir Phidipaldi** - Alfred.
+
+**Trout** - And can you describe the other ones? Theres a mir like a.
+
+**Game Master** - The next one is.
+
+**Game Master** - A A statue with a staff cradled in the arm hands clapped in prayer and says Piety.
+
+**Unassigned Speaker** - So thats M. Myrddin.
+
+**Trout** - Myrddin Okay.
+
+**Sir Phidipaldi** - Hold on Myrddin Piety, Yeah.
+
+**Game Master** - Um, uh, the third one is somebody reading from an open book.
+
+**Game Master** - And it says wisdom at the bottom.
+
+**Sir Phidipaldi** - So thats probably Brandon.
+
+**Game Master** - The fourth statue says duty as in duty.
+
+**Dr Uriah** - The crossed off the O above the H.
+
+**Game Master** - Exactly at the bottom and its the figure is bent over carrying a heavy load.
+
+**Dr Uriah** - Is that like a axe?
+
+**Trout** - Wyllt.
+
+**Game Master** - Uh, maybe, uh, yeah, its just like a like, you know, a bunch of like indeterminate kind of like heavy objects, um?
+
+**Sir Phidipaldi** - Sorry, and the one that said wisdom was reading.
+
+**Game Master** - Uh, yes, reading from an open book.
+
+**Trout** - So these are all just solid stone statues.
+
+**Game Master** - Solid stone statues.
+
+**Trout** - The plinth, too.
+
+**Game Master** - Yep, exactly.
+
+**Trout** - Nothing fancy or movable or anything.
+
+**Trout** - So these could also maybe be like words what to say to get them to stop?
+
+**Sir Phidipaldi** - Yeah, the question is, is this clues to a puzzle, or is it a puzzle?
+
+**Game Master** - You hear a sound of dripping water.
+
+**Game Master** - There is a little bit of an opening, uh, in, like the northwest of the room.
+
+**Trout** - At least ano another opportunity for, um, door searching. Perhaps I was about to say, Do I do? We passively know of a secret door here.
+
+**Game Master** - Uh, no, you. I guess I have to roll, even if theres nothing.
+
+**Game Master** - Uh, just to make sure to keep the illusion.
+
+**Waymon Tisdale** - If I could hear water dripping.
+
+**Waymon Tisdale** - Uh, can I use my aquatic vision with tide sense?
+
+**Dr Uriah** - To know the the providence of the water where it coming from.
+
+**Game Master** - Yeah, um, okay, I guess I could give you something like that. Uh, lets say.
+
+**Waymon Tisdale** - I didnt write down what, either.
+
+**Dr Uriah** - I think tide sense is is sounds f I didnt write it down either. Its the only one I wrote nothing about.
+
+**Game Master** - Sound sounds like its coming from a ceiling from the ceiling.
+
+**Dr Uriah** - Its like aquatic vision. I think I can understand what that means, you know?
+
+**Sir Phidipaldi** - Okay, are you saying that there is a path to the Northwest or theres just a dripping sound from the northwest corner?
+
+**Game Master** - Its its like a a room that is like attached to it.
+
+**Game Master** - Like, like, think of it like, Um, the way the bathrooms attached to this like room, its like, Yeah, theres like a little bit of a hallway, but not like a deep hallway.
+
+**Sir Phidipaldi** - Okay, great, all right, I walk, I walk in.
+
+**Waymon Tisdale** - An en suite.
+
+**Game Master** - An en suite, yes.
+
+**Game Master** - Um, s theres some s its a small room.
+
+**Game Master** - Uh, about like, 15 by 15.
+
+**Game Master** - Theres a bunch of stone pews in there.
+
+**Game Master** - Uh, that, like, are just disintegrating.
+
+**Game Master** - And at the foot of the At at the front of the room, theres a moldy statue of St. Arthur. Um, St. Arthur, Um, Uriah, you know, quite a bit about St. Arthur. He is the patron of hunters. Um, so this is a hes, a bearded man with a spear, um, and a patch of mold is growing over the statues base. Um, and then, uh, waters dripping from the ceiling kind of like onto the statue.
+
+**Sir Phidipaldi** - Oh, sure.
+
+**Game Master** - Which is kind of like where the mold?
+
+**Sir Phidipaldi** - Where the moss is coming from, yep, sure.
+
+**Game Master** - Yeah, right, um, so this is, obviously, you know, a barrow mound, and then this part had like A.
+
+**Sir Phidipaldi** - Chapel.
+
+**Game Master** - Little Chapel.
+
+**Unassigned Speaker** - Yeah, exactly.
+
+**Sir Phidipaldi** - Hmm, okay, ill clear the Moss off his face.
+
+**Dr Uriah** - Yeah, I was just about to do that.
+
+**Game Master** - All right, I want, uh, so w as you go to touch it.
+
+**Game Master** - Um, a spore cloud kind of like.
+
+**Sir Phidipaldi** - Awesome.
+
+**Game Master** - Shoots out in the.
+
+**Game Master** - Sir Phidipali's face.
+
+**Game Master** - Um, and, uh, I want you to save versus poison right now.
+
+**Waymon Tisdale** - I should have detected poison for you.
+
+**Waymon Tisdale** - Thats okay, thats all right, all right.
+
+**Sir Phidipaldi** - My saving throw is a 12.
+
+**Game Master** - Okay, so you are trying to roll what a 12 or under, I believe.
+
+**Unassigned Speaker** - I do not remember.
+
+**Unassigned Speaker** - Well, let us look, uh.
+
+**Sir Phidipaldi** - I want to say its a roll over.
+
+**Game Master** - It might be a roll over. Everything else seems to be so, um.
+
+**Dr Uriah** - Make sure I have I have poison, uh, protection. I mean, not a bad.
+
+**Game Master** - You know what, L? The best way for me to look is that, yep, saving throw goes down as you go up.
+
+**Game Master** - As you go up in level.
+
+**Game Master** - So youre right, its a roll over at it, hit it or over.
+
+**Sir Phidipaldi** - Okay, so 12 or over.
+
+**Game Master** - You got it great, um, you take no damage.
+
+**Game Master** - Uh, as this spore cloud disperses, but you feel blessed.
+
+**Game Master** - You are gonna get plus one.
+
+**Game Master** - To all of your rolls.
+
+**Game Master** - While in this barrow mound for the rest of the barrow mound adventure.
+
+**Game Master** - And youve been blessed by cause you cleaned St. Arthur.
+
+**Sir Phidipaldi** - I did.
+
+**Game Master** - Absolutely, um, those are all the rooms on this floor.
+
+**Game Master** - That you guys have seen the, UH, back in the Goblin room, there are stairs that go down.
+
+**Trout** - I think were gonna head for, Uh, go forward, whos our lead, uh s um, Scout.
+
+**Waymon Tisdale** - Yeah, I can do that.
+
+**Dr Uriah** - I do.
+
+**Game Master** - All right, Ned and Wade.
+
+**Dr Uriah** - And you have you have a buddy in case you need a backup.
+
+**Game Master** - So you guys head down the stairs.
+
+**Dr Uriah** - Checking for traps?
+
+**Game Master** - And Waymon
+
+**Unassigned Speaker** - Always.
+
+**Dr Uriah** - Checking for traps, Looking for doors?
+
+**Game Master** - And as you go down the stairs, you hit a what looks like a long corridor. You could see it kind of going off in the distance and right. At the bottom of the stairs are the bodies of three goblins in bloody pieces at the bottom of the stairs. Um, the walls and ceiling uh of the hall, drip with condensation, icy mist and, uh, viscera, obviously.
+
+**Waymon Tisdale** - Does drop dead? Ned accept bodies that he didnt kill?
+
+**Game Master** - Why dont you ask him?
+
+**Waymon Tisdale** - Drop dead, Ned.
+
+**Dr Uriah** - What, What up, pal?
+
+**Game Master** - There you go.
+
+**Waymon Tisdale** - You want those goblins?
+
+**Dr Uriah** - Ah, heres what ill do ill cut yous a deal ill? Take half off five gold pieces for dead bodies.
+
+**Waymon Tisdale** - Seems fair.
+
+**Waymon Tisdale** - All right, great.
+
+**Game Master** - Uh, you will have to. If you want Ned to get them, youre gonna have to sneak them past the goblin. Because obviously I dont think they want their compatriots. Uh, defiled by Ned, so its.
+
+**Dr Uriah** - Oh, Hohoho, who said anything about Defilement, Buddy?
+
+**Game Master** - You know what, I dont think that.ll give them a proper goblin burial.
+
+**Waymon Tisdale** - Im sure Youve got some some body bags on them.
+
+**Game Master** - So its.
+
+**Dr Uriah** - Yeah, a its a bag of holding its full of bodies.
+
+**Game Master** - All right, the S The the corridor is, um, gravely chill its cold, wet air, its like sticking to your skin. Uh, like, Um, kinda like, just like a weird cold sweat.
+
+**Game Master** - Um, it looked like the. When you look at the bodies of the Goblins, it looks like they were killed. Running towards the stairs like the stairs. You just came down, so they were kind of like their bodies.
+
+**Waymon Tisdale** - Running back.
+
+**Game Master** - Like they were facing, Yeah.
+
+**Game Master** - They were like, Oh God, we gotta get out of here, right?
+
+**Sir Phidipaldi** - What kind of wounds do they have?
+
+**Game Master** - Uh uh, sword wounds like it looks like they were, uh.
+
+**Waymon Tisdale** - Okay, dismemberment.
+
+**Game Master** - Dismemberment, exactly. Mist is seeping in through the cracks in the walls and the ceiling, falling in kinda like slow, gaseous streams like along the ground. You can kind of just like mist along the ground. And then what you can see as youre as you move forward a little bit with your your lantern is along the wall. Um, there are these religious carvings of, uh, animals being pursued by hunters running through the forest. And these are the kind of, um, uh, stylized swirl patterns that you would.
+
+**Game Master** - See in kind of like older. Um uh, religious carvings, um? And its one continuous scene that seems to be running the length of the corridor of like, you know, these kind of, Um, uh.
+
+**Game Master** - Hunting scenes.
+
+**Game Master** - Hunting scenes Um, you hear all the way down the hallway. It sounds like theres some sort of sounds like all the way down there.
+
+**Game Master** - But as you as you walk just 15 feet in, there is a room branching off to your left.
+
+**Sir Phidipaldi** - Which way does the corridor run?
+
+**Game Master** - Uh, this corridor runs you came in from the East.
+
+**Sir Phidipaldi** - Uhhuh and it runs West.
+
+**Sir Phidipaldi** - Okay, so we came from the East and its going West.
+
+**Game Master** - Thats right, and so theres a room thats almost immediately to your south.
+
+**Game Master** - And then theres a long corridor that keeps going to the West, where you hear sounds at the end of it.
+
+**Sir Phidipaldi** - What kind of sounds?
+
+**Game Master** - Uh, scratching.
+
+**Dr Uriah** - I like how we both have our own little maps.
+
+**Dr Uriah** - That were making.
+
+**Trout** - So, yeah, lets take a look at the room to the South.
+
+**Game Master** - All right, you, you go to the room in the South and you see. A This is quite a large rectangular room. Uh, about, um, 15 by, Uh, 40 or 50 or so.
+
+**Game Master** - Um, theres a circular pool of water built into the floor.
+
+**Game Master** - And globs of green slime are floating on the surface of the water like algae. Um, the glint of gold can be seen at the bottom of the pool.
+
+**Trout** - So Im gonna like, Take my torch walk a bit closer, just kinda like, look at, you know, see if the slime is.
+
+**Unassigned Speaker** - Move to Attack Point.
+
+**Trout** - Have movement.
+
+**Game Master** - Okay, all right, uh, the um, uh um, the, uh. The slimes are not like the the slimes are alive. They definitely like move around a little bit as you get close, but they dont seem to be like.
+
+**Game Master** - Skittering away from like the heat or whatever, um.
+
+**Trout** - Theyll be in danger.
+
+**Waymon Tisdale** - Would the slime?
+
+**Waymon Tisdale** - Would those slimes could be considered, uh, aquatic animals?
+
+**Sir Phidipaldi** - I think they would.
+
+**Sir Phidipaldi** - Well, theyre aquatic.
+
+**Sir Phidipaldi** - The question is, Are they animals?
+
+**Game Master** - They are aquatic. I will G, I will grant you that these are aquatic animals.
+
+**Waymon Tisdale** - Oh my God, let me let me talk to that slime, Oh my God.
+
+**Dr Uriah** - Talking to that slime slime time.
+
+**Game Master** - All right, here we go.
+
+**Dr Uriah** - Slime talk.
+
+**Dr Uriah** - My favorite, My favorite podcast.
+
+**Sir Phidipaldi** - I I have actually never developed a slime voice. Im very interested, Jason, in what you do here.
+
+**Game Master** - I didn.t come in its nothing.
+
+**Sir Phidipaldi** - Its awesome thank you that.s awesome.
+
+**Sir Phidipaldi** - Im gonna do it.
+
+**Waymon Tisdale** - Hows it going, Fountain, guys?
+
+**Game Master** - Oh, hanging out its, Uh.
+
+**Dr Uriah** - This is the rest of the eldest that IM concerned were camping out.
+
+**Unassigned Speaker** - Everybody.
+
+**Dr Uriah** - Getting to know our slime friends?
+
+**Waymon Tisdale** - Bring out your lunches. Uh, my friends and I, we just came here to, Uh, were were tracing the journey of Sir Brandon to.
+
+**Dr Uriah** - Oh yeah, big fans over here.
+
+**Waymon Tisdale** - Were fans. And, uh, you know, this is a very important place in his glorious journey to to Slay the Dragon. So were just trying to learn everything we can about this barrow mound.
+
+**Game Master** - Oh, I havent left this pool.
+
+**Waymon Tisdale** - Have you had many visitors?
+
+**Game Master** - People goblins. I was a goblin once upon a time I wont.
+
+**Waymon Tisdale** - What was, Uh, what about the what did the people look like?
+
+**Trout** - Oh, that was a long time ago.
+
+**Waymon Tisdale** - Theres like we heard theres A.
+
+**Game Master** - Slimes Dont have great memories.
+
+**Waymon Tisdale** - We heard theres like a really big guy down here.
+
+**Dr Uriah** - Oh, yeah.
+
+**Waymon Tisdale** - Wheres, Uh, where does he hold up?
+
+**Game Master** - He runs around.
+
+**Game Master** - Killed the Goblin.
+
+**Waymon Tisdale** - Is, uh, what? Whats his deal? He is half dead, very mad. I dont know hes dead a slime, so he hes dead. Yeah, but but hes still hes Hes undead Ive never talked to anyone before this youre doing great. Oh thank you, yeah, you.re doing a great job, youre a natural fine. Talk a little for us, thats too bad. I can talk. This place is pretty cool. Ask him Whats in the pool.
+
+**Dr Uriah** - Yeah, ask if we can get the gold.
+
+**Waymon Tisdale** - Uh yeah, we couldnt help, but notice is there is this your gold in the pool? Oh no, says you mind. If we take it, uh, go ahead.
+
+**Game Master** - Okay, so you are talking to a slime.
+
+**Game Master** - Uh, and.
+
+**Sir Phidipaldi** - And he said he didnt mind if we took the gold.
+
+**Dr Uriah** - He said he did not mind if you took the gold. And and we were basically trying to ask, is the Is that water? is it acid? Is it gonna hurt, right? If we grab it? Oh, its fine.
+
+**Game Master** - Is there a lot of gold? is it coins you cant tell? Is it like you cant tell its? A its? A You know, actually its not that deep of a pool, its only a fivefoot pool, fivefoot deep pool. Um, so you can actually see at the bottom. Theres a human skeleton with gold teeth, huh?
+
+**Game Master** - And hes holding a silver dagger, ooh.
+
+**Trout** - Squintss, go get me that dagger. Its time for your, your, your swimming merit badge Squintss, Squintss. Uh, says, Uh, can I use one of my tips? Yes, uh, how dont melt when youre in a adventuring party? Uh, like we are here, and you dont wanna do something that somebodys asking you to do. Whats the best way to handle that in a group? Whats your rank in the party? Uh well, I believe that I am Sir Dirks manager. Um, well, in regards to me, who instructed you to go do it, you are subordinate. Yeah, thats true. I yeah, thats true, so that means you have to follow my orders. Yeah, but but then c, could he? Then, like, then he can go down? He like shit, rolls downhill, right?
+
+**Sir Phidipaldi** - Delegate.
+
+**Trout** - You may instruct Dirk if you please ill, call him Dirk. He looks officiously over at Dirk. Get down in that pool and then Dirks like, I dont even know how to swim. And Squintss goes. Its only five feet deep, its not that like.
+
+**Dr Uriah** - And Squintss. The Slimes also its only five feet deep.
+
+**Game Master** - Dirk, uh, squats into the pool.
+
+**Waymon Tisdale** - Oh no, oh, no.
+
+**Game Master** - Dunks down and comes out with a skull that has, uh, gold teeth and hes like, Uh, May, we could lay, we could lay this. M 156. Yeah, like, very, very specific. Yes, I know, I know everything else has been much broader. Yeah, is the gold tooth worth anything? I mean, the gold teeth are worth 20. Oh, okay, um, anything else you wanna do, uh? And so the other thing is, in the slime pool room, there is a, um, uh, an antecove off to the West. And, um, and, uh, Waymond, you, you sense something you.
+
+**Waymon Tisdale** - What do I sense?
+
+**Game Master** - As you look around the room.
+
+**Game Master** - Uh, you notice an incongruous groove in the stone, uh of the.
+
+**Waymon Tisdale** - Sick, sick beats.
+
+**Game Master** - Of the Um, on the southern part of the room.
+
+**Waymon Tisdale** - Uh, in the floor.
+
+**Game Master** - No, no, its on the its on the wall.
+
+**Waymon Tisdale** - On the wall.
+
+**Game Master** - Yeah, like a groove in the stone in the wall like a.
+
+**Dr Uriah** - Yeah, yeah, like a hidden, open, hidden door.
+
+**Waymon Tisdale** - Go, uh, go, peep that.
+
+**Game Master** - Yeah, you look at it. And you think that if you had like a crowbar or some sort of tool, that could wrench it, that you could open up something something else. Oh, I bet you got that.
+
+**Unassigned Speaker** - CROWBAR No, definitely. One of us has a crowbar.
+
+**Dr Uriah** - Well, who has the thiefs? Tools, cause the crowbar and and?
+
+**Waymon Tisdale** - My other characters, a thief, um?
+
+**Dr Uriah** - Uh um, this guys, a do you have a crowbar?
+
+**Waymon Tisdale** - We dont I have, um, a whetstone and a dagger.
+
+**Unassigned Speaker** - MM Now I would make the argument go ahead that that we do have drop dead. Ned here, who is a a thief, a thief by trade, who you would assume would also come with thief tools. I I, I would ill ill roll with that story. So he hands you, he hands you a crowbar. Okay, you, uh, crack it open and you see that theres a sh, um, a a small like fivefoot or so passage that goes to the South that just ends in a blank wall. But obviously you can tell that if you just pushed on that, you can open up onto the other side. Um, so I assume youre gonna open that up as well.
+
+**Waymon Tisdale** - I am, but first.
+
+**Waymon Tisdale** - Im gonna check for traps.
+
+**Game Master** - Go a all right, um uh, lets see here.
+
+**Waymon Tisdale** - Cause if I were gonna put a trap somewhere, this would be a good place for it.
+
+**Dr Uriah** - Absolutely, yeah, um, the room before the room.
+
+**Game Master** - Right, uh, you do not detect any traps.
+
+**Game Master** - Okay, all right, you open up the door.
+
+**Waymon Tisdale** - Wait before I open the door.
+
+**Game Master** - Go ahead.
+
+**Waymon Tisdale** - Can I, uh, kind of put my ear?
+
+**Game Master** - Yeah.
+
+**Waymon Tisdale** - Near it, do I hear anything?
+
+**Game Master** - Uh, you do not.
+
+**Waymon Tisdale** - Can hear an angry undead giant stirring.
+
+**Game Master** - You do not hear anything like that.
+
+**Waymon Tisdale** - Okay, then ill open the door.
+
+**Game Master** - Okay, you open the door, it creaks open and you see a, uh, room thats about, Um, uh, 20 by 15 ri this r rectangular room, uh. And theres a statue of a noble woman in the center of the room and shes holding a sword horizontally in front of her. And with her, uh, proud eyes. Looking down before her and flush with the wall behind her is a closed set of stone doors.
+
+**Waymon Tisdale** - The noble woman holding a sword.
+
+**Game Master** - Yeah, like that.
+
+**Sir Phidipaldi** - Horizontal.
+
+**Trout** - And the s the sword is stone.
+
+**Game Master** - Uh, yes, the.
+
+**Unassigned Speaker** - The.
+
+**Game Master** - The the yeah, its, its, yeah, its a its like a statue like a stone statue, yeah.
+
+**Sir Phidipaldi** - It does it look like shes looking at the sword or shes looking past the sword.
+
+**Game Master** - Shes looking down.
+
+**Game Master** - Like, kind of like like this a little bit.
+
+**Sir Phidipaldi** - I see, okay.
+
+**Waymon Tisdale** - But clearly pointing at the stone doors.
+
+**Game Master** - Yes, yeah.
+
+**Waymon Tisdale** - Uh, I mean i'll Check for traps again.
+
+**Game Master** - MMHmm Uh, where?
+
+**Waymon Tisdale** - At the doors.
+
+**Game Master** - At the doors, yeah, absolutely.
+
+**Waymon Tisdale** - Is there anything on the statue there, any writing or anything notable?
+
+**Game Master** - Uh, no, you see that the, um, theres nothing, theres nothing on the stone doors that you see that like appears to be a trap.
+
+**Waymon Tisdale** - And theres nothing else in the room but the statue.
+
+**Game Master** - Yeah, thats right.
+
+**Unassigned Speaker** - Thats right, so.
+
+**Sir Phidipaldi** - And is it a really realistic statue?
+
+**Game Master** - Yeah, looks like it looks like it. I mean, not, no, no. It doesnt look like its like a person thats been like its A statue.
+
+**Sir Phidipaldi** - Turned to stone.
+
+**Unassigned Speaker** - Its like a stylized statue.
+
+**Trout** - How and how big are the doors like Theyre really like?
+
+**Game Master** - Yeah, theyre large, they take up like the whole kinda like side of the room.
+
+**Trout** - Cause it could be like this is the tomb where Brandons body is, or something like that like it.
+
+**Game Master** - Could be.
+
+**Unassigned Speaker** - Yeah, um.
+
+**Waymon Tisdale** - Do we know, uh, there was there a noble woman mentioned in any of the?
+
+**Sir Phidipaldi** - Not that I know of No, I, I dont have any recollection of that. Um, would we know if Wyllt or Merdan were women?
+
+**Game Master** - Uh, they wouldve looked like women on the, uh on the murals.
+
+**Game Master** - That you saw.
+
+**Sir Phidipaldi** - And.
+
+**Game Master** - Uh, they did not.
+
+**Sir Phidipaldi** - Yeah, okay.
+
+**Waymon Tisdale** - And we already saw the statues of them.
+
+**Game Master** - Yeah, um, as youre looking around the room, when you get close to the statue you hear and this is to Wayman. You hear a female voice in your head say, What makes a true knight?
+
+**Trout** - Valor.
+
+**Waymon Tisdale** - Great question.
+
+**Sir Phidipaldi** - Du duty.
+
+**Dr Uriah** - Well, thats so Thats Wyllt was carrying the thing and thats duty and.
+
+**Waymon Tisdale** - Alfred was valor.
+
+**Dr Uriah** - Alfred was carrying the sword and she has a sword, right?
+
+**Dr Uriah** - So, like his thing is valor. Uh, Brandon was reading, and his thing is wisdom. And Myrddin was piety, and I dont know if he was actually in any kind of position, I dont know.
+
+**Sir Phidipaldi** - And I and I think he was more priesty than he was piety.
+
+**Dr Uriah** - Yeah, yeah, Ma, Oh yeah, hes totally priesty.
+
+**Trout** - So the true Knight IM assuming Warrior like so, is Valor the right guess?
+
+**Sir Phidipaldi** - I my guess is duty, but I get richs analysis. I think that theres like that, that seems fair.
+
+**Game Master** - Sir Dirk is fawning at the statue Hes like its beautiful, but he doesnt he doesnt know who the statue is either.
+
+**Trout** - Okay, I think we should try one of the the word we saw on the statues upstairs.
+
+**Game Master** - Yeah, all of you at this point are hearing in your head what makes a true knight.
+
+**Waymon Tisdale** - Ill, say Valor.
+
+**Trout** - Nothing happens.
+
+**Dr Uriah** - Duty.
+
+**Unassigned Speaker** - Nothing happens.
+
+**Unassigned Speaker** - Wisdom.
+
+**Game Master** - Nothing happens.
+
+**Dr Uriah** - Piety.
+
+**Game Master** - You said All four, now, the doors open, the doors.
+
+**Waymon Tisdale** - Wow, how is this?
+
+**Game Master** - The doors to the south crack open and inside you, you havent entered the room yet, but you can see as like the doors like automatically open.
+
+**Game Master** - There is a, uh, the room is dominated by a wooden dragonheaded ship. Uh, like a big like.
+
+**Game Master** - Wooden carving thats inside of the room.
+
+**Sir Phidipaldi** - Like, like theres a W, a sorry, is it life size?
+
+**Game Master** - Uh y, yeah, yeah, like its like a um.
+
+**Sir Phidipaldi** - So, other words, Like a ship.
+
+**Game Master** - Like a 15 by 15 room with like, a big wooden ship inside of it.
+
+**Game Master** - But like it, like if you got close, you could like, Look, look in it.
+
+**Trout** - Its probably, maybe, maybe, like, old Vikings.
+
+**Trout** - Bury their.
+
+**Trout** - Dead in a ship, maybe?
+
+**Sir Phidipaldi** - Yep.
+
+**Trout** - Um, so can we? Uh, I cant im too short, but like, is there like a staircase on the side of the ship, or a ladder or something?
+
+**Game Master** - Uh, its its enough that you could just peer into it.
+
+**Game Master** - Um, inside.
+
+**Unassigned Speaker** - Have a look.
+
+**Game Master** - In the ship is a stone sarcophagus with a statue on its lid of a knight.
+
+**Game Master** - Who lies peacefully, as if asleep, clutching a long sword?
+
+**Sir Phidipaldi** - But the.
+
+**Game Master** - Treasures have been meticulously placed around the sarcophagus.
+
+**Sir Phidipaldi** - Okay, so the slo the sword on the sarcophagus is stone.
+
+**Sir Phidipaldi** - Okay, but okay, so.
+
+**Game Master** - Yes, and and Dirk goes its Sir Brandon himself. We have reached his holy burial place. He bows down, he starts praying.
+
+**Trout** - Ill. Take a look at some of the treasures around there, anything good and, uh, snatchable.
+
+**Game Master** - There absolutely are. There are urns, a kite shield and a jeweled chalice.
+
+**Trout** - A jeweled chalice like, Is it something I can carry?
+
+**Game Master** - Absolutely, it is.
+
+**Trout** - Kind of like, Go over there and pick it up.
+
+**Game Master** - Dirk As you do so, he looks at you and hes like, surely a gift to the church?
+
+**Trout** - Um, well, well, well, figure this stuff out later.
+
+**Dr Uriah** - Maybe.
+
+**Game Master** - Write down jeweled Chalice 600 gold pieces.
+
+**Game Master** - Yeah, you guys are gonna. You can only find a place to sell this shit.
+
+**Sir Phidipaldi** - Yeah, we could. We just need to unblock those supply routes.
+
+**Waymon Tisdale** - Need to get out of here alive?
+
+**Game Master** - Right.
+
+**Sir Phidipaldi** - Um, okay, so urn urns.
+
+**Game Master** - Five urns.
+
+**Game Master** - A kite shield and a jeweled chalice.
+
+**Sir Phidipaldi** - Okay, well, why dont we give the kite shield to?
+
+**Dr Uriah** - Well, I mean, you, obviously, I mean, youre a shield like, I guess you have twohand, huh?
+
+**Sir Phidipaldi** - Yes, no, I have a twohanded sword thats right and a lance.
+
+**Sir Phidipaldi** - So yeah, kite shields, not gonna help me, uh uh, um, the halflings a warrior Squintss.
+
+**Game Master** - Yeah, but I I dont think he could hold a A A.
+
+**Game Master** - Even a small kite shield.
+
+**Sir Phidipaldi** - Its too big for him.
+
+**Sir Phidipaldi** - Its too big for him, sure.
+
+**Game Master** - Probably for the Troll kin, maybe.
+
+**Unassigned Speaker** - Yeah, okay, great.
+
+**Game Master** - I think thats it.
+
+**Sir Phidipaldi** - Lets do that, yeah.
+
+**Sir Phidipaldi** - All right, all right, I will start opening the Urns.
+
+**Game Master** - Uh, yeah, they are filled with dust.
+
+**Sir Phidipaldi** - Yeah, okay, so, uh, ill, let that be.
+
+**Game Master** - But those urns are worth, uh, 100 gold each, if you wanna take em.
+
+**Sir Phidipaldi** - Oh, sorry, urns or like urn.
+
+**Game Master** - Urn a smaller.
+
+**Sir Phidipaldi** - Urn Okay.
+
+**Dr Uriah** - 500 gold a piece so that.s 1100 experience point.
+
+**Dr Uriah** - Right in the sweet spot.
+
+**Unassigned Speaker** - Curved.
+
+**Dr Uriah** - Thats right, thats right.
+
+**Dr Uriah** - Thats that.s gotta be level three now.
+
+**Sir Phidipaldi** - Rich A. As a guy with a light, can you treasure us?
+
+**Unassigned Speaker** - What do you mean?
+
+**Dr Uriah** - I mean, can you be Treasurer just?
+
+**Dr Uriah** - Oh yeah, yeah, yeah.
+
+**Sir Phidipaldi** - You can write.
+
+**Dr Uriah** - No, no, yeah, I got it, I got it.
+
+**Dr Uriah** - Im writing all this shit down.
+
+**Sir Phidipaldi** - Okay, great, all right, so, uh, uh, I will ask Waymond if he will help me. Remove the lid of the sarcophagus. But first, ill. Just check with Dirk and see if Hes needs to say any prayer over it, please.
+
+**Game Master** - He, he hes finishing the prayer and hes like, We came here for the sword. The sword is what we need to use to, Uh, uh.
+
+**Game Master** - You open up the sarcophagus. It has the name Brandon engraved on the side of it.
+
+**Dr Uriah** - Nice matching up right on the nose.
+
+**Game Master** - And inside is the brown skeleton of Sir Brandon, still dressed in his plate armor and holding his holy sword.
+
+**Trout** - Whos gonna be our sword wielder?
+
+**Sir Phidipaldi** - I think thats the troll kin.
+
+**Dr Uriah** - Whos gonna be the sword grabber and make make this guy wake up?
+
+**Sir Phidipaldi** - Thats me.
+
+**Trout** - You gonna grab it?
+
+**Sir Phidipaldi** - Yeah, I.
+
+**Trout** - Do it.
+
+**Dr Uriah** - Well, first of all, Nick, I uh, before he grabs it, I just just because I can. Is it cursed?
+
+**Game Master** - Um.
+
+**Dr Uriah** - Or check it for anything.
+
+**Game Master** - Uh, no, it is, it is, it is absolutely not cursed, it is a.
+
+**Dr Uriah** - Im assuming.
+
+**Game Master** - Magical sword.
+
+**Game Master** - Of silvery white metal, a sentence is etched into the blade.
+
+**Sir Phidipaldi** - And what is it?
+
+**Game Master** - All shadows yield to my light.
+
+**Sir Phidipaldi** - Okay, so we, we pick up the sword.
+
+**Sir Phidipaldi** - And we take the armor.
+
+**Game Master** - Thats right, Oh youre, youre, youre gonna strip the.
+
+**Game Master** - The body of the armor to, okay, whos gonna be carrying it?
+
+**Dr Uriah** - We have an army of people.
+
+**Unassigned Speaker** - So I.
+
+**Game Master** - You do have an army of people.
+
+**Sir Phidipaldi** - So Im gonna give my plate mail to my day laborer.
+
+**Game Master** - Ah, yeah.
+
+**Sir Phidipaldi** - And then Im gonna wear the plate mail.
+
+**Game Master** - Okay, Gotcha, theres no magical difference.
+
+**Sir Phidipaldi** - Thats fine.
+
+**Game Master** - To you know that that?
+
+**Sir Phidipaldi** - Yep, no problem at all.
+
+**Game Master** - Okay, great Gotcha, okay.
+
+**Game Master** - Um, all right, you, uh, um, you, you take the silvery, you know, sword.
+
+**Game Master** - And you, yeah, you guy, you guys get done dressing, uh, and in the doorway of the room.
+
+**Game Master** - As youre going to, like, get ready to leave, you see a seven foot tall brown skeleton.
+
+**Game Master** - In rusted armor and a mustachioed death mask.
+
+**Game Master** - Dragging a huge, great sword behind it. And that is where.
+
+**Sir Phidipaldi** - All right, well, call it a night.
+
+**Game Master** - Well, end the session for the night.
+
+</session_transcript>

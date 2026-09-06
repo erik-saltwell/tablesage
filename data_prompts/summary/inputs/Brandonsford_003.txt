@@ -1,0 +1,517 @@
+<session_metadata>
+Campaign: Brandonsford
+Game system: White Box
+Session date: 2026-09-01
+</session_metadata>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- john schork: Waymon Tisdale
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<session_ledger>
+{
+  "version": 3,
+  "session_id": "796cf216-a65e-4a1a-8887-a11a1e973ddb",
+  "session_name": "Socialist Goblins",
+  "attendees": [
+    {
+      "player_name": "erik saltwell",
+      "roles": [
+        "Sir Phidipaldi"
+      ]
+    },
+    {
+      "player_name": "jason beaumont",
+      "roles": [
+        "Game Master"
+      ]
+    },
+    {
+      "player_name": "jeff devries",
+      "roles": [
+        "Trout"
+      ]
+    },
+    {
+      "player_name": "john schork",
+      "roles": [
+        "Waymon Tisdale"
+      ]
+    },
+    {
+      "player_name": "rich gredzinski",
+      "roles": [
+        "Dr Uriah"
+      ]
+    }
+  ],
+  "preamble": {
+    "recap": {
+      "events": [
+        "Dr Uriah did scholarly sleuthing to trace the treasure map's origins and failed; he is also secretly making a copy of the map, and the copy is wrong.",
+        "At the Clumsy Fox, Trout chatted up Squints, an eager young halfling slinger hunting for his big break, and told him to meet in the morning about gathering the group and taking him on an adventure.",
+        "Also noted among the tavern adventurers was Malzazarik the Magnificent, a wizard in purple robes and a pointy purple hat with a yellow star.",
+        "That night Sir Phidipaldi, who had been kicked out of the good inn and was staying at the Golden Egg, hid in the cellar in an attempt to catch the liquor thief.",
+        "Dr Uriah staked out the river and saw the Clurichen emerge hauling a jug and turn invisible at the riverbank; Trout, spearfishing nearby, tailed Uriah and the Clurichen back to the Golden Egg.",
+        "The party caught the invisible thief outside the Golden Egg: Phidipaldi's scattered marbles tripped him, Uriah threw ink on him, and Trout captured him in his one-use fish bag, which he never got back.",
+        "The Clurichen turned out to be Naggeneen, who 'just likes to drink'; he offered his pot of gold or a secret for release, but the party refused and turned him in to the innkeeper for the 100 gold reward, which they split.",
+        "Quinn, owner of the Golden Egg, hung the bagged Naggeneen on a hook behind his bar and said he knew what he was going to do with this one.",
+        "Dunk, drinking with the farmer, cased Warwick's smithy for the rumored mithril chain shirt visible through the window, then caught Ingrid the alchemist skulking and followed her home, where she admitted she leaves nightly gifts on Warwick's windowsill and watches him sleep, though she has never spoken to him.",
+        "Dunk struck a deal with Ingrid: she brews a sleeping potion to be given to Warwick and unlocks the smithy's front door, and in exchange may sneak in and watch Warwick sleep all night; Dunk plans to take the mithril shirt, though when she got suspicious he claimed to be 'just a fan of clovers', and he pointedly declined to promise secrecy about her romance.",
+        "The sleeping potion requires faun wine from a grove north of town where the trees bleed wine that instantly fells any drinker.",
+        "The next morning Uriah visited the church and met Father William, a phrenologist who is racist toward nonhumans; William spent much time measuring Uriah, was convinced he had webbed feet, and wanted to pay to see them.",
+        "Father William said a magic sword — the one used to kill the dragon a thousand years ago — is buried with Sir Brandon in the barrow mound about a day's walk away, that he had already sent the young cleric Brother Dirk to fetch it to slay the dragon, marked the barrow mound and the wood witch's cottage on the map, extracted an agreement for a 10 gold donation for the barrow's upkeep, and dismissed Ingrid as a fraud fronting for the witch's coven.",
+        "Phidipaldi visited George, the one-armed hunter, who said the dragon's lair sits at the foot of the northern mountains; the dragon cannot fly yet but soon will, has a poison bite, sulfur breath, and black scales; George doubts the Reeve actually has the 1000 gold he promised; and a lance is among the few weapons never tried against it — so Phidipaldi decided to bring his lance, Lady Isaboob.",
+        "At Ingrid's shop, Uriah bought wolfsbane and healing mandrake tea and passed on a witch's powder; Ingrid named her forest friend, the witch Vivian, and mentioned that fairies have been emerging and encroaching far more than they used to.",
+        "Trout recruited Squints as a 'junior assistant halfling' in the Halfling Corps: merit-based pay only, second pick on treasure, self-funded until the first treasure drops, and entitled to ask Trout for three tips a day on how to be a good adventurer; Squints, actually a level two with better stats and equipment, accepted starry-eyed.",
+        "Dunk walked to the Fauns Grove, met some fauns, resisted the wine's poison and got drunk; the astonished fauns traded a flask of their wine for his sentimental rabbit's foot, since fauns prize sentimental tokens, and now regard Dunk as a remarkable trollkin.",
+        "Dunk cut the faun wine to one quarter of its strength before delivering it to Ingrid, keeping the rest for himself without telling her, and told the party only that he has 'a line on some good armor'.",
+        "The party plus Squints headed north for the barrow mound, deliberately routing around the witch's cottage.",
+        "On the way they stopped at the Giant's cottage — a triple-scale cottage of cyclopean stone — with a sleeping giant inside, a stew cooking, and a man-sized sack wiggling on the wall; Trout sent Squints in through the window as a test of his adventuring abilities, and out of the sack tumbled a bound and gagged monk: Brother Dirk.",
+        "The giant woke; Uriah smashed the fallen window as a distraction, Dunk and Phidipaldi threw open the door, Squints and Dunk sprinted clear, and Trout's covering sling shot went wide and cracked Squints in the head — the Halfling Corps' first casualty is friendly fire; the party outran the slow giant, who gave up the chase.",
+        "Brother Dirk wanted to go home, but the party pressured him onward, and Trout declared that Squints is now Dirk's manager."
+      ],
+      "opening_situation": "The whole party, plus Squints and the reluctant Brother Dirk, is in the woods north of Brandonsford outside Brandon's Barrow at sunset, bound for the magic sword; the giant is alive in the woods hunting them, and Dunk still owes Ingrid a return visit to collect the sleeping potion and break into Warwick's for the chain shirt."
+    },
+    "character_introductions": [
+      {
+        "character": "Waymon Tisdale",
+        "description": "A fishman assassin — as Uriah puts it, the 'Doer Fishman' to his own 'Thinker Fishman'."
+      }
+    ]
+  },
+  "utterances": [
+    {
+      "source": "Sir Phidipaldi",
+      "type": "correction",
+      "revision": "Retcon accepted by the table: the party had only received Drop Dead Ned's rate and never formally hired him, but it is now canon that they hired him and he accompanies them to the barrow mound. Terms: 100 gold for the week (33 each), Ned pays back 10 gold each time they let him murder somebody, and he may do whatever he wants with the bodies. Ned brings his killer wasp in a jar, and his character sheet goes to rich to play."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Lays out a plan: get the sword from the barrow mound, return to town for Dunk's shenanigans and the mithril chain shirt, stop at the witch's or the alchemist's for something to counteract the black dragon's poison, use the recovered sword to strongarm the Reeve into an advance, use the advance to hire Lady Hilda, and then — with poison protection, sword, shirt, and henchmen — go after the dragon. He also notes the party has never visited Warwick himself nor the general store."
+    },
+    {
+      "type": "question",
+      "asker": "john schork",
+      "question": "Didn't the sword fail to kill the dragon — or did it?",
+      "resolver": "jason beaumont",
+      "resolution": "In the tale of Sir Brandon, that sword is the one that killed the dragon — in myth — and Brandon supposedly got it from a fairy; the current dragon may be new, or the same one if the tales are off."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "After most of a day's walk, the sun is setting and the party stands outside the barrow mound. Its door is a white stone slab set into the mound, bearing a faded mural of a conquering knight."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "action",
+      "entity": "Waymon Tisdale",
+      "action": "Walks up to the door and checks it for traps."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The dirt below the door has been worked and pushed aside — the door must have opened recently. No traps are visible on the outside."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Brother Dirk",
+      "statement": "Nervously stammers what he knows of the mound: Sir Brandon is buried there with his sword, alongside the companions who accompanied him — Alfred, Myrddin, and Wyllt — and there are beautiful mosaics telling Brandon's story; Dirk grew up in Brandonsford and the church, has seen replicas of the murals his whole life, and was excited to see them when assigned to collect the sword."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Rather than camp, the party chooses to enter at night; with two lanterns lit they open the stone door and descend a sloping ramp into an antechamber roughly 15 by 20 feet, its walls lined with mosaics."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Brother Dirk",
+      "action": "Excitedly gathers the party and walks them through the three mosaics, identifying the figures."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The three mosaics tell Brandon's story in sequential art: first, Brandon gathering his men — among them a shaggy giant of a man with a great sword (Alfred), a wizened priest (Myrddin), and a wild-eyed man with an axe (Wyllt); second, Brandon slaying the dragon by driving his sword up through the roof of its mouth; third, Brandon and his men being knighted by a queen over the dragon's corpse. Waymon notices the mosaics' color highlights are real inlaid gemstones."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Hallways lead west and east from the antechamber; from the east come clattering, footsteps, and roughly four squeaky, childlike voices arguing in Common."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Drop Dead Ned and Waymon Tisdale",
+      "action": "Slink ahead down the short eastern hallway into a major crypt, sneaking close enough to see the arguers without being seen."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Four scraggly, thin, poorly equipped goblins are having a heated, absurd political argument over a talking stick: Grimble Who Holds the Stick, a mud-colored goblin with a peeled white stick; Watok the Scribbler, small and hunched with ink-stained fingers and a notched ear; Snurk the Walkout, a very young one in mismatched, paint-covered armor; and Peg Who Had the Torch, a quiet, scornful female goblin in a black robe and black eye patch. Nothing about them is fearsome."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "Strides into the center of the goblins in full plate mail wielding a two-handed sword, snatches the stick from Grimble's hand, silences him with a finger to the lips, and makes them all sit and raise hands to be granted the stick."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Snurk",
+      "statement": "Introduces the group: they are here to claim the barrow mound as the first home of the new Free Goblin Society — he is Snurk, with Grimble Who Holds the Stick, Watok the Scribbler, and Peg Who Had the Torch."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "speech",
+      "entity": "Sir Phidipaldi",
+      "statement": "Declares himself 'Sir Phidipaldi, the brave son of Brandon the Dragon Slayer', here to reclaim his father's heritage with a retinue of valiant knights; the party makes no claim on the barrow and will happily cede it to the Free Goblin Society, and will help clear the evil out of this place of death, in return for the goblins' help acquiring his father's goods — and they won't tell King Hogboon the goblins are here."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Grimble",
+      "statement": "Objects at length: there are no titles at the Free Mound, no one may be named 'sir', no man is above another, and there is no property — let alone hereditary property; they just left a king. Watok adds that the party may pay all of them or pay nothing — he prefers nothing, since they don't believe in property — as they are settling this land free from King Hogboon to rebuild society as a collective."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The stick is dispensed with at Watok's request, and the goblins confer and conclude that since none of them believe in property, the party may take whatever it wants; they agree to walk along with the party through the barrow. They point out finds in the room's four alcoves (one empty): one holds dusty bones with a skeleton wearing a chain mail shirt and holding a mace; another holds a beautiful, ornamental jewel-encrusted ceremonial dagger; a third is sealed behind a heavy flagstone."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Peg",
+      "statement": "Jittery, warns them not to look behind the flagstone: the goblins found a gray ooze there and, a little ashamed, sealed it up rather than kill it, because no man should cast judgment on another."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "action",
+      "entity": "Waymon Tisdale",
+      "action": "Takes the chain mail shirt from the alcove, though he cannot wear armor."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Suspecting the goblins are hiding treasure, has the flagstone pulled aside — and the gray ooze inside begins moving to attack."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party fights the gray ooze: Waymon plunges his short sword into it with a surprise backstab, Trout spears it, Sir Phidipaldi cleaves it with Sir Chumunga, and Squints finishes it with a masterfully aimed sling stone. There is nothing of value in the ooze's alcove."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Squints",
+      "action": "Looks immediately to Trout for approval, then collects some of the dead ooze in his pocket to show the people back home."
+    },
+    {
+      "source": "Trout",
+      "type": "speech",
+      "entity": "Trout",
+      "statement": "Gives Squints a slight nod: 'Well done, Apprentice.'"
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "The goblins",
+      "sentiment": "Horrified by the killing, they fall to arguing amongst themselves."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Snurk",
+      "statement": "Berates Squints: 'How dare you take another life — there are no judges here, nobody above anyone else. That is why we put the ooze in the alcove.'"
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "speech",
+      "entity": "Waymon Tisdale",
+      "statement": "Retorts that the goblins don't even know what ooze eats — they sealed it in stone to slowly starve, and it only attacked because it had been left to die."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The goblins",
+      "statement": "Nod and concede 'Waymond is wise' — they would not have known what to do with the ooze, they have outsourced their violence to make themselves feel safe, and they will need to determine how they feel about that later."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Uriah takes and appraises the jeweled dagger: it dates to the period when the barrow mound was created and sealed, and is probably worth upwards of 200 gold if sold in a major city."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The goblins",
+      "statement": "Asked about the rest of the barrow, quietly admit there were more than four of them when they arrived — many friends died down below, killed by one of the figures from the murals who is still alive, a huge one with a great sword. The room to the west of the antechamber, they add, is full of strange statues."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "expression",
+      "entity": "Dr Uriah",
+      "sentiment": "Concludes the killer below must be Alfred."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Dr Uriah",
+      "action": "Actively searches for secret doors with his Dagonite knack and finds a rectangular seam in the eastern wall of the goblins' room; pushing on it opens a hidden door."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The secret room holds a chest of polished dark wood in its center and stone shelves bearing thick white unlit candles in golden holders."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Takes the seven golden candle holders, worth 50 gold each."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Dr Uriah",
+      "action": "Has Ned examine the chest for traps — 'Looks fine, boss' — and open it, revealing a quarterstaff and monastic robes inside the vine-carved chest."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Brother Dirk",
+      "statement": "Declares 'These are the robes of Saint Arthur' — too holy to put on, incredible treasures, and turning them into torches would be sacrilege."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "action",
+      "entity": "Dr Uriah",
+      "action": "Confirms the robes are not cursed (though without the witch's powder he passed on, he cannot tell if they are magical), puts on the gorgeous robes anyway, and takes the quarterstaff too."
+    },
+    {
+      "source": "Game Master",
+      "type": "expression",
+      "entity": "Brother Dirk",
+      "sentiment": "Deeply offended at Uriah wearing Saint Arthur's robes."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "speech",
+      "entity": "Dr Uriah",
+      "statement": "Tells Dirk: 'Your boss sucks.'"
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party — a big group now, with the goblins trailing along — moves to the statue room west of the antechamber: four eight-foot knight statues, one per corner, each with a word etched into its base. A giant gripping sword and shield reads Valor (Alfred); one cradling a staff with hands clasped in prayer reads Piety (Myrddin); one reading from an open book reads Wisdom (presumed Brandon); and one bent under a heavy load reads Duty (Wyllt)."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Dripping water leads to a small attached chapel in the room's northwest: about 15 by 15 feet, with disintegrating stone pews and a moldy statue of St. Arthur — a bearded man with a spear, patron of hunters, as Uriah knows — with water dripping from the ceiling onto it."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "Clears the moss from St. Arthur's face; a spore cloud shoots into his face, but he saves against the poison."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Phidipaldi takes no damage and feels blessed for cleaning St. Arthur: he gains +1 to all his rolls for the rest of the barrow mound adventure."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "With the upper floor cleared, Ned and Waymon lead the party down the stairs from the goblin room, checking for traps. Below is a long, gravely chill corridor running west, its walls and ceiling dripping with condensation and icy mist seeping through the cracks; a continuous religious carving of hunters pursuing animals runs its length. At the foot of the stairs lie the bodies of three goblins in bloody pieces, dismembered by sword wounds while fleeing back toward the stairs. Scratching sounds come from the far western end, and a room branches south about fifteen feet in."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "speech",
+      "entity": "Waymon Tisdale",
+      "statement": "Asks Drop Dead Ned whether he accepts bodies he didn't kill, and offers him the dead goblins."
+    },
+    {
+      "source": "Dr Uriah",
+      "type": "speech",
+      "entity": "Drop Dead Ned",
+      "statement": "'I'll cut yous a deal — half off, five gold pieces for dead bodies.'"
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Waymon agrees to Ned's five-gold-per-corpse rate, but the bodies will have to be snuck past the goblins, who would want their compatriots given a proper goblin burial rather than defiled by Ned."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The south room is a large rectangle, roughly 15 by 40-50 feet, with a circular pool built into the floor; globs of living green slime float on the surface like algae, and gold glints at the bottom."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "action",
+      "entity": "Waymon Tisdale",
+      "action": "Using his ability to speak with aquatic animals, strikes up a conversation with one of the slimes, posing the party as fans tracing Sir Brandon's glorious journey."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "The slime",
+      "statement": "Says it has never left this pool and was a goblin once, long ago; slimes don't have great memories. The really big one runs around and killed the goblins — he's dead yet still moving. The party is welcome to the gold, and the water won't hurt them."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The pool is only five feet deep; at its bottom lies a human skeleton with gold teeth, holding a silver dagger."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Orders Squints to retrieve the dagger; Squints spends one of his daily tips to learn that, as a subordinate, he must obey — but that orders roll downhill, so he officiously delegates to Brother Dirk, whom he manages."
+    },
+    {
+      "source": "Game Master",
+      "type": "action",
+      "entity": "Brother Dirk",
+      "action": "Protesting that he can't even swim, squats down into the five-foot pool and comes up with the skull — its gold teeth worth 20 gold."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "action",
+      "entity": "Waymon Tisdale",
+      "action": "Notices an incongruous groove in the stone of the room's southern wall and, borrowing a crowbar from Ned's thief tools, wrenches it open, revealing a short five-foot passage south ending in a blank wall that can be pushed open."
+    },
+    {
+      "source": "Waymon Tisdale",
+      "type": "action",
+      "entity": "Waymon Tisdale",
+      "action": "Checks the hidden passage for traps, finds none, listens at the far wall, hears nothing, and pushes it open."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Beyond is a rectangular room about 20 by 15 feet with a statue of a noblewoman at its center, holding a sword horizontally before her, proud eyes cast down; flush with the wall behind her stands a closed set of large stone doors. There is no writing on the statue, and she matches no one from the murals."
+    },
+    {
+      "type": "question",
+      "asker": "erik saltwell",
+      "question": "Would the party know if Wyllt or Myrddin were women?",
+      "resolver": "jason beaumont",
+      "resolution": "They would have looked like women on the murals, and they did not — so the noblewoman is neither of them."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "As Waymon nears the statue, a female voice sounds in his head — and soon in everyone's — asking: 'What makes a true knight?'"
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party answers with the words from the four statues — Valor, Duty, Wisdom, and finally Piety — and once all four are spoken, the stone doors crack open."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The room beyond, about 15 by 15 feet, is dominated by a wooden dragon-headed burial ship. Inside the ship sits a stone sarcophagus, its lid carved as a knight lying peacefully asleep clutching a long sword, with treasures meticulously placed around it: five dust-filled urns worth 100 gold each, a kite shield, and a jeweled chalice worth 600 gold."
+    },
+    {
+      "source": "Game Master",
+      "type": "speech",
+      "entity": "Brother Dirk",
+      "statement": "'It's Sir Brandon himself — we have reached his holy burial place'; he bows down and begins praying."
+    },
+    {
+      "source": "Trout",
+      "type": "action",
+      "entity": "Trout",
+      "action": "Takes the jeweled chalice; when Dirk suggests it is surely a gift for the church, Trout deflects — 'we'll figure this stuff out later.'"
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "The party earmarks the kite shield for Dunk, the only one big enough to use it; Phidipaldi opens the urns and finds only dust."
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "After letting Dirk finish his prayer, removes the sarcophagus lid with Waymon's help; 'Brandon' is engraved on its side, and inside lies the brown skeleton of Sir Brandon, still dressed in his plate armor and holding his holy sword."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "Uriah confirms the sword is not cursed: it is a magical sword of silvery white metal with a sentence etched into the blade — 'All shadows yield to my light.'"
+    },
+    {
+      "source": "Sir Phidipaldi",
+      "type": "action",
+      "entity": "Sir Phidipaldi",
+      "action": "Takes up the sword and strips Brandon's plate armor from the body, donning it himself and handing his own plate mail down to his day laborer."
+    },
+    {
+      "source": "Game Master",
+      "type": "narration",
+      "fact": "As the party readies to leave, a seven-foot-tall brown skeleton in rusted armor and a mustachioed death mask appears in the doorway, dragging a huge great sword behind it — and there the session ends."
+    }
+  ]
+}
+
+</session_ledger>

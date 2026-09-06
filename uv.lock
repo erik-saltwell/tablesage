@@ -2628,14 +2628,22 @@ version = "0.1.0"
 source = { editable = "apps/optimize-prompts" }
 dependencies = [
     { name = "prompt-forge" },
+    { name = "prompt-model" },
+    { name = "prompt-model-metrics" },
+    { name = "pyyaml" },
     { name = "rich" },
+    { name = "tablesage-application" },
     { name = "typer" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "prompt-forge", editable = "../prompt-forge/apps/prompt-forge" },
+    { name = "prompt-model", editable = "../prompt-forge/packages/prompt-model" },
+    { name = "prompt-model-metrics", editable = "../prompt-forge/packages/prompt-model-metrics" },
+    { name = "pyyaml", specifier = ">=6" },
     { name = "rich", specifier = ">=15.0.0" },
+    { name = "tablesage-application", editable = "packages/tablesage-application" },
     { name = "typer", specifier = ">=0.23.1" },
 ]
 
