@@ -25,8 +25,11 @@ from .session_pipeline import artifacts, import_audio, processing, transcribe_au
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
+from .session_pipeline import generate_player_introductions as player_introductions_pipeline
+from .session_pipeline import generate_recap_summary as recap_summary_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
+from .session_pipeline import transcript_sections as transcript_sections_pipeline
 from .voice_clips import clips
 
 
@@ -527,6 +530,48 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return generate_ledger_pipeline.can_generate_ledger(self._session_folder(session, game_session))
 
+    def can_generate_transcript_sections(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return transcript_sections_pipeline.can_generate_transcript_sections(self._session_folder(session, game_session))
+
+    def generate_transcript_sections(self, session_id: uuid.UUID) -> transcript_sections_pipeline.TranscriptSections:
+        """Classify and persist the opening sections of a Session's Role Transcript."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = transcript_sections_pipeline.can_generate_transcript_sections(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot section transcript.")
+            attendees = tuple(
+                transcript_sections_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sessions.list_attendance(session, session_id)
+            )
+            role_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.ROLE_TRANSCRIPT].filename
+            role_transcript = transcript_sections_pipeline.RoleTranscript.load(role_path)
+
+        generated = asyncio.run(
+            transcript_sections_pipeline.generate_transcript_sections(
+                role_transcript,
+                attendees,
+                self._settings.llm_model_high,
+            )
+        )
+        target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
+        result = transcript_sections_pipeline.persist_transcript_sections(generated, role_path, target)
+        for name in (
+            paths.ArtifactName.LEDGER,
+            paths.ArtifactName.PLAYER_INTRODUCTIONS,
+            paths.ArtifactName.RECAP_SUMMARY,
+            paths.ArtifactName.SUMMARY,
+        ):
+            artifacts.delete_artifact(session_folder, name)
+        if result.starting_context_range is None:
+            raise transcript_sections_pipeline.TranscriptSectionsValidationError(
+                "Transcript sectioning found no usable starting situation; downstream generation cannot continue."
+            )
+        return result
+
     def generate_ledger(self, session_id: uuid.UUID) -> None:
         """Generate and atomically replace a Session's structured Ledger artifact."""
         with Session(self._engine) as session:
@@ -548,7 +593,11 @@ class Application:
             ledger_glossary = tuple(
                 generate_ledger_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in glossary_entries
             )
-            role_transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
+            role_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.ROLE_TRANSCRIPT].filename
+            sections_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
+            role_transcript = transcript_sections_pipeline.RoleTranscript.load(role_path)
+            transcript_sections = transcript_sections_pipeline.load_current_transcript_sections(role_path, sections_path)
+            routed_transcript = transcript_sections_pipeline.route_transcript(role_transcript, transcript_sections)
             session_name = game_session.name
 
         with widelog.wide_event(
@@ -559,15 +608,20 @@ class Application:
         ):
             generated = asyncio.run(
                 generate_ledger_pipeline.generate_ledger(
-                    role_transcript, known_roles, ledger_attendees, ledger_glossary, self._settings.llm_model_high
+                    routed_transcript.starting_context,
+                    routed_transcript.session,
+                    known_roles,
+                    ledger_attendees,
+                    ledger_glossary,
+                    self._settings.llm_model_high,
                 )
             )
             ledger = generate_ledger_pipeline.Ledger(
-                version=3,
+                version=4,
                 session_id=session_id,
                 session_name=session_name,
                 attendees=ledger_attendees,
-                preamble=generated.preamble,
+                starting_situation=generated.starting_situation,
                 utterances=generated.utterances,
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
@@ -585,10 +639,116 @@ class Application:
                 raise
             artifacts.invalidate_category(session_folder, paths.ArtifactCategory.FROM_LOG)
 
+    def can_generate_player_introductions(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return player_introductions_pipeline.can_generate_player_introductions(self._session_folder(session, game_session))
+
+    def generate_player_introductions(self, session_id: uuid.UUID) -> player_introductions_pipeline.PlayerIntroductions:
+        """Generate and atomically persist explicitly introduced attendee characters."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            campaign = session.get(Campaign, game_session.campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = player_introductions_pipeline.can_generate_player_introductions(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot generate Player Introductions.")
+
+            role_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.ROLE_TRANSCRIPT].filename
+            sections_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
+            role_transcript = transcript_sections_pipeline.RoleTranscript.load(role_path)
+            transcript_sections = transcript_sections_pipeline.load_current_transcript_sections(role_path, sections_path)
+            introduction_transcript = transcript_sections_pipeline.slice_introduction_transcript(role_transcript, transcript_sections)
+            prompt_attendees = tuple(
+                player_introductions_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sessions.list_attendance(session, session_id)
+            )
+            prompt_glossary = tuple(
+                player_introductions_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description)
+                for entry in glossary.list_glossary_entries(session, game_session.campaign_id)
+            )
+            campaign_name = campaign.name
+            game_system = campaign.game_system
+            session_date = game_session.session_date.isoformat() if game_session.session_date else None
+
+        generated = asyncio.run(
+            player_introductions_pipeline.generate_player_introductions(
+                introduction_transcript,
+                prompt_attendees,
+                prompt_glossary,
+                campaign_name,
+                session_date,
+                game_system,
+                self._settings.llm_model_high,
+            )
+        )
+        target = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
+        result = player_introductions_pipeline.persist_player_introductions(generated, session_id, target)
+        artifacts.delete_artifact(session_folder, paths.ArtifactName.SUMMARY)
+        return result
+
+    def can_generate_recap_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            return recap_summary_pipeline.can_generate_recap_summary(self._session_folder(session, game_session))
+
+    def generate_recap_summary(self, session_id: uuid.UUID) -> str:
+        """Generate and atomically persist a compact recap of the current Session Ledger."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            campaign = session.get(Campaign, game_session.campaign_id)
+            if campaign is None:
+                raise ValueError("Campaign not found.")
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = recap_summary_pipeline.can_generate_recap_summary(session_folder)
+            if not enabled:
+                raise ValueError(reason or "Cannot generate Recap Summary.")
+
+            entries = sorted(
+                glossary.list_glossary_entries(session, game_session.campaign_id),
+                key=lambda entry: entry.term.casefold(),
+            )
+            prompt_glossary = tuple(
+                recap_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
+            )
+            attendees = sessions.list_attendance(session, session_id)
+            prompt_attendees = tuple(
+                recap_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
+                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
+            )
+            ledger_text = (session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
+            campaign_name = campaign.name
+            session_date = game_session.session_date.isoformat() if game_session.session_date else None
+            game_system = campaign.game_system
+
+        with widelog.wide_event(
+            op="generate_recap_summary",
+            session_id=str(session_id),
+            glossary_entry_count=len(prompt_glossary),
+        ):
+            recap = asyncio.run(
+                recap_summary_pipeline.generate_recap_summary(
+                    ledger_text,
+                    prompt_attendees,
+                    prompt_glossary,
+                    campaign_name,
+                    session_date,
+                    game_system,
+                    self._settings.llm_model_high,
+                )
+            )
+            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename
+            recap_summary_pipeline.persist_recap_summary(recap, target)
+            return recap
+
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return processing.can_generate_summary(self._session_folder(session, game_session))
+            previous_session = sessions.get_previous_session(session, game_session)
+            previous_folder = self._session_folder(session, previous_session) if previous_session is not None else None
+            return processing.can_generate_summary(self._session_folder(session, game_session), previous_folder)
 
     def generate_summary(self, session_id: uuid.UUID) -> None:
         """Generate and atomically replace a session's Markdown summary from its Ledger."""
@@ -598,7 +758,9 @@ class Application:
             if campaign is None:
                 raise ValueError("Campaign not found.")
             session_folder = self._session_folder(session, game_session)
-            enabled, reason = processing.can_generate_summary(session_folder)
+            previous_session = sessions.get_previous_session(session, game_session)
+            previous_folder = self._session_folder(session, previous_session) if previous_session is not None else None
+            enabled, reason = processing.can_generate_summary(session_folder, previous_folder)
             if not enabled:
                 raise ValueError(reason or "Cannot generate summary.")
 
@@ -610,6 +772,9 @@ class Application:
             prompt_attendees = tuple(
                 generate_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
                 for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
+            )
+            introduction_attendees = tuple(
+                player_introductions_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles) for attendee in attendees
             )
             ledger_text = (session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
             campaign_name = campaign.name
@@ -628,10 +793,21 @@ class Application:
                     self._settings.llm_model_high,
                 )
             )
+            introductions_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
+            recap = (
+                (previous_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename).read_text(encoding="utf-8")
+                if previous_folder is not None
+                else None
+            )
+            introductions = player_introductions_pipeline.PlayerIntroductions.load(introductions_path)
+            if introductions.session_id != session_id:
+                raise generate_summary_pipeline.SummaryCompositionError("Player Introductions belong to a different Session.")
+            player_introductions_pipeline.validate_player_introductions(introductions, introduction_attendees)
+            composed_summary = generate_summary_pipeline.compose_summary(summary, recap, introductions.to_markdown())
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.SUMMARY].filename
             temp_target = target.with_name(f".{target.stem}.tmp{target.suffix}")
             try:
-                temp_target.write_text(summary, encoding="utf-8")
+                temp_target.write_text(composed_summary, encoding="utf-8")
                 temp_target.replace(target)
             except Exception:
                 temp_target.unlink(missing_ok=True)

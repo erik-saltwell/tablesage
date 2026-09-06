@@ -52,6 +52,26 @@ def get_session(session: Session, session_id: uuid.UUID) -> GameSession:
     return game_session
 
 
+def get_previous_session(session: Session, game_session: GameSession) -> GameSession | None:
+    """Return the preceding Session in campaign-local chronological order.
+
+    Dated Sessions sort first by date and then by sequence number. Undated Sessions sort after
+    dated Sessions and use sequence number among themselves, giving the ordering a deterministic
+    fallback when dates are unavailable.
+    """
+    campaign_sessions = list_sessions(session, game_session.campaign_id)
+    ordered = sorted(
+        campaign_sessions,
+        key=lambda candidate: (
+            candidate.session_date is None,
+            candidate.session_date or date.max,
+            candidate.sequence_number,
+        ),
+    )
+    position = next(index for index, candidate in enumerate(ordered) if candidate.id == game_session.id)
+    return ordered[position - 1] if position else None
+
+
 def update_session(session: Session, session_id: uuid.UUID, name: str, session_date: date | None) -> GameSession:
     game_session = get_session(session, session_id)
     game_session.name = name

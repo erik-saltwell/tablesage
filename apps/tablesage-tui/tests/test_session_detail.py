@@ -1,5 +1,6 @@
 import os
 import uuid
+from collections.abc import Callable
 from datetime import date, datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -32,7 +33,10 @@ def _artifacts(
     transcript: bool = False,
     reviewed_transcript: bool = False,
     role_transcript: bool = False,
+    transcript_sections: bool = False,
     ledger: bool = False,
+    player_introductions: bool = False,
+    recap_summary: bool = False,
     summary: bool = False,
 ) -> dict[ArtifactName, bool]:
     return {
@@ -43,7 +47,10 @@ def _artifacts(
         ArtifactName.TRANSCRIPT_BENCHMARK: False,
         ArtifactName.REVIEWED_TRANSCRIPT: reviewed_transcript,
         ArtifactName.ROLE_TRANSCRIPT: role_transcript,
+        ArtifactName.TRANSCRIPT_SECTIONS: transcript_sections,
         ArtifactName.LEDGER: ledger,
+        ArtifactName.PLAYER_INTRODUCTIONS: player_introductions,
+        ArtifactName.RECAP_SUMMARY: recap_summary,
         ArtifactName.SUMMARY: summary,
     }
 
@@ -402,14 +409,17 @@ async def test_generate_disabled_without_reviewed_transcript() -> None:
 
 
 @pytest.mark.anyio
-async def test_generate_runs_role_transcript_ledger_and_summary_in_order_with_no_confirmation() -> None:
+async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
     call_order: list[str] = []
     application.clean_transcript = MagicMock(
         side_effect=lambda *a, **k: call_order.append("clean_transcript") or CleanTranscriptResult(utterance_count=10, removed_count=4)
     )
+    application.generate_transcript_sections = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_transcript_sections"))
     application.generate_ledger = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_ledger"))
+    application.generate_player_introductions = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_player_introductions"))
+    application.generate_recap_summary = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_recap_summary"))
     application.generate_summary = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_summary"))
 
     async with TableSageApp(application).run_test() as pilot:
@@ -423,22 +433,63 @@ async def test_generate_runs_role_transcript_ledger_and_summary_in_order_with_no
             assert not isinstance(pilot.app.screen, ConfirmationDialog)
             await _wait_for_progress_worker(pilot)
 
-        assert call_order == ["clean_transcript", "generate_ledger", "generate_summary"]
+        assert call_order == [
+            "clean_transcript",
+            "generate_transcript_sections",
+            "generate_ledger",
+            "generate_player_introductions",
+            "generate_recap_summary",
+            "generate_summary",
+        ]
         assert application.clean_transcript.call_args.args[0] == session.id
+        application.generate_transcript_sections.assert_called_once_with(session.id)
         application.generate_ledger.assert_called_once_with(session.id)
+        application.generate_player_introductions.assert_called_once_with(session.id)
+        application.generate_recap_summary.assert_called_once_with(session.id)
         application.generate_summary.assert_called_once_with(session.id)
         assert application.session_artifacts.call_count >= 2
         notify.assert_called_once_with("Outputs generated.")
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
+@pytest.mark.parametrize(
+    ("failing_method", "phase_label"),
+    [
+        ("clean_transcript", "Role Transcript"),
+        ("generate_transcript_sections", "Transcript Sections"),
+        ("generate_ledger", "Ledger"),
+        ("generate_player_introductions", "Player Introductions"),
+        ("generate_recap_summary", "Recap Summary"),
+        ("generate_summary", "Summary"),
+    ],
+)
 @pytest.mark.anyio
-async def test_generate_mid_chain_failure_stops_chain_and_records_which_step_failed() -> None:
+async def test_generate_failure_stops_chain_and_records_exact_phase(failing_method: str, phase_label: str) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
-    application.clean_transcript = MagicMock(return_value=CleanTranscriptResult(utterance_count=10, removed_count=4))
-    application.generate_ledger = MagicMock(side_effect=ValueError("provider timed out"))
-    application.generate_summary = MagicMock()
+    phase_methods = [
+        "clean_transcript",
+        "generate_transcript_sections",
+        "generate_ledger",
+        "generate_player_introductions",
+        "generate_recap_summary",
+        "generate_summary",
+    ]
+    call_order: list[str] = []
+
+    def phase_effect(*_args: object, method: str, **_kwargs: object) -> CleanTranscriptResult | None:
+        call_order.append(method)
+        if method == failing_method:
+            raise ValueError("provider timed out")
+        if method == "clean_transcript":
+            return CleanTranscriptResult(utterance_count=10, removed_count=4)
+        return None
+
+    def effect_for(method: str) -> Callable[..., CleanTranscriptResult | None]:
+        return lambda *args, **kwargs: phase_effect(*args, method=method, **kwargs)
+
+    for method in phase_methods:
+        setattr(application, method, MagicMock(side_effect=effect_for(method)))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -448,11 +499,12 @@ async def test_generate_mid_chain_failure_stops_chain_and_records_which_step_fai
             await pilot.pause()
             await _wait_for_progress_worker(pilot)
 
-        application.generate_summary.assert_not_called()
-        notify.assert_called_once_with("Ledger generation failed: provider timed out", severity="error")
+        failure_index = phase_methods.index(failing_method)
+        assert call_order == phase_methods[: failure_index + 1]
+        notify.assert_called_once_with(f"{phase_label} generation failed: provider timed out", severity="error")
         error_table = pilot.app.screen.query_one("#error-table", DataTable)
         assert error_table.row_count == 1
-        assert error_table.get_row_at(0) == ["Generate Outputs", "Ledger generation failed: provider timed out"]
+        assert error_table.get_row_at(0) == ["Generate Outputs", f"{phase_label} generation failed: provider timed out"]
 
 
 @pytest.mark.anyio
@@ -460,7 +512,10 @@ async def test_generate_clears_previous_errors_on_a_fresh_press() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
     application.clean_transcript = MagicMock(side_effect=[ValueError("boom"), CleanTranscriptResult(utterance_count=1, removed_count=0)])
+    application.generate_transcript_sections = MagicMock(return_value=None)
     application.generate_ledger = MagicMock(return_value=None)
+    application.generate_player_introductions = MagicMock(return_value=None)
+    application.generate_recap_summary = MagicMock(return_value=None)
     application.generate_summary = MagicMock(return_value=None)
 
     async with TableSageApp(application).run_test() as pilot:

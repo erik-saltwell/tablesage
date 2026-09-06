@@ -32,9 +32,14 @@ def _player_has_centroid(session: Session, player_id: uuid.UUID) -> bool:
     return player is not None and player.centroid_embedding is not None
 
 
-def can_generate_summary(session_folder: Path) -> tuple[bool, str | None]:
-    if not session_artifacts(session_folder)[ArtifactName.LEDGER]:
+def can_generate_summary(session_folder: Path, previous_session_folder: Path | None = None) -> tuple[bool, str | None]:
+    existing = session_artifacts(session_folder)
+    if not existing[ArtifactName.LEDGER]:
         return False, "Generate the Ledger first."
+    if not existing[ArtifactName.PLAYER_INTRODUCTIONS]:
+        return False, "Generate Player Introductions first."
+    if previous_session_folder is not None and not session_artifacts(previous_session_folder)[ArtifactName.RECAP_SUMMARY]:
+        return False, "Generate the previous Session's Recap Summary first."
     return True, None
 
 

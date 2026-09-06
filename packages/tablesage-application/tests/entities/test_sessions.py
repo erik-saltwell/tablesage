@@ -4,7 +4,9 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from sqlmodel import Session
 from tablesage_application import Application
+from tablesage_application.entities import sessions as sessions_module
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
 
 
@@ -40,6 +42,26 @@ def test_list_sessions_scoped_to_campaign(tmp_path: Path) -> None:
 
     sessions_a = application.list_sessions(campaign_a.id)
     assert [s.name for s in sessions_a] == ["A1"]
+
+
+def test_previous_session_uses_campaign_date_then_sequence_with_undated_sessions_last(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    later_created_first = application.create_session(campaign.id, "January 10, first", date(2026, 1, 10))
+    earlier_date = application.create_session(campaign.id, "January 1", date(2026, 1, 1))
+    same_day_later_sequence = application.create_session(campaign.id, "January 10, second", date(2026, 1, 10))
+    undated = application.create_session(campaign.id, "Undated")
+    other_campaign = application.create_campaign(Campaign(name="Other Campaign"))
+    application.create_session(other_campaign.id, "Unrelated", date(2025, 1, 1))
+
+    with Session(application._engine) as session:
+        assert sessions_module.get_previous_session(session, earlier_date) is None
+        before_later_created_first = sessions_module.get_previous_session(session, later_created_first)
+        before_same_day_later_sequence = sessions_module.get_previous_session(session, same_day_later_sequence)
+        before_undated = sessions_module.get_previous_session(session, undated)
+        assert before_later_created_first is not None and before_later_created_first.id == earlier_date.id
+        assert before_same_day_later_sequence is not None and before_same_day_later_sequence.id == later_created_first.id
+        assert before_undated is not None and before_undated.id == same_day_later_sequence.id
 
 
 def test_last_session_dates_computed_dynamically(tmp_path: Path) -> None:

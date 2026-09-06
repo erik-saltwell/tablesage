@@ -18,6 +18,9 @@ class ArtifactName(Enum):
     TRANSCRIPT_BENCHMARK = "transcript_benchmark"
     REVIEWED_TRANSCRIPT = "reviewed_transcript"
     ROLE_TRANSCRIPT = "role_transcript"
+    TRANSCRIPT_SECTIONS = "transcript_sections"
+    PLAYER_INTRODUCTIONS = "player_introductions"
+    RECAP_SUMMARY = "recap_summary"
 
 
 class ArtifactCategory(Enum):
@@ -99,12 +102,30 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         should_show_in_ui=True,
         display_name="Role Transcript",
     ),
+    ArtifactName.TRANSCRIPT_SECTIONS: ArtifactSpec(
+        "transcript_sections.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Transcript Sections",
+    ),
     ArtifactName.LEDGER: ArtifactSpec(
         "ledger.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=True,
         display_name="Ledger",
         companion_filenames=("ledger.md",),
+    ),
+    ArtifactName.PLAYER_INTRODUCTIONS: ArtifactSpec(
+        "player_introductions.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Player Introductions",
+    ),
+    ArtifactName.RECAP_SUMMARY: ArtifactSpec(
+        "recap_summary.md",
+        ArtifactCategory.FROM_LOG,
+        should_show_in_ui=True,
+        display_name="Recap Summary",
     ),
     ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),
 }

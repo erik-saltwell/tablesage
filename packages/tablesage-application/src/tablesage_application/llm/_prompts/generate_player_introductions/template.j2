@@ -1,0 +1,17 @@
+<session_metadata>
+Campaign: {{ campaign_name }}
+Game system: {{ game_system if game_system else "unspecified" }}
+Session date: {{ session_date if session_date else "unknown" }}
+</session_metadata>
+
+<session_attendees>
+{% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
+{% endfor %}</session_attendees>
+
+<glossary>
+{% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
+{% endfor %}</glossary>
+
+<introduction_transcript>
+{{ introduction_transcript }}
+</introduction_transcript>

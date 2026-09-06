@@ -204,7 +204,10 @@ def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> No
         ArtifactName.TRANSCRIPT_ROLES_TEXT,
         ArtifactName.TRANSCRIPT_BENCHMARK,
         ArtifactName.ROLE_TRANSCRIPT,
+        ArtifactName.TRANSCRIPT_SECTIONS,
         ArtifactName.LEDGER,
+        ArtifactName.PLAYER_INTRODUCTIONS,
+        ArtifactName.RECAP_SUMMARY,
         ArtifactName.SUMMARY,
     ):
         delete_artifact(session_folder, name)

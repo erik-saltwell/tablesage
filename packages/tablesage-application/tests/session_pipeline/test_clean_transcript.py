@@ -10,6 +10,7 @@ from tablesage_application.session_pipeline.clean_transcript import (
     clean_transcript,
     render_role_transcript_text,
 )
+from tablesage_application.session_pipeline.role_transcript import RoleTranscript, RoleTranscriptUtterance
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
@@ -43,17 +44,28 @@ def test_clean_transcript_writes_role_transcript_and_invalidates_derivatives(tmp
     _transcript().save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
     ledger_path = tmp_path / ARTIFACTS[ArtifactName.LEDGER].filename
     summary_path = tmp_path / ARTIFACTS[ArtifactName.SUMMARY].filename
+    sections_path = tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT_SECTIONS].filename
+    introductions_path = tmp_path / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename
+    recap_path = tmp_path / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename
     ledger_path.write_text("{}")
     summary_path.write_text("stale summary")
+    sections_path.write_text("{}")
+    introductions_path.write_text("{}")
+    recap_path.write_text("stale recap")
 
     result = clean_transcript(tmp_path, max_words=3, role_names={"Alice": "Wizard"})
 
     assert result == CleanTranscriptResult(utterance_count=2, removed_count=0)
     assert not ledger_path.exists()
     assert not summary_path.exists()
+    assert not sections_path.exists()
+    assert not introductions_path.exists()
+    assert not recap_path.exists()
 
-    role_transcript = Transcript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
+    role_transcript = RoleTranscript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     assert [utterance.speaker for utterance in role_transcript.utterances] == ["Wizard", "Bob"]
+    assert [utterance.index for utterance in role_transcript.utterances] == [0, 1]
+    assert set(role_transcript.utterances[0].model_dump()) == {"index", "speaker", "text"}
 
 
 def test_clean_transcript_never_renames_unassigned_speaker(tmp_path: Path) -> None:
@@ -66,7 +78,7 @@ def test_clean_transcript_never_renames_unassigned_speaker(tmp_path: Path) -> No
 
     clean_transcript(tmp_path, max_words=3, role_names={})
 
-    role_transcript = Transcript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
+    role_transcript = RoleTranscript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     assert role_transcript.utterances[0].speaker == UNASSIGNED_SPEAKER
 
 
@@ -89,7 +101,7 @@ def test_clean_transcript_removes_only_unassigned_backchannel_candidates_no_llm(
     result = clean_transcript(tmp_path, max_words=3, role_names={"Alice": "Zaria", "Bob": "Marcus"})
 
     assert result == CleanTranscriptResult(utterance_count=3, removed_count=1)
-    role_transcript = Transcript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
+    role_transcript = RoleTranscript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     assert [utterance.text for utterance in role_transcript.utterances] == ["Are you coming", "Yeah", "Let's go"]
 
 
@@ -113,10 +125,10 @@ def test_clean_transcript_reports_staged_progress(tmp_path: Path) -> None:
 
 
 def test_render_role_transcript_text(tmp_path: Path) -> None:
-    role_transcript = Transcript.from_words(
-        [
-            _word("hello", "Wizard", 0.0, 1.0),
-            _word("world", UNASSIGNED_SPEAKER, 1.0, 2.0),
+    role_transcript = RoleTranscript(
+        utterances=[
+            RoleTranscriptUtterance(index=0, speaker="Wizard", text="hello"),
+            RoleTranscriptUtterance(index=1, speaker=UNASSIGNED_SPEAKER, text="world"),
         ]
     )
     role_transcript.save(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)

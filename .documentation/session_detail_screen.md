@@ -48,9 +48,9 @@ session are also managed here, since processing depends on them.
   directly. Generating it is no longer a separately triggerable step — it's produced internally,
   as the first phase of Generate (`G`). See Generate below.
 - **Ledger** — `ledger.json`, an LLM-generated, machine-usable semantic condensation of the
-  role transcript, plus its human-readable `ledger.md` companion. Its v3 format and generation
-  behavior are defined in `canonical_ledger_format_v3.md` and `generate_ledger.md`. It is
-  Generate's second phase.
+  current Session, plus its human-readable `ledger.md` companion. Its v4 format and generation
+  behavior are defined in `canonical_ledger_format_v4.md` and `generate_ledger.md`. Transcript
+  sectioning routes starting context and the current-session suffix before Ledger generation.
 - **Session summary** — a generated Markdown output derived from the Ledger (`ledger.json`), the
   session's attendees, and the campaign glossary. It is Generate's third and final phase. See
   `generate_summary.md`.

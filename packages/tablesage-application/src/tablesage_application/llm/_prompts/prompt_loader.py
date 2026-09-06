@@ -15,6 +15,9 @@ class PromptName(StrEnum):
     CLASSIFY_BACKCHANNELS = "classify_backchannels"
     EXTRACT_GLOSSARY = "extract_glossary"
     SUGGEST_SPELLING_CORRECTIONS = "suggest_spelling_corrections"
+    SECTION_TRANSCRIPT = "section_transcript"
+    GENERATE_PLAYER_INTRODUCTIONS = "generate_player_introductions"
+    GENERATE_RECAP_SUMMARY = "generate_recap_summary"
 
 
 def read_system_prompt(name: PromptName) -> str:

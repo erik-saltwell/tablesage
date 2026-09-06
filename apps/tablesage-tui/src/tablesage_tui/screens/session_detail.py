@@ -386,12 +386,11 @@ class SessionDetailScreen(TableSageScreen):
         result = self.application.generate_benchmark_transcript(self._session_id)
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
-    # Generate Outputs -- runs Role Transcript (the same post-review backchannel+role pass Clean
-    # Transcript used to expose as its own step), then Ledger, then Summary, in one call with no
-    # intermediate confirmation: every step writes via temp-then-rename, so there's nothing to
-    # lose by running immediately. Gated on a completed Manual Review (see check_action) -- Role
-    # Transcript generation is no longer a separately triggerable step, just an internal part of
-    # this one.
+    # Generate Outputs -- runs the six session-output phases in dependency order, beginning with
+    # Role Transcript (the same post-review backchannel+role pass Clean Transcript used to expose
+    # as its own step). There is no intermediate confirmation: every phase writes via
+    # temp-then-rename, so there's nothing to lose by running immediately. Gated on a completed
+    # Manual Review (see check_action) -- the individual phases are internal parts of this action.
 
     def action_generate(self) -> None:
         self._clear_errors()
@@ -403,10 +402,25 @@ class SessionDetailScreen(TableSageScreen):
             except Exception as exc:
                 raise RuntimeError(f"Role Transcript generation failed: {exc}") from exc
             try:
+                self.report_stage_progress("Generating Transcript Sections…", 0, 0)
+                self.application.generate_transcript_sections(self._session_id)
+            except Exception as exc:
+                raise RuntimeError(f"Transcript Sections generation failed: {exc}") from exc
+            try:
                 self.report_stage_progress("Generating Ledger…", 0, 0)
                 self.application.generate_ledger(self._session_id)
             except Exception as exc:
                 raise RuntimeError(f"Ledger generation failed: {exc}") from exc
+            try:
+                self.report_stage_progress("Generating Player Introductions…", 0, 0)
+                self.application.generate_player_introductions(self._session_id)
+            except Exception as exc:
+                raise RuntimeError(f"Player Introductions generation failed: {exc}") from exc
+            try:
+                self.report_stage_progress("Generating Recap Summary…", 0, 0)
+                self.application.generate_recap_summary(self._session_id)
+            except Exception as exc:
+                raise RuntimeError(f"Recap Summary generation failed: {exc}") from exc
             try:
                 self.report_stage_progress("Generating Summary…", 0, 0)
                 self.application.generate_summary(self._session_id)

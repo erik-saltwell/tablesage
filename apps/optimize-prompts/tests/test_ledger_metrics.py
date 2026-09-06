@@ -25,7 +25,7 @@ _INPUT = """<known_session_roles>
 
 _OUTPUT = """{
   "scratchpad": "Internal planning that must not affect Ledger quality metrics.",
-  "preamble": null,
+  "starting_situation": "The party is crossing an unstable bridge.",
   "utterances": [
     {
       "type": "narration",
@@ -77,7 +77,8 @@ def test_conciseness_uses_transcript_not_prompt_scaffolding() -> None:
     result = asyncio.run(metric.evaluate("# Prompt", EvalCase(input=_INPUT), _OUTPUT))
 
     transcript_words = len(extract_session_transcript(_INPUT).split())
-    assert result.score == pytest.approx((transcript_words - len(ledger_content(_OUTPUT).split())) / transcript_words)
+    expected_score = max(0.0, (transcript_words - len(ledger_content(_OUTPUT).split())) / transcript_words)
+    assert result.score == pytest.approx(expected_score)
 
 
 def test_ledger_content_excludes_generation_scratchpad() -> None:
