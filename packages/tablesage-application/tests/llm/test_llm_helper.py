@@ -93,12 +93,18 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
     captured: dict[str, Any] = {}
 
     async def fake_call_llm(
-        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+        system_prompt: str,
+        user_prompt: str,
+        model: str,
+        response_format: Any = None,
+        timeout: float | None = None,
+        prompt_name: str | None = None,
     ) -> str:
         captured["system_prompt"] = system_prompt
         captured["user_prompt"] = user_prompt
         captured["model"] = model
         captured["response_format"] = response_format
+        captured["prompt_name"] = prompt_name
         return "the summary"
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
@@ -113,6 +119,7 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
     assert result == "the summary"
     assert captured["model"] == "anthropic/claude-sonnet-4-5"
     assert captured["response_format"] is _SummaryResult
+    assert captured["prompt_name"] == "summarize_session"
     assert '{"utterances": []}' in captured["user_prompt"]
     assert "<glossary>" in captured["user_prompt"]  # glossary section is present even when empty
     assert "Campaign: Iron Pact" in captured["user_prompt"]
@@ -134,7 +141,12 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
     captured: dict[str, Any] = {}
 
     async def fake_call_llm(
-        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+        system_prompt: str,
+        user_prompt: str,
+        model: str,
+        response_format: Any = None,
+        timeout: float | None = None,
+        prompt_name: str | None = None,
     ) -> str:
         captured["user_prompt"] = user_prompt
         return "ok"
@@ -166,7 +178,12 @@ async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.Monke
     captured: dict[str, Any] = {}
 
     async def fake_call_llm(
-        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+        system_prompt: str,
+        user_prompt: str,
+        model: str,
+        response_format: Any = None,
+        timeout: float | None = None,
+        prompt_name: str | None = None,
     ) -> str:
         captured["model"] = model
         return "ok"
@@ -183,7 +200,12 @@ async def test_call_llm_with_prompt_forwards_timeout(monkeypatch: pytest.MonkeyP
     captured: dict[str, Any] = {}
 
     async def fake_call_llm(
-        system_prompt: str, user_prompt: str, model: str, response_format: Any = None, timeout: float | None = None
+        system_prompt: str,
+        user_prompt: str,
+        model: str,
+        response_format: Any = None,
+        timeout: float | None = None,
+        prompt_name: str | None = None,
     ) -> str:
         captured["timeout"] = timeout
         return "ok"

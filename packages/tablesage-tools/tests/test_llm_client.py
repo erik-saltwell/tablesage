@@ -75,6 +75,32 @@ async def test_call_llm_builds_system_and_user_messages(monkeypatch: MonkeyPatch
 
 
 @pytest.mark.anyio
+async def test_call_llm_logs_unstructured_markdown_as_text_without_false_json_error(monkeypatch: MonkeyPatch) -> None:
+    events = _capture_wide_events(monkeypatch)
+
+    async def fake_acompletion(**kwargs: Any) -> dict[str, Any]:
+        return {
+            "id": "completion-123",
+            "model": "claude-test",
+            "choices": [{"finish_reason": "stop", "message": {"content": "## Recap\n\n- The gate opened."}}],
+        }
+
+    import litellm
+
+    monkeypatch.setattr(litellm, "acompletion", fake_acompletion)
+
+    await call_llm("system", "user", "anthropic/claude-test", prompt_name="generate_recap_summary")
+
+    event = events[0]
+    assert event["prompt_name"] == "generate_recap_summary"
+    assert event["response_kind"] == "text"
+    assert event["response_content_nonempty"] is True
+    assert "response_json_valid" not in event
+    assert "response_json_error" not in event
+    assert "response_json_shape" not in event
+
+
+@pytest.mark.anyio
 async def test_call_llm_forwards_response_format(monkeypatch: MonkeyPatch) -> None:
     captured: dict[str, Any] = {}
 
@@ -118,6 +144,7 @@ async def test_call_llm_logs_structured_output_contract_and_valid_response_shape
     assert event["op"] == "call_llm"
     assert event["model"] == "anthropic/claude-test"
     assert event["provider"] == "anthropic"
+    assert event["response_kind"] == "structured_json"
     assert event["response_schema_name"] == "_Answer"
     assert event["response_schema"] == _Answer.model_json_schema()
     assert len(event["response_schema_sha256"]) == 64

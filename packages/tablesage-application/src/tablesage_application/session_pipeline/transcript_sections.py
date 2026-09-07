@@ -166,7 +166,16 @@ async def generate_transcript_sections(
             except (ValidationError, TranscriptSectionsValidationError) as exc:
                 last_error = exc
                 continue
-            log.set(attempt_count=attempt, failed=False)
+            log.set(
+                attempt_count=attempt,
+                failed=False,
+                recap_range=response.recap_range.model_dump() if response.recap_range is not None else None,
+                introduction_range=response.introduction_range.model_dump() if response.introduction_range is not None else None,
+                starting_context_range=(
+                    response.starting_context_range.model_dump() if response.starting_context_range is not None else None
+                ),
+                session_start_index=response.session_start_index,
+            )
             return response
 
         log.set(failed=True, failure_kind="structural_validation", last_validation_error=str(last_error))

@@ -550,27 +550,42 @@ class Application:
             role_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.ROLE_TRANSCRIPT].filename
             role_transcript = transcript_sections_pipeline.RoleTranscript.load(role_path)
 
-        generated = asyncio.run(
-            transcript_sections_pipeline.generate_transcript_sections(
-                role_transcript,
-                attendees,
-                self._settings.llm_model_high,
+        with widelog.wide_event(
+            op="generate_session_transcript_sections",
+            session_id=str(session_id),
+            session_folder=str(session_folder),
+            attendee_count=len(attendees),
+            role_transcript_utterance_count=len(role_transcript.utterances),
+        ) as log:
+            generated = asyncio.run(
+                transcript_sections_pipeline.generate_transcript_sections(
+                    role_transcript,
+                    attendees,
+                    self._settings.llm_model_high,
+                )
             )
-        )
-        target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
-        result = transcript_sections_pipeline.persist_transcript_sections(generated, role_path, target)
-        for name in (
-            paths.ArtifactName.LEDGER,
-            paths.ArtifactName.PLAYER_INTRODUCTIONS,
-            paths.ArtifactName.RECAP_SUMMARY,
-            paths.ArtifactName.SUMMARY,
-        ):
-            artifacts.delete_artifact(session_folder, name)
-        if result.starting_context_range is None:
-            raise transcript_sections_pipeline.TranscriptSectionsValidationError(
-                "Transcript sectioning found no usable starting situation; downstream generation cannot continue."
+            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
+            result = transcript_sections_pipeline.persist_transcript_sections(generated, role_path, target)
+            for name in (
+                paths.ArtifactName.LEDGER,
+                paths.ArtifactName.PLAYER_INTRODUCTIONS,
+                paths.ArtifactName.RECAP_SUMMARY,
+                paths.ArtifactName.SUMMARY,
+            ):
+                artifacts.delete_artifact(session_folder, name)
+            if result.starting_context_range is None:
+                raise transcript_sections_pipeline.TranscriptSectionsValidationError(
+                    "Transcript sectioning found no usable starting situation; downstream generation cannot continue."
+                )
+            log.set(
+                artifact_path=str(target),
+                recap_range=result.recap_range.model_dump() if result.recap_range is not None else None,
+                introduction_range=result.introduction_range.model_dump() if result.introduction_range is not None else None,
+                starting_context_range=result.starting_context_range.model_dump(),
+                session_start_index=result.session_start_index,
+                failed=False,
             )
-        return result
+            return result
 
     def generate_ledger(self, session_id: uuid.UUID) -> None:
         """Generate and atomically replace a Session's structured Ledger artifact."""
@@ -603,9 +618,12 @@ class Application:
         with widelog.wide_event(
             op="generate_session_ledger",
             session_id=str(session_id),
+            session_folder=str(session_folder),
             known_role_count=len(known_roles),
             glossary_count=len(ledger_glossary),
-        ):
+            starting_context_utterance_count=len(routed_transcript.starting_context),
+            session_utterance_count=len(routed_transcript.session),
+        ) as log:
             generated = asyncio.run(
                 generate_ledger_pipeline.generate_ledger(
                     routed_transcript.starting_context,
@@ -638,6 +656,12 @@ class Application:
                 markdown_temporary.unlink(missing_ok=True)
                 raise
             artifacts.invalidate_category(session_folder, paths.ArtifactCategory.FROM_LOG)
+            log.set(
+                ledger_utterance_count=len(ledger.utterances),
+                ledger_json_path=str(target),
+                ledger_markdown_path=str(markdown_target),
+                failed=False,
+            )
 
     def can_generate_player_introductions(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -673,21 +697,35 @@ class Application:
             game_system = campaign.game_system
             session_date = game_session.session_date.isoformat() if game_session.session_date else None
 
-        generated = asyncio.run(
-            player_introductions_pipeline.generate_player_introductions(
-                introduction_transcript,
-                prompt_attendees,
-                prompt_glossary,
-                campaign_name,
-                session_date,
-                game_system,
-                self._settings.llm_model_high,
+        with widelog.wide_event(
+            op="generate_session_player_introductions",
+            session_id=str(session_id),
+            session_folder=str(session_folder),
+            attendee_count=len(prompt_attendees),
+            glossary_entry_count=len(prompt_glossary),
+            introduction_range_present=introduction_transcript is not None,
+            introduction_utterance_count=len(introduction_transcript or ()),
+        ) as log:
+            generated = asyncio.run(
+                player_introductions_pipeline.generate_player_introductions(
+                    introduction_transcript,
+                    prompt_attendees,
+                    prompt_glossary,
+                    campaign_name,
+                    session_date,
+                    game_system,
+                    self._settings.llm_model_high,
+                )
             )
-        )
-        target = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
-        result = player_introductions_pipeline.persist_player_introductions(generated, session_id, target)
-        artifacts.delete_artifact(session_folder, paths.ArtifactName.SUMMARY)
-        return result
+            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
+            result = player_introductions_pipeline.persist_player_introductions(generated, session_id, target)
+            artifacts.delete_artifact(session_folder, paths.ArtifactName.SUMMARY)
+            log.set(
+                introduction_count=len(result.introductions),
+                artifact_path=str(target),
+                failed=False,
+            )
+            return result
 
     def can_generate_recap_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -726,8 +764,11 @@ class Application:
         with widelog.wide_event(
             op="generate_recap_summary",
             session_id=str(session_id),
+            session_folder=str(session_folder),
+            attendee_count=len(prompt_attendees),
             glossary_entry_count=len(prompt_glossary),
-        ):
+            ledger_chars=len(ledger_text),
+        ) as log:
             recap = asyncio.run(
                 recap_summary_pipeline.generate_recap_summary(
                     ledger_text,
@@ -741,6 +782,7 @@ class Application:
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename
             recap_summary_pipeline.persist_recap_summary(recap, target)
+            log.set(recap_chars=len(recap), artifact_path=str(target), failed=False)
             return recap
 
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
@@ -781,7 +823,16 @@ class Application:
             session_date = game_session.session_date.isoformat() if game_session.session_date else None
             game_system = campaign.game_system
 
-        with widelog.wide_event(op="generate_summary", session_id=str(session_id), glossary_entry_count=len(prompt_glossary)):
+        with widelog.wide_event(
+            op="generate_summary",
+            session_id=str(session_id),
+            session_folder=str(session_folder),
+            previous_session_id=str(previous_session.id) if previous_session is not None else None,
+            has_previous_session=previous_session is not None,
+            attendee_count=len(prompt_attendees),
+            glossary_entry_count=len(prompt_glossary),
+            ledger_chars=len(ledger_text),
+        ) as log:
             summary = asyncio.run(
                 generate_summary_pipeline.generate_summary(
                     ledger_text,
@@ -812,6 +863,14 @@ class Application:
             except Exception:
                 temp_target.unlink(missing_ok=True)
                 raise
+            log.set(
+                summary_template_chars=len(summary),
+                recap_chars=len(recap) if recap is not None else 0,
+                introduction_count=len(introductions.introductions),
+                composed_summary_chars=len(composed_summary),
+                artifact_path=str(target),
+                failed=False,
+            )
 
     def can_transcribe_audio(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:

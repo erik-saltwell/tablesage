@@ -1,8 +1,10 @@
 import os
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from datetime import date, datetime
 from pathlib import Path
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -17,6 +19,7 @@ from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tools.model import Transcript
 from tablesage_tui.dialogs import AttendeeDialog, ConfirmationDialog, TextInputDialog
+from tablesage_tui.screens import session_detail as session_detail_module
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
 from tablesage_tui.screens.glossary_review import GlossaryReviewScreen
 from tablesage_tui.screens.main_app import TableSageApp
@@ -93,6 +96,27 @@ async def _wait_for_progress_worker(pilot: Pilot) -> None:
     """Wait for the background-thread worker behind a ProgressDialog to finish and its callback to run."""
     await pilot.app.workers.wait_for_complete()
     await pilot.pause()
+
+
+class _FakeWideEvent:
+    def __init__(self, fields: dict[str, Any]) -> None:
+        self.fields = fields
+
+    def set(self, **fields: Any) -> None:
+        self.fields.update(fields)
+
+
+def _capture_wide_events(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    events: list[dict[str, Any]] = []
+
+    @contextmanager
+    def fake_wide_event(**fields: Any) -> Iterator[_FakeWideEvent]:
+        event = _FakeWideEvent(fields)
+        events.append(event.fields)
+        yield event
+
+    monkeypatch.setattr(session_detail_module.widelog, "wide_event", fake_wide_event)
+    return events
 
 
 def test_binding_keys_and_footer_labels() -> None:
@@ -409,7 +433,7 @@ async def test_generate_disabled_without_reviewed_transcript() -> None:
 
 
 @pytest.mark.anyio
-async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation() -> None:
+async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation(monkeypatch: pytest.MonkeyPatch) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
     call_order: list[str] = []
@@ -421,6 +445,7 @@ async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation
     application.generate_player_introductions = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_player_introductions"))
     application.generate_recap_summary = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_recap_summary"))
     application.generate_summary = MagicMock(side_effect=lambda *a, **k: call_order.append("generate_summary"))
+    events = _capture_wide_events(monkeypatch)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -450,6 +475,17 @@ async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation
         assert application.session_artifacts.call_count >= 2
         notify.assert_called_once_with("Outputs generated.")
         assert isinstance(pilot.app.screen, SessionDetailScreen)
+        assert events == [
+            {
+                "op": "generate_outputs",
+                "session_id": str(session.id),
+                "phase_count": 6,
+                "current_phase": None,
+                "completed_phase_count": 6,
+                "last_completed_phase": "summary",
+                "failed": False,
+            }
+        ]
 
 
 @pytest.mark.parametrize(
@@ -464,7 +500,11 @@ async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation
     ],
 )
 @pytest.mark.anyio
-async def test_generate_failure_stops_chain_and_records_exact_phase(failing_method: str, phase_label: str) -> None:
+async def test_generate_failure_stops_chain_and_records_exact_phase(
+    failing_method: str,
+    phase_label: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
     phase_methods = [
@@ -490,6 +530,7 @@ async def test_generate_failure_stops_chain_and_records_exact_phase(failing_meth
 
     for method in phase_methods:
         setattr(application, method, MagicMock(side_effect=effect_for(method)))
+    events = _capture_wide_events(monkeypatch)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -505,6 +546,10 @@ async def test_generate_failure_stops_chain_and_records_exact_phase(failing_meth
         error_table = pilot.app.screen.query_one("#error-table", DataTable)
         assert error_table.row_count == 1
         assert error_table.get_row_at(0) == ["Generate Outputs", f"{phase_label} generation failed: provider timed out"]
+        assert events[0]["current_phase"] == failing_method.removeprefix("generate_").replace("clean_transcript", "role_transcript")
+        assert events[0]["completed_phase_count"] == failure_index
+        assert events[0]["failed_phase"] == events[0]["current_phase"]
+        assert events[0]["failed"] is True
 
 
 @pytest.mark.anyio

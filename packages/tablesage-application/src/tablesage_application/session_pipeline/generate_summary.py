@@ -113,7 +113,7 @@ async def generate_summary(
             except SummaryValidationError as exc:
                 last_error = exc
                 continue
-            log.set(attempt_count=attempt, failed=False)
+            log.set(attempt_count=attempt, summary_template_chars=len(summary), failed=False)
             return f"{summary}\n"
 
         log.set(failed=True, failure_kind="validation", last_validation_error=str(last_error))

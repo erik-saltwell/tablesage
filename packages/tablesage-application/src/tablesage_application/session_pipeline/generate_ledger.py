@@ -234,6 +234,8 @@ async def generate_ledger(
         known_role_count=len(normalized_roles),
         attendee_count=len(normalized_attendees),
         glossary_count=len(glossary),
+        starting_context_utterance_count=len(starting_context),
+        session_utterance_count=len(session_utterances),
     ) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             log.set(attempt_count=attempt)
@@ -253,7 +255,13 @@ async def generate_ledger(
             candidate = _Candidate(response=response, warning_count=warning_count, attempt=attempt)
             candidates.append(candidate)
             if warning_count == 0:
-                log.set(attempt_count=attempt, warning_count=0, failed=False)
+                log.set(
+                    attempt_count=attempt,
+                    warning_count=0,
+                    generated_utterance_count=len(response.utterances),
+                    starting_situation_chars=len(response.starting_situation),
+                    failed=False,
+                )
                 return response
 
         if candidates:
@@ -262,6 +270,8 @@ async def generate_ledger(
                 attempt_count=MAX_GENERATION_ATTEMPTS,
                 warning_count=selected.warning_count,
                 selected_attempt=selected.attempt,
+                generated_utterance_count=len(selected.response.utterances),
+                starting_situation_chars=len(selected.response.starting_situation),
                 failed=False,
             )
             return selected.response

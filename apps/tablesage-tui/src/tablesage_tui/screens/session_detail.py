@@ -6,6 +6,7 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import widelog
 from tablesage_application.paths import ARTIFACTS, ArtifactCategory, ArtifactName
 from tablesage_application.session_pipeline import clean_transcript, import_audio, transcribe_audio
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
@@ -396,36 +397,58 @@ class SessionDetailScreen(TableSageScreen):
         self._clear_errors()
 
         def work() -> None:
-            try:
-                self.report_stage_progress(_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS], 0, 0)
-                self.application.clean_transcript(self._session_id, on_progress=self._on_clean_progress)
-            except Exception as exc:
-                raise RuntimeError(f"Role Transcript generation failed: {exc}") from exc
-            try:
-                self.report_stage_progress("Generating Transcript Sections…", 0, 0)
-                self.application.generate_transcript_sections(self._session_id)
-            except Exception as exc:
-                raise RuntimeError(f"Transcript Sections generation failed: {exc}") from exc
-            try:
-                self.report_stage_progress("Generating Ledger…", 0, 0)
-                self.application.generate_ledger(self._session_id)
-            except Exception as exc:
-                raise RuntimeError(f"Ledger generation failed: {exc}") from exc
-            try:
-                self.report_stage_progress("Generating Player Introductions…", 0, 0)
-                self.application.generate_player_introductions(self._session_id)
-            except Exception as exc:
-                raise RuntimeError(f"Player Introductions generation failed: {exc}") from exc
-            try:
-                self.report_stage_progress("Generating Recap Summary…", 0, 0)
-                self.application.generate_recap_summary(self._session_id)
-            except Exception as exc:
-                raise RuntimeError(f"Recap Summary generation failed: {exc}") from exc
-            try:
-                self.report_stage_progress("Generating Summary…", 0, 0)
-                self.application.generate_summary(self._session_id)
-            except Exception as exc:
-                raise RuntimeError(f"Summary generation failed: {exc}") from exc
+            with widelog.wide_event(op="generate_outputs", session_id=str(self._session_id), phase_count=6) as log:
+                completed_phase_count = 0
+
+                def run_phase(key: str, label: str, progress_message: str, action: Callable[[], object]) -> None:
+                    nonlocal completed_phase_count
+                    log.set(current_phase=key, completed_phase_count=completed_phase_count)
+                    self.report_stage_progress(progress_message, 0, 0)
+                    try:
+                        action()
+                    except Exception as exc:
+                        log.set(failed=True, failed_phase=key)
+                        raise RuntimeError(f"{label} generation failed: {exc}") from exc
+                    completed_phase_count += 1
+                    log.set(last_completed_phase=key, completed_phase_count=completed_phase_count)
+
+                run_phase(
+                    "role_transcript",
+                    "Role Transcript",
+                    _CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
+                    lambda: self.application.clean_transcript(self._session_id, on_progress=self._on_clean_progress),
+                )
+                run_phase(
+                    "transcript_sections",
+                    "Transcript Sections",
+                    "Generating Transcript Sections…",
+                    lambda: self.application.generate_transcript_sections(self._session_id),
+                )
+                run_phase(
+                    "ledger",
+                    "Ledger",
+                    "Generating Ledger…",
+                    lambda: self.application.generate_ledger(self._session_id),
+                )
+                run_phase(
+                    "player_introductions",
+                    "Player Introductions",
+                    "Generating Player Introductions…",
+                    lambda: self.application.generate_player_introductions(self._session_id),
+                )
+                run_phase(
+                    "recap_summary",
+                    "Recap Summary",
+                    "Generating Recap Summary…",
+                    lambda: self.application.generate_recap_summary(self._session_id),
+                )
+                run_phase(
+                    "summary",
+                    "Summary",
+                    "Generating Summary…",
+                    lambda: self.application.generate_summary(self._session_id),
+                )
+                log.set(current_phase=None, failed=False)
 
         self.run_with_progress(
             title="Generate Outputs",

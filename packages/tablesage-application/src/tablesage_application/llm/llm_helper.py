@@ -37,4 +37,11 @@ async def call_llm_with_prompt(
     system_prompt = read_system_prompt(prompt)
     template = jinja2.Template(read_prompt_template(prompt), undefined=jinja2.StrictUndefined)
     user_prompt = template.render(**_template_variables(template_data))
-    return await call_llm(system_prompt, user_prompt, model, response_format=response_model, timeout=timeout)
+    return await call_llm(
+        system_prompt,
+        user_prompt,
+        model,
+        response_format=response_model,
+        timeout=timeout,
+        prompt_name=prompt.value,
+    )
