@@ -1,0 +1,6299 @@
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- john schork: Waymon Tisdale
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<role_transcript>
+{
+  "utterances": [
+    {
+      "index": 0,
+      "speaker": "Game Master",
+      "text": "Um, Uriah, we were at the clumsy everyone woke up. It was like, kind of like, or no, it was, it was the evening, it was that evening. Sorry, we started."
+    },
+    {
+      "index": 1,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, you tried to make it."
+    },
+    {
+      "index": 2,
+      "speaker": "Game Master",
+      "text": "Yeah, I tried to make you all go to sleep and."
+    },
+    {
+      "index": 3,
+      "speaker": "Dr Uriah",
+      "text": "Were like, What night time?"
+    },
+    {
+      "index": 4,
+      "speaker": "Game Master",
+      "text": "Yeah."
+    },
+    {
+      "index": 5,
+      "speaker": "Dr Uriah",
+      "text": "Nighttime activities."
+    },
+    {
+      "index": 6,
+      "speaker": "Game Master",
+      "text": "Uh, Uriah, um, uh, took the treasure map, did some scholarly sleuthing to try to find the, um, origins of it um, and failed Um, uh, and then, um."
+    },
+    {
+      "index": 7,
+      "speaker": "Dr Uriah",
+      "text": "IM also making a copy of it, uh, but IM also making a copy of it and the copy is wrong."
+    },
+    {
+      "index": 8,
+      "speaker": "Game Master",
+      "text": "Right, thats right, exactly exactly right, right? Youre secretly making a copy of it. Um, Trout, our little River halfling friend, Um, was chatting up a halfling named Squints, who you may remember the guy who was looking for his big break. Uh, so you dont remember that, okay, so."
+    },
+    {
+      "index": 9,
+      "speaker": "Trout",
+      "text": "Hes not a Biggie lift character, anyway."
+    },
+    {
+      "index": 10,
+      "speaker": "Game Master",
+      "text": "So Squints, so Squints is an eager, young, halfling guy whos really into his sling. Um, who was sitting at the bar. Uh, hes, uh, hunting for his big break. And, uh, Trout told him to chat with him in the morning that he would, um, gather the group together, and, um, uh, maybe take him on a an adventure, Um. Also noted among the Tavern adventurers was a man named Malzazarik the Magnificent."
+    },
+    {
+      "index": 11,
+      "speaker": "Game Master",
+      "text": "A uh, wizard in, uh, purple robes and a a pointy purple hat with a yellow star on it."
+    },
+    {
+      "index": 12,
+      "speaker": "Game Master",
+      "text": "Um, that night, Um, Phidipaldi."
+    },
+    {
+      "index": 13,
+      "speaker": "Game Master",
+      "text": "Uh, who, um, was, um, kicked out of the good inn and was in the Um."
+    },
+    {
+      "index": 14,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh, good inn."
+    },
+    {
+      "index": 15,
+      "speaker": "Game Master",
+      "text": "The Golden Egg."
+    },
+    {
+      "index": 16,
+      "speaker": "Game Master",
+      "text": "Um, decided to bunker down in the cellar, um, and hide in an attempt to find the liquor thief. I dont know if you remember that little subplot."
+    },
+    {
+      "index": 17,
+      "speaker": "Game Master",
+      "text": "Uh. Meanwhile, Uriah decided to stake out the river to look for the Clurichen to see when he was gonna come out. And he did see him come out, uh, hauling a jug and then turning invisible at the Riverbank. Um, Trout, um, was also at the Riverbank. Um, spearfishing and, uh uh, decided to, um, tail Uriah and the Clurichen back to the, um uh, wherever he was going."
+    },
+    {
+      "index": 18,
+      "speaker": "Waymon Tisdale",
+      "text": "Remind me what the Clurichen is."
+    },
+    {
+      "index": 19,
+      "speaker": "Game Master",
+      "text": "He is the little."
+    },
+    {
+      "index": 20,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hes a leprechaun."
+    },
+    {
+      "index": 21,
+      "speaker": "Game Master",
+      "text": "The little leprechaun that, Uh, the frog told you guys about in the Uh, in the first adventure, Um, he, uh. They follow the Invisible Thief to You guessed it, the outside of the Golden Egg Tavern, where he attempted to get into the, uh, the basement."
+    },
+    {
+      "index": 22,
+      "speaker": "Game Master",
+      "text": "Um, uh. Phidipaldi had laid a bunch of marbles on the ground to make him trip and fall."
+    },
+    {
+      "index": 23,
+      "speaker": "Waymon Tisdale",
+      "text": "Three Ninjas style."
+    },
+    {
+      "index": 24,
+      "speaker": "Game Master",
+      "text": "Yes, and then, uh, Uriah threw ink at him. And, uh, and Trout."
+    },
+    {
+      "index": 25,
+      "speaker": "Dr Uriah",
+      "text": "Look what I got."
+    },
+    {
+      "index": 26,
+      "speaker": "Game Master",
+      "text": "Trout had a fish bag that he used."
+    },
+    {
+      "index": 27,
+      "speaker": "Dr Uriah",
+      "text": "Well, hes invisible, right? So I went and like."
+    },
+    {
+      "index": 28,
+      "speaker": "Game Master",
+      "text": "Right, exactly, yeah, Ink took cover of."
+    },
+    {
+      "index": 29,
+      "speaker": "Game Master",
+      "text": "And then and then, uh, um, Trout had a fish bag that he used to capture him."
+    },
+    {
+      "index": 30,
+      "speaker": "Waymon Tisdale",
+      "text": "It worked for Indiana Jones, dad."
+    },
+    {
+      "index": 31,
+      "speaker": "Game Master",
+      "text": "Yeah, exactly, uh, it turns out the Clurichens name is Naggeneen Naggeneen Naggeneen, who said Quoteunquote, I just like to drink, so he likes to come down and get ripped. He offered his pot of gold or a secret for release. Everyone refused and then called the, Um, the Innkeeper, because there was a reward of 100 gold. Um, I forgot to tell you all, you each get 100 experience points because you got the 100 gold, um."
+    },
+    {
+      "index": 32,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, is that what were doing?"
+    },
+    {
+      "index": 33,
+      "speaker": "Game Master",
+      "text": "That is how it works in In in original DD. even before."
+    },
+    {
+      "index": 34,
+      "speaker": "Game Master",
+      "text": "Oh yeah, gold was experience, yeah."
+    },
+    {
+      "index": 35,
+      "speaker": "Unassigned Speaker",
+      "text": "Basic dude, gold was experience."
+    },
+    {
+      "index": 36,
+      "speaker": "Game Master",
+      "text": "You didn.t get experience for killing monsters, you just get experience for gold."
+    },
+    {
+      "index": 37,
+      "speaker": "Unassigned Speaker",
+      "text": "Toll size."
+    },
+    {
+      "index": 38,
+      "speaker": "Dr Uriah",
+      "text": "But wait, that.s broken up between us, right? So we we each think it 100."
+    },
+    {
+      "index": 39,
+      "speaker": "Game Master",
+      "text": "We can do 100 each."
+    },
+    {
+      "index": 40,
+      "speaker": "Dr Uriah",
+      "text": "Uh, how much XP till my next level?"
+    },
+    {
+      "index": 41,
+      "speaker": "Game Master",
+      "text": "Uh, I will look that up for you once I get done summarizing this, Uh, so who gets the gold? We split it."
+    },
+    {
+      "index": 42,
+      "speaker": "Unassigned Speaker",
+      "text": "We, we split it."
+    },
+    {
+      "index": 43,
+      "speaker": "Game Master",
+      "text": "Uh yeah, we split it, yeah, the party split it. Um, and, uh, the Quinn, the owner of the Golden Egg, Um, put a bag of Naggeneen on a hook behind his bar and said, I know what Im gonna do with this one. And then everyone was like, All right, whatever and left, um."
+    },
+    {
+      "index": 44,
+      "speaker": "Sir Phidipaldi",
+      "text": "And he hung him in a bag over his bar."
+    },
+    {
+      "index": 45,
+      "speaker": "Game Master",
+      "text": "Right, right, so I never got my fish bag back, you never did get your fish bag back because I used my one use."
+    },
+    {
+      "index": 46,
+      "speaker": "Sir Phidipaldi",
+      "text": "Well, fix that."
+    },
+    {
+      "index": 47,
+      "speaker": "Game Master",
+      "text": "Meanwhile, its still evening and dunk. Um, our troll kin, uh was, um, staying, uh uh at the, um, hanging out with the farmer getting drunk as well. And he decided to case, Um, Warwicks Armory or Smithy, because, um, that Mithril chain shirt he heard a rumor about. He could see it through the window, he could see that it was visible and there was. You remember, the luck charms that covered the building and everything else like that. Um, he caught Ingrid the um uh, outmist, Yeah, um, skulking. And he followed her home, where she admitted that she leaves nightl nightly gifts on Warwicks Windowsill and watches him sleep, but has never spoken to him."
+    },
+    {
+      "index": 48,
+      "speaker": "Sir Phidipaldi",
+      "text": "And Im assuming that he wakes up every morning and finds trinkets, and this is why hes trying to cover himself with lucky charms."
+    },
+    {
+      "index": 49,
+      "speaker": "Game Master",
+      "text": "Cause he doesnt know whats going on."
+    },
+    {
+      "index": 50,
+      "speaker": "Game Master",
+      "text": "Hes like, Whats happening?"
+    },
+    {
+      "index": 51,
+      "speaker": "Sir Phidipaldi",
+      "text": "Were definitely gonna come back and use that to our advantage to get ourselves a Mithril shirt."
+    },
+    {
+      "index": 52,
+      "speaker": "Game Master",
+      "text": "Yes, so, so Dunk definitely had a plan here. Because he then said, he asked Ingrid to BL brew a sleeping potion that he would, um, give to Warwick in an exchange of. She could sneak into the uh, like the room and and make him fall asleep and then stare at him all night if she wanted."
+    },
+    {
+      "index": 53,
+      "speaker": "Sir Phidipaldi",
+      "text": "Cause she lives to watch."
+    },
+    {
+      "index": 54,
+      "speaker": "Game Master",
+      "text": "Yes, and then, Uh, uh. But then, in exchange, she has to unlock the front door for dunk to come in. At which point hes gonna take the Mithril shirt."
+    },
+    {
+      "index": 55,
+      "speaker": "Game Master",
+      "text": "Um, she got suspicious that he was gonna take the Mithril shirt and dunk, said Im just a fan of Clovers. She was dubious of that, um. The potion required some faun wine faun wine from a grove that she that she mentioned was north of town, where the trees bleed. Wine that instantly fells. Any drinker, um, so Dunk pointedly declares. He promised secrecy about her romance that she loves. Uh, or or she asked, Will you keep it secret? Hes like I Havent promised that yet so."
+    },
+    {
+      "index": 56,
+      "speaker": "Waymon Tisdale",
+      "text": "HM."
+    },
+    {
+      "index": 57,
+      "speaker": "Game Master",
+      "text": "Um, the next morning, the following things happened. Uriah wakes up and goes and visits the church where he meets, Uh, Father William, who is a."
+    },
+    {
+      "index": 58,
+      "speaker": "Dr Uriah",
+      "text": "Racist?"
+    },
+    {
+      "index": 59,
+      "speaker": "Game Master",
+      "text": "A racist to nonhumans."
+    },
+    {
+      "index": 60,
+      "speaker": "Sir Phidipaldi",
+      "text": "But also a phrenologist."
+    },
+    {
+      "index": 61,
+      "speaker": "Game Master",
+      "text": "Also a phrenologist."
+    },
+    {
+      "index": 62,
+      "speaker": "Sir Phidipaldi",
+      "text": "So it kinda evens out."
+    },
+    {
+      "index": 63,
+      "speaker": "Waymon Tisdale",
+      "text": "In six of one, half dozen of the other."
+    },
+    {
+      "index": 64,
+      "speaker": "Game Master",
+      "text": "He spent much time measuring Uriah and was convinced that he had webbing on his, uh, feet."
+    },
+    {
+      "index": 65,
+      "speaker": "Unassigned Speaker",
+      "text": "Feet."
+    },
+    {
+      "index": 66,
+      "speaker": "Game Master",
+      "text": "Just wanted to see his feet, wanted to pay, to see his feet."
+    },
+    {
+      "index": 67,
+      "speaker": "Dr Uriah",
+      "text": "So dont go there, fellow fishman."
+    },
+    {
+      "index": 68,
+      "speaker": "Waymon Tisdale",
+      "text": "He might wanna make some money."
+    },
+    {
+      "index": 69,
+      "speaker": "Trout",
+      "text": "Arg is also a fishman, too. Whats your class? By the way, what, uh?"
+    },
+    {
+      "index": 70,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, Assassin."
+    },
+    {
+      "index": 71,
+      "speaker": "Game Master",
+      "text": "Oh, right, Fishman, assassin."
+    },
+    {
+      "index": 72,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hes our combo maker."
+    },
+    {
+      "index": 73,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, Im Im the Thinker Fishman and Hes the Doer Fishman."
+    },
+    {
+      "index": 74,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, um. Father William mentioned that there was a magic sword buried with Sir Brandon in the barrow mound. Thats about a days walk away. Um, and that was the, um, sword that was used to kill the Dragon a thousand years ago, or whatever."
+    },
+    {
+      "index": 75,
+      "speaker": "Game Master",
+      "text": "And he had already sent a young cleric named Brother Dirk to go get the sword to go slay the Dragon. He marked the barrow mound on the map."
+    },
+    {
+      "index": 76,
+      "speaker": "Unassigned Speaker",
+      "text": "Dustily."
+    },
+    {
+      "index": 77,
+      "speaker": "Game Master",
+      "text": "Uh, dustily and um, and also a wood witchs cottage."
+    },
+    {
+      "index": 78,
+      "speaker": "Game Master",
+      "text": "On the map."
+    },
+    {
+      "index": 79,
+      "speaker": "Dr Uriah",
+      "text": "Vivian."
+    },
+    {
+      "index": 80,
+      "speaker": "Game Master",
+      "text": "Uh, yes, Vivian and Um. And he extracted an agreement for a 10 gold donation for the Barrows Upkeep dismissed Ingrid as a fraud fronting for the witch of Coven. Okay? And then Phidipaldi went to George the Hunter, who has only one arm. Uh, and he says, the Dragons lair sits at the foot of the northern, the northern part. Uh, the foot of the mountains, Um, says the Dragon Cant fly yet, but will soon has a poison bite, sulfur breath, black scales. Um, and he doubts that the Reeve actually has the 1000 gold pieces that he promised everybody. A Lance is among the few weapons he never tried."
+    },
+    {
+      "index": 81,
+      "speaker": "Game Master",
+      "text": "And then Phidipaldi decided, Im gonna bring a Lance and see if that hurts the Dragon."
+    },
+    {
+      "index": 82,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, Lady Isaboob."
+    },
+    {
+      "index": 83,
+      "speaker": "Game Master",
+      "text": "Lady Isaboob, right? Meanwhile, at Ingrids Shop, Um uh, Uriah buys, um, Wolf Bane and Healing Mandrake tea passes on a witchs powder. Ingrid names her forest friend, The Witch Vivian, and mentions that fairies have been emerging and encroaching far more than they used to."
+    },
+    {
+      "index": 84,
+      "speaker": "Dr Uriah",
+      "text": "Fairies are coming in."
+    },
+    {
+      "index": 85,
+      "speaker": "Game Master",
+      "text": "Yep, meanwhile, back at the Inn."
+    },
+    {
+      "index": 86,
+      "speaker": "Dr Uriah",
+      "text": "When your fairy understanding."
+    },
+    {
+      "index": 87,
+      "speaker": "Game Master",
+      "text": "Trout is talking to Squintss and recruits him as a quoteunquote junior assistant halfling."
+    },
+    {
+      "index": 88,
+      "speaker": "Sir Phidipaldi",
+      "text": "In the Halfling Corps."
+    },
+    {
+      "index": 89,
+      "speaker": "Game Master",
+      "text": "In the Halfling Corps of Of Your Guys Band, um, he, um, only gets meritbased pay. He gets second pickings on treasure and he is selffunded. Until the first treasure drops, he is allowed to ask, Uh, Trout for three tips a day."
+    },
+    {
+      "index": 90,
+      "speaker": "Sir Phidipaldi",
+      "text": "On how to be a good adventurer."
+    },
+    {
+      "index": 91,
+      "speaker": "Game Master",
+      "text": "On how to be a good adventurer."
+    },
+    {
+      "index": 92,
+      "speaker": "Trout",
+      "text": "Hes also much superior to me in all levels."
+    },
+    {
+      "index": 93,
+      "speaker": "Game Master",
+      "text": "Yeah, hes actually a level two. He has, like better stats, like better equipment."
+    },
+    {
+      "index": 94,
+      "speaker": "Waymon Tisdale",
+      "text": "Hes more confident."
+    },
+    {
+      "index": 95,
+      "speaker": "Game Master",
+      "text": "Yeah, um, he accepted. Um, starryeyed. Meanwhile, dunk walked to the Fauns, Grove, met some fauns, somehow rolled to, Um, resist poison on the wine and."
+    },
+    {
+      "index": 96,
+      "speaker": "Game Master",
+      "text": "Like a drunk."
+    },
+    {
+      "index": 97,
+      "speaker": "Game Master",
+      "text": "Got drunk, Yeah, yes."
+    },
+    {
+      "index": 98,
+      "speaker": "Unassigned Speaker",
+      "text": "He did twice."
+    },
+    {
+      "index": 99,
+      "speaker": "Game Master",
+      "text": "Yes, Um, astonished. The Fauns traded a sentimental rabbits foot for a flask of their wine because the Fauns prize sentimental tokens. And they now regard Dunk as a remarkable trollkin. Um. Meanwhile, the party decides to get together and head north. Um, well, dunk. Meanwhile, back in town, Quote Dunk tells the party that he has a line on quote unquote a line on some good armor. And so then."
+    },
+    {
+      "index": 100,
+      "speaker": "Dr Uriah",
+      "text": "No idea what hes talking about."
+    },
+    {
+      "index": 101,
+      "speaker": "Game Master",
+      "text": "So Dunk is supposed to deliver the faun wine to the alchemist. Um, but he cuts it, uh, before he delivers it at one quart, uh, one quarter of its strength, keeping the rest for himself. Um, doesnt tell her, obviously, um, the party. Plus, Squintss heads north for the barrow mound, deliberately routing around the Witchs cottage."
+    },
+    {
+      "index": 102,
+      "speaker": "Game Master",
+      "text": "Um, but on the way, they stop by and see a Giants cottage."
+    },
+    {
+      "index": 103,
+      "speaker": "Game Master",
+      "text": "And inside was a triple well outside was a. It was a triple scale cottage of Cyclopean Stone sleeping giant inside and a mansized sack wiggling on the wall. There was a stew cooking. Trout sent Squintss in through the window as a test of his, um, adventuring abilities."
+    },
+    {
+      "index": 104,
+      "speaker": "Waymon Tisdale",
+      "text": "Thats a good idea."
+    },
+    {
+      "index": 105,
+      "speaker": "Game Master",
+      "text": "Yeah, the giant stirred once, um Squints froze on trouts signal, then pulls the sack free and out tumbled a bound and gagged monk brother Dirk Um, the giant wakes Uriah smashes the fallen window as a distraction. Um, Duncan and Phidipaldi throw open the door, Squintss and dunk, sprint clear and, uh um, trouts covering Slingshot goes wide, cracks Squintss in the head, the Halfling Corps first."
+    },
+    {
+      "index": 106,
+      "speaker": "Dr Uriah",
+      "text": "Hes out."
+    },
+    {
+      "index": 107,
+      "speaker": "Game Master",
+      "text": "Casualty is friendly fire, um, party outruns the slow giant who gives up the chase. Uh, alive. Robbed of his dinner and sitting on the road between town and the Barrow, Uh, Dirk wants to go home."
+    },
+    {
+      "index": 108,
+      "speaker": "Sir Phidipaldi",
+      "text": "But we didnt let him."
+    },
+    {
+      "index": 109,
+      "speaker": "Game Master",
+      "text": "But we did not let him the party pressured him onward. Um, and then, uh, Trout says that, um, Squintss is now Dirks manager."
+    },
+    {
+      "index": 110,
+      "speaker": "Unassigned Speaker",
+      "text": "Gotta get a cut."
+    },
+    {
+      "index": 111,
+      "speaker": "Game Master",
+      "text": "Exactly so. Now we have a multilevel."
+    },
+    {
+      "index": 112,
+      "speaker": "Trout",
+      "text": "We dont call it a pyramid scheme in this world, we call it a Barrow."
+    },
+    {
+      "index": 113,
+      "speaker": "Sir Phidipaldi",
+      "text": "Right, and then they get three people to go on scheme."
+    },
+    {
+      "index": 114,
+      "speaker": "Game Master",
+      "text": "So all four of, uh, well, all of you. Plus, uh. Squintss and the reluctant brother Dirk are in the woods north of Brandonsford, bound for Brandons, barrow mound and the Magic Sword. Uh, the giant is alive somewhere in the woods."
+    },
+    {
+      "index": 115,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hunting us."
+    },
+    {
+      "index": 116,
+      "speaker": "Game Master",
+      "text": "Uh, hunting you all, um? And Dunk owes Ingrid a return visit to collect the sleeping potion. And, uh."
+    },
+    {
+      "index": 117,
+      "speaker": "Game Master",
+      "text": "Break into Warwicks to get the UH chain. But, uh, but for now, you all have, Um, uh, night is is is sun is setting."
+    },
+    {
+      "index": 118,
+      "speaker": "Game Master",
+      "text": "And Youre outside of the barrow mound."
+    },
+    {
+      "index": 119,
+      "speaker": "Sir Phidipaldi",
+      "text": "So I would like to propose."
+    },
+    {
+      "index": 120,
+      "speaker": "Sir Phidipaldi",
+      "text": "For peoples consideration."
+    },
+    {
+      "index": 121,
+      "speaker": "Sir Phidipaldi",
+      "text": "A retcon."
+    },
+    {
+      "index": 122,
+      "speaker": "Game Master",
+      "text": "Ah, do it."
+    },
+    {
+      "index": 123,
+      "speaker": "Sir Phidipaldi",
+      "text": "So I was thinking about this."
+    },
+    {
+      "index": 124,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I believe that we have already contracted with and are hoping to provide dead bodies to drop dead. Ned."
+    },
+    {
+      "index": 125,
+      "speaker": "Game Master",
+      "text": "Oh, drop dead, Ned being the thief that was back at the Inn."
+    },
+    {
+      "index": 126,
+      "speaker": "Dr Uriah",
+      "text": "Well, thats if we hired him."
+    },
+    {
+      "index": 127,
+      "speaker": "Sir Phidipaldi",
+      "text": "We did."
+    },
+    {
+      "index": 128,
+      "speaker": "Dr Uriah",
+      "text": "No, we didnt."
+    },
+    {
+      "index": 129,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, thats what we did. We were gonna pay him 100 GP at the end of the week."
+    },
+    {
+      "index": 130,
+      "speaker": "Dr Uriah",
+      "text": "Well, he gave us a rate, but we never formally hired him, I dont think."
+    },
+    {
+      "index": 131,
+      "speaker": "Game Master",
+      "text": "He wanted to kill people."
+    },
+    {
+      "index": 132,
+      "speaker": "Dr Uriah",
+      "text": "No, I think."
+    },
+    {
+      "index": 133,
+      "speaker": "Dr Uriah",
+      "text": "Hes saying the retcon so we can bring him along."
+    },
+    {
+      "index": 134,
+      "speaker": "Dr Uriah",
+      "text": "To the Barrow, too."
+    },
+    {
+      "index": 135,
+      "speaker": "Sir Phidipaldi",
+      "text": "I want him at the barrow mound."
+    },
+    {
+      "index": 136,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, that thats."
+    },
+    {
+      "index": 137,
+      "speaker": "Dr Uriah",
+      "text": "Which we can still do, but we still have to pay him. Cause we, we, we, we cannot."
+    },
+    {
+      "index": 138,
+      "speaker": "Sir Phidipaldi",
+      "text": "I am totally good with paying him."
+    },
+    {
+      "index": 139,
+      "speaker": "Game Master",
+      "text": "You guys wanna?"
+    },
+    {
+      "index": 140,
+      "speaker": "Trout",
+      "text": "How how much does he cost? And thats just the fucking dimension. Squints Is he just free because of Hes here?"
+    },
+    {
+      "index": 141,
+      "speaker": "Trout",
+      "text": "Cause he does have a price."
+    },
+    {
+      "index": 142,
+      "speaker": "Game Master",
+      "text": "Oh, I know its high. Yes, yeah, you, you did a good job, you."
+    },
+    {
+      "index": 143,
+      "speaker": "Game Master",
+      "text": "Yeah, no, um, drop dead. Ned would be 100 gold."
+    },
+    {
+      "index": 144,
+      "speaker": "Game Master",
+      "text": "Uh, and if you all, and then and then. But what he offered was every time you let him murder somebody."
+    },
+    {
+      "index": 145,
+      "speaker": "Game Master",
+      "text": "He would pay you 10 gold back."
+    },
+    {
+      "index": 146,
+      "speaker": "Sir Phidipaldi",
+      "text": "And as long as we let him have his way with the body."
+    },
+    {
+      "index": 147,
+      "speaker": "Game Master",
+      "text": "As long as Hes allowed to do whatever he wants."
+    },
+    {
+      "index": 148,
+      "speaker": "Sir Phidipaldi",
+      "text": "So I feel really good about this."
+    },
+    {
+      "index": 149,
+      "speaker": "Game Master",
+      "text": "Yeah, all right, do you guys wanna give up your gold?"
+    },
+    {
+      "index": 150,
+      "speaker": "Dr Uriah",
+      "text": "Yeah."
+    },
+    {
+      "index": 151,
+      "speaker": "Dr Uriah",
+      "text": "And this is the guy with the."
+    },
+    {
+      "index": 152,
+      "speaker": "Game Master",
+      "text": "All right, uh, then I am. Yes, Hes got a killer, a little killer wasp with him."
+    },
+    {
+      "index": 153,
+      "speaker": "Trout",
+      "text": "So were giving up 33 gold each."
+    },
+    {
+      "index": 154,
+      "speaker": "Unassigned Speaker",
+      "text": "Well, Im excited about this."
+    },
+    {
+      "index": 155,
+      "speaker": "Sir Phidipaldi",
+      "text": "So I can do 33 gold, for sure."
+    },
+    {
+      "index": 156,
+      "speaker": "Trout",
+      "text": "Cause we had, we had the 33 from the 100."
+    },
+    {
+      "index": 157,
+      "speaker": "Trout",
+      "text": "We didn.t get anything."
+    },
+    {
+      "index": 158,
+      "speaker": "Dr Uriah",
+      "text": "Well, we just got 100 gold."
+    },
+    {
+      "index": 159,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh yeah, sh, yeah, so were trying to youre."
+    },
+    {
+      "index": 160,
+      "speaker": "Unassigned Speaker",
+      "text": "But I only have 33 to me."
+    },
+    {
+      "index": 161,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, yeah, so, so we just zero it back out."
+    },
+    {
+      "index": 162,
+      "speaker": "Game Master",
+      "text": "Erik, I am gonna give you the character sheet for Drop Dead, Ned."
+    },
+    {
+      "index": 163,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh no, give it to Rich."
+    },
+    {
+      "index": 164,
+      "speaker": "Sir Phidipaldi",
+      "text": "He was definitely richs character."
+    },
+    {
+      "index": 165,
+      "speaker": "Game Master",
+      "text": "All right, all right, give it to rich, Um."
+    },
+    {
+      "index": 166,
+      "speaker": "Waymon Tisdale",
+      "text": "Mariners won, but, uh, Hobie Miller did such a great job. They had to put in Munoz for the last two outs."
+    },
+    {
+      "index": 167,
+      "speaker": "Game Master",
+      "text": "Oh my God, burn him, yeah, okay, um."
+    },
+    {
+      "index": 168,
+      "speaker": "Trout",
+      "text": "And then is Dirk a character sheet that we have?"
+    },
+    {
+      "index": 169,
+      "speaker": "Game Master",
+      "text": "Did I not give you his character sheet?"
+    },
+    {
+      "index": 170,
+      "speaker": "Sir Phidipaldi",
+      "text": "Ill take ill take brother Dirk."
+    },
+    {
+      "index": 171,
+      "speaker": "Game Master",
+      "text": "You know what, I dont know if he did, let me look, um?"
+    },
+    {
+      "index": 172,
+      "speaker": "Game Master",
+      "text": "I, I have Malzahar and."
+    },
+    {
+      "index": 173,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so while hes doing that, I will tell you I have a plan."
+    },
+    {
+      "index": 174,
+      "speaker": "Trout",
+      "text": "For the Barrow?"
+    },
+    {
+      "index": 175,
+      "speaker": "Unassigned Speaker",
+      "text": "No for the Dragon."
+    },
+    {
+      "index": 176,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so we know that its."
+    },
+    {
+      "index": 177,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, okay, so I think we go to the barrow mound, we get the sword well, come back, we do the whatever shenanigans for dunk."
+    },
+    {
+      "index": 178,
+      "speaker": "Sir Phidipaldi",
+      "text": "We, we get the chain mail shirt."
+    },
+    {
+      "index": 179,
+      "speaker": "Sir Phidipaldi",
+      "text": "Also, just to remind you, we have not visited Warwick himself."
+    },
+    {
+      "index": 180,
+      "speaker": "Game Master",
+      "text": "Uh, no, you did."
+    },
+    {
+      "index": 181,
+      "speaker": "Unassigned Speaker",
+      "text": "Did we?"
+    },
+    {
+      "index": 182,
+      "speaker": "Game Master",
+      "text": "Well, oh no, no, no, youre right, you did not visit Warwick."
+    },
+    {
+      "index": 183,
+      "speaker": "Game Master",
+      "text": "You visited the hunter. Yeah, yeah, yeah."
+    },
+    {
+      "index": 184,
+      "speaker": "Sir Phidipaldi",
+      "text": "Thats right, and we also have not visited the general store."
+    },
+    {
+      "index": 185,
+      "speaker": "Game Master",
+      "text": "Thats right."
+    },
+    {
+      "index": 186,
+      "speaker": "Sir Phidipaldi",
+      "text": "At all."
+    },
+    {
+      "index": 187,
+      "speaker": "Trout",
+      "text": "Warwicks, the mayor."
+    },
+    {
+      "index": 188,
+      "speaker": "Game Master",
+      "text": "Warwick is the guy whos selling the Mithril chain."
+    },
+    {
+      "index": 189,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hes the Smithy."
+    },
+    {
+      "index": 190,
+      "speaker": "Dr Uriah",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 191,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, he has a bunch of garbage in his place."
+    },
+    {
+      "index": 192,
+      "speaker": "Trout",
+      "text": "We just never talked to him."
+    },
+    {
+      "index": 193,
+      "speaker": "Trout",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 194,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, okay. So if we get the sword, we get the chain shirt, we stop on our way back at the witchs place. We try to get some way to counteract the black dragons, poison from the witch or from the Alchemist. We go back. Weve got brand Sir Brandons Sword Weve shown that were good at what we do. We we strongarm reeve into giving us an advance based on the fact that weve found in the sword."
+    },
+    {
+      "index": 195,
+      "speaker": "Sir Phidipaldi",
+      "text": "We use the advance to pay for Sir Hilda and And."
+    },
+    {
+      "index": 196,
+      "speaker": "Sir Phidipaldi",
+      "text": "And then, with the poison protection and the sword and the shirt and the."
+    },
+    {
+      "index": 197,
+      "speaker": "Sir Phidipaldi",
+      "text": "Henchmen Then we go after the Dragon."
+    },
+    {
+      "index": 198,
+      "speaker": "Trout",
+      "text": "That sounds reasonable to me."
+    },
+    {
+      "index": 199,
+      "speaker": "Trout",
+      "text": "Take a reeve theyll, go get reinforcements, get our armor."
+    },
+    {
+      "index": 200,
+      "speaker": "Waymon Tisdale",
+      "text": "The Sword di Didnt kill the Dragon."
+    },
+    {
+      "index": 201,
+      "speaker": "Game Master",
+      "text": "In the In the tale of, Uh, Sir Brandon, uh, that, um, you missed this last week, Um, uh, that is the sword that killed the Dragon."
+    },
+    {
+      "index": 202,
+      "speaker": "Sir Phidipaldi",
+      "text": "In The In Myth."
+    },
+    {
+      "index": 203,
+      "speaker": "Game Master",
+      "text": "In myth."
+    },
+    {
+      "index": 204,
+      "speaker": "Game Master",
+      "text": "Yes, yes, so, um."
+    },
+    {
+      "index": 205,
+      "speaker": "Sir Phidipaldi",
+      "text": "That he supposedly got from a fairy."
+    },
+    {
+      "index": 206,
+      "speaker": "Game Master",
+      "text": "Thats right, thats right."
+    },
+    {
+      "index": 207,
+      "speaker": "Waymon Tisdale",
+      "text": "But there is a new Dragon, or perhaps."
+    },
+    {
+      "index": 208,
+      "speaker": "Sir Phidipaldi",
+      "text": "Or could be the same one I if the tales are off."
+    },
+    {
+      "index": 209,
+      "speaker": "Game Master",
+      "text": "So the sun is setting you are outside of, uh, the barrow mound."
+    },
+    {
+      "index": 210,
+      "speaker": "Game Master",
+      "text": "Um, this is a there is a, uh, the door for it is a white stone slab, um, set into a mound. Think of this as just a huge kind of barrow mound."
+    },
+    {
+      "index": 211,
+      "speaker": "Game Master",
+      "text": "Most of it is you get in, you go underneath."
+    },
+    {
+      "index": 212,
+      "speaker": "Game Master",
+      "text": "Right, so, um, uh. And theres a faded mural on the surface of the white stone slab that shows a, uh, like a conquering knight. Um, uh, do you all want to try to get into the barrow mound tonight, or are you going to rest for the day it will."
+    },
+    {
+      "index": 213,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, do we wanna go in there at night, or do we wanna come back like?"
+    },
+    {
+      "index": 214,
+      "speaker": "Game Master",
+      "text": "It was about a days walk like you left in the morning."
+    },
+    {
+      "index": 215,
+      "speaker": "Game Master",
+      "text": "And you walked most of the day to get to the Barrow."
+    },
+    {
+      "index": 216,
+      "speaker": "Dr Uriah",
+      "text": "Okay, so."
+    },
+    {
+      "index": 217,
+      "speaker": "Game Master",
+      "text": "So you could camp outside of it if you wanted."
+    },
+    {
+      "index": 218,
+      "speaker": "Waymon Tisdale",
+      "text": "Im guessing there probably arent skylights in there, so."
+    },
+    {
+      "index": 219,
+      "speaker": "Trout",
+      "text": "So it doesnt really make a difference unless were tired."
+    },
+    {
+      "index": 220,
+      "speaker": "Trout",
+      "text": "Somehow, but its not really reflected anywhere."
+    },
+    {
+      "index": 221,
+      "speaker": "Dr Uriah",
+      "text": "And its prob, its probably not huge."
+    },
+    {
+      "index": 222,
+      "speaker": "Dr Uriah",
+      "text": "I mean, its a barrow mound."
+    },
+    {
+      "index": 223,
+      "speaker": "Dr Uriah",
+      "text": "You know, so its like."
+    },
+    {
+      "index": 224,
+      "speaker": "Dr Uriah",
+      "text": "A million."
+    },
+    {
+      "index": 225,
+      "speaker": "Game Master",
+      "text": "Yeah, knock it out in a couple hours."
+    },
+    {
+      "index": 226,
+      "speaker": "Waymon Tisdale",
+      "text": "I think we should check for traps."
+    },
+    {
+      "index": 227,
+      "speaker": "Game Master",
+      "text": "Yeah, so you walk up to, Uh, um, the door, uh, Waymond, right?"
+    },
+    {
+      "index": 228,
+      "speaker": "Waymon Tisdale",
+      "text": "MMHmm."
+    },
+    {
+      "index": 229,
+      "speaker": "Game Master",
+      "text": "Uh, so Waymond walks up to the door and you notice the dirt below the door has been like, worked, such as, like the door must have, like, opened recently."
+    },
+    {
+      "index": 230,
+      "speaker": "Game Master",
+      "text": "That its like, you know, theres some, like its pushed aside a bit. Um, uh, when you check on the outside you, you, you, nothing, theres nothing that you can see there."
+    },
+    {
+      "index": 231,
+      "speaker": "Sir Phidipaldi",
+      "text": "So I will inquire with brother Dirk, who was supposed to be going to the mound to get the sword."
+    },
+    {
+      "index": 232,
+      "speaker": "Sir Phidipaldi",
+      "text": "What does he know about the mound?"
+    },
+    {
+      "index": 233,
+      "speaker": "Game Master",
+      "text": "So he says he, he hes nervous, he starts to stammer a little bit, hes like, Well, what I. What I know most about is Sir Brandon is buried there. But there are these beautiful mosaics."
+    },
+    {
+      "index": 234,
+      "speaker": "Game Master",
+      "text": "Telling the story of Sir Brandon and I have seen these in carvings and in drawings in my books. Um, and, uh, and that Brandon was also he was buried with his fellow, um, adventurers, like as, like the people died."
+    },
+    {
+      "index": 235,
+      "speaker": "Game Master",
+      "text": "That had accompanied him. Uh, hes like, you know, much like all of you with your party when you all die, uh, if you conquer the Dragon, um, youll get buried together. And so his friend Uh Alfred, uh, his other friend Myrddin, and his friend Wyllt."
+    },
+    {
+      "index": 236,
+      "speaker": "Unassigned Speaker",
+      "text": "Wyllt."
+    },
+    {
+      "index": 237,
+      "speaker": "Sir Phidipaldi",
+      "text": "And Myrddin?"
+    },
+    {
+      "index": 238,
+      "speaker": "Game Master",
+      "text": "Were buried with him. Yeah, so Alfred is spelled like Alfred."
+    },
+    {
+      "index": 239,
+      "speaker": "Game Master",
+      "text": "WYLLT Uh, so thats all. He really knows about it. He just knows that its like, you know? Brandon was buried there with his sword and then a companion were buried alongside him. Uh, theres a beautiful mural that hes seen, Hes Hes very excited cause hes like I, I Ive Ive heard the story my entire life. I grew up in Brandons, Ford and in the Church. Um, we have replicas of these murals. And so when I was assigned to go visit the barrow mound and collect the sword, I was, um, excited to see these murals."
+    },
+    {
+      "index": 240,
+      "speaker": "Sir Phidipaldi",
+      "text": "Whos got torches?"
+    },
+    {
+      "index": 241,
+      "speaker": "Game Master",
+      "text": "Yes, great question."
+    },
+    {
+      "index": 242,
+      "speaker": "Waymon Tisdale",
+      "text": "I dont think I do."
+    },
+    {
+      "index": 243,
+      "speaker": "Sir Phidipaldi",
+      "text": "I have a bottle of wine."
+    },
+    {
+      "index": 244,
+      "speaker": "Dr Uriah",
+      "text": "I have oil."
+    },
+    {
+      "index": 245,
+      "speaker": "Dr Uriah",
+      "text": "We could burn. I have a lantern."
+    },
+    {
+      "index": 246,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh, there you go."
+    },
+    {
+      "index": 247,
+      "speaker": "Trout",
+      "text": "There we go."
+    },
+    {
+      "index": 248,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh yeah, I have a lantern, too."
+    },
+    {
+      "index": 249,
+      "speaker": "Game Master",
+      "text": "All right, so we have two lanterns. Okay, all right, so I assume you guys are going to."
+    },
+    {
+      "index": 250,
+      "speaker": "Trout",
+      "text": "We can make one."
+    },
+    {
+      "index": 251,
+      "speaker": "Trout",
+      "text": "Pretty quickly."
+    },
+    {
+      "index": 252,
+      "speaker": "Dr Uriah",
+      "text": "And if we have a fine set of clothes, we could just burn."
+    },
+    {
+      "index": 253,
+      "speaker": "Game Master",
+      "text": "I assume were gonna start by you two lighting your lanterns, though, right?"
+    },
+    {
+      "index": 254,
+      "speaker": "Dr Uriah",
+      "text": "Uh, yeah."
+    },
+    {
+      "index": 255,
+      "speaker": "Dr Uriah",
+      "text": "We all need the warning that the Goroos will be in the thing."
+    },
+    {
+      "index": 256,
+      "speaker": "Game Master",
+      "text": "Okay, and youre gonna go and youre gonna go inside of the um of the of the barrow mound, right?"
+    },
+    {
+      "index": 257,
+      "speaker": "Trout",
+      "text": "Was there a The door just opens."
+    },
+    {
+      "index": 258,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, wait, uh, wait."
+    },
+    {
+      "index": 259,
+      "speaker": "Game Master",
+      "text": "Its A its a stone door."
+    },
+    {
+      "index": 260,
+      "speaker": "Dr Uriah",
+      "text": "Its still nighttime, right?"
+    },
+    {
+      "index": 261,
+      "speaker": "Game Master",
+      "text": "It is nighttime. Are you guys gonna go in at night? Are you gonna rest? What are you gonna do?"
+    },
+    {
+      "index": 262,
+      "speaker": "Trout",
+      "text": "I vote for now."
+    },
+    {
+      "index": 263,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, lets do it."
+    },
+    {
+      "index": 264,
+      "speaker": "Trout",
+      "text": "Works for me."
+    },
+    {
+      "index": 265,
+      "speaker": "Game Master",
+      "text": "You open the door to the barrow mound and inside."
+    },
+    {
+      "index": 266,
+      "speaker": "Game Master",
+      "text": "You see, Um, uh, like a sloping as soon as you open it, its like a little bit of a sloping ramp."
+    },
+    {
+      "index": 267,
+      "speaker": "Game Master",
+      "text": "And as you walk in with your lanterns, it opens up into an antechamber thats about, say, 15 feet by 20 feet. Um, and then, uh, um, along the walls."
+    },
+    {
+      "index": 268,
+      "speaker": "Game Master",
+      "text": "Of the Antechamber are a series of mosaics. Uh, so, um, I just forgot the name of our little friend, our little monk."
+    },
+    {
+      "index": 269,
+      "speaker": "Sir Phidipaldi",
+      "text": "Brother Dirk."
+    },
+    {
+      "index": 270,
+      "speaker": "Game Master",
+      "text": "Brother Dirk gets very excited."
+    },
+    {
+      "index": 271,
+      "speaker": "Game Master",
+      "text": "And he he gathers you around and hes like, Let me show you, and he walks up to the first mosaic. And there you see, Um, uh, a drawing, a beautiful drawing of s of Brandon gathering his men. Its like, um, one of those medieval, um, uh, drawings, where its showing the characters multiple times like its showing, you know, kind of like their journey, like their gathering in the town."
+    },
+    {
+      "index": 272,
+      "speaker": "Game Master",
+      "text": "Theyre walking through the forest."
+    },
+    {
+      "index": 273,
+      "speaker": "Waymon Tisdale",
+      "text": "A little sequential art."
+    },
+    {
+      "index": 274,
+      "speaker": "Game Master",
+      "text": "Sequential Art Its A its a medieval comic book."
+    },
+    {
+      "index": 275,
+      "speaker": "Dr Uriah",
+      "text": "Theres a rabbit like a lance on the back of a turtle fighting something, you know, medieval art."
+    },
+    {
+      "index": 276,
+      "speaker": "Game Master",
+      "text": "Exactly, Um, and then three figures stand out against the Knights that, um, he that are accompanying Brandon and, uh, Dirk points them out. Theres a shaggy giant of a man with a great sword. Hes like thats Alfred, then theres a wizened priest, hes like Thats Myrddin, and then theres a wildeyed man with an ax. Hes like thats Wyllt Um. Dirk then walks over to the second mosaic. And he he ushers you over with a asks you to shine the lantern close to it. Um, because there thats the picture where you see. Brandon slaying the Dragon and the Dragon has his mouth open and Brandon is driving his sword up through the roof of the mouth of the dragon. And then, finally, in the third and final mosaic, Brandon and his men are being knighted by a Queen like the Dragon. Like the body of the Dragons kind of dead at the bottom and its like the end of Star Wars. You know, the Queen is like giving them, you know, a bunch of, uh, medals."
+    },
+    {
+      "index": 277,
+      "speaker": "Sir Phidipaldi",
+      "text": "All all except for the giant Alfred."
+    },
+    {
+      "index": 278,
+      "speaker": "Game Master",
+      "text": "Uh yeah, now, um, uh, as, um, uh, Waymond. As as youre moving your lantern along, a thing that you notice is that all of these mosaics are decorated with real gems."
+    },
+    {
+      "index": 279,
+      "speaker": "Game Master",
+      "text": "Like the color, highlights in the mosaics are all like, you know, gemstones that are kind of like inlaid in there. Um, they kind of glint in the light."
+    },
+    {
+      "index": 280,
+      "speaker": "Trout",
+      "text": "Whyd you say, except for the giant?"
+    },
+    {
+      "index": 281,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh uh, it was a joke about."
+    },
+    {
+      "index": 282,
+      "speaker": "Game Master",
+      "text": "Chewbacca."
+    },
+    {
+      "index": 283,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, Chewbacca not getting a medal."
+    },
+    {
+      "index": 284,
+      "speaker": "Dr Uriah",
+      "text": "Thats two."
+    },
+    {
+      "index": 285,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, so, um. There are hallways that go out to the West and the east from the Antechamber and, um."
+    },
+    {
+      "index": 286,
+      "speaker": "Sir Phidipaldi",
+      "text": "So there were only three murals."
+    },
+    {
+      "index": 287,
+      "speaker": "Game Master",
+      "text": "There were only three murals."
+    },
+    {
+      "index": 288,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, Gotcha."
+    },
+    {
+      "index": 289,
+      "speaker": "Game Master",
+      "text": "And in the East, you can hear some kind of like clattering and footsteps."
+    },
+    {
+      "index": 290,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, do they sound like they are common?"
+    },
+    {
+      "index": 291,
+      "speaker": "Game Master",
+      "text": "Uh, it it, it is a uh, yes."
+    },
+    {
+      "index": 292,
+      "speaker": "Waymon Tisdale",
+      "text": "I think we should probably go investigate the other people that are here."
+    },
+    {
+      "index": 293,
+      "speaker": "Dr Uriah",
+      "text": "Which way is that theyre theyre?"
+    },
+    {
+      "index": 294,
+      "speaker": "Unassigned Speaker",
+      "text": "To the East."
+    },
+    {
+      "index": 295,
+      "speaker": "Dr Uriah",
+      "text": "East Yeah, and it, its voices were hearing."
+    },
+    {
+      "index": 296,
+      "speaker": "Game Master",
+      "text": "Uh, yes."
+    },
+    {
+      "index": 297,
+      "speaker": "Dr Uriah",
+      "text": "Or or and but can we make out the language?"
+    },
+    {
+      "index": 298,
+      "speaker": "Game Master",
+      "text": "Uh, it does it, it does sound like common."
+    },
+    {
+      "index": 299,
+      "speaker": "Unassigned Speaker",
+      "text": "All right, yeah, okay."
+    },
+    {
+      "index": 300,
+      "speaker": "Trout",
+      "text": "The Halfling Corps will stand back with slings prepared."
+    },
+    {
+      "index": 301,
+      "speaker": "Trout",
+      "text": "Kind of covering."
+    },
+    {
+      "index": 302,
+      "speaker": "Trout",
+      "text": "The hallway."
+    },
+    {
+      "index": 303,
+      "speaker": "Game Master",
+      "text": "All right, so you guys are gonna head to the East and check it out."
+    },
+    {
+      "index": 304,
+      "speaker": "Game Master",
+      "text": "Who is leading the way?"
+    },
+    {
+      "index": 305,
+      "speaker": "Dr Uriah",
+      "text": "Well, we should have drop dead. And Ned, well, the the sneaky ones go first."
+    },
+    {
+      "index": 306,
+      "speaker": "Dr Uriah",
+      "text": "I would think."
+    },
+    {
+      "index": 307,
+      "speaker": "Game Master",
+      "text": "So Ned."
+    },
+    {
+      "index": 308,
+      "speaker": "Dr Uriah",
+      "text": "Just because they, you know."
+    },
+    {
+      "index": 309,
+      "speaker": "Waymon Tisdale",
+      "text": "Check for traps."
+    },
+    {
+      "index": 310,
+      "speaker": "Dr Uriah",
+      "text": "Along the way, but also they could, you know?"
+    },
+    {
+      "index": 311,
+      "speaker": "Dr Uriah",
+      "text": "Reconnoiter."
+    },
+    {
+      "index": 312,
+      "speaker": "Game Master",
+      "text": "So that would be Ned and Waymond, right?"
+    },
+    {
+      "index": 313,
+      "speaker": "Game Master",
+      "text": "Okay, so Ned and Waymond begin slinking along the, uh, short hallway, say, about 10 foot long hallway to, uh, to the East. And, um, uh, you see that this is like a, uh, like an actual crypt like you. You went from kind of like this antechamber where you entered, and then this is like a major crypt. And the thing that you see as youre kind of like getting closer is youre. First of all, before you see anything, youre hearing that theres like just like a heated kind of argument going on. But it sounds. It sounds like the dumbest argument Youve ever heard. Um, there is somebody who."
+    },
+    {
+      "index": 314,
+      "speaker": "Game Master",
+      "text": "Is talking about how they have the stick and that, um, even though they have the theyre, theyre not in charge, cause they have the stick, but that theyre supposed to be speaking because they have the stick."
+    },
+    {
+      "index": 315,
+      "speaker": "Waymon Tisdale",
+      "text": "The speaking stick."
+    },
+    {
+      "index": 316,
+      "speaker": "Game Master",
+      "text": "And then somebody else is talking over them really rapidly about how their new society will have no sticks and that theres no need for sticks."
+    },
+    {
+      "index": 317,
+      "speaker": "Sir Phidipaldi",
+      "text": "Does it feel like there are more than three voices?"
+    },
+    {
+      "index": 318,
+      "speaker": "Game Master",
+      "text": "Yeah, you, you hear about four voices, yeah."
+    },
+    {
+      "index": 319,
+      "speaker": "Waymon Tisdale",
+      "text": "Do they sound like adults?"
+    },
+    {
+      "index": 320,
+      "speaker": "Game Master",
+      "text": "They sound like almost like, Um, squeaky childlike."
+    },
+    {
+      "index": 321,
+      "speaker": "Dr Uriah",
+      "text": "Are they fairies?"
+    },
+    {
+      "index": 322,
+      "speaker": "Waymon Tisdale",
+      "text": "This breeds Lord of the Flies."
+    },
+    {
+      "index": 323,
+      "speaker": "Waymon Tisdale",
+      "text": "Um, well, if theyre, if theyre younglings, I dont think, uh. Trying to assassinate them is probably necessary."
+    },
+    {
+      "index": 324,
+      "speaker": "Game Master",
+      "text": "Right, right?"
+    },
+    {
+      "index": 325,
+      "speaker": "Dr Uriah",
+      "text": "I mean, Ned is old."
+    },
+    {
+      "index": 326,
+      "speaker": "Dr Uriah",
+      "text": "Doesnt may maybe doesnt."
+    },
+    {
+      "index": 327,
+      "speaker": "Sir Phidipaldi",
+      "text": "I just want to say thats 40 GP back."
+    },
+    {
+      "index": 328,
+      "speaker": "Game Master",
+      "text": "Right, right?"
+    },
+    {
+      "index": 329,
+      "speaker": "Waymon Tisdale",
+      "text": "Um, let me see."
+    },
+    {
+      "index": 330,
+      "speaker": "Trout",
+      "text": "But you are closer to see, you can just hear this still right. I, I missed that part. Do you see anybody?"
+    },
+    {
+      "index": 331,
+      "speaker": "Game Master",
+      "text": "Uh, you, you could get a little bit closer, Youre youre sneaking so you could try to try to see them without them seeing you if you want."
+    },
+    {
+      "index": 332,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, I would."
+    },
+    {
+      "index": 333,
+      "speaker": "Game Master",
+      "text": "Okay, absolutely. So as you get closer, what you see is, Um, sorry, I just want to look something up really fast."
+    },
+    {
+      "index": 334,
+      "speaker": "Game Master",
+      "text": "Uh, okay, um, its not children. These are four scraggly, thin goblins."
+    },
+    {
+      "index": 335,
+      "speaker": "Game Master",
+      "text": "That are all arguing amongst each other, one of them."
+    },
+    {
+      "index": 336,
+      "speaker": "Sir Phidipaldi",
+      "text": "Does one of us have a thing about Goblins?"
+    },
+    {
+      "index": 337,
+      "speaker": "Game Master",
+      "text": "I think, uh."
+    },
+    {
+      "index": 338,
+      "speaker": "Waymon Tisdale",
+      "text": "I think my other character."
+    },
+    {
+      "index": 339,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, okay."
+    },
+    {
+      "index": 340,
+      "speaker": "Game Master",
+      "text": "Your other character had like a hatred of them, right?"
+    },
+    {
+      "index": 341,
+      "speaker": "Game Master",
+      "text": "So, um, so you s you hear one of them? The one with the stick is saying, Uh, I am not the leader, I hold the stick. Whoever holds the stick talks, that is the purpose of the stick. And the person he is arguing with is saying, Um, uh, you know, everything here belongs to dead men. Uh, dead men are the only ones whose property was never really suited dead men own no property, just like men should own no property."
+    },
+    {
+      "index": 342,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yes, Socialist goblin, um."
+    },
+    {
+      "index": 343,
+      "speaker": "Game Master",
+      "text": "And that is exactly right. Yeah, as you begin listening more, you realize that what theyre arguing about is politics."
+    },
+    {
+      "index": 344,
+      "speaker": "Waymon Tisdale",
+      "text": "Do Are they armed?"
+    },
+    {
+      "index": 345,
+      "speaker": "Game Master",
+      "text": "Uh, no, I mean, they they have like crappy like gear on them like you, you theyre like a adventuring party, but not a particularly wellequipped, adventuring party. Um, certainly nothing that you feel like fearful of."
+    },
+    {
+      "index": 346,
+      "speaker": "Sir Phidipaldi",
+      "text": "I walk into the center of them."
+    },
+    {
+      "index": 347,
+      "speaker": "Game Master",
+      "text": "They they, they."
+    },
+    {
+      "index": 348,
+      "speaker": "Sir Phidipaldi",
+      "text": "I am wearing full plate mail."
+    },
+    {
+      "index": 349,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats right."
+    },
+    {
+      "index": 350,
+      "speaker": "Sir Phidipaldi",
+      "text": "I am wielding a twohanded sword."
+    },
+    {
+      "index": 351,
+      "speaker": "Game Master",
+      "text": "Thats right."
+    },
+    {
+      "index": 352,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I walk up to the guy holding the stick."
+    },
+    {
+      "index": 353,
+      "speaker": "Sir Phidipaldi",
+      "text": "I grab the stick out of his hand."
+    },
+    {
+      "index": 354,
+      "speaker": "Game Master",
+      "text": "He stops."
+    },
+    {
+      "index": 355,
+      "speaker": "Game Master",
+      "text": "And gets silent."
+    },
+    {
+      "index": 356,
+      "speaker": "Game Master",
+      "text": "And then the other one of the other ones, like, starts to Li like shakes, his finger at the stick guy."
+    },
+    {
+      "index": 357,
+      "speaker": "Game Master",
+      "text": "And he goes, You cant talk now."
+    },
+    {
+      "index": 358,
+      "speaker": "Game Master",
+      "text": "You dont have the stick and then the stick, Guy says. The stick was just symbolic, the stick was meant to create order. And they they barely recognize you."
+    },
+    {
+      "index": 359,
+      "speaker": "Game Master",
+      "text": "Um, the third theres a the, so let me describe each of them."
+    },
+    {
+      "index": 360,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, okay."
+    },
+    {
+      "index": 361,
+      "speaker": "Game Master",
+      "text": "Okay, so there is one that, um, the one that is, uh, holding the stick."
+    },
+    {
+      "index": 362,
+      "speaker": "Dr Uriah",
+      "text": "Formerly."
+    },
+    {
+      "index": 363,
+      "speaker": "Game Master",
+      "text": "Formerly held the stick, its like a mudcolored Uh goblin uh with, um, the like a peeled kind of white stick or formerly did."
+    },
+    {
+      "index": 364,
+      "speaker": "Game Master",
+      "text": "Um, and then hes talking. The main person hes arguing with is a small, hunched over goblin that has ink stained fingers."
+    },
+    {
+      "index": 365,
+      "speaker": "Waymon Tisdale",
+      "text": "Ooh."
+    },
+    {
+      "index": 366,
+      "speaker": "Game Master",
+      "text": "And like a notched ear."
+    },
+    {
+      "index": 367,
+      "speaker": "Game Master",
+      "text": "Um, and then theres finally, a very young one with like mismatched armor thats kind of covered in paint."
+    },
+    {
+      "index": 368,
+      "speaker": "Game Master",
+      "text": "And then there is a, uh, a female goblin, um."
+    },
+    {
+      "index": 369,
+      "speaker": "Dr Uriah",
+      "text": "A foblin."
+    },
+    {
+      "index": 370,
+      "speaker": "Game Master",
+      "text": "Who, uh, is wearing a black robe?"
+    },
+    {
+      "index": 371,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uhhuh."
+    },
+    {
+      "index": 372,
+      "speaker": "Game Master",
+      "text": "And a black eye patch."
+    },
+    {
+      "index": 373,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, I put my finger."
+    },
+    {
+      "index": 374,
+      "speaker": "Sir Phidipaldi",
+      "text": "On the guy who used to have the the stick."
+    },
+    {
+      "index": 375,
+      "speaker": "Sir Phidipaldi",
+      "text": "I put my finger on his lips."
+    },
+    {
+      "index": 376,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I go."
+    },
+    {
+      "index": 377,
+      "speaker": "Game Master",
+      "text": "He stops, he stops, and then watok. Uh, sorry, one of the ones says to you."
+    },
+    {
+      "index": 378,
+      "speaker": "Game Master",
+      "text": "Uh, hes like, Um, hes like, Uh, although you are here."
+    },
+    {
+      "index": 379,
+      "speaker": "Sir Phidipaldi",
+      "text": "Ah ah, ah, I have the stick"
+    },
+    {
+      "index": 380,
+      "speaker": "Game Master",
+      "text": "They all say."
+    },
+    {
+      "index": 381,
+      "speaker": "Sir Phidipaldi",
+      "text": "If anyone would like to talk, they can raise their hand and I may give them the stick to talk."
+    },
+    {
+      "index": 382,
+      "speaker": "Game Master",
+      "text": "One of them raises his hand."
+    },
+    {
+      "index": 383,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sit down."
+    },
+    {
+      "index": 384,
+      "speaker": "Game Master",
+      "text": "He sits down another one, raises his hand."
+    },
+    {
+      "index": 385,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sit down."
+    },
+    {
+      "index": 386,
+      "speaker": "Game Master",
+      "text": "The third one raises his hand."
+    },
+    {
+      "index": 387,
+      "speaker": "Sir Phidipaldi",
+      "text": "I say, All of you sit down and you may get the stick."
+    },
+    {
+      "index": 388,
+      "speaker": "Game Master",
+      "text": "They all sit down."
+    },
+    {
+      "index": 389,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, I give the first one I give the lady."
+    },
+    {
+      "index": 390,
+      "speaker": "Sir Phidipaldi",
+      "text": "With the eye patch, I give her the stick."
+    },
+    {
+      "index": 391,
+      "speaker": "Game Master",
+      "text": "She Um, she is the most uninterested in the stick she is quiet and almost scornful of the others. As soon as you give her the s the stick, she just hands it to the person next to her."
+    },
+    {
+      "index": 392,
+      "speaker": "Sir Phidipaldi",
+      "text": "Wonderful."
+    },
+    {
+      "index": 393,
+      "speaker": "Game Master",
+      "text": "Um, and, uh, he looks at you, um, sir Phidipaldi."
+    },
+    {
+      "index": 394,
+      "speaker": "Game Master",
+      "text": "And um, and says, Um, uh, allow us to introduce ourselves, um, we are here to claim this. barrow mound as the first home of the new Free Goblin Society. Um, I am snurk."
+    },
+    {
+      "index": 395,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, snurk."
+    },
+    {
+      "index": 396,
+      "speaker": "Game Master",
+      "text": "Uh, this is grimble. Who holds the stick?"
+    },
+    {
+      "index": 397,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uhhuh."
+    },
+    {
+      "index": 398,
+      "speaker": "Game Master",
+      "text": "Uh, and this is Watok, the scribbler, and the woman is Peg, who had the torch."
+    },
+    {
+      "index": 399,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so Watok the scribbler."
+    },
+    {
+      "index": 400,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, peg."
+    },
+    {
+      "index": 401,
+      "speaker": "Game Master",
+      "text": "Who had the torch?"
+    },
+    {
+      "index": 402,
+      "speaker": "Sir Phidipaldi",
+      "text": "Who has the torchs?"
+    },
+    {
+      "index": 403,
+      "speaker": "Game Master",
+      "text": "Who had the torch?"
+    },
+    {
+      "index": 404,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay."
+    },
+    {
+      "index": 405,
+      "speaker": "Dr Uriah",
+      "text": "Thats a cool name, yes."
+    },
+    {
+      "index": 406,
+      "speaker": "Sir Phidipaldi",
+      "text": "And and thats thats the female."
+    },
+    {
+      "index": 407,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, and then, who are the other two?"
+    },
+    {
+      "index": 408,
+      "speaker": "Game Master",
+      "text": "Watok the scribbler."
+    },
+    {
+      "index": 409,
+      "speaker": "Dr Uriah",
+      "text": "Snurk."
+    },
+    {
+      "index": 410,
+      "speaker": "Game Master",
+      "text": "Uh, and then the guy youre talking to is snurk the walkout?"
+    },
+    {
+      "index": 411,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, snurk the walkout and whos the one who had the stick?"
+    },
+    {
+      "index": 412,
+      "speaker": "Game Master",
+      "text": "Grimble Who holds the stick?"
+    },
+    {
+      "index": 413,
+      "speaker": "Sir Phidipaldi",
+      "text": "Grimble Okay, does Grimble wanna talk?"
+    },
+    {
+      "index": 414,
+      "speaker": "Game Master",
+      "text": "Uh yeah, Grimble absolutely wants to talk."
+    },
+    {
+      "index": 415,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, I will take the stick and I will hand him the stick."
+    },
+    {
+      "index": 416,
+      "speaker": "Game Master",
+      "text": "Okay, he says. The first thing you need to know, hes like, First, what is your name? hands you the stick."
+    },
+    {
+      "index": 417,
+      "speaker": "Sir Phidipaldi",
+      "text": "Thank you, I am Sir Phidipaldi, the brave son of Brandon the Dragon Slayer, and I am here to reclaim my Fathers heritage. We have no claim on this Barrow and we are happy to give it to the Free Goblin Society. In return for your help in acquiring the goods owned by my father and rightfully, B B bequeathed to me."
+    },
+    {
+      "index": 418,
+      "speaker": "Game Master",
+      "text": "I give him the stick back."
+    },
+    {
+      "index": 419,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right now, I give him the stick."
+    },
+    {
+      "index": 420,
+      "speaker": "Game Master",
+      "text": "Grimble takes the stick and he looks at you and hes like, I have many problems with what you just said. Like, first, we have one, we have no titles here at the Free Mound. There is nobody that can be named, sir. We are to put no man above another man. Second, there is no property here, let alone hereditary property. What sort of property kings have property? We just left a king, now we are here."
+    },
+    {
+      "index": 421,
+      "speaker": "Sir Phidipaldi",
+      "text": "I will put my finger up against his mouth."
+    },
+    {
+      "index": 422,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I will hold my hand out."
+    },
+    {
+      "index": 423,
+      "speaker": "Game Master",
+      "text": "Gives you the stick."
+    },
+    {
+      "index": 424,
+      "speaker": "Sir Phidipaldi",
+      "text": "Did I did I mention that I bring with me a retinue of valiant knights?"
+    },
+    {
+      "index": 425,
+      "speaker": "Game Master",
+      "text": "So at this point they look around and they see all of you, and I assume you all come into the room."
+    },
+    {
+      "index": 426,
+      "speaker": "Dr Uriah",
+      "text": "Sure."
+    },
+    {
+      "index": 427,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, we are firm believers in law of nature, which is that possession is ninetenths of ownership."
+    },
+    {
+      "index": 428,
+      "speaker": "Game Master",
+      "text": "Uh, Watok. The scribbler holds out his hand for the stick."
+    },
+    {
+      "index": 429,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, I give him the stick. Yeah, wait, but."
+    },
+    {
+      "index": 430,
+      "speaker": "Dr Uriah",
+      "text": "No, he hasnt talked yet."
+    },
+    {
+      "index": 431,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, I give him the stick."
+    },
+    {
+      "index": 432,
+      "speaker": "Game Master",
+      "text": "Watok says You may give us you either pay all of us with goods from here or you pay us nothing. I would prefer nothing. We we do not believe in property. We are trying to settle this land free from King Hogboon to make it a A A collective a place where we can rebuild society. Hands the stick back."
+    },
+    {
+      "index": 433,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, does anybody else wanna speak?"
+    },
+    {
+      "index": 434,
+      "speaker": "Dr Uriah",
+      "text": "No, no, youre doing youre great."
+    },
+    {
+      "index": 435,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, um, I say, okay, so certainly you can agree that, um, it would be a tragedy for you guys to attempt to build a fresh new society here, only for it to be shattered by the presence of evil."
+    },
+    {
+      "index": 436,
+      "speaker": "Sir Phidipaldi",
+      "text": "That is true."
+    },
+    {
+      "index": 437,
+      "speaker": "Game Master",
+      "text": "Did I give you the stick?"
+    },
+    {
+      "index": 438,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, sorry."
+    },
+    {
+      "index": 439,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, I say so. We understand that you have goals for a more perfect union and we honor that, and we think that is quite noble. And so we offer here to help you to clear the evil out of this place of death. And in return, you may inhabit it and be free from King Hogboon and."
+    },
+    {
+      "index": 440,
+      "speaker": "Game Master",
+      "text": "Of gloom."
+    },
+    {
+      "index": 441,
+      "speaker": "Sir Phidipaldi",
+      "text": "Did I give you the stick and make you free? From King Hogboon? And, um, and when we see him, we wont even tell him, Youre here, all right, there you go."
+    },
+    {
+      "index": 442,
+      "speaker": "Game Master",
+      "text": "Uh, they agree."
+    },
+    {
+      "index": 443,
+      "speaker": "Game Master",
+      "text": "Um, what precisely are you asking them to do? They are not very useful."
+    },
+    {
+      "index": 444,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, so, uh, they should walk with us."
+    },
+    {
+      "index": 445,
+      "speaker": "Game Master",
+      "text": "Okay."
+    },
+    {
+      "index": 446,
+      "speaker": "Sir Phidipaldi",
+      "text": "As we walk through this place."
+    },
+    {
+      "index": 447,
+      "speaker": "Sir Phidipaldi",
+      "text": "And just make sure everything is on the up and up."
+    },
+    {
+      "index": 448,
+      "speaker": "Sir Phidipaldi",
+      "text": "And in return for our help in doing that as a form of barter, not disgusting. Dirty property or trade, but."
+    },
+    {
+      "index": 449,
+      "speaker": "Sir Phidipaldi",
+      "text": "In return, if you guys were to allow us the gift of my fathers goods, then that would be very meaningful for me personally."
+    },
+    {
+      "index": 450,
+      "speaker": "Game Master",
+      "text": "So watok."
+    },
+    {
+      "index": 451,
+      "speaker": "Game Master",
+      "text": "Uhhuh takes the stick."
+    },
+    {
+      "index": 452,
+      "speaker": "Game Master",
+      "text": "Uh, takes the stick, says like, May we please dispense with the stick?"
+    },
+    {
+      "index": 453,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay."
+    },
+    {
+      "index": 454,
+      "speaker": "Game Master",
+      "text": "Lets be clear, I never agreed to the stick with Grimble, who holds the stick."
+    },
+    {
+      "index": 455,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, and so I, I look at you guys to see if youre okay with us dispensing of the stick."
+    },
+    {
+      "index": 456,
+      "speaker": "Trout",
+      "text": "You dont need the stick."
+    },
+    {
+      "index": 457,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, fine."
+    },
+    {
+      "index": 458,
+      "speaker": "Game Master",
+      "text": "Uh, they then they then begin chattering amongst each other, and then they come to a group conclusion that none of them believe in property. So you can take whatever you want."
+    },
+    {
+      "index": 459,
+      "speaker": "Game Master",
+      "text": "And in fact, they point out that there are several things in this very antechamber that they found this crypt."
+    },
+    {
+      "index": 460,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, nice."
+    },
+    {
+      "index": 461,
+      "speaker": "Game Master",
+      "text": "That they found, Uh, in this room, um, and so they theres these alcoves."
+    },
+    {
+      "index": 462,
+      "speaker": "Game Master",
+      "text": "That are around theres theres like theres, Uh, uh, four alcoves in the room, one of them is empty. These are just like, little, um, what do they call them in like a church where theres just like the little?"
+    },
+    {
+      "index": 463,
+      "speaker": "Trout",
+      "text": "Like Alcove."
+    },
+    {
+      "index": 464,
+      "speaker": "Game Master",
+      "text": "I guess an alcove, yeah, so these little alcoves around it."
+    },
+    {
+      "index": 465,
+      "speaker": "Game Master",
+      "text": "So, um, whos gonna go look at which one theres theres? Four of them, one of them is empty. So I guess tell me, You know, lets tell me A, B and C whos gonna look at each one."
+    },
+    {
+      "index": 466,
+      "speaker": "Waymon Tisdale",
+      "text": "Ill go to a."
+    },
+    {
+      "index": 467,
+      "speaker": "Game Master",
+      "text": "Gonna go to a."
+    },
+    {
+      "index": 468,
+      "speaker": "Waymon Tisdale",
+      "text": "B."
+    },
+    {
+      "index": 469,
+      "speaker": "Game Master",
+      "text": "B."
+    },
+    {
+      "index": 470,
+      "speaker": "Dr Uriah",
+      "text": "C."
+    },
+    {
+      "index": 471,
+      "speaker": "Game Master",
+      "text": "C Okay, lets start with a, um, so waymond. You walk over to A and its really, just like a little bit of, like, kind of like dusty pile of bones. But, um, one of the goblins. Snerk points to the fact that one of the skeletons Thats laying on the ground has a chain mail shirt on it. Its holding a mace."
+    },
+    {
+      "index": 472,
+      "speaker": "Game Master",
+      "text": "So if you want something you could take, if you wanted."
+    },
+    {
+      "index": 473,
+      "speaker": "Game Master",
+      "text": "So um, b is, um, uh, Trout trout, you walk over and, um, notice that this one is actually sealed with a heavy flagstone. So, you know, its like, very symmetrical around the room like these four little alcoves. And this one has like this like heavy kind of stone in front of it and peg the woman. Goblin, whos been very quiet up till now. Um, gets a little bit jittery and shes like, You dont wanna look behind there. We already looked there and thats why we sealed it up."
+    },
+    {
+      "index": 474,
+      "speaker": "Trout",
+      "text": "Whos the biggest among us?"
+    },
+    {
+      "index": 475,
+      "speaker": "Sir Phidipaldi",
+      "text": "I mean, it was dunk."
+    },
+    {
+      "index": 476,
+      "speaker": "Game Master",
+      "text": "It was dunk, but I would say, Um, probably at this point."
+    },
+    {
+      "index": 477,
+      "speaker": "Sir Phidipaldi",
+      "text": "I have an 11 strength."
+    },
+    {
+      "index": 478,
+      "speaker": "Waymon Tisdale",
+      "text": "I have a 15."
+    },
+    {
+      "index": 479,
+      "speaker": "Game Master",
+      "text": "Oh, there you go."
+    },
+    {
+      "index": 480,
+      "speaker": "Sir Phidipaldi",
+      "text": "There you go."
+    },
+    {
+      "index": 481,
+      "speaker": "Trout",
+      "text": "Okay, so whats your name again?"
+    },
+    {
+      "index": 482,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, Waymond."
+    },
+    {
+      "index": 483,
+      "speaker": "Trout",
+      "text": "So ill, just say, Hey, Waymond, get over here."
+    },
+    {
+      "index": 484,
+      "speaker": "Trout",
+      "text": "Lets move this thing theres theres treasure behind there."
+    },
+    {
+      "index": 485,
+      "speaker": "Game Master",
+      "text": "All right, what do you do?"
+    },
+    {
+      "index": 486,
+      "speaker": "Waymon Tisdale",
+      "text": "Move the thing."
+    },
+    {
+      "index": 487,
+      "speaker": "Game Master",
+      "text": "So Peg gets nervous as you start moving the thing. And, uh, she says, Whoa whoa, okay, before you move it. This is not one of our bylaws were all a little ashamed of this. Um, but there was this gray ooze and it we just didnt think it would be good to live in a barrel mound that had a gray ooze. But we didn.t want to kill it because, uh, no man should cast judgment on another man."
+    },
+    {
+      "index": 488,
+      "speaker": "Game Master",
+      "text": "Um, so we just put it."
+    },
+    {
+      "index": 489,
+      "speaker": "Waymon Tisdale",
+      "text": "Just segregate it from the outlying world."
+    },
+    {
+      "index": 490,
+      "speaker": "Game Master",
+      "text": "We we just put it there, yeah."
+    },
+    {
+      "index": 491,
+      "speaker": "Trout",
+      "text": "Was there anything else there with it?"
+    },
+    {
+      "index": 492,
+      "speaker": "Game Master",
+      "text": "I dont remember, we just put it back there."
+    },
+    {
+      "index": 493,
+      "speaker": "Trout",
+      "text": "Hmm, what do you think should we, uh, kill the ooze and see if it has anything cool?"
+    },
+    {
+      "index": 494,
+      "speaker": "Waymon Tisdale",
+      "text": "Can ooze talk?"
+    },
+    {
+      "index": 495,
+      "speaker": "Game Master",
+      "text": "Uh, ooze cannot talk."
+    },
+    {
+      "index": 496,
+      "speaker": "Dr Uriah",
+      "text": "Are ooze sentient?"
+    },
+    {
+      "index": 497,
+      "speaker": "Sir Phidipaldi",
+      "text": "There is a gray, there is a there, there is a type of ooze that is psychic."
+    },
+    {
+      "index": 498,
+      "speaker": "Game Master",
+      "text": "This is a gray ooze."
+    },
+    {
+      "index": 499,
+      "speaker": "Sir Phidipaldi",
+      "text": "And no, Im like, IM so meta gaming at this point, so I will just shut up."
+    },
+    {
+      "index": 500,
+      "speaker": "Game Master",
+      "text": "You, um, by the way, uriah, you walk and you see, Uh, um, an ornamental, jewelencrusted dagger laying here. This is absolutely beautiful."
+    },
+    {
+      "index": 501,
+      "speaker": "Game Master",
+      "text": "So very much like a, uh, ceremonial, um, kind of relic."
+    },
+    {
+      "index": 502,
+      "speaker": "Game Master",
+      "text": "So probably worth quite a bit if you were to sell it."
+    },
+    {
+      "index": 503,
+      "speaker": "Trout",
+      "text": "Interesting, So armor and Mace."
+    },
+    {
+      "index": 504,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 505,
+      "speaker": "Trout",
+      "text": "Ceremonial dagger."
+    },
+    {
+      "index": 506,
+      "speaker": "Trout",
+      "text": "Ooze."
+    },
+    {
+      "index": 507,
+      "speaker": "Dr Uriah",
+      "text": "Is there anything about its history that might? Might I find interesting?"
+    },
+    {
+      "index": 508,
+      "speaker": "Game Master",
+      "text": "Um, we can roll on that as soon as we resolve the, uh, secret of the ooze so."
+    },
+    {
+      "index": 509,
+      "speaker": "Unassigned Speaker",
+      "text": "I dig that."
+    },
+    {
+      "index": 510,
+      "speaker": "Dr Uriah",
+      "text": "I would definitely say that."
+    },
+    {
+      "index": 511,
+      "speaker": "Trout",
+      "text": "I think theyre hiding some treasure."
+    },
+    {
+      "index": 512,
+      "speaker": "Waymon Tisdale",
+      "text": "I think so, too, yeah."
+    },
+    {
+      "index": 513,
+      "speaker": "Trout",
+      "text": "Im gonna pull it aside."
+    },
+    {
+      "index": 514,
+      "speaker": "Game Master",
+      "text": "All right, you pull it aside and, uh, inside is some gray ooze, and it begins slowly moving towards you to attack you."
+    },
+    {
+      "index": 515,
+      "speaker": "Trout",
+      "text": "Halfling forces attack."
+    },
+    {
+      "index": 516,
+      "speaker": "Game Master",
+      "text": "All right, all right, we are gonna do our first combat, okay?"
+    },
+    {
+      "index": 517,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right."
+    },
+    {
+      "index": 518,
+      "speaker": "Game Master",
+      "text": "This is how combat worked in, Uh, back in the day, its much simpler than, um, how combat works in every other edition of DD. Um, okay, so, uh, let me just tell you all the combat rules really quickly. And, uh, they take up a total of two pages. Um, so the first thing were gonna do is we are, um, going to see if either side is surprised. So were gonna see. If you are surprised by the ooze attacking you slowly, or if the ooze is surprised by you all, um."
+    },
+    {
+      "index": 519,
+      "speaker": "Dr Uriah",
+      "text": "By attacking it slowly."
+    },
+    {
+      "index": 520,
+      "speaker": "Game Master",
+      "text": "Yes, exactly so. Uh, everybody, everybody should get a D6, uh and um, and anybody that rolls a one or a two is surprised. The ooze is surprised."
+    },
+    {
+      "index": 521,
+      "speaker": "Dr Uriah",
+      "text": "Im surprised."
+    },
+    {
+      "index": 522,
+      "speaker": "Game Master",
+      "text": "Youre surprised."
+    },
+    {
+      "index": 523,
+      "speaker": "Waymon Tisdale",
+      "text": "Im the opposite of surprised cause. I also have a plus two to surprise attack."
+    },
+    {
+      "index": 524,
+      "speaker": "Game Master",
+      "text": "Oh, there you go."
+    },
+    {
+      "index": 525,
+      "speaker": "Sir Phidipaldi",
+      "text": "I am also not surprised."
+    },
+    {
+      "index": 526,
+      "speaker": "Trout",
+      "text": "Not surprised."
+    },
+    {
+      "index": 527,
+      "speaker": "Game Master",
+      "text": "Okay, so both the ooze and, uh, you cant take a, um, an action during the first round of combat, okay?"
+    },
+    {
+      "index": 528,
+      "speaker": "Game Master",
+      "text": "Which youre across the room anyway, so youd kind of be running over."
+    },
+    {
+      "index": 529,
+      "speaker": "Dr Uriah",
+      "text": "Oh, can I roll for, Uh, Ned?"
+    },
+    {
+      "index": 530,
+      "speaker": "Game Master",
+      "text": "Uh, its okay, so, just, uh, so you guys are gonna kind of get a double attack on the ooze, okay?"
+    },
+    {
+      "index": 531,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yep."
+    },
+    {
+      "index": 532,
+      "speaker": "Game Master",
+      "text": "Um, okay, this is how initiative works. Okay, um, so every one players gonna roll a D6 and then Im gonna roll a D6. So who is gonna roll for initiative for all of you?"
+    },
+    {
+      "index": 533,
+      "speaker": "Waymon Tisdale",
+      "text": "Ill do it."
+    },
+    {
+      "index": 534,
+      "speaker": "Unassigned Speaker",
+      "text": "Three."
+    },
+    {
+      "index": 535,
+      "speaker": "Game Master",
+      "text": "I got a four, whatd you get?"
+    },
+    {
+      "index": 536,
+      "speaker": "Waymon Tisdale",
+      "text": "Six."
+    },
+    {
+      "index": 537,
+      "speaker": "Game Master",
+      "text": "A six Okay, uh, the side that rolls the higher number acts first. Um, and then, um, you all get to decide. Whatever you acted doesnt like every single round you get to pick a new order, you get to do whatever you want."
+    },
+    {
+      "index": 538,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, sure."
+    },
+    {
+      "index": 539,
+      "speaker": "Game Master",
+      "text": "So, but its just basically players go, monster goes, player goes, monster goes."
+    },
+    {
+      "index": 540,
+      "speaker": "Waymon Tisdale",
+      "text": "Will the ooze count as an aquatic animal?"
+    },
+    {
+      "index": 541,
+      "speaker": "Game Master",
+      "text": "It is not an aquatic animal. No, sorry."
+    },
+    {
+      "index": 542,
+      "speaker": "Game Master",
+      "text": "Uh, okay, so why dont whos gonna go first? On the player side, you guys get double attacks."
+    },
+    {
+      "index": 543,
+      "speaker": "Waymon Tisdale",
+      "text": "Does anybody know anything about ooze?"
+    },
+    {
+      "index": 544,
+      "speaker": "Dr Uriah",
+      "text": "Do I know, Uh, do I know anything about ooze?"
+    },
+    {
+      "index": 545,
+      "speaker": "Game Master",
+      "text": "I dont, I dont think you know anything about it."
+    },
+    {
+      "index": 546,
+      "speaker": "Dr Uriah",
+      "text": "No, I dont, I mean."
+    },
+    {
+      "index": 547,
+      "speaker": "Waymon Tisdale",
+      "text": "Okay, well, I guess ill attack with my short sword."
+    },
+    {
+      "index": 548,
+      "speaker": "Game Master",
+      "text": "All right here is how attacking works you are going to roll a D20."
+    },
+    {
+      "index": 549,
+      "speaker": "Dr Uriah",
+      "text": "If theyre like undead or particularly evil, I might know something about them."
+    },
+    {
+      "index": 550,
+      "speaker": "Game Master",
+      "text": "You are going to add any bonuses that you, uh, may have. Um, so, um, so these are, um, include maybe your class gets an attack bonus."
+    },
+    {
+      "index": 551,
+      "speaker": "Waymon Tisdale",
+      "text": "I do not."
+    },
+    {
+      "index": 552,
+      "speaker": "Game Master",
+      "text": "Okay, uh, do you have a, um, uh? If youre using a melee weapon you look for, see if you have a strength bonus."
+    },
+    {
+      "index": 553,
+      "speaker": "Waymon Tisdale",
+      "text": "I do."
+    },
+    {
+      "index": 554,
+      "speaker": "Game Master",
+      "text": "Plus one."
+    },
+    {
+      "index": 555,
+      "speaker": "Game Master",
+      "text": "Okay, uh, and then if you were to range attack, itd be dexterity. So youre gonna roll a D20 and you.re gonna add a plus one that is a nine. Hello, and you are trying to beat the armor class of the Um uh meets or exceeds the Defenders armor class. The attack is successful and hits the defender. You hit. Okay, so now you are going to roll the UH."
+    },
+    {
+      "index": 556,
+      "speaker": "Waymon Tisdale",
+      "text": "Damage."
+    },
+    {
+      "index": 557,
+      "speaker": "Game Master",
+      "text": "Um, the damage."
+    },
+    {
+      "index": 558,
+      "speaker": "Sir Phidipaldi",
+      "text": "So because he surprised the ooze."
+    },
+    {
+      "index": 559,
+      "speaker": "Sir Phidipaldi",
+      "text": "And then this is a stretch, Im just asking."
+    },
+    {
+      "index": 560,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, yeah, yeah."
+    },
+    {
+      "index": 561,
+      "speaker": "Sir Phidipaldi",
+      "text": "Does he get his surprise back stab attack?"
+    },
+    {
+      "index": 562,
+      "speaker": "Game Master",
+      "text": "Oh, Geez, I dont know."
+    },
+    {
+      "index": 563,
+      "speaker": "Unassigned Speaker",
+      "text": "I dont know."
+    },
+    {
+      "index": 564,
+      "speaker": "Game Master",
+      "text": "What does that do?"
+    },
+    {
+      "index": 565,
+      "speaker": "Waymon Tisdale",
+      "text": "Um, uh."
+    },
+    {
+      "index": 566,
+      "speaker": "Dr Uriah",
+      "text": "Plus two to attack roll."
+    },
+    {
+      "index": 567,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, it gives me plus two."
+    },
+    {
+      "index": 568,
+      "speaker": "Dr Uriah",
+      "text": "And you hit anyway."
+    },
+    {
+      "index": 569,
+      "speaker": "Sir Phidipaldi",
+      "text": "But does it also do?"
+    },
+    {
+      "index": 570,
+      "speaker": "Dr Uriah",
+      "text": "It doubles, doubles the damage."
+    },
+    {
+      "index": 571,
+      "speaker": "Game Master",
+      "text": "Lets do it."
+    },
+    {
+      "index": 572,
+      "speaker": "Game Master",
+      "text": "Well, let him double the damage."
+    },
+    {
+      "index": 573,
+      "speaker": "Dr Uriah",
+      "text": "Well, well, well, you roll twice, so it doesnt double you roll twice."
+    },
+    {
+      "index": 574,
+      "speaker": "Unassigned Speaker",
+      "text": "Do that."
+    },
+    {
+      "index": 575,
+      "speaker": "Waymon Tisdale",
+      "text": "So Im rolling a D6 minus one."
+    },
+    {
+      "index": 576,
+      "speaker": "Waymon Tisdale",
+      "text": "So that wouldve been one, and then that is three."
+    },
+    {
+      "index": 577,
+      "speaker": "Game Master",
+      "text": "Okay, so whats your total?"
+    },
+    {
+      "index": 578,
+      "speaker": "Waymon Tisdale",
+      "text": "Four."
+    },
+    {
+      "index": 579,
+      "speaker": "Game Master",
+      "text": "Okay, all right, you, um, what are you attacking with again?"
+    },
+    {
+      "index": 580,
+      "speaker": "Waymon Tisdale",
+      "text": "A short sword."
+    },
+    {
+      "index": 581,
+      "speaker": "Game Master",
+      "text": "Okay, your short sword, uh, plunges into the ooze, and, um, uh, yeah, exactly."
+    },
+    {
+      "index": 582,
+      "speaker": "Dr Uriah",
+      "text": "Im gonna need some sound effects."
+    },
+    {
+      "index": 583,
+      "speaker": "Game Master",
+      "text": "All right, whos gonna attack next?"
+    },
+    {
+      "index": 584,
+      "speaker": "Trout",
+      "text": "Ill. Just go around ooze, so I get to attack it. IM attacking twice."
+    },
+    {
+      "index": 585,
+      "speaker": "Game Master",
+      "text": "Uh, were just gonna do round one and then, well, do round two."
+    },
+    {
+      "index": 586,
+      "speaker": "Game Master",
+      "text": "Cause cause."
+    },
+    {
+      "index": 587,
+      "speaker": "Dr Uriah",
+      "text": "He attacked twice because he has a backstab."
+    },
+    {
+      "index": 588,
+      "speaker": "Trout",
+      "text": "Got it okay?"
+    },
+    {
+      "index": 589,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah."
+    },
+    {
+      "index": 590,
+      "speaker": "Trout",
+      "text": "So I get a two bonus on my spear, so what, Im rolling, what?"
+    },
+    {
+      "index": 591,
+      "speaker": "Game Master",
+      "text": "Youre gonna roll a D20, okay?"
+    },
+    {
+      "index": 592,
+      "speaker": "Trout",
+      "text": "May I may, I borrow one of those."
+    },
+    {
+      "index": 593,
+      "speaker": "Trout",
+      "text": "And then, um, and again with my."
+    },
+    {
+      "index": 594,
+      "speaker": "Sir Phidipaldi",
+      "text": "And then you add two."
+    },
+    {
+      "index": 595,
+      "speaker": "Game Master",
+      "text": "And youre gonna add two."
+    },
+    {
+      "index": 596,
+      "speaker": "Sir Phidipaldi",
+      "text": "And and I dont think you have a strength bonus."
+    },
+    {
+      "index": 597,
+      "speaker": "Trout",
+      "text": "No negative."
+    },
+    {
+      "index": 598,
+      "speaker": "Game Master",
+      "text": "Oh, so you have to subtract something. Whats your negative negative one?"
+    },
+    {
+      "index": 599,
+      "speaker": "Trout",
+      "text": "Yeah."
+    },
+    {
+      "index": 600,
+      "speaker": "Game Master",
+      "text": "Okay, so you add plus two for Spear, minus one for strength, so youre gonna have a plus one."
+    },
+    {
+      "index": 601,
+      "speaker": "Game Master",
+      "text": "Whatd you hit, whatd you roll?"
+    },
+    {
+      "index": 602,
+      "speaker": "Trout",
+      "text": "13."
+    },
+    {
+      "index": 603,
+      "speaker": "Sir Phidipaldi",
+      "text": "Plus one."
+    },
+    {
+      "index": 604,
+      "speaker": "Game Master",
+      "text": "You hit."
+    },
+    {
+      "index": 605,
+      "speaker": "Trout",
+      "text": "14 Okay, but where does strength come into play, or or just the bonus?"
+    },
+    {
+      "index": 606,
+      "speaker": "Dr Uriah",
+      "text": "Its a bonus."
+    },
+    {
+      "index": 607,
+      "speaker": "Game Master",
+      "text": "Its just the bonus. It just adds to you thats how it it it cause youre doing melee its strength."
+    },
+    {
+      "index": 608,
+      "speaker": "Game Master",
+      "text": "If you were doing, range its dex."
+    },
+    {
+      "index": 609,
+      "speaker": "Sir Phidipaldi",
+      "text": "Now in 5E, he would add his strength negative to his damage as well. Does that happen here?"
+    },
+    {
+      "index": 610,
+      "speaker": "Dr Uriah",
+      "text": "Uh, I mean, thats that.s crunch."
+    },
+    {
+      "index": 611,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, I also am skeptical that they would do that, yes."
+    },
+    {
+      "index": 612,
+      "speaker": "Game Master",
+      "text": "Uh, lets see if attack, uh, amount of damage inflicted is determined by the weapons damage die. Plus any Modifiers, thats all it says, Uh um. In Melee, combat characters may add their strength modifier."
+    },
+    {
+      "index": 613,
+      "speaker": "Game Master",
+      "text": "So so."
+    },
+    {
+      "index": 614,
+      "speaker": "Sir Phidipaldi",
+      "text": "So you get a minus one to your damage roll."
+    },
+    {
+      "index": 615,
+      "speaker": "Trout",
+      "text": "Thanks, dude."
+    },
+    {
+      "index": 616,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, youre, welcome."
+    },
+    {
+      "index": 617,
+      "speaker": "Trout",
+      "text": "But not my plus two for my spear."
+    },
+    {
+      "index": 618,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its only attack, yeah."
+    },
+    {
+      "index": 619,
+      "speaker": "Trout",
+      "text": "So, but the."
+    },
+    {
+      "index": 620,
+      "speaker": "Dr Uriah",
+      "text": "It doesnt matter."
+    },
+    {
+      "index": 621,
+      "speaker": "Trout",
+      "text": "But why is it like cause its a like 1D6 minus one? I get that its another comp right here, cause I have like my sling is 1d6, minus one."
+    },
+    {
+      "index": 622,
+      "speaker": "Sir Phidipaldi",
+      "text": "And then your spear is 1D6, right?"
+    },
+    {
+      "index": 623,
+      "speaker": "Trout",
+      "text": "Yeah."
+    },
+    {
+      "index": 624,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, thats without thats just the base damage of the weapon."
+    },
+    {
+      "index": 625,
+      "speaker": "Unassigned Speaker",
+      "text": "So two."
+    },
+    {
+      "index": 626,
+      "speaker": "Game Master",
+      "text": "Okay, two total damage."
+    },
+    {
+      "index": 627,
+      "speaker": "Game Master",
+      "text": "All right, whos going next?"
+    },
+    {
+      "index": 628,
+      "speaker": "Sir Phidipaldi",
+      "text": "I will attack."
+    },
+    {
+      "index": 629,
+      "speaker": "Sir Phidipaldi",
+      "text": "With my twohanded sword."
+    },
+    {
+      "index": 630,
+      "speaker": "Sir Phidipaldi",
+      "text": "Im gonna cleave, some ooze. Cleave, I do a nine."
+    },
+    {
+      "index": 631,
+      "speaker": "Game Master",
+      "text": "Okay, uh, you hit."
+    },
+    {
+      "index": 632,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, and I."
+    },
+    {
+      "index": 633,
+      "speaker": "Dr Uriah",
+      "text": "Its a lot of ooze."
+    },
+    {
+      "index": 634,
+      "speaker": "Sir Phidipaldi",
+      "text": "I do."
+    },
+    {
+      "index": 635,
+      "speaker": "Game Master",
+      "text": "Theres plenty. Yeah, its not a hard to hit thing."
+    },
+    {
+      "index": 636,
+      "speaker": "Sir Phidipaldi",
+      "text": "I do five damage."
+    },
+    {
+      "index": 637,
+      "speaker": "Dr Uriah",
+      "text": "On a metal slime."
+    },
+    {
+      "index": 638,
+      "speaker": "Game Master",
+      "text": "Uh, you do five damage, all right, you significantly hurt that little guy."
+    },
+    {
+      "index": 639,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sir Chumunga."
+    },
+    {
+      "index": 640,
+      "speaker": "Game Master",
+      "text": "Um, and then rich."
+    },
+    {
+      "index": 641,
+      "speaker": "Waymon Tisdale",
+      "text": "Squintss."
+    },
+    {
+      "index": 642,
+      "speaker": "Game Master",
+      "text": "No Squintss gets skipped."
+    },
+    {
+      "index": 643,
+      "speaker": "Game Master",
+      "text": "Oh, its, it got skipped. Um, okay, Squints."
+    },
+    {
+      "index": 644,
+      "speaker": "Dr Uriah",
+      "text": "And then, you know, ooze is skipped."
+    },
+    {
+      "index": 645,
+      "speaker": "Dr Uriah",
+      "text": "And then youre gonna use it again."
+    },
+    {
+      "index": 646,
+      "speaker": "Trout",
+      "text": "Um, and that would be, Uh, wheres the attack plus one?"
+    },
+    {
+      "index": 647,
+      "speaker": "Game Master",
+      "text": "Okay."
+    },
+    {
+      "index": 648,
+      "speaker": "Trout",
+      "text": "So 13."
+    },
+    {
+      "index": 649,
+      "speaker": "Game Master",
+      "text": "Thats okay."
+    },
+    {
+      "index": 650,
+      "speaker": "Trout",
+      "text": "And then this and this attack does get added. No, no, thats right, thats, uh, thatd be a strike."
+    },
+    {
+      "index": 651,
+      "speaker": "Game Master",
+      "text": "Uh, whats his, uh?"
+    },
+    {
+      "index": 652,
+      "speaker": "Trout",
+      "text": "Strike 12."
+    },
+    {
+      "index": 653,
+      "speaker": "Game Master",
+      "text": "What did he use to attack?"
+    },
+    {
+      "index": 654,
+      "speaker": "Sir Phidipaldi",
+      "text": "A sling."
+    },
+    {
+      "index": 655,
+      "speaker": "Trout",
+      "text": "Sling."
+    },
+    {
+      "index": 656,
+      "speaker": "Game Master",
+      "text": "So thats his dexterity gets added."
+    },
+    {
+      "index": 657,
+      "speaker": "Trout",
+      "text": "14."
+    },
+    {
+      "index": 658,
+      "speaker": "Game Master",
+      "text": "So is that a plus one?"
+    },
+    {
+      "index": 659,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its not."
+    },
+    {
+      "index": 660,
+      "speaker": "Game Master",
+      "text": "It is not."
+    },
+    {
+      "index": 661,
+      "speaker": "Trout",
+      "text": "Three."
+    },
+    {
+      "index": 662,
+      "speaker": "Game Master",
+      "text": "I want you to describe how S. Squintss and his sling kills the gray ooze."
+    },
+    {
+      "index": 663,
+      "speaker": "Trout",
+      "text": "With, like, masterful."
+    },
+    {
+      "index": 664,
+      "speaker": "Trout",
+      "text": "Aiming."
+    },
+    {
+      "index": 665,
+      "speaker": "Trout",
+      "text": "And just like martial prowess."
+    },
+    {
+      "index": 666,
+      "speaker": "Trout",
+      "text": "Like, lets go this kind of jagged looking stone, and it just."
+    },
+    {
+      "index": 667,
+      "speaker": "Trout",
+      "text": "Kind of pierces straight to the heart of the ooze."
+    },
+    {
+      "index": 668,
+      "speaker": "Trout",
+      "text": "And, uh, you can see it kind of there, wobbling in in the ooze as it like, you know, encountered the oozes vital organs."
+    },
+    {
+      "index": 669,
+      "speaker": "Game Master",
+      "text": "Squintss immediately looks to you Uh um, Trout, for approval right after its done."
+    },
+    {
+      "index": 670,
+      "speaker": "Trout",
+      "text": "I give a slight nod and I go, Well done, Apprentice."
+    },
+    {
+      "index": 671,
+      "speaker": "Game Master",
+      "text": "So he, Um, you see him collect some of the ooze and put it in his pocket."
+    },
+    {
+      "index": 672,
+      "speaker": "Sir Phidipaldi",
+      "text": "Gross."
+    },
+    {
+      "index": 673,
+      "speaker": "Game Master",
+      "text": "And say that hes going to show this to the people back home, um."
+    },
+    {
+      "index": 674,
+      "speaker": "Trout",
+      "text": "Does it like eat away at your armor or anything?"
+    },
+    {
+      "index": 675,
+      "speaker": "Game Master",
+      "text": "Uh yeah, thatll be coming. Uh, so the uh, so so, uh. The ooze is dead, the goblins are horrified, and they begin arguing amongst each other. And, um, one of them, Uh um, snurg. The walkout walks up to, Um, Squintss and says, How dare you, how dare you take another life of a human you? There are no judges here, there is nobody whos above anyone else. That is why we put the ooze in the alcove."
+    },
+    {
+      "index": 676,
+      "speaker": "Waymon Tisdale",
+      "text": "Are we still doing the stick thing?"
+    },
+    {
+      "index": 677,
+      "speaker": "Game Master",
+      "text": "Were holding against the stick thing. The stick is on the ground if you want to grab it."
+    },
+    {
+      "index": 678,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, no, shut up, man, do you know, do you know what ooze eats? How does how does ooze survive?"
+    },
+    {
+      "index": 679,
+      "speaker": "Game Master",
+      "text": "They all talk to each other for a little bit. And then Grimble looks at you and he goes. None of us know how ooze, eats or survives, but that is because."
+    },
+    {
+      "index": 680,
+      "speaker": "Waymon Tisdale",
+      "text": "Because because if you did, you probably wouldnt have sealed it behind in a stone alcove to slowly starve to death. It probably only attacked us and couldnt be reasoned with, because it had been left to die by a bunch of strange goblins."
+    },
+    {
+      "index": 681,
+      "speaker": "Game Master",
+      "text": "You see them all nodding, theyre all nodding, and then they talk to each other, They look at you, they go way.Mond is wise."
+    },
+    {
+      "index": 682,
+      "speaker": "Unassigned Speaker",
+      "text": "That is true."
+    },
+    {
+      "index": 683,
+      "speaker": "Trout",
+      "text": "We also defended your future home from attack."
+    },
+    {
+      "index": 684,
+      "speaker": "Game Master",
+      "text": "We would not have known what to do with the ooze in this way. We have outsourced our violence to somebody else. In order to make ourself feel safe. We need to determine how we feel about this later."
+    },
+    {
+      "index": 685,
+      "speaker": "Trout",
+      "text": "While theres that chatter going on."
+    },
+    {
+      "index": 686,
+      "speaker": "Trout",
+      "text": "Im just gonna look in there to see if the ooze had any, uh, valuables."
+    },
+    {
+      "index": 687,
+      "speaker": "Game Master",
+      "text": "There is nothing of value in there. Im sorry."
+    },
+    {
+      "index": 688,
+      "speaker": "Unassigned Speaker",
+      "text": "Eh?"
+    },
+    {
+      "index": 689,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, um."
+    },
+    {
+      "index": 690,
+      "speaker": "Dr Uriah",
+      "text": "So do I do anything about the providence of this jewel ritual dagger?"
+    },
+    {
+      "index": 691,
+      "speaker": "Game Master",
+      "text": "Yeah, why dont we do a roll of your, um?"
+    },
+    {
+      "index": 692,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, so its on a one or two, right?"
+    },
+    {
+      "index": 693,
+      "speaker": "Game Master",
+      "text": "Yeah, its on a one or two you got a one."
+    },
+    {
+      "index": 694,
+      "speaker": "Game Master",
+      "text": "Okay, um, this is something that was, Um, definitely. um, like you could kind of source that it was, uh, um, of the time period that, um, the Barrow bound was like, created and sealed to put."
+    },
+    {
+      "index": 695,
+      "speaker": "Game Master",
+      "text": "The people in your guess is that its probably worth upwards of 200 gold if you sold it in a major city."
+    },
+    {
+      "index": 696,
+      "speaker": "Sir Phidipaldi",
+      "text": "Now do we get the 2, do we get the 200 XP for it now?"
+    },
+    {
+      "index": 697,
+      "speaker": "Game Master",
+      "text": "I think its once you liquidate it."
+    },
+    {
+      "index": 698,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, okay."
+    },
+    {
+      "index": 699,
+      "speaker": "Game Master",
+      "text": "Is, I think, the way ill do it?"
+    },
+    {
+      "index": 700,
+      "speaker": "Sir Phidipaldi",
+      "text": "No problem."
+    },
+    {
+      "index": 701,
+      "speaker": "Game Master",
+      "text": "So, yeah, so okay, so in this room, um, there is a, uh, obviously a, uh, hallway going back to the West."
+    },
+    {
+      "index": 702,
+      "speaker": "Game Master",
+      "text": "To the Antechamber that you came from, theres also stairs going down."
+    },
+    {
+      "index": 703,
+      "speaker": "Waymon Tisdale",
+      "text": "HM UH should ask the Goblins."
+    },
+    {
+      "index": 704,
+      "speaker": "Trout",
+      "text": "Yeah."
+    },
+    {
+      "index": 705,
+      "speaker": "Waymon Tisdale",
+      "text": "You know, have you explored any of the other rooms?"
+    },
+    {
+      "index": 706,
+      "speaker": "Game Master",
+      "text": "Uh, they once again get quiet and they say, Uh, well, there were more than four of us when we came here. And, uh, many of our friends have valiantly, um, passed away, um, down below."
+    },
+    {
+      "index": 707,
+      "speaker": "Waymon Tisdale",
+      "text": "How so?"
+    },
+    {
+      "index": 708,
+      "speaker": "Game Master",
+      "text": "Uh, well, um, its a little complicated, um."
+    },
+    {
+      "index": 709,
+      "speaker": "Sir Phidipaldi",
+      "text": "Did you seal seal them behind a stone?"
+    },
+    {
+      "index": 710,
+      "speaker": "Game Master",
+      "text": "So, uh, what they say is, um, that, uh, you know how theres these pictures on the wall in the room over there?"
+    },
+    {
+      "index": 711,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, the one in the West."
+    },
+    {
+      "index": 712,
+      "speaker": "Game Master",
+      "text": "Well, at least one of them is still alive."
+    },
+    {
+      "index": 713,
+      "speaker": "Game Master",
+      "text": "And killed a bunch of our friends."
+    },
+    {
+      "index": 714,
+      "speaker": "Waymon Tisdale",
+      "text": "Is he real big?"
+    },
+    {
+      "index": 715,
+      "speaker": "Game Master",
+      "text": "Uh, yes."
+    },
+    {
+      "index": 716,
+      "speaker": "Sir Phidipaldi",
+      "text": "Great, okay."
+    },
+    {
+      "index": 717,
+      "speaker": "Game Master",
+      "text": "He had a huge sword."
+    },
+    {
+      "index": 718,
+      "speaker": "Dr Uriah",
+      "text": "Um, Alfred, then."
+    },
+    {
+      "index": 719,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, yep."
+    },
+    {
+      "index": 720,
+      "speaker": "Trout",
+      "text": "Should we, should we finish off this level before we go down?"
+    },
+    {
+      "index": 721,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, definitely."
+    },
+    {
+      "index": 722,
+      "speaker": "Trout",
+      "text": "Real quick."
+    },
+    {
+      "index": 723,
+      "speaker": "Waymon Tisdale",
+      "text": "What about the room in to the West?"
+    },
+    {
+      "index": 724,
+      "speaker": "Game Master",
+      "text": "Uh yeah, so the room to the West is where you came from. Then theres a R area to the west of that."
+    },
+    {
+      "index": 725,
+      "speaker": "Unassigned Speaker",
+      "text": "West of that."
+    },
+    {
+      "index": 726,
+      "speaker": "Game Master",
+      "text": "Yeah, so if youre gonna go over there."
+    },
+    {
+      "index": 727,
+      "speaker": "Waymon Tisdale",
+      "text": "Well, I was gonna ask them about it."
+    },
+    {
+      "index": 728,
+      "speaker": "Game Master",
+      "text": "Oh um, theyre like theres a bunch of weird statues in there, its strange."
+    },
+    {
+      "index": 729,
+      "speaker": "Trout",
+      "text": "Well, lets take a look."
+    },
+    {
+      "index": 730,
+      "speaker": "Waymon Tisdale",
+      "text": "Well, well, well, go scope it out and well, think about."
+    },
+    {
+      "index": 731,
+      "speaker": "Waymon Tisdale",
+      "text": "Old Alfred, down below."
+    },
+    {
+      "index": 732,
+      "speaker": "Game Master",
+      "text": "Oh okay, all right, Um, uh, really quick. Uh, let me check something okay, uh, you are a metaphysician, right?"
+    },
+    {
+      "index": 733,
+      "speaker": "Dr Uriah",
+      "text": "I am."
+    },
+    {
+      "index": 734,
+      "speaker": "Game Master",
+      "text": "Okay, sorry."
+    },
+    {
+      "index": 735,
+      "speaker": "Unassigned Speaker",
+      "text": "Its fine."
+    },
+    {
+      "index": 736,
+      "speaker": "Game Master",
+      "text": "Okay, uh, let me just check Dagonine really quick. I I wanna make sure that Im not, uh."
+    },
+    {
+      "index": 737,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, cause you can detect secret doors. Oh, yeah."
+    },
+    {
+      "index": 738,
+      "speaker": "Game Master",
+      "text": "Thats what Im trying to f."
+    },
+    {
+      "index": 739,
+      "speaker": "Game Master",
+      "text": "Figure out."
+    },
+    {
+      "index": 740,
+      "speaker": "Dr Uriah",
+      "text": "Thats right."
+    },
+    {
+      "index": 741,
+      "speaker": "Game Master",
+      "text": "Without giving it away."
+    },
+    {
+      "index": 742,
+      "speaker": "Dr Uriah",
+      "text": "Uh yeah, its like a plus two, uh, but a plus four from actively looking."
+    },
+    {
+      "index": 743,
+      "speaker": "Game Master",
+      "text": "Yeah, there you go."
+    },
+    {
+      "index": 744,
+      "speaker": "Dr Uriah",
+      "text": "I think its A plus two passive and a plus four active, right?"
+    },
+    {
+      "index": 745,
+      "speaker": "Game Master",
+      "text": "Well, did you want to actively look for secret doors?"
+    },
+    {
+      "index": 746,
+      "speaker": "Dr Uriah",
+      "text": "No, why would you?"
+    },
+    {
+      "index": 747,
+      "speaker": "Game Master",
+      "text": "Why would you, yeah, darting eyes, right?"
+    },
+    {
+      "index": 748,
+      "speaker": "Game Master",
+      "text": "So so first of all, what I should do is I should just roll a one I. I need to roll a D6 to see if you found one."
+    },
+    {
+      "index": 749,
+      "speaker": "Game Master",
+      "text": "Without L."
+    },
+    {
+      "index": 750,
+      "speaker": "Dr Uriah",
+      "text": "Its A one to four on a D6."
+    },
+    {
+      "index": 751,
+      "speaker": "Dr Uriah",
+      "text": "Searching for a secret one to four on."
+    },
+    {
+      "index": 752,
+      "speaker": "Dr Uriah",
+      "text": "Search for."
+    },
+    {
+      "index": 753,
+      "speaker": "Game Master",
+      "text": "So neither you nor, um, uh, Waymond found it passively."
+    },
+    {
+      "index": 754,
+      "speaker": "Game Master",
+      "text": "But did you now want to look actively okay? Why dont you roll a D6?"
+    },
+    {
+      "index": 755,
+      "speaker": "Trout",
+      "text": "So were were in the room."
+    },
+    {
+      "index": 756,
+      "speaker": "Game Master",
+      "text": "No th, this is Youre still in the room with the Goblin."
+    },
+    {
+      "index": 757,
+      "speaker": "Dr Uriah",
+      "text": "Oh, okay, were gonna do this in every room."
+    },
+    {
+      "index": 758,
+      "speaker": "Dr Uriah",
+      "text": "Now for every game."
+    },
+    {
+      "index": 759,
+      "speaker": "Dr Uriah",
+      "text": "Wherever we are, hey, look at that."
+    },
+    {
+      "index": 760,
+      "speaker": "Game Master",
+      "text": "Look at that you found a secret door. Okay? So you find, as you look around the room, there is a, um, rectangular seam in the stone, and when you push on it."
+    },
+    {
+      "index": 761,
+      "speaker": "Sir Phidipaldi",
+      "text": "What direction?"
+    },
+    {
+      "index": 762,
+      "speaker": "Game Master",
+      "text": "Uh, this is on the east eastern part of the wall."
+    },
+    {
+      "index": 763,
+      "speaker": "Game Master",
+      "text": "Um, it opens up into a small room where theres a chest of polished dark wood."
+    },
+    {
+      "index": 764,
+      "speaker": "Game Master",
+      "text": "It sits in the middle of the room, theres stone shelves built into the walls, upon which sit thick white candles in golden holders."
+    },
+    {
+      "index": 765,
+      "speaker": "Dr Uriah",
+      "text": "Okay, are the candles on?"
+    },
+    {
+      "index": 766,
+      "speaker": "Game Master",
+      "text": "Uh, the handles of the uh of what?"
+    },
+    {
+      "index": 767,
+      "speaker": "Dr Uriah",
+      "text": "I said The candles, the candles."
+    },
+    {
+      "index": 768,
+      "speaker": "Unassigned Speaker",
+      "text": "The Candle No, the candles are not lit."
+    },
+    {
+      "index": 769,
+      "speaker": "Trout",
+      "text": "We found a secret room, Richard, HM, before we even left the room. All right, I will take the candle holders."
+    },
+    {
+      "index": 770,
+      "speaker": "Game Master",
+      "text": "Okay, um, you are going to take seven candle holders."
+    },
+    {
+      "index": 771,
+      "speaker": "Sir Phidipaldi",
+      "text": "Seven gold."
+    },
+    {
+      "index": 772,
+      "speaker": "Game Master",
+      "text": "And uh, no seven, yeah, gold candle holders."
+    },
+    {
+      "index": 773,
+      "speaker": "Game Master",
+      "text": "And then just mark, so I dont have to look em up later. Those are worth 50 gold each."
+    },
+    {
+      "index": 774,
+      "speaker": "Trout",
+      "text": "Okay, wow."
+    },
+    {
+      "index": 775,
+      "speaker": "Dr Uriah",
+      "text": "Were gonna go up a level, uh, can we, uh, I, I. I nod at Ned and I tell him to go and look at the chest, like to examine it for traps."
+    },
+    {
+      "index": 776,
+      "speaker": "Game Master",
+      "text": "Yeah, uh, Ned looks at it and is like, Looks fine, boss."
+    },
+    {
+      "index": 777,
+      "speaker": "Dr Uriah",
+      "text": "Okay, great, go ahead and open it."
+    },
+    {
+      "index": 778,
+      "speaker": "Game Master",
+      "text": "The lid is carved with twisting vines, flowers and leaves."
+    },
+    {
+      "index": 779,
+      "speaker": "Game Master",
+      "text": "He opens it up and inside is a quarter staff and monastic robes. And, um."
+    },
+    {
+      "index": 780,
+      "speaker": "Waymon Tisdale",
+      "text": "Makings of a torch."
+    },
+    {
+      "index": 781,
+      "speaker": "Game Master",
+      "text": "Yeah, and uh, and uh."
+    },
+    {
+      "index": 782,
+      "speaker": "Dr Uriah",
+      "text": "The makings for an armor upgrade for people who dont wear armor."
+    },
+    {
+      "index": 783,
+      "speaker": "Game Master",
+      "text": "And, um, Brother Dirk looks at it and says, These are the robes of Saint Arthur."
+    },
+    {
+      "index": 784,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, well, I feel like he should put them on."
+    },
+    {
+      "index": 785,
+      "speaker": "Game Master",
+      "text": "Hes like these are too holy to put on, these are, I mean, these are treasures, these are, this is incredible."
+    },
+    {
+      "index": 786,
+      "speaker": "Sir Phidipaldi",
+      "text": "Would you rather, we make them into torches?"
+    },
+    {
+      "index": 787,
+      "speaker": "Game Master",
+      "text": "You could not s, you could not have such sacrilege."
+    },
+    {
+      "index": 788,
+      "speaker": "Sir Phidipaldi",
+      "text": "Then put it on."
+    },
+    {
+      "index": 789,
+      "speaker": "Dr Uriah",
+      "text": "Um, do I, um, hold on, hang on."
+    },
+    {
+      "index": 790,
+      "speaker": "Unassigned Speaker",
+      "text": "Does."
+    },
+    {
+      "index": 791,
+      "speaker": "Dr Uriah",
+      "text": "Are these magical?"
+    },
+    {
+      "index": 792,
+      "speaker": "Sir Phidipaldi",
+      "text": "Does Uriah know who Saint Arthur is?"
+    },
+    {
+      "index": 793,
+      "speaker": "Game Master",
+      "text": "Uh, sure."
+    },
+    {
+      "index": 794,
+      "speaker": "Dr Uriah",
+      "text": "Okay, great."
+    },
+    {
+      "index": 795,
+      "speaker": "Game Master",
+      "text": "Just like a a saint."
+    },
+    {
+      "index": 796,
+      "speaker": "Dr Uriah",
+      "text": "A saint."
+    },
+    {
+      "index": 797,
+      "speaker": "Game Master",
+      "text": "Like a its like, just some God in this world."
+    },
+    {
+      "index": 798,
+      "speaker": "Game Master",
+      "text": "Right, so Saint, like Saint of this world."
+    },
+    {
+      "index": 799,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, great."
+    },
+    {
+      "index": 800,
+      "speaker": "Game Master",
+      "text": "Yeah, um."
+    },
+    {
+      "index": 801,
+      "speaker": "Dr Uriah",
+      "text": "Like, Do Do I sense anything on these things? Are they magical, or are they very mundane?"
+    },
+    {
+      "index": 802,
+      "speaker": "Game Master",
+      "text": "Um, I believe you bought some powder, didnt you?"
+    },
+    {
+      "index": 803,
+      "speaker": "Dr Uriah",
+      "text": "MMHmm."
+    },
+    {
+      "index": 804,
+      "speaker": "Game Master",
+      "text": "That you could sprinkle."
+    },
+    {
+      "index": 805,
+      "speaker": "Dr Uriah",
+      "text": "Oh, that was Witcher powder. No, I didnt I didnt."
+    },
+    {
+      "index": 806,
+      "speaker": "Game Master",
+      "text": "Oh, you didn.t buy it."
+    },
+    {
+      "index": 807,
+      "speaker": "Dr Uriah",
+      "text": "No, I didnt buy it."
+    },
+    {
+      "index": 808,
+      "speaker": "Game Master",
+      "text": "Its a shame."
+    },
+    {
+      "index": 809,
+      "speaker": "Dr Uriah",
+      "text": "Is that Witcher powder that doesnt achieve like the thing? Oh no, thats what I was gonna say."
+    },
+    {
+      "index": 810,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, yeah, yeah, she said. She said that you could sprinkle it on something, and then if it glowed, uh, that it was magical."
+    },
+    {
+      "index": 811,
+      "speaker": "Sir Phidipaldi",
+      "text": "Ah, all right, so we can wait till we go back to her. Uh, can Uriah wear armor? No, okay, um."
+    },
+    {
+      "index": 812,
+      "speaker": "Game Master",
+      "text": "Do you wanna wear the robes?"
+    },
+    {
+      "index": 813,
+      "speaker": "Dr Uriah",
+      "text": "Fuck, yeah."
+    },
+    {
+      "index": 814,
+      "speaker": "Game Master",
+      "text": "Put the robes on."
+    },
+    {
+      "index": 815,
+      "speaker": "Waymon Tisdale",
+      "text": "Well, I have a chain mail vest that I found that I cant wear. Yeah, I cant wear, I cant wear armor."
+    },
+    {
+      "index": 816,
+      "speaker": "Game Master",
+      "text": "You can wear robes."
+    },
+    {
+      "index": 817,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, no, I know, I know."
+    },
+    {
+      "index": 818,
+      "speaker": "Game Master",
+      "text": "Okay, so you gonna put em?"
+    },
+    {
+      "index": 819,
+      "speaker": "Dr Uriah",
+      "text": "But I cant wear chain mail."
+    },
+    {
+      "index": 820,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, yeah, are you gonna put it on?"
+    },
+    {
+      "index": 821,
+      "speaker": "Dr Uriah",
+      "text": "Oh man, hopefully theyre not. Oh, wait, I can tell if an items cursed."
+    },
+    {
+      "index": 822,
+      "speaker": "Sir Phidipaldi",
+      "text": "Ah, it is not cursed."
+    },
+    {
+      "index": 823,
+      "speaker": "Dr Uriah",
+      "text": "Okay, that that I can like that I can."
+    },
+    {
+      "index": 824,
+      "speaker": "Dr Uriah",
+      "text": "Uh, that I do know."
+    },
+    {
+      "index": 825,
+      "speaker": "Dr Uriah",
+      "text": "Okay, yeah, ill put em on."
+    },
+    {
+      "index": 826,
+      "speaker": "Game Master",
+      "text": "Great, you put on the majestic, the whole robe."
+    },
+    {
+      "index": 827,
+      "speaker": "Dr Uriah",
+      "text": "I mean, are they nice?"
+    },
+    {
+      "index": 828,
+      "speaker": "Game Master",
+      "text": "Theyre gorgeous."
+    },
+    {
+      "index": 829,
+      "speaker": "Dr Uriah",
+      "text": "Theyre not like rotten."
+    },
+    {
+      "index": 830,
+      "speaker": "Game Master",
+      "text": "No, no, but like Dirk is like deeply offended."
+    },
+    {
+      "index": 831,
+      "speaker": "Dr Uriah",
+      "text": "Thats fine, Youre. I look at him, I go like, your boss sucks."
+    },
+    {
+      "index": 832,
+      "speaker": "Game Master",
+      "text": "Okay, you, um, theres nothing else to see in this room."
+    },
+    {
+      "index": 833,
+      "speaker": "Unassigned Speaker",
+      "text": "And I guess I take the quarterstaff, too. Any notable effect of him wearing the robes?"
+    },
+    {
+      "index": 834,
+      "speaker": "Game Master",
+      "text": "No, nothing notable."
+    },
+    {
+      "index": 835,
+      "speaker": "Game Master",
+      "text": "Great, yeah."
+    },
+    {
+      "index": 836,
+      "speaker": "Dr Uriah",
+      "text": "Cause I already have a staff and maybe its a better one."
+    },
+    {
+      "index": 837,
+      "speaker": "Game Master",
+      "text": "So now you head to the West to go back to that entry antechamber."
+    },
+    {
+      "index": 838,
+      "speaker": "Waymon Tisdale",
+      "text": "I feel like since the sick robe should be a charisma boost."
+    },
+    {
+      "index": 839,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 840,
+      "speaker": "Dr Uriah",
+      "text": "I got, I got a plus one charisma."
+    },
+    {
+      "index": 841,
+      "speaker": "Game Master",
+      "text": "And now you head to the room to the west of that."
+    },
+    {
+      "index": 842,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, the statue, okay, the statue room."
+    },
+    {
+      "index": 843,
+      "speaker": "Game Master",
+      "text": "Um, in this room, uh, much like the Goblins described, who are kind of trailing along behind you. You guys have quite a big group at this point."
+    },
+    {
+      "index": 844,
+      "speaker": "Game Master",
+      "text": "Um, there are four statues, each of them are about eight feet tall, one in each corner of the room. And each statue is a knight, with a different word etched into the base."
+    },
+    {
+      "index": 845,
+      "speaker": "Trout",
+      "text": "Oh, its the four Knights."
+    },
+    {
+      "index": 846,
+      "speaker": "Sir Phidipaldi",
+      "text": "So is one of them giant?"
+    },
+    {
+      "index": 847,
+      "speaker": "Game Master",
+      "text": "Uh, one of them is giant. He is, uh, um, gripping a sword and a shield and underneath, uh, his statue, it says Valor."
+    },
+    {
+      "index": 848,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, hold on statues."
+    },
+    {
+      "index": 849,
+      "speaker": "Trout",
+      "text": "So thats Alfred."
+    },
+    {
+      "index": 850,
+      "speaker": "Sir Phidipaldi",
+      "text": "Alfred."
+    },
+    {
+      "index": 851,
+      "speaker": "Trout",
+      "text": "And can you describe the other ones? Theres a mir like a."
+    },
+    {
+      "index": 852,
+      "speaker": "Game Master",
+      "text": "The next one is."
+    },
+    {
+      "index": 853,
+      "speaker": "Game Master",
+      "text": "A A statue with a staff cradled in the arm hands clapped in prayer and says Piety."
+    },
+    {
+      "index": 854,
+      "speaker": "Unassigned Speaker",
+      "text": "So thats M. Myrddin."
+    },
+    {
+      "index": 855,
+      "speaker": "Trout",
+      "text": "Myrddin Okay."
+    },
+    {
+      "index": 856,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hold on Myrddin Piety, Yeah."
+    },
+    {
+      "index": 857,
+      "speaker": "Game Master",
+      "text": "Um, uh, the third one is somebody reading from an open book."
+    },
+    {
+      "index": 858,
+      "speaker": "Game Master",
+      "text": "And it says wisdom at the bottom."
+    },
+    {
+      "index": 859,
+      "speaker": "Sir Phidipaldi",
+      "text": "So thats probably Brandon."
+    },
+    {
+      "index": 860,
+      "speaker": "Game Master",
+      "text": "The fourth statue says duty as in duty."
+    },
+    {
+      "index": 861,
+      "speaker": "Dr Uriah",
+      "text": "The crossed off the O above the H."
+    },
+    {
+      "index": 862,
+      "speaker": "Game Master",
+      "text": "Exactly at the bottom and its the figure is bent over carrying a heavy load."
+    },
+    {
+      "index": 863,
+      "speaker": "Dr Uriah",
+      "text": "Is that like a axe?"
+    },
+    {
+      "index": 864,
+      "speaker": "Trout",
+      "text": "Wyllt."
+    },
+    {
+      "index": 865,
+      "speaker": "Game Master",
+      "text": "Uh, maybe, uh, yeah, its just like a like, you know, a bunch of like indeterminate kind of like heavy objects, um?"
+    },
+    {
+      "index": 866,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sorry, and the one that said wisdom was reading."
+    },
+    {
+      "index": 867,
+      "speaker": "Game Master",
+      "text": "Uh, yes, reading from an open book."
+    },
+    {
+      "index": 868,
+      "speaker": "Trout",
+      "text": "So these are all just solid stone statues."
+    },
+    {
+      "index": 869,
+      "speaker": "Game Master",
+      "text": "Solid stone statues."
+    },
+    {
+      "index": 870,
+      "speaker": "Trout",
+      "text": "The plinth, too."
+    },
+    {
+      "index": 871,
+      "speaker": "Game Master",
+      "text": "Yep, exactly."
+    },
+    {
+      "index": 872,
+      "speaker": "Trout",
+      "text": "Nothing fancy or movable or anything."
+    },
+    {
+      "index": 873,
+      "speaker": "Trout",
+      "text": "So these could also maybe be like words what to say to get them to stop?"
+    },
+    {
+      "index": 874,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, the question is, is this clues to a puzzle, or is it a puzzle?"
+    },
+    {
+      "index": 875,
+      "speaker": "Game Master",
+      "text": "You hear a sound of dripping water."
+    },
+    {
+      "index": 876,
+      "speaker": "Game Master",
+      "text": "There is a little bit of an opening, uh, in, like the northwest of the room."
+    },
+    {
+      "index": 877,
+      "speaker": "Trout",
+      "text": "At least ano another opportunity for, um, door searching. Perhaps I was about to say, Do I do? We passively know of a secret door here."
+    },
+    {
+      "index": 878,
+      "speaker": "Game Master",
+      "text": "Uh, no, you. I guess I have to roll, even if theres nothing."
+    },
+    {
+      "index": 879,
+      "speaker": "Game Master",
+      "text": "Uh, just to make sure to keep the illusion."
+    },
+    {
+      "index": 880,
+      "speaker": "Waymon Tisdale",
+      "text": "If I could hear water dripping."
+    },
+    {
+      "index": 881,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, can I use my aquatic vision with tide sense?"
+    },
+    {
+      "index": 882,
+      "speaker": "Dr Uriah",
+      "text": "To know the the providence of the water where it coming from."
+    },
+    {
+      "index": 883,
+      "speaker": "Game Master",
+      "text": "Yeah, um, okay, I guess I could give you something like that. Uh, lets say."
+    },
+    {
+      "index": 884,
+      "speaker": "Waymon Tisdale",
+      "text": "I didnt write down what, either."
+    },
+    {
+      "index": 885,
+      "speaker": "Dr Uriah",
+      "text": "I think tide sense is is sounds f I didnt write it down either. Its the only one I wrote nothing about."
+    },
+    {
+      "index": 886,
+      "speaker": "Game Master",
+      "text": "Sound sounds like its coming from a ceiling from the ceiling."
+    },
+    {
+      "index": 887,
+      "speaker": "Dr Uriah",
+      "text": "Its like aquatic vision. I think I can understand what that means, you know?"
+    },
+    {
+      "index": 888,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, are you saying that there is a path to the Northwest or theres just a dripping sound from the northwest corner?"
+    },
+    {
+      "index": 889,
+      "speaker": "Game Master",
+      "text": "Its its like a a room that is like attached to it."
+    },
+    {
+      "index": 890,
+      "speaker": "Game Master",
+      "text": "Like, like, think of it like, Um, the way the bathrooms attached to this like room, its like, Yeah, theres like a little bit of a hallway, but not like a deep hallway."
+    },
+    {
+      "index": 891,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, great, all right, I walk, I walk in."
+    },
+    {
+      "index": 892,
+      "speaker": "Waymon Tisdale",
+      "text": "An en suite."
+    },
+    {
+      "index": 893,
+      "speaker": "Game Master",
+      "text": "An en suite, yes."
+    },
+    {
+      "index": 894,
+      "speaker": "Game Master",
+      "text": "Um, s theres some s its a small room."
+    },
+    {
+      "index": 895,
+      "speaker": "Game Master",
+      "text": "Uh, about like, 15 by 15."
+    },
+    {
+      "index": 896,
+      "speaker": "Game Master",
+      "text": "Theres a bunch of stone pews in there."
+    },
+    {
+      "index": 897,
+      "speaker": "Game Master",
+      "text": "Uh, that, like, are just disintegrating."
+    },
+    {
+      "index": 898,
+      "speaker": "Game Master",
+      "text": "And at the foot of the At at the front of the room, theres a moldy statue of St. Arthur. Um, St. Arthur, Um, Uriah, you know, quite a bit about St. Arthur. He is the patron of hunters. Um, so this is a hes, a bearded man with a spear, um, and a patch of mold is growing over the statues base. Um, and then, uh, waters dripping from the ceiling kind of like onto the statue."
+    },
+    {
+      "index": 899,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, sure."
+    },
+    {
+      "index": 900,
+      "speaker": "Game Master",
+      "text": "Which is kind of like where the mold?"
+    },
+    {
+      "index": 901,
+      "speaker": "Sir Phidipaldi",
+      "text": "Where the moss is coming from, yep, sure."
+    },
+    {
+      "index": 902,
+      "speaker": "Game Master",
+      "text": "Yeah, right, um, so this is, obviously, you know, a barrow mound, and then this part had like A."
+    },
+    {
+      "index": 903,
+      "speaker": "Sir Phidipaldi",
+      "text": "Chapel."
+    },
+    {
+      "index": 904,
+      "speaker": "Game Master",
+      "text": "Little Chapel."
+    },
+    {
+      "index": 905,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, exactly."
+    },
+    {
+      "index": 906,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hmm, okay, ill clear the Moss off his face."
+    },
+    {
+      "index": 907,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, I was just about to do that."
+    },
+    {
+      "index": 908,
+      "speaker": "Game Master",
+      "text": "All right, I want, uh, so w as you go to touch it."
+    },
+    {
+      "index": 909,
+      "speaker": "Game Master",
+      "text": "Um, a spore cloud kind of like."
+    },
+    {
+      "index": 910,
+      "speaker": "Sir Phidipaldi",
+      "text": "Awesome."
+    },
+    {
+      "index": 911,
+      "speaker": "Game Master",
+      "text": "Shoots out in the."
+    },
+    {
+      "index": 912,
+      "speaker": "Game Master",
+      "text": "Sir Phidipali's face."
+    },
+    {
+      "index": 913,
+      "speaker": "Game Master",
+      "text": "Um, and, uh, I want you to save versus poison right now."
+    },
+    {
+      "index": 914,
+      "speaker": "Waymon Tisdale",
+      "text": "I should have detected poison for you."
+    },
+    {
+      "index": 915,
+      "speaker": "Waymon Tisdale",
+      "text": "Thats okay, thats all right, all right."
+    },
+    {
+      "index": 916,
+      "speaker": "Sir Phidipaldi",
+      "text": "My saving throw is a 12."
+    },
+    {
+      "index": 917,
+      "speaker": "Game Master",
+      "text": "Okay, so you are trying to roll what a 12 or under, I believe."
+    },
+    {
+      "index": 918,
+      "speaker": "Unassigned Speaker",
+      "text": "I do not remember."
+    },
+    {
+      "index": 919,
+      "speaker": "Unassigned Speaker",
+      "text": "Well, let us look, uh."
+    },
+    {
+      "index": 920,
+      "speaker": "Sir Phidipaldi",
+      "text": "I want to say its a roll over."
+    },
+    {
+      "index": 921,
+      "speaker": "Game Master",
+      "text": "It might be a roll over. Everything else seems to be so, um."
+    },
+    {
+      "index": 922,
+      "speaker": "Dr Uriah",
+      "text": "Make sure I have I have poison, uh, protection. I mean, not a bad."
+    },
+    {
+      "index": 923,
+      "speaker": "Game Master",
+      "text": "You know what, L? The best way for me to look is that, yep, saving throw goes down as you go up."
+    },
+    {
+      "index": 924,
+      "speaker": "Game Master",
+      "text": "As you go up in level."
+    },
+    {
+      "index": 925,
+      "speaker": "Game Master",
+      "text": "So youre right, its a roll over at it, hit it or over."
+    },
+    {
+      "index": 926,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so 12 or over."
+    },
+    {
+      "index": 927,
+      "speaker": "Game Master",
+      "text": "You got it great, um, you take no damage."
+    },
+    {
+      "index": 928,
+      "speaker": "Game Master",
+      "text": "Uh, as this spore cloud disperses, but you feel blessed."
+    },
+    {
+      "index": 929,
+      "speaker": "Game Master",
+      "text": "You are gonna get plus one."
+    },
+    {
+      "index": 930,
+      "speaker": "Game Master",
+      "text": "To all of your rolls."
+    },
+    {
+      "index": 931,
+      "speaker": "Game Master",
+      "text": "While in this barrow mound for the rest of the barrow mound adventure."
+    },
+    {
+      "index": 932,
+      "speaker": "Game Master",
+      "text": "And youve been blessed by cause you cleaned St. Arthur."
+    },
+    {
+      "index": 933,
+      "speaker": "Sir Phidipaldi",
+      "text": "I did."
+    },
+    {
+      "index": 934,
+      "speaker": "Game Master",
+      "text": "Absolutely, um, those are all the rooms on this floor."
+    },
+    {
+      "index": 935,
+      "speaker": "Game Master",
+      "text": "That you guys have seen the, UH, back in the Goblin room, there are stairs that go down."
+    },
+    {
+      "index": 936,
+      "speaker": "Trout",
+      "text": "I think were gonna head for, Uh, go forward, whos our lead, uh s um, Scout."
+    },
+    {
+      "index": 937,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, I can do that."
+    },
+    {
+      "index": 938,
+      "speaker": "Dr Uriah",
+      "text": "I do."
+    },
+    {
+      "index": 939,
+      "speaker": "Game Master",
+      "text": "All right, Ned and Wade."
+    },
+    {
+      "index": 940,
+      "speaker": "Dr Uriah",
+      "text": "And you have you have a buddy in case you need a backup."
+    },
+    {
+      "index": 941,
+      "speaker": "Game Master",
+      "text": "So you guys head down the stairs."
+    },
+    {
+      "index": 942,
+      "speaker": "Dr Uriah",
+      "text": "Checking for traps?"
+    },
+    {
+      "index": 943,
+      "speaker": "Game Master",
+      "text": "And Waymon"
+    },
+    {
+      "index": 944,
+      "speaker": "Unassigned Speaker",
+      "text": "Always."
+    },
+    {
+      "index": 945,
+      "speaker": "Dr Uriah",
+      "text": "Checking for traps, Looking for doors?"
+    },
+    {
+      "index": 946,
+      "speaker": "Game Master",
+      "text": "And as you go down the stairs, you hit a what looks like a long corridor. You could see it kind of going off in the distance and right. At the bottom of the stairs are the bodies of three goblins in bloody pieces at the bottom of the stairs. Um, the walls and ceiling uh of the hall, drip with condensation, icy mist and, uh, viscera, obviously."
+    },
+    {
+      "index": 947,
+      "speaker": "Waymon Tisdale",
+      "text": "Does drop dead? Ned accept bodies that he didnt kill?"
+    },
+    {
+      "index": 948,
+      "speaker": "Game Master",
+      "text": "Why dont you ask him?"
+    },
+    {
+      "index": 949,
+      "speaker": "Waymon Tisdale",
+      "text": "Drop dead, Ned."
+    },
+    {
+      "index": 950,
+      "speaker": "Dr Uriah",
+      "text": "What, What up, pal?"
+    },
+    {
+      "index": 951,
+      "speaker": "Game Master",
+      "text": "There you go."
+    },
+    {
+      "index": 952,
+      "speaker": "Waymon Tisdale",
+      "text": "You want those goblins?"
+    },
+    {
+      "index": 953,
+      "speaker": "Dr Uriah",
+      "text": "Ah, heres what ill do ill cut yous a deal ill? Take half off five gold pieces for dead bodies."
+    },
+    {
+      "index": 954,
+      "speaker": "Waymon Tisdale",
+      "text": "Seems fair."
+    },
+    {
+      "index": 955,
+      "speaker": "Waymon Tisdale",
+      "text": "All right, great."
+    },
+    {
+      "index": 956,
+      "speaker": "Game Master",
+      "text": "Uh, you will have to. If you want Ned to get them, youre gonna have to sneak them past the goblin. Because obviously I dont think they want their compatriots. Uh, defiled by Ned, so its."
+    },
+    {
+      "index": 957,
+      "speaker": "Dr Uriah",
+      "text": "Oh, Hohoho, who said anything about Defilement, Buddy?"
+    },
+    {
+      "index": 958,
+      "speaker": "Game Master",
+      "text": "You know what, I dont think that.ll give them a proper goblin burial."
+    },
+    {
+      "index": 959,
+      "speaker": "Waymon Tisdale",
+      "text": "Im sure Youve got some some body bags on them."
+    },
+    {
+      "index": 960,
+      "speaker": "Game Master",
+      "text": "So its."
+    },
+    {
+      "index": 961,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, a its a bag of holding its full of bodies."
+    },
+    {
+      "index": 962,
+      "speaker": "Game Master",
+      "text": "All right, the S The the corridor is, um, gravely chill its cold, wet air, its like sticking to your skin. Uh, like, Um, kinda like, just like a weird cold sweat."
+    },
+    {
+      "index": 963,
+      "speaker": "Game Master",
+      "text": "Um, it looked like the. When you look at the bodies of the Goblins, it looks like they were killed. Running towards the stairs like the stairs. You just came down, so they were kind of like their bodies."
+    },
+    {
+      "index": 964,
+      "speaker": "Waymon Tisdale",
+      "text": "Running back."
+    },
+    {
+      "index": 965,
+      "speaker": "Game Master",
+      "text": "Like they were facing, Yeah."
+    },
+    {
+      "index": 966,
+      "speaker": "Game Master",
+      "text": "They were like, Oh God, we gotta get out of here, right?"
+    },
+    {
+      "index": 967,
+      "speaker": "Sir Phidipaldi",
+      "text": "What kind of wounds do they have?"
+    },
+    {
+      "index": 968,
+      "speaker": "Game Master",
+      "text": "Uh uh, sword wounds like it looks like they were, uh."
+    },
+    {
+      "index": 969,
+      "speaker": "Waymon Tisdale",
+      "text": "Okay, dismemberment."
+    },
+    {
+      "index": 970,
+      "speaker": "Game Master",
+      "text": "Dismemberment, exactly. Mist is seeping in through the cracks in the walls and the ceiling, falling in kinda like slow, gaseous streams like along the ground. You can kind of just like mist along the ground. And then what you can see as youre as you move forward a little bit with your your lantern is along the wall. Um, there are these religious carvings of, uh, animals being pursued by hunters running through the forest. And these are the kind of, um, uh, stylized swirl patterns that you would."
+    },
+    {
+      "index": 971,
+      "speaker": "Game Master",
+      "text": "See in kind of like older. Um uh, religious carvings, um? And its one continuous scene that seems to be running the length of the corridor of like, you know, these kind of, Um, uh."
+    },
+    {
+      "index": 972,
+      "speaker": "Game Master",
+      "text": "Hunting scenes."
+    },
+    {
+      "index": 973,
+      "speaker": "Game Master",
+      "text": "Hunting scenes Um, you hear all the way down the hallway. It sounds like theres some sort of sounds like all the way down there."
+    },
+    {
+      "index": 974,
+      "speaker": "Game Master",
+      "text": "But as you as you walk just 15 feet in, there is a room branching off to your left."
+    },
+    {
+      "index": 975,
+      "speaker": "Sir Phidipaldi",
+      "text": "Which way does the corridor run?"
+    },
+    {
+      "index": 976,
+      "speaker": "Game Master",
+      "text": "Uh, this corridor runs you came in from the East."
+    },
+    {
+      "index": 977,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uhhuh and it runs West."
+    },
+    {
+      "index": 978,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so we came from the East and its going West."
+    },
+    {
+      "index": 979,
+      "speaker": "Game Master",
+      "text": "Thats right, and so theres a room thats almost immediately to your south."
+    },
+    {
+      "index": 980,
+      "speaker": "Game Master",
+      "text": "And then theres a long corridor that keeps going to the West, where you hear sounds at the end of it."
+    },
+    {
+      "index": 981,
+      "speaker": "Sir Phidipaldi",
+      "text": "What kind of sounds?"
+    },
+    {
+      "index": 982,
+      "speaker": "Game Master",
+      "text": "Uh, scratching."
+    },
+    {
+      "index": 983,
+      "speaker": "Dr Uriah",
+      "text": "I like how we both have our own little maps."
+    },
+    {
+      "index": 984,
+      "speaker": "Dr Uriah",
+      "text": "That were making."
+    },
+    {
+      "index": 985,
+      "speaker": "Trout",
+      "text": "So, yeah, lets take a look at the room to the South."
+    },
+    {
+      "index": 986,
+      "speaker": "Game Master",
+      "text": "All right, you, you go to the room in the South and you see. A This is quite a large rectangular room. Uh, about, um, 15 by, Uh, 40 or 50 or so."
+    },
+    {
+      "index": 987,
+      "speaker": "Game Master",
+      "text": "Um, theres a circular pool of water built into the floor."
+    },
+    {
+      "index": 988,
+      "speaker": "Game Master",
+      "text": "And globs of green slime are floating on the surface of the water like algae. Um, the glint of gold can be seen at the bottom of the pool."
+    },
+    {
+      "index": 989,
+      "speaker": "Trout",
+      "text": "So Im gonna like, Take my torch walk a bit closer, just kinda like, look at, you know, see if the slime is."
+    },
+    {
+      "index": 990,
+      "speaker": "Unassigned Speaker",
+      "text": "Move to Attack Point."
+    },
+    {
+      "index": 991,
+      "speaker": "Trout",
+      "text": "Have movement."
+    },
+    {
+      "index": 992,
+      "speaker": "Game Master",
+      "text": "Okay, all right, uh, the um, uh um, the, uh. The slimes are not like the the slimes are alive. They definitely like move around a little bit as you get close, but they dont seem to be like."
+    },
+    {
+      "index": 993,
+      "speaker": "Game Master",
+      "text": "Skittering away from like the heat or whatever, um."
+    },
+    {
+      "index": 994,
+      "speaker": "Trout",
+      "text": "Theyll be in danger."
+    },
+    {
+      "index": 995,
+      "speaker": "Waymon Tisdale",
+      "text": "Would the slime?"
+    },
+    {
+      "index": 996,
+      "speaker": "Waymon Tisdale",
+      "text": "Would those slimes could be considered, uh, aquatic animals?"
+    },
+    {
+      "index": 997,
+      "speaker": "Sir Phidipaldi",
+      "text": "I think they would."
+    },
+    {
+      "index": 998,
+      "speaker": "Sir Phidipaldi",
+      "text": "Well, theyre aquatic."
+    },
+    {
+      "index": 999,
+      "speaker": "Sir Phidipaldi",
+      "text": "The question is, Are they animals?"
+    },
+    {
+      "index": 1000,
+      "speaker": "Game Master",
+      "text": "They are aquatic. I will G, I will grant you that these are aquatic animals."
+    },
+    {
+      "index": 1001,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh my God, let me let me talk to that slime, Oh my God."
+    },
+    {
+      "index": 1002,
+      "speaker": "Dr Uriah",
+      "text": "Talking to that slime slime time."
+    },
+    {
+      "index": 1003,
+      "speaker": "Game Master",
+      "text": "All right, here we go."
+    },
+    {
+      "index": 1004,
+      "speaker": "Dr Uriah",
+      "text": "Slime talk."
+    },
+    {
+      "index": 1005,
+      "speaker": "Dr Uriah",
+      "text": "My favorite, My favorite podcast."
+    },
+    {
+      "index": 1006,
+      "speaker": "Sir Phidipaldi",
+      "text": "I I have actually never developed a slime voice. Im very interested, Jason, in what you do here."
+    },
+    {
+      "index": 1007,
+      "speaker": "Game Master",
+      "text": "I didn.t come in its nothing."
+    },
+    {
+      "index": 1008,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its awesome thank you that.s awesome."
+    },
+    {
+      "index": 1009,
+      "speaker": "Sir Phidipaldi",
+      "text": "Im gonna do it."
+    },
+    {
+      "index": 1010,
+      "speaker": "Waymon Tisdale",
+      "text": "Hows it going, Fountain, guys?"
+    },
+    {
+      "index": 1011,
+      "speaker": "Game Master",
+      "text": "Oh, hanging out its, Uh."
+    },
+    {
+      "index": 1012,
+      "speaker": "Dr Uriah",
+      "text": "This is the rest of the eldest that IM concerned were camping out."
+    },
+    {
+      "index": 1013,
+      "speaker": "Unassigned Speaker",
+      "text": "Everybody."
+    },
+    {
+      "index": 1014,
+      "speaker": "Dr Uriah",
+      "text": "Getting to know our slime friends?"
+    },
+    {
+      "index": 1015,
+      "speaker": "Waymon Tisdale",
+      "text": "Bring out your lunches. Uh, my friends and I, we just came here to, Uh, were were tracing the journey of Sir Brandon to."
+    },
+    {
+      "index": 1016,
+      "speaker": "Dr Uriah",
+      "text": "Oh yeah, big fans over here."
+    },
+    {
+      "index": 1017,
+      "speaker": "Waymon Tisdale",
+      "text": "Were fans. And, uh, you know, this is a very important place in his glorious journey to to Slay the Dragon. So were just trying to learn everything we can about this barrow mound."
+    },
+    {
+      "index": 1018,
+      "speaker": "Game Master",
+      "text": "Oh, I havent left this pool."
+    },
+    {
+      "index": 1019,
+      "speaker": "Waymon Tisdale",
+      "text": "Have you had many visitors?"
+    },
+    {
+      "index": 1020,
+      "speaker": "Game Master",
+      "text": "People goblins. I was a goblin once upon a time I wont."
+    },
+    {
+      "index": 1021,
+      "speaker": "Waymon Tisdale",
+      "text": "What was, Uh, what about the what did the people look like?"
+    },
+    {
+      "index": 1022,
+      "speaker": "Trout",
+      "text": "Oh, that was a long time ago."
+    },
+    {
+      "index": 1023,
+      "speaker": "Waymon Tisdale",
+      "text": "Theres like we heard theres A."
+    },
+    {
+      "index": 1024,
+      "speaker": "Game Master",
+      "text": "Slimes Dont have great memories."
+    },
+    {
+      "index": 1025,
+      "speaker": "Waymon Tisdale",
+      "text": "We heard theres like a really big guy down here."
+    },
+    {
+      "index": 1026,
+      "speaker": "Dr Uriah",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 1027,
+      "speaker": "Waymon Tisdale",
+      "text": "Wheres, Uh, where does he hold up?"
+    },
+    {
+      "index": 1028,
+      "speaker": "Game Master",
+      "text": "He runs around."
+    },
+    {
+      "index": 1029,
+      "speaker": "Game Master",
+      "text": "Killed the Goblin."
+    },
+    {
+      "index": 1030,
+      "speaker": "Waymon Tisdale",
+      "text": "Is, uh, what? Whats his deal? He is half dead, very mad. I dont know hes dead a slime, so he hes dead. Yeah, but but hes still hes Hes undead Ive never talked to anyone before this youre doing great. Oh thank you, yeah, you.re doing a great job, youre a natural fine. Talk a little for us, thats too bad. I can talk. This place is pretty cool. Ask him Whats in the pool."
+    },
+    {
+      "index": 1031,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, ask if we can get the gold."
+    },
+    {
+      "index": 1032,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh yeah, we couldnt help, but notice is there is this your gold in the pool? Oh no, says you mind. If we take it, uh, go ahead."
+    },
+    {
+      "index": 1033,
+      "speaker": "Game Master",
+      "text": "Okay, so you are talking to a slime."
+    },
+    {
+      "index": 1034,
+      "speaker": "Game Master",
+      "text": "Uh, and."
+    },
+    {
+      "index": 1035,
+      "speaker": "Sir Phidipaldi",
+      "text": "And he said he didnt mind if we took the gold."
+    },
+    {
+      "index": 1036,
+      "speaker": "Dr Uriah",
+      "text": "He said he did not mind if you took the gold. And and we were basically trying to ask, is the Is that water? is it acid? Is it gonna hurt, right? If we grab it? Oh, its fine."
+    },
+    {
+      "index": 1037,
+      "speaker": "Game Master",
+      "text": "Is there a lot of gold? is it coins you cant tell? Is it like you cant tell its? A its? A You know, actually its not that deep of a pool, its only a fivefoot pool, fivefoot deep pool. Um, so you can actually see at the bottom. Theres a human skeleton with gold teeth, huh?"
+    },
+    {
+      "index": 1038,
+      "speaker": "Game Master",
+      "text": "And hes holding a silver dagger, ooh."
+    },
+    {
+      "index": 1039,
+      "speaker": "Trout",
+      "text": "Squintss, go get me that dagger. Its time for your, your, your swimming merit badge Squintss, Squintss. Uh, says, Uh, can I use one of my tips? Yes, uh, how dont melt when youre in a adventuring party? Uh, like we are here, and you dont wanna do something that somebodys asking you to do. Whats the best way to handle that in a group? Whats your rank in the party? Uh well, I believe that I am Sir Dirks manager. Um, well, in regards to me, who instructed you to go do it, you are subordinate. Yeah, thats true. I yeah, thats true, so that means you have to follow my orders. Yeah, but but then c, could he? Then, like, then he can go down? He like shit, rolls downhill, right?"
+    },
+    {
+      "index": 1040,
+      "speaker": "Sir Phidipaldi",
+      "text": "Delegate."
+    },
+    {
+      "index": 1041,
+      "speaker": "Trout",
+      "text": "You may instruct Dirk if you please ill, call him Dirk. He looks officiously over at Dirk. Get down in that pool and then Dirks like, I dont even know how to swim. And Squintss goes. Its only five feet deep, its not that like."
+    },
+    {
+      "index": 1042,
+      "speaker": "Dr Uriah",
+      "text": "And Squintss. The Slimes also its only five feet deep."
+    },
+    {
+      "index": 1043,
+      "speaker": "Game Master",
+      "text": "Dirk, uh, squats into the pool."
+    },
+    {
+      "index": 1044,
+      "speaker": "Waymon Tisdale",
+      "text": "Oh no, oh, no."
+    },
+    {
+      "index": 1045,
+      "speaker": "Game Master",
+      "text": "Dunks down and comes out with a skull that has, uh, gold teeth and hes like, Uh, May, we could lay, we could lay this. M 156. Yeah, like, very, very specific. Yes, I know, I know everything else has been much broader. Yeah, is the gold tooth worth anything? I mean, the gold teeth are worth 20. Oh, okay, um, anything else you wanna do, uh? And so the other thing is, in the slime pool room, there is a, um, uh, an antecove off to the West. And, um, and, uh, Waymond, you, you sense something you."
+    },
+    {
+      "index": 1046,
+      "speaker": "Waymon Tisdale",
+      "text": "What do I sense?"
+    },
+    {
+      "index": 1047,
+      "speaker": "Game Master",
+      "text": "As you look around the room."
+    },
+    {
+      "index": 1048,
+      "speaker": "Game Master",
+      "text": "Uh, you notice an incongruous groove in the stone, uh of the."
+    },
+    {
+      "index": 1049,
+      "speaker": "Waymon Tisdale",
+      "text": "Sick, sick beats."
+    },
+    {
+      "index": 1050,
+      "speaker": "Game Master",
+      "text": "Of the Um, on the southern part of the room."
+    },
+    {
+      "index": 1051,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, in the floor."
+    },
+    {
+      "index": 1052,
+      "speaker": "Game Master",
+      "text": "No, no, its on the its on the wall."
+    },
+    {
+      "index": 1053,
+      "speaker": "Waymon Tisdale",
+      "text": "On the wall."
+    },
+    {
+      "index": 1054,
+      "speaker": "Game Master",
+      "text": "Yeah, like a groove in the stone in the wall like a."
+    },
+    {
+      "index": 1055,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, yeah, like a hidden, open, hidden door."
+    },
+    {
+      "index": 1056,
+      "speaker": "Waymon Tisdale",
+      "text": "Go, uh, go, peep that."
+    },
+    {
+      "index": 1057,
+      "speaker": "Game Master",
+      "text": "Yeah, you look at it. And you think that if you had like a crowbar or some sort of tool, that could wrench it, that you could open up something something else. Oh, I bet you got that."
+    },
+    {
+      "index": 1058,
+      "speaker": "Unassigned Speaker",
+      "text": "CROWBAR No, definitely. One of us has a crowbar."
+    },
+    {
+      "index": 1059,
+      "speaker": "Dr Uriah",
+      "text": "Well, who has the thiefs? Tools, cause the crowbar and and?"
+    },
+    {
+      "index": 1060,
+      "speaker": "Waymon Tisdale",
+      "text": "My other characters, a thief, um?"
+    },
+    {
+      "index": 1061,
+      "speaker": "Dr Uriah",
+      "text": "Uh um, this guys, a do you have a crowbar?"
+    },
+    {
+      "index": 1062,
+      "speaker": "Waymon Tisdale",
+      "text": "We dont I have, um, a whetstone and a dagger."
+    },
+    {
+      "index": 1063,
+      "speaker": "Unassigned Speaker",
+      "text": "MM Now I would make the argument go ahead that that we do have drop dead. Ned here, who is a a thief, a thief by trade, who you would assume would also come with thief tools. I I, I would ill ill roll with that story. So he hands you, he hands you a crowbar. Okay, you, uh, crack it open and you see that theres a sh, um, a a small like fivefoot or so passage that goes to the South that just ends in a blank wall. But obviously you can tell that if you just pushed on that, you can open up onto the other side. Um, so I assume youre gonna open that up as well."
+    },
+    {
+      "index": 1064,
+      "speaker": "Waymon Tisdale",
+      "text": "I am, but first."
+    },
+    {
+      "index": 1065,
+      "speaker": "Waymon Tisdale",
+      "text": "Im gonna check for traps."
+    },
+    {
+      "index": 1066,
+      "speaker": "Game Master",
+      "text": "Go a all right, um uh, lets see here."
+    },
+    {
+      "index": 1067,
+      "speaker": "Waymon Tisdale",
+      "text": "Cause if I were gonna put a trap somewhere, this would be a good place for it."
+    },
+    {
+      "index": 1068,
+      "speaker": "Dr Uriah",
+      "text": "Absolutely, yeah, um, the room before the room."
+    },
+    {
+      "index": 1069,
+      "speaker": "Game Master",
+      "text": "Right, uh, you do not detect any traps."
+    },
+    {
+      "index": 1070,
+      "speaker": "Game Master",
+      "text": "Okay, all right, you open up the door."
+    },
+    {
+      "index": 1071,
+      "speaker": "Waymon Tisdale",
+      "text": "Wait before I open the door."
+    },
+    {
+      "index": 1072,
+      "speaker": "Game Master",
+      "text": "Go ahead."
+    },
+    {
+      "index": 1073,
+      "speaker": "Waymon Tisdale",
+      "text": "Can I, uh, kind of put my ear?"
+    },
+    {
+      "index": 1074,
+      "speaker": "Game Master",
+      "text": "Yeah."
+    },
+    {
+      "index": 1075,
+      "speaker": "Waymon Tisdale",
+      "text": "Near it, do I hear anything?"
+    },
+    {
+      "index": 1076,
+      "speaker": "Game Master",
+      "text": "Uh, you do not."
+    },
+    {
+      "index": 1077,
+      "speaker": "Waymon Tisdale",
+      "text": "Can hear an angry undead giant stirring."
+    },
+    {
+      "index": 1078,
+      "speaker": "Game Master",
+      "text": "You do not hear anything like that."
+    },
+    {
+      "index": 1079,
+      "speaker": "Waymon Tisdale",
+      "text": "Okay, then ill open the door."
+    },
+    {
+      "index": 1080,
+      "speaker": "Game Master",
+      "text": "Okay, you open the door, it creaks open and you see a, uh, room thats about, Um, uh, 20 by 15 ri this r rectangular room, uh. And theres a statue of a noble woman in the center of the room and shes holding a sword horizontally in front of her. And with her, uh, proud eyes. Looking down before her and flush with the wall behind her is a closed set of stone doors."
+    },
+    {
+      "index": 1081,
+      "speaker": "Waymon Tisdale",
+      "text": "The noble woman holding a sword."
+    },
+    {
+      "index": 1082,
+      "speaker": "Game Master",
+      "text": "Yeah, like that."
+    },
+    {
+      "index": 1083,
+      "speaker": "Sir Phidipaldi",
+      "text": "Horizontal."
+    },
+    {
+      "index": 1084,
+      "speaker": "Trout",
+      "text": "And the s the sword is stone."
+    },
+    {
+      "index": 1085,
+      "speaker": "Game Master",
+      "text": "Uh, yes, the."
+    },
+    {
+      "index": 1086,
+      "speaker": "Unassigned Speaker",
+      "text": "The."
+    },
+    {
+      "index": 1087,
+      "speaker": "Game Master",
+      "text": "The the yeah, its, its, yeah, its a its like a statue like a stone statue, yeah."
+    },
+    {
+      "index": 1088,
+      "speaker": "Sir Phidipaldi",
+      "text": "It does it look like shes looking at the sword or shes looking past the sword."
+    },
+    {
+      "index": 1089,
+      "speaker": "Game Master",
+      "text": "Shes looking down."
+    },
+    {
+      "index": 1090,
+      "speaker": "Game Master",
+      "text": "Like, kind of like like this a little bit."
+    },
+    {
+      "index": 1091,
+      "speaker": "Sir Phidipaldi",
+      "text": "I see, okay."
+    },
+    {
+      "index": 1092,
+      "speaker": "Waymon Tisdale",
+      "text": "But clearly pointing at the stone doors."
+    },
+    {
+      "index": 1093,
+      "speaker": "Game Master",
+      "text": "Yes, yeah."
+    },
+    {
+      "index": 1094,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, I mean i'll Check for traps again."
+    },
+    {
+      "index": 1095,
+      "speaker": "Game Master",
+      "text": "MMHmm Uh, where?"
+    },
+    {
+      "index": 1096,
+      "speaker": "Waymon Tisdale",
+      "text": "At the doors."
+    },
+    {
+      "index": 1097,
+      "speaker": "Game Master",
+      "text": "At the doors, yeah, absolutely."
+    },
+    {
+      "index": 1098,
+      "speaker": "Waymon Tisdale",
+      "text": "Is there anything on the statue there, any writing or anything notable?"
+    },
+    {
+      "index": 1099,
+      "speaker": "Game Master",
+      "text": "Uh, no, you see that the, um, theres nothing, theres nothing on the stone doors that you see that like appears to be a trap."
+    },
+    {
+      "index": 1100,
+      "speaker": "Waymon Tisdale",
+      "text": "And theres nothing else in the room but the statue."
+    },
+    {
+      "index": 1101,
+      "speaker": "Game Master",
+      "text": "Yeah, thats right."
+    },
+    {
+      "index": 1102,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats right, so."
+    },
+    {
+      "index": 1103,
+      "speaker": "Sir Phidipaldi",
+      "text": "And is it a really realistic statue?"
+    },
+    {
+      "index": 1104,
+      "speaker": "Game Master",
+      "text": "Yeah, looks like it looks like it. I mean, not, no, no. It doesnt look like its like a person thats been like its A statue."
+    },
+    {
+      "index": 1105,
+      "speaker": "Sir Phidipaldi",
+      "text": "Turned to stone."
+    },
+    {
+      "index": 1106,
+      "speaker": "Unassigned Speaker",
+      "text": "Its like a stylized statue."
+    },
+    {
+      "index": 1107,
+      "speaker": "Trout",
+      "text": "How and how big are the doors like Theyre really like?"
+    },
+    {
+      "index": 1108,
+      "speaker": "Game Master",
+      "text": "Yeah, theyre large, they take up like the whole kinda like side of the room."
+    },
+    {
+      "index": 1109,
+      "speaker": "Trout",
+      "text": "Cause it could be like this is the tomb where Brandons body is, or something like that like it."
+    },
+    {
+      "index": 1110,
+      "speaker": "Game Master",
+      "text": "Could be."
+    },
+    {
+      "index": 1111,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, um."
+    },
+    {
+      "index": 1112,
+      "speaker": "Waymon Tisdale",
+      "text": "Do we know, uh, there was there a noble woman mentioned in any of the?"
+    },
+    {
+      "index": 1113,
+      "speaker": "Sir Phidipaldi",
+      "text": "Not that I know of No, I, I dont have any recollection of that. Um, would we know if Wyllt or Merdan were women?"
+    },
+    {
+      "index": 1114,
+      "speaker": "Game Master",
+      "text": "Uh, they wouldve looked like women on the, uh on the murals."
+    },
+    {
+      "index": 1115,
+      "speaker": "Game Master",
+      "text": "That you saw."
+    },
+    {
+      "index": 1116,
+      "speaker": "Sir Phidipaldi",
+      "text": "And."
+    },
+    {
+      "index": 1117,
+      "speaker": "Game Master",
+      "text": "Uh, they did not."
+    },
+    {
+      "index": 1118,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, okay."
+    },
+    {
+      "index": 1119,
+      "speaker": "Waymon Tisdale",
+      "text": "And we already saw the statues of them."
+    },
+    {
+      "index": 1120,
+      "speaker": "Game Master",
+      "text": "Yeah, um, as youre looking around the room, when you get close to the statue you hear and this is to Wayman. You hear a female voice in your head say, What makes a true knight?"
+    },
+    {
+      "index": 1121,
+      "speaker": "Trout",
+      "text": "Valor."
+    },
+    {
+      "index": 1122,
+      "speaker": "Waymon Tisdale",
+      "text": "Great question."
+    },
+    {
+      "index": 1123,
+      "speaker": "Sir Phidipaldi",
+      "text": "Du duty."
+    },
+    {
+      "index": 1124,
+      "speaker": "Dr Uriah",
+      "text": "Well, thats so Thats Wyllt was carrying the thing and thats duty and."
+    },
+    {
+      "index": 1125,
+      "speaker": "Waymon Tisdale",
+      "text": "Alfred was valor."
+    },
+    {
+      "index": 1126,
+      "speaker": "Dr Uriah",
+      "text": "Alfred was carrying the sword and she has a sword, right?"
+    },
+    {
+      "index": 1127,
+      "speaker": "Dr Uriah",
+      "text": "So, like his thing is valor. Uh, Brandon was reading, and his thing is wisdom. And Myrddin was piety, and I dont know if he was actually in any kind of position, I dont know."
+    },
+    {
+      "index": 1128,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I and I think he was more priesty than he was piety."
+    },
+    {
+      "index": 1129,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, yeah, Ma, Oh yeah, hes totally priesty."
+    },
+    {
+      "index": 1130,
+      "speaker": "Trout",
+      "text": "So the true Knight IM assuming Warrior like so, is Valor the right guess?"
+    },
+    {
+      "index": 1131,
+      "speaker": "Sir Phidipaldi",
+      "text": "I my guess is duty, but I get richs analysis. I think that theres like that, that seems fair."
+    },
+    {
+      "index": 1132,
+      "speaker": "Game Master",
+      "text": "Sir Dirk is fawning at the statue Hes like its beautiful, but he doesnt he doesnt know who the statue is either."
+    },
+    {
+      "index": 1133,
+      "speaker": "Trout",
+      "text": "Okay, I think we should try one of the the word we saw on the statues upstairs."
+    },
+    {
+      "index": 1134,
+      "speaker": "Game Master",
+      "text": "Yeah, all of you at this point are hearing in your head what makes a true knight."
+    },
+    {
+      "index": 1135,
+      "speaker": "Waymon Tisdale",
+      "text": "Ill, say Valor."
+    },
+    {
+      "index": 1136,
+      "speaker": "Trout",
+      "text": "Nothing happens."
+    },
+    {
+      "index": 1137,
+      "speaker": "Dr Uriah",
+      "text": "Duty."
+    },
+    {
+      "index": 1138,
+      "speaker": "Unassigned Speaker",
+      "text": "Nothing happens."
+    },
+    {
+      "index": 1139,
+      "speaker": "Unassigned Speaker",
+      "text": "Wisdom."
+    },
+    {
+      "index": 1140,
+      "speaker": "Game Master",
+      "text": "Nothing happens."
+    },
+    {
+      "index": 1141,
+      "speaker": "Dr Uriah",
+      "text": "Piety."
+    },
+    {
+      "index": 1142,
+      "speaker": "Game Master",
+      "text": "You said All four, now, the doors open, the doors."
+    },
+    {
+      "index": 1143,
+      "speaker": "Waymon Tisdale",
+      "text": "Wow, how is this?"
+    },
+    {
+      "index": 1144,
+      "speaker": "Game Master",
+      "text": "The doors to the south crack open and inside you, you havent entered the room yet, but you can see as like the doors like automatically open."
+    },
+    {
+      "index": 1145,
+      "speaker": "Game Master",
+      "text": "There is a, uh, the room is dominated by a wooden dragonheaded ship. Uh, like a big like."
+    },
+    {
+      "index": 1146,
+      "speaker": "Game Master",
+      "text": "Wooden carving thats inside of the room."
+    },
+    {
+      "index": 1147,
+      "speaker": "Sir Phidipaldi",
+      "text": "Like, like theres a W, a sorry, is it life size?"
+    },
+    {
+      "index": 1148,
+      "speaker": "Game Master",
+      "text": "Uh y, yeah, yeah, like its like a um."
+    },
+    {
+      "index": 1149,
+      "speaker": "Sir Phidipaldi",
+      "text": "So, other words, Like a ship."
+    },
+    {
+      "index": 1150,
+      "speaker": "Game Master",
+      "text": "Like a 15 by 15 room with like, a big wooden ship inside of it."
+    },
+    {
+      "index": 1151,
+      "speaker": "Game Master",
+      "text": "But like it, like if you got close, you could like, Look, look in it."
+    },
+    {
+      "index": 1152,
+      "speaker": "Trout",
+      "text": "Its probably, maybe, maybe, like, old Vikings."
+    },
+    {
+      "index": 1153,
+      "speaker": "Trout",
+      "text": "Bury their."
+    },
+    {
+      "index": 1154,
+      "speaker": "Trout",
+      "text": "Dead in a ship, maybe?"
+    },
+    {
+      "index": 1155,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yep."
+    },
+    {
+      "index": 1156,
+      "speaker": "Trout",
+      "text": "Um, so can we? Uh, I cant im too short, but like, is there like a staircase on the side of the ship, or a ladder or something?"
+    },
+    {
+      "index": 1157,
+      "speaker": "Game Master",
+      "text": "Uh, its its enough that you could just peer into it."
+    },
+    {
+      "index": 1158,
+      "speaker": "Game Master",
+      "text": "Um, inside."
+    },
+    {
+      "index": 1159,
+      "speaker": "Unassigned Speaker",
+      "text": "Have a look."
+    },
+    {
+      "index": 1160,
+      "speaker": "Game Master",
+      "text": "In the ship is a stone sarcophagus with a statue on its lid of a knight."
+    },
+    {
+      "index": 1161,
+      "speaker": "Game Master",
+      "text": "Who lies peacefully, as if asleep, clutching a long sword?"
+    },
+    {
+      "index": 1162,
+      "speaker": "Sir Phidipaldi",
+      "text": "But the."
+    },
+    {
+      "index": 1163,
+      "speaker": "Game Master",
+      "text": "Treasures have been meticulously placed around the sarcophagus."
+    },
+    {
+      "index": 1164,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so the slo the sword on the sarcophagus is stone."
+    },
+    {
+      "index": 1165,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, but okay, so."
+    },
+    {
+      "index": 1166,
+      "speaker": "Game Master",
+      "text": "Yes, and and Dirk goes its Sir Brandon himself. We have reached his holy burial place. He bows down, he starts praying."
+    },
+    {
+      "index": 1167,
+      "speaker": "Trout",
+      "text": "Ill. Take a look at some of the treasures around there, anything good and, uh, snatchable."
+    },
+    {
+      "index": 1168,
+      "speaker": "Game Master",
+      "text": "There absolutely are. There are urns, a kite shield and a jeweled chalice."
+    },
+    {
+      "index": 1169,
+      "speaker": "Trout",
+      "text": "A jeweled chalice like, Is it something I can carry?"
+    },
+    {
+      "index": 1170,
+      "speaker": "Game Master",
+      "text": "Absolutely, it is."
+    },
+    {
+      "index": 1171,
+      "speaker": "Trout",
+      "text": "Kind of like, Go over there and pick it up."
+    },
+    {
+      "index": 1172,
+      "speaker": "Game Master",
+      "text": "Dirk As you do so, he looks at you and hes like, surely a gift to the church?"
+    },
+    {
+      "index": 1173,
+      "speaker": "Trout",
+      "text": "Um, well, well, well, figure this stuff out later."
+    },
+    {
+      "index": 1174,
+      "speaker": "Dr Uriah",
+      "text": "Maybe."
+    },
+    {
+      "index": 1175,
+      "speaker": "Game Master",
+      "text": "Write down jeweled Chalice 600 gold pieces."
+    },
+    {
+      "index": 1176,
+      "speaker": "Game Master",
+      "text": "Yeah, you guys are gonna. You can only find a place to sell this shit."
+    },
+    {
+      "index": 1177,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, we could. We just need to unblock those supply routes."
+    },
+    {
+      "index": 1178,
+      "speaker": "Waymon Tisdale",
+      "text": "Need to get out of here alive?"
+    },
+    {
+      "index": 1179,
+      "speaker": "Game Master",
+      "text": "Right."
+    },
+    {
+      "index": 1180,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, okay, so urn urns."
+    },
+    {
+      "index": 1181,
+      "speaker": "Game Master",
+      "text": "Five urns."
+    },
+    {
+      "index": 1182,
+      "speaker": "Game Master",
+      "text": "A kite shield and a jeweled chalice."
+    },
+    {
+      "index": 1183,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, well, why dont we give the kite shield to?"
+    },
+    {
+      "index": 1184,
+      "speaker": "Dr Uriah",
+      "text": "Well, I mean, you, obviously, I mean, youre a shield like, I guess you have twohand, huh?"
+    },
+    {
+      "index": 1185,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yes, no, I have a twohanded sword thats right and a lance."
+    },
+    {
+      "index": 1186,
+      "speaker": "Sir Phidipaldi",
+      "text": "So yeah, kite shields, not gonna help me, uh uh, um, the halflings a warrior Squintss."
+    },
+    {
+      "index": 1187,
+      "speaker": "Game Master",
+      "text": "Yeah, but I I dont think he could hold a A A."
+    },
+    {
+      "index": 1188,
+      "speaker": "Game Master",
+      "text": "Even a small kite shield."
+    },
+    {
+      "index": 1189,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its too big for him."
+    },
+    {
+      "index": 1190,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its too big for him, sure."
+    },
+    {
+      "index": 1191,
+      "speaker": "Game Master",
+      "text": "Probably for the Troll kin, maybe."
+    },
+    {
+      "index": 1192,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, okay, great."
+    },
+    {
+      "index": 1193,
+      "speaker": "Game Master",
+      "text": "I think thats it."
+    },
+    {
+      "index": 1194,
+      "speaker": "Sir Phidipaldi",
+      "text": "Lets do that, yeah."
+    },
+    {
+      "index": 1195,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, all right, I will start opening the Urns."
+    },
+    {
+      "index": 1196,
+      "speaker": "Game Master",
+      "text": "Uh, yeah, they are filled with dust."
+    },
+    {
+      "index": 1197,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, okay, so, uh, ill, let that be."
+    },
+    {
+      "index": 1198,
+      "speaker": "Game Master",
+      "text": "But those urns are worth, uh, 100 gold each, if you wanna take em."
+    },
+    {
+      "index": 1199,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, sorry, urns or like urn."
+    },
+    {
+      "index": 1200,
+      "speaker": "Game Master",
+      "text": "Urn a smaller."
+    },
+    {
+      "index": 1201,
+      "speaker": "Sir Phidipaldi",
+      "text": "Urn Okay."
+    },
+    {
+      "index": 1202,
+      "speaker": "Dr Uriah",
+      "text": "500 gold a piece so that.s 1100 experience point."
+    },
+    {
+      "index": 1203,
+      "speaker": "Dr Uriah",
+      "text": "Right in the sweet spot."
+    },
+    {
+      "index": 1204,
+      "speaker": "Unassigned Speaker",
+      "text": "Curved."
+    },
+    {
+      "index": 1205,
+      "speaker": "Dr Uriah",
+      "text": "Thats right, thats right."
+    },
+    {
+      "index": 1206,
+      "speaker": "Dr Uriah",
+      "text": "Thats that.s gotta be level three now."
+    },
+    {
+      "index": 1207,
+      "speaker": "Sir Phidipaldi",
+      "text": "Rich A. As a guy with a light, can you treasure us?"
+    },
+    {
+      "index": 1208,
+      "speaker": "Unassigned Speaker",
+      "text": "What do you mean?"
+    },
+    {
+      "index": 1209,
+      "speaker": "Dr Uriah",
+      "text": "I mean, can you be Treasurer just?"
+    },
+    {
+      "index": 1210,
+      "speaker": "Dr Uriah",
+      "text": "Oh yeah, yeah, yeah."
+    },
+    {
+      "index": 1211,
+      "speaker": "Sir Phidipaldi",
+      "text": "You can write."
+    },
+    {
+      "index": 1212,
+      "speaker": "Dr Uriah",
+      "text": "No, no, yeah, I got it, I got it."
+    },
+    {
+      "index": 1213,
+      "speaker": "Dr Uriah",
+      "text": "Im writing all this shit down."
+    },
+    {
+      "index": 1214,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, great, all right, so, uh, uh, I will ask Waymond if he will help me. Remove the lid of the sarcophagus. But first, ill. Just check with Dirk and see if Hes needs to say any prayer over it, please."
+    },
+    {
+      "index": 1215,
+      "speaker": "Game Master",
+      "text": "He, he hes finishing the prayer and hes like, We came here for the sword. The sword is what we need to use to, Uh, uh."
+    },
+    {
+      "index": 1216,
+      "speaker": "Game Master",
+      "text": "You open up the sarcophagus. It has the name Brandon engraved on the side of it."
+    },
+    {
+      "index": 1217,
+      "speaker": "Dr Uriah",
+      "text": "Nice matching up right on the nose."
+    },
+    {
+      "index": 1218,
+      "speaker": "Game Master",
+      "text": "And inside is the brown skeleton of Sir Brandon, still dressed in his plate armor and holding his holy sword."
+    },
+    {
+      "index": 1219,
+      "speaker": "Trout",
+      "text": "Whos gonna be our sword wielder?"
+    },
+    {
+      "index": 1220,
+      "speaker": "Sir Phidipaldi",
+      "text": "I think thats the troll kin."
+    },
+    {
+      "index": 1221,
+      "speaker": "Dr Uriah",
+      "text": "Whos gonna be the sword grabber and make make this guy wake up?"
+    },
+    {
+      "index": 1222,
+      "speaker": "Sir Phidipaldi",
+      "text": "Thats me."
+    },
+    {
+      "index": 1223,
+      "speaker": "Trout",
+      "text": "You gonna grab it?"
+    },
+    {
+      "index": 1224,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, I."
+    },
+    {
+      "index": 1225,
+      "speaker": "Trout",
+      "text": "Do it."
+    },
+    {
+      "index": 1226,
+      "speaker": "Dr Uriah",
+      "text": "Well, first of all, Nick, I uh, before he grabs it, I just just because I can. Is it cursed?"
+    },
+    {
+      "index": 1227,
+      "speaker": "Game Master",
+      "text": "Um."
+    },
+    {
+      "index": 1228,
+      "speaker": "Dr Uriah",
+      "text": "Or check it for anything."
+    },
+    {
+      "index": 1229,
+      "speaker": "Game Master",
+      "text": "Uh, no, it is, it is, it is absolutely not cursed, it is a."
+    },
+    {
+      "index": 1230,
+      "speaker": "Dr Uriah",
+      "text": "Im assuming."
+    },
+    {
+      "index": 1231,
+      "speaker": "Game Master",
+      "text": "Magical sword."
+    },
+    {
+      "index": 1232,
+      "speaker": "Game Master",
+      "text": "Of silvery white metal, a sentence is etched into the blade."
+    },
+    {
+      "index": 1233,
+      "speaker": "Sir Phidipaldi",
+      "text": "And what is it?"
+    },
+    {
+      "index": 1234,
+      "speaker": "Game Master",
+      "text": "All shadows yield to my light."
+    },
+    {
+      "index": 1235,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so we, we pick up the sword."
+    },
+    {
+      "index": 1236,
+      "speaker": "Sir Phidipaldi",
+      "text": "And we take the armor."
+    },
+    {
+      "index": 1237,
+      "speaker": "Game Master",
+      "text": "Thats right, Oh youre, youre, youre gonna strip the."
+    },
+    {
+      "index": 1238,
+      "speaker": "Game Master",
+      "text": "The body of the armor to, okay, whos gonna be carrying it?"
+    },
+    {
+      "index": 1239,
+      "speaker": "Dr Uriah",
+      "text": "We have an army of people."
+    },
+    {
+      "index": 1240,
+      "speaker": "Unassigned Speaker",
+      "text": "So I."
+    },
+    {
+      "index": 1241,
+      "speaker": "Game Master",
+      "text": "You do have an army of people."
+    },
+    {
+      "index": 1242,
+      "speaker": "Sir Phidipaldi",
+      "text": "So Im gonna give my plate mail to my day laborer."
+    },
+    {
+      "index": 1243,
+      "speaker": "Game Master",
+      "text": "Ah, yeah."
+    },
+    {
+      "index": 1244,
+      "speaker": "Sir Phidipaldi",
+      "text": "And then Im gonna wear the plate mail."
+    },
+    {
+      "index": 1245,
+      "speaker": "Game Master",
+      "text": "Okay, Gotcha, theres no magical difference."
+    },
+    {
+      "index": 1246,
+      "speaker": "Sir Phidipaldi",
+      "text": "Thats fine."
+    },
+    {
+      "index": 1247,
+      "speaker": "Game Master",
+      "text": "To you know that that?"
+    },
+    {
+      "index": 1248,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yep, no problem at all."
+    },
+    {
+      "index": 1249,
+      "speaker": "Game Master",
+      "text": "Okay, great Gotcha, okay."
+    },
+    {
+      "index": 1250,
+      "speaker": "Game Master",
+      "text": "Um, all right, you, uh, um, you, you take the silvery, you know, sword."
+    },
+    {
+      "index": 1251,
+      "speaker": "Game Master",
+      "text": "And you, yeah, you guy, you guys get done dressing, uh, and in the doorway of the room."
+    },
+    {
+      "index": 1252,
+      "speaker": "Game Master",
+      "text": "As youre going to, like, get ready to leave, you see a seven foot tall brown skeleton."
+    },
+    {
+      "index": 1253,
+      "speaker": "Game Master",
+      "text": "In rusted armor and a mustachioed death mask."
+    },
+    {
+      "index": 1254,
+      "speaker": "Game Master",
+      "text": "Dragging a huge, great sword behind it. And that is where."
+    },
+    {
+      "index": 1255,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, well, call it a night."
+    },
+    {
+      "index": 1256,
+      "speaker": "Game Master",
+      "text": "Well, end the session for the night."
+    }
+  ]
+}
+</role_transcript>

@@ -16,3 +16,10 @@ def test_summary_command() -> None:
 
     assert result.exit_code == 0
     assert "Summary" in result.output
+
+
+def test_section_transcript_command_is_registered() -> None:
+    result = runner.invoke(app, ["section-transcript", "--help"])
+
+    assert result.exit_code == 0
+    assert "cross-validate" in result.output

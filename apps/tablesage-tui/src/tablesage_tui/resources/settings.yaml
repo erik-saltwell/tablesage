@@ -131,4 +131,4 @@ llm_model: anthropic/claude-sonnet-4-5
 llm_model_lite: anthropic/claude-haiku-4-5
 # A more capable model for the most demanding LLM calls (ledger and summary
 # generation).
-llm_model_high: anthropic/claude-fable-5
+llm_model_high: openai/gpt-6-astra

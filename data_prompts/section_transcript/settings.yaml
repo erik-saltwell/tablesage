@@ -1,0 +1,28 @@
+target_llm:
+  model: openai/gpt-6-astra
+  effort: high
+  extra:
+    allowed_openai_params:
+      - reasoning_effort
+
+actor_llm:
+  model: anthropic/claude-sonnet-5
+  temperature: 1.0
+
+judge_llm:
+  model: openai/gpt-6-astra
+
+optimizer:
+  iterations: 6
+  top_k_per_iteration: 2
+  floor: 3
+  ucb_budget: 0
+  seed_warmup_pulls: 3
+  max_children_per_parent: 4
+  early_stop_patience: 3
+  max_llm_concurrency: 5
+  error_budget: 1
+  seed: 1
+
+metric_weights:
+  sectioning_routing: 1.0

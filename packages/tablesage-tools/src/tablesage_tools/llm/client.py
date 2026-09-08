@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from importlib.metadata import version
 from typing import Any
 
 import widelog
 from pydantic import BaseModel, ValidationError
+
+_ASTRA_MODEL = "openai/gpt-6-astra"
+_ASTRA_HIGH_THINKING_OPTIONS = {"reasoning_effort": "high", "allowed_openai_params": ["reasoning_effort"]}
 
 
 def _remove_schema_keyword(value: Any, keyword: str) -> None:
@@ -71,6 +75,7 @@ async def call_llm(
     response_format: type[BaseModel] | None = None,
     timeout: float | None = None,
     prompt_name: str | None = None,
+    model_options: Mapping[str, Any] | None = None,
 ) -> str:
     """Send a single-turn system+user prompt to *model* via litellm and return its text response.
 
@@ -79,9 +84,14 @@ async def call_llm(
     ``response_format.model_validate_json(result)``) -- this function always returns plain text.
     *timeout* is forwarded to litellm as-is; `None` (the default) leaves litellm's own default
     (600 seconds) in effect. *prompt_name* is diagnostic context only and is never sent to the
-    provider.
+    provider. *model_options* passes provider-specific controls such as reasoning effort through
+    to LiteLLM.
     """
     import litellm
+
+    effective_model_options = dict(model_options) if model_options is not None else {}
+    if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
+        effective_model_options = {**_ASTRA_HIGH_THINKING_OPTIONS, **effective_model_options}
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -115,12 +125,14 @@ async def call_llm(
         response_schema=response_schema,
         response_schema_sha256=hashlib.sha256(canonical_schema.encode()).hexdigest() if canonical_schema else None,
         response_schema_supported=litellm.supports_response_schema(model=model) if response_format is not None else None,
+        model_options=effective_model_options or None,
     ) as log:
         response = await litellm.acompletion(
             model=model,
             messages=messages,
             response_format=provider_response_format,
             timeout=timeout,
+            **effective_model_options,
         )
         choices = _response_value(response, "choices") or []
         choice = choices[0]
