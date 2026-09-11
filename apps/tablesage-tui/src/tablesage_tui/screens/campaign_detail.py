@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 
 from tablesage_model.model import GAME_MASTER_ROLE, GlossaryEntry
 from textual.app import ComposeResult
@@ -8,6 +9,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.events import Click
 from textual.widgets import ContentSwitcher, DataTable, Input, Static
+from textual_fspicker import FileOpen, Filters
 
 from ..dialogs import (
     ConfirmationDialog,
@@ -38,6 +40,7 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("enter,e,E", "edit_item", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_item", "Delete", key_display="D"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
+        Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
     ]
 
     def __init__(self, campaign_id: uuid.UUID) -> None:
@@ -207,6 +210,8 @@ class CampaignDetailScreen(TableSageScreen):
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action == "cleanup":
             return self._active_tab == "sessions"
+        if action == "import_legacy_settings":
+            return self._active_tab == "glossary"
         return True
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
@@ -445,6 +450,24 @@ class CampaignDetailScreen(TableSageScreen):
             self._reload_glossary()
 
         self.app.push_screen(ConfirmationDialog(title="Delete Glossary Entry", prompt="Delete this glossary entry?"), on_dismiss)
+
+    def action_import_legacy_settings(self) -> None:
+        def on_picked(source_path: Path | None) -> None:
+            if source_path is None:
+                return
+            try:
+                imported_count = self.application.import_legacy_glossary(self._campaign_id, source_path)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+            self._reload_glossary()
+            self.notify(f"Imported {imported_count} glossary term(s).")
+
+        yaml_filter = Filters(("YAML settings files", lambda path: path.suffix.lower() == ".yaml"))
+        self.app.push_screen(
+            FileOpen(title="Import Legacy Settings", location=Path.home(), filters=yaml_filter),
+            on_picked,
+        )
 
     # Dispatch
 

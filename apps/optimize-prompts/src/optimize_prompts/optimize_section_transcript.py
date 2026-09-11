@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from pathlib import Path
 from typing import Any
 
@@ -19,9 +18,7 @@ from rich.syntax import Syntax
 from tablesage_application.session_pipeline.transcript_sections import TranscriptSectionsGenerationResponse
 
 from .sectioning_metrics import TranscriptSectioningMetric
-
-_WINNING_PROMPT_FILENAME = "best_prompt.md"
-_WINNING_RESULT_FILENAME = "best_prompt_result.json"
+from .winner_output import checkpoint_callback, report_interruption, resolve_seed_prompt, save_winner
 
 
 class SectioningOptimizerSettings(BaseModel):
@@ -91,15 +88,6 @@ def _build_config(seed_prompt: str, eval_cases: list[EvalCase], settings: Sectio
     )
 
 
-def _save_winner(output_directory: Path, prompt: str, metadata: dict[str, Any]) -> Path:
-    """Persist the prompt selected by an optimizer run and its selection evidence."""
-    output_directory.mkdir(parents=True, exist_ok=True)
-    prompt_path = output_directory / _WINNING_PROMPT_FILENAME
-    prompt_path.write_text(prompt.rstrip() + "\n", encoding="utf-8")
-    (output_directory / _WINNING_RESULT_FILENAME).write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    return prompt_path
-
-
 async def _score_holdout(prompt: str, case: EvalCase, settings: SectioningSettings) -> MetricResult:
     output = await acomplete(
         prompt,
@@ -121,14 +109,23 @@ async def _run_cross_validation(
     output_directory: Path,
     console: Console,
 ) -> None:
-    if len(cases) != 3:
-        raise ValueError("Transcript-sectioning cross-validation requires exactly three evaluation cases.")
+    if len(cases) < 2:
+        raise ValueError("Transcript-sectioning cross-validation requires at least two evaluation cases.")
     scorer = WeightedMeanScorer(settings.metric_weights)
     winner: tuple[str, float, dict[str, Any]] | None = None
     for held_out in cases:
         training_cases = [case for case in cases if case != held_out]
         config = _build_config(seed_prompt, training_cases, settings)
-        result = await optimize_prompt(config=config, metrics=[TranscriptSectioningMetric()], scorer=scorer)
+        try:
+            result = await optimize_prompt(
+                config=config,
+                metrics=[TranscriptSectioningMetric()],
+                scorer=scorer,
+                on_checkpoint=lambda prompt: checkpoint_callback(output_directory, prompt),
+            )
+        except BaseException as exc:
+            report_interruption(exc, output_directory, console, title="Transcript Sectioning Cross-validation")
+            raise
         holdout_result = await _score_holdout(result.best_prompt, held_out, settings)
         metadata = {
             "mode": "cross_validation",
@@ -151,8 +148,59 @@ async def _run_cross_validation(
             )
         )
     assert winner is not None
-    prompt_path = _save_winner(output_directory, winner[0], winner[2])
+    prompt_path = save_winner(output_directory, winner[0], winner[2])
     console.print(f"Cross-validation winner saved to {prompt_path}.")
+
+
+async def _run_group_holdout(
+    seed_prompt: str,
+    cases: list[EvalCase],
+    settings: SectioningSettings,
+    output_directory: Path,
+    holdout_prefix: str,
+    console: Console,
+) -> None:
+    held_out = [case for case in cases if (case.source_path or "").startswith(holdout_prefix)]
+    training = [case for case in cases if case not in held_out]
+    if not held_out:
+        raise ValueError(f"No evaluation cases matched holdout prefix {holdout_prefix!r}.")
+    if not training:
+        raise ValueError("Group holdout requires at least one training case outside the holdout prefix.")
+
+    scorer = WeightedMeanScorer(settings.metric_weights)
+    config = _build_config(seed_prompt, training, settings)
+    try:
+        result = await optimize_prompt(
+            config=config,
+            metrics=[TranscriptSectioningMetric()],
+            scorer=scorer,
+            on_checkpoint=lambda prompt: checkpoint_callback(output_directory, prompt),
+        )
+    except BaseException as exc:
+        report_interruption(exc, output_directory, console, title="Transcript Sectioning Group Holdout")
+        raise
+    holdout_results = [await _score_holdout(result.best_prompt, case, settings) for case in held_out]
+    holdout_score = sum(item.score for item in holdout_results) / len(holdout_results)
+    metadata = {
+        "mode": "group_holdout",
+        "holdout_prefix": holdout_prefix,
+        "training_cases": [case.source_path for case in training],
+        "held_out_cases": [case.source_path for case in held_out],
+        "training_result": result.model_dump(mode="json"),
+        "held_out_results": [item.model_dump(mode="json") for item in holdout_results],
+        "held_out_mean_score": holdout_score,
+    }
+    prompt_path = save_winner(output_directory, result.best_prompt, metadata)
+    console.print(
+        Panel(
+            f"Training cases: {len(training)}\n"
+            f"Held-out cases: {len(held_out)}\n"
+            f"Held-out mean score: {holdout_score:.4f}\n"
+            f"Winner saved to: {prompt_path}",
+            title="Transcript Sectioning Group Holdout",
+            border_style="cyan",
+        )
+    )
 
 
 def optimize_section_transcript(
@@ -160,7 +208,9 @@ def optimize_section_transcript(
     console: Console,
     *,
     run: bool = False,
+    resume: bool = False,
     cross_validate: bool = False,
+    holdout_prefix: str | None = None,
 ) -> None:
     seed_prompt_path = prompt_directory / "seed_prompt.txt"
     inputs_directory = prompt_directory / "inputs"
@@ -174,7 +224,7 @@ def optimize_section_transcript(
         raise ValueError(f"Ground-truth directory not found at {ground_truth_directory}.")
 
     settings = _load_settings(prompt_directory / "settings.yaml")
-    seed_prompt = seed_prompt_path.read_text(encoding="utf-8")
+    seed_prompt = resolve_seed_prompt(seed_prompt_path, output_directory, resume=resume, console=console)
     cases = _load_eval_cases(inputs_directory, ground_truth_directory)
     config = _build_config(seed_prompt, cases, settings)
     console.print(
@@ -188,18 +238,28 @@ def optimize_section_transcript(
     if not run:
         return
 
+    if cross_validate and holdout_prefix is not None:
+        raise ValueError("Choose either --cross-validate or --holdout-prefix, not both.")
+    if holdout_prefix is not None:
+        asyncio.run(_run_group_holdout(seed_prompt, cases, settings, output_directory, holdout_prefix, console))
+        return
     if cross_validate:
         asyncio.run(_run_cross_validation(seed_prompt, cases, settings, output_directory, console))
         return
 
-    result = asyncio.run(
-        optimize_prompt(
-            config=config,
-            metrics=[TranscriptSectioningMetric()],
-            scorer=WeightedMeanScorer(settings.metric_weights),
+    try:
+        result = asyncio.run(
+            optimize_prompt(
+                config=config,
+                metrics=[TranscriptSectioningMetric()],
+                scorer=WeightedMeanScorer(settings.metric_weights),
+                on_checkpoint=lambda prompt: checkpoint_callback(output_directory, prompt),
+            )
         )
-    )
-    prompt_path = _save_winner(
+    except BaseException as exc:
+        report_interruption(exc, output_directory, console, title="Transcript Sectioning Optimization")
+        raise
+    prompt_path = save_winner(
         output_directory,
         result.best_prompt,
         {"mode": "full_corpus", "result": result.model_dump(mode="json")},

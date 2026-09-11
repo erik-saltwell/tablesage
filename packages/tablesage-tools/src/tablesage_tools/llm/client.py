@@ -10,7 +10,7 @@ import widelog
 from pydantic import BaseModel, ValidationError
 
 _ASTRA_MODEL = "openai/gpt-6-astra"
-_ASTRA_HIGH_THINKING_OPTIONS = {"reasoning_effort": "high", "allowed_openai_params": ["reasoning_effort"]}
+_ASTRA_MEDIUM_THINKING_OPTIONS = {"reasoning_effort": "medium", "allowed_openai_params": ["reasoning_effort"]}
 
 
 def _remove_schema_keyword(value: Any, keyword: str) -> None:
@@ -91,7 +91,7 @@ async def call_llm(
 
     effective_model_options = dict(model_options) if model_options is not None else {}
     if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
-        effective_model_options = {**_ASTRA_HIGH_THINKING_OPTIONS, **effective_model_options}
+        effective_model_options = {**_ASTRA_MEDIUM_THINKING_OPTIONS, **effective_model_options}
 
     messages = [
         {"role": "system", "content": system_prompt},

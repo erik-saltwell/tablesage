@@ -7,8 +7,10 @@ import uuid
 from collections.abc import Callable, Mapping, Sequence
 from datetime import date
 from pathlib import Path
+from typing import cast
 
 import widelog
+import yaml
 from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
@@ -278,6 +280,57 @@ class Application:
         with Session(self._engine) as session:
             glossary.delete_glossary_entry(session, campaign_id, entry_id)
             session.commit()
+
+    def import_legacy_glossary(self, campaign_id: uuid.UUID, source_path: Path) -> int:
+        """Import new terms from a pre-campaign ``settings.yaml`` glossary.
+
+        Existing campaign terms, including their descriptions, are deliberately
+        left unchanged. Duplicate terms within the legacy file are imported only
+        once as well.
+        """
+        if source_path.suffix.lower() != ".yaml":
+            raise ValueError("Please choose a YAML (.yaml) settings file.")
+
+        try:
+            source = yaml.safe_load(source_path.read_text(encoding="utf-8"))
+        except OSError as exc:
+            raise ValueError(f"Could not read '{source_path}': {exc.strerror or exc}") from exc
+        except yaml.YAMLError as exc:
+            raise ValueError(f"Could not parse '{source_path}' as YAML: {exc}") from exc
+
+        if not isinstance(source, Mapping):
+            raise ValueError("Legacy settings must contain a top-level mapping.")
+        campaign_info = source.get("campaign_info")
+        if not isinstance(campaign_info, Mapping):
+            raise ValueError("Legacy settings must contain a 'campaign_info' mapping.")
+        legacy_entries = campaign_info.get("glossary")
+        if not isinstance(legacy_entries, list):
+            raise ValueError("Legacy settings must contain a 'campaign_info.glossary' list.")
+
+        entries: list[tuple[str, str | None]] = []
+        for index, legacy_entry in enumerate(legacy_entries, start=1):
+            if not isinstance(legacy_entry, Mapping):
+                raise ValueError(f"Glossary entry {index} must be a mapping.")
+            entry_mapping = cast(Mapping[object, object], legacy_entry)
+            term = entry_mapping.get("term")
+            description = entry_mapping.get("description")
+            if not isinstance(term, str) or not (term := term.strip()):
+                raise ValueError(f"Glossary entry {index} must have a non-blank 'term'.")
+            if description is not None and not isinstance(description, str):
+                raise ValueError(f"Glossary entry {index} has a non-text 'description'.")
+            entries.append((term, description.strip() or None if isinstance(description, str) else None))
+
+        with Session(self._engine) as session:
+            existing_terms = {entry.term for entry in glossary.list_glossary_entries(session, campaign_id)}
+            imported_count = 0
+            for term, description in entries:
+                if term in existing_terms:
+                    continue
+                glossary.create_glossary_entry(session, GlossaryEntry(campaign_id=campaign_id, term=term, description=description))
+                existing_terms.add(term)
+                imported_count += 1
+            session.commit()
+            return imported_count
 
     def can_extract_glossary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:

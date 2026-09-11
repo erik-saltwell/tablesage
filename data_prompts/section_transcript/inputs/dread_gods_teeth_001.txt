@@ -1,0 +1,829 @@
+<session_attendees>
+- andrew tomms: Fulgore 'crocs' Crocket
+- erik saltwell: Game Master
+- jason beaumont: Bruce Walters
+- john schork: Ward 'mollusk' Ellstrop
+- rich gredzinski: Dr Ambrose 'airtight' Reichman aka Thumper
+</session_attendees>
+
+<role_transcript>
+{
+  "utterances": [
+    {
+      "index": 0,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Theyre so bad that theyre just like, You know what Im done? Like, Uh, they mentioned on the Wiz, or on the the return to Oz episode, they mentioned, Um, the good, extraordinary gentleman."
+    },
+    {
+      "index": 1,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "It was so bad."
+    },
+    {
+      "index": 2,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, it was very bad."
+    },
+    {
+      "index": 3,
+      "speaker": "Unassigned Speaker",
+      "text": "So bad."
+    },
+    {
+      "index": 4,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "He was like, I retire."
+    },
+    {
+      "index": 5,
+      "speaker": "Bruce Walters",
+      "text": "Yep, yep, uh, so I am here next week so I can host again."
+    },
+    {
+      "index": 6,
+      "speaker": "Bruce Walters",
+      "text": "But then the week after, I am not, uh, I am in Japan."
+    },
+    {
+      "index": 7,
+      "speaker": "Bruce Walters",
+      "text": "Then I am back for a week."
+    },
+    {
+      "index": 8,
+      "speaker": "Bruce Walters",
+      "text": "And then the week after, I am not IM in India."
+    },
+    {
+      "index": 9,
+      "speaker": "Unassigned Speaker",
+      "text": "So, uh, yeah, okay."
+    },
+    {
+      "index": 10,
+      "speaker": "Unassigned Speaker",
+      "text": "Is that a work thing or?"
+    },
+    {
+      "index": 11,
+      "speaker": "Bruce Walters",
+      "text": "Work thing Yeah, Indias a work thing, yeah, 25 hours each way."
+    },
+    {
+      "index": 12,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, yeah, were were."
+    },
+    {
+      "index": 13,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Where did you go?"
+    },
+    {
+      "index": 14,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Were in, Yeah."
+    },
+    {
+      "index": 15,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, uh. Noida, its a part of Delhi."
+    },
+    {
+      "index": 16,
+      "speaker": "Bruce Walters",
+      "text": "Apparently its the new Microsoft campus. And, yeah, and as of, uh, yesterday."
+    },
+    {
+      "index": 17,
+      "speaker": "Bruce Walters",
+      "text": "I now report directly to Sarah, the head of Xbox."
+    },
+    {
+      "index": 18,
+      "speaker": "Bruce Walters",
+      "text": "And now I have like a multihundred person team in India, I have to deal with."
+    },
+    {
+      "index": 19,
+      "speaker": "Bruce Walters",
+      "text": "So, yeah, no some parts, yeah, other parts, no, so."
+    },
+    {
+      "index": 20,
+      "speaker": "Unassigned Speaker",
+      "text": "What place is he in India?"
+    },
+    {
+      "index": 21,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, uh, so like, basically like all of our, like our services."
+    },
+    {
+      "index": 22,
+      "speaker": "Bruce Walters",
+      "text": "Like back end like services like, you know, like when you go buy something, its like thats the thing that charges your credit card. Thats the thing you know. So its like stuff like that, so its like, I dont even know, like theyre like, were gonna show you demos of all of our work. Im like, I dont even wanna fucking see half this shit."
+    },
+    {
+      "index": 23,
+      "speaker": "Unassigned Speaker",
+      "text": "Its India, though."
+    },
+    {
+      "index": 24,
+      "speaker": "Bruce Walters",
+      "text": "Ive always wanted to go, Ive never been No."
+    },
+    {
+      "index": 25,
+      "speaker": "Bruce Walters",
+      "text": "No, the only person I know whove been is, uh, Brandon, who, uh, uh, stayed in a temple that had a, uh."
+    },
+    {
+      "index": 26,
+      "speaker": "Unassigned Speaker",
+      "text": "Deity."
+    },
+    {
+      "index": 27,
+      "speaker": "Bruce Walters",
+      "text": "A. BRANDON Yeah, but Im just making a joke. I dont want people moving to India."
+    },
+    {
+      "index": 28,
+      "speaker": "Bruce Walters",
+      "text": "But like."
+    },
+    {
+      "index": 29,
+      "speaker": "Bruce Walters",
+      "text": "When you remember when, Brandon claimed that he was moving to India."
+    },
+    {
+      "index": 30,
+      "speaker": "Unassigned Speaker",
+      "text": "I dont even know Brandon."
+    },
+    {
+      "index": 31,
+      "speaker": "Bruce Walters",
+      "text": "No, no, no, no, um, uh. What was Brandons last name who worked at Scarecrow?"
+    },
+    {
+      "index": 32,
+      "speaker": "Unassigned Speaker",
+      "text": "Brandon Lane."
+    },
+    {
+      "index": 33,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, did you ever hear this story?"
+    },
+    {
+      "index": 34,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "He moved to India. I dont think so."
+    },
+    {
+      "index": 35,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yeah, thats when he was working there."
+    },
+    {
+      "index": 36,
+      "speaker": "Bruce Walters",
+      "text": "He he, he was like."
+    },
+    {
+      "index": 37,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh, no, he already, he already."
+    },
+    {
+      "index": 38,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "I think when he left cause he was at the chocolate factory."
+    },
+    {
+      "index": 39,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, he was at the, he was at Theo, he was at Theo, yeah."
+    },
+    {
+      "index": 40,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "He wasnt."
+    },
+    {
+      "index": 41,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "I mean, only for a short time cause the chocolate factory was a job he had after Scarecrow."
+    },
+    {
+      "index": 42,
+      "speaker": "Bruce Walters",
+      "text": "So he had, like, told us this story where he was like, Im gonna go to India and Im gonna visit this temple, where theres a palm leaf with each persons name on it on Earth."
+    },
+    {
+      "index": 43,
+      "speaker": "Unassigned Speaker",
+      "text": "What?"
+    },
+    {
+      "index": 44,
+      "speaker": "Unassigned Speaker",
+      "text": "And were like, All right."
+    },
+    {
+      "index": 45,
+      "speaker": "Unassigned Speaker",
+      "text": "What?"
+    },
+    {
+      "index": 46,
+      "speaker": "Bruce Walters",
+      "text": "And then, like, we dont see him for like two years, and then later we see him and its like. He never went to India like its, like he and his girlfriend, like, moved to like Ithaca for a while."
+    },
+    {
+      "index": 47,
+      "speaker": "Bruce Walters",
+      "text": "You know something like that?"
+    },
+    {
+      "index": 48,
+      "speaker": "Unassigned Speaker",
+      "text": "India Ithaca."
+    },
+    {
+      "index": 49,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Its in the If You Keep Going."
+    },
+    {
+      "index": 50,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, yeah, exactly, yeah."
+    },
+    {
+      "index": 51,
+      "speaker": "Unassigned Speaker",
+      "text": "Its not so common now."
+    },
+    {
+      "index": 52,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "TH Lets just say the razors edge was a little too sharp."
+    },
+    {
+      "index": 53,
+      "speaker": "Bruce Walters",
+      "text": "Right, and then he gave me like this weird, like Nazi war game that he found in his basement at home. Remember this?"
+    },
+    {
+      "index": 54,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Do you still have it?"
+    },
+    {
+      "index": 55,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, yeah, ill have to dig it up, yeah, then he gave me like Kampfgruppe, 99 or whatever."
+    },
+    {
+      "index": 56,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, Jesus."
+    },
+    {
+      "index": 57,
+      "speaker": "Bruce Walters",
+      "text": "And we were like, What is this?"
+    },
+    {
+      "index": 58,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "I was looking at old Nazi war games on eBay. Cause theres a really great one. No, no, I mean."
+    },
+    {
+      "index": 59,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Like, not like made by Nazis, but."
+    },
+    {
+      "index": 60,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I know it, I know it, thats just. There is no way to say that in sentence. Yeah, without it being fucking."
+    },
+    {
+      "index": 61,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, thats true, thats true. The novel came out in the 70s called Escape from Colditz."
+    },
+    {
+      "index": 62,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Which was a, you know, prison of famous prison, and a guy escaped multiple times, and he wrote a book about it. And and then they made a board game based on his book."
+    },
+    {
+      "index": 63,
+      "speaker": "Unassigned Speaker",
+      "text": "Even a board game on it."
+    },
+    {
+      "index": 64,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So you could beat him, yeah, so you could beat him. And its like the layout of Colditz, and so youre like."
+    },
+    {
+      "index": 65,
+      "speaker": "Unassigned Speaker",
+      "text": "Sure, youre escaping."
+    },
+    {
+      "index": 66,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Its, like its like one person, plays the guard, and the other person plays like the prisoner trying to escape and its all."
+    },
+    {
+      "index": 67,
+      "speaker": "Bruce Walters",
+      "text": "This is fucking trauma."
+    },
+    {
+      "index": 68,
+      "speaker": "Unassigned Speaker",
+      "text": "And youre like, All right, what if?"
+    },
+    {
+      "index": 69,
+      "speaker": "Unassigned Speaker",
+      "text": "Well, so so are you, are you out during midwinter break?"
+    },
+    {
+      "index": 70,
+      "speaker": "Bruce Walters",
+      "text": "Uh yeah, thats the week after next that."
+    },
+    {
+      "index": 71,
+      "speaker": "Game Master",
+      "text": "Okay, so I will also be out that week."
+    },
+    {
+      "index": 72,
+      "speaker": "Bruce Walters",
+      "text": "Oh okay, okay, Gotcha, so well, just cancel that week."
+    },
+    {
+      "index": 73,
+      "speaker": "Game Master",
+      "text": "Yeah, all right. Uh, quick recap, Tel Cave."
+    },
+    {
+      "index": 74,
+      "speaker": "Game Master",
+      "text": "Tel Cave a day later."
+    },
+    {
+      "index": 75,
+      "speaker": "Game Master",
+      "text": "Found by the Tel Cave."
+    },
+    {
+      "index": 76,
+      "speaker": "Game Master",
+      "text": "Also found later on When you guys visited, right?"
+    },
+    {
+      "index": 77,
+      "speaker": "Bruce Walters",
+      "text": "Yep."
+    },
+    {
+      "index": 78,
+      "speaker": "Game Master",
+      "text": "Also found later on when you guys visited."
+    },
+    {
+      "index": 79,
+      "speaker": "Game Master",
+      "text": "Yes, uh."
+    },
+    {
+      "index": 80,
+      "speaker": "Bruce Walters",
+      "text": "Barbed wire."
+    },
+    {
+      "index": 81,
+      "speaker": "Game Master",
+      "text": "Uh, killed a snake."
+    },
+    {
+      "index": 82,
+      "speaker": "Game Master",
+      "text": "Well, half killed a snake, the other half was rich."
+    },
+    {
+      "index": 83,
+      "speaker": "Game Master",
+      "text": "Uh, this is the problem that were all why were."
+    },
+    {
+      "index": 84,
+      "speaker": "Game Master",
+      "text": "In the Middle East, uh, this is the camp that youre currently in."
+    },
+    {
+      "index": 85,
+      "speaker": "Game Master",
+      "text": "Uh."
+    },
+    {
+      "index": 86,
+      "speaker": "Bruce Walters",
+      "text": "And we went looking for the two people that we found killed like we had their identities."
+    },
+    {
+      "index": 87,
+      "speaker": "Game Master",
+      "text": "Thats right, thats right."
+    },
+    {
+      "index": 88,
+      "speaker": "Game Master",
+      "text": "So you went to the headquarters, which I think is up here."
+    },
+    {
+      "index": 89,
+      "speaker": "Game Master",
+      "text": "Um, and after finding out that the person who, um, that youre, uh, you saw photographs like a big posters plastered on the like, Uh, the the boards that were put up around construction sites."
+    },
+    {
+      "index": 90,
+      "speaker": "Game Master",
+      "text": "And, uh, it had pictures of Israeli soldiers shooting Palestinians. That were the guys that you saw in front of the cave."
+    },
+    {
+      "index": 91,
+      "speaker": "Game Master",
+      "text": "And a picture was taken when they were in front of the cave. And you guys all got headaches. And then you went to the, Um, you went and found out that they that the Palestinians did live here, you went to a coffee shop to ask around, and while there you guys, Uh, uh. Mollusk saw photographs on the wall that smelled a ton like sugar cookies."
+    },
+    {
+      "index": 92,
+      "speaker": "Game Master",
+      "text": "And um, you learned that the Palestinians were Hamas, the ones who had died, and you learned that, um, the person who took the pictures. Her name is Danielle Houston, and she is Western."
+    },
+    {
+      "index": 93,
+      "speaker": "Game Master",
+      "text": "And that she, um, uh, is here as a photojournalist and that she has been around the camp for some time. So you guys believe that she lives in the camp?"
+    },
+    {
+      "index": 94,
+      "speaker": "Bruce Walters",
+      "text": "MMHmm."
+    },
+    {
+      "index": 95,
+      "speaker": "Game Master",
+      "text": "You guys, you know that there is around the outside. There is housing for people who are not, uh, refugees, like aid worker housing."
+    },
+    {
+      "index": 96,
+      "speaker": "Game Master",
+      "text": "And thats where the journalists would be housed in one of those facilities."
+    },
+    {
+      "index": 97,
+      "speaker": "Game Master",
+      "text": "You guys went to go look, but as you exited the cafe, you were in this space."
+    },
+    {
+      "index": 98,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, right, okay."
+    },
+    {
+      "index": 99,
+      "speaker": "Game Master",
+      "text": "Right, you were right here and from over here, you saw a woman on the roof and she looked at Bruce and smiled."
+    },
+    {
+      "index": 100,
+      "speaker": "Game Master",
+      "text": "And then took a picture and the whole thing became ruins right and was blocked off by a wall. And there was a British soldier here and he told you guys to arm up and he pointed you at a weapons locker. And it was just hand grenades. And then you guys had to decide, would you throw hand grenades over the wall? Or not, as people were trying to beat down the wall and you decided not to, um, and instead you trip. Decided to disarm the British soldier, who was shooting at the wall, waiting for them to get through. You wrestled the gun from him. And then, um, the people broke through the wall, and they turned out to be Palestinian refugees from the modern era. Um, and so I think were all caught up. I think that.s where we took over, I am cause were kind of later in the game."
+    },
+    {
+      "index": 101,
+      "speaker": "Game Master",
+      "text": "I will start by just pulling some bricks."
+    },
+    {
+      "index": 102,
+      "speaker": "Unassigned Speaker",
+      "text": "Come on."
+    },
+    {
+      "index": 103,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, now while youre doing that."
+    },
+    {
+      "index": 104,
+      "speaker": "Bruce Walters",
+      "text": "I have a question for you."
+    },
+    {
+      "index": 105,
+      "speaker": "Unassigned Speaker",
+      "text": "Please."
+    },
+    {
+      "index": 106,
+      "speaker": "Bruce Walters",
+      "text": "Uh, and I dont remember this from the letters, but maybe it was in there."
+    },
+    {
+      "index": 107,
+      "speaker": "Bruce Walters",
+      "text": "Was this the world or was it a different game? You played where we like visited that office and that woman had like there was different photographs in it and, like soldiers, attacked the office."
+    },
+    {
+      "index": 108,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, yeah, that was in."
+    },
+    {
+      "index": 109,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, that was in this one, okay?"
+    },
+    {
+      "index": 110,
+      "speaker": "Game Master",
+      "text": "Yep, that was when you were investigating, Uh, the."
+    },
+    {
+      "index": 111,
+      "speaker": "Bruce Walters",
+      "text": "That was when we were investigating, Yeah."
+    },
+    {
+      "index": 112,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, okay, okay, all right, Im just trying to its reminding me of this so."
+    },
+    {
+      "index": 113,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, it was in, like the version of her her world, where she like, saved the."
+    },
+    {
+      "index": 114,
+      "speaker": "Unassigned Speaker",
+      "text": "Because they blew up the."
+    },
+    {
+      "index": 115,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "One more left."
+    },
+    {
+      "index": 116,
+      "speaker": "Bruce Walters",
+      "text": "Oh, thats right, thats right, its. So this is just, I don.t know, it just kind of reminded me of that so."
+    },
+    {
+      "index": 117,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "With the phone up to like Willynilly like, it didnt matter."
+    },
+    {
+      "index": 118,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Wait, does that relate into your background?"
+    },
+    {
+      "index": 119,
+      "speaker": "Game Master",
+      "text": "I mean, no, I mean, maybe, but I mean, you know, so, um, I will remind you all that there is, um, now you can see again the artillery fires and the bursts, and theres gunshots in the distance because the Israeli army is invading. And that will add one pull to any pulls you do."
+    },
+    {
+      "index": 120,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, thats right."
+    },
+    {
+      "index": 121,
+      "speaker": "Game Master",
+      "text": "And um, yeah, what do you guys? So, uh, the, uh, any other questions you have is fine, if not, what do you guys do?"
+    },
+    {
+      "index": 122,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Um, so were were like just so we all know where were at were in that, like Culdesac room, whatever with the wall."
+    },
+    {
+      "index": 123,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Gone."
+    },
+    {
+      "index": 124,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Modern day is the British soldier with us."
+    },
+    {
+      "index": 125,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "He hes like, Knocked out, right?"
+    },
+    {
+      "index": 126,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, thats right, thats right."
+    },
+    {
+      "index": 127,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "He he was like wounded."
+    },
+    {
+      "index": 128,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "We have JJ."
+    },
+    {
+      "index": 129,
+      "speaker": "Game Master",
+      "text": "You have J.J. whos your interpreter."
+    },
+    {
+      "index": 130,
+      "speaker": "Game Master",
+      "text": "Thats right, yes."
+    },
+    {
+      "index": 131,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Was he with us in the room, like in our group, was he like?"
+    },
+    {
+      "index": 132,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Like so, he experienced what we experienced."
+    },
+    {
+      "index": 133,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Cause we asked him to to try and talk to the people on the other side of the wall."
+    },
+    {
+      "index": 134,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats right, Yep."
+    },
+    {
+      "index": 135,
+      "speaker": "Bruce Walters",
+      "text": "I guess we should try to make contact with these Palestinian refugees, try to talk to them."
+    },
+    {
+      "index": 136,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Oh, so were like face to face with them now, right?"
+    },
+    {
+      "index": 137,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, cause they."
+    },
+    {
+      "index": 138,
+      "speaker": "Game Master",
+      "text": "Yeah, thats right."
+    },
+    {
+      "index": 139,
+      "speaker": "Game Master",
+      "text": "Yeah, theyre in here."
+    },
+    {
+      "index": 140,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, I mean, they were banging on a wall."
+    },
+    {
+      "index": 141,
+      "speaker": "Game Master",
+      "text": "So so they are s like Th, you know, theyre very excited."
+    },
+    {
+      "index": 142,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, theres a reason."
+    },
+    {
+      "index": 143,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "They were banging on the wall."
+    },
+    {
+      "index": 144,
+      "speaker": "Game Master",
+      "text": "And theyre, you know, so theyre, uh, talking to JJ and JJ is talking back and this happens for a few minutes."
+    },
+    {
+      "index": 145,
+      "speaker": "Game Master",
+      "text": "And uh, then he says, Um, uh, you know, theyre all locals who live very close by and they were in the area. Of course, cause I mean, this is very highly populated. And when the walls showed up, they just freaked out and didnt know what happened and saw the coffee shop, you know, get blocked off."
+    },
+    {
+      "index": 146,
+      "speaker": "Game Master",
+      "text": "And so they knocked on the wall and came in."
+    },
+    {
+      "index": 147,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "We should probably do something with this guy."
+    },
+    {
+      "index": 148,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, ill. I just wanna ask JJ like, Well, what are they saying?"
+    },
+    {
+      "index": 149,
+      "speaker": "Game Master",
+      "text": "Uh, so, uh, I mean, they are just wanting to know what happened, and where did these walls come from?"
+    },
+    {
+      "index": 150,
+      "speaker": "Bruce Walters",
+      "text": "Yeah."
+    },
+    {
+      "index": 151,
+      "speaker": "Unassigned Speaker",
+      "text": "And."
+    },
+    {
+      "index": 152,
+      "speaker": "Bruce Walters",
+      "text": "We wanna know, too."
+    },
+    {
+      "index": 153,
+      "speaker": "Game Master",
+      "text": "Yeah, and who is this dude whos laying on the ground dressed like a cosplayer?"
+    },
+    {
+      "index": 154,
+      "speaker": "Bruce Walters",
+      "text": "So I wanna I tell JJ, like, Can you just tell them that we are just as confused?"
+    },
+    {
+      "index": 155,
+      "speaker": "Bruce Walters",
+      "text": "As they are."
+    },
+    {
+      "index": 156,
+      "speaker": "Bruce Walters",
+      "text": "Like we dont know."
+    },
+    {
+      "index": 157,
+      "speaker": "Game Master",
+      "text": "So he, he lets you know that hes already conveyed this, but hes."
+    },
+    {
+      "index": 158,
+      "speaker": "Game Master",
+      "text": "Yeah, so, so theyre kinda like theyre good theyre. You know, if they knew they would be very grateful, you guys didnt throw hand grenades at them."
+    },
+    {
+      "index": 159,
+      "speaker": "Game Master",
+      "text": "And, um."
+    },
+    {
+      "index": 160,
+      "speaker": "Game Master",
+      "text": "Uh."
+    },
+    {
+      "index": 161,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "From where we are, could we still like we could see where the SH the photog? The photograph was taken from its still."
+    },
+    {
+      "index": 162,
+      "speaker": "Game Master",
+      "text": "Thats definitely, Yep, yep."
+    }
+  ]
+}
+</role_transcript>

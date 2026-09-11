@@ -33,7 +33,7 @@ The index of the first utterance belonging to active play in the current Session
 If the recording establishes a starting situation but contains no subsequent active play, return the utterance count—one greater than the final utterance index.
 
 # Boundary Rules
-
+- For each non-null `recap_range`, `introduction_range`, and `starting_context_range`, choose the smallest contiguous inclusive range that satisfies its Section Definition. Trim leading or trailing utterances only when doing so preserves all content required by that definition. Retain intervening utterances and mixed-content boundary utterances when needed to preserve that content. Minimize each range independently; overlap remains valid.
 - When a boundary is ambiguous, include the material on the Session side by choosing the earlier plausible `session_start_index`. This prevents current-session content from being lost.
 - `recap_range`, `introduction_range`, and `starting_context_range` may overlap.
 - A mixed utterance may belong to multiple ranges and may also be the `session_start_index`.

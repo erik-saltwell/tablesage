@@ -1,0 +1,2120 @@
+<session_attendees>
+- john schork: Ward 'mollusk' Ellstrop
+- jason beaumont: Bruce Walters
+- jen malczewski: Jonas Friday
+- rich gredzinski: Dr Ambrose 'airtight' Reichman aka Thumper
+- andrew tomms: Fulgore 'crocs' Crocket
+- erik saltwell: Game Master
+</session_attendees>
+
+<role_transcript>
+{
+  "utterances": [
+    {
+      "index": 0,
+      "speaker": "Game Master",
+      "text": "All right, so I got Jason Jason."
+    },
+    {
+      "index": 1,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Do you have a stack of just blank ones?"
+    },
+    {
+      "index": 2,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Well, I thought we were just passing around. I ended up having like two of mine that werent filled out."
+    },
+    {
+      "index": 3,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Until partway through, Um, so Im just gonna finish filling out one of them."
+    },
+    {
+      "index": 4,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, no problem."
+    },
+    {
+      "index": 5,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Got a g ah?"
+    },
+    {
+      "index": 6,
+      "speaker": "Unassigned Speaker",
+      "text": "All right, Croc."
+    },
+    {
+      "index": 7,
+      "speaker": "Game Master",
+      "text": "I want you to take on the persona of now were, so heres what? How were gonna play this reading out?"
+    },
+    {
+      "index": 8,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Im gonna pick that, uh."
+    },
+    {
+      "index": 9,
+      "speaker": "Unassigned Speaker",
+      "text": "We are all."
+    },
+    {
+      "index": 10,
+      "speaker": "Unassigned Speaker",
+      "text": "What do you want me to say?"
+    },
+    {
+      "index": 11,
+      "speaker": "Game Master",
+      "text": "Okay."
+    },
+    {
+      "index": 12,
+      "speaker": "Unassigned Speaker",
+      "text": "Whatever."
+    },
+    {
+      "index": 13,
+      "speaker": "Game Master",
+      "text": "Its not like the Harvey Milk Water Reclamation plant has a psychiatric. Staff were all just gonna pretend for a second. That in the very early days, when it was still a real official public nonblack site, they did so. Lets assume that we are all psychiatric staff."
+    },
+    {
+      "index": 14,
+      "speaker": "Game Master",
+      "text": "Who are reviewing new incoming captives? And I will well just go around and Youll each read out and present to the rest of the group. One kid that you saw the intake for and thats the kid that youre reading."
+    },
+    {
+      "index": 15,
+      "speaker": "Bruce Walters",
+      "text": "Did did somebody write all of these on this one, or what?"
+    },
+    {
+      "index": 16,
+      "speaker": "Unassigned Speaker",
+      "text": "Its the handwriting."
+    },
+    {
+      "index": 17,
+      "speaker": "Bruce Walters",
+      "text": "The handwriting looks suspiciously similar across every single one."
+    },
+    {
+      "index": 18,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Its probably mine."
+    },
+    {
+      "index": 19,
+      "speaker": "Bruce Walters",
+      "text": "Just somebody, just going nuts on different things."
+    },
+    {
+      "index": 20,
+      "speaker": "Unassigned Speaker",
+      "text": "Hey, you started it."
+    },
+    {
+      "index": 21,
+      "speaker": "Game Master",
+      "text": "All right, Andrew, why dont you present to us your first, uh, your first new case?"
+    },
+    {
+      "index": 22,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Okay, uh, so first new. And so were not making up a name or anything. Theres no names to them."
+    },
+    {
+      "index": 23,
+      "speaker": "Game Master",
+      "text": "Thats just numbers."
+    },
+    {
+      "index": 24,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "So, uh."
+    },
+    {
+      "index": 25,
+      "speaker": "Game Master",
+      "text": "You can read out the last three numbers if you want."
+    },
+    {
+      "index": 26,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Okay, so the first, uh, intake person I have, uh, number 323, born in 2018, its its like up to current time, right?"
+    },
+    {
+      "index": 27,
+      "speaker": "Game Master",
+      "text": "It is now right now, is current time, right?"
+    },
+    {
+      "index": 28,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Okay, cool, so theyre almost, uh, eight years old, uh, from Guatemala, um, and very distinctive because they have a Mohawk. And we, it says, we confiscated at Checkin, are we saying like after, like the debriefing, so we have."
+    },
+    {
+      "index": 29,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah."
+    },
+    {
+      "index": 30,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yeah, um, so they have a chain wallet, um, for."
+    },
+    {
+      "index": 31,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Their reaction once they, uh, were separated or their selfsoothing behavior."
+    },
+    {
+      "index": 32,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Appears to be air drumming."
+    },
+    {
+      "index": 33,
+      "speaker": "Game Master",
+      "text": "Okay, sure, yeah, thats a nervous habit."
+    },
+    {
+      "index": 34,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 35,
+      "speaker": "Unassigned Speaker",
+      "text": "Could be cooler."
+    },
+    {
+      "index": 36,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "And they have, apparently, they have an allergic to fritos."
+    },
+    {
+      "index": 37,
+      "speaker": "Game Master",
+      "text": "Okay, and what was their reaction when separated from their from their guardians when they were first intook?"
+    },
+    {
+      "index": 38,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "They kept on repeating the same thing over and over again."
+    },
+    {
+      "index": 39,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Uh, a weird phrase, apparently. That said, they were saying, Hot water, burn, baby."
+    },
+    {
+      "index": 40,
+      "speaker": "Unassigned Speaker",
+      "text": "All right, go ahead, Jen."
+    },
+    {
+      "index": 41,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh, right."
+    },
+    {
+      "index": 42,
+      "speaker": "Unassigned Speaker",
+      "text": "Detaining number."
+    },
+    {
+      "index": 43,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Its a movie reference."
+    },
+    {
+      "index": 44,
+      "speaker": "Jonas Friday",
+      "text": "316 Uhhuh."
+    },
+    {
+      "index": 45,
+      "speaker": "Jonas Friday",
+      "text": "Allegedly allegedly born May 17th, 2021."
+    },
+    {
+      "index": 46,
+      "speaker": "Jonas Friday",
+      "text": "Country of Origin Mexico has a scar above their left eyebrow and was confiscated with a 1980s walkman with an Iron Maiden tape."
+    },
+    {
+      "index": 47,
+      "speaker": "Jonas Friday",
+      "text": "Selfsoothing behaviors observed gambling eats pretty much anything and was physically resistant at the time of separation. In my humble, evaluative opinion, this is definitely an adult pretending to be a child, it is just a very small."
+    },
+    {
+      "index": 48,
+      "speaker": "Game Master",
+      "text": "Adult."
+    },
+    {
+      "index": 49,
+      "speaker": "Jonas Friday",
+      "text": "A very small Mexican adult."
+    },
+    {
+      "index": 50,
+      "speaker": "Unassigned Speaker",
+      "text": "All right, Jason."
+    },
+    {
+      "index": 51,
+      "speaker": "Bruce Walters",
+      "text": "Ive got a sixyearold Mexican kid here with a third nipple. Luckily, before we brought him into intake, we confiscated his orphan nipple."
+    },
+    {
+      "index": 52,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "What?"
+    },
+    {
+      "index": 53,
+      "speaker": "Unassigned Speaker",
+      "text": "I dont know, I, uh."
+    },
+    {
+      "index": 54,
+      "speaker": "Bruce Walters",
+      "text": "Uh, every time he gets a little whacked out, he does nipple. For some reason, I dont know why we fed a sixyearold breast milk."
+    },
+    {
+      "index": 55,
+      "speaker": "Bruce Walters",
+      "text": "And determined he was allergic to it."
+    },
+    {
+      "index": 56,
+      "speaker": "Unassigned Speaker",
+      "text": "But he is."
+    },
+    {
+      "index": 57,
+      "speaker": "Unassigned Speaker",
+      "text": "What?"
+    },
+    {
+      "index": 58,
+      "speaker": "Unassigned Speaker",
+      "text": "Hes Hes pretty."
+    },
+    {
+      "index": 59,
+      "speaker": "Unassigned Speaker",
+      "text": "Its like the only thing he would soothe with."
+    },
+    {
+      "index": 60,
+      "speaker": "Jonas Friday",
+      "text": "This would be this would be Harvey breast milk."
+    },
+    {
+      "index": 61,
+      "speaker": "Unassigned Speaker",
+      "text": "At the Harvey Milk Plant."
+    },
+    {
+      "index": 62,
+      "speaker": "Bruce Walters",
+      "text": "No, thanks, exactly. Hes pretty nonresponsive when we take him away from his guardian."
+    },
+    {
+      "index": 63,
+      "speaker": "Unassigned Speaker",
+      "text": "Very nonresponsive, got it."
+    },
+    {
+      "index": 64,
+      "speaker": "Unassigned Speaker",
+      "text": "Go ahead, John."
+    },
+    {
+      "index": 65,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, the Afghanistani child, uh, born on April 8th, 2022. Uh, they have a vestigial tail, um, we."
+    },
+    {
+      "index": 66,
+      "speaker": "Game Master",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 67,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Confiscated Mittens at Checkin Um, doesnt say how many? So it could be a lot."
+    },
+    {
+      "index": 68,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, selfsoothing behaviors observed were acting like a kitten."
+    },
+    {
+      "index": 69,
+      "speaker": "Game Master",
+      "text": "Oh, sure."
+    },
+    {
+      "index": 70,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, weirdly, they didnt like milk."
+    },
+    {
+      "index": 71,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, oh."
+    },
+    {
+      "index": 72,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, and the response when separated from their guardian, crying, screaming and physical resistance."
+    },
+    {
+      "index": 73,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Similar to bathing a cat."
+    },
+    {
+      "index": 74,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, sure."
+    },
+    {
+      "index": 75,
+      "speaker": "Unassigned Speaker",
+      "text": "Rich."
+    },
+    {
+      "index": 76,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Let me fix that, yeah, someone did the same thing, you got it. You can. Its from rain, man, by the way."
+    },
+    {
+      "index": 77,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Um, so we have a a young child here, uh, from India 02324 whos about six years old. Uh, they got many large moles on their back."
+    },
+    {
+      "index": 78,
+      "speaker": "Unassigned Speaker",
+      "text": "Ooh."
+    },
+    {
+      "index": 79,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Which is, you know, thats fine, uh, their. Their possession was a Harvey milk button, specifically the pinback."
+    },
+    {
+      "index": 80,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So we know, we know, we know actually how."
+    },
+    {
+      "index": 81,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "How it looks Yeah, uh, theyre into thumb, uh, thumbsucking, which makes which tracks."
+    },
+    {
+      "index": 82,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "And they are, they are have a shellfish, a shellfish, uh, aller allergy here to shrimp."
+    },
+    {
+      "index": 83,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Um, they, uh, attempted to follow and they had to be physically redirected. Uh, and then they attempted to com to to to comfort The Guardian. So the real switcheroo and, uh, they were, uh, they barked a lot."
+    },
+    {
+      "index": 84,
+      "speaker": "Game Master",
+      "text": "Yeah, okay, I think it is creepy that, uh um, comfort. The Guardian happens often enough that its a check item on the checklist."
+    },
+    {
+      "index": 85,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, mmhmm."
+    },
+    {
+      "index": 86,
+      "speaker": "Game Master",
+      "text": "Andrew, You wanna go for your next one?"
+    },
+    {
+      "index": 87,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Sure, uh, okay, so my next one, uh uh, its a number, uh. Detainee number 328 uh, also around eight years old from Mexico."
+    },
+    {
+      "index": 88,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Um, physical identifying trait one blue eye and one green eye, um, personal possession confiscated at Checkin. Uh. It was very large, so it was hard to store, but it was an anime body pillow."
+    },
+    {
+      "index": 89,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Was it a lightning?"
+    },
+    {
+      "index": 90,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Uh yeah, we need to check on that, um."
+    },
+    {
+      "index": 91,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, it was Fedora."
+    },
+    {
+      "index": 92,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh my God, um. Foods not tolerated, uh, allergic to shell food, shell, shellfish."
+    },
+    {
+      "index": 93,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yeah, I, I wrote that, so should be."
+    },
+    {
+      "index": 94,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Shellfish, Um."
+    },
+    {
+      "index": 95,
+      "speaker": "Unassigned Speaker",
+      "text": "Shell food."
+    },
+    {
+      "index": 96,
+      "speaker": "Game Master",
+      "text": "Yeah, that was fast."
+    },
+    {
+      "index": 97,
+      "speaker": "Unassigned Speaker",
+      "text": "No, I love it."
+    },
+    {
+      "index": 98,
+      "speaker": "Jonas Friday",
+      "text": "King could be allergic to shell food."
+    },
+    {
+      "index": 99,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "And they were crying and screaming when they were separated. Uh uh, showed some signs of physical resistance. Um, and they, uh, appeared. No one on staff speaks Japanese, but they appeared to be, Uh, uh, saying Japanese words."
+    },
+    {
+      "index": 100,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Maybe related to one of the animes they watch."
+    },
+    {
+      "index": 101,
+      "speaker": "Unassigned Speaker",
+      "text": "Sure, totally, Jen."
+    },
+    {
+      "index": 102,
+      "speaker": "Jonas Friday",
+      "text": "Uh, detainee number 02327. A A child from El Salvador, seven years old, even though a child has a mustache."
+    },
+    {
+      "index": 103,
+      "speaker": "Jonas Friday",
+      "text": "A pronounced mustache."
+    },
+    {
+      "index": 104,
+      "speaker": "Jonas Friday",
+      "text": "Um, confiscated at Checkin one yellow bear lunchbox unclear origin, Definitely a uh, you know, knockoff of some. When they get agitated, they do curiously advanced yoga, but surprisingly, no kombucha."
+    },
+    {
+      "index": 105,
+      "speaker": "Game Master",
+      "text": "No Kombucha, all right, and when separated."
+    },
+    {
+      "index": 106,
+      "speaker": "Jonas Friday",
+      "text": "Uh, crying and screaming as one would."
+    },
+    {
+      "index": 107,
+      "speaker": "Game Master",
+      "text": "All right, Jason."
+    },
+    {
+      "index": 108,
+      "speaker": "Bruce Walters",
+      "text": "We got a sixyearold Guatemalan here."
+    },
+    {
+      "index": 109,
+      "speaker": "Bruce Walters",
+      "text": "Hes got extremely long hair."
+    },
+    {
+      "index": 110,
+      "speaker": "Bruce Walters",
+      "text": "He took his pocket watch on entry. Uh, gets upset. He uh has a a ragged blanket that he likes, that he, uh uh, foods not tolerated, just, says Suckling."
+    },
+    {
+      "index": 111,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Oh, that goes with the other."
+    },
+    {
+      "index": 112,
+      "speaker": "Bruce Walters",
+      "text": "Oh, okay, oh, okay."
+    },
+    {
+      "index": 113,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "I blended because when I did that, I didnt read the second one."
+    },
+    {
+      "index": 114,
+      "speaker": "Bruce Walters",
+      "text": "Oh, I see."
+    },
+    {
+      "index": 115,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "And for and also I just I, I inadvertently did that."
+    },
+    {
+      "index": 116,
+      "speaker": "Bruce Walters",
+      "text": "We did."
+    },
+    {
+      "index": 117,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So were suckling it."
+    },
+    {
+      "index": 118,
+      "speaker": "Bruce Walters",
+      "text": "We did attempt to feed him a suckling pig."
+    },
+    {
+      "index": 119,
+      "speaker": "Unassigned Speaker",
+      "text": "Nope."
+    },
+    {
+      "index": 120,
+      "speaker": "Bruce Walters",
+      "text": "A Polynesian delicacy."
+    },
+    {
+      "index": 121,
+      "speaker": "Bruce Walters",
+      "text": "And, uh, he did not like it."
+    },
+    {
+      "index": 122,
+      "speaker": "Unassigned Speaker",
+      "text": "I."
+    },
+    {
+      "index": 123,
+      "speaker": "Bruce Walters",
+      "text": "Were at the Harvey Milk facility. We have a diverse, UH, culinary program."
+    },
+    {
+      "index": 124,
+      "speaker": "Game Master",
+      "text": "Right, um, we try, uh, me and one of the kids in Jacobs, the fathers of one of the kids in Jacobs class at school. Um, were gonna bring a roast pig to the auction one year. And then we didnt because the one of the lead teachers owned a pet pig."
+    },
+    {
+      "index": 125,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 126,
+      "speaker": "Jonas Friday",
+      "text": "Oh, no."
+    },
+    {
+      "index": 127,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, they got it."
+    },
+    {
+      "index": 128,
+      "speaker": "Game Master",
+      "text": "And we checked with him and he was like, Please dont, and we were like, Okay."
+    },
+    {
+      "index": 129,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, yeah."
+    },
+    {
+      "index": 130,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, cause you remembered what school Jacob goes to."
+    },
+    {
+      "index": 131,
+      "speaker": "Unassigned Speaker",
+      "text": "Right, yeah, yeah."
+    },
+    {
+      "index": 132,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh Ive got a uh fiveyearold Venezuelan uh hes. A presented with a noticeable lump doesnt say where, Uh uh. He was wearing Heelys shoes, so couldve been a rolled ankle. Uh, selfsoothing behaviors observed rocking back and forth. Uh, he has an intolerance for creamy things."
+    },
+    {
+      "index": 133,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, h. His response when separated from his Guardian was other, but when we? When he was asked to describe the other, uh, he declined so."
+    },
+    {
+      "index": 134,
+      "speaker": "Game Master",
+      "text": "Okay, okay, great."
+    },
+    {
+      "index": 135,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Um, uh. Sixyearold, Cuba 02329. Hes got braces. Cause Cuba has that good healthcare. Uh, Im not joking. Uh, so they get him on there early. Uh, he got, he had a glowinthedark Yoyo, and he, uh, did Yoyo tricks to, you know?"
+    },
+    {
+      "index": 136,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Oh, sure."
+    },
+    {
+      "index": 137,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "To make himself feel good, make sense. Um, Hes allergic to nerds clusters, so maybe the dye Im assuming."
+    },
+    {
+      "index": 138,
+      "speaker": "Unassigned Speaker",
+      "text": "Maybe something with the sugar, but probably the dye."
+    },
+    {
+      "index": 139,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Its very common."
+    },
+    {
+      "index": 140,
+      "speaker": "Unassigned Speaker",
+      "text": "Tragic."
+    },
+    {
+      "index": 141,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Uh, he was nonresponsive and and attempted to comfort the Guardian."
+    },
+    {
+      "index": 142,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So another guy who had whatever but, uh, other, not not checked, but in other he did ask for popcorn."
+    },
+    {
+      "index": 143,
+      "speaker": "Unassigned Speaker",
+      "text": "So there you go."
+    },
+    {
+      "index": 144,
+      "speaker": "Game Master",
+      "text": "Well, thats good, theyre opening up to us."
+    },
+    {
+      "index": 145,
+      "speaker": "Unassigned Speaker",
+      "text": "Sure, sure."
+    },
+    {
+      "index": 146,
+      "speaker": "Game Master",
+      "text": "Andrew, you wanna do your last one?"
+    },
+    {
+      "index": 147,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yep, uh. 317 from Honduras, uh, almost seven, um, three ear piercings, um, were logged, uh, personal possessions confiscated was a J Blue Jansport backpack. Um, they were singing loudly, uh, seeming to soothe themselves, Um, they are, uh, allergic to hard cheese and red dye."
+    },
+    {
+      "index": 148,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "So probably nerds, too, um, theyre nonverbal or nonresponsive and just staring at the ground."
+    },
+    {
+      "index": 149,
+      "speaker": "Bruce Walters",
+      "text": "Well, the Harvey Milk Detention Facility will have to change its Cheese Board program."
+    },
+    {
+      "index": 150,
+      "speaker": "Jonas Friday",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 151,
+      "speaker": "Unassigned Speaker",
+      "text": "Lounge singing."
+    },
+    {
+      "index": 152,
+      "speaker": "Unassigned Speaker",
+      "text": "Actually."
+    },
+    {
+      "index": 153,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Oh, is it on that one?"
+    },
+    {
+      "index": 154,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Wait, lounge singing."
+    },
+    {
+      "index": 155,
+      "speaker": "Jonas Friday",
+      "text": "No, you got lounge singing."
+    },
+    {
+      "index": 156,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Lounge singing Okay, okay?"
+    },
+    {
+      "index": 157,
+      "speaker": "Jonas Friday",
+      "text": "Um, however, Detainee 02322 has engaged in quite a bit of lounge singing."
+    },
+    {
+      "index": 158,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "They can start a band."
+    },
+    {
+      "index": 159,
+      "speaker": "Jonas Friday",
+      "text": "Uh, yes."
+    },
+    {
+      "index": 160,
+      "speaker": "Jonas Friday",
+      "text": "Strangely confiscated at Checkin, a personalized hammer."
+    },
+    {
+      "index": 161,
+      "speaker": "Jonas Friday",
+      "text": "Im unclear on what exactly that means."
+    },
+    {
+      "index": 162,
+      "speaker": "Game Master",
+      "text": "Well, hes got a name, Uh uh, the kids name on it."
+    },
+    {
+      "index": 163,
+      "speaker": "Jonas Friday",
+      "text": "Or he stole someones Hammer."
+    },
+    {
+      "index": 164,
+      "speaker": "Game Master",
+      "text": "Okay, that could be, yeah, for sure, right? We I know the kid."
+    },
+    {
+      "index": 165,
+      "speaker": "Jonas Friday",
+      "text": "Uh, missing two front teeth upper."
+    },
+    {
+      "index": 166,
+      "speaker": "Jonas Friday",
+      "text": "Does not tolerate steak or chewy things, probably due to the front teeth and separated from Guardian crying, screaming, calls out mother."
+    },
+    {
+      "index": 167,
+      "speaker": "Unassigned Speaker",
+      "text": "Madre."
+    },
+    {
+      "index": 168,
+      "speaker": "Bruce Walters",
+      "text": "Uh, okay, this is my third sixyearold in a row."
+    },
+    {
+      "index": 169,
+      "speaker": "Bruce Walters",
+      "text": "Uh, he has a permanent smile."
+    },
+    {
+      "index": 170,
+      "speaker": "Jonas Friday",
+      "text": "Creepy."
+    },
+    {
+      "index": 171,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Thats hard."
+    },
+    {
+      "index": 172,
+      "speaker": "Bruce Walters",
+      "text": "Exactly, Yeah, um, he had an oyster knife on him. Hes really into Pearl diving."
+    },
+    {
+      "index": 173,
+      "speaker": "Unassigned Speaker",
+      "text": "Oyster knife."
+    },
+    {
+      "index": 174,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, I think hes really into Pearl diving."
+    },
+    {
+      "index": 175,
+      "speaker": "Bruce Walters",
+      "text": "Um, oddly enough, this part wasnt filled out food sought tolerant of oysters."
+    },
+    {
+      "index": 176,
+      "speaker": "Unassigned Speaker",
+      "text": "Oysters Okay?"
+    },
+    {
+      "index": 177,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, um."
+    },
+    {
+      "index": 178,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "We always want what we cant have."
+    },
+    {
+      "index": 179,
+      "speaker": "Bruce Walters",
+      "text": "He just wants the pearls. Yeah, um, no visible reaction when, Uh, separated from Guardian."
+    },
+    {
+      "index": 180,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Ooh, John."
+    },
+    {
+      "index": 181,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I have a fiveyearold from Somalia. They showed up with a double limp, but."
+    },
+    {
+      "index": 182,
+      "speaker": "Jonas Friday",
+      "text": "Double limp."
+    },
+    {
+      "index": 183,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "They were in possession of a BMX bike. Uh, the only selfsoothing behavior observed."
+    },
+    {
+      "index": 184,
+      "speaker": "Bruce Walters",
+      "text": "Well, these are all 80s kids. Yeah, we all."
+    },
+    {
+      "index": 185,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Thrashing."
+    },
+    {
+      "index": 186,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And, uh."
+    },
+    {
+      "index": 187,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "The only thing they dont tolerate is the man."
+    },
+    {
+      "index": 188,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Okay, oh, wow."
+    },
+    {
+      "index": 189,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And they cried, screamed and, uh, were physically resistant."
+    },
+    {
+      "index": 190,
+      "speaker": "Game Master",
+      "text": "Okay, rich, last one."
+    },
+    {
+      "index": 191,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "UH 02318 Sevenyearold from El Salvador, missing a left arm."
+    },
+    {
+      "index": 192,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Ooh."
+    },
+    {
+      "index": 193,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Hard, but he does have a game boy that he cant play easily."
+    },
+    {
+      "index": 194,
+      "speaker": "Unassigned Speaker",
+      "text": "Who listened?"
+    },
+    {
+      "index": 195,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, uh, he, uh, with a single cartridge, so he has a single game. Well, assume its Tetris. Uh, he repeats, repeats lines from the The Mario Brothers movie."
+    },
+    {
+      "index": 196,
+      "speaker": "Game Master",
+      "text": "Which one?"
+    },
+    {
+      "index": 197,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "It doesnt spec. I was thinking the same one."
+    },
+    {
+      "index": 198,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "And then, like, which one now cause theres several?"
+    },
+    {
+      "index": 199,
+      "speaker": "Unassigned Speaker",
+      "text": "Is that the good one?"
+    },
+    {
+      "index": 200,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "One of the animated ones."
+    },
+    {
+      "index": 201,
+      "speaker": "Unassigned Speaker",
+      "text": "Only one good one."
+    },
+    {
+      "index": 202,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Only one good one, I know. Ask Bob Hoskins what he thinks about that movie."
+    },
+    {
+      "index": 203,
+      "speaker": "Unassigned Speaker",
+      "text": "Yes, exactly exactly."
+    },
+    {
+      "index": 204,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "People disagree, uh."
+    },
+    {
+      "index": 205,
+      "speaker": "Bruce Walters",
+      "text": "Did you know that the the collectors version of that comes with three scripts of the movie?"
+    },
+    {
+      "index": 206,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "No."
+    },
+    {
+      "index": 207,
+      "speaker": "Unassigned Speaker",
+      "text": "Wow, theres four."
+    },
+    {
+      "index": 208,
+      "speaker": "Bruce Walters",
+      "text": "Is it four?"
+    },
+    {
+      "index": 209,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah."
+    },
+    {
+      "index": 210,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, four."
+    },
+    {
+      "index": 211,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Thats amazing."
+    },
+    {
+      "index": 212,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Some heros gonna have to like, do each one of them."
+    },
+    {
+      "index": 213,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Uh, he has severe acid reflux with all food, so this kid is not having a good time."
+    },
+    {
+      "index": 214,
+      "speaker": "Unassigned Speaker",
+      "text": "Ooh."
+    },
+    {
+      "index": 215,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "He was physically res, uh uh, resistant and, uh, had repetitive vocalizations of California, California, I thought."
+    },
+    {
+      "index": 216,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Hes just trying to make it to video Armageddon."
+    },
+    {
+      "index": 217,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, exactly."
+    },
+    {
+      "index": 218,
+      "speaker": "Game Master",
+      "text": "All right, so, uh, Im gonna do a little recap."
+    },
+    {
+      "index": 219,
+      "speaker": "Bruce Walters",
+      "text": "Please attempt that."
+    },
+    {
+      "index": 220,
+      "speaker": "Game Master",
+      "text": "And, um, rather than recapping the last session, Im gonna do a little bit of a previously on so well."
+    },
+    {
+      "index": 221,
+      "speaker": "Unassigned Speaker",
+      "text": "Were gonna go back pretty far."
+    },
+    {
+      "index": 222,
+      "speaker": "Game Master",
+      "text": "So, um, in the late 80s, early 90s, a set of Russian Orthodox religious cult called the Skoptsy made their way to, Um, to Maryland, where they settled on an extended kind of almost like a weird shtetl called the Moscow on the Hudson. And um, uh, and while there they, um, they had some very weird religious beliefs amongst them. This is from the files of Delta Green. Amongst them was the fact that, um, that they all believed that the breast milk of the Virgin Mary provided immortality. And you would think that this would not be super useful. Except they also believed that women subjected to intense suffering could actually be made to express the original milk from the Virgin. Mary and, um, they raised a bunch of, uh, young women in that environment and had a program around raising kids under extreme suffering. One such woman made her way actually back from Ukraine here. And, um, uh, made her way in the community. And actually was known for the fact that, um, she could express a black milk from her breasts. She was given authority over an, uh, like a trial orphanage here in America called Cornucopia House. And they would kidnap young kids and take them. And, um, she was the one who had the great idea to institute the program to deny them language amongst the other types of suffering that they were subject to, Um, those kids were eventually freed from Cornucopia House, um."
+    },
+    {
+      "index": 223,
+      "speaker": "Jonas Friday",
+      "text": "Thats us."
+    },
+    {
+      "index": 224,
+      "speaker": "Unassigned Speaker",
+      "text": "By."
+    },
+    {
+      "index": 225,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, we did it, we did it."
+    },
+    {
+      "index": 226,
+      "speaker": "Game Master",
+      "text": "By a group of people, including Amelia Granger, EMT."
+    },
+    {
+      "index": 227,
+      "speaker": "Jonas Friday",
+      "text": "Wow from the past."
+    },
+    {
+      "index": 228,
+      "speaker": "Game Master",
+      "text": "Uh, Jonas. FRIDAY FBI Agent Um, hold on if I cant find it, Im just leaving it. Okay, uh, were leaving it for the rest of them. Uh, Bruce Walters, of course."
+    },
+    {
+      "index": 229,
+      "speaker": "Unassigned Speaker",
+      "text": "Bruce Walters."
+    },
+    {
+      "index": 230,
+      "speaker": "Game Master",
+      "text": "There was a machinist, there was an EMT thats Emil Granger, and there was, Do you remember who your original character was? I I I Wa."
+    },
+    {
+      "index": 231,
+      "speaker": "Unassigned Speaker",
+      "text": "I dont know."
+    },
+    {
+      "index": 232,
+      "speaker": "Game Master",
+      "text": "It was a medical, it was definitely a medical something, it was like a a psychiatric intake. Or no. Okay, I dont remember."
+    },
+    {
+      "index": 233,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, I dont remember."
+    },
+    {
+      "index": 234,
+      "speaker": "Jonas Friday",
+      "text": "Like Neil Basement."
+    },
+    {
+      "index": 235,
+      "speaker": "Unassigned Speaker",
+      "text": "Its okay."
+    },
+    {
+      "index": 236,
+      "speaker": "Game Master",
+      "text": "Yeah, okay, um, uh. The people who freed those people, those who survived were, um, plagued by the fact that whenever they encountered something supernatural, they smelled sugar, cookies. And, um, they joined Delta Green and used that power for good and, um, good, and had a number of runins with survivor children from Cornucopia House. UM, including Wesley Kuhl MMHMM, a Stanford researcher and person who built a VPN that could send people to their own reality bubbles MMHMM."
+    },
+    {
+      "index": 237,
+      "speaker": "Bruce Walters",
+      "text": "Wait, how did we get to him again? Can you back up two seconds?"
+    },
+    {
+      "index": 238,
+      "speaker": "Game Master",
+      "text": "Yeah, so the as Delta Green."
+    },
+    {
+      "index": 239,
+      "speaker": "Game Master",
+      "text": "You were investigating the fact that a sorority house at Cornell University was, um, attacked by a young man."
+    },
+    {
+      "index": 240,
+      "speaker": "Game Master",
+      "text": "Who had black pilled?"
+    },
+    {
+      "index": 241,
+      "speaker": "Game Master",
+      "text": "And he was killing them for H for killing one of his friends, and he had video camera footage of them flaying him alive."
+    },
+    {
+      "index": 242,
+      "speaker": "Game Master",
+      "text": "And he was still alive. And thats because it happened in the bubble. Reality and thats how it got onto Delta Greens radar and thats how you guys got to it."
+    },
+    {
+      "index": 243,
+      "speaker": "Bruce Walters",
+      "text": "But we werent sent there because of that. Any connection to Cornucopia House?"
+    },
+    {
+      "index": 244,
+      "speaker": "Game Master",
+      "text": "Thats correct."
+    },
+    {
+      "index": 245,
+      "speaker": "Bruce Walters",
+      "text": "We were sent there because we were just part of the crew at this point."
+    },
+    {
+      "index": 246,
+      "speaker": "Game Master",
+      "text": "Thats exactly right. You were a working group mascot."
+    },
+    {
+      "index": 247,
+      "speaker": "Game Master",
+      "text": "Thats exactly right."
+    },
+    {
+      "index": 248,
+      "speaker": "Game Master",
+      "text": "And you had a adventure where you, um, okay, there was a side adventure, not from your group. In order to, uh, investigate. Sheriffs right at the L.A. County Sheriffs Department MMHMM that was running a game called the Slugs MMHMM."
+    },
+    {
+      "index": 249,
+      "speaker": "Game Master",
+      "text": "Um, and one of whom was one of these cops was actually one of the children from Cornucopia House. And, Um, had started to play with. I forget how he found it. Some kind of like he thought he was recreating some formula that would take him back to his languageless state. And, um, uh, it didnt. It drove people crazy and they wanted to tear their own tongues out and right their own jaws off. Yeah, and um, okay, so that got stopped. And then, um, uh, is, is there another adventure that you guys had that wasnt then Operation Night Terror, where you had to cover up the crimes? I like another adventure with a like there was the there was the sheriffs, one MMHmm, there was the one with the Wesley Kuhl MMHMm, was there another one?"
+    },
+    {
+      "index": 250,
+      "speaker": "Bruce Walters",
+      "text": "The Wesley Kuhl one was the one where we went to some of the alternate realities, right?"
+    },
+    {
+      "index": 251,
+      "speaker": "Game Master",
+      "text": "Thats right, yeah."
+    },
+    {
+      "index": 252,
+      "speaker": "Unassigned Speaker",
+      "text": "That one, yeah."
+    },
+    {
+      "index": 253,
+      "speaker": "Game Master",
+      "text": "Cause his VPN picky eater."
+    },
+    {
+      "index": 254,
+      "speaker": "Game Master",
+      "text": "Um, okay, uh, Im gonna skip ahead then and just say, Okay, then you guys, um. Then a woman shows up dead in El Paso, Texas, in a trailer park and her cats are eating her. MMHMM. And um, the sheriff who follows up finds that she was, Um, Shed been in exile in Paris and Europe. And then came back here, and she had a like a ledger full of her talking about how she worked for some secret government agency. And that whole agency was killed by the Skoptsy. And so she found some patsies, some friendlies. That, um, her boss, the head of the group who had died, um, had been friendlies with. And so she corralled them all to go kill the skoptsy who ran Cornucopia House. Do you want to see a picture of the founder of The Skoptsy?"
+    },
+    {
+      "index": 255,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, cool."
+    },
+    {
+      "index": 256,
+      "speaker": "Unassigned Speaker",
+      "text": "Hes a real chill guy."
+    },
+    {
+      "index": 257,
+      "speaker": "Game Master",
+      "text": "Super chill looking."
+    },
+    {
+      "index": 258,
+      "speaker": "Game Master",
+      "text": "Nice hair. Um, uh, you guys went and covered it up, and, um, you made some friends along the way and roped some new people into Delta Green, MMHMm and, um, uh, ran into some brown recluse spiders and, uh, covered up stuff. And then, Um, then you guys, Uh. Then there was the attack in Israel, right? and you guys went to Israel and to PA to Gaza. And you found that. One of the children of Cornucopia House was a photographer, and whatever she photographed added real life things. From World War I. That led you to Scribe Life 420, where you guys, Um, uh. First you were investigating graffiti around the D.C. area of a brain. We see it in D.C. and then you. Um, and then you went to, Uh, visit Scribelife and Scribelife directed you guys to. The Cornucopia Foundation, right? And Cornucopia Foundation was working, um, to help kids who had Aphasia, um, and were now grown adults. And then you, um? From there, you found your way to Root Crown and Royal, the law firm where you discovered that, um, the foundation was run by was F founded and funded by Essau Jacobs, father of one of the children from Cornucopia House. Connor Jacobs and Connor now works at ICE and has been running for a long time. The Um Harvey Milk Water Reclamation Plant and um. And when child Separation stopped, he kept going, and he made a special deal with the government, where they couldnt come visit. And in return he was doing research and this became a cancer in the government. And nobody felt like they could do anything about it. Because Youd have to tell people it was there and it was so horrific that anybody involved would be burned. And so it just kept going until the Biden administration was complicit and then now trumps complicit. And Wesley Kuhl has offered them a way out. Which is moving the whole thing to Africa, where he will be beyond anyones control and with enough money to do whatever he wants. And, um."
+    },
+    {
+      "index": 259,
+      "speaker": "Bruce Walters",
+      "text": "Is the same Wesley Kuhl from?"
+    },
+    {
+      "index": 260,
+      "speaker": "Game Master",
+      "text": "Oh Im sorry, no different, yeah. Connor Jacobs Yeah."
+    },
+    {
+      "index": 261,
+      "speaker": "Bruce Walters",
+      "text": "Okay, Gotcha, okay, cause I was like, what?"
+    },
+    {
+      "index": 262,
+      "speaker": "Game Master",
+      "text": "Yep, nope."
+    },
+    {
+      "index": 263,
+      "speaker": "Unassigned Speaker",
+      "text": "Awesome, yeah."
+    },
+    {
+      "index": 264,
+      "speaker": "Game Master",
+      "text": "Yep, thank you, wow."
+    },
+    {
+      "index": 265,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats a missed connection."
+    },
+    {
+      "index": 266,
+      "speaker": "Game Master",
+      "text": "Pay attention. Yeah, no, no, no pay attention. Um, uh. SPOILER ALERT yeah. Tom George was the guy that he was blackmailing to move his facility to Mogadishu."
+    },
+    {
+      "index": 267,
+      "speaker": "Game Master",
+      "text": "And no ones seen Tom George and disappeared. Yes, MIA, and you guys heavily dead, thats right, and you guys have made your way now to El Paso, Texas, where you did a first drive by of the Harvey Milk Water Reclamation plant. The B cell of Delta Green is after you because all of you guys are, um, no longer part of the agency."
+    },
+    {
+      "index": 268,
+      "speaker": "Game Master",
+      "text": "You are off the leash and, um, uh. And when Rich tried to use his special ability, it was not very good for him."
+    },
+    {
+      "index": 269,
+      "speaker": "Jonas Friday",
+      "text": "Oh, thats right, I forgot about that."
+    },
+    {
+      "index": 270,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Thats where the stinky, the stinky candle came from."
+    },
+    {
+      "index": 271,
+      "speaker": "Jonas Friday",
+      "text": "Thats right."
+    },
+    {
+      "index": 272,
+      "speaker": "Bruce Walters",
+      "text": "Are you youre doomed, right?"
+    },
+    {
+      "index": 273,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 274,
+      "speaker": "Game Master",
+      "text": "What happened, what did you remember?"
+    },
+    {
+      "index": 275,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Am I doomed?"
+    },
+    {
+      "index": 276,
+      "speaker": "Game Master",
+      "text": "No, hes not."
+    },
+    {
+      "index": 277,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "IM not doomed."
+    },
+    {
+      "index": 278,
+      "speaker": "Unassigned Speaker",
+      "text": "No, Im doomed."
+    },
+    {
+      "index": 279,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Oh, youre doomed."
+    },
+    {
+      "index": 280,
+      "speaker": "Game Master",
+      "text": "Yeah, so Jen got doomed. And so where when did you guys get doomed? do you remember?"
+    },
+    {
+      "index": 281,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "My last last last time."
+    },
+    {
+      "index": 282,
+      "speaker": "Game Master",
+      "text": "But do you remember what you were doing?"
+    },
+    {
+      "index": 283,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "I I was, it was, was it the airplane?"
+    },
+    {
+      "index": 284,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, we were in the car outside."
+    },
+    {
+      "index": 285,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Oh, it was in the car, yeah, cause I did the airplane, then I tried to do it again in the car, cause we were being surrounded by."
+    },
+    {
+      "index": 286,
+      "speaker": "Game Master",
+      "text": "Car first, then airplane."
+    },
+    {
+      "index": 287,
+      "speaker": "Jonas Friday",
+      "text": "I feel like I was doing something that wasnt that hard."
+    },
+    {
+      "index": 288,
+      "speaker": "Game Master",
+      "text": "I agree."
+    },
+    {
+      "index": 289,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, it was like it, it was a unpoetic dooming."
+    },
+    {
+      "index": 290,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, I was just trying to like control animals again."
+    },
+    {
+      "index": 291,
+      "speaker": "Unassigned Speaker",
+      "text": "Yep, okay."
+    },
+    {
+      "index": 292,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "And it didnt go well."
+    },
+    {
+      "index": 293,
+      "speaker": "Jonas Friday",
+      "text": "And."
+    },
+    {
+      "index": 294,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Can I share a fun fact about the Scoptites?"
+    },
+    {
+      "index": 295,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Apparently so theyre. They mandated that it was a precondition for entering paradise to be castrated, or for women to have their genital mutilated."
+    },
+    {
+      "index": 296,
+      "speaker": "Bruce Walters",
+      "text": "Oh, great."
+    },
+    {
+      "index": 297,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, by 1866, it was reported that they had, uh, 5444 members and."
+    },
+    {
+      "index": 298,
+      "speaker": "Jonas Friday",
+      "text": "Wait, like they collected members."
+    },
+    {
+      "index": 299,
+      "speaker": "Jonas Friday",
+      "text": "Members of their members."
+    },
+    {
+      "index": 300,
+      "speaker": "Unassigned Speaker",
+      "text": "Members."
+    },
+    {
+      "index": 301,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Members of the Scoptites."
+    },
+    {
+      "index": 302,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, but funny, you should say that. Because even though they had close to five and a half thousand members, uh, fewer than 1000 had actually undergone any of the mutilating."
+    },
+    {
+      "index": 303,
+      "speaker": "Unassigned Speaker",
+      "text": "Shocking."
+    },
+    {
+      "index": 304,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, shocking."
+    },
+    {
+      "index": 305,
+      "speaker": "Game Master",
+      "text": "Um, okay, so uh, um, yeah, so Jen and Richard, the only ones doomed."
+    },
+    {
+      "index": 306,
+      "speaker": "Unassigned Speaker",
+      "text": "Them."
+    },
+    {
+      "index": 307,
+      "speaker": "Game Master",
+      "text": "And I dont think anyone burned their bond. Yeah, Jason did burn his bond, but he brought it back."
+    },
+    {
+      "index": 308,
+      "speaker": "Unassigned Speaker",
+      "text": "Tomorrow."
+    },
+    {
+      "index": 309,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, I resurrected a cookie tomorrow."
+    },
+    {
+      "index": 310,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, I heard you did."
+    },
+    {
+      "index": 311,
+      "speaker": "Unassigned Speaker",
+      "text": "Cookies."
+    },
+    {
+      "index": 312,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "You had to do it."
+    },
+    {
+      "index": 313,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And, um."
+    },
+    {
+      "index": 314,
+      "speaker": "Unassigned Speaker",
+      "text": "Im Im good, Im good."
+    },
+    {
+      "index": 315,
+      "speaker": "Game Master",
+      "text": "Okay, uh."
+    },
+    {
+      "index": 316,
+      "speaker": "Unassigned Speaker",
+      "text": "Thanks."
+    },
+    {
+      "index": 317,
+      "speaker": "Game Master",
+      "text": "And you guys are in El Paso, Texas. Um, and, uh, oh, and sorry, you visited the University of Texas at El Paso."
+    },
+    {
+      "index": 318,
+      "speaker": "Game Master",
+      "text": "Where you found that they were receiving the 30 35 CO2 gas mixture?"
+    },
+    {
+      "index": 319,
+      "speaker": "Game Master",
+      "text": "Um, but you were.nt able to find who there was collecting it. And I think thats where we pick up, so lets take it from here. What do you guys do?"
+    },
+    {
+      "index": 320,
+      "speaker": "Unassigned Speaker",
+      "text": "You wanna pray?"
+    },
+    {
+      "index": 321,
+      "speaker": "Game Master",
+      "text": "No, I got it, you, oh, you guys are gonna make a lot of fools today."
+    },
+    {
+      "index": 322,
+      "speaker": "Jonas Friday",
+      "text": "I mean."
+    },
+    {
+      "index": 323,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh, and I used my thing on Jason on the last one, right?"
+    },
+    {
+      "index": 324,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "I dont have."
+    },
+    {
+      "index": 325,
+      "speaker": "Game Master",
+      "text": "Thats right, its a very, very last thing that happened."
+    },
+    {
+      "index": 326,
+      "speaker": "Unassigned Speaker",
+      "text": "It saved me."
+    },
+    {
+      "index": 327,
+      "speaker": "Bruce Walters",
+      "text": "So, okay, so were at the university right now."
+    },
+    {
+      "index": 328,
+      "speaker": "Unassigned Speaker",
+      "text": "Um, y."
+    },
+    {
+      "index": 329,
+      "speaker": "Unassigned Speaker",
+      "text": "Were out."
+    },
+    {
+      "index": 330,
+      "speaker": "Unassigned Speaker",
+      "text": "You can, I, I believe."
+    },
+    {
+      "index": 331,
+      "speaker": "Unassigned Speaker",
+      "text": "Were sitting in our car."
+    },
+    {
+      "index": 332,
+      "speaker": "Game Master",
+      "text": "Youre in El Paso, you werent in any danger when we took off."
+    },
+    {
+      "index": 333,
+      "speaker": "Unassigned Speaker",
+      "text": "So youre good."
+    },
+    {
+      "index": 334,
+      "speaker": "Unassigned Speaker",
+      "text": "And."
+    },
+    {
+      "index": 335,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So we we can. So Harvey milk being case."
+    },
+    {
+      "index": 336,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly."
+    },
+    {
+      "index": 337,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "By by B team."
+    },
+    {
+      "index": 338,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Right, um, we probably wanna go there at some point."
+    },
+    {
+      "index": 339,
+      "speaker": "Bruce Walters",
+      "text": "I think, yeah, thats probably one of our."
+    },
+    {
+      "index": 340,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "But what is our plan? Do we wanna go there? And just like?"
+    },
+    {
+      "index": 341,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, like, whats our plan to go there? What are we?"
+    },
+    {
+      "index": 342,
+      "speaker": "Bruce Walters",
+      "text": "Bring a delivery pizza."
+    },
+    {
+      "index": 343,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, but say, Were there, what do we wanna do? When were there?"
+    },
+    {
+      "index": 344,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Like, Are we there to free like all these kids?"
+    },
+    {
+      "index": 345,
+      "speaker": "Jonas Friday",
+      "text": "What are we, yeah?"
+    },
+    {
+      "index": 346,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Or are we just gonna burn the whole place?"
+    },
+    {
+      "index": 347,
+      "speaker": "Bruce Walters",
+      "text": "Oh, we have guns, too."
+    },
+    {
+      "index": 348,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Blow the whole place up."
+    },
+    {
+      "index": 349,
+      "speaker": "Unassigned Speaker",
+      "text": "Remember, we have guns."
+    },
+    {
+      "index": 350,
+      "speaker": "Game Master",
+      "text": "Super quick question Yeah, thats right and on your way back."
+    },
+    {
+      "index": 351,
+      "speaker": "Unassigned Speaker",
+      "text": "Brown recluse spiders came out of the vents."
+    },
+    {
+      "index": 352,
+      "speaker": "Unassigned Speaker",
+      "text": "Perfect."
+    },
+    {
+      "index": 353,
+      "speaker": "Game Master",
+      "text": "In your car, um, why do you guys think that now? When you encounter something supernatural, you dont smell sugar cookies, you smell rotten meat?"
+    },
+    {
+      "index": 354,
+      "speaker": "Jonas Friday",
+      "text": "I mean."
+    },
+    {
+      "index": 355,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Well, the first time it happened was when with my guy, right?"
+    },
+    {
+      "index": 356,
+      "speaker": "Game Master",
+      "text": "Uhhuh But its happened to all of you, like when you were on the airplane."
+    },
+    {
+      "index": 357,
+      "speaker": "Game Master",
+      "text": "You all smelled it."
+    },
+    {
+      "index": 358,
+      "speaker": "Bruce Walters",
+      "text": "I assume its cause. You bought a candle and were tracking it."
+    },
+    {
+      "index": 359,
+      "speaker": "Game Master",
+      "text": "No, that is not the case."
+    },
+    {
+      "index": 360,
+      "speaker": "Unassigned Speaker",
+      "text": "Trying to get Jason to board."
+    },
+    {
+      "index": 361,
+      "speaker": "Game Master",
+      "text": "I So we came up with a use first."
+    },
+    {
+      "index": 362,
+      "speaker": "Jonas Friday",
+      "text": "I mean, I assume its like, Uh, all of our, the degradation of our soul, catching up with us, like all of the crazy shit that weve did from and like."
+    },
+    {
+      "index": 363,
+      "speaker": "Unassigned Speaker",
+      "text": "So we have a message from Jacob."
+    },
+    {
+      "index": 364,
+      "speaker": "Jonas Friday",
+      "text": "Here it is, in a smell form."
+    },
+    {
+      "index": 365,
+      "speaker": "Unassigned Speaker",
+      "text": "Or."
+    },
+    {
+      "index": 366,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Teased it."
+    },
+    {
+      "index": 367,
+      "speaker": "Unassigned Speaker",
+      "text": "In a smell form."
+    },
+    {
+      "index": 368,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Heres heres your soul, a little little, a little pretaste of whats on the inside."
+    },
+    {
+      "index": 369,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "You know."
+    },
+    {
+      "index": 370,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "The original mother."
+    },
+    {
+      "index": 371,
+      "speaker": "Unassigned Speaker",
+      "text": "Um, yeah."
+    },
+    {
+      "index": 372,
+      "speaker": "Game Master",
+      "text": "You, you guys killed her the very first session."
+    },
+    {
+      "index": 373,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, yeah, yeah, thats what my thats. My character died."
+    },
+    {
+      "index": 374,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, good."
+    },
+    {
+      "index": 375,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "The first guy."
+    },
+    {
+      "index": 376,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "And the other guy?"
+    },
+    {
+      "index": 377,
+      "speaker": "Game Master",
+      "text": "Now she did, like you could maybe make a claim that the black ooze during Operation Night terror that filled her cottage. Was that the remnants of her?"
+    },
+    {
+      "index": 378,
+      "speaker": "Jonas Friday",
+      "text": "MMHmm."
+    },
+    {
+      "index": 379,
+      "speaker": "Game Master",
+      "text": "I dont know."
+    },
+    {
+      "index": 380,
+      "speaker": "Jonas Friday",
+      "text": "Some power within her."
+    },
+    {
+      "index": 381,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So Jacob sent us that that threat."
+    },
+    {
+      "index": 382,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "One of us right hes like and hes like, and thats something that also is like that. That tonight might be where, like the tonight where were at now."
+    },
+    {
+      "index": 383,
+      "speaker": "Bruce Walters",
+      "text": "Oh, right, right, right?"
+    },
+    {
+      "index": 384,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Hes like Youll see tonight, but he starts that message by saying."
+    },
+    {
+      "index": 385,
+      "speaker": "Jonas Friday",
+      "text": "Oh, I forgot about that."
+    },
+    {
+      "index": 386,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Yeah, yeah, and the message I think started with like, Um, we, we first called for you or something like that."
+    },
+    {
+      "index": 387,
+      "speaker": "Jonas Friday",
+      "text": "Called."
+    },
+    {
+      "index": 388,
+      "speaker": "Game Master",
+      "text": "We called and you came."
+    },
+    {
+      "index": 389,
+      "speaker": "Unassigned Speaker",
+      "text": "And ruined our lives."
+    },
+    {
+      "index": 390,
+      "speaker": "Unassigned Speaker",
+      "text": "Right, exactly."
+    },
+    {
+      "index": 391,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So IM, and this is a long shot. But like we CA, we, we they called, and we came in the Cornucopia House, right, and so we got rid of them. So they dont like that. Theyre no longer theyre theyre talking, right?"
+    },
+    {
+      "index": 392,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "But thats when we started smelling sugar cookies, right?"
+    },
+    {
+      "index": 393,
+      "speaker": "Jonas Friday",
+      "text": "MMHmm."
+    },
+    {
+      "index": 394,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Around that time."
+    },
+    {
+      "index": 395,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "So their position, their outlook on us, has changed. So does that mean that the smell now changes?"
+    },
+    {
+      "index": 396,
+      "speaker": "Jonas Friday",
+      "text": "Yeah."
+    },
+    {
+      "index": 397,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Because were connected."
+    },
+    {
+      "index": 398,
+      "speaker": "Bruce Walters",
+      "text": "And were not their saviors anymore."
+    },
+    {
+      "index": 399,
+      "speaker": "Bruce Walters",
+      "text": "Right, they used to be gracing us with sugar cookies."
+    },
+    {
+      "index": 400,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Like, right?"
+    },
+    {
+      "index": 401,
+      "speaker": "Bruce Walters",
+      "text": "Now theyre damning us with meat."
+    },
+    {
+      "index": 402,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, right."
+    },
+    {
+      "index": 403,
+      "speaker": "Unassigned Speaker",
+      "text": "I will give you an insight."
+    },
+    {
+      "index": 404,
+      "speaker": "Game Master",
+      "text": "If youre willing to pull one of the card."
+    },
+    {
+      "index": 405,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Ooh, the color."
+    },
+    {
+      "index": 406,
+      "speaker": "Game Master",
+      "text": "Now heres the thing I will tell you You have two bonds to burn."
+    },
+    {
+      "index": 407,
+      "speaker": "Jonas Friday",
+      "text": "I do wanna pull a card."
+    },
+    {
+      "index": 408,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "All right, go for it."
+    },
+    {
+      "index": 409,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "Oh boy, and we all remember which one is the bad one?"
+    },
+    {
+      "index": 410,
+      "speaker": "Game Master",
+      "text": "Thats the bad one. JEN Which of your two bonds do you burn?"
+    },
+    {
+      "index": 411,
+      "speaker": "Jonas Friday",
+      "text": "Not the grocery lady."
+    },
+    {
+      "index": 412,
+      "speaker": "Game Master",
+      "text": "Oh no, I think its the grocery lady."
+    },
+    {
+      "index": 413,
+      "speaker": "Unassigned Speaker",
+      "text": "Grocery lady."
+    },
+    {
+      "index": 414,
+      "speaker": "Jonas Friday",
+      "text": "I do because my other one is my nephew, and I cant do that."
+    },
+    {
+      "index": 415,
+      "speaker": "Game Master",
+      "text": "No, no, your other one is, Oh yeah, its your nephew, right?"
+    },
+    {
+      "index": 416,
+      "speaker": "Game Master",
+      "text": "So who is it, is it your nephew or is it or is it the grocery lady?"
+    },
+    {
+      "index": 417,
+      "speaker": "Unassigned Speaker",
+      "text": "Its The Grocery Lady."
+    },
+    {
+      "index": 418,
+      "speaker": "Jonas Friday",
+      "text": "Im so sorry, Marge."
+    },
+    {
+      "index": 419,
+      "speaker": "Dr Ambrose 'airtight' Reichman aka Thumper",
+      "text": "She was always there for you."
+    },
+    {
+      "index": 420,
+      "speaker": "Unassigned Speaker",
+      "text": "I know."
+    }
+  ]
+}
+</role_transcript>

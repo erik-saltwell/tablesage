@@ -550,7 +550,9 @@ class SessionDetailScreen(TableSageScreen):
     def action_new_attendee(self) -> None:
         game_session = self.application.get_session(self._session_id)
         attending_ids = {attendee.player_id for attendee in self.application.list_attendance(self._session_id)}
-        available = [player for _, player in self.application.list_roster(game_session.campaign_id) if player.id not in attending_ids]
+        roster = self.application.list_roster(game_session.campaign_id)
+        available = [player for _, player in roster if player.id not in attending_ids]
+        default_roles = {player.id: membership.default_role_name for membership, player in roster}
 
         def on_saved(result: AttendeeResult | None) -> None:
             if result is None:
@@ -569,7 +571,7 @@ class SessionDetailScreen(TableSageScreen):
 
             self._with_invalidation_guard(do_add)
 
-        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee"), on_saved)
+        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee", default_roles=default_roles), on_saved)
 
     def action_edit_attendee(self) -> None:
         attendee = self._selected_attendee()

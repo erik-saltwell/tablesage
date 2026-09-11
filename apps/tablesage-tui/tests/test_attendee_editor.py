@@ -59,6 +59,48 @@ async def test_add_custom_role_via_dialog() -> None:
 
 
 @pytest.mark.anyio
+async def test_character_role_uses_selected_players_campaign_default() -> None:
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(
+            AttendeeDialog(
+                players=[_ALICE],
+                title="Add Attendee",
+                default_roles={_ALICE.id: "Zaria"},
+            )
+        )
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
+        await pilot.pause()
+        pilot.app.screen.query_one("#attendee-add-character", Button).press()
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert pilot.app.screen.query_one("#text-input-value", Input).value == "Zaria"
+
+
+@pytest.mark.anyio
+async def test_character_role_does_not_default_to_case_insensitive_game_master_sentinel() -> None:
+    async with TableSageApp().run_test() as pilot:
+        pilot.app.push_screen(
+            AttendeeDialog(
+                players=[_ALICE],
+                title="Add Attendee",
+                default_roles={_ALICE.id: "GAME-MASTER"},
+            )
+        )
+        await pilot.pause()
+
+        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
+        await pilot.pause()
+        pilot.app.screen.query_one("#attendee-add-character", Button).press()
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert pilot.app.screen.query_one("#text-input-value", Input).value == ""
+
+
+@pytest.mark.anyio
 async def test_add_duplicate_custom_role_is_a_no_op() -> None:
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))

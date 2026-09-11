@@ -49,3 +49,27 @@ def test_delete_glossary_entry(tmp_path: Path) -> None:
     application.delete_glossary_entry(campaign.id, entry.id)
 
     assert application.list_glossary_entries(campaign.id) == []
+
+
+def test_import_legacy_glossary_adds_only_new_terms_and_preserves_existing_descriptions(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ironhold", description="Current description"))
+    source = tmp_path / "settings.yaml"
+    source.write_text(
+        """campaign_info:
+  glossary:
+    - term: Ironhold
+      description: Old description
+    - term: Ashmoor
+      description: A blighted moorland.
+    - term: Ashmoor
+      description: Duplicate legacy description
+""",
+        encoding="utf-8",
+    )
+
+    assert application.import_legacy_glossary(campaign.id, source) == 1
+
+    entries = {entry.term: entry.description for entry in application.list_glossary_entries(campaign.id)}
+    assert entries == {"Ironhold": "Current description", "Ashmoor": "A blighted moorland."}

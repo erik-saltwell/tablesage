@@ -15,6 +15,7 @@ from rich.syntax import Syntax
 
 from .recap_summary_metrics import build_recap_summary_metrics
 from .recap_summary_scorer import RecapSummaryGatedScorer
+from .winner_output import checkpoint_callback, report_interruption, resolve_seed_prompt, save_winner
 
 
 class RecapSummaryOptimizerSettings(BaseModel):
@@ -56,9 +57,10 @@ def _load_settings(path: Path) -> RecapSummarySettings:
         return RecapSummarySettings.model_validate(yaml.safe_load(stream) or {})
 
 
-def optimize_recap_summary(prompt_directory: Path, console: Console, *, run: bool = False) -> None:
+def optimize_recap_summary(prompt_directory: Path, console: Console, *, run: bool = False, resume: bool = False) -> None:
     seed_prompt_path = prompt_directory / "seed_prompt.txt"
     inputs_directory = prompt_directory / "inputs"
+    output_directory = prompt_directory / "outputs"
     if not seed_prompt_path.is_file():
         raise ValueError(f"Seed prompt not found at {seed_prompt_path}.")
     if not inputs_directory.is_dir():
@@ -66,7 +68,7 @@ def optimize_recap_summary(prompt_directory: Path, console: Console, *, run: boo
 
     settings = _load_settings(prompt_directory / "settings.yaml")
     config = OptimizerConfig(
-        seed_prompt=seed_prompt_path.read_text(encoding="utf-8"),
+        seed_prompt=resolve_seed_prompt(seed_prompt_path, output_directory, resume=resume, console=console),
         eval_cases=_load_eval_cases(inputs_directory),
         target_llm=settings.target_llm,
         actor_llm=settings.actor_llm,
@@ -88,5 +90,27 @@ def optimize_recap_summary(prompt_directory: Path, console: Console, *, run: boo
     console.print(Syntax(config.model_dump_json(indent=2), "json"))
     if not run:
         return
-    result = asyncio.run(optimize_prompt(config=config, metrics=metrics, scorer=scorer))
-    console.print(Panel(f"Best score: {result.best_score:.4f}", title="Recap Summary Optimization Complete", border_style="cyan"))
+    try:
+        result = asyncio.run(
+            optimize_prompt(
+                config=config,
+                metrics=metrics,
+                scorer=scorer,
+                on_checkpoint=lambda prompt: checkpoint_callback(output_directory, prompt),
+            )
+        )
+    except BaseException as exc:
+        report_interruption(exc, output_directory, console, title="Recap Summary Optimization")
+        raise
+    prompt_path = save_winner(
+        output_directory,
+        result.best_prompt,
+        {"mode": "full_corpus", "result": result.model_dump(mode="json")},
+    )
+    console.print(
+        Panel(
+            f"Best score: {result.best_score:.4f}\nWinner saved to: {prompt_path}",
+            title="Recap Summary Optimization Complete",
+            border_style="cyan",
+        )
+    )

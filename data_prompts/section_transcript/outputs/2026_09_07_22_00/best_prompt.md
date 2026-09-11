@@ -13,11 +13,19 @@ Do not summarize or rewrite the transcript. Do not decide which material belongs
 
 ## Recap Range
 
-The Recap Range is the smallest inclusive utterance-index interval that contains the opening recounting of prior-session events. Set `start_index` to the first utterance that substantively states a prior event, excluding recap announcements, conversational lead-in, filler, reactions, and false starts. Set `end_index` to the last utterance needed to complete that opening recounting, excluding trailing commentary, clarifications that add no prior-session evidence, character introductions, transition language, and current-session setup. Brief interruptions may occur inside the interval, but do not extend it to later callbacks after the conversation has moved on. Return `null` only when no utterance substantively recounts prior-session events.
+Some sessions begin by recapitulating what has happened in the fiction in prior sessions, or earlier in the fictional game world, before active play begins.  It often leads up to describing the situation the characters find themselves in at the start of the session.  The Recap Range is the smallest inclusive range containing an explicitly framed opening account of events from previous Sessions or earlier campaign history. Ordinary reminders during active play are not part of the Recap Range. Return `null` when no opening recap is present. Do not extend the Recap Range solely to include a separate description of the current starting situation. When one utterance contains both recap and starting-situation material, it may belong to both the Recap Range and the Starting Context Range.
+
+::: guidance
+When locating the start of the Recap Range, choose the smallest start_index whose utterance already begins narrating or referencing prior-session events — do not skip past a short lead-in, acknowledgment, or transitional line if it is the first utterance carrying recap content. Shifting the start index later than the true first recap utterance is a common error to avoid.
+:::
 
 ## Introduction Range
 
 If this is the first session, or a new player character is joining the party, the start of the session may include an introduction of new player characters. The Introduction Range is the smallest inclusive range containing explicit opening-preamble introductions of player-character roles listed in `<session_attendees>`. Exclude NPC descriptions, Game Master self-introductions, inferred character profiles, and character facts first revealed after active play begins.
+
+::: guidance
+The Introduction Range must end before any Recap Range content begins — the two ranges must never overlap. If utterances shift from player/character naming into narrating earlier in-fiction events (a recap), stop the Introduction Range at the last utterance before that shift, even if the recap content occurs later in the same block of dialogue.
+:::
 
 When introductions are interleaved with recap utterances, use the smallest range enclosing all qualifying introductions. The range may therefore contain intervening recap material. Return `null` when no qualifying introduction is present.
 
@@ -25,17 +33,22 @@ When introductions are interleaved with recap utterances, use the smallest range
 
 The minimum inclusive range containing enough direct transcript evidence to state the immediate situation in which the players begin this Session. It may overlap the end of the recap or the transition into active play.
 
+::: guidance
+- The Starting Context Range must begin at or before the session_start_index and extend far enough to fully establish the immediate starting situation. Do not truncate the range to only the last utterance(s) before active play begins — if the recap transitions into mixed or transitional content, that content belongs inside the Starting Context Range, not excluded from it.
+- The Starting Context Range must span enough utterances to fully establish the immediate present-scene situation (who is present, where they are, what is about to happen) — do not stop at the first utterance after the recap/introduction transition if the starting situation is not yet fully established. Likewise, the range should begin only once genuine present-scene narration starts, not at the last recap/introduction utterance.
+- Keep the Starting Context Range as narrow as possible: it should cover only the utterance(s) strictly necessary to establish the immediate starting situation, not every utterance that continues or elaborates on that situation. If a single utterance establishes the starting context, set start_index equal to end_index rather than extending the range forward.
+:::
+
 This range provides evidence for a single starting-situation statement; it does not classify the entire setup, recap, or the string of events leading to the starting situation.  Relevant evidence may include the characters’ location, current objective, immediate conditions, threats, or obstacles, but only when explicitly supported by the transcript. Return `null` only when the transcript does not support any starting situation. The application will stop downstream generation rather than inventing one.
 
 ## Session Start Index
 
 The index of the first utterance belonging to active play in the current Session. Opening recap and introductions normally precede it, while scene-setting that begins the present action may also be included in the Starting Context Range.  Active play often begins when the Game Master presents the immediate situation or asks, “What do you do?” When such an utterance marks the transition into active play, use its index as `session_start_index`.
 
-If one utterance mixes recap with present-scene narration, dialogue, a prompt for action, or another clear resumption-of-play cue, use that utterance's index. Return `null` only when the transcript contains no defensible onset of active play; uncertainty between nearby candidates is not sufficient reason to return `null`.
+If the recording establishes a starting situation but contains no subsequent active play, return the utterance count—one greater than the final utterance index.
 
 # Boundary Rules
 
-- For each non-null `recap_range`, `introduction_range`, and `starting_context_range`, choose the smallest contiguous inclusive range that satisfies its Section Definition. Trim leading or trailing utterances only when doing so preserves all content required by that definition. Retain intervening utterances and mixed-content boundary utterances when needed to preserve that content. Minimize each range independently; overlap remains valid.
 - When a boundary is ambiguous, include the material on the Session side by choosing the earlier plausible `session_start_index`. This prevents current-session content from being lost.
 - `recap_range`, `introduction_range`, and `starting_context_range` may overlap.
 - A mixed utterance may belong to multiple ranges and may also be the `session_start_index`.

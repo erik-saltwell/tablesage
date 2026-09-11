@@ -1,4 +1,5 @@
 from datetime import date
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
@@ -11,6 +12,7 @@ from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from tablesage_tui.widgets import CommittingInput
 from textual.widgets import Button, DataTable, Input, Static
+from textual_fspicker import FileOpen
 
 
 def _application(
@@ -435,6 +437,28 @@ async def test_glossary_duplicate_term_shows_error() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, CampaignDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_import_legacy_settings_opens_yaml_picker_and_refreshes_glossary(tmp_path: Path) -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    application.import_legacy_glossary = MagicMock(return_value=2)
+    source = tmp_path / "settings.yaml"
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("g", "i")
+        await pilot.pause()
+
+        picker = pilot.app.screen
+        assert isinstance(picker, FileOpen)
+        picker.dismiss(source)
+        await pilot.pause()
+
+        application.import_legacy_glossary.assert_called_once_with(campaign.id, source)
+        assert application.list_glossary_entries.call_count >= 2
 
 
 @pytest.mark.anyio

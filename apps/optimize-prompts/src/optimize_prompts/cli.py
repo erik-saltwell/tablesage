@@ -18,9 +18,14 @@ app = typer.Typer(
 )
 console = Console()
 
+_RESUME_HELP = "Continue from outputs/checkpoint.md (the best prompt found before the last run stopped) instead of seed_prompt.txt."
+
 
 @app.command()
-def ledger(run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration.")) -> None:
+def ledger(
+    run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration."),
+    resume: bool = typer.Option(False, help=_RESUME_HELP),
+) -> None:
     """Start the Ledger prompt-optimization workflow."""
     console.print(
         Panel(
@@ -29,11 +34,14 @@ def ledger(run: bool = typer.Option(False, help="Run optimization instead of onl
             border_style="cyan",
         )
     )
-    optimize_ledger(Path("data_prompts/ledger"), console, run=run)
+    optimize_ledger(Path("data_prompts/ledger"), console, run=run, resume=resume)
 
 
 @app.command()
-def summary(run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration.")) -> None:
+def summary(
+    run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration."),
+    resume: bool = typer.Option(False, help=_RESUME_HELP),
+) -> None:
     """Start the summary prompt-optimization workflow."""
     console.print(
         Panel(
@@ -42,11 +50,14 @@ def summary(run: bool = typer.Option(False, help="Run optimization instead of on
             border_style="cyan",
         )
     )
-    optimize_summary(Path("data_prompts/summary"), console, run=run)
+    optimize_summary(Path("data_prompts/summary"), console, run=run, resume=resume)
 
 
 @app.command("recap-summary")
-def recap_summary(run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration.")) -> None:
+def recap_summary(
+    run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration."),
+    resume: bool = typer.Option(False, help=_RESUME_HELP),
+) -> None:
     """Start the Recap Summary prompt-optimization workflow."""
     console.print(
         Panel(
@@ -55,13 +66,18 @@ def recap_summary(run: bool = typer.Option(False, help="Run optimization instead
             border_style="cyan",
         )
     )
-    optimize_recap_summary(Path("data_prompts/recap_summary"), console, run=run)
+    optimize_recap_summary(Path("data_prompts/recap_summary"), console, run=run, resume=resume)
 
 
 @app.command("section-transcript")
 def section_transcript(
     run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration."),
-    cross_validate: bool = typer.Option(False, help="Run three two-session training and one-session holdout rotations."),
+    resume: bool = typer.Option(False, help=_RESUME_HELP + " Applies only to the default full-corpus run."),
+    cross_validate: bool = typer.Option(False, help="Run leave-one-case-out training and holdout rotations."),
+    holdout_prefix: str | None = typer.Option(
+        None,
+        help="Optimize on cases outside this source-name prefix, then score matching cases as a group holdout.",
+    ),
 ) -> None:
     """Start the transcript-sectioning prompt-optimization workflow."""
     console.print(
@@ -71,4 +87,11 @@ def section_transcript(
             border_style="cyan",
         )
     )
-    optimize_section_transcript(Path("data_prompts/section_transcript"), console, run=run, cross_validate=cross_validate)
+    optimize_section_transcript(
+        Path("data_prompts/section_transcript"),
+        console,
+        run=run,
+        resume=resume,
+        cross_validate=cross_validate,
+        holdout_prefix=holdout_prefix,
+    )

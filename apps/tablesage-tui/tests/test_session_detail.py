@@ -433,7 +433,9 @@ async def test_generate_disabled_without_reviewed_transcript() -> None:
 
 
 @pytest.mark.anyio
-async def test_generate_runs_all_six_output_phases_in_order_with_no_confirmation(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_generate_runs_all_post_transcription_artifacts_with_no_confirmation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session, artifacts=_artifacts(reviewed_transcript=True))
     call_order: list[str] = []
@@ -909,6 +911,33 @@ async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_a
         await pilot.pause()
 
         application.add_attendance_with_roles.assert_called_once_with(session.id, available_player.id, ["Game Master"])
+
+
+@pytest.mark.anyio
+async def test_new_attendee_character_uses_campaign_default_role() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
+    available_player = Player(name="Alice")
+    application = _application(session=session)
+    application.list_roster = MagicMock(
+        return_value=[
+            (CampaignPlayer(campaign_id=session.campaign_id, player_id=available_player.id, default_role_name="Zaria"), available_player),
+        ]
+    )
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+        await pilot.press("n")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, AttendeeDialog)
+        dialog.query_one("#attendee-player-select", Select).value = available_player.id
+        await pilot.pause()
+        dialog.query_one("#attendee-add-character", Button).press()
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert pilot.app.screen.query_one("#text-input-value", Input).value == "Zaria"
 
 
 @pytest.mark.anyio

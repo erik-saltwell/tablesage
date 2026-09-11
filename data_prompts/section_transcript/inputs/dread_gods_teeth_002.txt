@@ -1,0 +1,3224 @@
+<session_attendees>
+- john schork: Ward 'mollusk' Ellstrop
+- jason beaumont: Bruce Walters
+- jen malczewski: Jonas Friday
+- andrew tomms: Fulgore 'crocs' Crocket
+- erik saltwell: Game Master
+</session_attendees>
+
+<role_transcript>
+{
+  "utterances": [
+    {
+      "index": 0,
+      "speaker": "Bruce Walters",
+      "text": "Last session."
+    },
+    {
+      "index": 1,
+      "speaker": "Bruce Walters",
+      "text": "Must have been the conclusion."
+    },
+    {
+      "index": 2,
+      "speaker": "Bruce Walters",
+      "text": "But it sounds like."
+    },
+    {
+      "index": 3,
+      "speaker": "Bruce Walters",
+      "text": "More is coming."
+    },
+    {
+      "index": 4,
+      "speaker": "Game Master",
+      "text": "More is coming."
+    },
+    {
+      "index": 5,
+      "speaker": "Unassigned Speaker",
+      "text": "Yes, more is coming."
+    },
+    {
+      "index": 6,
+      "speaker": "Bruce Walters",
+      "text": "Excited."
+    },
+    {
+      "index": 7,
+      "speaker": "Unassigned Speaker",
+      "text": "Weve only just begun."
+    },
+    {
+      "index": 8,
+      "speaker": "Game Master",
+      "text": "Yes, that was part one of the finale."
+    },
+    {
+      "index": 9,
+      "speaker": "Bruce Walters",
+      "text": "Oh okay, great."
+    },
+    {
+      "index": 10,
+      "speaker": "Bruce Walters",
+      "text": "All right, did you catch Jen up on it yet?"
+    },
+    {
+      "index": 11,
+      "speaker": "Unassigned Speaker",
+      "text": "I have not yet."
+    },
+    {
+      "index": 12,
+      "speaker": "Game Master",
+      "text": "So well, do that in just a second."
+    },
+    {
+      "index": 13,
+      "speaker": "Game Master",
+      "text": "And then, So what well do is Shes filling out her character sheet."
+    },
+    {
+      "index": 14,
+      "speaker": "Game Master",
+      "text": "Then, well, do a recap of ghosts of world wars past."
+    },
+    {
+      "index": 15,
+      "speaker": "Game Master",
+      "text": "And then we will tie her into the adventure."
+    },
+    {
+      "index": 16,
+      "speaker": "Bruce Walters",
+      "text": "Co coauthored by Jacob."
+    },
+    {
+      "index": 17,
+      "speaker": "Game Master",
+      "text": "Thats exactly right."
+    },
+    {
+      "index": 18,
+      "speaker": "Game Master",
+      "text": "Yeah, same with Ghosts of World War past."
+    },
+    {
+      "index": 19,
+      "speaker": "Unassigned Speaker",
+      "text": "Wait, is that your son?"
+    },
+    {
+      "index": 20,
+      "speaker": "Game Master",
+      "text": "Thats my son."
+    },
+    {
+      "index": 21,
+      "speaker": "Unassigned Speaker",
+      "text": "What?"
+    },
+    {
+      "index": 22,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh yeah, oh yeah, he."
+    },
+    {
+      "index": 23,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "He didnt do the last follow, did he?"
+    },
+    {
+      "index": 24,
+      "speaker": "Game Master",
+      "text": "Yeah."
+    },
+    {
+      "index": 25,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, oh, yeah."
+    },
+    {
+      "index": 26,
+      "speaker": "Unassigned Speaker",
+      "text": "Whoa."
+    },
+    {
+      "index": 27,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, he did, Im trying to remember, Wait, what was wasnt he gonna like? Come in in costume or something?"
+    },
+    {
+      "index": 28,
+      "speaker": "Game Master",
+      "text": "Yeah, I dont."
+    },
+    {
+      "index": 29,
+      "speaker": "Unassigned Speaker",
+      "text": "That would be the greatest thing ever."
+    },
+    {
+      "index": 30,
+      "speaker": "Game Master",
+      "text": "I mean, he definitely is a cosplayer, so were not."
+    },
+    {
+      "index": 31,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "He was making props."
+    },
+    {
+      "index": 32,
+      "speaker": "Game Master",
+      "text": "Kidding, he was making props, he made the spoon."
+    },
+    {
+      "index": 33,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yeah, thats what?"
+    },
+    {
+      "index": 34,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "He was gonna poke his head around the corner and take a picture of us."
+    },
+    {
+      "index": 35,
+      "speaker": "Bruce Walters",
+      "text": "Hes hes gonna come up, hes just like hes a dead Taliban guy."
+    },
+    {
+      "index": 36,
+      "speaker": "Game Master",
+      "text": "Yes, I wanna say that. The encounter where Rich stepped on the landmine."
+    },
+    {
+      "index": 37,
+      "speaker": "Game Master",
+      "text": "While the sniper was firing."
+    },
+    {
+      "index": 38,
+      "speaker": "Game Master",
+      "text": "That was Jake."
+    },
+    {
+      "index": 39,
+      "speaker": "Bruce Walters",
+      "text": "That was that, yeah."
+    },
+    {
+      "index": 40,
+      "speaker": "Unassigned Speaker",
+      "text": "That was Jake that."
+    },
+    {
+      "index": 41,
+      "speaker": "Bruce Walters",
+      "text": "So what youre saying is Hes inherited your armor."
+    },
+    {
+      "index": 42,
+      "speaker": "Unassigned Speaker",
+      "text": "Hes inherited my yeah, he learned from the best."
+    },
+    {
+      "index": 43,
+      "speaker": "Unassigned Speaker",
+      "text": "He inherited highly from you."
+    },
+    {
+      "index": 44,
+      "speaker": "Game Master",
+      "text": "Yeah, were very collaborative, yes."
+    },
+    {
+      "index": 45,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "What did he think when you told him about how, uh, we took the car at the end and were using it?"
+    },
+    {
+      "index": 46,
+      "speaker": "Game Master",
+      "text": "I He was a super big fan."
+    },
+    {
+      "index": 47,
+      "speaker": "Game Master",
+      "text": "Um, yes, when you guys are done with this adventure, I will tell you the thing that he added to this one."
+    },
+    {
+      "index": 48,
+      "speaker": "Bruce Walters",
+      "text": "Okay, great."
+    },
+    {
+      "index": 49,
+      "speaker": "Game Master",
+      "text": "And youre gonna be like, Ugh."
+    },
+    {
+      "index": 50,
+      "speaker": "Bruce Walters",
+      "text": "Thats awesome."
+    },
+    {
+      "index": 51,
+      "speaker": "Game Master",
+      "text": "Yep, yep, ugh, so I was just in eastern Washington."
+    },
+    {
+      "index": 52,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Where about?"
+    },
+    {
+      "index": 53,
+      "speaker": "Game Master",
+      "text": "Winthrop."
+    },
+    {
+      "index": 54,
+      "speaker": "Game Master",
+      "text": "I So we go every year over midwinter, break to Mazama to go crosscountry skiing."
+    },
+    {
+      "index": 55,
+      "speaker": "Game Master",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 56,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 57,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, this year there."
+    },
+    {
+      "index": 58,
+      "speaker": "Jonas Friday",
+      "text": "I was gonna say, snow."
+    },
+    {
+      "index": 59,
+      "speaker": "Unassigned Speaker",
+      "text": "Not a lot up there."
+    },
+    {
+      "index": 60,
+      "speaker": "Game Master",
+      "text": "I mean, there was enough that we could go, but it was terrible."
+    },
+    {
+      "index": 61,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, Im sorry."
+    },
+    {
+      "index": 62,
+      "speaker": "Game Master",
+      "text": "Yeah, its okay, its all right. I mean, it was mostly just hanging out with friends."
+    },
+    {
+      "index": 63,
+      "speaker": "Jonas Friday",
+      "text": "I have people I know who like thats. Their favorite spot is that, like Winthrop Mazama area."
+    },
+    {
+      "index": 64,
+      "speaker": "Jonas Friday",
+      "text": "Like the."
+    },
+    {
+      "index": 65,
+      "speaker": "Bruce Walters",
+      "text": "That little town there is really cool."
+    },
+    {
+      "index": 66,
+      "speaker": "Game Master",
+      "text": "Yeah, so weve been to the same house for 17 years."
+    },
+    {
+      "index": 67,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, wow."
+    },
+    {
+      "index": 68,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, wow."
+    },
+    {
+      "index": 69,
+      "speaker": "Game Master",
+      "text": "Go every year for midwinter break."
+    },
+    {
+      "index": 70,
+      "speaker": "Game Master",
+      "text": "And uh, so like we, we went with this couple who we were in birthing class with."
+    },
+    {
+      "index": 71,
+      "speaker": "Bruce Walters",
+      "text": "Oh, Jeez."
+    },
+    {
+      "index": 72,
+      "speaker": "Unassigned Speaker",
+      "text": "And."
+    },
+    {
+      "index": 73,
+      "speaker": "Bruce Walters",
+      "text": "For Kashas, birthing No, no, yeah."
+    },
+    {
+      "index": 74,
+      "speaker": "Unassigned Speaker",
+      "text": "No for Kashas."
+    },
+    {
+      "index": 75,
+      "speaker": "Bruce Walters",
+      "text": "For Kashas, birth, yeah."
+    },
+    {
+      "index": 76,
+      "speaker": "Game Master",
+      "text": "And so now the kids that we ha were there for the birthing class are have now aged out and no longer attend."
+    },
+    {
+      "index": 77,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Thats really cool."
+    },
+    {
+      "index": 78,
+      "speaker": "Game Master",
+      "text": "It makes you feel old."
+    },
+    {
+      "index": 79,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Where did Kasha end up going to college?"
+    },
+    {
+      "index": 80,
+      "speaker": "Game Master",
+      "text": "CLU."
+    },
+    {
+      "index": 81,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh, awesome."
+    },
+    {
+      "index": 82,
+      "speaker": "Game Master",
+      "text": "Oh yeah, yeah, I just. I saw her 10 minutes ago and its I."
+    },
+    {
+      "index": 83,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats pretty cool."
+    },
+    {
+      "index": 84,
+      "speaker": "Game Master",
+      "text": "Highly highly recommend if you get the privilege."
+    },
+    {
+      "index": 85,
+      "speaker": "Game Master",
+      "text": "Like we, we do lunch every Wednesday, uh, every Friday."
+    },
+    {
+      "index": 86,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, thats awesome."
+    },
+    {
+      "index": 87,
+      "speaker": "Unassigned Speaker",
+      "text": "Very cool."
+    },
+    {
+      "index": 88,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Its really cool. I just attended an an online information session with CLU last week."
+    },
+    {
+      "index": 89,
+      "speaker": "Bruce Walters",
+      "text": "Oh, thats awesome."
+    },
+    {
+      "index": 90,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, okay."
+    },
+    {
+      "index": 91,
+      "speaker": "Bruce Walters",
+      "text": "I told you I saw Larry."
+    },
+    {
+      "index": 92,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, he says, Hi, so he remembers you."
+    },
+    {
+      "index": 93,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "What was he doing?"
+    },
+    {
+      "index": 94,
+      "speaker": "Bruce Walters",
+      "text": "He he reached out to Asha and was just like, Hey, Im Major Nelson, like you, should you know?"
+    },
+    {
+      "index": 95,
+      "speaker": "Bruce Walters",
+      "text": "You need my help."
+    },
+    {
+      "index": 96,
+      "speaker": "Bruce Walters",
+      "text": "You need my help, yeah, and she was like, I."
+    },
+    {
+      "index": 97,
+      "speaker": "Unassigned Speaker",
+      "text": "You know, Larry, or."
+    },
+    {
+      "index": 98,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "What does he do?"
+    },
+    {
+      "index": 99,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh, from like Minecraft stuff."
+    },
+    {
+      "index": 100,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "He gave me my first Xbox."
+    },
+    {
+      "index": 101,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Was that for like nonminecraft stuff, or when, when youre at Microsoft?"
+    },
+    {
+      "index": 102,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, yeah, it was Microsoft."
+    },
+    {
+      "index": 103,
+      "speaker": "Bruce Walters",
+      "text": "Okay, they were together not only at Microsoft, but also at, um, Unity."
+    },
+    {
+      "index": 104,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "He No, that was. He started unity after I left."
+    },
+    {
+      "index": 105,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, he did."
+    },
+    {
+      "index": 106,
+      "speaker": "Game Master",
+      "text": "I did not know he was at unity."
+    },
+    {
+      "index": 107,
+      "speaker": "Game Master",
+      "text": "Was he doing the same kind of thing?"
+    },
+    {
+      "index": 108,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Pretty much he. It was like, after all of the huge rounds of layoffs."
+    },
+    {
+      "index": 109,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, they hired him. I think he was running community."
+    },
+    {
+      "index": 110,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Okay, cool, cool."
+    },
+    {
+      "index": 111,
+      "speaker": "Bruce Walters",
+      "text": "MMHMM Yeah, so he basically hes like pitching her on a job, and, uh."
+    },
+    {
+      "index": 112,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Head of Xbox."
+    },
+    {
+      "index": 113,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly, and uh um, and uh, and anyway, um, hes like, you know, if she asks you, will you say its a good idea? Im like, Yeah, I dont what is it? Im like, ill, just say ill, just say it is."
+    },
+    {
+      "index": 114,
+      "speaker": "Bruce Walters",
+      "text": "ID Rather work with you again. Thatd be fun."
+    },
+    {
+      "index": 115,
+      "speaker": "Bruce Walters",
+      "text": "So, um, so, yeah, weve been texting back and forth so, but yeah, he might be coming back so."
+    },
+    {
+      "index": 116,
+      "speaker": "Bruce Walters",
+      "text": "So maybe ill say you should hire Jon Shark to be."
+    },
+    {
+      "index": 117,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly so."
+    },
+    {
+      "index": 118,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Be the hatchet man."
+    },
+    {
+      "index": 119,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, so."
+    },
+    {
+      "index": 120,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I think that would genuinely be a smart move for him."
+    },
+    {
+      "index": 121,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, I think so too, I think so too like."
+    },
+    {
+      "index": 122,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "That would send like."
+    },
+    {
+      "index": 123,
+      "speaker": "Bruce Walters",
+      "text": "Immediate signal."
+    },
+    {
+      "index": 124,
+      "speaker": "Game Master",
+      "text": "Even after the the change in management."
+    },
+    {
+      "index": 125,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "There theres so much."
+    },
+    {
+      "index": 126,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, of course."
+    },
+    {
+      "index": 127,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Very uncharitable, doom saying."
+    },
+    {
+      "index": 128,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And people, you know."
+    },
+    {
+      "index": 129,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Its its a real like, oh, its never been more clear that Xbox is forsaking gamers."
+    },
+    {
+      "index": 130,
+      "speaker": "Unassigned Speaker",
+      "text": "Yes, exactly."
+    },
+    {
+      "index": 131,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "I I."
+    },
+    {
+      "index": 132,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Who was the Whos the guy that, like, invented the Xbox that said that theyre forsaking?"
+    },
+    {
+      "index": 133,
+      "speaker": "Bruce Walters",
+      "text": "Uh, Seamus Blackley Yeah, yeah, but that guy, its funny, that guys a a super interesting guy, he, uh, he retired like 20 years ago."
+    },
+    {
+      "index": 134,
+      "speaker": "Bruce Walters",
+      "text": "Like he, he retired like even before the 360, I think."
+    },
+    {
+      "index": 135,
+      "speaker": "Unassigned Speaker",
+      "text": "So Hes, he has videos, too."
+    },
+    {
+      "index": 136,
+      "speaker": "Bruce Walters",
+      "text": "No, no, like Hes got like old like 1980s Microsoft Money."
+    },
+    {
+      "index": 137,
+      "speaker": "Bruce Walters",
+      "text": "Hes the guy who found a way to bake Egyptian bread using recovered DNA from like some tomb. Did you ever read about this?"
+    },
+    {
+      "index": 138,
+      "speaker": "Unassigned Speaker",
+      "text": "I think I did. This is sounding really familiar."
+    },
+    {
+      "index": 139,
+      "speaker": "Jonas Friday",
+      "text": "I I know about this."
+    },
+    {
+      "index": 140,
+      "speaker": "Bruce Walters",
+      "text": "Have you heard about this, too? Yeah, thats that guy."
+    },
+    {
+      "index": 141,
+      "speaker": "Bruce Walters",
+      "text": "It kind of made the rounds like several years ago, when he did it, where it was like."
+    },
+    {
+      "index": 142,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Wait, is this guy cool?"
+    },
+    {
+      "index": 143,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly."
+    },
+    {
+      "index": 144,
+      "speaker": "Unassigned Speaker",
+      "text": "Cause it sounds cool."
+    },
+    {
+      "index": 145,
+      "speaker": "Bruce Walters",
+      "text": "It is kind of cool, so it was like a total like Jurassic Park thing where it was like using the DNA. From this tomb. I was able to like, create a strain of wheat that hasnt existed on Earth in, like, 2000 years. And then I used it to make this recipe. And then its anyway. IM still retired. IM, you know?"
+    },
+    {
+      "index": 146,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Hes still the most retired."
+    },
+    {
+      "index": 147,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly right, right, so."
+    },
+    {
+      "index": 148,
+      "speaker": "Game Master",
+      "text": "Kind of sounds like the dude from intellectual ventures."
+    },
+    {
+      "index": 149,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, again, Nathan Myhrvold."
+    },
+    {
+      "index": 150,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, exactly, yeah."
+    },
+    {
+      "index": 151,
+      "speaker": "Unassigned Speaker",
+      "text": "Hes our friend."
+    },
+    {
+      "index": 152,
+      "speaker": "Unassigned Speaker",
+      "text": "Well, I."
+    },
+    {
+      "index": 153,
+      "speaker": "Jonas Friday",
+      "text": "I think maybe I caught that because it made me think."
+    },
+    {
+      "index": 154,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, newly revealed in the Epstein files."
+    },
+    {
+      "index": 155,
+      "speaker": "Game Master",
+      "text": "What?"
+    },
+    {
+      "index": 156,
+      "speaker": "Bruce Walters",
+      "text": "Yes."
+    },
+    {
+      "index": 157,
+      "speaker": "Bruce Walters",
+      "text": "Very much so."
+    },
+    {
+      "index": 158,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Oh my gosh, I had no idea."
+    },
+    {
+      "index": 159,
+      "speaker": "Bruce Walters",
+      "text": "He was at dinner with all you know, its like one of those things where its like."
+    },
+    {
+      "index": 160,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, not on the island, but at many dinners, you know?"
+    },
+    {
+      "index": 161,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, sure."
+    },
+    {
+      "index": 162,
+      "speaker": "Unassigned Speaker",
+      "text": "That dude was everywhere."
+    },
+    {
+      "index": 163,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Did you guys ever see the documentary? Uh, Tims Vermeer."
+    },
+    {
+      "index": 164,
+      "speaker": "Bruce Walters",
+      "text": "No."
+    },
+    {
+      "index": 165,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, it, I forget his last name, but it was it was a dude who named Tim, who I th. I wanna say he did, like really important foundational stuff at Adobe, maybe."
+    },
+    {
+      "index": 166,
+      "speaker": "Bruce Walters",
+      "text": "Okay, yeah."
+    },
+    {
+      "index": 167,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, but was like, very early tech."
+    },
+    {
+      "index": 168,
+      "speaker": "Unassigned Speaker",
+      "text": "Magnate."
+    },
+    {
+      "index": 169,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And Is is super eccentric and retired, and got obsessed with Vermeer and with recreating Vermeers paintings."
+    },
+    {
+      "index": 170,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, wow."
+    },
+    {
+      "index": 171,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And in doing so, like figuring out the the imaging that he would use, cause he knew like he used these elaborate mirrors to basically be able to like trace reality."
+    },
+    {
+      "index": 172,
+      "speaker": "Unassigned Speaker",
+      "text": "From what, what?"
+    },
+    {
+      "index": 173,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "The scene?"
+    },
+    {
+      "index": 174,
+      "speaker": "Unassigned Speaker",
+      "text": "Were talking about Vermeer."
+    },
+    {
+      "index": 175,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, yeah, yeah, and so he was like, I have lots of money and all the free time in the world and IM."
+    },
+    {
+      "index": 176,
+      "speaker": "Unassigned Speaker",
+      "text": "This is my project."
+    },
+    {
+      "index": 177,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "An obsessive weirdo in in the best way. And so he was just like, Im, Im gonna figure this out."
+    },
+    {
+      "index": 178,
+      "speaker": "Unassigned Speaker",
+      "text": "That project was great."
+    },
+    {
+      "index": 179,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats so awesome."
+    },
+    {
+      "index": 180,
+      "speaker": "Bruce Walters",
+      "text": "Um, yeah, that thats awesome."
+    },
+    {
+      "index": 181,
+      "speaker": "Jonas Friday",
+      "text": "Okay, Im done."
+    },
+    {
+      "index": 182,
+      "speaker": "Game Master",
+      "text": "All right, great, why dont you tell us about your answers a little bit?"
+    },
+    {
+      "index": 183,
+      "speaker": "Bruce Walters",
+      "text": "Did your character die last time or?"
+    },
+    {
+      "index": 184,
+      "speaker": "Jonas Friday",
+      "text": "No way, baby, my characters been alive forever."
+    },
+    {
+      "index": 185,
+      "speaker": "Jonas Friday",
+      "text": "Which is why I am."
+    },
+    {
+      "index": 186,
+      "speaker": "Bruce Walters",
+      "text": "You and I."
+    },
+    {
+      "index": 187,
+      "speaker": "Unassigned Speaker",
+      "text": "Reading Jasons character."
+    },
+    {
+      "index": 188,
+      "speaker": "Jonas Friday",
+      "text": "I couldnt quite remember what our timeline was."
+    },
+    {
+      "index": 189,
+      "speaker": "Game Master",
+      "text": "That feels about right, and I feel like."
+    },
+    {
+      "index": 190,
+      "speaker": "Unassigned Speaker",
+      "text": "I feel like we were around the right."
+    },
+    {
+      "index": 191,
+      "speaker": "Game Master",
+      "text": "Youre all in your."
+    },
+    {
+      "index": 192,
+      "speaker": "Game Master",
+      "text": "Kind of mid50s or early mid50s."
+    },
+    {
+      "index": 193,
+      "speaker": "Jonas Friday",
+      "text": "IM 51 but feel 70."
+    },
+    {
+      "index": 194,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, man."
+    },
+    {
+      "index": 195,
+      "speaker": "Game Master",
+      "text": "So Jonas, Friday."
+    },
+    {
+      "index": 196,
+      "speaker": "Jonas Friday",
+      "text": "Jonas Friday. So heres a a real question."
+    },
+    {
+      "index": 197,
+      "speaker": "Jonas Friday",
+      "text": "Is what haunts Jonas Friday? Cause it haunts me."
+    },
+    {
+      "index": 198,
+      "speaker": "Jonas Friday",
+      "text": "Um, the mystery that haunts me, I Jonas Friday obsesses about whether or not we should have killed the children at Cornucopia House."
+    },
+    {
+      "index": 199,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, yeah, thats true."
+    },
+    {
+      "index": 200,
+      "speaker": "Jonas Friday",
+      "text": "Like, if we knew, then what we know now."
+    },
+    {
+      "index": 201,
+      "speaker": "Unassigned Speaker",
+      "text": "What you know now?"
+    },
+    {
+      "index": 202,
+      "speaker": "Bruce Walters",
+      "text": "Would we have made that decision?"
+    },
+    {
+      "index": 203,
+      "speaker": "Game Master",
+      "text": "Dr. Wesley Cool."
+    },
+    {
+      "index": 204,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, right."
+    },
+    {
+      "index": 205,
+      "speaker": "Jonas Friday",
+      "text": "Fucking Dr. Wesley Cool."
+    },
+    {
+      "index": 206,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, my God."
+    },
+    {
+      "index": 207,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, um."
+    },
+    {
+      "index": 208,
+      "speaker": "Bruce Walters",
+      "text": "Crocs never had to face any such moral dilemmas."
+    },
+    {
+      "index": 209,
+      "speaker": "Bruce Walters",
+      "text": "Does Jen know about Fulgore Crockett, otherwise known as Crocs?"
+    },
+    {
+      "index": 210,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Lets get both barrels."
+    },
+    {
+      "index": 211,
+      "speaker": "Jonas Friday",
+      "text": "So thats the thing that haunts me."
+    },
+    {
+      "index": 212,
+      "speaker": "Jonas Friday",
+      "text": "Uh, in the intervening years, in order to investigate, Ive gotten very into attending seances."
+    },
+    {
+      "index": 213,
+      "speaker": "Jonas Friday",
+      "text": "And communing with spirits in order."
+    },
+    {
+      "index": 214,
+      "speaker": "Unassigned Speaker",
+      "text": "I like that."
+    },
+    {
+      "index": 215,
+      "speaker": "Jonas Friday",
+      "text": "To receive some sort of like spiritual guidance about this."
+    },
+    {
+      "index": 216,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, I like that."
+    },
+    {
+      "index": 217,
+      "speaker": "Jonas Friday",
+      "text": "From people who are dead."
+    },
+    {
+      "index": 218,
+      "speaker": "Game Master",
+      "text": "Hold on, hold on to that, well, come back to that in just a second."
+    },
+    {
+      "index": 219,
+      "speaker": "Jonas Friday",
+      "text": "Okay, want me to keep going?"
+    },
+    {
+      "index": 220,
+      "speaker": "Game Master",
+      "text": "Yeah, please."
+    },
+    {
+      "index": 221,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, sorry."
+    },
+    {
+      "index": 222,
+      "speaker": "Jonas Friday",
+      "text": "Um, what? like, what happened, what do I go to like the shame of Operation Night terror?"
+    },
+    {
+      "index": 223,
+      "speaker": "Game Master",
+      "text": "Yeah."
+    },
+    {
+      "index": 224,
+      "speaker": "Game Master",
+      "text": "Which was corn, poppy, House hold."
+    },
+    {
+      "index": 225,
+      "speaker": "Jonas Friday",
+      "text": "Yes, wait, was that one or two?"
+    },
+    {
+      "index": 226,
+      "speaker": "Game Master",
+      "text": "That was one. Oh, no, wait, night, terror is."
+    },
+    {
+      "index": 227,
+      "speaker": "Unassigned Speaker",
+      "text": "That was two, right?"
+    },
+    {
+      "index": 228,
+      "speaker": "Unassigned Speaker",
+      "text": "Two."
+    },
+    {
+      "index": 229,
+      "speaker": "Unassigned Speaker",
+      "text": "That was the first one."
+    },
+    {
+      "index": 230,
+      "speaker": "Game Master",
+      "text": "It doesnt have an an operation name."
+    },
+    {
+      "index": 231,
+      "speaker": "Game Master",
+      "text": "Because it was never sanctioned."
+    },
+    {
+      "index": 232,
+      "speaker": "Jonas Friday",
+      "text": "Because it was."
+    },
+    {
+      "index": 233,
+      "speaker": "Unassigned Speaker",
+      "text": "Off the books."
+    },
+    {
+      "index": 234,
+      "speaker": "Unassigned Speaker",
+      "text": "Off the books."
+    },
+    {
+      "index": 235,
+      "speaker": "Jonas Friday",
+      "text": "So I obviously just dont sleep very much."
+    },
+    {
+      "index": 236,
+      "speaker": "Jonas Friday",
+      "text": "But when I do, I always dream of that dog."
+    },
+    {
+      "index": 237,
+      "speaker": "Jonas Friday",
+      "text": "That like real sad dog."
+    },
+    {
+      "index": 238,
+      "speaker": "Jonas Friday",
+      "text": "And it always like, wants you to help it. And then when I get close to it, it just goes for the throat."
+    },
+    {
+      "index": 239,
+      "speaker": "Unassigned Speaker",
+      "text": "MM Yeah."
+    },
+    {
+      "index": 240,
+      "speaker": "Jonas Friday",
+      "text": "And wakes me up so I just dont sleep very much."
+    },
+    {
+      "index": 241,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, great."
+    },
+    {
+      "index": 242,
+      "speaker": "Jonas Friday",
+      "text": "That is my reoccurring nightmare."
+    },
+    {
+      "index": 243,
+      "speaker": "Jonas Friday",
+      "text": "And then in the years since, I have developed a strong bond with the local grocery checkout lady."
+    },
+    {
+      "index": 244,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, nice."
+    },
+    {
+      "index": 245,
+      "speaker": "Jonas Friday",
+      "text": "Um, I often make grocery trips for the thing that I forgot."
+    },
+    {
+      "index": 246,
+      "speaker": "Unassigned Speaker",
+      "text": "Was it for milk?"
+    },
+    {
+      "index": 247,
+      "speaker": "Unassigned Speaker",
+      "text": "Does she see her?"
+    },
+    {
+      "index": 248,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah."
+    },
+    {
+      "index": 249,
+      "speaker": "Jonas Friday",
+      "text": "Or for whatever, just so that I can have small talk with her about the weather."
+    },
+    {
+      "index": 250,
+      "speaker": "Jonas Friday",
+      "text": "Or her grandkid?"
+    },
+    {
+      "index": 251,
+      "speaker": "Jonas Friday",
+      "text": "Or."
+    },
+    {
+      "index": 252,
+      "speaker": "Unassigned Speaker",
+      "text": "The produce."
+    },
+    {
+      "index": 253,
+      "speaker": "Jonas Friday",
+      "text": "You know, the produce, yeah."
+    },
+    {
+      "index": 254,
+      "speaker": "Jonas Friday",
+      "text": "Thats my like bond for life."
+    },
+    {
+      "index": 255,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Good one, yeah."
+    },
+    {
+      "index": 256,
+      "speaker": "Game Master",
+      "text": "Okay, so, uh, before we do so in a minute were gonna do were gonna start with Y, um, the main, the characters who played in part one doing a uh, calling Anthony Pizzarelli to tell him how how everything went."
+    },
+    {
+      "index": 257,
+      "speaker": "Bruce Walters",
+      "text": "I have to remember, yeah."
+    },
+    {
+      "index": 258,
+      "speaker": "Game Master",
+      "text": "Yes, and that will be our recap."
+    },
+    {
+      "index": 259,
+      "speaker": "Unassigned Speaker",
+      "text": "Ah, okay, great."
+    },
+    {
+      "index": 260,
+      "speaker": "Game Master",
+      "text": "Well, figure it out. Okay, so, um, uh, Jonas."
+    },
+    {
+      "index": 261,
+      "speaker": "Game Master",
+      "text": "Heres the weird thing about the seances."
+    },
+    {
+      "index": 262,
+      "speaker": "Game Master",
+      "text": "Whenever you do, not whenever, but lets, say, 70 of the time that you talk to spirits in the seance."
+    },
+    {
+      "index": 263,
+      "speaker": "Game Master",
+      "text": "Right, go ahead. 30 of the time. Nothing right, you talk and youre like, Okay, this persons bullshitting me. Theres nobody on the other end of this line, but like 70 of the time."
+    },
+    {
+      "index": 264,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uhhuh Oh, no."
+    },
+    {
+      "index": 265,
+      "speaker": "Game Master",
+      "text": "You can smell the sugar cookies."
+    },
+    {
+      "index": 266,
+      "speaker": "Jonas Friday",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 267,
+      "speaker": "Game Master",
+      "text": "And every time that you smell the sugar cookies, whoever on the other end keeps warning you about the Red Thoughts Security Systemss."
+    },
+    {
+      "index": 268,
+      "speaker": "Unassigned Speaker",
+      "text": "The Red Thoughts Security Systemss?"
+    },
+    {
+      "index": 269,
+      "speaker": "Game Master",
+      "text": "And how you have to stop the Red Thoughts Security Systemss."
+    },
+    {
+      "index": 270,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, no."
+    },
+    {
+      "index": 271,
+      "speaker": "Game Master",
+      "text": "And this is like just a thing like its happened like seven or eight times, and, um, it sticks in your craw. What do you do as an FBI agent to try to figure out what those spirits meant?"
+    },
+    {
+      "index": 272,
+      "speaker": "Jonas Friday",
+      "text": "Red Thoughts Security Systemss."
+    },
+    {
+      "index": 273,
+      "speaker": "Jonas Friday",
+      "text": "As an FBI, I mean, thats a pretty good phrase. So like, Im sure Im going through the FBI databases, like just doing some interesting searches for that phrase."
+    },
+    {
+      "index": 274,
+      "speaker": "Jonas Friday",
+      "text": "And people who are sort of talking about this."
+    },
+    {
+      "index": 275,
+      "speaker": "Game Master",
+      "text": "Yep, okay, so you find something old and then something new, so ill tell you about the something old. And then were gonna cut to, Um, Anthony Pizzarelli. And then we will come back."
+    },
+    {
+      "index": 276,
+      "speaker": "Game Master",
+      "text": "Um, in northern Canada, on particularly bad winters in like somewhere in the 18 to 1900s, so were talking an age range. Thats like getting to the modern era, but is like, you know?"
+    },
+    {
+      "index": 277,
+      "speaker": "Jonas Friday",
+      "text": "Still hard winter."
+    },
+    {
+      "index": 278,
+      "speaker": "Game Master",
+      "text": "Its still hard winters, occasionally on very hard winters when talks of the Windigo come up."
+    },
+    {
+      "index": 279,
+      "speaker": "Game Master",
+      "text": "And people walking out of their houses during snowstorms because they are so hungry."
+    },
+    {
+      "index": 280,
+      "speaker": "Game Master",
+      "text": "There are talks about people who would carve pictures of brains into the snow."
+    },
+    {
+      "index": 281,
+      "speaker": "Unassigned Speaker",
+      "text": "What?"
+    },
+    {
+      "index": 282,
+      "speaker": "Game Master",
+      "text": "And and then would open up either the blood of animals, often pets or their own arms."
+    },
+    {
+      "index": 283,
+      "speaker": "Game Master",
+      "text": "And then sprinkle them with blood in the snow and somewhere in."
+    },
+    {
+      "index": 284,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "You can tell it was brains."
+    },
+    {
+      "index": 285,
+      "speaker": "Game Master",
+      "text": "I mean, so were still, I mean, were like, lets say, Lateish 1800s. People knew what a brains looked like."
+    },
+    {
+      "index": 286,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "No, but I mean, how would they draw it in snow to the point where somebody would be like, thats a brain?"
+    },
+    {
+      "index": 287,
+      "speaker": "Game Master",
+      "text": "Oh no, no, so think like packed snow like that. They had packed down and tamped down or into, you know."
+    },
+    {
+      "index": 288,
+      "speaker": "Bruce Walters",
+      "text": "Like a sculpture."
+    },
+    {
+      "index": 289,
+      "speaker": "Game Master",
+      "text": "Yeah, like a sculpture."
+    },
+    {
+      "index": 290,
+      "speaker": "Bruce Walters",
+      "text": "Snow Sculpture."
+    },
+    {
+      "index": 291,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, um."
+    },
+    {
+      "index": 292,
+      "speaker": "Jonas Friday",
+      "text": "I mean, a brain can look like a bunch of other."
+    },
+    {
+      "index": 293,
+      "speaker": "Game Master",
+      "text": "It can."
+    },
+    {
+      "index": 294,
+      "speaker": "Jonas Friday",
+      "text": "You know, anatomical items."
+    },
+    {
+      "index": 295,
+      "speaker": "Unassigned Speaker",
+      "text": "But."
+    },
+    {
+      "index": 296,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Or like a a walnut."
+    },
+    {
+      "index": 297,
+      "speaker": "Game Master",
+      "text": "Sure, and in addition, some of the people who again like walked out and had drawn this in the snow. Um, they would talk about Red Thoughts Security Systemss."
+    },
+    {
+      "index": 298,
+      "speaker": "Game Master",
+      "text": "And and."
+    },
+    {
+      "index": 299,
+      "speaker": "Jonas Friday",
+      "text": "Record of this?"
+    },
+    {
+      "index": 300,
+      "speaker": "Game Master",
+      "text": "Yeah, for sure, but, and the records are like, You know, um, explorers who would come to."
+    },
+    {
+      "index": 301,
+      "speaker": "Unassigned Speaker",
+      "text": "You know, tremors."
+    },
+    {
+      "index": 302,
+      "speaker": "Game Master",
+      "text": "Exactly Trappers. People like that would report on it."
+    },
+    {
+      "index": 303,
+      "speaker": "Game Master",
+      "text": "In addition, at the same time, these people who would talk about Red Thoughts Security Systemss would always talk about Red Thoughts Security Systemss, leading to white teeth."
+    },
+    {
+      "index": 304,
+      "speaker": "Bruce Walters",
+      "text": "All right, Jens, just like, Yeah, sounds reasonable."
+    },
+    {
+      "index": 305,
+      "speaker": "Unassigned Speaker",
+      "text": "I remember that from last time."
+    },
+    {
+      "index": 306,
+      "speaker": "Game Master",
+      "text": "All right, so who wants to call Anthony Pizzarelli to report after you killed? Um, uh, Danielle Huston?"
+    },
+    {
+      "index": 307,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I can do it."
+    },
+    {
+      "index": 308,
+      "speaker": "Game Master",
+      "text": "Okay, great. So uh, Anthony gets on the other end of the line and hes like, Uh, it is a total shit show out there. I hope that you have good news for me. This is headlines a day or two before."
+    },
+    {
+      "index": 309,
+      "speaker": "Unassigned Speaker",
+      "text": "Pizzarelli."
+    },
+    {
+      "index": 310,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, I know hes always stressed out."
+    },
+    {
+      "index": 311,
+      "speaker": "Unassigned Speaker",
+      "text": "What what did you find?"
+    },
+    {
+      "index": 312,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, yeah."
+    },
+    {
+      "index": 313,
+      "speaker": "Game Master",
+      "text": "Is this?"
+    },
+    {
+      "index": 314,
+      "speaker": "Bruce Walters",
+      "text": "You missed some stuff."
+    },
+    {
+      "index": 315,
+      "speaker": "Game Master",
+      "text": "Is there something I is it something that the organization cares about?"
+    },
+    {
+      "index": 316,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yes."
+    },
+    {
+      "index": 317,
+      "speaker": "Game Master",
+      "text": "All right, all right, go on and tell me."
+    },
+    {
+      "index": 318,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, we found who we believe to be one of the kids who escaped from Cornucopia House."
+    },
+    {
+      "index": 319,
+      "speaker": "Game Master",
+      "text": "You mean Operation Night terror bullshit?"
+    },
+    {
+      "index": 320,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah."
+    },
+    {
+      "index": 321,
+      "speaker": "Game Master",
+      "text": "Was in Gaza."
+    },
+    {
+      "index": 322,
+      "speaker": "Unassigned Speaker",
+      "text": "Gets more interesting."
+    },
+    {
+      "index": 323,
+      "speaker": "Unassigned Speaker",
+      "text": "Got some wrinkles? Well, Im trying to remember."
+    },
+    {
+      "index": 324,
+      "speaker": "Game Master",
+      "text": "Okay, so this Jens."
+    },
+    {
+      "index": 325,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Well, Im trying to remember how Pizzarelli knows about."
+    },
+    {
+      "index": 326,
+      "speaker": "Game Master",
+      "text": "Of the gas attack."
+    },
+    {
+      "index": 327,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "About what we saw and were doing."
+    },
+    {
+      "index": 328,
+      "speaker": "Game Master",
+      "text": "So he knows, I dont think Youve contacted him."
+    },
+    {
+      "index": 329,
+      "speaker": "Game Master",
+      "text": "And its only been a day or two. It has not been long."
+    },
+    {
+      "index": 330,
+      "speaker": "Game Master",
+      "text": "So its been like."
+    },
+    {
+      "index": 331,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Well, then ill start at the beginning."
+    },
+    {
+      "index": 332,
+      "speaker": "Game Master",
+      "text": "Yep, so."
+    },
+    {
+      "index": 333,
+      "speaker": "Unassigned Speaker",
+      "text": "Its A gas attack."
+    },
+    {
+      "index": 334,
+      "speaker": "Jonas Friday",
+      "text": "I mean, if you dont travel through TSA with that equipment."
+    },
+    {
+      "index": 335,
+      "speaker": "Game Master",
+      "text": "So yes, so notice when the gas attack happens, this is this is before the gas attack."
+    },
+    {
+      "index": 336,
+      "speaker": "Game Master",
+      "text": "Right, this is after the gas attack and after the gas attack. Not here. In the original photo is a World War I era trench. Also found at the scene was."
+    },
+    {
+      "index": 337,
+      "speaker": "Unassigned Speaker",
+      "text": "Barbed wire."
+    },
+    {
+      "index": 338,
+      "speaker": "Game Master",
+      "text": "Barbed wire, but a very specific part of barbed wire wielded by the Germans at the end of World War I as they started to run out of metal."
+    },
+    {
+      "index": 339,
+      "speaker": "Game Master",
+      "text": "And in addition, this helmet and, um."
+    },
+    {
+      "index": 340,
+      "speaker": "Bruce Walters",
+      "text": "Like Ottoman Empire Helmet."
+    },
+    {
+      "index": 341,
+      "speaker": "Unassigned Speaker",
+      "text": "Is that what we figured out?"
+    },
+    {
+      "index": 342,
+      "speaker": "Game Master",
+      "text": "Thats right, exactly right."
+    },
+    {
+      "index": 343,
+      "speaker": "Game Master",
+      "text": "So in the middle of World War I, the Germans realized they need to start putting metal on peoples, heads and make German helmets. But this one has a little hump in the front that the German one doesnt have. And people used to say that was because the Ottomans would kneel to pray on that, but some people would say."
+    },
+    {
+      "index": 344,
+      "speaker": "Game Master",
+      "text": "So so those were found at the trench site. Okay, so what did you find? So, uh, Cornucopia House."
+    },
+    {
+      "index": 345,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, so we well, let me let me back up a little bit, I. I thought we had talked earlier."
+    },
+    {
+      "index": 346,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, so we took, we took the."
+    },
+    {
+      "index": 347,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "The U.N. credentials that you so kindly gave us."
+    },
+    {
+      "index": 348,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, we were able to get into Gaza."
+    },
+    {
+      "index": 349,
+      "speaker": "Unassigned Speaker",
+      "text": "We."
+    },
+    {
+      "index": 350,
+      "speaker": "Game Master",
+      "text": "And let me just say the fact that you guys disappeared from that group has been a huge headache for me."
+    },
+    {
+      "index": 351,
+      "speaker": "Bruce Walters",
+      "text": "My job is hard."
+    },
+    {
+      "index": 352,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Unavoidable."
+    },
+    {
+      "index": 353,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, ours is harder."
+    },
+    {
+      "index": 354,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I guarantee Weve had a worse last 48 hours than you did."
+    },
+    {
+      "index": 355,
+      "speaker": "Game Master",
+      "text": "A. As long as you can tell me, theres results."
+    },
+    {
+      "index": 356,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, well."
+    },
+    {
+      "index": 357,
+      "speaker": "Game Master",
+      "text": "For for our rubric, yes."
+    },
+    {
+      "index": 358,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, for Congressional oversight hearing, probably not so much."
+    },
+    {
+      "index": 359,
+      "speaker": "Game Master",
+      "text": "Okay, I can work with that."
+    },
+    {
+      "index": 360,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "So we get into Gaza, we meet up with our The Fixer JJ."
+    },
+    {
+      "index": 361,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, and we go to the site of the gas attack."
+    },
+    {
+      "index": 362,
+      "speaker": "Unassigned Speaker",
+      "text": "Were able to get there."
+    },
+    {
+      "index": 363,
+      "speaker": "Game Master",
+      "text": "Yep."
+    },
+    {
+      "index": 364,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, things start to get a little strange there."
+    },
+    {
+      "index": 365,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, we are almost immediately fired upon, uh, by a soldier, um. And as he got closer to us, we saw that he was, uh, had clearly come from earlier in time."
+    },
+    {
+      "index": 366,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, he was dressed in rifle like a a Turkish World War I soldier."
+    },
+    {
+      "index": 367,
+      "speaker": "Jonas Friday",
+      "text": "From another time."
+    },
+    {
+      "index": 368,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, uh, trying to figure out the least weird way to say that."
+    },
+    {
+      "index": 369,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "But he was a World War I Turkish soldier, uh."
+    },
+    {
+      "index": 370,
+      "speaker": "Bruce Walters",
+      "text": "Not no one cos that wasnt cosplaying. It was, Yeah, yeah, very much so yeah."
+    },
+    {
+      "index": 371,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, we went to the Tell Cave, uh, which is where the that trench essentially was kind of surrounding."
+    },
+    {
+      "index": 372,
+      "speaker": "Jonas Friday",
+      "text": "Thats where the guy got attacked."
+    },
+    {
+      "index": 373,
+      "speaker": "Game Master",
+      "text": "Yep, yep."
+    },
+    {
+      "index": 374,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, we didn.t really. We found some bodies there that were also, uh, curiously, uh, untethered from time, it would seem."
+    },
+    {
+      "index": 375,
+      "speaker": "Jonas Friday",
+      "text": "Hmm, thats a very nice way to put it."
+    },
+    {
+      "index": 376,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "We went back to the, Um, uh, the the Village."
+    },
+    {
+      "index": 377,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 378,
+      "speaker": "Unassigned Speaker",
+      "text": "Jabalia."
+    },
+    {
+      "index": 379,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, we went back to the village to start asking some questions, and that was where things started to get, uh, ratcheted up a bit."
+    },
+    {
+      "index": 380,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "We started seeing really strange photos of, um, places that we could kind of recognize. But there was something very strange about the photos. Something that visually didnt compute."
+    },
+    {
+      "index": 381,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, w. And there were phenomena that were very similar to what Wed encountered on on previous missions. Um, we were able to identify the photographer, uh, and about as soon as we did that. Uh, we saw her. She took a photo of us from a rooftop, and then, uh, suddenly it was World War I and."
+    },
+    {
+      "index": 382,
+      "speaker": "Game Master",
+      "text": "And sorry, youre talking about in the refugee camp."
+    },
+    {
+      "index": 383,
+      "speaker": "Game Master",
+      "text": "Of Jabalia."
+    },
+    {
+      "index": 384,
+      "speaker": "Game Master",
+      "text": "It was World War I."
+    },
+    {
+      "index": 385,
+      "speaker": "Bruce Walters",
+      "text": "After a woman snapped a picture of us."
+    },
+    {
+      "index": 386,
+      "speaker": "Jonas Friday",
+      "text": "Was she like specifically looking to take a photo of you guys?"
+    },
+    {
+      "index": 387,
+      "speaker": "Unassigned Speaker",
+      "text": "As near as we could tell."
+    },
+    {
+      "index": 388,
+      "speaker": "Jonas Friday",
+      "text": "Or just was like, Heres the scene."
+    },
+    {
+      "index": 389,
+      "speaker": "Jonas Friday",
+      "text": "She was like, No, I want them."
+    },
+    {
+      "index": 390,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "If if the effect of her taking that photo was unintentional, it was very rude. Uh, we had to calm down. A A mob of, Um, of angry villagers, um."
+    },
+    {
+      "index": 391,
+      "speaker": "Game Master",
+      "text": "Oh, please tell me. The civilian casualties were at a minimum."
+    },
+    {
+      "index": 392,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "They were."
+    },
+    {
+      "index": 393,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I mean, from us, uh, the Israelis."
+    },
+    {
+      "index": 394,
+      "speaker": "Bruce Walters",
+      "text": "Until the Israelis showed up."
+    },
+    {
+      "index": 395,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Yeah, I more."
+    },
+    {
+      "index": 396,
+      "speaker": "Bruce Walters",
+      "text": "They they have a penchant for civilian casualties."
+    },
+    {
+      "index": 397,
+      "speaker": "Game Master",
+      "text": "Its like their thing."
+    },
+    {
+      "index": 398,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, its their, its their thing, they love it."
+    },
+    {
+      "index": 399,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "If you, if you want a little more background, uh, theres a hopefully still sedated and very confused. Uh, British soldier."
+    },
+    {
+      "index": 400,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, we left him there."
+    },
+    {
+      "index": 401,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "From World War I whos in Jabalia."
+    },
+    {
+      "index": 402,
+      "speaker": "Unassigned Speaker",
+      "text": "Um, w."
+    },
+    {
+      "index": 403,
+      "speaker": "Bruce Walters",
+      "text": "Uh uh, this I I cut in, I I cut in and I say, No, no, no, hes dead."
+    },
+    {
+      "index": 404,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, well, yeah, we can show you the body."
+    },
+    {
+      "index": 405,
+      "speaker": "Unassigned Speaker",
+      "text": "Sure, um, you could carbon date him."
+    },
+    {
+      "index": 406,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Of course."
+    },
+    {
+      "index": 407,
+      "speaker": "Bruce Walters",
+      "text": "We took off his clothes so nobody could tell."
+    },
+    {
+      "index": 408,
+      "speaker": "Game Master",
+      "text": "Okay, great, well, perfect thats exactly what you were supposed to do."
+    },
+    {
+      "index": 409,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Wonderful, so, uh, we we end up finding the A journalist that we were told, Uh, regularly worked with Danielle."
+    },
+    {
+      "index": 410,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And as we were doing that, the village started getting shelled. Uh, we."
+    },
+    {
+      "index": 411,
+      "speaker": "Game Master",
+      "text": "You mean, like World War I shelled, or you mean like Israeli shelled?"
+    },
+    {
+      "index": 412,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Israeli shelled."
+    },
+    {
+      "index": 413,
+      "speaker": "Game Master",
+      "text": "Okay, got it."
+    },
+    {
+      "index": 414,
+      "speaker": "Unassigned Speaker",
+      "text": "Modern shelling."
+    },
+    {
+      "index": 415,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh, both bad, very different."
+    },
+    {
+      "index": 416,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, as we talked more and more to him, uh, we found out that she is mute essentially, um, he has often acted as her kind of gobetween and interpreter."
+    },
+    {
+      "index": 417,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And it essentially lined up with a lot of the things that other kids, that that."
+    },
+    {
+      "index": 418,
+      "speaker": "Game Master",
+      "text": "So this is one of these Cornucopia House kids with no language."
+    },
+    {
+      "index": 419,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, that with no language and with the power to take photos."
+    },
+    {
+      "index": 420,
+      "speaker": "Unassigned Speaker",
+      "text": "Other time."
+    },
+    {
+      "index": 421,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And transport, whatever is in her."
+    },
+    {
+      "index": 422,
+      "speaker": "Game Master",
+      "text": "Wait, are you saying that right now? The Israelis are invading Gaza cause? She took a picture of some chlorine gas."
+    },
+    {
+      "index": 423,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, I dont think you could put that one on her."
+    },
+    {
+      "index": 424,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, I dont, yeah, I. I. I think I think that conflict predates her."
+    },
+    {
+      "index": 425,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, okay."
+    },
+    {
+      "index": 426,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I think its probably like."
+    },
+    {
+      "index": 427,
+      "speaker": "Unassigned Speaker",
+      "text": "Chlorine Gas."
+    },
+    {
+      "index": 428,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "A real handy excuse."
+    },
+    {
+      "index": 429,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, but the gas attack is most likely the result of her taking photos. For what purpose we dont know."
+    },
+    {
+      "index": 430,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, we were able to kind of corner her across a minefield and through some acts of."
+    },
+    {
+      "index": 431,
+      "speaker": "Bruce Walters",
+      "text": "Bravery."
+    },
+    {
+      "index": 432,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Really extreme, daring and courage."
+    },
+    {
+      "index": 433,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And ingenuity?"
+    },
+    {
+      "index": 434,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, kill her."
+    },
+    {
+      "index": 435,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "You should note that she seemed to wanna like, give herself up too, though, right?"
+    },
+    {
+      "index": 436,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "She wanted to die so."
+    },
+    {
+      "index": 437,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Which is, maybe, is, does that seem different than other behavior from Cornucopia House children?"
+    },
+    {
+      "index": 438,
+      "speaker": "Game Master",
+      "text": "I couldnt remember, I feel like it is."
+    },
+    {
+      "index": 439,
+      "speaker": "Game Master",
+      "text": "I think this is the first time Youve seen that."
+    },
+    {
+      "index": 440,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "She the only way to to end, uh. The only way for us to get out out alive was to kill her and she explicitly wanted to die."
+    },
+    {
+      "index": 441,
+      "speaker": "Unassigned Speaker",
+      "text": "So was it her, or was it the camera?"
+    },
+    {
+      "index": 442,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Unclear."
+    },
+    {
+      "index": 443,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, we found packaging from from film, which seemed very normal."
+    },
+    {
+      "index": 444,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Uh, nothing seemed at least to to the naked eye to be extraordinary about the camera."
+    },
+    {
+      "index": 445,
+      "speaker": "Unassigned Speaker",
+      "text": "Do you have the camera?"
+    },
+    {
+      "index": 446,
+      "speaker": "Game Master",
+      "text": "I think you guys can say yes."
+    },
+    {
+      "index": 447,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I dont know why we wouldnt at this point."
+    },
+    {
+      "index": 448,
+      "speaker": "Unassigned Speaker",
+      "text": "The Pontoon."
+    },
+    {
+      "index": 449,
+      "speaker": "Bruce Walters",
+      "text": "We were playing with it."
+    },
+    {
+      "index": 450,
+      "speaker": "Game Master",
+      "text": "Um, okay, so."
+    },
+    {
+      "index": 451,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, we defeated her with the power of mirrors and birds."
+    },
+    {
+      "index": 452,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, so we."
+    },
+    {
+      "index": 453,
+      "speaker": "Bruce Walters",
+      "text": "Thats true. We did do that, yeah."
+    },
+    {
+      "index": 454,
+      "speaker": "Game Master",
+      "text": "You did, actually."
+    },
+    {
+      "index": 455,
+      "speaker": "Game Master",
+      "text": "With the power with the power of mirror and birds."
+    },
+    {
+      "index": 456,
+      "speaker": "Unassigned Speaker",
+      "text": "And a gun?"
+    },
+    {
+      "index": 457,
+      "speaker": "Game Master",
+      "text": "Um, uh, do okay. So we have some contacts in, you know, a sister organizationish in Israel. So we will send them in to clean up whatever the Israelis dont accidentally take out with artillery fire."
+    },
+    {
+      "index": 458,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Good luck."
+    },
+    {
+      "index": 459,
+      "speaker": "Unassigned Speaker",
+      "text": "Theres probably not gonna be much."
+    },
+    {
+      "index": 460,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, there wasnt, really. There was very little that persisted, uh, from the rift in time or whatever you wanna call it."
+    },
+    {
+      "index": 461,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "So as near as pretty much anybodys gonna be able to tell, that goes in there."
+    },
+    {
+      "index": 462,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Its gonna be, you know, normal Israeli violence, and maybe some peculiar cosplayers."
+    },
+    {
+      "index": 463,
+      "speaker": "Game Master",
+      "text": "Okay, well, I can definitely work with all of that, um."
+    },
+    {
+      "index": 464,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Please."
+    },
+    {
+      "index": 465,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, please eat them."
+    },
+    {
+      "index": 466,
+      "speaker": "Game Master",
+      "text": "Okay, so, uh, is this is that it youre coming home?"
+    },
+    {
+      "index": 467,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I hope so."
+    },
+    {
+      "index": 468,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, wed like to."
+    },
+    {
+      "index": 469,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "We dont wanna stick around."
+    },
+    {
+      "index": 470,
+      "speaker": "Game Master",
+      "text": "Um, uh, I mean, any loose ends."
+    },
+    {
+      "index": 471,
+      "speaker": "Bruce Walters",
+      "text": "Well, you guys killed my cat."
+    },
+    {
+      "index": 472,
+      "speaker": "Game Master",
+      "text": "I mean, that was kinda."
+    },
+    {
+      "index": 473,
+      "speaker": "Jonas Friday",
+      "text": "You had a cat."
+    },
+    {
+      "index": 474,
+      "speaker": "Unassigned Speaker",
+      "text": "He had had a cat."
+    },
+    {
+      "index": 475,
+      "speaker": "Bruce Walters",
+      "text": "Had a cat?"
+    },
+    {
+      "index": 476,
+      "speaker": "Unassigned Speaker",
+      "text": "Burned it."
+    },
+    {
+      "index": 477,
+      "speaker": "Game Master",
+      "text": "And then he."
+    },
+    {
+      "index": 478,
+      "speaker": "Jonas Friday",
+      "text": "Really, after all weve been through, you keep a pet cat."
+    },
+    {
+      "index": 479,
+      "speaker": "Bruce Walters",
+      "text": "I had to burn my bond in order to live."
+    },
+    {
+      "index": 480,
+      "speaker": "Bruce Walters",
+      "text": "That tower was pretty insane last time."
+    },
+    {
+      "index": 481,
+      "speaker": "Unassigned Speaker",
+      "text": "It was pretty crazy."
+    },
+    {
+      "index": 482,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And everybody made it out alive."
+    },
+    {
+      "index": 483,
+      "speaker": "Unassigned Speaker",
+      "text": "I mean, we did."
+    },
+    {
+      "index": 484,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I dont think there were any loose ends."
+    },
+    {
+      "index": 485,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "You have one loose end."
+    },
+    {
+      "index": 486,
+      "speaker": "Game Master",
+      "text": "Which is."
+    },
+    {
+      "index": 487,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Theres J.J."
+    },
+    {
+      "index": 488,
+      "speaker": "Game Master",
+      "text": "Theres JJ, but no, um, you found an email from her."
+    },
+    {
+      "index": 489,
+      "speaker": "Game Master",
+      "text": "Um, so when she had gotten the job at the."
+    },
+    {
+      "index": 490,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Oh yeah, there was a weird website."
+    },
+    {
+      "index": 491,
+      "speaker": "Game Master",
+      "text": "Yeah, so she had gotten a job at the Free Press, which she was a photojournalist for, and she got the job."
+    },
+    {
+      "index": 492,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "This didnt occur to me last time. Isnt the Free Press Barry Weiss."
+    },
+    {
+      "index": 493,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, the Free Press is Barry Weiss Old magazine. Um, uh. She now runs CBS News."
+    },
+    {
+      "index": 494,
+      "speaker": "Unassigned Speaker",
+      "text": "Well done."
+    },
+    {
+      "index": 495,
+      "speaker": "Unassigned Speaker",
+      "text": "Really cool."
+    },
+    {
+      "index": 496,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 497,
+      "speaker": "Unassigned Speaker",
+      "text": "Super cool person."
+    },
+    {
+      "index": 498,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "I didnt know about Free Press, though."
+    },
+    {
+      "index": 499,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Yeah, that was the thing, she that was the outfit she started after she, uh, left The New York Times."
+    },
+    {
+      "index": 500,
+      "speaker": "Unassigned Speaker",
+      "text": "She quit The New York Times."
+    },
+    {
+      "index": 501,
+      "speaker": "Unassigned Speaker",
+      "text": "Its good."
+    },
+    {
+      "index": 502,
+      "speaker": "Game Master",
+      "text": "Too liberal, too woke. It is a little rightwing. Yeah, okay, um. So she had gotten the job with the help of this weird online paper mill that writes like papers for kids."
+    },
+    {
+      "index": 503,
+      "speaker": "Game Master",
+      "text": "And because she had no language."
+    },
+    {
+      "index": 504,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Thats right."
+    },
+    {
+      "index": 505,
+      "speaker": "Game Master",
+      "text": "This dude, Philip Roth had helped her at this company, called ScribeLife420, to, UH, to get the job right. He had actually shown up and kinda proxied questions to her in the interview. And the the text journalist who was there with her for photography, had said that she had communicated with him a bunch. Or, like whatever I mean, like she doesnt really communicate. Um, and, uh, the text journalist had started to communicate with Philip Roth as well. Um, for her. And in there you found some statements about other kids or young people without language that he was also helping."
+    },
+    {
+      "index": 506,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, ScribeLife420 how can you forget?"
+    },
+    {
+      "index": 507,
+      "speaker": "Jonas Friday",
+      "text": "That was in the letter."
+    },
+    {
+      "index": 508,
+      "speaker": "Unassigned Speaker",
+      "text": "Yep, yep."
+    },
+    {
+      "index": 509,
+      "speaker": "Unassigned Speaker",
+      "text": "The Was it?"
+    },
+    {
+      "index": 510,
+      "speaker": "Unassigned Speaker",
+      "text": "Journalist got mine fielded."
+    },
+    {
+      "index": 511,
+      "speaker": "Jonas Friday",
+      "text": "That was how the one guy got a job as a journalist."
+    },
+    {
+      "index": 512,
+      "speaker": "Game Master",
+      "text": "Uh, the journalist, yes, the journalist guy."
+    },
+    {
+      "index": 513,
+      "speaker": "Bruce Walters",
+      "text": "I love how you remember this stuff."
+    },
+    {
+      "index": 514,
+      "speaker": "Jonas Friday",
+      "text": "I just read the letter."
+    },
+    {
+      "index": 515,
+      "speaker": "Unassigned Speaker",
+      "text": "Um, okay, well, then."
+    },
+    {
+      "index": 516,
+      "speaker": "Jonas Friday",
+      "text": "Also, ScribeLife420 is."
+    },
+    {
+      "index": 517,
+      "speaker": "Bruce Walters",
+      "text": "Pretty, yeah."
+    },
+    {
+      "index": 518,
+      "speaker": "Game Master",
+      "text": "You know, pretty memorable."
+    },
+    {
+      "index": 519,
+      "speaker": "Game Master",
+      "text": "So, uh, why dont you guys? Then go and investigate Scribelife? Because if theres other kids out there, they probably have weirdness going on with them too, and we probably need to hunt them all down."
+    },
+    {
+      "index": 520,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Hmm."
+    },
+    {
+      "index": 521,
+      "speaker": "Unassigned Speaker",
+      "text": "And kill them."
+    },
+    {
+      "index": 522,
+      "speaker": "Game Master",
+      "text": "Get rid of them somehow, like you capture them great."
+    },
+    {
+      "index": 523,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 524,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Maybe theyll wanna die like this one, though."
+    },
+    {
+      "index": 525,
+      "speaker": "Bruce Walters",
+      "text": "Tie them to a little red balloon they go."
+    },
+    {
+      "index": 526,
+      "speaker": "Game Master",
+      "text": "Um, okay, so what do you guys do to find ScribeLife420 and Philip Roth?"
+    },
+    {
+      "index": 527,
+      "speaker": "Bruce Walters",
+      "text": "Well, start with a Google search."
+    },
+    {
+      "index": 528,
+      "speaker": "Game Master",
+      "text": "Great, you start with a Google search and you do, in fact, so you search for ScribeLife420."
+    },
+    {
+      "index": 529,
+      "speaker": "Game Master",
+      "text": "And you find it."
+    },
+    {
+      "index": 530,
+      "speaker": "Game Master",
+      "text": "You find references to it in the wayback machine."
+    },
+    {
+      "index": 531,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 532,
+      "speaker": "Game Master",
+      "text": "So up until about a year and a half ago, it was running a website and that website was like, You know, Uh, ill. Write your papers for you."
+    },
+    {
+      "index": 533,
+      "speaker": "Game Master",
+      "text": "I have a database of old papers. We guarantee that you wont be like accused of plagiarism, and then about a year and a half ago. Theres a message that the websites going down and that because of AI, the need for paper mills is just gone now. And so, uh, Philip Roth signs off and says that hes that hes done."
+    },
+    {
+      "index": 534,
+      "speaker": "Game Master",
+      "text": "So Jen, Um."
+    },
+    {
+      "index": 535,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Hes gonna become a novelist."
+    },
+    {
+      "index": 536,
+      "speaker": "Game Master",
+      "text": "Youre as youre, so, so you kinda you go from Red Thoughts Security Systemss."
+    },
+    {
+      "index": 537,
+      "speaker": "Game Master",
+      "text": "To like markers of red brains and, um, you start to turn up some hits of pictures of So these are like gang SI. Gang units in the Washington, D.C. area and the gang units will regularly take pictures that are timestamped and geolocated of graffiti. Because its a great sign of Whos staked out."
+    },
+    {
+      "index": 538,
+      "speaker": "Game Master",
+      "text": "What territory in gangs?"
+    },
+    {
+      "index": 539,
+      "speaker": "Jonas Friday",
+      "text": "MMHmm."
+    },
+    {
+      "index": 540,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Where are they like, are they just keeping this for themselves?"
+    },
+    {
+      "index": 541,
+      "speaker": "Game Master",
+      "text": "Um, I mean, its no, no, so this is part of her of an FBI database."
+    },
+    {
+      "index": 542,
+      "speaker": "Unassigned Speaker",
+      "text": "Right, okay, okay."
+    },
+    {
+      "index": 543,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, no problem."
+    },
+    {
+      "index": 544,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Shes not monitoring the gangs, actually."
+    },
+    {
+      "index": 545,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Archiving."
+    },
+    {
+      "index": 546,
+      "speaker": "Game Master",
+      "text": "Thats right."
+    },
+    {
+      "index": 547,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "I think so, okay."
+    },
+    {
+      "index": 548,
+      "speaker": "Unassigned Speaker",
+      "text": "And I got nothing on the thing."
+    },
+    {
+      "index": 549,
+      "speaker": "Jonas Friday",
+      "text": "Yeah, that was badass, yeah."
+    },
+    {
+      "index": 550,
+      "speaker": "Game Master",
+      "text": "So as youre looking, you see amongst the regular crips and bloods and whatever you see, a series of Washington, D.C. graffiti that looks just like that."
+    },
+    {
+      "index": 551,
+      "speaker": "Jonas Friday",
+      "text": "Interesting could be a walnut."
+    },
+    {
+      "index": 552,
+      "speaker": "Unassigned Speaker",
+      "text": "Definitely real fucked up."
+    },
+    {
+      "index": 553,
+      "speaker": "Unassigned Speaker",
+      "text": "Super fucked."
+    },
+    {
+      "index": 554,
+      "speaker": "Bruce Walters",
+      "text": "Real fucked."
+    },
+    {
+      "index": 555,
+      "speaker": "Unassigned Speaker",
+      "text": "Can I see the nerds?"
+    },
+    {
+      "index": 556,
+      "speaker": "Unassigned Speaker",
+      "text": "Its really nice."
+    },
+    {
+      "index": 557,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, it looks clean."
+    },
+    {
+      "index": 558,
+      "speaker": "Game Master",
+      "text": "Um, what do you do?"
+    },
+    {
+      "index": 559,
+      "speaker": "Jonas Friday",
+      "text": "Uh, how recently were these taken?"
+    },
+    {
+      "index": 560,
+      "speaker": "Game Master",
+      "text": "Uh, they are all so okay. So its currently February 26."
+    },
+    {
+      "index": 561,
+      "speaker": "Game Master",
+      "text": "2026."
+    },
+    {
+      "index": 562,
+      "speaker": "Game Master",
+      "text": "Um, and these go from S one or two photos, maybe like seven years ago, eight years ago."
+    },
+    {
+      "index": 563,
+      "speaker": "Game Master",
+      "text": "And but you definitely see theres ones all the way up through say, um, September of last year."
+    },
+    {
+      "index": 564,
+      "speaker": "Bruce Walters",
+      "text": "Okay, so recent stuff, yeah."
+    },
+    {
+      "index": 565,
+      "speaker": "Jonas Friday",
+      "text": "Um, well, this is sort of a hidden hobby of mine."
+    },
+    {
+      "index": 566,
+      "speaker": "Jonas Friday",
+      "text": "Looking for these things?"
+    },
+    {
+      "index": 567,
+      "speaker": "Game Master",
+      "text": "Yeah."
+    },
+    {
+      "index": 568,
+      "speaker": "Jonas Friday",
+      "text": "Not like I.M. like on mission finding them."
+    },
+    {
+      "index": 569,
+      "speaker": "Jonas Friday",
+      "text": "So Im gonna try to ignore it in my brain for a little while."
+    },
+    {
+      "index": 570,
+      "speaker": "Jonas Friday",
+      "text": "No pun intended, um, but its gonna eat at me."
+    },
+    {
+      "index": 571,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, correct."
+    },
+    {
+      "index": 572,
+      "speaker": "Jonas Friday",
+      "text": "Eventually, I might buy a plane ticket to Washington, D.C. cause I wanna go see the sites."
+    },
+    {
+      "index": 573,
+      "speaker": "Game Master",
+      "text": "Where are you located?"
+    },
+    {
+      "index": 574,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh, Iowa."
+    },
+    {
+      "index": 575,
+      "speaker": "Game Master",
+      "text": "Okay, great, um, okay, uh, the rest of you guys."
+    },
+    {
+      "index": 576,
+      "speaker": "Game Master",
+      "text": "Uh um, you see you did your Google search."
+    },
+    {
+      "index": 577,
+      "speaker": "Game Master",
+      "text": "You see the wayback machine, you see, Philip Roth definitely associated with it. Um, what do you do?"
+    },
+    {
+      "index": 578,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Um, so it just kinda stops at that Philip Roth thing that you said."
+    },
+    {
+      "index": 579,
+      "speaker": "Game Master",
+      "text": "Yeah, exactly, so he kinda shuts down."
+    },
+    {
+      "index": 580,
+      "speaker": "Game Master",
+      "text": "After a year and a half ago and hes kinda claiming that hes shut down by it might even feel reasonable that hes shut down by kind of AI."
+    },
+    {
+      "index": 581,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Is he totally independent, Did he have any other like funding or backers?"
+    },
+    {
+      "index": 582,
+      "speaker": "Unassigned Speaker",
+      "text": "Hmm, um, how do you want to investigate that?"
+    },
+    {
+      "index": 583,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Youre, a C.I.A. analyst Um, I am going to go with, like, you know, business filings, all that kind of shit and untangle all that stuff."
+    },
+    {
+      "index": 584,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, okay."
+    },
+    {
+      "index": 585,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "LLCs, you know."
+    },
+    {
+      "index": 586,
+      "speaker": "Game Master",
+      "text": "Great, go ahead and make a pull."
+    },
+    {
+      "index": 587,
+      "speaker": "Unassigned Speaker",
+      "text": "Ooh, many."
+    },
+    {
+      "index": 588,
+      "speaker": "Game Master",
+      "text": "Uh, just one."
+    },
+    {
+      "index": 589,
+      "speaker": "Unassigned Speaker",
+      "text": "Easy, peasy."
+    },
+    {
+      "index": 590,
+      "speaker": "Game Master",
+      "text": "I know right, full tower."
+    },
+    {
+      "index": 591,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Taking a card out, just kidding."
+    },
+    {
+      "index": 592,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "So, uh, Eric made us pull like fucking multiple cards in one night, and John kept on getting by accident. It was pretty great, yeah."
+    },
+    {
+      "index": 593,
+      "speaker": "Unassigned Speaker",
+      "text": "Appreciate it."
+    },
+    {
+      "index": 594,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Me, too. If we did get it, we didnt die, we just had to do like multiple pulls."
+    },
+    {
+      "index": 595,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "And as the Israeli shelling got more and more intense, the number of pulls we had to do increased."
+    },
+    {
+      "index": 596,
+      "speaker": "Game Master",
+      "text": "Yeah, you had to do an TR pull every time you did a pull. Okay, Andrew, you, um, you go and search online and, um, Scribe Life 420 definitely did not pay any taxes."
+    },
+    {
+      "index": 597,
+      "speaker": "Game Master",
+      "text": "Definitely did not file for anything but Youre able to crossreference Scribe Life 420 and its Facebook existence. And then a Philip Roth posting regularly comments and great reviews on the Facebook site for 420. From that, you find his Facebook user, and from that youre able to pull up an address in Washington, D.C."
+    },
+    {
+      "index": 598,
+      "speaker": "Jonas Friday",
+      "text": "Really needed to be a CIA analyst for that one, huh?"
+    },
+    {
+      "index": 599,
+      "speaker": "Game Master",
+      "text": "All right, so you guys have an address, what do you wanna do?"
+    },
+    {
+      "index": 600,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Um, well, I mean, we should look at the address in any databases or anything that we have information about."
+    },
+    {
+      "index": 601,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Just to, Is it a house, is it a business?"
+    },
+    {
+      "index": 602,
+      "speaker": "Game Master",
+      "text": "Yep, okay, so it is, Um, uh. The address is just an apartment in an apartment complex in D.C. and its not in any way, shape or form a business. This guys probably working out of his house."
+    },
+    {
+      "index": 603,
+      "speaker": "Game Master",
+      "text": "Um, yeah, it is not like I mean its not in the best neighborhood in D.C. but its also not in shit."
+    },
+    {
+      "index": 604,
+      "speaker": "Game Master",
+      "text": "Right, so its like, you know."
+    },
+    {
+      "index": 605,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Theres nothing extraordinary."
+    },
+    {
+      "index": 606,
+      "speaker": "Game Master",
+      "text": "Theres nothing extraordinary about it."
+    },
+    {
+      "index": 607,
+      "speaker": "Unassigned Speaker",
+      "text": "Whats our tactical loadouts? Thats the right question."
+    },
+    {
+      "index": 608,
+      "speaker": "Game Master",
+      "text": "All right, um, uh, what do you guys do?"
+    },
+    {
+      "index": 609,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "How M I cant Remember how much like resourcewise, do we have? We dont have like control of like satellites, easily like we have to clear a bunch of shit for that kind of stuff."
+    },
+    {
+      "index": 610,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats exactly right."
+    },
+    {
+      "index": 611,
+      "speaker": "Game Master",
+      "text": "Thats a R all request to Fitzarelli and like."
+    },
+    {
+      "index": 612,
+      "speaker": "Game Master",
+      "text": "And that, or and more or less, the problem is, anytime you do that, it it just exposes the organization to risk."
+    },
+    {
+      "index": 613,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Do we have access? And same thing with, like, traffic cams, all that kind of stuff?"
+    },
+    {
+      "index": 614,
+      "speaker": "Game Master",
+      "text": "I mean, traffic cams are a lot easier."
+    },
+    {
+      "index": 615,
+      "speaker": "Game Master",
+      "text": "Right, like tasking a satellite thats a big deal."
+    },
+    {
+      "index": 616,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Could we do like that lower level kind of surveillance access?"
+    },
+    {
+      "index": 617,
+      "speaker": "Game Master",
+      "text": "Yeah, sure you do, and, um, uh, I mean, you get photos, you, you, um, youre able to pull his driver license, and so you see him occasionally walk in or out of the building, but."
+    },
+    {
+      "index": 618,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Not a lot of guests."
+    },
+    {
+      "index": 619,
+      "speaker": "Game Master",
+      "text": "But it, yeah, it really does not seem like theres a lot of guests."
+    },
+    {
+      "index": 620,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Um, so we dont know about the graffiti, just Jen or."
+    },
+    {
+      "index": 621,
+      "speaker": "Unassigned Speaker",
+      "text": "Just Jen, Thats right."
+    },
+    {
+      "index": 622,
+      "speaker": "Unassigned Speaker",
+      "text": "Okay, all right, okay, cool."
+    },
+    {
+      "index": 623,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Can we, uh, do we have any access to his digital footprint outside of whats public?"
+    },
+    {
+      "index": 624,
+      "speaker": "Game Master",
+      "text": "Like what?"
+    },
+    {
+      "index": 625,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "I mean, could we get into his email or anything like that?"
+    },
+    {
+      "index": 626,
+      "speaker": "Game Master",
+      "text": "Yeah, for sure, just somebodys gotta make two pulls."
+    },
+    {
+      "index": 627,
+      "speaker": "Jonas Friday",
+      "text": "Oh, shit."
+    },
+    {
+      "index": 628,
+      "speaker": "Bruce Walters",
+      "text": "Yeah, see its easy time right now."
+    },
+    {
+      "index": 629,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "Payoff later What about just get access to his, UH, Xbox account?"
+    },
+    {
+      "index": 630,
+      "speaker": "Bruce Walters",
+      "text": "Its not that hard."
+    },
+    {
+      "index": 631,
+      "speaker": "Game Master",
+      "text": "Uh yeah, um, so uh, Scribelife420com is or I Im sorry scribelife420GMailcom."
+    },
+    {
+      "index": 632,
+      "speaker": "Game Master",
+      "text": "Um, it. It is mostly his business that dries up a year and a half ago. So, um, y, there are. You go back, you see, like kids asking for papers on Napoleon and whatever you go back a little further."
+    },
+    {
+      "index": 633,
+      "speaker": "Jonas Friday",
+      "text": "This is good."
+    },
+    {
+      "index": 634,
+      "speaker": "Game Master",
+      "text": "And you see an email that looks suspicious to you, and it kinda is like, Um, uh, I have some customers who I think you would be interested in. Um, and we would be iinterested in funding. Um, and, uh, they all, um, suffer from language deficiencies. Uh, and, uh. We represent a nonprofit, and this nonprofit, UM, supports adult survivors of Childonset, Aphasia. And we provide job placement services and some fiscal support. And we would like to support you, helping them to fill out applications and write essays. And these people have extremely limited language skills. And if youre interested, you know, please let us know. And he he writes right back, and hes like, Absolutely, im super interested, um."
+    },
+    {
+      "index": 635,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "You say child onset or adult onset?"
+    },
+    {
+      "index": 636,
+      "speaker": "Game Master",
+      "text": "Child onset."
+    },
+    {
+      "index": 637,
+      "speaker": "Game Master",
+      "text": "And he and so hes like, Yeah, I am super interested. Please let me know, um, and and and then you dont see anything."
+    },
+    {
+      "index": 638,
+      "speaker": "Ward 'mollusk' Ellstrop",
+      "text": "Theres no indication of what the organization is called."
+    },
+    {
+      "index": 639,
+      "speaker": "Game Master",
+      "text": "I mean, theres the email address, the email address is admincornucopiafoundationorg."
+    },
+    {
+      "index": 640,
+      "speaker": "Fulgore 'crocs' Crocket",
+      "text": "How long ago was that from?"
+    },
+    {
+      "index": 641,
+      "speaker": "Game Master",
+      "text": "So it was about, Uh, uh, two years ago."
+    }
+  ]
+}
+</role_transcript>
