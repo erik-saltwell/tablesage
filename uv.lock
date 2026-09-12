@@ -2630,6 +2630,7 @@ dependencies = [
     { name = "prompt-forge" },
     { name = "prompt-model" },
     { name = "prompt-model-metrics" },
+    { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "rich" },
     { name = "tablesage-application" },
@@ -2641,6 +2642,7 @@ requires-dist = [
     { name = "prompt-forge", editable = "../prompt-forge/apps/prompt-forge" },
     { name = "prompt-model", editable = "../prompt-forge/packages/prompt-model" },
     { name = "prompt-model-metrics", editable = "../prompt-forge/packages/prompt-model-metrics" },
+    { name = "python-dotenv", specifier = ">=1" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "rich", specifier = ">=15.0.0" },
     { name = "tablesage-application", editable = "packages/tablesage-application" },
@@ -4622,6 +4624,7 @@ version = "0.1.0"
 source = { editable = "packages/tablesage-application" }
 dependencies = [
     { name = "jinja2" },
+    { name = "pyyaml" },
     { name = "sqlmodel" },
     { name = "tablesage-model" },
     { name = "tablesage-tools" },
@@ -4631,6 +4634,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "jinja2", specifier = ">=3.1.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
     { name = "sqlmodel", specifier = ">=0.0.39" },
     { name = "tablesage-model", editable = "packages/tablesage-model" },
     { name = "tablesage-tools", editable = "packages/tablesage-tools" },
@@ -4737,6 +4741,7 @@ dependencies = [
     { name = "tablesage-model" },
     { name = "textual" },
     { name = "textual-fspicker" },
+    { name = "widelog-py" },
 ]
 
 [package.dev-dependencies]
@@ -4751,6 +4756,7 @@ requires-dist = [
     { name = "tablesage-model", editable = "packages/tablesage-model" },
     { name = "textual", specifier = ">=8.2.6" },
     { name = "textual-fspicker", specifier = ">=1.0.1" },
+    { name = "widelog-py", specifier = ">=2026.7.2" },
 ]
 
 [package.metadata.requires-dev]

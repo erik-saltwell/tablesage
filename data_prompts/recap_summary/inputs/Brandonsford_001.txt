@@ -1,0 +1,270 @@
+<session_metadata>
+Campaign: Brandonsford
+Game system: White Box
+Session date: 2026-08-18
+</session_metadata>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- john schork: Waymon Tisdale
+- marshall rise: Dunk
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<scene_breakdown>
+{
+  "ending_situation": "Sir Phidipaldi is at the Golden Egg, planning a staged ale delivery with Quinn; Dr Uriah and Waymon remain at the Clumsy Fox, while Dunk is drinking with Farmer Gill and may sleep in his barn. Eric's thousand-gold dragon bounty remains available, and Sir Phidipaldi's challenge to duel Eric at dawn is unanswered.",
+  "scenes": [
+    {
+      "title": "Who approaches?",
+      "location": "Brandonsford",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Waymon Tisdale",
+        "Dunk",
+        "Night watchman"
+      ],
+      "situation": "The party reaches unfamiliar Brandonsford after sunset and must pass the town's volunteer night watch.",
+      "outcome": "The watchman admits them and points out the town's two inns and other businesses.",
+      "carry_forward": [
+        "Brandonsford has no formal guards or law enforcement.",
+        "The Clumsy Fox is busy, while the Golden Egg is quiet."
+      ],
+      "signature_detail": "Two large inns face each other among thatched stone cottages behind an ancient low wall.",
+      "ledger_ranges": [
+        {
+          "start_index": 0,
+          "end_index": 6
+        }
+      ]
+    },
+    {
+      "title": "Reginald the Frog",
+      "location": "The river near Brandonsford",
+      "participants": [
+        "Dr Uriah",
+        "Reginald",
+        "Sir Phidipaldi",
+        "Dunk"
+      ],
+      "situation": "Before choosing lodgings, Dr Uriah seeks a local animal's opinion of the two taverns.",
+      "outcome": "Reginald cannot recommend an inn but warns of a nightly Clurichen; Sir Phidipaldi chooses the Clumsy Fox while Dunk splits off toward the farm.",
+      "carry_forward": [
+        "A trickster Clurichen comes from the river and enters town every night.",
+        "Dr Uriah has established contact with Reginald."
+      ],
+      "signature_detail": "The party's first local informant is a frog with no understanding of inns.",
+      "ledger_ranges": [
+        {
+          "start_index": 7,
+          "end_index": 12
+        }
+      ]
+    },
+    {
+      "title": "A chivalric quest for treasure",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Lady Hilda",
+        "Dr Uriah",
+        "Waymon Tisdale"
+      ],
+      "situation": "Sir Phidipaldi approaches the seasoned red-haired noblewoman in the crowded tavern while the party seeks rumors and opportunities.",
+      "outcome": "Lady Hilda buys him a drink, directs the party to Eric the Reeve about a dragon, and offers to join them for payment.",
+      "carry_forward": [
+        "Lady Hilda wears chain mail and carries a shield.",
+        "Lady Hilda's price was not established and no agreement was reached."
+      ],
+      "signature_detail": "Sir Phidipaldi compares Lady Hilda to his enormous lance, Lady Isaboob.",
+      "ledger_ranges": [
+        {
+          "start_index": 13,
+          "end_index": 20
+        }
+      ]
+    },
+    {
+      "title": "The killer wasp",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Dr Uriah",
+        "Drop Dead Ned"
+      ],
+      "situation": "Dr Uriah notices a suspicious patron wearing a jar with a live wasp and later approaches him to investigate.",
+      "outcome": "Drop Dead Ned identifies the wasp as a killer and offers his services, but Dr Uriah only says he will consider the terms.",
+      "carry_forward": [
+        "Ned's standard price is one hundred gold per week plus ten percent of treasure.",
+        "Ned alternatively offers Dr Uriah five gold for every victim Ned is permitted to kill and cut up as he wishes.",
+        "No hiring agreement was made."
+      ],
+      "signature_detail": "A killer wasp buzzes inside a jar worn as a necklace.",
+      "ledger_ranges": [
+        {
+          "start_index": 21,
+          "end_index": 22
+        },
+        {
+          "start_index": 49,
+          "end_index": 55
+        }
+      ]
+    },
+    {
+      "title": "Fox Tail brew",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Waymon Tisdale",
+        "Bentley"
+      ],
+      "situation": "Waymon questions the jovial owner of the busy inn about Brandonsford.",
+      "outcome": "Bentley provides a free excellent brew and lodgings, then explains that a town shipment is a week overdue and Eric is recruiting help.",
+      "carry_forward": [
+        "Rooms cost ten silver pieces per night.",
+        "The missing shipment was intended to restock the entire town.",
+        "Bentley says nothing comparable has happened since Sir Brandon killed a dragon centuries ago."
+      ],
+      "signature_detail": "Bentley's first Fox Tail brew is free and tastes fantastic.",
+      "ledger_ranges": [
+        {
+          "start_index": 23,
+          "end_index": 27
+        }
+      ]
+    },
+    {
+      "title": "Dunk and the Farmer",
+      "location": "Farmer Gill's farm",
+      "participants": [
+        "Dunk",
+        "Farmer Gill",
+        "Seamus"
+      ],
+      "situation": "Dunk visits the farm at sunset hoping to scavenge and instead drinks with Farmer Gill, who is eager for company.",
+      "outcome": "Gill offers Dunk barn lodging and drinks, tries to sell him Seamus, recounts Sir Brandon's legend, and reveals that he sent all three sons after the current dragon.",
+      "carry_forward": [
+        "Seamus is offered for one hundred gold.",
+        "Sir Brandon received a magic sword from a fairy and used it to kill a dragon centuries ago.",
+        "Gill assumes the current dragon is a different creature.",
+        "Warwick displays a mithril chain shirt he refuses to sell and surrounds his poorly stocked smithy with lucky charms.",
+        "Gill believes Ingrid is attracted to Warwick and speculates that Warwick's charms are meant to keep her away."
+      ],
+      "signature_detail": "Farmer Gill becomes increasingly unsteady while happily sharing gossip and liquor from his still.",
+      "ledger_ranges": [
+        {
+          "start_index": 28,
+          "end_index": 36
+        },
+        {
+          "start_index": 56,
+          "end_index": 59
+        }
+      ]
+    },
+    {
+      "title": "A duel at dawn",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Eric the Reeve",
+        "Dr Uriah",
+        "Bentley"
+      ],
+      "situation": "Sir Phidipaldi approaches the visibly stressed reeve seeking fame and fortune through local work.",
+      "outcome": "Eric offers one thousand gold for the dragon's body, but Sir Phidipaldi disputes the dragon's existence, strikes Eric with a glove, and challenges him to an unanswered duel at dawn; Bentley then expels Sir Phidipaldi for causing trouble.",
+      "carry_forward": [
+        "George is a one-armed woodsman who recently lost his arm to a relatively small black dragon.",
+        "Eric's bounty requires both killing the dragon and dragging its body into town.",
+        "Sir Phidipaldi's companions may remain at the Clumsy Fox, but he must stay at the Golden Egg for the night."
+      ],
+      "signature_detail": "Sir Phidipaldi slaps the reeve with a glove before issuing his dawn challenge.",
+      "ledger_ranges": [
+        {
+          "start_index": 37,
+          "end_index": 48
+        },
+        {
+          "start_index": 60,
+          "end_index": 64
+        }
+      ]
+    },
+    {
+      "title": "A fake shipment",
+      "location": "Golden Egg Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Quinn"
+      ],
+      "situation": "Expelled from the crowded Clumsy Fox, Sir Phidipaldi enters its deserted rival and meets Quinn.",
+      "outcome": "Quinn offers one hundred gold to expose the nightly loss of his ale, and he and Sir Phidipaldi agree to stage a conspicuous delivery of water-filled bottles as a fake shipment.",
+      "carry_forward": [
+        "Quinn suspects Bentley of stealing or ruining his ale at night.",
+        "Real shipments have stopped arriving.",
+        "The staged delivery is only planned and has not yet occurred."
+      ],
+      "signature_detail": "The Golden Egg's costly ale is badly watered down, and its bony proprietor is startled to see a customer.",
+      "ledger_ranges": [
+        {
+          "start_index": 65,
+          "end_index": 71
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "session_id": "a11288dd-803e-4300-8935-86358ddd995a",
+  "session_name": "The talking frog",
+  "starting_situation": "The party follows a treasure map to Brandonsford, the only location on it they recognize, assuming the treasure lies at one of the map's otherwise unidentified marked places.",
+  "ledger_sha256": "ddf1da7f12ac1ffa79ce3e56f38aa0378d1e67a6d42b9084212f3daf470aac58"
+}
+</scene_breakdown>

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 import uuid
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Annotated, Literal, Self
 
@@ -11,9 +12,10 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, Validation
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
+from .scene_breakdown import SceneBreakdownContent
+from .transcript_sections import RoutedUtterance
 
 NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-NonEmptyTextList = Annotated[list[NonEmptyText], Field(min_length=1)]
 
 MAX_GENERATION_ATTEMPTS = 3
 LEDGER_MARKDOWN_FILENAME = "ledger.md"
@@ -28,33 +30,6 @@ _GAME_MASTER_LABEL = "Game Master"
 
 class _StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
-
-class Recap(_StrictModel):
-    events: NonEmptyTextList = Field(description="Prior campaign events in the order the transcript describes them.")
-    opening_situation: NonEmptyText | None = Field(description="The situation in which the new session begins, when stated.")
-
-
-class CharacterIntroduction(_StrictModel):
-    character: NonEmptyText = Field(description="The introduced character's role name.")
-    description: NonEmptyText = Field(description="A condensed description of the character's explicit introduction.")
-
-
-class Preamble(_StrictModel):
-    recap: Recap | None = Field(description="An explicitly framed recap of prior campaign events.")
-    character_introductions: Annotated[list[CharacterIntroduction], Field(min_length=1)] | None = Field(
-        description="Explicit character introductions in first-introduction order."
-    )
-
-    @model_validator(mode="after")
-    def _require_content_and_unique_characters(self) -> Self:
-        if self.recap is None and self.character_introductions is None:
-            raise ValueError("Preamble must contain a recap, character introductions, or both.")
-        if self.character_introductions is not None:
-            normalized = [introduction.character.casefold() for introduction in self.character_introductions]
-            if len(normalized) != len(set(normalized)):
-                raise ValueError("Preamble must contain one introduction per character.")
-        return self
 
 
 class _LedgerUtterance(_StrictModel):
@@ -106,28 +81,18 @@ class Question(_StrictModel):
 LedgerUtterance = Annotated[Narration | Action | Speech | Expression | Correction | Question, Field(discriminator="type")]
 
 
-def _require_meaningful_content(preamble: Preamble | None, utterances: list[LedgerUtterance]) -> None:
-    if preamble is None and not utterances:
-        raise ValueError("Ledger must contain meaningful content in its preamble or regular utterances.")
-
-
 class Attendee(_StrictModel):
     player_name: NonEmptyText
     roles: tuple[NonEmptyText, ...]
 
 
 class Ledger(_StrictModel):
-    version: Literal[3] = 3
+    version: Literal[4] = 4
     session_id: uuid.UUID
     session_name: NonEmptyText
     attendees: tuple[Attendee, ...] = ()
-    preamble: Preamble | None
+    starting_situation: NonEmptyText
     utterances: list[LedgerUtterance]
-
-    @model_validator(mode="after")
-    def _require_content(self) -> Self:
-        _require_meaningful_content(self.preamble, self.utterances)
-        return self
 
     def save(self, path: Path) -> None:
         path.write_text(f"{self.model_dump_json(indent=2)}\n", encoding="utf-8")
@@ -143,19 +108,7 @@ class Ledger(_StrictModel):
         else:
             lines.append("_No attendees recorded._")
 
-        if self.preamble is not None and self.preamble.recap is not None:
-            lines.extend(["", "## Recap", ""])
-            for index, event in enumerate(self.preamble.recap.events, start=1):
-                lines.append(f"{index}. {event}")
-            if self.preamble.recap.opening_situation is not None:
-                lines.extend(["", f"**Opening:** {self.preamble.recap.opening_situation}"])
-
-        if self.preamble is not None and self.preamble.character_introductions is not None:
-            lines.extend(["", "## Characters", ""])
-            for introduction in self.preamble.character_introductions:
-                lines.append(f"- **{introduction.character}** — {introduction.description}")
-
-        lines.extend(["", "## Session", ""])
+        lines.extend(["", "## Starting Situation", "", self.starting_situation, "", "## Session", ""])
         for index, utterance in enumerate(self.utterances, start=1):
             lines.append(_render_markdown_utterance(index, utterance))
             lines.append("")
@@ -190,14 +143,22 @@ def _render_markdown_utterance(index: int, utterance: LedgerUtterance) -> str:
     return f"{index}. **{utterance.entity}** — *{utterance.sentiment}*"
 
 
-class LedgerGenerationResponse(_StrictModel):
-    scratchpad: str = Field(description="Brief generation planning notes; discarded by the application.")
-    preamble: Preamble | None
+class LedgerContent(_StrictModel):
     utterances: list[LedgerUtterance]
 
+
+class LedgerGenerationResponse(_StrictModel):
+    starting_situation: NonEmptyText = Field(description="A concise statement of the immediate situation at the beginning of this Session.")
+    ledger: LedgerContent
+    scene_breakdown: SceneBreakdownContent
+
     @model_validator(mode="after")
-    def _require_content(self) -> Self:
-        _require_meaningful_content(self.preamble, self.utterances)
+    def validate_scene_coverage(self) -> Self:
+        # Ordering changes no assignments; canonicalize it without spending another LLM call.
+        for scene in self.scene_breakdown.scenes:
+            scene.ledger_ranges.sort(key=lambda span: span.start_index)
+        self.scene_breakdown.scenes.sort(key=lambda scene: scene.ledger_ranges[0].start_index)
+        self.scene_breakdown.validate_coverage(len(self.ledger.utterances))
         return self
 
 
@@ -209,10 +170,13 @@ class GlossaryPromptEntry:
 
 @dataclass(frozen=True)
 class LedgerPromptData:
-    transcript: str
+    starting_context: str
+    session_utterances: str
     known_roles: tuple[str, ...]
     attendees: tuple[Attendee, ...]
     glossary: tuple[GlossaryPromptEntry, ...]
+    validation_feedback: str | None = None
+    rejected_candidate: str | None = None
 
 
 @dataclass(frozen=True)
@@ -225,19 +189,14 @@ class _Candidate:
 def can_generate_ledger(session_folder: Path) -> tuple[bool, str | None]:
     if not (session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename).is_file():
         return False, "Clean the transcript first."
+    if not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_SECTIONS].filename).is_file():
+        return False, "Section the transcript first."
     return True, None
-
-
-def _introduction_warning_count(response: LedgerGenerationResponse, known_roles: frozenset[str]) -> int:
-    warning_count = 0
-    if response.preamble is not None and response.preamble.character_introductions is not None:
-        warning_count += sum(introduction.character not in known_roles for introduction in response.preamble.character_introductions)
-    return warning_count
 
 
 def _attendee_warning_count(response: LedgerGenerationResponse, known_players: frozenset[str]) -> int:
     warning_count = 0
-    for utterance in response.utterances:
+    for utterance in response.ledger.utterances:
         if not isinstance(utterance, Question):
             continue
         warning_count += utterance.asker not in known_players
@@ -247,21 +206,21 @@ def _attendee_warning_count(response: LedgerGenerationResponse, known_players: f
 
 
 async def generate_ledger(
-    transcript: str,
+    starting_context: Sequence[RoutedUtterance],
+    session_utterances: Sequence[RoutedUtterance],
     known_roles: Sequence[str],
     attendees: Sequence[Attendee],
     glossary: Sequence[GlossaryPromptEntry],
     model: str,
 ) -> LedgerGenerationResponse:
-    """Generate the best structurally valid whole-session Ledger content in at most three attempts.
+    """Generate the best structurally valid current-session Ledger content in at most three attempts.
 
-    Structurally invalid responses are unavailable as candidates. Unknown introduced characters
-    and Question attendees are warnings: they trigger another attempt, but after the final attempt
-    the parseable candidate with the fewest warnings is returned (earliest wins ties). Regular
-    `source` values are intentionally unrestricted beyond the schema's non-empty-string rule.
+    Structurally invalid responses are unavailable as candidates. Unknown Question attendees are
+    warnings: they trigger another attempt, but after the final attempt the parseable candidate
+    with the fewest warnings is returned (earliest wins ties). Regular `source` values are
+    intentionally unrestricted beyond the schema's non-empty-string rule.
     """
     normalized_roles = tuple(sorted({role.strip() for role in known_roles if role.strip()}))
-    known_role_set = frozenset(normalized_roles)
     normalized_attendees = tuple(
         sorted(
             (
@@ -276,7 +235,11 @@ async def generate_ledger(
     )
     known_player_set = frozenset(attendee.player_name for attendee in normalized_attendees)
     prompt_data = LedgerPromptData(
-        transcript=transcript, known_roles=normalized_roles, attendees=normalized_attendees, glossary=tuple(glossary)
+        starting_context=json.dumps([utterance.model_dump() for utterance in starting_context], ensure_ascii=False, indent=2),
+        session_utterances=json.dumps([utterance.model_dump() for utterance in session_utterances], ensure_ascii=False, indent=2),
+        known_roles=normalized_roles,
+        attendees=normalized_attendees,
+        glossary=tuple(glossary),
     )
     candidates: list[_Candidate] = []
     last_error: Exception | None = None
@@ -287,6 +250,8 @@ async def generate_ledger(
         known_role_count=len(normalized_roles),
         attendee_count=len(normalized_attendees),
         glossary_count=len(glossary),
+        starting_context_utterance_count=len(starting_context),
+        session_utterance_count=len(session_utterances),
     ) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             log.set(attempt_count=attempt)
@@ -300,13 +265,25 @@ async def generate_ledger(
                 response = LedgerGenerationResponse.model_validate_json(raw)
             except ValidationError as exc:
                 last_error = exc
+                prompt_data = replace(
+                    prompt_data,
+                    validation_feedback=json.dumps(exc.errors(include_input=False, include_url=False), default=str),
+                    rejected_candidate=raw,
+                )
                 continue
 
-            warning_count = _introduction_warning_count(response, known_role_set) + _attendee_warning_count(response, known_player_set)
+            warning_count = _attendee_warning_count(response, known_player_set)
             candidate = _Candidate(response=response, warning_count=warning_count, attempt=attempt)
             candidates.append(candidate)
             if warning_count == 0:
-                log.set(attempt_count=attempt, warning_count=0, failed=False)
+                log.set(
+                    attempt_count=attempt,
+                    warning_count=0,
+                    generated_utterance_count=len(response.ledger.utterances),
+                    generated_scene_count=len(response.scene_breakdown.scenes),
+                    starting_situation_chars=len(response.starting_situation),
+                    failed=False,
+                )
                 return response
 
         if candidates:
@@ -315,6 +292,9 @@ async def generate_ledger(
                 attempt_count=MAX_GENERATION_ATTEMPTS,
                 warning_count=selected.warning_count,
                 selected_attempt=selected.attempt,
+                generated_utterance_count=len(selected.response.ledger.utterances),
+                generated_scene_count=len(selected.response.scene_breakdown.scenes),
+                starting_situation_chars=len(selected.response.starting_situation),
                 failed=False,
             )
             return selected.response

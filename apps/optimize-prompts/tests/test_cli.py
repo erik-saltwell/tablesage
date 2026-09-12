@@ -16,3 +16,18 @@ def test_summary_command() -> None:
 
     assert result.exit_code == 0
     assert "Summary" in result.output
+
+
+def test_recap_command_validates_corpus_without_running_optimizer() -> None:
+    result = runner.invoke(app, ["recap-summary"])
+
+    assert result.exit_code == 0, result.output
+    assert "3 evaluation cases and 6 metrics" in result.output
+    assert "alignment gate: 1.0" in result.output
+
+
+def test_section_transcript_command_is_registered() -> None:
+    result = runner.invoke(app, ["section-transcript", "--help"])
+
+    assert result.exit_code == 0
+    assert "cross-validate" in result.output

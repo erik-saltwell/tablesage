@@ -233,19 +233,19 @@ Players are top-level records, independent of any single campaign — a player's
 
 ### Generate a Ledger
 
-**Description:** Condense the current Session transcript into the structured v3 Ledger format.
+**Description:** Condense the current Session into the structured v4 Ledger format.
 
 **Goal:** Produce a chronological, machine-usable record of meaningful campaign events without treating the Transcript as a lossless canonical record.
 
-- The user requests Ledger generation for a Session with a Transcript.
-- The app uses the completed Reviewed Transcript when present, otherwise the machine Transcript, and presents speakers to the generator as their Session roles.
-- Explicitly framed pre-session material becomes an optional Preamble containing a Recap, Character Introductions, or both.
-- Regular content becomes ordered Narration, Action, Speech, Expression, and Correction entries. The Ledger may omit, rephrase, combine, or split transcript utterances and carries no offsets or provenance links.
-- The app validates structured output, retries malformed or unknown-role results up to twice, and selects the best structurally valid candidate without silently fuzzy-matching names.
+- The user requests Ledger generation after Role Transcript and Transcript Sections exist.
+- The app verifies that Transcript Sections matches the exact Role Transcript, then supplies the generator with separate Starting Context and current-session utterance arrays.
+- The required `starting_situation` comes only from Starting Context. Only current-session utterances may produce regular Ledger entries; opening recap and character introductions are not stored in the Ledger.
+- Regular content becomes ordered Narration, Action, Speech, Expression, Correction, and Question entries. The Ledger may omit, rephrase, combine, or split transcript utterances and carries no offsets or provenance links.
+- The app validates structured output, retries malformed results or unknown Question attendees up to twice, and selects the best structurally valid candidate without silently fuzzy-matching names.
 - A successful run atomically replaces canonical `ledger.json` and its deterministic,
   human-readable `ledger.md` companion. A failed run preserves any prior Ledger. Ledger export asks
   whether to copy Markdown or JSON; historical JSON-only Ledgers create Markdown lazily on export.
-- Rebuilding or completing the source Transcript, re-importing audio, or changing attendance/roles invalidates the Ledger.
+- Rebuilding or completing the source Transcript, re-importing audio, or changing attendance/roles invalidates Transcript Sections and the Ledger.
 
 ### View and regenerate a summary
 

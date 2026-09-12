@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from sqlalchemy.exc import IntegrityError
@@ -59,6 +59,7 @@ def last_session_dates(session: Session) -> dict[uuid.UUID, date]:
 def rename_campaign(session: Session, campaign_id: uuid.UUID, new_name: str, campaigns_root: Path) -> Campaign:
     campaign = get_campaign(session, campaign_id)
     rename_named_entity(session, campaign, new_name, campaigns_root, kind="campaign")
+    campaign.updated_at = datetime.now(UTC)
     return campaign
 
 
@@ -67,6 +68,7 @@ def update_campaign(session: Session, campaign_id: uuid.UUID, description: str |
     campaign = get_campaign(session, campaign_id)
     campaign.description = description
     campaign.game_system = game_system
+    campaign.updated_at = datetime.now(UTC)
     session.add(campaign)
     session.flush()
     return campaign

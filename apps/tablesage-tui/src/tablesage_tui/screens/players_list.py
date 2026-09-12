@@ -30,17 +30,19 @@ class PlayersListScreen(TableSageScreen):
     """The top-level list of all players, independent of any campaign."""
 
     section = "players"
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+        Binding("r,R", "preview_review_screen", "Preview Review (DEV)", key_display="R", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("n,N", "new_player", "New Player", key_display="N"),
         Binding("a,A", "create_players_from_audio", "From Audio", key_display="A"),
         Binding("s,S", "enhance_from_session", "From Session", key_display="S"),
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
+    ]
+    OTHER_BINDINGS = [
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
-        # TEMPORARY -- dev-only shortcut to eyeball the review screen without running the
-        # real transcribe+LLM pipeline. Remove once no longer needed.
-        Binding("r,R", "preview_review_screen", "Preview Review (DEV)", key_display="R"),
     ]
 
     def compose_content(self) -> ComposeResult:

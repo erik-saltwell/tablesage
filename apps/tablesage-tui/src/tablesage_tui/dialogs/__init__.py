@@ -1,8 +1,10 @@
+from .artifact_regeneration import ArtifactRegenerationDialog
 from .attendee_editor import AttendeeDialog, AttendeeResult
 from .find_replace import FindReplaceDialog, FindReplaceResult
 from .generic import ConfirmationDialog, TextInputDialog
 from .glossary_entry import GlossaryEntryDialog
 from .manual_review import ManualReviewUtteranceDialog, ManualReviewUtteranceResult
+from .other_actions import OtherActionsDialog
 from .progress import ProgressDialog
 from .roster import PlayerPickerDialog, RolePickerDialog
 from .session_picker import SessionFromCampaignPickerDialog
@@ -13,6 +15,7 @@ from .transcript_view import TranscriptViewDialog
 __all__ = [
     "AttendeeDialog",
     "AttendeeResult",
+    "ArtifactRegenerationDialog",
     "ConfirmationDialog",
     "TextInputDialog",
     "FindReplaceDialog",
@@ -20,6 +23,7 @@ __all__ = [
     "GlossaryEntryDialog",
     "ManualReviewUtteranceDialog",
     "ManualReviewUtteranceResult",
+    "OtherActionsDialog",
     "PlayerPickerDialog",
     "ProgressDialog",
     "RolePickerDialog",

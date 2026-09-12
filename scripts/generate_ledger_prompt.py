@@ -9,6 +9,7 @@ The rendered prompts are written to ``temp/generate_ledger_prompt.txt`` at the r
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Protocol
@@ -17,8 +18,10 @@ import jinja2
 from tablesage_application import Application
 from tablesage_application.llm import PromptName
 from tablesage_application.llm._prompts import read_prompt_template, read_system_prompt
-from tablesage_application.session_pipeline.clean_transcript import render_role_transcript_text
+from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.generate_ledger import Attendee, GlossaryPromptEntry, LedgerPromptData
+from tablesage_application.session_pipeline.role_transcript import RoleTranscript
+from tablesage_application.session_pipeline.transcript_sections import load_current_transcript_sections, route_transcript
 from tablesage_model.model import Session as GameSession
 
 CAMPAIGN_NAME = "Brandonsford"
@@ -76,8 +79,19 @@ def main() -> None:
         GlossaryPromptEntry(term=entry.term, description=entry.description)
         for entry in sorted(application.list_glossary_entries(campaign.id), key=lambda entry: entry.term.casefold())
     )
-    transcript = render_role_transcript_text(application.session_folder(game_session.id))
-    prompt_data = LedgerPromptData(transcript=transcript, known_roles=known_roles, attendees=attendees, glossary=glossary)
+    session_folder = application.session_folder(game_session.id)
+    role_path = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
+    sections_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_SECTIONS].filename
+    role_transcript = RoleTranscript.load(role_path)
+    sections = load_current_transcript_sections(role_path, sections_path)
+    routed = route_transcript(role_transcript, sections)
+    prompt_data = LedgerPromptData(
+        starting_context=json.dumps([utterance.model_dump() for utterance in routed.starting_context], indent=2),
+        session_utterances=json.dumps([utterance.model_dump() for utterance in routed.session], indent=2),
+        known_roles=known_roles,
+        attendees=attendees,
+        glossary=glossary,
+    )
 
     system_prompt = read_system_prompt(PromptName.GENERATE_LEDGER)
     template = jinja2.Template(read_prompt_template(PromptName.GENERATE_LEDGER), undefined=jinja2.StrictUndefined)

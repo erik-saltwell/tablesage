@@ -609,6 +609,7 @@ Button {
 /* ******************************** */
 
 ConfirmationDialog,
+ArtifactRegenerationDialog,
 TextInputDialog,
 PlayerPickerDialog,
 RolePickerDialog,
@@ -619,11 +620,13 @@ SessionFromCampaignPickerDialog,
 ManualReviewUtteranceDialog,
 SpeakerResolutionDialog,
 TranscriptViewDialog,
-FindReplaceDialog {
+FindReplaceDialog,
+OtherActionsDialog {
     align: center middle;
     background: $overlay-bg;
 
     #confirmation-dialog,
+    #artifact-regeneration-dialog,
     #text-input-dialog,
     #player-picker-dialog,
     #role-picker-dialog,
@@ -645,6 +648,23 @@ FindReplaceDialog {
         border-title-align: left;
         border-title-color: $fg-accent;
         border-title-style: bold;
+    }
+
+    #other-actions-dialog {
+        width: 48;
+        height: auto;
+        background: $pine-750;
+        color: $surface-2-fg;
+        border: solid $surface-border;
+        padding: 1 2;
+
+        border-title-align: left;
+        border-title-color: $fg-accent;
+        border-title-style: bold;
+    }
+
+    #artifact-regeneration-dialog {
+        height: 20;
     }
 
     #attendee-dialog,
@@ -820,6 +840,29 @@ FindReplaceDialog {
 
         Button {
             margin: 1 0 0 1;
+        }
+    }
+}
+
+OtherActionsDialog {
+    .other-actions-prompt {
+        height: 1;
+        margin: 0 0 1 0;
+        color: $fg-muted;
+    }
+
+    #other-actions-list {
+        height: auto;
+    }
+
+    OtherActionButton {
+        width: 1fr;
+        height: 1;
+        margin: 0 0 1 0;
+
+        .other-action-description {
+            width: 1fr;
+            padding: 0 1;
         }
     }
 }
@@ -1373,6 +1416,10 @@ SessionDetailScreen {
             &.artifact-missing {
                 color: $fg-muted;
             }
+
+            &.artifact-stale {
+                color: $fg-warning;
+            }
         }
     }
 }
@@ -1402,6 +1449,7 @@ ManualReviewScreen {
 
         Button {
             margin: 0 0 0 1;
+            min-width: 20;
         }
     }
 
@@ -1439,6 +1487,7 @@ ManualReviewScreen {
 
         Button {
             margin: 0 0 0 1;
+            min-width: 20;
         }
     }
 }

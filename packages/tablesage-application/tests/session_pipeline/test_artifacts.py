@@ -19,8 +19,11 @@ def test_delete_all_artifacts_removes_everything_including_input_audio(tmp_path:
         ArtifactName.TRANSCRIPT_TEXT,
         ArtifactName.REVIEWED_TRANSCRIPT,
         ArtifactName.ROLE_TRANSCRIPT,
+        ArtifactName.TRANSCRIPT_SECTIONS,
         ArtifactName.TRANSCRIPT_BENCHMARK,
         ArtifactName.LEDGER,
+        ArtifactName.PLAYER_INTRODUCTIONS,
+        ArtifactName.RECAP_SUMMARY,
         ArtifactName.SUMMARY,
     ):
         _touch(tmp_path, name)

@@ -16,7 +16,7 @@ class PlayerImportSummaryScreen(TableSageScreen):
 
     section = "players"
 
-    BINDINGS = [
+    COMMON_BINDINGS = [
         Binding("escape,enter", "pop_screen", "Done", key_display="Esc/Enter"),
     ]
 

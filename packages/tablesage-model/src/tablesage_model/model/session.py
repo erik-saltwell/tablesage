@@ -47,6 +47,8 @@ class Session(SQLModel, table=True):
     status: str = Field(default=SessionStatus.DRAFT.value)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    metadata_updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    attendance_updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @validates("name")
     def validate_name(self, key: str, value: str) -> str:

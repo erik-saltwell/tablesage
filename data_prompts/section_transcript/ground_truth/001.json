@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "role_transcript_sha256": "835012db88a081993f670aded0b78d696a411182c9a0e2e2159f3755955724f6",
+  "recap_range": {
+      "start_index": 40,
+      "end_index": 59
+    },
+    "introduction_range": {
+      "start_index": 1,
+      "end_index": 36
+    },
+    "starting_context_range": {
+      "start_index": 61,
+      "end_index": 61
+    },
+    "session_start_index": 61
+}

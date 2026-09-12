@@ -254,7 +254,10 @@ def test_save_reviewed_transcript_creates_separate_artifact_without_changing_mac
         ArtifactName.TRANSCRIPT_ROLES_TEXT,
         ArtifactName.TRANSCRIPT_BENCHMARK,
         ArtifactName.ROLE_TRANSCRIPT,
+        ArtifactName.TRANSCRIPT_SECTIONS,
         ArtifactName.LEDGER,
+        ArtifactName.PLAYER_INTRODUCTIONS,
+        ArtifactName.RECAP_SUMMARY,
         ArtifactName.SUMMARY,
     )
     for name in stale_derivatives:
@@ -264,7 +267,7 @@ def test_save_reviewed_transcript_creates_separate_artifact_without_changing_mac
 
     assert Transcript.load(machine_path) == machine
     assert load_review_transcript(tmp_path) == reviewed
-    assert all(not (tmp_path / ARTIFACTS[name].filename).exists() for name in stale_derivatives)
+    assert all((tmp_path / ARTIFACTS[name].filename).exists() for name in stale_derivatives)
 
 
 def test_count_adjusted_utterances(tmp_path: Path) -> None:

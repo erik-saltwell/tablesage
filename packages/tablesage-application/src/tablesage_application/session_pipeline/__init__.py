@@ -3,12 +3,16 @@ from . import (
     clean_transcript,
     extract_glossary,
     generate_ledger,
+    generate_player_introductions,
+    generate_recap_summary,
     generate_summary,
     import_audio,
     processing,
+    role_transcript,
     suggest_spelling_corrections,
     transcribe_audio,
     transcript_review,
+    transcript_sections,
 )
 
 __all__ = [
@@ -16,10 +20,14 @@ __all__ = [
     "clean_transcript",
     "extract_glossary",
     "generate_ledger",
+    "generate_player_introductions",
+    "generate_recap_summary",
     "generate_summary",
     "import_audio",
     "processing",
+    "role_transcript",
     "suggest_spelling_corrections",
     "transcribe_audio",
     "transcript_review",
+    "transcript_sections",
 ]

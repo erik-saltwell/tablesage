@@ -1,8 +1,10 @@
 from datetime import date
-from unittest.mock import MagicMock
+from pathlib import Path
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 from tablesage_application.paths import ArtifactName
+from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus, GenerationTask
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
 from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, PlayerPickerDialog, RolePickerDialog, TextInputDialog
@@ -10,7 +12,9 @@ from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from tablesage_tui.widgets import CommittingInput
+from textual.pilot import Pilot
 from textual.widgets import Button, DataTable, Input, Static
+from textual_fspicker import FileOpen
 
 
 def _application(
@@ -33,6 +37,8 @@ def _application(
         get_session=MagicMock(return_value=GameSession(campaign_id=campaign.id, sequence_number=1, name="Session")),
         list_attendance=MagicMock(return_value=[]),
         session_artifacts=MagicMock(return_value=dict.fromkeys(ArtifactName, False)),
+        session_artifact_states=MagicMock(return_value=dict.fromkeys(ArtifactName, ArtifactStatus.MISSING)),
+        generate_outputs=MagicMock(return_value=()),
         can_transcribe_audio=MagicMock(return_value=(False, "Import input audio first.")),
         can_clean_session=MagicMock(return_value=(False, "No artifacts to delete.")),
         can_extract_glossary=MagicMock(return_value=(False, "Generate the Role Transcript first.")),
@@ -40,6 +46,11 @@ def _application(
         campaign_folder_exists=MagicMock(return_value=False),
         session_folder_would_collide=MagicMock(return_value=False),
     )
+
+
+async def _wait_for_progress_worker(pilot: Pilot) -> None:
+    await pilot.app.workers.wait_for_complete()
+    await pilot.pause()
 
 
 @pytest.mark.anyio
@@ -54,6 +65,49 @@ async def test_sessions_is_the_default_tab() -> None:
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
         assert screen._active_tab == "sessions"
+
+
+@pytest.mark.anyio
+async def test_regenerate_all_outputs_processes_only_reviewed_audio_sessions() -> None:
+    campaign = Campaign(name="Iron Pact")
+    ready = GameSession(campaign_id=campaign.id, sequence_number=1, name="Ready")
+    awaiting_review = GameSession(campaign_id=campaign.id, sequence_number=2, name="Awaiting review")
+    application = _application(campaign=campaign, sessions=[ready, awaiting_review])
+    application.session_artifacts.side_effect = lambda session_id: (
+        {name: name is ArtifactName.INPUT_AUDIO for name in ArtifactName}
+        if session_id in {ready.id, awaiting_review.id}
+        else dict.fromkeys(ArtifactName, False)
+    )
+    application.session_artifact_states.side_effect = lambda session_id: {
+        name: ArtifactStatus.CURRENT if session_id == ready.id and name is ArtifactName.REVIEWED_TRANSCRIPT else ArtifactStatus.MISSING
+        for name in ArtifactName
+    }
+    application.generate_outputs.return_value = (GenerationTask(ready.id, ArtifactName.LEDGER),)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("slash", "o")
+        await _wait_for_progress_worker(pilot)
+
+    application.generate_outputs.assert_called_once_with(ready.id, on_stage=ANY)
+
+
+@pytest.mark.anyio
+async def test_prepare_next_session_notifies_that_it_was_called() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        with patch.object(pilot.app.screen, "notify") as notify:
+            await pilot.press("slash", "p")
+            await pilot.pause()
+
+    notify.assert_called_once_with("Prepare Next Session was called.")
 
 
 @pytest.mark.anyio
@@ -435,6 +489,28 @@ async def test_glossary_duplicate_term_shows_error() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, CampaignDetailScreen)
+
+
+@pytest.mark.anyio
+async def test_import_legacy_settings_opens_yaml_picker_and_refreshes_glossary(tmp_path: Path) -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    application.import_legacy_glossary = MagicMock(return_value=2)
+    source = tmp_path / "settings.yaml"
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("g", "i")
+        await pilot.pause()
+
+        picker = pilot.app.screen
+        assert isinstance(picker, FileOpen)
+        picker.dismiss(source)
+        await pilot.pause()
+
+        application.import_legacy_glossary.assert_called_once_with(campaign.id, source)
+        assert application.list_glossary_entries.call_count >= 2
 
 
 @pytest.mark.anyio

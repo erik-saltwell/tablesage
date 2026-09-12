@@ -1,0 +1,329 @@
+<session_metadata>
+Campaign: Brandonsford
+Game system: White Box
+Session date: 2026-09-01
+</session_metadata>
+
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- jeff devries: Trout
+- john schork: Waymon Tisdale
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<glossary>
+- Alfred: A shaggy giant companion of Sir Brandon, depicted wielding a greatsword in the barrow mound murals.
+- Bentley: Halfling owner of the Clumsy Fox Tavern.
+- Brandon's Barrow: A burial mound where Brandon is supposed to be burried.
+- Brandonsford: A quiet town.
+- Brother Dirk: Assistant to Father William
+- Clumsy Fox Tavern: A warm, busy tavern in Brandonsford owned by Bentley, a jovial halfling. Known for its Fox Tail brew.
+- Clurichen: A small trickster creature that comes from the river at night and causes mischief in town.
+- Dagonite: A pale-skinned, human-like race with unusual eyes.
+- Drop Dead Ned: Greasy-haired assassin. Owns a killer wasp in a jar.
+- Dunk: A trollkin adventurer who traded with fauns and plotted to steal Warwick's mithril shirt using Ingrid's help.
+- Eric the Reeve: Landowner representative of Brandonsford. Kind of the mayor.
+- Farmer Gill: Local farmer with three sons.
+- Father William: Racist priest of Brandonsford's church.
+- Faun wine: A red, intoxicating wine that bleeds like sap from trees in the Fauns Grove.
+- Fauns Grove: A grove slightly north of Brandonsford across the river where fauns gather wine that bleeds from the trees
+- Fox Tail brew: The signature ale served at the Clumsy Fox Tavern, known for its excellent taste.
+- Free Goblin Society: A collective of goblins led by Snurk, Grimble, Watok, and Peg who fled King Hogboon to settle the barrow mound.
+- George: One-armed woodsman of Brandonsford who encountered the black dragon and lost his arm to it.
+- Giant's cottage: A cottage three times normal size where a giant lives.
+- Golden Egg Tavern: A nearly empty tavern across from the Clumsy Fox, owned by Quinn.
+- Grimble Who Holds the Stick: A goblin from the Free Goblin Society who insists on using a speaking stick to maintain order.
+- Ingrid: The town alchemist who allegedly has romantic interest in Warwick.
+- King Hogboon: A goblin king from whom the Free Goblin Society fled to establish their new collective.
+- Lady Hilda: Red-haired noble woman adventurer staying at the Clumsy Fox.
+- Lady Isaboob: Sir Phidipaldi's lance.
+- Malzazarik the Magnificent: A wizard in purple robes and pointy hat with a yellow star, staying at the Clumsy Fox Tavern.
+- Mithril chain shirt: A valuable piece of armor on display in Warwick's shop that he refuses to sell.
+- Myrddin: A wizened priest companion of Sir Brandon, depicted with a staff and clasped hands in the barrow mound murals.
+- Naggeneen: A Clurichen (small trickster creature) who emerges from the river at night to steal alcohol from the Golden Egg Tavern.
+- Peg Who Had the Torch: A female goblin wearing a black robe and eye patch, member of the Free Goblin Society.
+- Quinn: White-bearded, bony owner of the Golden Egg Tavern.
+- Reginald: A frog living by the river near Brandonsford - hates Nageneen.
+- Saint Arthur: Patron saint of hunters, depicted as a bearded man with a spear in religious carvings and statues.
+- Seamus: Farmer Gill's shabby mule
+- Sir Brandon: Legendary hero who killed a dragon and whom Brandonsford is named after.
+- Sir Brandon's sword: A holy sword of silvery white metal etched with 'All shadows yield to my light,' buried with Brandon.
+- Sir Chumunga: Sir Phidipaldi's two-handed sword.
+- Snurk the Walkout: A mud-colored goblin and member of the Free Goblin Society who advocates for their new collective.
+- Squints: A river halfling fighter with a sling.
+- Trollkin: Large race not related to trolls
+- Vivian: Ingrid's friend who lives in the forest.
+- Warwick: The town smith who keeps his shop filled with lucky charms.
+- Watok the Scribbler: A hunched goblin with ink-stained fingers who serves as scribe for the Free Goblin Society.
+- Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
+</glossary>
+
+<scene_breakdown>
+{
+  "ending_situation": "The party is inside Sir Brandon's burial chamber with his magical sword, plate armor, and valuable grave goods; a seven-foot skeletal warrior with a death mask and huge greatsword blocks the doorway.",
+  "scenes": [
+    {
+      "title": "Drop Dead Ned's Price",
+      "location": "Outside the barrow mound",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Drop Dead Ned"
+      ],
+      "situation": "Before entering the mound, the party considers retroactively bringing Drop Dead Ned along.",
+      "outcome": "They hire Drop Dead Ned for 100 gold under his murder-and-bodies arrangement and pay his fee.",
+      "carry_forward": [
+        "Drop Dead Ned returns 10 gold whenever the party lets him murder someone and do whatever he wants with the body.",
+        "Drop Dead Ned carries a killer wasp in a jar."
+      ],
+      "signature_detail": "The assassin's fee decreases whenever he is allowed to murder someone.",
+      "ledger_ranges": [
+        {
+          "start_index": 0,
+          "end_index": 2
+        }
+      ]
+    },
+    {
+      "title": "A Plan for the Dragon",
+      "location": "Outside the barrow mound",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale"
+      ],
+      "situation": "The party considers how the barrow expedition could prepare them to confront the black dragon.",
+      "outcome": "Sir Phidipaldi proposes a multi-stage plan beginning with Sir Brandon's sword and the mithril shirt; the party also confirms it has not yet visited Warwick or the general store.",
+      "carry_forward": [
+        "The proposed plan includes obtaining poison protection, pressing Eric the Reeve for an advance, hiring Lady Hilda, and bringing henchmen against the dragon.",
+        "Legend says Sir Brandon's fairy-given sword killed a dragon."
+      ],
+      "signature_detail": "Sir Phidipaldi frames the barrow's sword as the centerpiece of a larger dragon-hunting plan.",
+      "ledger_ranges": [
+        {
+          "start_index": 3,
+          "end_index": 5
+        }
+      ]
+    },
+    {
+      "title": "The Medieval Comic Book",
+      "location": "Brandon's Barrow",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Brother Dirk",
+        "Squints",
+        "Drop Dead Ned"
+      ],
+      "situation": "At nightfall, the party must determine whether the recently opened mound is safe to enter and learn what lies inside.",
+      "outcome": "They enter by lantern light, study three gemstone-inlaid mosaics of Sir Brandon's company, and investigate Common-speaking voices to the east.",
+      "carry_forward": [
+        "Disturbed earth shows that the stone entrance opened recently.",
+        "The mosaics depict Alfred, Myrddin, and Wyllt alongside Sir Brandon.",
+        "Clattering, footsteps, and voices come from the eastern crypt."
+      ],
+      "signature_detail": "Real gems glint in the lantern light across mosaics resembling a medieval comic book.",
+      "ledger_ranges": [
+        {
+          "start_index": 6,
+          "end_index": 17
+        }
+      ]
+    },
+    {
+      "title": "The Free Goblin Society",
+      "location": "The eastern crypt",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Free Goblin Society",
+        "Brother Dirk",
+        "Squints",
+        "Drop Dead Ned"
+      ],
+      "situation": "Four poorly equipped goblins are arguing about politics and a speaking stick in a crypt they intend to settle.",
+      "outcome": "Sir Phidipaldi commandeers the stick and negotiates an alliance: the goblins accompany the party and waive claims to the barrow's goods, while the party clears the mound and hides them from King Hogboon.",
+      "carry_forward": [
+        "The Free Goblin Society consists of Snurk the Walkout, Grimble Who Holds the Stick, Watok the Scribbler, and Peg Who Had the Torch.",
+        "The goblins fled King Hogboon to create a propertyless collective in the barrow.",
+        "The party may take Sir Brandon's goods under the agreement."
+      ],
+      "signature_detail": "A fully armored Sir Phidipaldi takes the speaking stick and makes every goblin sit before speaking.",
+      "ledger_ranges": [
+        {
+          "start_index": 18,
+          "end_index": 33
+        }
+      ]
+    },
+    {
+      "title": "The Secret of the Ooze",
+      "location": "The eastern crypt",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Squints",
+        "Free Goblin Society"
+      ],
+      "situation": "The party explores the crypt's alcoves despite Peg's warning that the goblins sealed a gray ooze behind one flagstone.",
+      "outcome": "The party releases and kills the ooze; Squints delivers the final sling shot, and the goblins acknowledge that imprisoning it merely outsourced their violence.",
+      "carry_forward": [
+        "A skeleton in another alcove has a chain shirt and mace.",
+        "A ceremonial jewel-encrusted dagger dates to the barrow's sealing and may be worth upwards of 200 gold in a major city.",
+        "Several goblins died below to a large, still-living figure from the murals wielding a huge sword.",
+        "The western rooms contain strange statues."
+      ],
+      "signature_detail": "Squints pockets a sample of dead ooze after looking to Trout for approval.",
+      "ledger_ranges": [
+        {
+          "start_index": 34,
+          "end_index": 49
+        }
+      ]
+    },
+    {
+      "title": "The Robes of Saint Arthur",
+      "location": "A secret room off the eastern crypt",
+      "participants": [
+        "Dr Uriah",
+        "Trout",
+        "Drop Dead Ned",
+        "Brother Dirk"
+      ],
+      "situation": "Dr Uriah discovers a concealed chamber containing golden candle holders and a carved dark-wood chest.",
+      "outcome": "Trout takes seven golden candle holders, Drop Dead Ned opens the safe chest, and Dr Uriah dons Saint Arthur's uncursed robes and takes the quarterstaff.",
+      "carry_forward": [
+        "The seven candle holders are worth 50 gold each.",
+        "The robes have no immediately notable effect."
+      ],
+      "signature_detail": "Brother Dirk is deeply offended when Dr Uriah puts on the gorgeous holy robes.",
+      "ledger_ranges": [
+        {
+          "start_index": 50,
+          "end_index": 57
+        }
+      ]
+    },
+    {
+      "title": "Valor, Piety, Wisdom, and Duty",
+      "location": "The western statue room and chapel",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Brother Dirk",
+        "Free Goblin Society"
+      ],
+      "situation": "The party examines four virtue-labeled statues and follows dripping water into a ruined chapel.",
+      "outcome": "Sir Phidipaldi cleans the mold-covered statue of Saint Arthur, resists its spore cloud, and receives a blessing lasting through the barrow adventure.",
+      "carry_forward": [
+        "The four inscribed virtues are Valor, Piety, Wisdom, and Duty.",
+        "Saint Arthur is the patron of hunters.",
+        "Sir Phidipaldi has a +1 bonus to all rolls for the remainder of the barrow adventure."
+      ],
+      "signature_detail": "A poisonous spore cloud becomes Saint Arthur's blessing when Sir Phidipaldi cleans the statue.",
+      "ledger_ranges": [
+        {
+          "start_index": 58,
+          "end_index": 62
+        }
+      ]
+    },
+    {
+      "title": "Bloody Pieces at the Bottom",
+      "location": "The lower corridor",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Drop Dead Ned"
+      ],
+      "situation": "The party descends into a cold, mist-filled lower corridor where goblins were killed while fleeing toward the stairs.",
+      "outcome": "They identify dismembering sword wounds, hear scratching farther west, and find a large room branching south.",
+      "carry_forward": [
+        "Drop Dead Ned offers and Waymon accepts a five-gold credit for each already-dead body given to him.",
+        "The corridor's walls bear a continuous hunting scene.",
+        "An unidentified threat remains farther west."
+      ],
+      "signature_detail": "Icy mist curls around three goblins left in bloody pieces beneath carvings of pursuing hunters.",
+      "ledger_ranges": [
+        {
+          "start_index": 63,
+          "end_index": 67
+        }
+      ]
+    },
+    {
+      "title": "Slime Talk",
+      "location": "The slime pool room",
+      "participants": [
+        "Waymon Tisdale",
+        "Trout",
+        "Squints",
+        "Brother Dirk",
+        "Drop Dead Ned",
+        "a green slime"
+      ],
+      "situation": "The party finds living green slimes floating above visible treasure in a five-foot-deep pool.",
+      "outcome": "Waymon peacefully questions a slime, Brother Dirk retrieves a skull with gold teeth, and Waymon opens a concealed southern passage with Drop Dead Ned's crowbar.",
+      "carry_forward": [
+        "The slime says a half-dead, angry large figure roams below and killed the goblins.",
+        "The slime permits the party to take the pool's treasure.",
+        "A human skeleton with a silver dagger remains in the pool.",
+        "The retrieved gold teeth are worth 20 gold."
+      ],
+      "signature_detail": "Squints delegates his swimming assignment to Brother Dirk after arguing that orders flow downhill.",
+      "ledger_ranges": [
+        {
+          "start_index": 68,
+          "end_index": 80
+        }
+      ]
+    },
+    {
+      "title": "What Makes a True Knight?",
+      "location": "Sir Brandon's burial chamber",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Trout",
+        "Waymon Tisdale",
+        "Brother Dirk"
+      ],
+      "situation": "Beyond the concealed passage, a noblewoman's statue telepathically asks what makes a true knight and bars the way through large stone doors.",
+      "outcome": "Speaking all four virtues opens the doors to Sir Brandon's ship-burial chamber; the party opens his sarcophagus, takes his magical sword and plate armor, and is confronted by a seven-foot skeletal warrior.",
+      "carry_forward": [
+        "Sir Brandon's sword is magical, uncursed silvery white metal engraved, “All shadows yield to my light.”",
+        "Trout has taken a jeweled chalice worth 600 gold.",
+        "Five dust-filled urns are worth 100 gold each; a kite shield also lies among the grave goods.",
+        "Sir Phidipaldi now wears Sir Brandon's nonmagical plate armor, while his day laborer carries his former armor."
+      ],
+      "signature_detail": "A mustachioed death mask faces the party as a skeletal giant drags its greatsword into the doorway.",
+      "ledger_ranges": [
+        {
+          "start_index": 81,
+          "end_index": 93
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "session_id": "796cf216-a65e-4a1a-8887-a11a1e973ddb",
+  "session_name": "Socialist Goblins",
+  "starting_situation": "At sunset, the party is gathered outside the barrow mound.",
+  "ledger_sha256": "5cde5991eb46722ea9ea00caa2968427ee567e33fa2b5fe5c49637906600e342"
+}
+</scene_breakdown>

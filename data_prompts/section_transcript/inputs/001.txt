@@ -1,0 +1,3044 @@
+<session_attendees>
+- erik saltwell: Sir Phidipaldi
+- jason beaumont: Game Master
+- john schork: Waymon Tisdale
+- marshall rise: Dunk
+- rich gredzinski: Dr Uriah
+</session_attendees>
+
+<role_transcript>
+{
+  "utterances": [
+    {
+      "index": 0,
+      "speaker": "Game Master",
+      "text": "John."
+    },
+    {
+      "index": 1,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, I named both of my characters after power forwards from the 1986 N.B.A. season, so Waymond Tisdale was from the Indiana Pacers."
+    },
+    {
+      "index": 2,
+      "speaker": "Waymon Tisdale",
+      "text": "And that is my Dagonite assassin."
+    },
+    {
+      "index": 3,
+      "speaker": "Game Master",
+      "text": "All right, uh, Marsh."
+    },
+    {
+      "index": 4,
+      "speaker": "Dunk",
+      "text": "Uh, dunk a Trollkin wanderer."
+    },
+    {
+      "index": 5,
+      "speaker": "Game Master",
+      "text": "Okay, so Marsh is dunk Trollkin wanderer."
+    },
+    {
+      "index": 6,
+      "speaker": "Dunk",
+      "text": "Also of the Indiana Pacers."
+    },
+    {
+      "index": 7,
+      "speaker": "Dunk",
+      "text": "But more The halftime show."
+    },
+    {
+      "index": 8,
+      "speaker": "Game Master",
+      "text": "John, what was your?"
+    },
+    {
+      "index": 9,
+      "speaker": "Game Master",
+      "text": "Characters name again."
+    },
+    {
+      "index": 10,
+      "speaker": "Waymon Tisdale",
+      "text": "Waymond, Tisdale."
+    },
+    {
+      "index": 11,
+      "speaker": "Game Master",
+      "text": "WAymOnd Tisdale And he is what?"
+    },
+    {
+      "index": 12,
+      "speaker": "Waymon Tisdale",
+      "text": "Uh, dagonite, assassin."
+    },
+    {
+      "index": 13,
+      "speaker": "Game Master",
+      "text": "Dagonite Assassin Okay, uh, Eric."
+    },
+    {
+      "index": 14,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sir Phidipaldi Human errant fool."
+    },
+    {
+      "index": 15,
+      "speaker": "Game Master",
+      "text": "All right, Sir Phidipaldi."
+    },
+    {
+      "index": 16,
+      "speaker": "Game Master",
+      "text": "Fit."
+    },
+    {
+      "index": 17,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, phidip."
+    },
+    {
+      "index": 18,
+      "speaker": "Game Master",
+      "text": "Ehidip."
+    },
+    {
+      "index": 19,
+      "speaker": "Sir Phidipaldi",
+      "text": "Aldi?"
+    },
+    {
+      "index": 20,
+      "speaker": "Sir Phidipaldi",
+      "text": "Aldi?"
+    },
+    {
+      "index": 21,
+      "speaker": "Sir Phidipaldi",
+      "text": "There you, there you go."
+    },
+    {
+      "index": 22,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sir Phidipaldi."
+    },
+    {
+      "index": 23,
+      "speaker": "Game Master",
+      "text": "And you are an errant fool."
+    },
+    {
+      "index": 24,
+      "speaker": "Game Master",
+      "text": "Uh, what race?"
+    },
+    {
+      "index": 25,
+      "speaker": "Sir Phidipaldi",
+      "text": "Human."
+    },
+    {
+      "index": 26,
+      "speaker": "Unassigned Speaker",
+      "text": "Human."
+    },
+    {
+      "index": 27,
+      "speaker": "Dr Uriah",
+      "text": "The most foolish of all the races."
+    },
+    {
+      "index": 28,
+      "speaker": "Game Master",
+      "text": "Exactly, and then Rich."
+    },
+    {
+      "index": 29,
+      "speaker": "Dr Uriah",
+      "text": "Uh, its Hes Dagonite Metaphysi, uh Metaphysician, and his name is Uriah Marsh."
+    },
+    {
+      "index": 30,
+      "speaker": "Unassigned Speaker",
+      "text": "How do you spell Uriah?"
+    },
+    {
+      "index": 31,
+      "speaker": "Unassigned Speaker",
+      "text": "How do you spell Uriah?"
+    },
+    {
+      "index": 32,
+      "speaker": "Dr Uriah",
+      "text": "Uriah."
+    },
+    {
+      "index": 33,
+      "speaker": "Game Master",
+      "text": "URI."
+    },
+    {
+      "index": 34,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sure, yeah, that makes sense."
+    },
+    {
+      "index": 35,
+      "speaker": "Game Master",
+      "text": "He is a hes, a dagonite."
+    },
+    {
+      "index": 36,
+      "speaker": "Dr Uriah",
+      "text": "He is."
+    },
+    {
+      "index": 37,
+      "speaker": "Game Master",
+      "text": "So we have two Dagonites in the party. Okay, how do you all know each other weve got?"
+    },
+    {
+      "index": 38,
+      "speaker": "Unassigned Speaker",
+      "text": "W W Were we?"
+    },
+    {
+      "index": 39,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, you all."
+    },
+    {
+      "index": 40,
+      "speaker": "Dr Uriah",
+      "text": "Were we all in this card game?"
+    },
+    {
+      "index": 41,
+      "speaker": "Game Master",
+      "text": "You were all, Yeah, you were all doing this gambling thing, and you won this. This treasure map that gets you to this town of Brandinsford. Um, so you are two Dagonites, a human and a trollkin, uh, a wanderer assassin, a metaphysician and a fool."
+    },
+    {
+      "index": 42,
+      "speaker": "Sir Phidipaldi",
+      "text": "Are we going to start in Brandensburg?"
+    },
+    {
+      "index": 43,
+      "speaker": "Game Master",
+      "text": "You are, yeah."
+    },
+    {
+      "index": 44,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so maybe we were at a Brandensburg bar or Inn, and we."
+    },
+    {
+      "index": 45,
+      "speaker": "Game Master",
+      "text": "Well, Im gonna say you."
+    },
+    {
+      "index": 46,
+      "speaker": "Game Master",
+      "text": "You were somewhere else, and then the map took you to this city."
+    },
+    {
+      "index": 47,
+      "speaker": "Unassigned Speaker",
+      "text": "You moved it."
+    },
+    {
+      "index": 48,
+      "speaker": "Dr Uriah",
+      "text": "So more or less, we were in another another like."
+    },
+    {
+      "index": 49,
+      "speaker": "Dr Uriah",
+      "text": "Tavern at another city."
+    },
+    {
+      "index": 50,
+      "speaker": "Dr Uriah",
+      "text": "Um, maybe we were all in the same card game and and we like."
+    },
+    {
+      "index": 51,
+      "speaker": "Sir Phidipaldi",
+      "text": "And we had a fourway tie."
+    },
+    {
+      "index": 52,
+      "speaker": "Dr Uriah",
+      "text": "Thats what I was gonna say."
+    },
+    {
+      "index": 53,
+      "speaker": "Dr Uriah",
+      "text": "Like playing five people."
+    },
+    {
+      "index": 54,
+      "speaker": "Dr Uriah",
+      "text": "And and and someone lost, and then it was a fourway tie."
+    },
+    {
+      "index": 55,
+      "speaker": "Waymon Tisdale",
+      "text": "Maybe we discovered that he was cheating."
+    },
+    {
+      "index": 56,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, oh, sure, there you go."
+    },
+    {
+      "index": 57,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, I love it."
+    },
+    {
+      "index": 58,
+      "speaker": "Game Master",
+      "text": "I love it, okay?"
+    },
+    {
+      "index": 59,
+      "speaker": "Dr Uriah",
+      "text": "And then and so we were all there. For whatever reasons, personally, to make money, you know, Im probably just trying to like, get money. Just to further my scholarly work, you know, I gotta pay off to buy some dark secrets."
+    },
+    {
+      "index": 60,
+      "speaker": "Dr Uriah",
+      "text": "And whatever you guys are doing."
+    },
+    {
+      "index": 61,
+      "speaker": "Game Master",
+      "text": "So you go to this so you follow this treasure map to this town called, and you dont know, really like you see that its marked. But you dont know really what those locations are. The only thing you really know is this town of Brandinsford, and you assume the treasure is, you know, probably in one of those places."
+    },
+    {
+      "index": 62,
+      "speaker": "Dr Uriah",
+      "text": "Im assuming were coming from this direction."
+    },
+    {
+      "index": 63,
+      "speaker": "Game Master",
+      "text": "Yeah, exactly."
+    },
+    {
+      "index": 64,
+      "speaker": "Dr Uriah",
+      "text": "So this will be all like kind of unknown land."
+    },
+    {
+      "index": 65,
+      "speaker": "Game Master",
+      "text": "Its unknown land exactly exactly, uh, Brandinsfords, a quiet little town on the edge of the wilderness. Uh, the houses are, uh, mostly thatched roof stone cottages, uh, along with two big plaster and timber inns."
+    },
+    {
+      "index": 66,
+      "speaker": "Game Master",
+      "text": "That, um, are facing each other. So theres one inn that is called the clumsy Fox Tavern."
+    },
+    {
+      "index": 67,
+      "speaker": "Game Master",
+      "text": "And then across from it is the Golden Egg Tavern. Um, and, uh, there, uh, there theres a a an ancient small, ancient stone wall. Uh, let me know if you want me to repeat anything."
+    },
+    {
+      "index": 68,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sure."
+    },
+    {
+      "index": 69,
+      "speaker": "Game Master",
+      "text": "Around the town, uh doesnt really seem to be any, um, guards, or, like proper law enforcement like its, a pretty shitty small little town."
+    },
+    {
+      "index": 70,
+      "speaker": "Game Master",
+      "text": "Um, but the town is protected by a rotating group of ablebodied men on night watch duty."
+    },
+    {
+      "index": 71,
+      "speaker": "Game Master",
+      "text": "And thats, as you approach. One of them calls out to you and asks, Um, who are you like, who approaches?"
+    },
+    {
+      "index": 72,
+      "speaker": "Dr Uriah",
+      "text": "Are we are we, is it night?"
+    },
+    {
+      "index": 73,
+      "speaker": "Game Master",
+      "text": "It is night, yeah, yeah, the sun is set."
+    },
+    {
+      "index": 74,
+      "speaker": "Dr Uriah",
+      "text": "Gotcha its A sun down town. We better watch out with the hog races."
+    },
+    {
+      "index": 75,
+      "speaker": "Dr Uriah",
+      "text": "Against Dagonites."
+    },
+    {
+      "index": 76,
+      "speaker": "Dr Uriah",
+      "text": "So we look like humans, but were just like, pale as fuck and like, have weird eyes and shit."
+    },
+    {
+      "index": 77,
+      "speaker": "Game Master",
+      "text": "Thats right."
+    },
+    {
+      "index": 78,
+      "speaker": "Game Master",
+      "text": "Thats exactly right."
+    },
+    {
+      "index": 79,
+      "speaker": "Dr Uriah",
+      "text": "But otherwise were just kinda human."
+    },
+    {
+      "index": 80,
+      "speaker": "Game Master",
+      "text": "Yeah, youre like."
+    },
+    {
+      "index": 81,
+      "speaker": "Dr Uriah",
+      "text": "We dont have a tail and shit."
+    },
+    {
+      "index": 82,
+      "speaker": "Game Master",
+      "text": "Yeah, you.re like intimate people."
+    },
+    {
+      "index": 83,
+      "speaker": "Game Master",
+      "text": "Yeah, so, you know, halt, you know who goes there, what business do you have in this town?"
+    },
+    {
+      "index": 84,
+      "speaker": "Sir Phidipaldi",
+      "text": "We are ancient travelers who?"
+    },
+    {
+      "index": 85,
+      "speaker": "Dr Uriah",
+      "text": "Ancient."
+    },
+    {
+      "index": 86,
+      "speaker": "Game Master",
+      "text": "Keep going, keep going."
+    },
+    {
+      "index": 87,
+      "speaker": "Sir Phidipaldi",
+      "text": "Who, uh, who claim the sacred law of Zeus for hospitality?"
+    },
+    {
+      "index": 88,
+      "speaker": "Game Master",
+      "text": "Uh, he nods."
+    },
+    {
+      "index": 89,
+      "speaker": "Game Master",
+      "text": "He says, Youre sus."
+    },
+    {
+      "index": 90,
+      "speaker": "Game Master",
+      "text": "He says, Uh."
+    },
+    {
+      "index": 91,
+      "speaker": "Game Master",
+      "text": "Where where are you coming from? We dont get many visitors."
+    },
+    {
+      "index": 92,
+      "speaker": "Waymon Tisdale",
+      "text": "Ithaca."
+    },
+    {
+      "index": 93,
+      "speaker": "Game Master",
+      "text": "Thats right, um, so he, he, he says, You know, well, you better come in, you know, night is falling. Uh um, you know, we have two inns to choose from. Uh, he points at one, uh, its the clumsy Fox."
+    },
+    {
+      "index": 94,
+      "speaker": "Game Master",
+      "text": "And then he points to the other one across the street from it."
+    },
+    {
+      "index": 95,
+      "speaker": "Game Master",
+      "text": "Uh, called the owner of the Gold or Im Sorry the The Or or just the Golden Egg Tavern."
+    },
+    {
+      "index": 96,
+      "speaker": "Game Master",
+      "text": "Um, the clumsy Fox seems, Um, uh, busy."
+    },
+    {
+      "index": 97,
+      "speaker": "Game Master",
+      "text": "Warm and cozy, the golden egg. Uh, not as much seems like theres a little bit less people there, um, you could also see down the street that there is a general store and a Smith and a small church and an Alchemist shop."
+    },
+    {
+      "index": 98,
+      "speaker": "Dr Uriah",
+      "text": "Ooh."
+    },
+    {
+      "index": 99,
+      "speaker": "Unassigned Speaker",
+      "text": "Whoa."
+    },
+    {
+      "index": 100,
+      "speaker": "Dr Uriah",
+      "text": "Way out here."
+    },
+    {
+      "index": 101,
+      "speaker": "Sir Phidipaldi",
+      "text": "Pretty small town for an alchemy shop."
+    },
+    {
+      "index": 102,
+      "speaker": "Dr Uriah",
+      "text": "Thats interesting."
+    },
+    {
+      "index": 103,
+      "speaker": "Game Master",
+      "text": "Pretty classic DD."
+    },
+    {
+      "index": 104,
+      "speaker": "Dr Uriah",
+      "text": "Shop with two P.S. and an E, obviously."
+    },
+    {
+      "index": 105,
+      "speaker": "Dunk",
+      "text": "Oh, there, yeah, theres theres also."
+    },
+    {
+      "index": 106,
+      "speaker": "Unassigned Speaker",
+      "text": "Shop E."
+    },
+    {
+      "index": 107,
+      "speaker": "Game Master",
+      "text": "Theres also a farm on the the edge of town, too. So, um, where, um, where would you all like to go?"
+    },
+    {
+      "index": 108,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 109,
+      "speaker": "Sir Phidipaldi",
+      "text": "I dont feel like I need to do any shopping."
+    },
+    {
+      "index": 110,
+      "speaker": "Game Master",
+      "text": "You have the clumsy Fox Tavern, the Golden Egg Tavern, the General Store, the Smith."
+    },
+    {
+      "index": 111,
+      "speaker": "Dr Uriah",
+      "text": "Well, I mean, I Im definitely gonna go to the Alchemist shop."
+    },
+    {
+      "index": 112,
+      "speaker": "Dr Uriah",
+      "text": "But before I do that."
+    },
+    {
+      "index": 113,
+      "speaker": "Dr Uriah",
+      "text": "I go to the river and I cast speak with aquatic animals."
+    },
+    {
+      "index": 114,
+      "speaker": "Dr Uriah",
+      "text": "And I ask a fish, What is the best place to stay of the taverns, what is the best or better of the two taverns?"
+    },
+    {
+      "index": 115,
+      "speaker": "Game Master",
+      "text": "Yeah, like that, um."
+    },
+    {
+      "index": 116,
+      "speaker": "Dr Uriah",
+      "text": "Or maybe maybe its a frog."
+    },
+    {
+      "index": 117,
+      "speaker": "Unassigned Speaker",
+      "text": "No, no."
+    },
+    {
+      "index": 118,
+      "speaker": "Dr Uriah",
+      "text": "That lives lives on the on the bank."
+    },
+    {
+      "index": 119,
+      "speaker": "Game Master",
+      "text": "I, I will warn you."
+    },
+    {
+      "index": 120,
+      "speaker": "Game Master",
+      "text": "That that is your one use of speak with aquatic animals for the day."
+    },
+    {
+      "index": 121,
+      "speaker": "Dr Uriah",
+      "text": "Until I sleep, its not its nighttime."
+    },
+    {
+      "index": 122,
+      "speaker": "Dunk",
+      "text": "Its sundown."
+    },
+    {
+      "index": 123,
+      "speaker": "Dunk",
+      "text": "Yeah, its sundown."
+    },
+    {
+      "index": 124,
+      "speaker": "Game Master",
+      "text": "Just letting you know."
+    },
+    {
+      "index": 125,
+      "speaker": "Game Master",
+      "text": "Just letting you know, Um, are you gonna make me do the fish?"
+    },
+    {
+      "index": 126,
+      "speaker": "Unassigned Speaker",
+      "text": "I mean."
+    },
+    {
+      "index": 127,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, or frog, or like."
+    },
+    {
+      "index": 128,
+      "speaker": "Unassigned Speaker",
+      "text": "Or frog."
+    },
+    {
+      "index": 129,
+      "speaker": "Dr Uriah",
+      "text": "Like, maybe a fish might be more of a transient, maybe if theres like a frog or some other aquatic animal."
+    },
+    {
+      "index": 130,
+      "speaker": "Dr Uriah",
+      "text": "That kind of lives like in the Murk."
+    },
+    {
+      "index": 131,
+      "speaker": "Dr Uriah",
+      "text": "Maybe maybe some sort of like sea slug or some sort of like something that burrows in the like that hears the chatter."
+    },
+    {
+      "index": 132,
+      "speaker": "Dunk",
+      "text": "Maybe stay there permanently."
+    },
+    {
+      "index": 133,
+      "speaker": "Dr Uriah",
+      "text": "And and that has an opinion."
+    },
+    {
+      "index": 134,
+      "speaker": "Dr Uriah",
+      "text": "I look around till I find one who has an opinion on on On Inns."
+    },
+    {
+      "index": 135,
+      "speaker": "Game Master",
+      "text": "So, so you, you meet a, uh, um, you meet a frog."
+    },
+    {
+      "index": 136,
+      "speaker": "Waymon Tisdale",
+      "text": "Frog says What is an inn?"
+    },
+    {
+      "index": 137,
+      "speaker": "Game Master",
+      "text": "Exactly its a fucking frog. What are you talking about?"
+    },
+    {
+      "index": 138,
+      "speaker": "Sir Phidipaldi",
+      "text": "Im waving people past us. Theres nothing to see here."
+    },
+    {
+      "index": 139,
+      "speaker": "Game Master",
+      "text": "The The Frog says, Um, he doesnt know which Tavern, uh or which place to stay."
+    },
+    {
+      "index": 140,
+      "speaker": "Game Master",
+      "text": "But that he is, um, he warns you."
+    },
+    {
+      "index": 141,
+      "speaker": "Game Master",
+      "text": "That, uh, from the River banks. At night, a little creature called a clurichen, Im gonna show you a picture of the guy comes."
+    },
+    {
+      "index": 142,
+      "speaker": "Game Master",
+      "text": "He he warns you, hes like he, he comes from the river."
+    },
+    {
+      "index": 143,
+      "speaker": "Game Master",
+      "text": "Wait, which this guy?"
+    },
+    {
+      "index": 144,
+      "speaker": "Game Master",
+      "text": "This little guy, yeah, exactly."
+    },
+    {
+      "index": 145,
+      "speaker": "Dr Uriah",
+      "text": "All right, love it."
+    },
+    {
+      "index": 146,
+      "speaker": "Game Master",
+      "text": "That that hes like, Uh, hes up to no good. Hes a trickster and he goes into town every night, so wherever it is, he goes, you want to stay away from."
+    },
+    {
+      "index": 147,
+      "speaker": "Dr Uriah",
+      "text": "Already some good info, guys."
+    },
+    {
+      "index": 148,
+      "speaker": "Dr Uriah",
+      "text": "Talking to fucking animals lets go."
+    },
+    {
+      "index": 149,
+      "speaker": "Game Master",
+      "text": "Good job, okay, all right, so you know about the Clurichen."
+    },
+    {
+      "index": 150,
+      "speaker": "Game Master",
+      "text": "Uhhuh, Um, you meet a fro, a frog friend."
+    },
+    {
+      "index": 151,
+      "speaker": "Dr Uriah",
+      "text": "I meet a frog. Does it have a name?"
+    },
+    {
+      "index": 152,
+      "speaker": "Game Master",
+      "text": "Yeah, uh, the frog."
+    },
+    {
+      "index": 153,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, why not? Maybe ill come talk to him more."
+    },
+    {
+      "index": 154,
+      "speaker": "Game Master",
+      "text": "Why dont you tell me the name of the frog?"
+    },
+    {
+      "index": 155,
+      "speaker": "Dr Uriah",
+      "text": "Oh uh, thats too much, um, Reginald."
+    },
+    {
+      "index": 156,
+      "speaker": "Game Master",
+      "text": "Reginald the Frog."
+    },
+    {
+      "index": 157,
+      "speaker": "Game Master",
+      "text": "Okay, all right."
+    },
+    {
+      "index": 158,
+      "speaker": "Unassigned Speaker",
+      "text": "He."
+    },
+    {
+      "index": 159,
+      "speaker": "Sir Phidipaldi",
+      "text": "Y You can keep that in your notes somewhere."
+    },
+    {
+      "index": 160,
+      "speaker": "Game Master",
+      "text": "Yeah, exactly, Reginald the Frog."
+    },
+    {
+      "index": 161,
+      "speaker": "Dr Uriah",
+      "text": "This is canon guys. No, I know, I know."
+    },
+    {
+      "index": 162,
+      "speaker": "Game Master",
+      "text": "All right, you guys have two taverns, a general store, a smithy."
+    },
+    {
+      "index": 163,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, so Sir. Phidiipaldi recommends we go to the busy one, cause thats itll be more likely the high status inn and."
+    },
+    {
+      "index": 164,
+      "speaker": "Sir Phidipaldi",
+      "text": "You know, well, get more rumors there."
+    },
+    {
+      "index": 165,
+      "speaker": "Waymon Tisdale",
+      "text": "Less likely of a food poisoning."
+    },
+    {
+      "index": 166,
+      "speaker": "Game Master",
+      "text": "Absolutely okay."
+    },
+    {
+      "index": 167,
+      "speaker": "Dunk",
+      "text": "Dunk goes sort of, hesitantly, because he prefers to be alone in the wilderness."
+    },
+    {
+      "index": 168,
+      "speaker": "Dunk",
+      "text": "So he likes the lower."
+    },
+    {
+      "index": 169,
+      "speaker": "Unassigned Speaker",
+      "text": "Not the lowest one."
+    },
+    {
+      "index": 170,
+      "speaker": "Dr Uriah",
+      "text": "To the depths."
+    },
+    {
+      "index": 171,
+      "speaker": "Game Master",
+      "text": "Is dunk gonna go to the other one?"
+    },
+    {
+      "index": 172,
+      "speaker": "Dunk",
+      "text": "Actually."
+    },
+    {
+      "index": 173,
+      "speaker": "Game Master",
+      "text": "Is he gonna go to the Golden Egg?"
+    },
+    {
+      "index": 174,
+      "speaker": "Dunk",
+      "text": "No, uh, but hes hes gonna split off to go, uh, to scavenge at the farm."
+    },
+    {
+      "index": 175,
+      "speaker": "Dunk",
+      "text": "Hopefully at night."
+    },
+    {
+      "index": 176,
+      "speaker": "Game Master",
+      "text": "Awesome, I love it. Okay, so well, do well. Do a scene of the three of you going into the, um, the clumsy Fox."
+    },
+    {
+      "index": 177,
+      "speaker": "Unassigned Speaker",
+      "text": "The clumsy Fox."
+    },
+    {
+      "index": 178,
+      "speaker": "Game Master",
+      "text": "And then we will talk about Dunk and the Farmer."
+    },
+    {
+      "index": 179,
+      "speaker": "Game Master",
+      "text": "So."
+    },
+    {
+      "index": 180,
+      "speaker": "Dr Uriah",
+      "text": "Dunk and the Farmer. I love that story."
+    },
+    {
+      "index": 181,
+      "speaker": "Dunk",
+      "text": "Oh yeah, here we go."
+    },
+    {
+      "index": 182,
+      "speaker": "Game Master",
+      "text": "Okay, so the um, so, um, uh, Waymon, Sir Phidipaldi."
+    },
+    {
+      "index": 183,
+      "speaker": "Sir Phidipaldi",
+      "text": "Phidipaldi"
+    },
+    {
+      "index": 184,
+      "speaker": "Game Master",
+      "text": "Phidipaldi"
+    },
+    {
+      "index": 185,
+      "speaker": "Game Master",
+      "text": "And Uriah?"
+    },
+    {
+      "index": 186,
+      "speaker": "Game Master",
+      "text": "Uh, head into the."
+    },
+    {
+      "index": 187,
+      "speaker": "Dr Uriah",
+      "text": "Dr. Uriah."
+    },
+    {
+      "index": 188,
+      "speaker": "Game Master",
+      "text": "Dr. Uriah."
+    },
+    {
+      "index": 189,
+      "speaker": "Dr Uriah",
+      "text": "Im sorry."
+    },
+    {
+      "index": 190,
+      "speaker": "Unassigned Speaker",
+      "text": "Dr. Uriah."
+    },
+    {
+      "index": 191,
+      "speaker": "Sir Phidipaldi",
+      "text": "Dr. Uriah."
+    },
+    {
+      "index": 192,
+      "speaker": "Game Master",
+      "text": "Uh, head into the clumsy Fox Tavern. It is a warm tavern, theres a fire going. This is like your classic like, kind of like fantasy, you know, Tavern, right?"
+    },
+    {
+      "index": 193,
+      "speaker": "Game Master",
+      "text": "There behind the bar is a halfling who has glasses a bald head. Um, Hes jovial hes talkative like hes talking to everybody around him, theyre engaging with him, and the bar is hopping. Um, his wife is kind of going back and forth from the kitchen, carrying out like pots of food."
+    },
+    {
+      "index": 194,
+      "speaker": "Game Master",
+      "text": "And his three daughters are, um, servers theyre running around with food."
+    },
+    {
+      "index": 195,
+      "speaker": "Game Master",
+      "text": "Um, in the In the Uh um, Inn, you see not only a bustling bar filled with people. Uh, drinking and chatting. Um, but you see a, um, handful of, um, adventurers that, um, you could also talk to if you want. One of which is, Um, uh, a redheaded, um, what looks like a noble woman. Um, there is a, um, a railthin magician. Uh, there is a."
+    },
+    {
+      "index": 196,
+      "speaker": "Dr Uriah",
+      "text": "MCPS."
+    },
+    {
+      "index": 197,
+      "speaker": "Game Master",
+      "text": "Uh, greasy looking, um, thief, and there is a, uh, shifty eyed little halfling, uh, as well. So, um, what do you wanna do, do you want to, Who do you wanna talk to, What do you wanna do in the Tavern? Why dont we start with, Um, uh, Sir Fittipaldi?"
+    },
+    {
+      "index": 198,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, I will go up to the redhead."
+    },
+    {
+      "index": 199,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I will say, Um, Farethee, well, young maiden thou looks as fine as mine trusty weapon. And I bring out IM carrying my Lance, its huge right and its clearly too big for me."
+    },
+    {
+      "index": 200,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sir Or or sorry, my my weapon \"Lady Isaboob\""
+    },
+    {
+      "index": 201,
+      "speaker": "Game Master",
+      "text": "She um shes very gentle in her like response, so she has that kind of like unflappable."
+    },
+    {
+      "index": 202,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yep, sure."
+    },
+    {
+      "index": 203,
+      "speaker": "Game Master",
+      "text": "Ness Shes youre not the fool first fool that shes like."
+    },
+    {
+      "index": 204,
+      "speaker": "Sir Phidipaldi",
+      "text": "Shes met, sure."
+    },
+    {
+      "index": 205,
+      "speaker": "Game Master",
+      "text": "Encountered, right."
+    },
+    {
+      "index": 206,
+      "speaker": "Game Master",
+      "text": "And um, she very patiently asks if you, um, would like a A A A drink you you look parched, you.ve just been traveling you.ve come a long way. Would you like to have a?"
+    },
+    {
+      "index": 207,
+      "speaker": "Sir Phidipaldi",
+      "text": "Clearly, the laws of Zeus are strong here. Um, and I will Cli kindly accept your offer."
+    },
+    {
+      "index": 208,
+      "speaker": "Sir Phidipaldi",
+      "text": "Thank you."
+    },
+    {
+      "index": 209,
+      "speaker": "Game Master",
+      "text": "She buys a drink, uh, on on her."
+    },
+    {
+      "index": 210,
+      "speaker": "Game Master",
+      "text": "Um, and the two of you drink and she says, Um, what has brought you to? Brandons furt its such a small town and youre such a noble person."
+    },
+    {
+      "index": 211,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh uh, uh, it is a chivalric quest for we seek, uh, bountiful treasure."
+    },
+    {
+      "index": 212,
+      "speaker": "Game Master",
+      "text": "Okay, all right, uh, so, she says, treasure."
+    },
+    {
+      "index": 213,
+      "speaker": "Game Master",
+      "text": "Uh, and she says, Um, well, you know, there are rumors."
+    },
+    {
+      "index": 214,
+      "speaker": "Game Master",
+      "text": "Uh, in the town of a Dragon."
+    },
+    {
+      "index": 215,
+      "speaker": "Sir Phidipaldi",
+      "text": "In the town."
+    },
+    {
+      "index": 216,
+      "speaker": "Game Master",
+      "text": "Uh uh, uh, around the town."
+    },
+    {
+      "index": 217,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, in the in its."
+    },
+    {
+      "index": 218,
+      "speaker": "Unassigned Speaker",
+      "text": "Theres rumors in town."
+    },
+    {
+      "index": 219,
+      "speaker": "Sir Phidipaldi",
+      "text": "In its environments."
+    },
+    {
+      "index": 220,
+      "speaker": "Game Master",
+      "text": "Of a dragon."
+    },
+    {
+      "index": 221,
+      "speaker": "Game Master",
+      "text": "Right up, right up in there, maybe, yeah, um, the local reeve like the the Sheriff kind of."
+    },
+    {
+      "index": 222,
+      "speaker": "Game Master",
+      "text": "Like, not, not really Sheriff, but the um, he kinda like is like the, um, the, uh, landlord of the town, like he controls it for like the."
+    },
+    {
+      "index": 223,
+      "speaker": "Game Master",
+      "text": "Normal people, right?"
+    },
+    {
+      "index": 224,
+      "speaker": "Game Master",
+      "text": "Um, she says, you should talk to Eric the Reeve, and she points to a portly, muttonchopped fellow."
+    },
+    {
+      "index": 225,
+      "speaker": "Game Master",
+      "text": "Uh, whos at the other end of the Tavern?"
+    },
+    {
+      "index": 226,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uhhuh."
+    },
+    {
+      "index": 227,
+      "speaker": "Game Master",
+      "text": "And shes like Hes been trying to hire somebody to go and kill. Um, uh, the Dragon, shes like, Um, you know, I, I cant do it myself, um? But you know, if you have a party of adventurers, I would join you for some money."
+    },
+    {
+      "index": 228,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, um."
+    },
+    {
+      "index": 229,
+      "speaker": "Dr Uriah",
+      "text": "Uh, whats your resume? So give us your stats. Yeah, so, uh, I scan, yeah, so she she has a, you know, chain mail and a shield she looks like, uh, a little bit more seasoned than you all are."
+    },
+    {
+      "index": 230,
+      "speaker": "Game Master",
+      "text": "So, yeah."
+    },
+    {
+      "index": 231,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, uh, uh, we will go and talk with the mayor and we will come back. And, um, uh, avail ourselves of your services as varied and, um, bountiful as they may be."
+    },
+    {
+      "index": 232,
+      "speaker": "Unassigned Speaker",
+      "text": "All right, could I do? I sense any curses from any of them. You do not sense a curse, um, all right from any of the people, um, but like what you do when you, when you do like, look around trying to sense it, you notice that that kind of like greasyhaired thief, Um, has a little jar around his neck, like on like a necklace mmhmm, and inside theres like a wasp buzzing around inside it. Um, just something something catches your eyes. So could I, uh, can I learn the history of that item? Um? Using metaphysics, Youd have to get youd, have to get a little bit closer to it. Okay, and try to do that. Okay, um, uh, waymon, what are you doing right now?"
+    },
+    {
+      "index": 233,
+      "speaker": "Game Master",
+      "text": "Theres the Halfling bar owner."
+    },
+    {
+      "index": 234,
+      "speaker": "Game Master",
+      "text": "Tending bar his wife coming in and out, his daughters kind of being the servers around bunch of adventurers there. And then you just learned about the local reeve, uh, whos like the land owner."
+    },
+    {
+      "index": 235,
+      "speaker": "Waymon Tisdale",
+      "text": "MM uh ill talk to the bar owner."
+    },
+    {
+      "index": 236,
+      "speaker": "Game Master",
+      "text": "Yeah, he introduces himself as Bentley. Uh, he is, uh, happy to see you, uh, and he um says, Im going to give you, uh, my famous Fox Tail brew first ones for free. He pours it and it is, um, absolutely beautiful tasting like it its you take your first sip, its fantastic, he says. Um, I have rooms available only 10 silver pieces a night. Um, you know, make yourself at home is, is is it like 10? is it 100 silver to gold? Yeah, something like that. Yeah, yeah, its just one gold would cover all of you. Yeah, yeah, yeah, rooms for the night."
+    },
+    {
+      "index": 237,
+      "speaker": "Dr Uriah",
+      "text": "So yeah, multiple nights. Actually, yeah, yeah, yeah, exactly."
+    },
+    {
+      "index": 238,
+      "speaker": "Waymon Tisdale",
+      "text": "What, uh, have you have? You always lived here."
+    },
+    {
+      "index": 239,
+      "speaker": "Game Master",
+      "text": "Uh, I have my entire life, uh, you know, but, um, you know, like things have gotten a little bit, you know, downhearted here. Because, um, you know, Im sure Youve heard the rumor of of the Dragon Thats nearby. And, um, uh, we have a, um, you know, my shipment of stuff that was supposed to come in to help me restock the tavern. It was supposed to come in a week ago and it never showed up and."
+    },
+    {
+      "index": 240,
+      "speaker": "Game Master",
+      "text": "Um, you know, its its not just for me, its for this whole town, you know, and weve never had something like this in this town before. Uh, not, not, not until you know, many, many years ago, hundreds of years ago, when, um, Sir Brandon killed the first Dragon."
+    },
+    {
+      "index": 241,
+      "speaker": "Waymon Tisdale",
+      "text": "MM Has anybody gone after the shipment?"
+    },
+    {
+      "index": 242,
+      "speaker": "Game Master",
+      "text": "Uh, well, you know, were simple folk here, and he, he points at the adventurers, hes like, You have to pay all of them. And."
+    },
+    {
+      "index": 243,
+      "speaker": "Game Master",
+      "text": "Theyre too much money for any of us. So so then he points at the Reeve, the the muttonchopped guy, and is like Hes been trying to get people to help out."
+    },
+    {
+      "index": 244,
+      "speaker": "Game Master",
+      "text": "Yeah, um, okay, Im gonna go hop out of the tavern."
+    },
+    {
+      "index": 245,
+      "speaker": "Game Master",
+      "text": "Were gonna pull the camera out."
+    },
+    {
+      "index": 246,
+      "speaker": "Game Master",
+      "text": "Were gonna go down the street. Little Sam Raimi style zip over to dunk."
+    },
+    {
+      "index": 247,
+      "speaker": "Game Master",
+      "text": "Our Dwarven kin dunk."
+    },
+    {
+      "index": 248,
+      "speaker": "Dr Uriah",
+      "text": "And the farmer?"
+    },
+    {
+      "index": 249,
+      "speaker": "Game Master",
+      "text": "Yeah, as he approaches."
+    },
+    {
+      "index": 250,
+      "speaker": "Dr Uriah",
+      "text": "Friday nights on NBC."
+    },
+    {
+      "index": 251,
+      "speaker": "Game Master",
+      "text": "Yeah, as he approaches a farm, uh, the sun is setting, the farmer is done with his work. He is sitting on his porch, chewing on some straw. Uh, hes packing a pipe and he looks up at dunk and he is like, Fuck me, exactly, Yeah, hes like, Who are you? hes like hes like you ever? You ever get hired onto a farm like you could youd be amazing at it."
+    },
+    {
+      "index": 252,
+      "speaker": "Dunk",
+      "text": "Done a little farm work in my time."
+    },
+    {
+      "index": 253,
+      "speaker": "Unassigned Speaker",
+      "text": "A little farm work."
+    },
+    {
+      "index": 254,
+      "speaker": "Game Master",
+      "text": "All right, well, you know, like, Um, if you ever wanna open up a farm yourself, Im selling my mule, do you wanna see my mule?"
+    },
+    {
+      "index": 255,
+      "speaker": "Dunk",
+      "text": "Sure, ID Love to see your mule."
+    },
+    {
+      "index": 256,
+      "speaker": "Game Master",
+      "text": "So he he walks you over to his mule. And it is this, um, like just shitty looking mule like it is not like, like its its a pretty low rent mule and hes like."
+    },
+    {
+      "index": 257,
+      "speaker": "Dunk",
+      "text": "Not much to eat on it."
+    },
+    {
+      "index": 258,
+      "speaker": "Game Master",
+      "text": "Uh, exactly, hes like, I love this is sebu she shebus sebus sebus."
+    },
+    {
+      "index": 259,
+      "speaker": "Dr Uriah",
+      "text": "Seamus."
+    },
+    {
+      "index": 260,
+      "speaker": "Unassigned Speaker",
+      "text": "Seamus."
+    },
+    {
+      "index": 261,
+      "speaker": "Unassigned Speaker",
+      "text": "Seamus."
+    },
+    {
+      "index": 262,
+      "speaker": "Game Master",
+      "text": "This is Seamus, my, my, my, my prize Mule trying to sell him for 100 gold. You could start your own farm with it."
+    },
+    {
+      "index": 263,
+      "speaker": "Dr Uriah",
+      "text": "Ill use the Irish spelling."
+    },
+    {
+      "index": 264,
+      "speaker": "Dunk",
+      "text": "Do you have any, um, could we trade any, maybe any work?"
+    },
+    {
+      "index": 265,
+      "speaker": "Game Master",
+      "text": "Well, you know, the big work that we need is to kill this Dragon thats outside of town. Um, you know, Hun, long time ago."
+    },
+    {
+      "index": 266,
+      "speaker": "Sir Phidipaldi",
+      "text": "Nudge, nudge."
+    },
+    {
+      "index": 267,
+      "speaker": "Game Master",
+      "text": "Long time ago."
+    },
+    {
+      "index": 268,
+      "speaker": "Game Master",
+      "text": "There was this guy named Sir Brandon, he killed the Dragon."
+    },
+    {
+      "index": 269,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, we heard about that."
+    },
+    {
+      "index": 270,
+      "speaker": "Unassigned Speaker",
+      "text": "Thats why thats why this town is called Brandonsford."
+    },
+    {
+      "index": 271,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh Brandonsford, yeah."
+    },
+    {
+      "index": 272,
+      "speaker": "Game Master",
+      "text": "They named it after him."
+    },
+    {
+      "index": 273,
+      "speaker": "Unassigned Speaker",
+      "text": "Whoa."
+    },
+    {
+      "index": 274,
+      "speaker": "Game Master",
+      "text": "Um, he lived right here like not, not too, like s right around in this town. And, uh, he had a bunch of friends. And they all went out and they ventured into the woods and they. They killed the DRA, the dragon that was had been terrorizing the town for weeks. They went out there and they killed him and he got a magic sword, um, from a fairy like he was out in the woods. He met a fairy, the fairy gave him a sword, and that that sword just killed the dragon. Uh, anyway, they, uh, we knighted him, but then they all left like they he Brandon died."
+    },
+    {
+      "index": 275,
+      "speaker": "Game Master",
+      "text": "He didnt want to stay here."
+    },
+    {
+      "index": 276,
+      "speaker": "Dr Uriah",
+      "text": "He hit it and quit it, huh?"
+    },
+    {
+      "index": 277,
+      "speaker": "Game Master",
+      "text": "So."
+    },
+    {
+      "index": 278,
+      "speaker": "Game Master",
+      "text": "So, um, ID give you work to kill the Dragon. But um, uh, I, I. I saw it not too. Im im Im scared like it saw me and, uh, it wanted nothing to do with me, so I sent my boys off after it. Um, theyre all trying to kill it right now, so I thats the work ID give you. But, um, Im sure they got it, theyll probably bring it back, and then theyll well name the town after them, or me or Seamus."
+    },
+    {
+      "index": 279,
+      "speaker": "Dunk",
+      "text": "Thats Um, thats thats something."
+    },
+    {
+      "index": 280,
+      "speaker": "Dr Uriah",
+      "text": "How many, how many sons did you send out there?"
+    },
+    {
+      "index": 281,
+      "speaker": "Game Master",
+      "text": "I got three kids."
+    },
+    {
+      "index": 282,
+      "speaker": "Dr Uriah",
+      "text": "Three."
+    },
+    {
+      "index": 283,
+      "speaker": "Dunk",
+      "text": "So."
+    },
+    {
+      "index": 284,
+      "speaker": "Dr Uriah",
+      "text": "Coffins."
+    },
+    {
+      "index": 285,
+      "speaker": "Game Master",
+      "text": "Yeah, theyll be fine, theyll be fine."
+    },
+    {
+      "index": 286,
+      "speaker": "Dunk",
+      "text": "So so did so Brandon Didnt kill the Dragon then, or he did kill the Dragon."
+    },
+    {
+      "index": 287,
+      "speaker": "Game Master",
+      "text": "Well, I dont know how it came back."
+    },
+    {
+      "index": 288,
+      "speaker": "Game Master",
+      "text": "I will just say, like it was dead, we dragged it through the town, we ripped it apart. Uh, that thing was dead. And but that was long time ago, hundreds of years ago, I wasnt alive."
+    },
+    {
+      "index": 289,
+      "speaker": "Dr Uriah",
+      "text": "Thats what I was curious."
+    },
+    {
+      "index": 290,
+      "speaker": "Game Master",
+      "text": "Yeah, I mean, I assume its a different dragon. I dont know where Dragons come from, do you?"
+    },
+    {
+      "index": 291,
+      "speaker": "Game Master",
+      "text": "What are you?"
+    },
+    {
+      "index": 292,
+      "speaker": "Dunk",
+      "text": "I dont Im not re IM not really sure theres a theres a little."
+    },
+    {
+      "index": 293,
+      "speaker": "Game Master",
+      "text": "Im not sure what you are, either."
+    },
+    {
+      "index": 294,
+      "speaker": "Game Master",
+      "text": "Thats Okay, thats okay."
+    },
+    {
+      "index": 295,
+      "speaker": "Dunk",
+      "text": "When I was just a little dude, I was sent out of my village."
+    },
+    {
+      "index": 296,
+      "speaker": "Dr Uriah",
+      "text": "This is the most mid world farm Ive ever seen."
+    },
+    {
+      "index": 297,
+      "speaker": "Dunk",
+      "text": "Yeah, yeah, I know."
+    },
+    {
+      "index": 298,
+      "speaker": "Game Master",
+      "text": "You know you may."
+    },
+    {
+      "index": 299,
+      "speaker": "Dunk",
+      "text": "Just gonna re reflect next to his freaking rats. But I yeah, could I maybe sleep in the barn tonight and think about it."
+    },
+    {
+      "index": 300,
+      "speaker": "Game Master",
+      "text": "You can sleep in my barn."
+    },
+    {
+      "index": 301,
+      "speaker": "Game Master",
+      "text": "Hes like, Ill make it up. Why, why dont you make yourself at home? I will get us something to drink from my still and you and I will sit out on the porch."
+    },
+    {
+      "index": 302,
+      "speaker": "Dunk",
+      "text": "All right, sounds great."
+    },
+    {
+      "index": 303,
+      "speaker": "Game Master",
+      "text": "All right, we go back to the clumsy Fox Tavern."
+    },
+    {
+      "index": 304,
+      "speaker": "Sir Phidipaldi",
+      "text": "Great, yes."
+    },
+    {
+      "index": 305,
+      "speaker": "Game Master",
+      "text": "And and, uh, Sir Phil Philiapaldi."
+    },
+    {
+      "index": 306,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yes, Fipapaldi."
+    },
+    {
+      "index": 307,
+      "speaker": "Game Master",
+      "text": "Fipapaldi has, um, stopped talking to Lady Helda."
+    },
+    {
+      "index": 308,
+      "speaker": "Game Master",
+      "text": "I believe."
+    },
+    {
+      "index": 309,
+      "speaker": "Game Master",
+      "text": "Uh, and what are you doing now?"
+    },
+    {
+      "index": 310,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, I will go up to the Reeve."
+    },
+    {
+      "index": 311,
+      "speaker": "Game Master",
+      "text": "You go up to the local Reeve, who introduces himself as a man named Eric."
+    },
+    {
+      "index": 312,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, hi, how does he spell it?"
+    },
+    {
+      "index": 313,
+      "speaker": "Game Master",
+      "text": "Yeah, with a c."
+    },
+    {
+      "index": 314,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, bastard."
+    },
+    {
+      "index": 315,
+      "speaker": "Game Master",
+      "text": "I know."
+    },
+    {
+      "index": 316,
+      "speaker": "Dr Uriah",
+      "text": "An IC."
+    },
+    {
+      "index": 317,
+      "speaker": "Game Master",
+      "text": "Uh, Eric."
+    },
+    {
+      "index": 318,
+      "speaker": "Unassigned Speaker",
+      "text": "Eric."
+    },
+    {
+      "index": 319,
+      "speaker": "Game Master",
+      "text": "Eric Um Hes Portly. He has these big Mutton chops."
+    },
+    {
+      "index": 320,
+      "speaker": "Game Master",
+      "text": "Purple rings around his eyes and he looks visibly stressed."
+    },
+    {
+      "index": 321,
+      "speaker": "Game Master",
+      "text": "Yeah, and uh, hes like Youre youre new in town, hes like, Whats what brings you here, whats your name?"
+    },
+    {
+      "index": 322,
+      "speaker": "Sir Phidipaldi",
+      "text": "We are a chivalrous party in search of adventure. I am Sir Phidipaldi bearing my weapons Lady Isaboob and Sir Chumunga, which is a twohanded sword that I can barely lift."
+    },
+    {
+      "index": 323,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, and, uh, we come in search of fame and fortune."
+    },
+    {
+      "index": 324,
+      "speaker": "Game Master",
+      "text": "Well, I, I could do all of that for you I have. Ive got a lot of problems."
+    },
+    {
+      "index": 325,
+      "speaker": "Sir Phidipaldi",
+      "text": "Oh, please go on."
+    },
+    {
+      "index": 326,
+      "speaker": "Game Master",
+      "text": "Well, first of all, theres a dragon."
+    },
+    {
+      "index": 327,
+      "speaker": "Sir Phidipaldi",
+      "text": "We have heard."
+    },
+    {
+      "index": 328,
+      "speaker": "Game Master",
+      "text": "I will give you 1000 gold if you kill that dragon and drag drag its dragons body into town."
+    },
+    {
+      "index": 329,
+      "speaker": "Sir Phidipaldi",
+      "text": "Has anyone seen the Dragon?"
+    },
+    {
+      "index": 330,
+      "speaker": "Game Master",
+      "text": "Well, theres a guy named George."
+    },
+    {
+      "index": 331,
+      "speaker": "Game Master",
+      "text": "Hes a woodsman."
+    },
+    {
+      "index": 332,
+      "speaker": "Game Master",
+      "text": "He lives, he just a couple houses down, he might even show up here tonight."
+    },
+    {
+      "index": 333,
+      "speaker": "Game Master",
+      "text": "Um, now you know, I, I George is really capable."
+    },
+    {
+      "index": 334,
+      "speaker": "Game Master",
+      "text": "Um, but hes only got one arm."
+    },
+    {
+      "index": 335,
+      "speaker": "Sir Phidipaldi",
+      "text": "One arm."
+    },
+    {
+      "index": 336,
+      "speaker": "Game Master",
+      "text": "Uh, so I mean, he cant go kill it."
+    },
+    {
+      "index": 337,
+      "speaker": "Game Master",
+      "text": "But he encountered the Dragon like he he he saw, um, and thats how he lost his arm."
+    },
+    {
+      "index": 338,
+      "speaker": "Sir Phidipaldi",
+      "text": "And how would he have described this dragon?"
+    },
+    {
+      "index": 339,
+      "speaker": "Game Master",
+      "text": "Well, he told me a lot of stories about it, he says. Its black."
+    },
+    {
+      "index": 340,
+      "speaker": "Sir Phidipaldi",
+      "text": "Black Dragon."
+    },
+    {
+      "index": 341,
+      "speaker": "Game Master",
+      "text": "Yeah, its, uh, its not a big one."
+    },
+    {
+      "index": 342,
+      "speaker": "Game Master",
+      "text": "You know."
+    },
+    {
+      "index": 343,
+      "speaker": "Game Master",
+      "text": "But uh."
+    },
+    {
+      "index": 344,
+      "speaker": "Game Master",
+      "text": "Black Dragon and it, uh, it ripped his arm off, you should tell you, should ask George."
+    },
+    {
+      "index": 345,
+      "speaker": "Sir Phidipaldi",
+      "text": "Recently."
+    },
+    {
+      "index": 346,
+      "speaker": "Game Master",
+      "text": "Yes, you should have George tell you George used to have two arms, I knew him when he had two arms, now he doesnt."
+    },
+    {
+      "index": 347,
+      "speaker": "Game Master",
+      "text": "You should talk to him. He doesnt even have the other arm its gone."
+    },
+    {
+      "index": 348,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, I would like to make an etiquette roll."
+    },
+    {
+      "index": 349,
+      "speaker": "Game Master",
+      "text": "Yes, absolutely. Why dont you make an etiquette roll?"
+    },
+    {
+      "index": 350,
+      "speaker": "Dr Uriah",
+      "text": "I was waiting for our very first etiquette roll."
+    },
+    {
+      "index": 351,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, all right, you do it, okay, you do it, you do it, Craig."
+    },
+    {
+      "index": 352,
+      "speaker": "Game Master",
+      "text": "Make the etiquette roll. Uh, you commit a faux pas, what do you do?"
+    },
+    {
+      "index": 353,
+      "speaker": "Sir Phidipaldi",
+      "text": "Okay, um, so."
+    },
+    {
+      "index": 354,
+      "speaker": "Dr Uriah",
+      "text": "How did you roll?"
+    },
+    {
+      "index": 355,
+      "speaker": "Unassigned Speaker",
+      "text": "You rolled two."
+    },
+    {
+      "index": 356,
+      "speaker": "Sir Phidipaldi",
+      "text": "Heres the thing."
+    },
+    {
+      "index": 357,
+      "speaker": "Dr Uriah",
+      "text": "I thought that was one and two misses."
+    },
+    {
+      "index": 358,
+      "speaker": "Game Master",
+      "text": "His is a one."
+    },
+    {
+      "index": 359,
+      "speaker": "Sir Phidipaldi",
+      "text": "Mines a one, mines a one."
+    },
+    {
+      "index": 360,
+      "speaker": "Dr Uriah",
+      "text": "Oh fuck, I thought you had it."
+    },
+    {
+      "index": 361,
+      "speaker": "Sir Phidipaldi",
+      "text": "I I understand that you guys are local and and that you also know the area and I respect that. But lets be clear, City folk like my friend here, who is a metaphysician and has great understanding of the laws of nature natural philosopher."
+    },
+    {
+      "index": 362,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, he can tell you that, um, in actuality, there are no such thing as Black Dragons. In fact, the only cases that we found of verified Black Dragons were the fact that sometimes, a creature known as the Clerichen will create illusions of black dragons to scare people off, you guys, Havent happened to seen a a clerichen in the village, have you?"
+    },
+    {
+      "index": 363,
+      "speaker": "Game Master",
+      "text": "First of all, what the fuck is a clurichen?"
+    },
+    {
+      "index": 364,
+      "speaker": "Sir Phidipaldi",
+      "text": "It is its a short beast. Very small lives in the river comes out at night. Um, and, like I said, casts, illusion, spells, tricks. People sometimes steals their limbs."
+    },
+    {
+      "index": 365,
+      "speaker": "Dr Uriah",
+      "text": "Is this Do I know I is this something I can verify with my lore? Check?"
+    },
+    {
+      "index": 366,
+      "speaker": "Game Master",
+      "text": "Absolutely, you can."
+    },
+    {
+      "index": 367,
+      "speaker": "Dr Uriah",
+      "text": "Awesome."
+    },
+    {
+      "index": 368,
+      "speaker": "Game Master",
+      "text": "Yeah, all right, uh, you got a you succeeded."
+    },
+    {
+      "index": 369,
+      "speaker": "Unassigned Speaker",
+      "text": "Uh."
+    },
+    {
+      "index": 370,
+      "speaker": "Dr Uriah",
+      "text": "So do I know if hes bullshitting me?"
+    },
+    {
+      "index": 371,
+      "speaker": "Game Master",
+      "text": "Yeah, he hes got it wrong. I got, Yeah, hes got it wrong, hes got it wrong and you know it. And Eric the Reeve, the town reeve knows it too. Um, he looks offe."
+    },
+    {
+      "index": 372,
+      "speaker": "Game Master",
+      "text": "He looks offended and hes like, Listen, hes like Ive known George all my life. Theres no way he wouldve lied about, like, how how did the Clerichen take his arm away? Where would his arm go? He doesnt, he doesnt even know where his arm is."
+    },
+    {
+      "index": 373,
+      "speaker": "Sir Phidipaldi",
+      "text": "I take my glove off."
+    },
+    {
+      "index": 374,
+      "speaker": "Game Master",
+      "text": "He doesnt know where the arm is."
+    },
+    {
+      "index": 375,
+      "speaker": "Sir Phidipaldi",
+      "text": "And I hit him in the face with the glove and say, You offend my honor, sir."
+    },
+    {
+      "index": 376,
+      "speaker": "Dr Uriah",
+      "text": "Wow, he looks."
+    },
+    {
+      "index": 377,
+      "speaker": "Sir Phidipaldi",
+      "text": "I challenge thee to a duel at dawn."
+    },
+    {
+      "index": 378,
+      "speaker": "Game Master",
+      "text": "Okay, he he looks visibly frust, flustered, and he says, Um, you know, well, youre youre obviously much more skilled in adventure than I am. Um, and he doesnt know, like what to say. Hes like lost hes like a."
+    },
+    {
+      "index": 379,
+      "speaker": "Sir Phidipaldi",
+      "text": "Sure, sure."
+    },
+    {
+      "index": 380,
+      "speaker": "Game Master",
+      "text": "Okay were going to hop over to Waymond."
+    },
+    {
+      "index": 381,
+      "speaker": "Unassigned Speaker",
+      "text": "Its getting a little hot in here."
+    },
+    {
+      "index": 382,
+      "speaker": "Game Master",
+      "text": "Waymond You were chatting with Bentley, the owner of the clumsy Fox Tavern you had, uh, drank his brew."
+    },
+    {
+      "index": 383,
+      "speaker": "Game Master",
+      "text": "Um, you chatted a little bit about the town, um."
+    },
+    {
+      "index": 384,
+      "speaker": "Dr Uriah",
+      "text": "Well, did did you use your poison skill?"
+    },
+    {
+      "index": 385,
+      "speaker": "Game Master",
+      "text": "Yeah, did you do that?"
+    },
+    {
+      "index": 386,
+      "speaker": "Dr Uriah",
+      "text": "There was poison in that."
+    },
+    {
+      "index": 387,
+      "speaker": "Game Master",
+      "text": "Uh, what would you like to do now?"
+    },
+    {
+      "index": 388,
+      "speaker": "Waymon Tisdale",
+      "text": "Um, I think ill go talk to the, um, the Reeve."
+    },
+    {
+      "index": 389,
+      "speaker": "Game Master",
+      "text": "The Thats who hes talking to."
+    },
+    {
+      "index": 390,
+      "speaker": "Unassigned Speaker",
+      "text": "Oh yeah, I mean, yeah."
+    },
+    {
+      "index": 391,
+      "speaker": "Sir Phidipaldi",
+      "text": "You can see me and Im slapping him in the face with a leather glove."
+    },
+    {
+      "index": 392,
+      "speaker": "Dr Uriah",
+      "text": "Hes slapping him around."
+    },
+    {
+      "index": 393,
+      "speaker": "Waymon Tisdale",
+      "text": "Um, I dont know if I can diffuse the situation, No."
+    },
+    {
+      "index": 394,
+      "speaker": "Dunk",
+      "text": "You can certainly attempt an assassinationn."
+    },
+    {
+      "index": 395,
+      "speaker": "Dr Uriah",
+      "text": "You can assassinate."
+    },
+    {
+      "index": 396,
+      "speaker": "Dr Uriah",
+      "text": "The stress in the room."
+    },
+    {
+      "index": 397,
+      "speaker": "Sir Phidipaldi",
+      "text": "I backstab the stress."
+    },
+    {
+      "index": 398,
+      "speaker": "Dr Uriah",
+      "text": "Whats the S, Whats the awareness of the stress, does it know?"
+    },
+    {
+      "index": 399,
+      "speaker": "Sir Phidipaldi",
+      "text": "Does he have it by surprise?"
+    },
+    {
+      "index": 400,
+      "speaker": "Dr Uriah",
+      "text": "Yeah."
+    },
+    {
+      "index": 401,
+      "speaker": "Game Master",
+      "text": "Now you there, so in the tavern is the, um, the bartender, uh, his wife, his daughters. Uh, the adventurers that are out there. Um, and then, yeah, the the the Reeve and that you see getting into an altercation with your friend, um, Sir Fittipaldi."
+    },
+    {
+      "index": 402,
+      "speaker": "Game Master",
+      "text": "Off to the side is your friend, um, Uriah, right? Uriah, right?"
+    },
+    {
+      "index": 403,
+      "speaker": "Dunk",
+      "text": "Doctor Doctor, Uriah."
+    },
+    {
+      "index": 404,
+      "speaker": "Game Master",
+      "text": "Who seems to be getting closer and closer to a, um, shifty looking thief? Uh, that is sitting at a bench, uh, because hes trying to get a look at a jar that is on a chain around his neck that has a wasp inside of it. And then your friend, uh, dunk is not in the building."
+    },
+    {
+      "index": 405,
+      "speaker": "Dr Uriah",
+      "text": "Right, um, dunk is getting loaded with a farmer down the road. Sorry, I dont know."
+    },
+    {
+      "index": 406,
+      "speaker": "Game Master",
+      "text": "Thats Okay, thats okay, we are going to go over to, Uh, Uriah."
+    },
+    {
+      "index": 407,
+      "speaker": "Unassigned Speaker",
+      "text": "Uriah."
+    },
+    {
+      "index": 408,
+      "speaker": "Game Master",
+      "text": "You are getting closer, are you, did you?"
+    },
+    {
+      "index": 409,
+      "speaker": "Dr Uriah",
+      "text": "Is this guy, is this guy sitting by himself, or is he?"
+    },
+    {
+      "index": 410,
+      "speaker": "Game Master",
+      "text": "He is sitting by himself."
+    },
+    {
+      "index": 411,
+      "speaker": "Game Master",
+      "text": "He has greasy hair."
+    },
+    {
+      "index": 412,
+      "speaker": "Game Master",
+      "text": "Rotten teeth."
+    },
+    {
+      "index": 413,
+      "speaker": "Dr Uriah",
+      "text": "Of course."
+    },
+    {
+      "index": 414,
+      "speaker": "Game Master",
+      "text": "Um, hes obviously looking around so."
+    },
+    {
+      "index": 415,
+      "speaker": "Dr Uriah",
+      "text": "Is he is he, is he looking shifty, is he?"
+    },
+    {
+      "index": 416,
+      "speaker": "Game Master",
+      "text": "He does look shifty."
+    },
+    {
+      "index": 417,
+      "speaker": "Dr Uriah",
+      "text": "Is he looking furtive?"
+    },
+    {
+      "index": 418,
+      "speaker": "Game Master",
+      "text": "He does look a little bit furtive, yeah."
+    },
+    {
+      "index": 419,
+      "speaker": "Dr Uriah",
+      "text": "Um, is he drinking anything?"
+    },
+    {
+      "index": 420,
+      "speaker": "Game Master",
+      "text": "He is drinking, yes."
+    },
+    {
+      "index": 421,
+      "speaker": "Dr Uriah",
+      "text": "Whats he drinking?"
+    },
+    {
+      "index": 422,
+      "speaker": "Game Master",
+      "text": "Uh, the uh, Fox tail brew."
+    },
+    {
+      "index": 423,
+      "speaker": "Dr Uriah",
+      "text": "I go and get."
+    },
+    {
+      "index": 424,
+      "speaker": "Game Master",
+      "text": "This bar is."
+    },
+    {
+      "index": 425,
+      "speaker": "Dr Uriah",
+      "text": "I go and get two Fox Tail brews."
+    },
+    {
+      "index": 426,
+      "speaker": "Game Master",
+      "text": "Great, you sit down next to him, he um, looks you up and down. And he says, Dagonite, huh?"
+    },
+    {
+      "index": 427,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, and I hand him the other beer."
+    },
+    {
+      "index": 428,
+      "speaker": "Game Master",
+      "text": "Hes like, Well, friend, what brings you to this, uh, part of town or w this city at all? This place is a dump."
+    },
+    {
+      "index": 429,
+      "speaker": "Game Master",
+      "text": "By the way, my name is Drop dead, Ned."
+    },
+    {
+      "index": 430,
+      "speaker": "Dr Uriah",
+      "text": "Drop dead Ned Sweet. I I tell him my name is Dr. Uriah March."
+    },
+    {
+      "index": 431,
+      "speaker": "Game Master",
+      "text": "All right, all right."
+    },
+    {
+      "index": 432,
+      "speaker": "Dr Uriah",
+      "text": "Uh uh, you know, probably same reason youre here, you know, just looking for work, just hanging, you know, with my crew."
+    },
+    {
+      "index": 433,
+      "speaker": "Dr Uriah",
+      "text": "Uh, Im a scholar. So Im always just looking out for backwoods. Just learning things cause, you know, you find all kind of crazy, weird folk remedies or lore."
+    },
+    {
+      "index": 434,
+      "speaker": "Dr Uriah",
+      "text": "And kinda out out things. So Im always like poking around here, but ill tell you why I came over here, friend."
+    },
+    {
+      "index": 435,
+      "speaker": "Dr Uriah",
+      "text": "Is, uh, that necklace of yours is very interesting."
+    },
+    {
+      "index": 436,
+      "speaker": "Game Master",
+      "text": "Its pretty cool, isnt it?"
+    },
+    {
+      "index": 437,
+      "speaker": "Dr Uriah",
+      "text": "It is cool it."
+    },
+    {
+      "index": 438,
+      "speaker": "Game Master",
+      "text": "Its a killer Wasp."
+    },
+    {
+      "index": 439,
+      "speaker": "Dr Uriah",
+      "text": "No shit."
+    },
+    {
+      "index": 440,
+      "speaker": "Game Master",
+      "text": "Yeah, it fucking kills people."
+    },
+    {
+      "index": 441,
+      "speaker": "Dr Uriah",
+      "text": "Like, you let it out and it kills people."
+    },
+    {
+      "index": 442,
+      "speaker": "Dr Uriah",
+      "text": "And it comes back."
+    },
+    {
+      "index": 443,
+      "speaker": "Sir Phidipaldi",
+      "text": "Its a trained killer, Wasp."
+    },
+    {
+      "index": 444,
+      "speaker": "Dr Uriah",
+      "text": "That is amazing."
+    },
+    {
+      "index": 445,
+      "speaker": "Dr Uriah",
+      "text": "Where did you get that from?"
+    },
+    {
+      "index": 446,
+      "speaker": "Game Master",
+      "text": "Uh, its a long story, but, uh."
+    },
+    {
+      "index": 447,
+      "speaker": "Dr Uriah",
+      "text": "Man, two more beers."
+    },
+    {
+      "index": 448,
+      "speaker": "Game Master",
+      "text": "Uh, you know, and, uh, if you want me and the Wasp, uh, we could help you out if you just got enough coin."
+    },
+    {
+      "index": 449,
+      "speaker": "Dr Uriah",
+      "text": "Oh yeah, so youre for hire."
+    },
+    {
+      "index": 450,
+      "speaker": "Game Master",
+      "text": "Oh, yeah."
+    },
+    {
+      "index": 451,
+      "speaker": "Dr Uriah",
+      "text": "Oh, okay, whats? What is the rate?"
+    },
+    {
+      "index": 452,
+      "speaker": "Game Master",
+      "text": "100 gold for the week."
+    },
+    {
+      "index": 453,
+      "speaker": "Dr Uriah",
+      "text": "A whole week."
+    },
+    {
+      "index": 454,
+      "speaker": "Dr Uriah",
+      "text": "Seven days."
+    },
+    {
+      "index": 455,
+      "speaker": "Game Master",
+      "text": "Nice 10 of your treasure."
+    },
+    {
+      "index": 456,
+      "speaker": "Dr Uriah",
+      "text": "Oh, and then 10 on top."
+    },
+    {
+      "index": 457,
+      "speaker": "Game Master",
+      "text": "Yeah, and I dont, I dont give a shit, I will do anything."
+    },
+    {
+      "index": 458,
+      "speaker": "Dr Uriah",
+      "text": "Awesome, awesome."
+    },
+    {
+      "index": 459,
+      "speaker": "Game Master",
+      "text": "Hes like, You just need to let me kill people with this wasp."
+    },
+    {
+      "index": 460,
+      "speaker": "Dr Uriah",
+      "text": "All right, all right, can I, I mean, its really cool, can I like? Just look at it like?"
+    },
+    {
+      "index": 461,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, yeah."
+    },
+    {
+      "index": 462,
+      "speaker": "Dr Uriah",
+      "text": "So so I grab it, and Im just kinda like looking at it."
+    },
+    {
+      "index": 463,
+      "speaker": "Dr Uriah",
+      "text": "Enjoying."
+    },
+    {
+      "index": 464,
+      "speaker": "Dr Uriah",
+      "text": "Im Um, wanting."
+    },
+    {
+      "index": 465,
+      "speaker": "Game Master",
+      "text": "Yeah, its secure around it."
+    },
+    {
+      "index": 466,
+      "speaker": "Dr Uriah",
+      "text": "No, no, Im not gonna take it."
+    },
+    {
+      "index": 467,
+      "speaker": "Game Master",
+      "text": "Yeah, yeah, yeah, yeah."
+    },
+    {
+      "index": 468,
+      "speaker": "Dr Uriah",
+      "text": "Im Im really just analyzing it."
+    },
+    {
+      "index": 469,
+      "speaker": "Game Master",
+      "text": "No, yeah, it is a uh, um, you know, it looks really cool."
+    },
+    {
+      "index": 470,
+      "speaker": "Dr Uriah",
+      "text": "Am I getting any vibes from it, any kinda like?"
+    },
+    {
+      "index": 471,
+      "speaker": "Game Master",
+      "text": "No, as you."
+    },
+    {
+      "index": 472,
+      "speaker": "Dr Uriah",
+      "text": "Gut check, like."
+    },
+    {
+      "index": 473,
+      "speaker": "Game Master",
+      "text": "As you look at it, the thing that dropped dead, Ned says to you, and hes like thats that.s thats for things. I wanna kill fast hes like I like to kill things slow."
+    },
+    {
+      "index": 474,
+      "speaker": "Dr Uriah",
+      "text": "I like this guy."
+    },
+    {
+      "index": 475,
+      "speaker": "Dr Uriah",
+      "text": "Aw Oh, so his poisons very effective. Oh, yeah."
+    },
+    {
+      "index": 476,
+      "speaker": "Game Master",
+      "text": "Yeah, well, slowly effective."
+    },
+    {
+      "index": 477,
+      "speaker": "Game Master",
+      "text": "Yeah, I like to watch things die."
+    },
+    {
+      "index": 478,
+      "speaker": "Dr Uriah",
+      "text": "Awesome, awesome, so just just uh for future reference."
+    },
+    {
+      "index": 479,
+      "speaker": "Dr Uriah",
+      "text": "$100 for a week, but what if I told you you were guaranteed to kill at least 10 people?"
+    },
+    {
+      "index": 480,
+      "speaker": "Game Master",
+      "text": "A day."
+    },
+    {
+      "index": 481,
+      "speaker": "Dr Uriah",
+      "text": "Well, I mean, over the course of like."
+    },
+    {
+      "index": 482,
+      "speaker": "Game Master",
+      "text": "Over the course of a week."
+    },
+    {
+      "index": 483,
+      "speaker": "Unassigned Speaker",
+      "text": "A Couple night, yeah."
+    },
+    {
+      "index": 484,
+      "speaker": "Game Master",
+      "text": "All right, how about this 100 gold for my fee for the week?"
+    },
+    {
+      "index": 485,
+      "speaker": "Dr Uriah",
+      "text": "Sure."
+    },
+    {
+      "index": 486,
+      "speaker": "Game Master",
+      "text": "Every time you let me kill somebody ill give you another five gold."
+    },
+    {
+      "index": 487,
+      "speaker": "Dr Uriah",
+      "text": "Okay, all right, all right, all right, all right, ill think."
+    },
+    {
+      "index": 488,
+      "speaker": "Unassigned Speaker",
+      "text": "If."
+    },
+    {
+      "index": 489,
+      "speaker": "Dr Uriah",
+      "text": "Ill think of, Oh, okay."
+    },
+    {
+      "index": 490,
+      "speaker": "Game Master",
+      "text": "If I get to do what I want with them."
+    },
+    {
+      "index": 491,
+      "speaker": "Dr Uriah",
+      "text": "Oh, do I get to know what that is beforehand?"
+    },
+    {
+      "index": 492,
+      "speaker": "Game Master",
+      "text": "Well, just cut em up."
+    },
+    {
+      "index": 493,
+      "speaker": "Game Master",
+      "text": "Just normal stuff."
+    },
+    {
+      "index": 494,
+      "speaker": "Dr Uriah",
+      "text": "Normal stuff, sure, sure, sure, sure."
+    },
+    {
+      "index": 495,
+      "speaker": "Game Master",
+      "text": "All right, so dunk, you are out, yeah. Youre out at the farm where you are sitting out on the patio, getting loaded."
+    },
+    {
+      "index": 496,
+      "speaker": "Unassigned Speaker",
+      "text": "I like it."
+    },
+    {
+      "index": 497,
+      "speaker": "Game Master",
+      "text": "Hes told you all about his sons, and Hes started to tell you a little bit of gossip about the town. Okay, so he um told you about, Um, Eric, the town reeve, who you know the rest of your party. You dont know this, but have met, Um, and then he tells you about a, Uh, the Smith, whose name is Warwick and Hes like, You know, that guy, that guys got like. A. I mean, he barely has anything for sale cause nothings come into town in months. Like Dont, theres theres, theres nothing to buy."
+    },
+    {
+      "index": 498,
+      "speaker": "Game Master",
+      "text": "Um, and its its so weird. His entire store, he keeps adding like lucky charms everywhere, theres a fucking rabbits foot. There is a dream catcher, there are horseshoes. He every day hes adding new things to it, its weird cause. He, you know, most of the stuff he sells is crap. But Hes got like this like beautiful Mithril chain shirt that he just R always refuses to sell, but he has it up on display. It wont fit you, youre too small, but like if you know somebody whos like normal sized IM, I am sorry I didn.t mean to not call you normal, but you."
+    },
+    {
+      "index": 499,
+      "speaker": "Game Master",
+      "text": "Like, like me, right, then, uh."
+    },
+    {
+      "index": 500,
+      "speaker": "Game Master",
+      "text": "Uh um, you know, its probably the best best kind of chain you can get in the world, its incredible but war Warwick. I dont know whats going on. He gets more and more paranoid."
+    },
+    {
+      "index": 501,
+      "speaker": "Dunk",
+      "text": "Well, why dont, why dont you get us a couple more drinks and lets see about tell me more about these trinkets."
+    },
+    {
+      "index": 502,
+      "speaker": "Game Master",
+      "text": "All right, all right, so he goes."
+    },
+    {
+      "index": 503,
+      "speaker": "Game Master",
+      "text": "And he gets some more, Uh uh, drinks and hes like Hes also got clovers, like one of his walls is just clovers and like you, y, have you ever seen a clover?"
+    },
+    {
+      "index": 504,
+      "speaker": "Dunk",
+      "text": "Ive seen some clovers, but not on."
+    },
+    {
+      "index": 505,
+      "speaker": "Dunk",
+      "text": "But not on a wall."
+    },
+    {
+      "index": 506,
+      "speaker": "Game Master",
+      "text": "Thats the thing."
+    },
+    {
+      "index": 507,
+      "speaker": "Game Master",
+      "text": "He puts them on his wall to protect his shop. Now what I think is going on is, Do you know who Ingrid is? Have you ever met her?"
+    },
+    {
+      "index": 508,
+      "speaker": "Dunk",
+      "text": "Dont know, Ingrid Havent met her."
+    },
+    {
+      "index": 509,
+      "speaker": "Game Master",
+      "text": "Well, she she sells the potions, shes got the hots."
+    },
+    {
+      "index": 510,
+      "speaker": "Dunk",
+      "text": "MM But how does he? What does he think of her?"
+    },
+    {
+      "index": 511,
+      "speaker": "Game Master",
+      "text": "I dont know, maybe thats why hes putting up all of the, uh, the charms, cause he wants to keep her away. Hes not that good looking."
+    },
+    {
+      "index": 512,
+      "speaker": "Game Master",
+      "text": "Yeah, but you want potions that thats where you go."
+    },
+    {
+      "index": 513,
+      "speaker": "Dunk",
+      "text": "But why, why dont you get us a couple more drinks unless we think how she looks?"
+    },
+    {
+      "index": 514,
+      "speaker": "Game Master",
+      "text": "All right, all right."
+    },
+    {
+      "index": 515,
+      "speaker": "Game Master",
+      "text": "So you see him, hes starting to kinda like, wobble a little bit, but hes having the time of his life talking to dunk so."
+    },
+    {
+      "index": 516,
+      "speaker": "Game Master",
+      "text": "So lets get back into the clumsy fox."
+    },
+    {
+      "index": 517,
+      "speaker": "Dunk",
+      "text": "Gotta use a 17 constitution."
+    },
+    {
+      "index": 518,
+      "speaker": "Game Master",
+      "text": "Its gonna be."
+    },
+    {
+      "index": 519,
+      "speaker": "Game Master",
+      "text": "So, so, Eric."
+    },
+    {
+      "index": 520,
+      "speaker": "Dr Uriah",
+      "text": "I like it, I like it."
+    },
+    {
+      "index": 521,
+      "speaker": "Game Master",
+      "text": "Eric the Town Reeve and, uh uh um, Sir Phidipaldi."
+    },
+    {
+      "index": 522,
+      "speaker": "Game Master",
+      "text": "Are are starting to get more and more heated."
+    },
+    {
+      "index": 523,
+      "speaker": "Game Master",
+      "text": "And Bentley, the owner of the Tavern, comes over. He puts his hand on Sir Phidipaldi shoulder Hes like, Listen, hes like, I dont want any any fighting in here. He looks over at Eric and Hes like, Why dont you all calm down? Hes like Friend Im sorry, you.re new in town I like to host, but your friends can stay here, but you cause some trouble. Youre gonna have to go across the street to the golden egg, youre gonna have to just stay there for the night. I Im just gonna have to escort you out, Im so sorry you, your drink is on me."
+    },
+    {
+      "index": 524,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, I go."
+    },
+    {
+      "index": 525,
+      "speaker": "Game Master",
+      "text": "Okay, so he, he escorts you out."
+    },
+    {
+      "index": 526,
+      "speaker": "Game Master",
+      "text": "Your all of your weird chain mail and everything is."
+    },
+    {
+      "index": 527,
+      "speaker": "Sir Phidipaldi",
+      "text": "Plate mail."
+    },
+    {
+      "index": 528,
+      "speaker": "Game Master",
+      "text": "Flapping around your plate, mails clanking on you."
+    },
+    {
+      "index": 529,
+      "speaker": "Sir Phidipaldi",
+      "text": "I Plate Mail Are you wearing plate? I am, I cant use it. So it only counts as chain mail but Im wearing plate mail."
+    },
+    {
+      "index": 530,
+      "speaker": "Game Master",
+      "text": "Yeah, great, great. And then why dont you describe what you look like getting kinda pushed out of the, uh, the clumsy Fox Tavern?"
+    },
+    {
+      "index": 531,
+      "speaker": "Waymon Tisdale",
+      "text": "Yeah, describe what it sounds like, yeah."
+    },
+    {
+      "index": 532,
+      "speaker": "Dr Uriah",
+      "text": "Jesus its like a cacophony of plates."
+    },
+    {
+      "index": 533,
+      "speaker": "Sir Phidipaldi",
+      "text": "I mean, so. He has a lance and a twohanded sword, and he cant carry both of them at the same time. Well, so hes kinda like holding them in his arms, and hes like the whole time hes just talking about how. Um, uh, Zeus, Law of Courtesy is not honored anymore. And this is gonna, you know, clearly foretell doom on the Tavern of the clumsy Fox."
+    },
+    {
+      "index": 534,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uh, but eventually he goes."
+    },
+    {
+      "index": 535,
+      "speaker": "Sir Phidipaldi",
+      "text": "Hes all bluster, hes not, you know."
+    },
+    {
+      "index": 536,
+      "speaker": "Game Master",
+      "text": "Well, you know that bluster carries into kinda getting pushed out."
+    },
+    {
+      "index": 537,
+      "speaker": "Game Master",
+      "text": "And into the Golden Egg Tavern."
+    },
+    {
+      "index": 538,
+      "speaker": "Game Master",
+      "text": "Which could not be more opposite of what you just experienced at the clumsy Fox."
+    },
+    {
+      "index": 539,
+      "speaker": "Game Master",
+      "text": "No ones there, no ones there, except for this white bearded, bony like Shif, you know, odd looking owner whos like tending bar, no ones hanging out."
+    },
+    {
+      "index": 540,
+      "speaker": "Game Master",
+      "text": "Theres no music."
+    },
+    {
+      "index": 541,
+      "speaker": "Game Master",
+      "text": "Theres no food, and Quinn, like Look, is almost even startled that you came into his bar."
+    },
+    {
+      "index": 542,
+      "speaker": "Game Master",
+      "text": "And he introduces himself Hes like I.M Quinn, the owner. Uh uh, happy to help you. uh I, I, I have a a ale if you want some, uh, costs."
+    },
+    {
+      "index": 543,
+      "speaker": "Sir Phidipaldi",
+      "text": "It I have had a hard day, I will take some ale."
+    },
+    {
+      "index": 544,
+      "speaker": "Game Master",
+      "text": "Okay, uh, its 10 silver pieces."
+    },
+    {
+      "index": 545,
+      "speaker": "Game Master",
+      "text": "So y you notice right away that, unlike Bentley, who was like, kind of freeflowing, you know, hes automatically asking for money."
+    },
+    {
+      "index": 546,
+      "speaker": "Sir Phidipaldi",
+      "text": "For money."
+    },
+    {
+      "index": 547,
+      "speaker": "Dr Uriah",
+      "text": "Yeah, a lot of money, too."
+    },
+    {
+      "index": 548,
+      "speaker": "Game Master",
+      "text": "Yeah, a lot of mon, well, thats."
+    },
+    {
+      "index": 549,
+      "speaker": "Dr Uriah",
+      "text": "That that thats actually pretty expensive for for an ale."
+    },
+    {
+      "index": 550,
+      "speaker": "Game Master",
+      "text": "Its It is three times more expensive than the ale across the street. As soon as you sip it, it is shit."
+    },
+    {
+      "index": 551,
+      "speaker": "Game Master",
+      "text": "It is like completely watered down."
+    },
+    {
+      "index": 552,
+      "speaker": "Game Master",
+      "text": "And uh, and he, uh, he sees."
+    },
+    {
+      "index": 553,
+      "speaker": "Game Master",
+      "text": "You kind of wince a little bit."
+    },
+    {
+      "index": 554,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, sure."
+    },
+    {
+      "index": 555,
+      "speaker": "Game Master",
+      "text": "At your drink."
+    },
+    {
+      "index": 556,
+      "speaker": "Game Master",
+      "text": "Hes like, no matter how much I spend to get in, I get in all the good stuff and its gone the next morning. And so Im sorry, I got it watered down the little bit that I have. Uh, I s. I wish I wish I was able to give you something better."
+    },
+    {
+      "index": 557,
+      "speaker": "Sir Phidipaldi",
+      "text": "I am glad to see that courtesy is not lost in this town. Finally, I can find somebody who who I think really understands me. You know, that other tavern across the street?"
+    },
+    {
+      "index": 558,
+      "speaker": "Game Master",
+      "text": "Hate em, hate em."
+    },
+    {
+      "index": 559,
+      "speaker": "Sir Phidipaldi",
+      "text": "Same."
+    },
+    {
+      "index": 560,
+      "speaker": "Unassigned Speaker",
+      "text": "Hate them."
+    },
+    {
+      "index": 561,
+      "speaker": "Sir Phidipaldi",
+      "text": "They have, they have no sense of honor and courtesy."
+    },
+    {
+      "index": 562,
+      "speaker": "Game Master",
+      "text": "So thats whos been stealing my good ale. Hes like every time I get it in, I think Bentley steals it at night, at night, like ill go to bed."
+    },
+    {
+      "index": 563,
+      "speaker": "Game Master",
+      "text": "I will have a fully stocked bar downstairs."
+    },
+    {
+      "index": 564,
+      "speaker": "Game Master",
+      "text": "I will get a the no matter how good my shipment of Ale is. In the next morning I will wake up. And like half of those glasses are empty or theyre knocked over and its Bentley theres. He he look, look at how popular his tavern is, and everyone likes his foxtail brew. He must be stealing it from me."
+    },
+    {
+      "index": 565,
+      "speaker": "Sir Phidipaldi",
+      "text": "UhHuH Um, that is truly awful."
+    },
+    {
+      "index": 566,
+      "speaker": "Game Master",
+      "text": "I know."
+    },
+    {
+      "index": 567,
+      "speaker": "Sir Phidipaldi",
+      "text": "I would love to help you get back at him."
+    },
+    {
+      "index": 568,
+      "speaker": "Game Master",
+      "text": "Well, if you did, ID give you 100 gold."
+    },
+    {
+      "index": 569,
+      "speaker": "Sir Phidipaldi",
+      "text": "Um, thats great. When is your next shipment coming in?"
+    },
+    {
+      "index": 570,
+      "speaker": "Game Master",
+      "text": "Well, thats the problem. We havent had any shipments for a while."
+    },
+    {
+      "index": 571,
+      "speaker": "Game Master",
+      "text": "But heres my thinking."
+    },
+    {
+      "index": 572,
+      "speaker": "Game Master",
+      "text": "You could make a fake shipment."
+    },
+    {
+      "index": 573,
+      "speaker": "Sir Phidipaldi",
+      "text": "Ooh, smart."
+    },
+    {
+      "index": 574,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, good brain."
+    },
+    {
+      "index": 575,
+      "speaker": "Game Master",
+      "text": "Right, right?"
+    },
+    {
+      "index": 576,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah."
+    },
+    {
+      "index": 577,
+      "speaker": "Game Master",
+      "text": "So maybe you could like find some bottles and hide some down some downstairs, like maybe you could like. Cook it up like you were delivering it, and then we could see whats going on."
+    },
+    {
+      "index": 578,
+      "speaker": "Sir Phidipaldi",
+      "text": "Yeah, that sounds great."
+    },
+    {
+      "index": 579,
+      "speaker": "Sir Phidipaldi",
+      "text": "All right, excellent. You bring the bottles up here and well, fill em with water and then ill go out and ill. Make a big show of coming in and delivering you some ale."
+    },
+    {
+      "index": 580,
+      "speaker": "Game Master",
+      "text": "And that is where we will end."
+    },
+    {
+      "index": 581,
+      "speaker": "Game Master",
+      "text": "Tonight, so you, our major characters, you have visited the town of Brandonsford, you visited the clumsy Fox Tavern, the Golden Egg Tavern, you met Erath the Reeve made friends with Farmer Gill."
+    },
+    {
+      "index": 582,
+      "speaker": "Dr Uriah",
+      "text": "Uh, we made friends with Reginald the Frog."
+    },
+    {
+      "index": 583,
+      "speaker": "Game Master",
+      "text": "We friends with Reginald the Frog, Drop Dead, Ned."
+    },
+    {
+      "index": 584,
+      "speaker": "Game Master",
+      "text": "Met Lady Hilda."
+    },
+    {
+      "index": 585,
+      "speaker": "Game Master",
+      "text": "Um, and, uh, the um."
+    },
+    {
+      "index": 586,
+      "speaker": "Sir Phidipaldi",
+      "text": "Whats the name of the owner of the Clumsy Fox?"
+    },
+    {
+      "index": 587,
+      "speaker": "Game Master",
+      "text": "The owner of the Clumsy Fox is."
+    },
+    {
+      "index": 588,
+      "speaker": "Game Master",
+      "text": "Bentley."
+    },
+    {
+      "index": 589,
+      "speaker": "Sir Phidipaldi",
+      "text": "Bentley."
+    },
+    {
+      "index": 590,
+      "speaker": "Sir Phidipaldi",
+      "text": "BENTLEY And the name of the farmer is."
+    },
+    {
+      "index": 591,
+      "speaker": "Game Master",
+      "text": "Uh, Gill Gill."
+    },
+    {
+      "index": 592,
+      "speaker": "Sir Phidipaldi",
+      "text": "Uhhuh And the guy who owns the Golden Egg is Quinn."
+    },
+    {
+      "index": 593,
+      "speaker": "Game Master",
+      "text": "Quinn."
+    },
+    {
+      "index": 594,
+      "speaker": "Game Master",
+      "text": "And then the, um, the hunter that has lost his arm."
+    },
+    {
+      "index": 595,
+      "speaker": "Game Master",
+      "text": "His name is George."
+    },
+    {
+      "index": 596,
+      "speaker": "Sir Phidipaldi",
+      "text": "George Yep."
+    },
+    {
+      "index": 597,
+      "speaker": "Game Master",
+      "text": "Yep, but you guys have not yet met him."
+    },
+    {
+      "index": 598,
+      "speaker": "Unassigned Speaker",
+      "text": "Nope."
+    },
+    {
+      "index": 599,
+      "speaker": "Game Master",
+      "text": "And then the Smith that has all the charm."
+    },
+    {
+      "index": 600,
+      "speaker": "Game Master",
+      "text": "His name is Warwick."
+    },
+    {
+      "index": 601,
+      "speaker": "Sir Phidipaldi",
+      "text": "Warwick, Yep, and Ingrid."
+    },
+    {
+      "index": 602,
+      "speaker": "Unassigned Speaker",
+      "text": "Ingrid."
+    },
+    {
+      "index": 603,
+      "speaker": "Game Master",
+      "text": "And then Ingrid is the alchemist."
+    },
+    {
+      "index": 604,
+      "speaker": "Unassigned Speaker",
+      "text": "Yeah, absolutely. And and then we havent gone to the church so we dont know his name."
+    },
+    {
+      "index": 605,
+      "speaker": "Game Master",
+      "text": "You guys havent gone to the church yet, and, uh, yeah."
+    }
+  ]
+}
+</role_transcript>

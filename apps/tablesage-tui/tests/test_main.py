@@ -48,7 +48,7 @@ def test_packaged_settings_yaml_deploys_and_loads_with_expected_defaults(tmp_pat
     assert settings.speaker_identification.cluster_propagation.contradiction_veto_margin_threshold == 0.02
     assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
     assert settings.speaker_identification.allow_unassigned is True
-    assert settings.llm_model_high == "anthropic/claude-fable-5"
+    assert settings.llm_model_high == "openai/gpt-6-astra"
 
 
 def test_packaged_settings_yaml_is_not_redeployed_over_user_edits(tmp_path: Path) -> None:

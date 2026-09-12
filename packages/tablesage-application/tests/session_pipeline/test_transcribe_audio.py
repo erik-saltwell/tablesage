@@ -271,7 +271,7 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
     }
 
 
-def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp_path: Path) -> None:
+def test_successful_transcription_preserves_existing_derivatives_for_freshness_checks(tmp_path: Path) -> None:
     session_folder = tmp_path
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
@@ -297,12 +297,12 @@ def test_successful_transcription_invalidates_transcript_and_log_derivatives(tmp
         llm_model_lite=_LLM_MODEL_LITE,
     )
 
-    assert not summary_path.exists()
-    assert not reviewed_path.exists()
-    assert not benchmark_path.exists()
-    assert not role_text_path.exists()
-    assert not role_transcript_path.exists()
-    assert not ledger_path.exists()
+    assert summary_path.exists()
+    assert reviewed_path.exists()
+    assert benchmark_path.exists()
+    assert role_text_path.exists()
+    assert role_transcript_path.exists()
+    assert ledger_path.exists()
 
 
 def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

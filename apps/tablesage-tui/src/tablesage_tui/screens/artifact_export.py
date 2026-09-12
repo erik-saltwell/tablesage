@@ -23,8 +23,10 @@ class ArtifactExportScreen(TableSageScreen):
 
     section = "session detail"
 
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("enter,e,E", "export_selected", "Export", key_display="E"),
     ]
 

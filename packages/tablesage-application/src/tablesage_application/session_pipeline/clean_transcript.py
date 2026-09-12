@@ -11,7 +11,7 @@ from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..paths import ARTIFACTS, ArtifactName
-from .artifacts import delete_artifact
+from .role_transcript import RoleTranscript, RoleTranscriptUtterance
 from .transcript_review import load_review_transcript
 
 
@@ -90,13 +90,12 @@ def render_role_transcript_text(session_folder: Path) -> str:
     field in `role_transcript.json` already holds the role name (or `UNASSIGNED_SPEAKER`), baked
     in by `clean_transcript`.
     """
-    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
+    transcript = RoleTranscript.load(session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     return "\n\n".join(_render_utterance(utterance) for utterance in transcript.utterances) + "\n"
 
 
-def _render_utterance(utterance: Utterance) -> str:
-    text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
-    return f"**{utterance.speaker}** - {text}"
+def _render_utterance(utterance: RoleTranscriptUtterance) -> str:
+    return f"**{utterance.speaker}** - {utterance.text}"
 
 
 def clean_transcript(
@@ -110,8 +109,8 @@ def clean_transcript(
     Reads the completed Manual Review when present, otherwise the machine transcript (see
     `load_review_transcript`) -- neither source is modified. The result is a new, independent
     artifact: `transcript.json` and `transcript_reviewed.json` are untouched by this step.
-    Regenerating `role_transcript.json` invalidates any Ledger and Summary built from the previous
-    copy, since both are derived from it.
+    Regenerating `role_transcript.json` makes any older dependent Ledger and Summary stale without
+    deleting them.
 
     Unlike the pre-review pass (`remove_backchannels.py`, run automatically during Transcribe),
     this step makes no LLM call -- see `_remove_unassigned_backchannels`.
@@ -125,7 +124,7 @@ def clean_transcript(
         _report(on_progress, Stage.REMOVING_BACKCHANNELS, 1, 1)
 
         _report(on_progress, Stage.ASSIGNING_ROLES, 0, 0)
-        role_transcript = _apply_roles(cleaned, role_names)
+        role_transcript = RoleTranscript.from_transcript(_apply_roles(cleaned, role_names))
         _report(on_progress, Stage.ASSIGNING_ROLES, 1, 1)
 
         target = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
@@ -136,9 +135,6 @@ def clean_transcript(
         except Exception:
             temporary.unlink(missing_ok=True)
             raise
-
-        for name in (ArtifactName.LEDGER, ArtifactName.SUMMARY):
-            delete_artifact(session_folder, name)
 
         removed_count = original_count - len(cleaned.utterances)
         log.set(utterance_count=len(cleaned.utterances), removed_count=removed_count)

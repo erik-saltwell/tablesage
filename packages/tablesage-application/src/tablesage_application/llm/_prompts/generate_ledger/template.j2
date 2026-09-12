@@ -10,6 +10,23 @@
 {% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
 {% endfor %}</glossary>
 
-<session_transcript>
-{{ transcript }}
-</session_transcript>
+<starting_context>
+{{ starting_context }}
+</starting_context>
+
+<session_utterances>
+{{ session_utterances }}
+</session_utterances>
+{% if validation_feedback %}
+
+<validation_feedback>
+The previous response was rejected. Generate a complete corrected pair from the original inputs.
+{{ validation_feedback }}
+</validation_feedback>
+<rejected_candidate>
+{{ rejected_candidate | default("") }}
+</rejected_candidate>
+This candidate is an invalid draft, not an additional factual source. Use the original transcript
+to correct it. Return the complete joint response; do not remove real events or merge distinct
+scenes to make reference validation easier.
+{% endif %}

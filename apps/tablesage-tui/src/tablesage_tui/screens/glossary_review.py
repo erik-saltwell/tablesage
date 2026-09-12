@@ -27,8 +27,10 @@ class GlossaryReviewScreen(TableSageScreen):
 
     section = "session detail"
 
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("n,N", "new_entry", "New", key_display="N"),
         Binding("enter,e,E", "edit_entry", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_entry", "Delete", key_display="D"),

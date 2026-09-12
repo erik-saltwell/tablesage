@@ -37,6 +37,11 @@ dev.db
 temp/
 logs/
 
+# Local recap optimization traces and restart state. Accepted prompts remain reviewable.
+data_prompts/recap_summary/outputs/runs/
+data_prompts/recap_summary/outputs/checkpoint.md
+data_prompts/recap_summary/outputs/checkpoint_manifest.json
+
 # Downloaded ML model checkpoints (e.g. MossFormer2 voice enhancement) --
 # fetched at runtime, not source.
 checkpoints/

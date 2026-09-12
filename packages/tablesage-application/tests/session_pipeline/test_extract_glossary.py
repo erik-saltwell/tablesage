@@ -13,13 +13,13 @@ from tablesage_application.session_pipeline.extract_glossary import (
     GlossaryPromptEntry,
     GlossaryProposal,
 )
+from tablesage_application.session_pipeline.role_transcript import RoleTranscript, RoleTranscriptUtterance
 from tablesage_model.model import Campaign, GlossaryEntry, Player
 from tablesage_model.settings import AppSettings
-from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 
 
 def _role_transcript(path: Path) -> None:
-    Transcript.from_words([TranscriptionWord(text="We meet Veyra.", type=SpeechType.WORD, start=0.0, end=1.0, speaker="Aria")]).save(
+    RoleTranscript(utterances=[RoleTranscriptUtterance(index=0, speaker="Aria", text="We meet Veyra.")]).save(
         path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
     )
 

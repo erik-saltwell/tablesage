@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from importlib.metadata import version
 from typing import Any
 
 import widelog
 from pydantic import BaseModel, ValidationError
+
+_ASTRA_MODEL = "openai/gpt-6-astra"
+_ASTRA_MEDIUM_THINKING_OPTIONS = {"reasoning_effort": "medium", "allowed_openai_params": ["reasoning_effort"]}
 
 
 def _remove_schema_keyword(value: Any, keyword: str) -> None:
@@ -70,6 +74,8 @@ async def call_llm(
     model: str,
     response_format: type[BaseModel] | None = None,
     timeout: float | None = None,
+    prompt_name: str | None = None,
+    model_options: Mapping[str, Any] | None = None,
 ) -> str:
     """Send a single-turn system+user prompt to *model* via litellm and return its text response.
 
@@ -77,9 +83,15 @@ async def call_llm(
     request; the caller is responsible for parsing the returned text (e.g. via
     ``response_format.model_validate_json(result)``) -- this function always returns plain text.
     *timeout* is forwarded to litellm as-is; `None` (the default) leaves litellm's own default
-    (600 seconds) in effect.
+    (600 seconds) in effect. *prompt_name* is diagnostic context only and is never sent to the
+    provider. *model_options* passes provider-specific controls such as reasoning effort through
+    to LiteLLM.
     """
     import litellm
+
+    effective_model_options = dict(model_options) if model_options is not None else {}
+    if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
+        effective_model_options = {**_ASTRA_MEDIUM_THINKING_OPTIONS, **effective_model_options}
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -102,21 +114,25 @@ async def call_llm(
 
     with widelog.wide_event(
         op="call_llm",
+        prompt_name=prompt_name,
         model=model,
         provider=model.partition("/")[0] or None,
         litellm_version=version("litellm"),
         system_prompt_chars=len(system_prompt),
         user_prompt_chars=len(user_prompt),
+        response_kind="structured_json" if response_format is not None else "text",
         response_schema_name=response_format.__name__ if response_format is not None else None,
         response_schema=response_schema,
         response_schema_sha256=hashlib.sha256(canonical_schema.encode()).hexdigest() if canonical_schema else None,
         response_schema_supported=litellm.supports_response_schema(model=model) if response_format is not None else None,
+        model_options=effective_model_options or None,
     ) as log:
         response = await litellm.acompletion(
             model=model,
             messages=messages,
             response_format=provider_response_format,
             timeout=timeout,
+            **effective_model_options,
         )
         choices = _response_value(response, "choices") or []
         choice = choices[0]
@@ -126,19 +142,20 @@ async def call_llm(
             response_model=_response_value(response, "model"),
             finish_reason=_choice_value(choice, "finish_reason"),
             response_content_chars=len(content),
+            response_content_nonempty=bool(content.strip()),
         )
 
-        try:
-            parsed_content = json.loads(content)
-        except json.JSONDecodeError as exc:
-            log.set(
-                response_json_valid=False,
-                response_json_error={"message": exc.msg, "line": exc.lineno, "column": exc.colno},
-            )
-        else:
-            log.set(response_json_valid=True, response_json_shape=_json_shape(parsed_content))
-
         if response_format is not None:
+            try:
+                parsed_content = json.loads(content)
+            except json.JSONDecodeError as exc:
+                log.set(
+                    response_json_valid=False,
+                    response_json_error={"message": exc.msg, "line": exc.lineno, "column": exc.colno},
+                )
+            else:
+                log.set(response_json_valid=True, response_json_shape=_json_shape(parsed_content))
+
             try:
                 response_format.model_validate_json(content)
             except ValidationError as exc:

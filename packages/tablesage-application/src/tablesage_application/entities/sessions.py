@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from sqlalchemy import func
@@ -52,12 +52,42 @@ def get_session(session: Session, session_id: uuid.UUID) -> GameSession:
     return game_session
 
 
+def get_previous_session(session: Session, game_session: GameSession) -> GameSession | None:
+    """Return the preceding Session in campaign-local chronological order.
+
+    Dated Sessions sort first by date and then by sequence number. Undated Sessions sort after
+    dated Sessions and use sequence number among themselves, giving the ordering a deterministic
+    fallback when dates are unavailable.
+    """
+    campaign_sessions = list_sessions(session, game_session.campaign_id)
+    ordered = sorted(
+        campaign_sessions,
+        key=lambda candidate: (
+            candidate.session_date is None,
+            candidate.session_date or date.max,
+            candidate.sequence_number,
+        ),
+    )
+    position = next(index for index, candidate in enumerate(ordered) if candidate.id == game_session.id)
+    return ordered[position - 1] if position else None
+
+
 def update_session(session: Session, session_id: uuid.UUID, name: str, session_date: date | None) -> GameSession:
     game_session = get_session(session, session_id)
     game_session.name = name
     game_session.session_date = session_date
+    game_session.updated_at = datetime.now(UTC)
+    game_session.metadata_updated_at = game_session.updated_at
     session.flush()
     return game_session
+
+
+def touch_attendance(session: Session, session_id: uuid.UUID) -> None:
+    """Advance the logical input clock consumed by Session artifact build rules."""
+    game_session = get_session(session, session_id)
+    game_session.updated_at = datetime.now(UTC)
+    game_session.attendance_updated_at = game_session.updated_at
+    session.add(game_session)
 
 
 def delete_session(session: Session, session_id: uuid.UUID) -> None:

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from sqlmodel import Session
 from tablesage_application import Application
 from tablesage_model.model import Campaign, Player
 
@@ -20,6 +22,22 @@ def test_add_player_to_campaign_and_list_roster(tmp_path: Path) -> None:
     assert stored_membership.id == membership.id
     assert stored_player.name == "Alice"
     assert stored_membership.default_role_name == "game-master"
+
+
+def test_roster_mutation_advances_campaign_roster_clock(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    player = application.create_player(Player(name="Alice"))
+    old_clock = datetime(2000, 1, 1, tzinfo=UTC)
+    with Session(application._engine) as session:
+        stored = session.get(Campaign, campaign.id)
+        assert stored is not None
+        stored.roster_updated_at = old_clock
+        session.commit()
+
+    application.add_player_to_campaign(campaign.id, player.id, "game-master")
+
+    assert application.get_campaign(campaign.id).roster_updated_at.year != old_clock.year
 
 
 def test_same_player_can_have_different_roles_in_different_campaigns(tmp_path: Path) -> None:

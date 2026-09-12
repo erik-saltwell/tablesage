@@ -6,21 +6,7 @@ from pathlib import Path
 import widelog
 from tablesage_tools.audio import clean_clip, convert_to_16k_mono
 
-from ..paths import ARTIFACTS, AUDIO_EXTENSIONS, ArtifactCategory, ArtifactName
-from .artifacts import delete_artifact
-
-
-def invalidate_downstream(session_folder: Path) -> None:
-    """Delete every derived artifact (anything not IMPORTED) -- never the raw input audio.
-
-    Public (not module-private) because every destructive edit invalidates:
-    re-importing audio, adding/removing an attendee, editing roles, and
-    (in Phase 11) rerunning Process -- all call this directly.
-    """
-    with widelog.wide_event(op="invalidate_downstream", session_folder=str(session_folder)):
-        for name, spec in ARTIFACTS.items():
-            if spec.category is not ArtifactCategory.IMPORTED:
-                delete_artifact(session_folder, name)
+from ..paths import ARTIFACTS, AUDIO_EXTENSIONS, ArtifactName
 
 
 def validate_import_source(source_path: Path) -> None:
@@ -41,9 +27,8 @@ def import_audio(source_path: Path, session_folder: Path, normalize_volume: bool
     """Clean (or just convert) `source_path` into the session folder as the fixed input-audio file.
 
     Cleaned into a temp file in the same folder first, so a failed/partial
-    clean never corrupts an existing `input_audio.wav`; downstream artifacts
-    are only invalidated once the clean has actually succeeded, so a failure
-    leaves prior processing intact instead of destroying it for nothing.
+    clean never corrupts an existing `input_audio.wav`. Existing derivatives remain on disk;
+    their older modification times make them stale after replacement succeeds.
 
     `should_clean_audio=False` skips the Mossformer2 noise-removal pass (and
     `normalize_volume` with it) and just runs the format conversion -- only valid for
@@ -78,5 +63,4 @@ def import_audio(source_path: Path, session_folder: Path, normalize_volume: bool
             temp_target.unlink(missing_ok=True)
             raise
 
-        invalidate_downstream(session_folder)
         temp_target.replace(session_folder / input_audio_filename)

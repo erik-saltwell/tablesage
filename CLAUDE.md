@@ -12,6 +12,14 @@ Triage uses the default canonical state names. See `docs/agents/triage-labels.md
 
 This repository uses a single-context domain-doc layout. See `docs/agents/domain.md`.
 
+### Session artifacts
+
+The authoritative artifact specifications are:
+
+- [Ledger](specs/ledger.md)
+- [Player Introductions](specs/player-introductions.md)
+- [Transcript Sections](specs/transcript-sections.md)
+
 ### Settings
 
 Whenever you add code where `tablesage-tui` (directly, or via `tablesage-application`) calls

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 
 from sqlalchemy.exc import IntegrityError
@@ -41,6 +42,7 @@ def get_player(session: Session, player_id: uuid.UUID) -> Player:
 def rename_player(session: Session, player_id: uuid.UUID, new_name: str, players_root: Path) -> Player:
     player = get_player(session, player_id)
     rename_named_entity(session, player, new_name, players_root, kind="player")
+    player.updated_at = datetime.now(UTC)
     return player
 
 

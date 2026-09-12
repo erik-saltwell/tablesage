@@ -1,27 +1,39 @@
 target_llm:
-  model: anthropic/claude-fable-5.1
+  model: openai/gpt-5.6-sol
+  effort: low
+  extra:
+    allowed_openai_params:
+      - reasoning_effort
 
 actor_llm:
-  model: anthropic/claude-sonnet-5
-  temperature: 0.5
+  model: openai/gpt-5.6-sol
+  effort: medium
+  temperature: 1.0
+  extra:
+    allowed_openai_params:
+      - reasoning_effort
 
 judge_llm:
-  model: anthropic/claude-sonnet-5
+  model: openai/gpt-5.6-sol
+  effort: medium
+  extra:
+    allowed_openai_params:
+      - reasoning_effort
 
 optimizer:
-  iterations: 1
-  top_k_per_iteration: 1
-  floor: 1
+  iterations: 6
+  top_k_per_iteration: 2
+  floor: 8
   ucb_budget: 0
-  seed_warmup_pulls: 1
-  max_children_per_parent: 1
-  early_stop_patience: 1
-  max_llm_concurrency: 1
-  error_budget: 0
-  seed: 1
+  seed_warmup_pulls: 8
+  max_children_per_parent: 4
+  early_stop_patience: 3
+  max_llm_concurrency: 3
+  error_budget: 3
+  seed: 42
 
 metric_weights:
-  ledger_coverage: 0.35
-  ledger_accuracy: 0.35
+  ledger_coverage: 0.3
+  ledger_accuracy: 0.3
   ledger_conciseness: 0.15
-  ledger_exclusion: 0.15
+  ledger_exclusion: 0.25

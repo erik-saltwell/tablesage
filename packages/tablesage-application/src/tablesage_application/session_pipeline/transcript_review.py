@@ -13,7 +13,6 @@ from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import MIN_UTTERANCE_DURATION_SECONDS
 
 from ..paths import ARTIFACTS, ArtifactName
-from .artifacts import delete_artifact
 
 REVIEW_CLIPS_DIRNAME = "speaker_review_clips"
 
@@ -190,7 +189,7 @@ def replace_text(transcript: Transcript, find: str, replacement: str, case_sensi
 
 
 def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> None:
-    """Atomically replace the completed review, then discard artifacts derived from its source."""
+    """Atomically replace the completed review; downstream freshness follows its mtime."""
     target = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
     temporary = target.with_name(f".{target.stem}.tmp{target.suffix}")
     try:
@@ -199,15 +198,6 @@ def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> No
     except Exception:
         temporary.unlink(missing_ok=True)
         raise
-
-    for name in (
-        ArtifactName.TRANSCRIPT_ROLES_TEXT,
-        ArtifactName.TRANSCRIPT_BENCHMARK,
-        ArtifactName.ROLE_TRANSCRIPT,
-        ArtifactName.LEDGER,
-        ArtifactName.SUMMARY,
-    ):
-        delete_artifact(session_folder, name)
 
 
 @dataclass(frozen=True)

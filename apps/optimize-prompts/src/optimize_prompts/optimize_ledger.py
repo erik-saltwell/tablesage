@@ -14,6 +14,7 @@ from rich.syntax import Syntax
 from tablesage_application.session_pipeline.generate_ledger import LedgerGenerationResponse
 
 from .ledger_metrics import build_ledger_metrics
+from .winner_output import checkpoint_callback, report_interruption, resolve_seed_prompt, save_winner
 
 
 class LedgerOptimizerSettings(BaseModel):
@@ -82,10 +83,11 @@ def _load_settings(path: Path) -> LedgerSettings:
         return LedgerSettings.model_validate(yaml.safe_load(stream) or {})
 
 
-def optimize_ledger(prompt_directory: Path, console: Console, *, run: bool = False) -> None:
+def optimize_ledger(prompt_directory: Path, console: Console, *, run: bool = False, resume: bool = False) -> None:
     seed_prompt_path: Path = prompt_directory / "seed_prompt.txt"
     inputs_directory: Path = prompt_directory / "inputs"
     settings_path: Path = prompt_directory / "settings.yaml"
+    output_directory: Path = prompt_directory / "outputs"
 
     if not seed_prompt_path.is_file():
         raise ValueError(f"Seed prompt not found at {seed_prompt_path}.")
@@ -94,7 +96,7 @@ def optimize_ledger(prompt_directory: Path, console: Console, *, run: bool = Fal
 
     settings = _load_settings(settings_path)
     config = _build_ledger_config(
-        seed_prompt=seed_prompt_path.read_text(encoding="utf-8"),
+        seed_prompt=resolve_seed_prompt(seed_prompt_path, output_directory, resume=resume, console=console),
         eval_cases=_load_eval_cases(inputs_directory),
         settings=settings,
     )
@@ -116,5 +118,27 @@ def optimize_ledger(prompt_directory: Path, console: Console, *, run: bool = Fal
     if not run:
         return
 
-    result = asyncio.run(optimize_prompt(config=config, metrics=metrics, scorer=scorer))
-    console.print(Panel(f"Best score: {result.best_score:.4f}", title="Ledger Optimization Complete", border_style="green"))
+    try:
+        result = asyncio.run(
+            optimize_prompt(
+                config=config,
+                metrics=metrics,
+                scorer=scorer,
+                on_checkpoint=lambda prompt: checkpoint_callback(output_directory, prompt),
+            )
+        )
+    except BaseException as exc:
+        report_interruption(exc, output_directory, console, title="Ledger Optimization")
+        raise
+    prompt_path = save_winner(
+        output_directory,
+        result.best_prompt,
+        {"mode": "full_corpus", "result": result.model_dump(mode="json")},
+    )
+    console.print(
+        Panel(
+            f"Best score: {result.best_score:.4f}\nWinner saved to: {prompt_path}",
+            title="Ledger Optimization Complete",
+            border_style="green",
+        )
+    )

@@ -30,15 +30,17 @@ async def _open_review(pilot: Pilot, session_id: uuid.UUID) -> None:
 
 
 def test_review_binding_keys() -> None:
-    bindings = {binding.action: binding.key for binding in GlossaryReviewScreen.BINDINGS}
-    assert bindings == {
+    assert {binding.action: binding.key for binding in GlossaryReviewScreen.HIDDEN_BINDINGS} == {
         "cancel": "escape",
+    }
+    assert {binding.action: binding.key for binding in GlossaryReviewScreen.COMMON_BINDINGS} == {
         "new_entry": "n,N",
         "edit_entry": "enter,e,E",
         "delete_entry": "d,D,delete,backspace",
         "find_replace": "f,F",
         "complete": "c,C",
     }
+    assert GlossaryReviewScreen.OTHER_BINDINGS == []
 
 
 @pytest.mark.anyio

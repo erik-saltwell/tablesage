@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ._prompts import PromptName, read_prompt_template, read_system_prompt
+from ._prompts import PromptName, read_prompt_template, read_system_prompt, system_prompt_path
 from .llm_helper import DEFAULT_LLM_MODEL, call_llm_with_prompt
 
 __all__ = [
@@ -9,4 +9,5 @@ __all__ = [
     "call_llm_with_prompt",
     "read_prompt_template",
     "read_system_prompt",
+    "system_prompt_path",
 ]

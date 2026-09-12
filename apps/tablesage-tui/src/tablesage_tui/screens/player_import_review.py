@@ -25,8 +25,10 @@ class PlayerImportReviewScreen(TableSageScreen):
 
     section = "players"
 
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("enter,e,E", "edit_row", "Edit", key_display="E"),
         Binding("t,T", "view_transcript", "Transcript", key_display="T"),
         Binding("b,B", "build", "Build Players", key_display="B"),
