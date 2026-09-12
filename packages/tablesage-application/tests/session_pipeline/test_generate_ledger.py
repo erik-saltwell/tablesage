@@ -17,12 +17,14 @@ from tablesage_application.session_pipeline.generate_ledger import (
     Expression,
     GlossaryPromptEntry,
     Ledger,
+    LedgerContent,
     LedgerGenerationResponse,
     Narration,
     Question,
     Speech,
 )
 from tablesage_application.session_pipeline.role_transcript import RoleTranscript, RoleTranscriptUtterance
+from tablesage_application.session_pipeline.scene_breakdown import LedgerRange, Scene, SceneBreakdownContent
 from tablesage_application.session_pipeline.transcript_sections import (
     InclusiveUtteranceRange,
     RoutedUtterance,
@@ -37,22 +39,44 @@ def _response(
     *, source: str = "Zaria", asker: str = "Alice", resolver: str = "Bob", starting_situation: str = "The party wakes beside the river."
 ) -> LedgerGenerationResponse:
     return LedgerGenerationResponse(
-        scratchpad="Classified the campaign-relevant moves.",
         starting_situation=starting_situation,
-        utterances=[
-            Narration(type="narration", source=source, fact="Rain falls over the camp."),
-            Action(type="action", source=source, entity="Zaria", action="Lights a signal fire."),
-            Speech(type="speech", source=source, entity="Zaria", statement="We should leave before dawn."),
-            Expression(type="expression", source=source, entity="Zaria", sentiment="Fears the riders will return."),
-            Correction(type="correction", source=source, revision="The riders came from the east, not the north."),
-            Question(
-                type="question",
-                asker=asker,
-                question="Is the eastern road flooded?",
-                resolver=resolver,
-                resolution="Yes, the bridge is underwater.",
-            ),
-        ],
+        scene_breakdown=_scenes(6),
+        ledger=LedgerContent(
+            utterances=[
+                Narration(type="narration", source=source, fact="Rain falls over the camp."),
+                Action(type="action", source=source, entity="Zaria", action="Lights a signal fire."),
+                Speech(type="speech", source=source, entity="Zaria", statement="We should leave before dawn."),
+                Expression(type="expression", source=source, entity="Zaria", sentiment="Fears the riders will return."),
+                Correction(type="correction", source=source, revision="The riders came from the east, not the north."),
+                Question(
+                    type="question",
+                    asker=asker,
+                    question="Is the eastern road flooded?",
+                    resolver=resolver,
+                    resolution="Yes, the bridge is underwater.",
+                ),
+            ]
+        ),
+    )
+
+
+def _scenes(count: int) -> SceneBreakdownContent:
+    return SceneBreakdownContent(
+        ending_situation="The party prepares to leave.",
+        scenes=[
+            Scene(
+                title="River camp",
+                location="River",
+                participants=["Zaria"],
+                situation="Leave before dawn.",
+                outcome="A fire is lit.",
+                carry_forward=["The bridge is flooded."],
+                signature_detail="Rain over camp.",
+                ledger_ranges=[LedgerRange(start_index=0, end_index=count - 1)],
+            )
+        ]
+        if count
+        else [],
     )
 
 
@@ -98,7 +122,7 @@ def test_ledger_v4_schema_supports_starting_situation_and_all_discriminated_utte
         session_name="  Session One  ",
         attendees=(Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=("Game Master",))),
         starting_situation=generated.starting_situation,
-        utterances=generated.utterances,
+        utterances=generated.ledger.utterances,
     )
     reparsed = Ledger.model_validate_json(ledger.model_dump_json())
 
@@ -123,7 +147,7 @@ def test_ledger_v4_schema_supports_starting_situation_and_all_discriminated_utte
 def test_ledger_markdown_is_a_numbered_chronological_human_readable_view() -> None:
     session_id = uuid.uuid4()
     generated = _response()
-    generated.utterances[-1] = Question(
+    generated.ledger.utterances[-1] = Question(
         type="question",
         asker="Alice",
         question="Who built the bridge?",
@@ -135,7 +159,7 @@ def test_ledger_markdown_is_a_numbered_chronological_human_readable_view() -> No
         session_name="Session One",
         attendees=(Attendee(player_name="Alice", roles=("Zaria",)), Attendee(player_name="Bob", roles=())),
         starting_situation=generated.starting_situation,
-        utterances=generated.utterances,
+        utterances=generated.ledger.utterances,
     )
 
     markdown = ledger.to_markdown()
@@ -155,7 +179,7 @@ def test_ledger_markdown_is_a_numbered_chronological_human_readable_view() -> No
 
 def test_ledger_schema_requires_non_empty_starting_situation_and_forbids_preamble_and_extra_fields() -> None:
     with pytest.raises(ValidationError, match="at least 1 character"):
-        LedgerGenerationResponse(scratchpad="", starting_situation="  ", utterances=[])
+        LedgerGenerationResponse(starting_situation="  ", ledger=LedgerContent(utterances=[]), scene_breakdown=_scenes(0))
 
     with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
         LedgerGenerationResponse.model_validate(
@@ -187,9 +211,11 @@ def test_ledger_schema_requires_non_empty_starting_situation_and_forbids_preambl
 
 def test_question_allows_unresolved_exchange_and_attendee_warnings_are_separate_from_roles() -> None:
     response = LedgerGenerationResponse(
-        scratchpad="",
         starting_situation="The party stands before a locked door.",
-        utterances=[Question(type="question", asker="Unknown", question="Is it locked?", resolver=None, resolution=None)],
+        ledger=LedgerContent(
+            utterances=[Question(type="question", asker="Unknown", question="Is it locked?", resolver=None, resolution=None)]
+        ),
+        scene_breakdown=_scenes(1),
     )
 
     assert generate_ledger_module._attendee_warning_count(response, frozenset({"Alice"})) == 1
@@ -233,8 +259,8 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
         "test-model",
     )
 
-    assert isinstance(result.utterances[0], Narration)
-    assert result.utterances[0].source == "Zaria"
+    assert isinstance(result.ledger.utterances[0], Narration)
+    assert result.ledger.utterances[0].source == "Zaria"
     assert captured["prompt"] is PromptName.GENERATE_LEDGER
     assert captured["model"] == "test-model"
     assert captured["response_model"] is LedgerGenerationResponse
@@ -265,6 +291,12 @@ async def test_generate_ledger_retries_malformed_response_but_accepts_unknown_so
     async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
         nonlocal call_count
         call_count += 1
+        prompt_data = args[1]
+        assert isinstance(prompt_data, generate_ledger_module.LedgerPromptData)
+        if call_count == 2:
+            assert prompt_data.rejected_candidate == "not json"
+            assert prompt_data.validation_feedback is not None
+            assert "json_invalid" in prompt_data.validation_feedback
         return next(responses)
 
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
@@ -279,7 +311,7 @@ async def test_generate_ledger_retries_malformed_response_but_accepts_unknown_so
     )
 
     assert call_count == 2
-    assert result.utterances[0].source == "Unknown Wanderer"
+    assert result.ledger.utterances[0].source == "Unknown Wanderer"
 
 
 @pytest.mark.anyio
@@ -304,7 +336,7 @@ async def test_generate_ledger_retries_unknown_question_attendee(monkeypatch: py
     )
 
     assert call_count == 2
-    question = result.utterances[-1]
+    question = result.ledger.utterances[-1]
     assert isinstance(question, Question)
     assert question.asker == "Alice"
 
@@ -357,7 +389,7 @@ async def test_generate_ledger_fails_when_all_three_responses_are_structurally_i
         )
 
     assert call_count == 3
-    assert "scratchpad" in str(raised.value)
+    assert "scene_breakdown" in str(raised.value)
 
 
 @pytest.mark.anyio
@@ -472,8 +504,8 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
         "glossary": (GlossaryPromptEntry(term="Ashmoor", description="The blighted moorland."),),
         "model": "test-model",
     }
-    assert not summary_path.exists()
-    assert not recap_path.exists()
+    assert summary_path.read_text(encoding="utf-8") == "stale summary\n"
+    assert recap_path.read_text(encoding="utf-8") == "stale recap\n"
     assert ledger_markdown_path.read_text(encoding="utf-8") == ledger.to_markdown()
     assert not (session_folder / ".ledger.tmp.json").exists()
     assert not (session_folder / ".ledger.tmp.md").exists()

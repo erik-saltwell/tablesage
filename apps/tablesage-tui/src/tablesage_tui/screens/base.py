@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 
 from tablesage_application import Application
 from textual.app import ComposeResult
@@ -12,6 +12,7 @@ from textual.widgets import Footer
 from textual.worker import Worker, WorkerState
 
 from ..dialogs.generic import ConfirmationDialog
+from ..dialogs.other_actions import OtherActionsDialog
 from ..dialogs.progress import ProgressDialog
 from ..widgets.tablesage_header import TableSageHeader
 
@@ -29,11 +30,47 @@ class TableSageScreen(Screen[None]):
     section = ""
     campaign = "no campaign loaded"
 
-    # Merged with each subclass's own BINDINGS (Textual combines BINDINGS across
-    # the whole MRO), so every screen gets F5 without redeclaring it.
+    # Every full-page screen inherits this hidden refresh binding.
     BINDINGS = [
         Binding("f5", "refresh_screen", "Refresh", key_display="F5", show=False),
     ]
+    COMMON_BINDINGS: ClassVar[list[Binding]] = []
+    OTHER_BINDINGS: ClassVar[list[Binding]] = []
+    HIDDEN_BINDINGS: ClassVar[list[Binding]] = []
+
+    def __init__(self, name: str | None = None, id: str | None = None, classes: str | None = None) -> None:
+        super().__init__(name=name, id=id, classes=classes)
+        # Install the grouped declarations on this screen's map so both dispatch
+        # and the Footer use the same source lists.
+        for binding in self.HIDDEN_BINDINGS:
+            self._bindings.bind(
+                binding.key,
+                binding.action,
+                binding.description,
+                show=False,
+                key_display=binding.key_display,
+                priority=binding.priority,
+            )
+        for binding in self.COMMON_BINDINGS:
+            self._bindings.bind(
+                binding.key,
+                binding.action,
+                binding.description,
+                show=binding.show,
+                key_display=binding.key_display,
+                priority=binding.priority,
+            )
+        for binding in self.OTHER_BINDINGS:
+            self._bindings.bind(
+                binding.key,
+                binding.action,
+                binding.description,
+                show=False,
+                key_display=binding.key_display,
+                priority=binding.priority,
+            )
+        if self.OTHER_BINDINGS:
+            self._bindings.bind("question_mark,slash", "show_other_actions", "Other actions", key_display="?")
 
     _progress_on_success: Callable[[Any], None] | None = None
     _progress_on_error: Callable[[BaseException], None] | None = None
@@ -66,6 +103,17 @@ class TableSageScreen(Screen[None]):
     def action_refresh_screen(self) -> None:
         """Reload this screen's data from the DB/disk -- for changes made outside the app."""
         self.refresh_data()
+
+    def action_show_other_actions(self) -> None:
+        """Open the secondary-action menu, then run the selected action on this screen."""
+        if not self.OTHER_BINDINGS:
+            return
+
+        def run_selected(action: str | None) -> None:
+            if action is not None:
+                self.call_later(self.app.run_action, action, default_namespace=self)
+
+        self.app.push_screen(OtherActionsDialog(self.OTHER_BINDINGS), run_selected)
 
     def refresh_data(self) -> None:
         """Reload the data this screen displays. No-op by default; override in screens that show live data."""

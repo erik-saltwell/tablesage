@@ -40,7 +40,7 @@ def test_can_clean_transcript_requires_machine_transcript(tmp_path: Path) -> Non
     assert reason is None
 
 
-def test_clean_transcript_writes_role_transcript_and_invalidates_derivatives(tmp_path: Path) -> None:
+def test_clean_transcript_writes_role_transcript_and_preserves_derivatives_for_freshness_checks(tmp_path: Path) -> None:
     _transcript().save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
     ledger_path = tmp_path / ARTIFACTS[ArtifactName.LEDGER].filename
     summary_path = tmp_path / ARTIFACTS[ArtifactName.SUMMARY].filename
@@ -56,11 +56,11 @@ def test_clean_transcript_writes_role_transcript_and_invalidates_derivatives(tmp
     result = clean_transcript(tmp_path, max_words=3, role_names={"Alice": "Wizard"})
 
     assert result == CleanTranscriptResult(utterance_count=2, removed_count=0)
-    assert not ledger_path.exists()
-    assert not summary_path.exists()
-    assert not sections_path.exists()
-    assert not introductions_path.exists()
-    assert not recap_path.exists()
+    assert ledger_path.exists()
+    assert summary_path.exists()
+    assert sections_path.exists()
+    assert introductions_path.exists()
+    assert recap_path.exists()
 
     role_transcript = RoleTranscript.load(tmp_path / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename)
     assert [utterance.speaker for utterance in role_transcript.utterances] == ["Wizard", "Bob"]

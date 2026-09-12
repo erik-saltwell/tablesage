@@ -23,8 +23,8 @@ from tablesage_tools.speakers import (
 from tablesage_tools.transcription import transcribe_and_diarize
 
 from ..entities.sessions import list_attendance
-from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
-from .artifacts import invalidate_category, session_artifacts
+from ..paths import ARTIFACTS, ArtifactName
+from .artifacts import session_artifacts
 from .remove_backchannels import remove_backchannels
 
 
@@ -187,9 +187,6 @@ def transcribe_audio(
         (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(
             _render_transcript_text(transcript), encoding="utf-8"
         )
-        invalidate_category(session_folder, ArtifactCategory.FROM_TRANSCRIPT)
-        invalidate_category(session_folder, ArtifactCategory.FROM_LOG)
-
         unassigned_count = sum(1 for utterance in transcript.utterances if utterance.speaker == UNASSIGNED_SPEAKER)
         log.set(
             utterance_count=len(transcript.utterances),

@@ -24,15 +24,18 @@ _INPUT = """<known_session_roles>
 """
 
 _OUTPUT = """{
-  "scratchpad": "Internal planning that must not affect Ledger quality metrics.",
   "starting_situation": "The party is crossing an unstable bridge.",
-  "utterances": [
+  "ledger": {"utterances": [
     {
       "type": "narration",
       "source": "Game Master",
       "fact": "The bridge collapses."
     }
-  ]
+  ]},
+  "scene_breakdown": {"ending_situation": "On the broken bridge.", "scenes": [
+    {"title": "The bridge", "location": "Bridge", "participants": [], "situation": "Cross.",
+     "outcome": "Bridge collapses.", "signature_detail": null, "carry_forward": [],
+    "ledger_ranges": [{"start_index": 0, "end_index": 0}]}]}
 }"""
 
 
@@ -43,6 +46,16 @@ def test_extract_session_transcript_uses_only_the_transcript_block() -> None:
 def test_extract_session_transcript_rejects_content_after_the_transcript() -> None:
     with pytest.raises(LedgerInputError, match="Unexpected content"):
         extract_session_transcript(_INPUT + "\n<extra>not source context</extra>")
+
+
+def test_extract_routed_sources_excludes_glossary_and_metadata() -> None:
+    rendered = "<glossary>Do not treat as fiction.</glossary><starting_context>[]</starting_context>"
+    rendered += '<session_utterances>[{"speaker":"GM","text":"The bridge collapses."}]</session_utterances>'
+    source = extract_session_transcript(rendered)
+    assert "The bridge collapses." in source
+    assert "Do not treat as fiction" not in source
+    with pytest.raises(LedgerInputError, match="Unexpected content"):
+        extract_session_transcript(rendered + "extra")
 
 
 def test_json_question_factory_uses_the_exact_input_filename(tmp_path: Path) -> None:
@@ -81,5 +94,7 @@ def test_conciseness_uses_transcript_not_prompt_scaffolding() -> None:
     assert result.score == pytest.approx(expected_score)
 
 
-def test_ledger_content_excludes_generation_scratchpad() -> None:
-    assert "Internal planning" not in ledger_content(_OUTPUT)
+def test_ledger_content_excludes_scene_breakdown() -> None:
+    assert "scene_breakdown" not in ledger_content(_OUTPUT)
+    assert "signature_detail" not in ledger_content(_OUTPUT)
+    assert "The bridge collapses." in ledger_content(_OUTPUT)

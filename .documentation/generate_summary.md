@@ -11,14 +11,14 @@ context; sidecars are inserted afterward in code.
 - **Ledger** — `ledger.json`, the session's canonical structured record (see `generate_ledger.md`, `canonical_ledger_format_v4.md`). Summary generation reads its raw JSON text and treats it as an opaque string; it does not depend on the Ledger's Pydantic schema.
 - **Attendees** — the session's human roster (player name and session roles), sourced the same way Ledger generation sources it, and included as its own prompt section alongside the Ledger.
 - **Glossary** — the campaign's terms and optional descriptions, always included as a prompt section.
-- **Recap Summary** — `recap_summary.md` generated from one Session's Ledger and inserted into the
+- **Recap Summary** — `recap_summary.md` generated from one Session's Scene Breakdown and inserted into the
   following Session's Summary.
 - **Player Introductions** — the current Session's structured `player_introductions.json`, rendered
   deterministically when composed.
 - **Summary template** — Markdown returned by the LLM with one `<!-- RECAP -->` marker followed by
   one `<!-- PLAYER_INTRODUCTIONS -->` marker.
 - **Summary** — the deterministically composed Markdown stored as `summary.md`.
-- **Log-derived artifact** — Summary's `FROM_LOG` category: it is derived from the Ledger, and generating a new Ledger invalidates any existing Summary.
+- **Log-derived artifact** — Summary's `FROM_LOG` category: it is derived from the Ledger, and a newer Ledger makes an existing Summary stale.
 
 ## Generate Summary Flow
 
@@ -50,10 +50,10 @@ context; sidecars are inserted afterward in code.
 - Save composed Markdown without otherwise rewriting LLM content, except to normalize blank lines
   and ensure one final newline.
 - The summary call returns plain Markdown and does not use structured output.
-- Generating a new Ledger invalidates any existing Summary (Summary's `FROM_LOG` category is defined as "derived from the Ledger"); regenerating the role transcript invalidates both, since Ledger is itself derived from it.
-- Regenerating a Session's Recap does not automatically invalidate the following Session's
-  existing Summary. The user owns that regeneration for now.
-- Glossary changes do not invalidate existing summaries. Regeneration is an explicit user action.
+- The packaged Summarize Session `system.md` is a build dependency; changing it makes Summary stale.
+- Generating a new Ledger makes any existing Summary stale; regenerating the Role Transcript propagates staleness through Ledger to Summary.
+- Regenerating a Session's Recap makes the following Session's Summary stale. `Generate Outputs` on that following Session detects the cross-session dependency and rebuilds it.
+- Glossary, attendance, and relevant Campaign or Session metadata changes advance database clocks and make existing summaries stale.
 
 ## Current Integration Constraints
 

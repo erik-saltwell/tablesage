@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 from importlib.resources import files
+from pathlib import Path
 
 _RESOURCE_PACKAGE = __name__.rsplit(".", maxsplit=1)[0]
 
@@ -18,6 +19,11 @@ class PromptName(StrEnum):
     SECTION_TRANSCRIPT = "section_transcript"
     GENERATE_PLAYER_INTRODUCTIONS = "generate_player_introductions"
     GENERATE_RECAP_SUMMARY = "generate_recap_summary"
+
+
+def system_prompt_path(name: PromptName) -> Path:
+    """Return the installed filesystem path used for prompt freshness checks."""
+    return Path(__file__).parent / name.value / "system.md"
 
 
 def read_system_prompt(name: PromptName) -> str:

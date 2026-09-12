@@ -3,7 +3,7 @@
 ## Overview
 
 Generate a version-4 `ledger.json` containing only the starting situation and events from the
-current Session. The format is defined in [Canonical Ledger Format v4](canonical_ledger_format_v4.md).
+current Session, together with a version-1 `scene_breakdown.json` in the same LLM call. The format is defined in [Canonical Ledger Format v4](canonical_ledger_format_v4.md).
 
 Ledger generation is an incomplete semantic condensation. It may omit irrelevant material,
 rephrase one transcript utterance, combine several utterances or speakers, or split one utterance
@@ -33,11 +33,12 @@ response contains:
 
 ```text
 LedgerGenerationResponse
-  scratchpad: text
   starting_situation: non-empty text
-  utterances: ordered list[
-    Narration | Action | Speech | Expression | Correction | Question
-  ]
+  ledger:
+    utterances: ordered list[Narration | Action | Speech | Expression | Correction | Question]
+  scene_breakdown:
+    ending_situation: non-empty text
+    scenes: ordered list[Scene]
 ```
 
 The persisted Ledger adds application-supplied `version: 4`, `session_id`, `session_name`, and
@@ -60,12 +61,15 @@ values are checked against Session attendees as generation warnings.
    three attempts. Provider and configuration errors fail immediately.
 7. Accept a warning-free response immediately. If every structurally valid candidate has warnings,
    choose the candidate with the fewest warnings; the earliest candidate wins ties.
-8. Inject application-owned metadata and atomically replace `ledger.json` and its deterministic
-   `ledger.md` companion.
-9. Invalidate artifacts derived from the previous Ledger.
+8. Sort scenes and their ranges by first Ledger index, then validate that ranges partition every Ledger entry exactly once. Accept each candidate as a pair.
+9. Inject metadata and the same starting situation into both artifacts; bind Scene Breakdown to the exact Ledger bytes with SHA-256.
+10. Stage and replace `ledger.json`, `ledger.md`, and `scene_breakdown.json` as a rollback unit. Their consumers remain on disk and become stale by modification-time comparison. An interruption marker blocks potentially mixed outputs until regeneration succeeds.
 
 No attempt may use opening recap or introduction ranges as Ledger content. A stale fingerprint is
 an error rather than an invitation to silently slice a changed transcript.
+
+The packaged Generate Ledger `system.md` is a build dependency. Editing it makes the shared
+Ledger and Scene Breakdown step stale, which propagates to their respective consumers.
 
 ## Artifact and Rendering Behavior
 
@@ -74,8 +78,8 @@ read-only companion. The readable view contains the Session title, attendee rost
 `## Starting Situation`, a numbered `## Session`, and the Session/version footer. It contains no
 Recap or Characters section.
 
-A failed LLM call or failed atomic write preserves the existing Ledger and Summary. Successful
-replacement invalidates downstream Ledger-derived artifacts. Existing v3 Ledgers are not read or
+A failed LLM call preserves existing outputs. Handled write failures restore all replaced outputs; process interruptions require regeneration. Successful
+replacement makes downstream Ledger-derived artifacts stale. Existing v3 Ledgers are not read or
 migrated; Sessions are reprocessed to create v4.
 
 ## Implementation Boundaries
@@ -84,5 +88,5 @@ migrated; Sessions are reprocessed to create v4.
   still decides which current-session material is relevant and how it should be classified.
 - The application owns Session metadata, source-fingerprint verification, slicing, and atomic
   persistence.
-- The LLM owns only `starting_situation` and the ordered semantic entries.
-- `scratchpad` is discarded and never persisted.
+- The LLM owns the shared starting situation, ordered semantic entries, and scene content. It returns no scratchpad.
+- [Scene Breakdown](../specs/scene-breakdown.md) is registered but hidden in the UI and has no Markdown companion. Recap generation reads it; detailed Summary generation continues reading the Ledger.

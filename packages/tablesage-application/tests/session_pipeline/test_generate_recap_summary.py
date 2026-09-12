@@ -12,8 +12,43 @@ from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import generate_recap_summary as module
 from tablesage_application.session_pipeline.generate_ledger import Ledger, Narration
 from tablesage_application.session_pipeline.generate_recap_summary import Attendee, GlossaryPromptEntry
+from tablesage_application.session_pipeline.scene_breakdown import (
+    LedgerRange,
+    Scene,
+    SceneBreakdown,
+    SceneBreakdownContent,
+    persist_ledger_pair,
+)
 from tablesage_model.model import Campaign, GlossaryEntry, Player
 from tablesage_model.settings import AppSettings
+
+
+def _content() -> SceneBreakdownContent:
+    return SceneBreakdownContent(
+        ending_situation="The party enters the city.",
+        scenes=[
+            Scene(
+                title="The gate",
+                location="City gate",
+                participants=["Zaria"],
+                situation="Enter the city.",
+                outcome="The gate opens.",
+                carry_forward=[],
+                signature_detail=None,
+                ledger_ranges=[LedgerRange(start_index=0, end_index=0)],
+            )
+        ],
+    )
+
+
+def _source() -> str:
+    return SceneBreakdown(
+        session_id=uuid.UUID(int=1),
+        session_name="Session One",
+        starting_situation="At the gate.",
+        ledger_sha256="0" * 64,
+        **_content().model_dump(),
+    ).model_dump_json()
 
 
 def _write_ledger(application: Application, session_id: uuid.UUID) -> str:
@@ -24,9 +59,7 @@ def _write_ledger(application: Application, session_id: uuid.UUID) -> str:
         starting_situation="The party stands before the gate.",
         utterances=[Narration(type="narration", source="Game Master", fact="The gate opens.")],
     )
-    target = application.session_folder(game_session.id) / ARTIFACTS[ArtifactName.LEDGER].filename
-    ledger.save(target)
-    return target.read_text(encoding="utf-8")
+    return persist_ledger_pair(ledger, _content(), application.session_folder(game_session.id)).model_dump_json(indent=2)
 
 
 @pytest.mark.anyio
@@ -40,14 +73,14 @@ async def test_generate_recap_summary_uses_dedicated_prompt_and_adds_heading(mon
         response_model: object | None = None,
     ) -> str:
         captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model)
-        return "  - The gate — The party entered the city.  \n\n"
+        return "- The gate — The party entered the city.  \n\n"
 
     monkeypatch.setattr(module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
     attendees = (Attendee(player_name="Alice", roles=("Zaria",)),)
     glossary = (GlossaryPromptEntry(term="Aldor", description="a kingdom"),)
 
     result = await module.generate_recap_summary(
-        '{"version": 4}', attendees, glossary, "Iron Pact", "2026-08-18", "Blades in the Dark", "high-model"
+        _source(), attendees, glossary, "Iron Pact", "2026-08-18", "Blades in the Dark", "high-model"
     )
 
     assert result == "## Recap\n\n- The gate — The party entered the city.\n"
@@ -55,7 +88,7 @@ async def test_generate_recap_summary_uses_dedicated_prompt_and_adds_heading(mon
     assert captured["model"] == "high-model"
     assert captured["response_model"] is None
     prompt_data = cast(module.RecapSummaryPromptData, captured["template_data"])
-    assert prompt_data.ledger == '{"version": 4}'
+    assert prompt_data.scene_breakdown == _source()
     assert prompt_data.attendees == attendees
     assert prompt_data.glossary == glossary
     assert prompt_data.campaign_name == "Iron Pact"
@@ -71,13 +104,39 @@ async def test_generate_recap_summary_rejects_empty_response(monkeypatch: pytest
     monkeypatch.setattr(module, "call_llm_with_prompt", _empty_response)
 
     with pytest.raises(ValueError, match="empty response"):
-        await module.generate_recap_summary("{}", (), (), "Iron Pact", None, None, "high-model")
+        await module.generate_recap_summary(_source(), (), (), "Iron Pact", None, None, "high-model")
 
 
 def test_can_generate_recap_summary_requires_ledger(tmp_path: Path) -> None:
-    assert module.can_generate_recap_summary(tmp_path) == (False, "Generate the Ledger first.")
+    assert module.can_generate_recap_summary(tmp_path) == (False, "Generate the Ledger and Scene Breakdown first.")
     (tmp_path / ARTIFACTS[ArtifactName.LEDGER].filename).write_text("{}", encoding="utf-8")
-    assert module.can_generate_recap_summary(tmp_path) == (True, None)
+    assert module.can_generate_recap_summary(tmp_path)[0] is False
+
+
+@pytest.mark.anyio
+async def test_recap_retries_malformed_bullets_then_accepts_valid_content(monkeypatch: pytest.MonkeyPatch) -> None:
+    outputs = iter(["## Recap\n- Heading is forbidden", "- First bullet\n  - Nested bullet", "- The gate opens."])
+
+    async def respond(*args: object, **kwargs: object) -> str:
+        return next(outputs)
+
+    monkeypatch.setattr(module, "call_llm_with_prompt", respond)
+    assert await module.generate_recap_summary(_source(), (), (), "Campaign", None, None, "model") == "## Recap\n\n- The gate opens.\n"
+
+
+@pytest.mark.anyio
+async def test_recap_provider_failure_is_not_retried(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = 0
+
+    async def respond(*args: object, **kwargs: object) -> str:
+        nonlocal calls
+        calls += 1
+        raise RuntimeError("provider failed")
+
+    monkeypatch.setattr(module, "call_llm_with_prompt", respond)
+    with pytest.raises(RuntimeError, match="provider failed"):
+        await module.generate_recap_summary(_source(), (), (), "Campaign", None, None, "model")
+    assert calls == 1
 
 
 def test_application_generates_recap_without_automatically_invalidating_any_summary(
@@ -102,7 +161,7 @@ def test_application_generates_recap_without_automatically_invalidating_any_summ
     captured: dict[str, object] = {}
 
     async def _stub_generate_recap_summary(
-        ledger: str,
+        scene_breakdown: str,
         attendees: tuple[Attendee, ...],
         glossary: tuple[GlossaryPromptEntry, ...],
         campaign_name: str,
@@ -111,7 +170,7 @@ def test_application_generates_recap_without_automatically_invalidating_any_summ
         model: str,
     ) -> str:
         captured.update(
-            ledger=ledger,
+            scene_breakdown=scene_breakdown,
             attendees=attendees,
             glossary=glossary,
             campaign_name=campaign_name,
@@ -131,7 +190,7 @@ def test_application_generates_recap_without_automatically_invalidating_any_summ
     assert summary_path.read_text(encoding="utf-8") == "stale summary\n"
     assert next_summary_path.read_text(encoding="utf-8") == "user-owned stale summary\n"
     assert captured == {
-        "ledger": expected_ledger,
+        "scene_breakdown": expected_ledger,
         "attendees": (Attendee(player_name="Alice", roles=("Zaria",)),),
         "glossary": (
             GlossaryPromptEntry(term="Aldor", description=None),

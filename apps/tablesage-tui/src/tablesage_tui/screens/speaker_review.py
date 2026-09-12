@@ -123,8 +123,10 @@ class ManualReviewScreen(TableSageScreen):
     _SUGGESTIONS_ACTIONS = frozenset({"new_suggestion", "edit_suggestion", "delete_suggestion", "complete_suggestions"})
     _REVIEW_ACTIONS = frozenset({"toggle_mode", "replay", "delete_utterance", "find_replace", "assign_speaker", "toggle_focus"})
 
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         # Suggestions phase.
         Binding("n,N", "new_suggestion", "New", key_display="N"),
         Binding("enter,e,E", "edit_suggestion", "Edit", key_display="E"),

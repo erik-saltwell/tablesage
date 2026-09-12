@@ -5,11 +5,11 @@ Session date: 2026-08-18
 </session_metadata>
 
 <session_attendees>
-- john schork: Waymon Tisdale
+- erik saltwell: Sir Phidipaldi
 - jason beaumont: Game Master
+- john schork: Waymon Tisdale
 - marshall rise: Dunk
 - rich gredzinski: Dr Uriah
-- erik saltwell: Sir Phidipaldi
 </session_attendees>
 
 <glossary>
@@ -59,401 +59,212 @@ Session date: 2026-08-18
 - Wyllt: A wild-eyed axeman companion of Sir Brandon, depicted carrying a heavy load in the barrow mound murals.
 </glossary>
 
-<session_ledger>
+<scene_breakdown>
 {
-  "version": 4,
-  "session_id": "a11288dd-803e-4300-8935-86358ddd995a",
-  "session_name": "The talking frog",
-  "attendees": [
+  "ending_situation": "Sir Phidipaldi is at the Golden Egg, planning a staged ale delivery with Quinn; Dr Uriah and Waymon remain at the Clumsy Fox, while Dunk is drinking with Farmer Gill and may sleep in his barn. Eric's thousand-gold dragon bounty remains available, and Sir Phidipaldi's challenge to duel Eric at dawn is unanswered.",
+  "scenes": [
     {
-      "player_name": "erik saltwell",
-      "roles": [
-        "Sir Phidipaldi"
+      "title": "Who approaches?",
+      "location": "Brandonsford",
+      "participants": [
+        "Sir Phidipaldi",
+        "Dr Uriah",
+        "Waymon Tisdale",
+        "Dunk",
+        "Night watchman"
+      ],
+      "situation": "The party reaches unfamiliar Brandonsford after sunset and must pass the town's volunteer night watch.",
+      "outcome": "The watchman admits them and points out the town's two inns and other businesses.",
+      "carry_forward": [
+        "Brandonsford has no formal guards or law enforcement.",
+        "The Clumsy Fox is busy, while the Golden Egg is quiet."
+      ],
+      "signature_detail": "Two large inns face each other among thatched stone cottages behind an ancient low wall.",
+      "ledger_ranges": [
+        {
+          "start_index": 0,
+          "end_index": 6
+        }
       ]
     },
     {
-      "player_name": "jason beaumont",
-      "roles": [
-        "Game Master"
-      ]
-    },
-    {
-      "player_name": "john schork",
-      "roles": [
-        "Waymon Tisdale"
-      ]
-    },
-    {
-      "player_name": "marshall rise",
-      "roles": [
+      "title": "Reginald the Frog",
+      "location": "The river near Brandonsford",
+      "participants": [
+        "Dr Uriah",
+        "Reginald",
+        "Sir Phidipaldi",
         "Dunk"
+      ],
+      "situation": "Before choosing lodgings, Dr Uriah seeks a local animal's opinion of the two taverns.",
+      "outcome": "Reginald cannot recommend an inn but warns of a nightly Clurichen; Sir Phidipaldi chooses the Clumsy Fox while Dunk splits off toward the farm.",
+      "carry_forward": [
+        "A trickster Clurichen comes from the river and enters town every night.",
+        "Dr Uriah has established contact with Reginald."
+      ],
+      "signature_detail": "The party's first local informant is a frog with no understanding of inns.",
+      "ledger_ranges": [
+        {
+          "start_index": 7,
+          "end_index": 12
+        }
       ]
     },
     {
-      "player_name": "rich gredzinski",
-      "roles": [
-        "Dr Uriah"
+      "title": "A chivalric quest for treasure",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Lady Hilda",
+        "Dr Uriah",
+        "Waymon Tisdale"
+      ],
+      "situation": "Sir Phidipaldi approaches the seasoned red-haired noblewoman in the crowded tavern while the party seeks rumors and opportunities.",
+      "outcome": "Lady Hilda buys him a drink, directs the party to Eric the Reeve about a dragon, and offers to join them for payment.",
+      "carry_forward": [
+        "Lady Hilda wears chain mail and carries a shield.",
+        "Lady Hilda's price was not established and no agreement was reached."
+      ],
+      "signature_detail": "Sir Phidipaldi compares Lady Hilda to his enormous lance, Lady Isaboob.",
+      "ledger_ranges": [
+        {
+          "start_index": 13,
+          "end_index": 20
+        }
+      ]
+    },
+    {
+      "title": "The killer wasp",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Dr Uriah",
+        "Drop Dead Ned"
+      ],
+      "situation": "Dr Uriah notices a suspicious patron wearing a jar with a live wasp and later approaches him to investigate.",
+      "outcome": "Drop Dead Ned identifies the wasp as a killer and offers his services, but Dr Uriah only says he will consider the terms.",
+      "carry_forward": [
+        "Ned's standard price is one hundred gold per week plus ten percent of treasure.",
+        "Ned alternatively offers Dr Uriah five gold for every victim Ned is permitted to kill and cut up as he wishes.",
+        "No hiring agreement was made."
+      ],
+      "signature_detail": "A killer wasp buzzes inside a jar worn as a necklace.",
+      "ledger_ranges": [
+        {
+          "start_index": 21,
+          "end_index": 22
+        },
+        {
+          "start_index": 49,
+          "end_index": 55
+        }
+      ]
+    },
+    {
+      "title": "Fox Tail brew",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Waymon Tisdale",
+        "Bentley"
+      ],
+      "situation": "Waymon questions the jovial owner of the busy inn about Brandonsford.",
+      "outcome": "Bentley provides a free excellent brew and lodgings, then explains that a town shipment is a week overdue and Eric is recruiting help.",
+      "carry_forward": [
+        "Rooms cost ten silver pieces per night.",
+        "The missing shipment was intended to restock the entire town.",
+        "Bentley says nothing comparable has happened since Sir Brandon killed a dragon centuries ago."
+      ],
+      "signature_detail": "Bentley's first Fox Tail brew is free and tastes fantastic.",
+      "ledger_ranges": [
+        {
+          "start_index": 23,
+          "end_index": 27
+        }
+      ]
+    },
+    {
+      "title": "Dunk and the Farmer",
+      "location": "Farmer Gill's farm",
+      "participants": [
+        "Dunk",
+        "Farmer Gill",
+        "Seamus"
+      ],
+      "situation": "Dunk visits the farm at sunset hoping to scavenge and instead drinks with Farmer Gill, who is eager for company.",
+      "outcome": "Gill offers Dunk barn lodging and drinks, tries to sell him Seamus, recounts Sir Brandon's legend, and reveals that he sent all three sons after the current dragon.",
+      "carry_forward": [
+        "Seamus is offered for one hundred gold.",
+        "Sir Brandon received a magic sword from a fairy and used it to kill a dragon centuries ago.",
+        "Gill assumes the current dragon is a different creature.",
+        "Warwick displays a mithril chain shirt he refuses to sell and surrounds his poorly stocked smithy with lucky charms.",
+        "Gill believes Ingrid is attracted to Warwick and speculates that Warwick's charms are meant to keep her away."
+      ],
+      "signature_detail": "Farmer Gill becomes increasingly unsteady while happily sharing gossip and liquor from his still.",
+      "ledger_ranges": [
+        {
+          "start_index": 28,
+          "end_index": 36
+        },
+        {
+          "start_index": 56,
+          "end_index": 59
+        }
+      ]
+    },
+    {
+      "title": "A duel at dawn",
+      "location": "Clumsy Fox Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Eric the Reeve",
+        "Dr Uriah",
+        "Bentley"
+      ],
+      "situation": "Sir Phidipaldi approaches the visibly stressed reeve seeking fame and fortune through local work.",
+      "outcome": "Eric offers one thousand gold for the dragon's body, but Sir Phidipaldi disputes the dragon's existence, strikes Eric with a glove, and challenges him to an unanswered duel at dawn; Bentley then expels Sir Phidipaldi for causing trouble.",
+      "carry_forward": [
+        "George is a one-armed woodsman who recently lost his arm to a relatively small black dragon.",
+        "Eric's bounty requires both killing the dragon and dragging its body into town.",
+        "Sir Phidipaldi's companions may remain at the Clumsy Fox, but he must stay at the Golden Egg for the night."
+      ],
+      "signature_detail": "Sir Phidipaldi slaps the reeve with a glove before issuing his dawn challenge.",
+      "ledger_ranges": [
+        {
+          "start_index": 37,
+          "end_index": 48
+        },
+        {
+          "start_index": 60,
+          "end_index": 64
+        }
+      ]
+    },
+    {
+      "title": "A fake shipment",
+      "location": "Golden Egg Tavern",
+      "participants": [
+        "Sir Phidipaldi",
+        "Quinn"
+      ],
+      "situation": "Expelled from the crowded Clumsy Fox, Sir Phidipaldi enters its deserted rival and meets Quinn.",
+      "outcome": "Quinn offers one hundred gold to expose the nightly loss of his ale, and he and Sir Phidipaldi agree to stage a conspicuous delivery of water-filled bottles as a fake shipment.",
+      "carry_forward": [
+        "Quinn suspects Bentley of stealing or ruining his ale at night.",
+        "Real shipments have stopped arriving.",
+        "The staged delivery is only planned and has not yet occurred."
+      ],
+      "signature_detail": "The Golden Egg's costly ale is badly watered down, and its bony proprietor is startled to see a customer.",
+      "ledger_ranges": [
+        {
+          "start_index": 65,
+          "end_index": 71
+        }
       ]
     }
   ],
-  "starting_situation": "Following a treasure map marked with unknown locations, the party arrives at night at Brandonsford, a quiet town on the edge of the wilderness with thatched stone cottages and two facing inns, the Clumsy Fox Tavern and the Golden Egg Tavern. The town has no proper law enforcement, only a rotating night watch of able-bodied men, one of whom calls out demanding to know who approaches.",
-  "utterances": [
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "It is night; the sun has set as the party approaches Brandonsford."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The party are Dagonites: pale-skinned, human-like people with unusual eyes, otherwise human in appearance with no tails."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "We are travelers who claim the sacred law of Zeus for hospitality."
-    },
-    {
-      "source": "Waymon Tisdale",
-      "type": "speech",
-      "entity": "Waymon Tisdale",
-      "statement": "We come from Ithaca."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Night watchman",
-      "statement": "You had better come in, night is falling. There are two inns: the Clumsy Fox, which is busy, warm, and cozy, and the Golden Egg across the street, which has fewer people. Down the street are a general store, a smith, a small church, and an alchemist shop, and there is a farm on the edge of town."
-    },
-    {
-      "source": "Dr Uriah",
-      "type": "action",
-      "entity": "Dr Uriah",
-      "action": "Before going to the alchemist shop, goes to the river and casts speak with aquatic animals, searching for a creature with an opinion on the town's inns."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Reginald",
-      "statement": "The frog doesn't know which tavern is better, but warns that a little trickster creature called a Clurichen comes out of the river at night and goes into town every night; wherever it goes, you want to stay away from."
-    },
-    {
-      "source": "rich gredzinski",
-      "type": "narration",
-      "fact": "The frog is named Reginald; the Game Master invites the player to name him and canonizes it."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "Recommends the party stay at the busy Clumsy Fox, since it is likely the higher-status inn and a better source of rumors."
-    },
-    {
-      "source": "Dunk",
-      "type": "action",
-      "entity": "Dunk",
-      "action": "Splits off from the party to go scavenge at the farm on the edge of town at night, preferring to avoid crowds."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The scene follows Waymon Tisdale, Sir Phidipaldi, and Dr Uriah into the Clumsy Fox Tavern; Dunk heads separately to the farm."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The Clumsy Fox is warm and hopping, with a fire going. Behind the bar is a jovial, talkative, bald halfling with glasses; his wife carries pots of food from the kitchen and his three daughters serve. Among the patrons are a handful of adventurers: a red-haired noblewoman, a rail-thin magician, a greasy-haired thief, and a shifty-eyed halfling."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "action",
-      "entity": "Sir Phidipaldi",
-      "action": "Approaches the red-haired noblewoman, flirting grandly and brandishing his lance, Lady Isaboob, which is clearly too big for him."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The noblewoman, Lady Hilda, is unflappably patient with Sir Phidipaldi and buys him a drink. She wears chain mail and carries a shield, and looks more seasoned than the party."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "We are on a chivalric quest; we seek bountiful treasure."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Lady Hilda",
-      "statement": "There are rumors of a dragon around the town. You should talk to Eric the Reeve, the portly, muttonchopped landowner at the other end of the tavern; he has been trying to hire somebody to kill the dragon. I can't do it myself, but if you have a party of adventurers, I would join you for some money."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "We will go talk with the Reeve and come back to avail ourselves of your services."
-    },
-    {
-      "source": "Dr Uriah",
-      "type": "action",
-      "entity": "Dr Uriah",
-      "action": "Scans the tavern for curses, sensing none."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "While scanning, Dr Uriah notices the greasy-haired thief wears a little jar on a necklace with a live wasp buzzing inside; to learn the item's history with metaphysics he would need to get closer."
-    },
-    {
-      "source": "Waymon Tisdale",
-      "type": "action",
-      "entity": "Waymon Tisdale",
-      "action": "Goes to talk to the halfling bar owner."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Bentley",
-      "statement": "Introduces himself as Bentley, pours Waymon a free first glass of his famous, fantastic Fox Tail brew, and offers rooms at 10 silver pieces a night."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Bentley",
-      "statement": "He has lived in Brandonsford his entire life. Things have gotten downhearted because of the dragon rumored nearby; his restocking shipment was due a week ago and never showed, and it hurts the whole town. Nothing like this has happened since hundreds of years ago, when Sir Brandon killed the first dragon. The townsfolk are too poor to hire the adventurers, so Eric the Reeve has been trying to get people to help."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The scene shifts to the farm on the edge of town, where Dunk approaches as the sun sets and the farmer sits on his porch packing a pipe."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Farmer Gill",
-      "statement": "Impressed by Dunk's size, says he'd be amazing farm help, and offers to sell his mule for 100 gold so Dunk could start his own farm."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The mule is a shabby, low-rent animal."
-    },
-    {
-      "source": "rich gredzinski",
-      "type": "narration",
-      "fact": "The farmer's prize mule is named Seamus; the Game Master fumbled the name and adopted the player's suggestion."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Farmer Gill",
-      "statement": "The big work needed is killing the dragon outside town. Long ago, Sir Brandon, who lived right around this town, ventured into the woods with his friends and killed the dragon that had been terrorizing the town for weeks; a fairy in the woods gave him a magic sword, and that sword killed the dragon. He was knighted, the town was named Brandonsford after him, but he left and later died. The farmer himself saw the current dragon and was scared; it wanted nothing to do with him, so he sent his boys off after it, and figures they'll probably bring it back."
-    },
-    {
-      "type": "question",
-      "asker": "rich gredzinski",
-      "question": "How many sons did the farmer send after the dragon?",
-      "resolver": "jason beaumont",
-      "resolution": "Three; the farmer insists they'll be fine."
-    },
-    {
-      "source": "Dunk",
-      "type": "speech",
-      "entity": "Dunk",
-      "statement": "So did Brandon actually kill the dragon, or not?"
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Farmer Gill",
-      "statement": "The dragon was definitely dead: they dragged it through town and ripped it apart, but that was hundreds of years ago, before his time. He assumes this is a different dragon; he doesn't know where dragons come from."
-    },
-    {
-      "source": "Dunk",
-      "type": "speech",
-      "entity": "Dunk",
-      "statement": "Asks if he can sleep in the barn tonight and think over the mule offer."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Farmer Gill",
-      "statement": "Agrees to let Dunk sleep in his barn, tells him to make himself at home, and fetches something to drink from his still so the two can sit out on the porch."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The scene returns to the Clumsy Fox Tavern."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "action",
-      "entity": "Sir Phidipaldi",
-      "action": "Goes up to Eric the Reeve and introduces himself: a chivalrous knight of a party in search of adventure, bearing Lady Isaboob and Sir Chumunga, a two-handed sword he can barely lift, seeking fame and fortune."
-    },
-    {
-      "source": "Game Master",
-      "type": "expression",
-      "entity": "Eric the Reeve",
-      "sentiment": "Has purple rings around his eyes and looks visibly stressed."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Eric the Reeve",
-      "statement": "He has a lot of problems, first of all a dragon: he will pay 1000 gold to whoever kills the dragon and drags its body into town. George, a capable one-armed woodsman who lives a couple houses down and might show up tonight, encountered the dragon and lost his arm to it. George says it is a black dragon, not a big one. They should ask George about it."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "Sir Phidipaldi fails an etiquette roll and commits a faux pas with the Reeve."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "Condescendingly claims there is no such thing as black dragons: verified sightings are actually illusions created by a creature called the Clurichen, a small river beast that comes out at night, tricks people, and sometimes steals their limbs."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "Dr Uriah's successful lore check confirms Sir Phidipaldi has it wrong about the Clurichen and black dragons, and Eric the Reeve knows it too."
-    },
-    {
-      "source": "Game Master",
-      "type": "expression",
-      "entity": "Eric the Reeve",
-      "sentiment": "Looks offended at the suggestion that George lied."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Eric the Reeve",
-      "statement": "He has known George all his life; George would never lie about this. How would a Clurichen take his arm? George doesn't even know where his arm is."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "action",
-      "entity": "Sir Phidipaldi",
-      "action": "Takes off his glove, slaps Eric the Reeve in the face with it, declares his honor offended, and challenges him to a duel at dawn."
-    },
-    {
-      "source": "Game Master",
-      "type": "expression",
-      "entity": "Eric the Reeve",
-      "sentiment": "Looks visibly flustered and lost, stammering that Sir Phidipaldi is obviously more skilled in adventure than he is."
-    },
-    {
-      "source": "Dr Uriah",
-      "type": "action",
-      "entity": "Dr Uriah",
-      "action": "Buys two Fox Tail brews, sits down next to the greasy-haired thief, and hands him one."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Drop Dead Ned",
-      "statement": "Recognizes Uriah as a Dagonite, calls the town a dump, and introduces himself as Drop Dead Ned."
-    },
-    {
-      "source": "Dr Uriah",
-      "type": "speech",
-      "entity": "Dr Uriah",
-      "statement": "Introduces himself as Dr. Uriah March, a scholar always poking around backwoods for folk remedies and lore, and says Ned's necklace caught his interest."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Drop Dead Ned",
-      "statement": "The jar holds a killer wasp: you let it out, it kills people, and it comes back. But the wasp is for things he wants to kill fast; he prefers to kill things slow and likes to watch things die. He and the wasp are for hire and he will do anything."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Drop Dead Ned",
-      "statement": "His final offer after haggling: 100 gold for the week as his fee, and he will pay Uriah five gold every time Uriah lets him kill somebody, provided Ned gets to do what he wants with them. Uriah says he'll think about it."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The scene shifts back to Gill's farm, where Dunk and the farmer sit on the porch getting loaded, and the farmer gossips about the town."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Farmer Gill",
-      "statement": "Tells Dunk about Eric the town Reeve, and about Warwick the smith: Warwick has barely anything for sale since nothing has come into town in months, yet keeps a beautiful mithril chain shirt on display that he always refuses to sell, probably the best chain in the world, though it would be too small for Dunk. Warwick keeps adding lucky charms to his shop every day, a rabbit's foot, a dreamcatcher, horseshoes, and a whole wall of clovers to protect the place, and grows more and more paranoid. Gill speculates the charms are to keep away Ingrid, who sells the potions and has the hots for Warwick."
-    },
-    {
-      "source": "Game Master",
-      "type": "expression",
-      "entity": "Farmer Gill",
-      "sentiment": "Starting to wobble drunk but having the time of his life talking to Dunk."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "The scene returns to the Clumsy Fox, where the altercation between Eric the Reeve and Sir Phidipaldi grows more heated."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Bentley",
-      "statement": "Puts a hand on Sir Phidipaldi's shoulder: he wants no fighting in his tavern. Phidipaldi's friends can stay, but since he caused trouble he must go across the street and stay the night at the Golden Egg; his drink is on Bentley."
-    },
-    {
-      "source": "Game Master",
-      "type": "action",
-      "entity": "Bentley",
-      "action": "Escorts Sir Phidipaldi out of the Clumsy Fox Tavern."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "action",
-      "entity": "Sir Phidipaldi",
-      "action": "Is pushed out clanking in his plate mail, awkwardly cradling his lance and two-handed sword, blustering the whole way that Zeus's law of courtesy is no longer honored and that this foretells doom on the Clumsy Fox."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "Sir Phidipaldi enters the Golden Egg Tavern, the opposite of the Clumsy Fox: empty of patrons, no music, no food, with only a white-bearded, bony, odd-looking owner tending bar, who is almost startled that anyone came in."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Quinn",
-      "statement": "Introduces himself as Quinn, the owner, and offers ale at 10 silver pieces."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "Quinn immediately asks for money, unlike the free-flowing Bentley; his ale costs three times more than the ale across the street and tastes terrible, completely watered down."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Quinn",
-      "statement": "Apologizes for the watered-down ale: no matter how much he spends to bring in good stock, it's gone the next morning. He'll go to bed with a fully stocked bar and wake to half the glasses empty or knocked over. He believes Bentley steals it at night; look how popular Bentley's tavern is, and everyone loves his Fox Tail brew. He hates the tavern across the street."
-    },
-    {
-      "source": "Game Master",
-      "type": "speech",
-      "entity": "Quinn",
-      "statement": "Offers 100 gold if Sir Phidipaldi helps him get back at Bentley, and proposes a plan: since no shipments have come in a while, stage a fake one."
-    },
-    {
-      "source": "Sir Phidipaldi",
-      "type": "speech",
-      "entity": "Sir Phidipaldi",
-      "statement": "Agrees to the plan: Quinn will bring bottles up, they will fill them with water, and Phidipaldi will make a big show of coming in and delivering ale, then they will see what's going on."
-    },
-    {
-      "source": "Game Master",
-      "type": "narration",
-      "fact": "In the closing recap, the farmer's name is established as Gill, and Ingrid is confirmed as the town's alchemist. The party has not yet met George or visited the church."
-    }
-  ]
+  "version": 1,
+  "session_id": "a11288dd-803e-4300-8935-86358ddd995a",
+  "session_name": "The talking frog",
+  "starting_situation": "The party follows a treasure map to Brandonsford, the only location on it they recognize, assuming the treasure lies at one of the map's otherwise unidentified marked places.",
+  "ledger_sha256": "ddf1da7f12ac1ffa79ce3e56f38aa0378d1e67a6d42b9084212f3daf470aac58"
 }
-
-</session_ledger>
+</scene_breakdown>

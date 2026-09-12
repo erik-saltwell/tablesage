@@ -1,0 +1,9 @@
+{
+  "source": "scene_breakdown_v1",
+  "template_sha256": "abcda8aa472b408fd4f33785f99dd1a0ed7703372715eed0daeac03cf32f601b",
+  "scene_breakdown_sha256": {
+    "Brandonsford_001.txt": "24eaa1715e8d781a34f63657556044d9ddb23c48c078c86671e860c19a9d7b1a",
+    "Brandonsford_002.txt": "9fdc0bd5b7755e9cc2212af3908bef462d0b5f91d44a78096af8165bf270a01a",
+    "Brandonsford_003.txt": "f381ee4a3c1bfda8ef3aa7c23ef3ab7ae1019c65bfddb31185bda5cfa7cb3f3e"
+  }
+}

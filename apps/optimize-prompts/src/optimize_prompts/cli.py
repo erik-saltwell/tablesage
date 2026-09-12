@@ -1,6 +1,7 @@
 """Typer commands for prompt-optimization workflows."""
 
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -57,16 +58,29 @@ def summary(
 def recap_summary(
     run: bool = typer.Option(False, help="Run optimization instead of only validating its configuration."),
     resume: bool = typer.Option(False, help=_RESUME_HELP),
+    evaluate: bool = typer.Option(False, help="Generate and score a baseline without searching."),
+    case: str | None = typer.Option(None, help="Exact input filename for --evaluate only."),
+    prompt: Annotated[Path | None, typer.Option(help="System prompt file to score with --evaluate; defaults to the seed.")] = None,
+    iterations: int | None = typer.Option(None, min=1, help="Override iteration count for --run."),
 ) -> None:
     """Start the Recap Summary prompt-optimization workflow."""
     console.print(
         Panel(
-            "Recap Summary optimization favors the shortest fully supported recap.",
+            "Recap Summary optimization preserves essential facts and recognition cues within a short read-aloud budget.",
             title="Recap Summary",
             border_style="cyan",
         )
     )
-    optimize_recap_summary(Path("data_prompts/recap_summary"), console, run=run, resume=resume)
+    optimize_recap_summary(
+        Path("data_prompts/recap_summary"),
+        console,
+        run=run,
+        resume=resume,
+        evaluate=evaluate,
+        case_name=case,
+        prompt_path=prompt,
+        iterations=iterations,
+    )
 
 
 @app.command("section-transcript")

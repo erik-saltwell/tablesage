@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from sqlalchemy import func
@@ -76,8 +76,18 @@ def update_session(session: Session, session_id: uuid.UUID, name: str, session_d
     game_session = get_session(session, session_id)
     game_session.name = name
     game_session.session_date = session_date
+    game_session.updated_at = datetime.now(UTC)
+    game_session.metadata_updated_at = game_session.updated_at
     session.flush()
     return game_session
+
+
+def touch_attendance(session: Session, session_id: uuid.UUID) -> None:
+    """Advance the logical input clock consumed by Session artifact build rules."""
+    game_session = get_session(session, session_id)
+    game_session.updated_at = datetime.now(UTC)
+    game_session.attendance_updated_at = game_session.updated_at
+    session.add(game_session)
 
 
 def delete_session(session: Session, session_id: uuid.UUID) -> None:

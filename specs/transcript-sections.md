@@ -18,7 +18,7 @@ Role Transcript
 
 The routes can overlap. Most importantly, a mixed recap-to-play utterance can be in a range and also be the first current-session utterance, so current-session content is never dropped at the boundary.
 
-Generating Transcript Sections deletes the Ledger, Player Introductions, Recap Summary, and Summary artifacts because all depend on its routing decisions.
+Replacing Transcript Sections leaves existing downstream files in place. Its newer modification time makes Ledger, Player Introductions, Recap Summary, and Summary stale through the recursive artifact dependency graph.
 
 ## Persisted schema
 
@@ -37,7 +37,10 @@ Generating Transcript Sections deletes the Ledger, Player Introductions, Recap S
 
 Each non-null range is inclusive and zero-based. `start_index` and `end_index` are non-negative, with `start_index <= end_index`, and both must identify an existing Role Transcript utterance. `session_start_index` is non-negative and must identify an existing utterance, except it may equal the utterance count for a setup-only recording with no active play.
 
-`role_transcript_sha256` binds the routing result to the exact bytes of `role_transcript.json`. Downstream consumers validate this digest and reject stale routing rather than using it against an edited transcript.
+`role_transcript_sha256` binds the routing result to the exact bytes of `role_transcript.json`. The dependency graph treats a newer Role Transcript as making Transcript Sections stale and regenerates it before downstream consumers run. Direct consumers still validate the digest rather than using stale routing.
+
+The packaged Section Transcript `system.md` is also a modification-time dependency. Changing it
+makes Transcript Sections and all transitive consumers stale.
 
 ## Section definitions
 
@@ -71,5 +74,5 @@ The sectioner must read the whole transcript and attendees before selecting boun
 
 - Schema, validation, digest binding, and route construction: [`transcript_sections.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/transcript_sections.py)
 - Prompt contract: [`section_transcript/system.md`](../packages/tablesage-application/src/tablesage_application/llm/_prompts/section_transcript/system.md)
-- Session orchestration and downstream invalidation: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py)
+- Session orchestration and recursive freshness: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py) and [`artifact_graph.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/artifact_graph.py)
 - Evaluation fixture workflow: [`data_prompts/section_transcript/README.md`](../data_prompts/section_transcript/README.md)

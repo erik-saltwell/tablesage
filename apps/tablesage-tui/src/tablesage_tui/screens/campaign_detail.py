@@ -3,6 +3,12 @@ from __future__ import annotations
 import uuid
 from pathlib import Path
 
+from tablesage_application.paths import ArtifactName
+from tablesage_application.session_pipeline.artifact_graph import (
+    GENERATION_LABELS,
+    ArtifactStatus,
+    GenerationTask,
+)
 from tablesage_model.model import GAME_MASTER_ROLE, GlossaryEntry
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -31,16 +37,22 @@ class CampaignDetailScreen(TableSageScreen):
 
     section = "campaign detail"
     AUTO_FOCUS = ""
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("r,R", "show_roster", "Roster", key_display="R"),
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
         Binding("n,N", "new_item", "New", key_display="N"),
         Binding("enter,e,E", "edit_item", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_item", "Delete", key_display="D"),
+    ]
+    OTHER_BINDINGS = [
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
+        Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
+        Binding("p,P", "prepare_next_session", "Prepare Next Session", key_display="P"),
     ]
 
     def __init__(self, campaign_id: uuid.UUID) -> None:
@@ -468,6 +480,65 @@ class CampaignDetailScreen(TableSageScreen):
             FileOpen(title="Import Legacy Settings", location=Path.home(), filters=yaml_filter),
             on_picked,
         )
+
+    def action_regenerate_all_outputs(self) -> None:
+        """Run the same stale-aware output generation as ``G`` for reviewed audio sessions."""
+        sessions = sorted(self.application.list_sessions(self._campaign_id), key=lambda item: item.sequence_number)
+        audio_sessions = [
+            game_session for game_session in sessions if self.application.session_artifacts(game_session.id)[ArtifactName.INPUT_AUDIO]
+        ]
+        ready_sessions = [
+            game_session
+            for game_session in audio_sessions
+            if self.application.session_artifact_states(game_session.id)[ArtifactName.REVIEWED_TRANSCRIPT] is ArtifactStatus.CURRENT
+        ]
+        pending_review_count = len(audio_sessions) - len(ready_sessions)
+        if not audio_sessions:
+            self.notify("No sessions have imported audio.")
+            return
+        if not ready_sessions:
+            self.notify("Imported-audio sessions must have a completed current transcript review before outputs can be generated.")
+            return
+
+        def work() -> tuple[GenerationTask, ...]:
+            completed_sessions = 0
+            generated: list[GenerationTask] = []
+            total_sessions = len(ready_sessions)
+            for game_session in ready_sessions:
+                session_label = f"Session {game_session.sequence_number:03d}"
+                self.report_stage_progress(f"{session_label}: checking outputs…", completed_sessions, total_sessions)
+                generated.extend(
+                    self.application.generate_outputs(
+                        game_session.id,
+                        on_stage=lambda task, _completed, _total, session_label=session_label, completed_sessions=completed_sessions: (
+                            self.report_stage_progress(
+                                f"{session_label}: {GENERATION_LABELS[task.artifact_name]}…",
+                                completed_sessions,
+                                total_sessions,
+                            )
+                        ),
+                    )
+                )
+                completed_sessions += 1
+                self.report_stage_progress(f"{session_label}: complete", completed_sessions, total_sessions)
+            return tuple(generated)
+
+        def on_success(generated: tuple[GenerationTask, ...]) -> None:
+            self._reload_metadata_and_tables()
+            message = f"Regenerated {len(generated)} output phase(s) across {len(ready_sessions)} session(s)."
+            if pending_review_count:
+                message += f" Skipped {pending_review_count} session(s) awaiting transcript review."
+            self.notify(message)
+
+        self.run_with_progress(
+            title="Regenerate All Outputs",
+            message="Checking session outputs…",
+            work=work,
+            on_success=on_success,
+        )
+
+    def action_prepare_next_session(self) -> None:
+        self.notify("Prepare Next Session was called.")
 
     # Dispatch
 

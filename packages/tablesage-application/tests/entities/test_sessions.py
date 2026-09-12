@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pytest
@@ -8,6 +8,7 @@ from sqlmodel import Session
 from tablesage_application import Application
 from tablesage_application.entities import sessions as sessions_module
 from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
+from tablesage_model.model import Session as GameSession
 
 
 def test_create_session_assigns_sequence_number_and_creates_folder(tmp_path: Path) -> None:
@@ -21,6 +22,24 @@ def test_create_session_assigns_sequence_number_and_creates_folder(tmp_path: Pat
     assert second.sequence_number == 2
     assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001").is_dir()
     assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "002").is_dir()
+
+
+def test_attendance_mutation_advances_session_attendance_clock(tmp_path: Path) -> None:
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    game_session = application.create_session(campaign.id, "Session One")
+    player = application.create_player(Player(name="Alice"))
+    application.add_player_to_campaign(campaign.id, player.id, "Alice")
+    old_clock = datetime(2000, 1, 1, tzinfo=UTC)
+    with Session(application._engine) as session:
+        stored = session.get(GameSession, game_session.id)
+        assert stored is not None
+        stored.attendance_updated_at = old_clock
+        session.commit()
+
+    application.add_attendance(game_session.id, player.id)
+
+    assert application.get_session(game_session.id).attendance_updated_at.year != old_clock.year
 
 
 def test_sequence_numbers_are_never_reused_after_deletion(tmp_path: Path) -> None:

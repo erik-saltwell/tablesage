@@ -5,7 +5,7 @@ import json
 import shutil
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import cast
 
@@ -22,7 +22,8 @@ from tablesage_tools.model import Transcript
 from . import paths, player_import_from_audio, players_from_session
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
-from .llm import PromptName, call_llm_with_prompt
+from .llm import PromptName, call_llm_with_prompt, system_prompt_path
+from .session_pipeline import artifact_graph as artifact_graph_pipeline
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
@@ -32,6 +33,7 @@ from .session_pipeline import generate_recap_summary as recap_summary_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
+from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
 from .voice_clips import clips
 
 
@@ -236,6 +238,7 @@ class Application:
     def add_player_to_campaign(self, campaign_id: uuid.UUID, player_id: uuid.UUID, default_role_name: str) -> CampaignPlayer:
         with Session(self._engine) as session:
             result = roster.add_player_to_campaign(session, campaign_id, player_id, default_role_name)
+            campaigns.get_campaign(session, campaign_id).roster_updated_at = datetime.now(UTC)
             session.commit()
             session.refresh(result)
             return result
@@ -247,13 +250,19 @@ class Application:
     def update_default_role(self, membership_id: uuid.UUID, default_role_name: str) -> CampaignPlayer:
         with Session(self._engine) as session:
             result = roster.update_default_role(session, membership_id, default_role_name)
+            campaigns.get_campaign(session, result.campaign_id).roster_updated_at = datetime.now(UTC)
             session.commit()
             session.refresh(result)
             return result
 
     def remove_from_roster(self, membership_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
+            membership = session.get(CampaignPlayer, membership_id)
+            if membership is None:
+                raise ValueError("Roster membership not found.")
+            campaign_id = membership.campaign_id
             roster.remove_from_roster(session, membership_id)
+            campaigns.get_campaign(session, campaign_id).roster_updated_at = datetime.now(UTC)
             session.commit()
 
     # Glossary
@@ -261,6 +270,8 @@ class Application:
     def create_glossary_entry(self, entry: GlossaryEntry) -> GlossaryEntry:
         with Session(self._engine) as session:
             result = glossary.create_glossary_entry(session, entry)
+            campaign = campaigns.get_campaign(session, entry.campaign_id)
+            campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
             session.refresh(result)
             return result
@@ -272,6 +283,8 @@ class Application:
     def update_glossary_entry(self, campaign_id: uuid.UUID, entry_id: uuid.UUID, term: str, description: str | None) -> GlossaryEntry:
         with Session(self._engine) as session:
             result = glossary.update_glossary_entry(session, campaign_id, entry_id, term, description)
+            campaign = campaigns.get_campaign(session, campaign_id)
+            campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
             session.refresh(result)
             return result
@@ -279,6 +292,8 @@ class Application:
     def delete_glossary_entry(self, campaign_id: uuid.UUID, entry_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
             glossary.delete_glossary_entry(session, campaign_id, entry_id)
+            campaign = campaigns.get_campaign(session, campaign_id)
+            campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
 
     def import_legacy_glossary(self, campaign_id: uuid.UUID, source_path: Path) -> int:
@@ -329,6 +344,9 @@ class Application:
                 glossary.create_glossary_entry(session, GlossaryEntry(campaign_id=campaign_id, term=term, description=description))
                 existing_terms.add(term)
                 imported_count += 1
+            if imported_count:
+                campaign = campaigns.get_campaign(session, campaign_id)
+                campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
             return imported_count
 
@@ -402,6 +420,9 @@ class Application:
                 )
 
             session.add_all(accepted)
+            if accepted:
+                campaign = campaigns.get_campaign(session, game_session.campaign_id)
+                campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
 
         return extract_glossary_pipeline.GlossaryCommitResult(added_count=len(accepted), skipped_duplicate_count=skipped_count)
@@ -486,6 +507,272 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return artifacts.session_artifacts(self._session_folder(session, game_session))
+
+    @staticmethod
+    def _datetime_ns(value: datetime | None) -> int:
+        if value is None:
+            return 0
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=UTC)
+        return int(value.timestamp() * 1_000_000_000)
+
+    def _artifact_graph(self, session: Session, campaign_id: uuid.UUID) -> artifact_graph_pipeline.ArtifactGraph:
+        campaign = campaigns.get_campaign(session, campaign_id)
+        campaign_metadata_clock = artifact_graph_pipeline.TimestampInput(self._datetime_ns(campaign.updated_at))
+        glossary_clock = artifact_graph_pipeline.TimestampInput(self._datetime_ns(campaign.glossary_updated_at))
+
+        def prompt_input(name: PromptName) -> artifact_graph_pipeline.SystemPromptInput:
+            return artifact_graph_pipeline.SystemPromptInput(system_prompt_path(name))
+
+        settings_path = self._cwd / ".tablesage" / "settings.yaml"
+        settings_clock = artifact_graph_pipeline.TimestampInput(settings_path.stat().st_mtime_ns if settings_path.is_file() else 0)
+        game_sessions = sessions.list_sessions(session, campaign_id)
+        ordered_sessions = sorted(
+            game_sessions,
+            key=lambda item: (item.session_date is None, item.session_date or date.max, item.sequence_number),
+        )
+        previous_by_id = {
+            game_session.id: ordered_sessions[index - 1] if index else None for index, game_session in enumerate(ordered_sessions)
+        }
+        steps: list[artifact_graph_pipeline.BuildStep] = []
+        interrupted: set[artifact_graph_pipeline.ArtifactRef] = set()
+
+        for game_session in game_sessions:
+            folder = self._session_folder(session, game_session)
+
+            def ref(name: paths.ArtifactName, folder: Path = folder) -> artifact_graph_pipeline.ArtifactRef:
+                return artifact_graph_pipeline.ArtifactRef(folder, name)
+
+            attendance_clock = artifact_graph_pipeline.TimestampInput(self._datetime_ns(game_session.attendance_updated_at))
+            metadata_clock = artifact_graph_pipeline.TimestampInput(self._datetime_ns(game_session.metadata_updated_at))
+            attendee_profiles = []
+            attendee_identities = []
+            for attendee in sessions.list_attendance(session, game_session.id):
+                player = session.get(Player, attendee.player_id)
+                if player is not None:
+                    attendee_profiles.append(self._datetime_ns(player.computed_at))
+                    attendee_identities.append(self._datetime_ns(player.updated_at))
+            voice_clock = artifact_graph_pipeline.TimestampInput(max(attendee_profiles, default=0))
+            identity_clock = artifact_graph_pipeline.TimestampInput(max(attendee_identities, default=0))
+
+            steps.extend(
+                (
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.TRANSCRIPT,
+                        (ref(paths.ArtifactName.TRANSCRIPT), ref(paths.ArtifactName.TRANSCRIPT_TEXT)),
+                        (
+                            ref(paths.ArtifactName.INPUT_AUDIO),
+                            attendance_clock,
+                            identity_clock,
+                            voice_clock,
+                            settings_clock,
+                            prompt_input(PromptName.CLASSIFY_BACKCHANNELS),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.REVIEWED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
+                        (ref(paths.ArtifactName.TRANSCRIPT),),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.TRANSCRIPT_BENCHMARK,
+                        (ref(paths.ArtifactName.TRANSCRIPT_BENCHMARK),),
+                        (
+                            ref(paths.ArtifactName.REVIEWED_TRANSCRIPT)
+                            if ref(paths.ArtifactName.REVIEWED_TRANSCRIPT).path.is_file()
+                            else ref(paths.ArtifactName.TRANSCRIPT),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.ROLE_TRANSCRIPT,
+                        (ref(paths.ArtifactName.ROLE_TRANSCRIPT),),
+                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT), attendance_clock, identity_clock, settings_clock),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.TRANSCRIPT_SECTIONS,
+                        (ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),),
+                        (
+                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                            attendance_clock,
+                            identity_clock,
+                            settings_clock,
+                            prompt_input(PromptName.SECTION_TRANSCRIPT),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.LEDGER,
+                        (
+                            ref(paths.ArtifactName.LEDGER),
+                            artifact_graph_pipeline.FileRef(folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME),
+                            ref(paths.ArtifactName.SCENE_BREAKDOWN),
+                        ),
+                        (
+                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                            ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
+                            attendance_clock,
+                            identity_clock,
+                            metadata_clock,
+                            campaign_metadata_clock,
+                            glossary_clock,
+                            settings_clock,
+                            prompt_input(PromptName.GENERATE_LEDGER),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.PLAYER_INTRODUCTIONS,
+                        (ref(paths.ArtifactName.PLAYER_INTRODUCTIONS),),
+                        (
+                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                            ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
+                            attendance_clock,
+                            identity_clock,
+                            metadata_clock,
+                            campaign_metadata_clock,
+                            glossary_clock,
+                            settings_clock,
+                            prompt_input(PromptName.GENERATE_PLAYER_INTRODUCTIONS),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.RECAP_SUMMARY,
+                        (ref(paths.ArtifactName.RECAP_SUMMARY),),
+                        (
+                            ref(paths.ArtifactName.SCENE_BREAKDOWN),
+                            attendance_clock,
+                            identity_clock,
+                            metadata_clock,
+                            campaign_metadata_clock,
+                            glossary_clock,
+                            settings_clock,
+                            prompt_input(PromptName.GENERATE_RECAP_SUMMARY),
+                        ),
+                    ),
+                )
+            )
+            summary_dependencies: list[artifact_graph_pipeline.Dependency] = [
+                ref(paths.ArtifactName.LEDGER),
+                ref(paths.ArtifactName.PLAYER_INTRODUCTIONS),
+                attendance_clock,
+                identity_clock,
+                metadata_clock,
+                campaign_metadata_clock,
+                glossary_clock,
+                settings_clock,
+                prompt_input(PromptName.SUMMARIZE_SESSION),
+            ]
+            previous_session = previous_by_id[game_session.id]
+            if previous_session is not None:
+                previous_folder = self._session_folder(session, previous_session)
+                summary_dependencies.append(artifact_graph_pipeline.ArtifactRef(previous_folder, paths.ArtifactName.RECAP_SUMMARY))
+            steps.append(
+                artifact_graph_pipeline.BuildStep(
+                    paths.ArtifactName.SUMMARY,
+                    (ref(paths.ArtifactName.SUMMARY),),
+                    tuple(summary_dependencies),
+                )
+            )
+            if (folder / paths.LEDGER_PAIR_MARKER).exists():
+                interrupted.update((ref(paths.ArtifactName.LEDGER), ref(paths.ArtifactName.SCENE_BREAKDOWN)))
+
+        return artifact_graph_pipeline.ArtifactGraph(tuple(steps), interrupted=frozenset(interrupted))
+
+    def session_artifact_states(self, session_id: uuid.UUID) -> dict[paths.ArtifactName, artifact_graph_pipeline.ArtifactStatus]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+            return graph.session_statuses(self._session_folder(session, game_session))
+
+    def generation_plan(
+        self, session_id: uuid.UUID, *, force: paths.ArtifactName | None = None
+    ) -> tuple[artifact_graph_pipeline.GenerationTask, ...]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+            campaign_sessions = sessions.list_sessions(session, game_session.campaign_id)
+            folder_by_id = {item.id: self._session_folder(session, item) for item in campaign_sessions}
+            session_id_by_folder = {folder: item_id for item_id, folder in folder_by_id.items()}
+
+            if force is not None and force not in artifact_graph_pipeline.GENERATION_DEPENDENCIES:
+                raise ValueError(f"{paths.ARTIFACTS[force].display_name} cannot be regenerated from this screen.")
+
+            requested = set(artifact_graph_pipeline.GENERATION_ORDER) if force is None else {force}
+            forced: set[paths.ArtifactName] = set()
+            if force is not None:
+                forced.add(force)
+                changed = True
+                while changed:
+                    changed = False
+                    for candidate, candidate_dependencies in artifact_graph_pipeline.GENERATION_DEPENDENCIES.items():
+                        if candidate not in requested and candidate_dependencies & requested:
+                            requested.add(candidate)
+                            forced.add(candidate)
+                            changed = True
+
+            plan: list[artifact_graph_pipeline.GenerationTask] = []
+            scheduled: set[tuple[uuid.UUID, paths.ArtifactName]] = set()
+
+            def ensure(target_session_id: uuid.UUID, name: paths.ArtifactName, *, is_forced: bool = False) -> None:
+                key = (target_session_id, name)
+                if key in scheduled:
+                    return
+                target = artifact_graph_pipeline.ArtifactRef(folder_by_id[target_session_id], name)
+                step = graph.step_for(target)
+                if step is None:
+                    raise ValueError(f"No build step produces {paths.ARTIFACTS[name].display_name}.")
+                needs_build = is_forced or graph.status(target) is not artifact_graph_pipeline.ArtifactStatus.CURRENT
+                if not needs_build:
+                    return
+
+                for dependency in step.dependencies:
+                    if not isinstance(dependency, artifact_graph_pipeline.ArtifactRef):
+                        continue
+                    dependency_status = graph.status(dependency)
+                    if dependency_status is artifact_graph_pipeline.ArtifactStatus.CURRENT:
+                        continue
+                    dependency_step = graph.step_for(dependency)
+                    if dependency_step is None or dependency_step.name not in artifact_graph_pipeline.GENERATION_DEPENDENCIES:
+                        raise ValueError(
+                            f"{paths.ARTIFACTS[dependency.name].display_name} must be current before outputs can be generated."
+                        )
+                    ensure(session_id_by_folder[dependency.session_folder], dependency_step.name)
+
+                scheduled.add(key)
+                plan.append(artifact_graph_pipeline.GenerationTask(target_session_id, name))
+
+            for name in artifact_graph_pipeline.GENERATION_ORDER:
+                if name in requested:
+                    ensure(session_id, name, is_forced=name in forced)
+            return tuple(plan)
+
+    def generate_outputs(
+        self,
+        session_id: uuid.UUID,
+        *,
+        force: paths.ArtifactName | None = None,
+        on_stage: Callable[[artifact_graph_pipeline.GenerationTask, int, int], None] | None = None,
+        on_clean_progress: Callable[[clean_transcript_pipeline.Stage, int, int], None] | None = None,
+    ) -> tuple[artifact_graph_pipeline.GenerationTask, ...]:
+        """Run a session's missing or stale output phases in dependency order."""
+        plan = self.generation_plan(session_id, force=force)
+        phases: dict[paths.ArtifactName, Callable[[uuid.UUID], object]] = {
+            paths.ArtifactName.ROLE_TRANSCRIPT: lambda task_session_id: self.clean_transcript(
+                task_session_id, on_progress=on_clean_progress
+            ),
+            paths.ArtifactName.TRANSCRIPT_SECTIONS: self.generate_transcript_sections,
+            paths.ArtifactName.LEDGER: self.generate_ledger,
+            paths.ArtifactName.PLAYER_INTRODUCTIONS: self.generate_player_introductions,
+            paths.ArtifactName.RECAP_SUMMARY: self.generate_recap_summary,
+            paths.ArtifactName.SUMMARY: self.generate_summary,
+        }
+        for completed, task in enumerate(plan):
+            if on_stage is not None:
+                on_stage(task, completed, len(plan))
+            try:
+                phases[task.artifact_name](task.session_id)
+            except Exception as exc:
+                label = artifact_graph_pipeline.GENERATION_LABELS[task.artifact_name]
+                raise RuntimeError(f"{label} generation failed: {exc}") from exc
+        return plan
 
     def exportable_artifacts(self, session_id: uuid.UUID) -> list[paths.ArtifactName]:
         with Session(self._engine) as session:
@@ -619,13 +906,6 @@ class Application:
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
             result = transcript_sections_pipeline.persist_transcript_sections(generated, role_path, target)
-            for name in (
-                paths.ArtifactName.LEDGER,
-                paths.ArtifactName.PLAYER_INTRODUCTIONS,
-                paths.ArtifactName.RECAP_SUMMARY,
-                paths.ArtifactName.SUMMARY,
-            ):
-                artifacts.delete_artifact(session_folder, name)
             if result.starting_context_range is None:
                 raise transcript_sections_pipeline.TranscriptSectionsValidationError(
                     "Transcript sectioning found no usable starting situation; downstream generation cannot continue."
@@ -641,7 +921,7 @@ class Application:
             return result
 
     def generate_ledger(self, session_id: uuid.UUID) -> None:
-        """Generate and atomically replace a Session's structured Ledger artifact."""
+        """Generate and replace a Session's matched Ledger and Scene Breakdown artifacts."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
@@ -693,26 +973,17 @@ class Application:
                 session_name=session_name,
                 attendees=ledger_attendees,
                 starting_situation=generated.starting_situation,
-                utterances=generated.utterances,
+                utterances=generated.ledger.utterances,
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
-            temporary = target.with_name(f".{target.stem}.tmp{target.suffix}")
             markdown_target = session_folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME
-            markdown_temporary = markdown_target.with_name(f".{markdown_target.stem}.tmp{markdown_target.suffix}")
-            try:
-                ledger.save(temporary)
-                markdown_temporary.write_text(ledger.to_markdown(), encoding="utf-8")
-                temporary.replace(target)
-                markdown_temporary.replace(markdown_target)
-            except Exception:
-                temporary.unlink(missing_ok=True)
-                markdown_temporary.unlink(missing_ok=True)
-                raise
-            artifacts.invalidate_category(session_folder, paths.ArtifactCategory.FROM_LOG)
+            breakdown = persist_ledger_pair(ledger, generated.scene_breakdown, session_folder)
             log.set(
                 ledger_utterance_count=len(ledger.utterances),
+                scene_count=len(breakdown.scenes),
                 ledger_json_path=str(target),
                 ledger_markdown_path=str(markdown_target),
+                scene_breakdown_path=str(session_folder / paths.ARTIFACTS[paths.ArtifactName.SCENE_BREAKDOWN].filename),
                 failed=False,
             )
 
@@ -772,7 +1043,6 @@ class Application:
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
             result = player_introductions_pipeline.persist_player_introductions(generated, session_id, target)
-            artifacts.delete_artifact(session_folder, paths.ArtifactName.SUMMARY)
             log.set(
                 introduction_count=len(result.introductions),
                 artifact_path=str(target),
@@ -786,7 +1056,7 @@ class Application:
             return recap_summary_pipeline.can_generate_recap_summary(self._session_folder(session, game_session))
 
     def generate_recap_summary(self, session_id: uuid.UUID) -> str:
-        """Generate and atomically persist a compact recap of the current Session Ledger."""
+        """Generate and atomically persist a compact recap from the current Scene Breakdown."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             campaign = session.get(Campaign, game_session.campaign_id)
@@ -809,7 +1079,10 @@ class Application:
                 recap_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
                 for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
             )
-            ledger_text = (session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
+            breakdown = load_current_scene_breakdown(session_folder)
+            if breakdown.session_id != session_id:
+                raise ValueError("Scene Breakdown belongs to a different Session.")
+            breakdown_text = breakdown.model_dump_json(indent=2)
             campaign_name = campaign.name
             session_date = game_session.session_date.isoformat() if game_session.session_date else None
             game_system = campaign.game_system
@@ -820,11 +1093,11 @@ class Application:
             session_folder=str(session_folder),
             attendee_count=len(prompt_attendees),
             glossary_entry_count=len(prompt_glossary),
-            ledger_chars=len(ledger_text),
+            scene_breakdown_chars=len(breakdown_text),
         ) as log:
             recap = asyncio.run(
                 recap_summary_pipeline.generate_recap_summary(
-                    ledger_text,
+                    breakdown_text,
                     prompt_attendees,
                     prompt_glossary,
                     campaign_name,
@@ -999,39 +1272,39 @@ class Application:
     def add_attendance(self, session_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance(session, game_session.campaign_id, session_id, player_id)
+            sessions.touch_attendance(session, session_id)
             session.commit()
             return result
 
     def add_attendance_with_roles(self, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.add_attendance_with_roles(session, game_session.campaign_id, session_id, player_id, roles)
+            sessions.touch_attendance(session, session_id)
             session.commit()
             return result
 
     def set_attendance_player(self, session_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> sessions.Attendee:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            import_audio.invalidate_downstream(self._session_folder(session, game_session))
             result = sessions.set_attendance_player(session, game_session.campaign_id, attendance_id, player_id)
+            sessions.touch_attendance(session, session_id)
             session.commit()
             return result
 
     def remove_attendance(self, session_id: uuid.UUID, attendance_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            import_audio.invalidate_downstream(self._session_folder(session, game_session))
+            sessions.get_session(session, session_id)
             sessions.remove_attendance(session, attendance_id)
+            sessions.touch_attendance(session, session_id)
             session.commit()
 
     def set_attendance_roles(self, session_id: uuid.UUID, attendance_id: uuid.UUID, roles: list[str]) -> sessions.Attendee:
         with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            import_audio.invalidate_downstream(self._session_folder(session, game_session))
+            sessions.get_session(session, session_id)
             result = sessions.set_attendance_roles(session, attendance_id, roles)
+            sessions.touch_attendance(session, session_id)
             session.commit()
             return result
 

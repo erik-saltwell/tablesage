@@ -25,11 +25,15 @@ class CampaignListScreen(TableSageScreen):
     """Shown when at least one campaign exists."""
 
     section = "campaigns"
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("n,N", "new_campaign", "New Campaign", key_display="N"),
         Binding("enter,e,E", "open_campaign", "Edit Campaign", key_display="E"),
         Binding("d,D,delete,backspace", "delete_campaign", "Delete", key_display="D"),
+    ]
+    OTHER_BINDINGS = [
         Binding("c,C", "cleanup_campaigns", "Clean Up", key_display="C"),
         Binding("i,I", "import_campaign", "Import", key_display="I"),
     ]

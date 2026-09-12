@@ -6,9 +6,12 @@ Player Introductions is a per-session sidecar containing concise descriptions of
 
 Transcript Sections identifies an optional Introduction Range in the Role Transcript. Player Introductions consumes only that range, plus attendee-role mappings and glossary spellings. It runs after the Role Transcript and Transcript Sections artifacts exist.
 
-The persisted artifact is `player_introductions.json` in the session folder. It is later rendered to Markdown and inserted into the generated Summary at the Summary's Player Introductions composition marker. Regenerating it invalidates `summary.md`, but not the Ledger or Recap Summary.
+The persisted artifact is `player_introductions.json` in the session folder. It is later rendered to Markdown and inserted into the generated Summary at the Summary's Player Introductions composition marker. Replacing it makes `summary.md` stale by modification time, but does not affect the Ledger or Recap Summary.
 
 When the Introduction Range is `null`, no LLM call is made and an empty introductions artifact is persisted. An empty artifact is therefore a valid and meaningful result.
+
+The packaged Generate Player Introductions `system.md` is a build dependency. Changing it makes
+the artifact stale even though a particular run may take the valid no-LLM empty-range path.
 
 ## Persisted schema
 
@@ -64,4 +67,4 @@ Like the Ledger, this generator refuses a Transcript Sections artifact whose sto
 - Schema, eligibility validation, persistence, and rendering: [`generate_player_introductions.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_player_introductions.py)
 - Prompt contract: [`generate_player_introductions/system.md`](../packages/tablesage-application/src/tablesage_application/llm/_prompts/generate_player_introductions/system.md)
 - Summary composition: [`generate_summary.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_summary.py)
-- Session orchestration and invalidation: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py)
+- Session orchestration and recursive freshness: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py) and [`artifact_graph.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/artifact_graph.py)

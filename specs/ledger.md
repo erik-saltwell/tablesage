@@ -6,7 +6,12 @@ The Ledger is TableSage's canonical, structured record of one session's current 
 
 Transcript Sections routes the role-attributed transcript into a starting-context view and a current-session view. Ledger generation consumes those two views, attendee roles, and glossary spellings. It runs after the Role Transcript and Transcript Sections artifacts exist.
 
-The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Generating a Ledger invalidates the downstream, Ledger-derived Recap Summary and Summary artifacts.
+One structured LLM call generates the shared `starting_situation`, `ledger: {utterances}`, and `scene_breakdown: {ending_situation, scenes}` directly from the routed transcript. The response has exactly those three top-level fields; no scratchpad is returned. See [Scene Breakdown](scene-breakdown.md) for the paired schema and reference rules.
+
+The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale through modification-time comparison; it does not delete them or make its Scene Breakdown sibling stale.
+
+The packaged Generate Ledger `system.md` is an input to the shared build step. A newer prompt makes
+both Ledger and Scene Breakdown stale.
 
 ## Source boundaries
 
@@ -62,13 +67,15 @@ Every claim must be directly traceable to the permitted transcript slice. Rephra
 
 ## Generation and validation
 
-The generator makes at most three structured-output attempts. Structurally invalid results are discarded. A structurally valid candidate whose question attendees do not match the current attendee roster is retried; after the final attempt, the candidate with the fewest such warnings wins, with earlier attempts breaking ties.
+The generator makes at most three structured-output attempts. Structurally invalid results, including incomplete or overlapping scene coverage, are discarded as a pair. Validation errors are included in the next attempt. A structurally valid candidate whose question attendees do not match the current attendee roster is retried; after the final attempt, the candidate with the fewest such warnings wins, with earlier attempts breaking ties.
 
 Generation requires a current `role_transcript.json` and `transcript_sections.json`. The sections artifact is bound to the exact Role Transcript bytes with SHA-256; a stale sections artifact prevents generation instead of silently routing changed text.
+
+The application builds both persisted artifacts with the same starting situation. Handled replacement failures roll back the pair and Ledger Markdown. Interrupted replacements leave a marker that blocks use until regeneration. Existing downstream files remain on disk and become stale when their inputs are newer. Existing Ledgers retain version 4; generating a recap requires generating the shared step when Scene Breakdown is absent.
 
 ## Authoritative implementation references
 
 - Schema, rendering, validation, and generation: [`generate_ledger.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_ledger.py)
 - Prompt contract: [`generate_ledger/system.md`](../packages/tablesage-application/src/tablesage_application/llm/_prompts/generate_ledger/system.md)
-- Session orchestration and invalidation: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py)
+- Session orchestration and recursive freshness: [`application.py`](../packages/tablesage-application/src/tablesage_application/application.py) and [`artifact_graph.py`](../packages/tablesage-application/src/tablesage_application/session_pipeline/artifact_graph.py)
 - Artifact filenames and categories: [`paths.py`](../packages/tablesage-application/src/tablesage_application/paths.py)

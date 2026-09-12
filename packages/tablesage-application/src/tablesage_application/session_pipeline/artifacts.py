@@ -5,7 +5,7 @@ from pathlib import Path
 
 import widelog
 
-from ..paths import ARTIFACTS, ArtifactCategory, ArtifactName
+from ..paths import ARTIFACTS, LEDGER_PAIR_MARKER, ArtifactName
 
 
 def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
@@ -14,19 +14,18 @@ def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
     (session_folder / spec.filename).unlink(missing_ok=True)
     for companion_filename in spec.companion_filenames:
         (session_folder / companion_filename).unlink(missing_ok=True)
+    if artifact_name is ArtifactName.LEDGER:
+        (session_folder / ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].filename).unlink(missing_ok=True)
+        (session_folder / LEDGER_PAIR_MARKER).unlink(missing_ok=True)
 
 
 def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
     """What exists on disk for a session -- drives the indicator panel and the P/G/T gates."""
-    return {name: (session_folder / spec.filename).is_file() for name, spec in ARTIFACTS.items()}
-
-
-def invalidate_category(session_folder: Path, category: ArtifactCategory) -> None:
-    """Delete every existing session artifact in *category*."""
-    with widelog.wide_event(op="invalidate_artifact_category", session_folder=str(session_folder), category=category.value):
-        for name, spec in ARTIFACTS.items():
-            if spec.category is category:
-                delete_artifact(session_folder, name)
+    existing = {name: (session_folder / spec.filename).is_file() for name, spec in ARTIFACTS.items()}
+    if (session_folder / LEDGER_PAIR_MARKER).exists():
+        for name in (ArtifactName.LEDGER, ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY, ArtifactName.SUMMARY):
+            existing[name] = False
+    return existing
 
 
 def delete_all_artifacts(session_folder: Path) -> None:

@@ -16,12 +16,12 @@ import jinja2
 from tablesage_application import Application
 from tablesage_application.llm import PromptName
 from tablesage_application.llm._prompts import read_prompt_template, read_system_prompt
-from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.generate_recap_summary import (
     Attendee,
     GlossaryPromptEntry,
     RecapSummaryPromptData,
 )
+from tablesage_application.session_pipeline.scene_breakdown import load_current_scene_breakdown
 from tablesage_model.model import Session as GameSession
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -65,7 +65,7 @@ def main() -> None:
     campaign = _find_named(application.list_campaigns(), arguments.campaign_name, kind="Campaign")
     game_session = _find_session_by_id(application.list_sessions(campaign.id), arguments.session_id)
     session_folder = application.session_folder(game_session.id)
-    ledger = (session_folder / ARTIFACTS[ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
+    breakdown = load_current_scene_breakdown(session_folder)
     attendees = tuple(
         Attendee(player_name=attendee.player_name, roles=attendee.roles) for attendee in application.list_attendance(game_session.id)
     )
@@ -78,7 +78,7 @@ def main() -> None:
         session_date=game_session.session_date.isoformat() if game_session.session_date else None,
         attendees=attendees,
         glossary=glossary,
-        ledger=ledger,
+        scene_breakdown=breakdown.model_dump_json(indent=2),
     )
     system_prompt = read_system_prompt(PromptName.GENERATE_RECAP_SUMMARY)
     template = jinja2.Template(

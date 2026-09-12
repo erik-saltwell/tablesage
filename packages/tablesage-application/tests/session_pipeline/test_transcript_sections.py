@@ -241,4 +241,4 @@ def test_application_persists_null_starting_context_then_stops(tmp_path: Path, m
 
     target = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_SECTIONS].filename
     assert TranscriptSections.load(target).starting_context_range is None
-    assert all(not stale_path.exists() for stale_path in stale_paths)
+    assert all(stale_path.exists() for stale_path in stale_paths)

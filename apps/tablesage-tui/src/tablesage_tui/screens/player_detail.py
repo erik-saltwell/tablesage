@@ -26,12 +26,16 @@ class PlayerDetailScreen(TableSageScreen):
 
     section = "player detail"
     AUTO_FOCUS = ""
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("d,D,delete,backspace", "delete_clip", "Delete", key_display="D"),
+        Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
+    ]
+    OTHER_BINDINGS = [
         Binding("r,R", "recompute_centroid", "Recompute", key_display="R"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
-        Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
     ]
 
     def __init__(self, player_id: uuid.UUID) -> None:

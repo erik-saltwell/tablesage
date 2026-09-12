@@ -11,7 +11,6 @@ from tablesage_tools.model import Transcript, Utterance
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..paths import ARTIFACTS, ArtifactName
-from .artifacts import delete_artifact
 from .role_transcript import RoleTranscript, RoleTranscriptUtterance
 from .transcript_review import load_review_transcript
 
@@ -110,8 +109,8 @@ def clean_transcript(
     Reads the completed Manual Review when present, otherwise the machine transcript (see
     `load_review_transcript`) -- neither source is modified. The result is a new, independent
     artifact: `transcript.json` and `transcript_reviewed.json` are untouched by this step.
-    Regenerating `role_transcript.json` invalidates any Ledger and Summary built from the previous
-    copy, since both are derived from it.
+    Regenerating `role_transcript.json` makes any older dependent Ledger and Summary stale without
+    deleting them.
 
     Unlike the pre-review pass (`remove_backchannels.py`, run automatically during Transcribe),
     this step makes no LLM call -- see `_remove_unassigned_backchannels`.
@@ -136,15 +135,6 @@ def clean_transcript(
         except Exception:
             temporary.unlink(missing_ok=True)
             raise
-
-        for name in (
-            ArtifactName.TRANSCRIPT_SECTIONS,
-            ArtifactName.LEDGER,
-            ArtifactName.PLAYER_INTRODUCTIONS,
-            ArtifactName.RECAP_SUMMARY,
-            ArtifactName.SUMMARY,
-        ):
-            delete_artifact(session_folder, name)
 
         removed_count = original_count - len(cleaned.utterances)
         log.set(utterance_count=len(cleaned.utterances), removed_count=removed_count)

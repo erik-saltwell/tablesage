@@ -19,6 +19,7 @@ This repository uses a single-context domain-doc layout. See [the domain guide](
 Read the relevant specification before changing an artifact's schema, prompt contract, routing, persistence, or downstream invalidation:
 
 - [Ledger](specs/ledger.md)
+- [Scene Breakdown and Recap](specs/scene-breakdown.md)
 - [Player Introductions](specs/player-introductions.md)
 - [Transcript Sections](specs/transcript-sections.md)
 

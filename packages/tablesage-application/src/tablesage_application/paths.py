@@ -6,11 +6,11 @@ from pathlib import Path
 
 
 class ArtifactName(Enum):
-    """Every artifact a session folder can hold. Adding a new one means adding an entry to `ARTIFACTS` below --
-    that's what makes it show up in `session_artifacts()` and in `invalidate_downstream()`."""
+    """Every artifact a session folder can hold and the identity used by the build graph."""
 
     INPUT_AUDIO = "input_audio"
     LEDGER = "ledger"
+    SCENE_BREAKDOWN = "scene_breakdown"
     SUMMARY = "summary"
     TRANSCRIPT = "transcript"
     TRANSCRIPT_TEXT = "transcript_text"
@@ -24,12 +24,12 @@ class ArtifactName(Enum):
 
 
 class ArtifactCategory(Enum):
-    """How an artifact is produced, for `invalidate_downstream()` to decide what a change makes stale.
+    """How an artifact is produced, retained for grouping and destructive Clean Session behavior.
 
-    IMPORTED artifacts are never invalidated -- they're the source, not a derivative. FROM_AUDIO
+    IMPORTED artifacts are sources rather than derivatives. FROM_AUDIO
     artifacts are derived (directly or transitively) from the input audio. FROM_TRANSCRIPT
-    artifacts are derived from the current transcript. FROM_LOG artifacts are derived from the
-    Ledger.
+    artifacts are derived from the current transcript. FROM_LOG artifacts are derived from
+    Ledger or Scene Breakdown outputs.
     """
 
     IMPORTED = "imported"
@@ -55,6 +55,8 @@ class ArtifactSpec:
 # Order here is pipeline order, and drives both the indicator panel's layout
 # and `should_show_in_ui`'s filtering -- entries stay in this order whether
 # or not they're shown.
+LEDGER_PAIR_MARKER = ".ledger-generation-incomplete"
+
 ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ArtifactName.INPUT_AUDIO: ArtifactSpec(
         "input_audio.wav", ArtifactCategory.IMPORTED, should_show_in_ui=True, display_name="Input Audio"
@@ -67,7 +69,7 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ),
     ArtifactName.TRANSCRIPT_ROLES_TEXT: ArtifactSpec(
         # Legacy Summary-generation input. Transcription no longer creates this artifact;
-        # a transcript rebuild still invalidates any older copy. Ledger generation renders
+        # a transcript rebuild still makes any older copy stale. Ledger generation renders
         # the preferred transcript to role-attributed Markdown in memory instead.
         "transcript_roles.md",
         ArtifactCategory.FROM_TRANSCRIPT,
@@ -76,8 +78,8 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ),
     # A benchmark-only derivative of TRANSCRIPT with too-short-to-identify utterances stripped
     # (see `session_pipeline.transcript_review.generate_benchmark_transcript`) -- generated on
-    # demand, never hand-edited, never read back by any other pipeline step. It is invalidated
-    # alongside the reviewed transcript whenever the source transcript is rebuilt.
+    # demand, never hand-edited, never read back by any other pipeline step. It becomes stale
+    # whenever the reviewed source transcript is rebuilt.
     ArtifactName.TRANSCRIPT_BENCHMARK: ArtifactSpec(
         "transcript_benchmark.json",
         ArtifactCategory.FROM_TRANSCRIPT,
@@ -85,7 +87,7 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         display_name="Transcript (Benchmark)",
     ),
     # A completed Manual Review. It is deliberately separate from the machine-produced
-    # transcript and is invalidated whenever that source transcript is rebuilt or the audio
+    # transcript and becomes stale whenever that source transcript is rebuilt or the audio
     # (or attendance that influences speaker identification) changes.
     ArtifactName.REVIEWED_TRANSCRIPT: ArtifactSpec(
         "transcript_reviewed.json",
@@ -114,6 +116,12 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         should_show_in_ui=True,
         display_name="Ledger",
         companion_filenames=("ledger.md",),
+    ),
+    ArtifactName.SCENE_BREAKDOWN: ArtifactSpec(
+        "scene_breakdown.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Scene Breakdown",
     ),
     ArtifactName.PLAYER_INTRODUCTIONS: ArtifactSpec(
         "player_introductions.json",

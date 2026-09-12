@@ -23,6 +23,24 @@ class LedgerInputError(ValueError):
 
 def extract_session_transcript(rendered_input: str) -> str:
     """Extract the sole transcript block from a rendered Ledger user prompt."""
+    if "<session_utterances>" in rendered_input:
+        blocks: dict[str, str] = {}
+        for tag in ("starting_context", "session_utterances"):
+            opening, closing = f"<{tag}>", f"</{tag}>"
+            if rendered_input.count(opening) != 1 or rendered_input.count(closing) != 1:
+                raise LedgerInputError(f"Expected exactly one {opening} block.")
+            if rendered_input.index(closing) < rendered_input.index(opening):
+                raise LedgerInputError(f"Reversed {opening} block.")
+            blocks[tag] = rendered_input.split(opening, 1)[1].split(closing, 1)[0].strip()
+            try:
+                records = json.loads(blocks[tag])
+            except json.JSONDecodeError as exc:
+                raise LedgerInputError(f"Invalid JSON in {opening}.") from exc
+            if not isinstance(records, list):
+                raise LedgerInputError(f"Expected an utterance array in {opening}.")
+        if rendered_input.split("</session_utterances>", 1)[1].strip():
+            raise LedgerInputError("Unexpected content after </session_utterances>.")
+        return json.dumps(blocks, ensure_ascii=False)
     if rendered_input.count(_TRANSCRIPT_OPEN) != 1 or rendered_input.count(_TRANSCRIPT_CLOSE) != 1:
         raise LedgerInputError("Expected exactly one <session_transcript> block in the Ledger evaluation input.")
 
@@ -43,9 +61,9 @@ def transcript_case(case: EvalCase) -> EvalCase:
 
 
 def ledger_content(output: str) -> str:
-    """Remove generation-only scratchpad text before assessing the persisted Ledger."""
+    """Assess only the Ledger portion of the joint response."""
     response = LedgerGenerationResponse.model_validate_json(output)
-    return response.model_dump_json(exclude={"scratchpad"})
+    return json.dumps({"starting_situation": response.starting_situation, **response.ledger.model_dump()}, ensure_ascii=False)
 
 
 class JsonQuestionFactory:

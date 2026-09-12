@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import uuid
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Annotated, Literal, Self
 
@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, Validation
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
+from .scene_breakdown import SceneBreakdownContent
 from .transcript_sections import RoutedUtterance
 
 NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -142,10 +143,23 @@ def _render_markdown_utterance(index: int, utterance: LedgerUtterance) -> str:
     return f"{index}. **{utterance.entity}** — *{utterance.sentiment}*"
 
 
-class LedgerGenerationResponse(_StrictModel):
-    scratchpad: str = Field(description="Brief generation planning notes; discarded by the application.")
-    starting_situation: NonEmptyText = Field(description="A concise statement of the immediate situation at the beginning of this Session.")
+class LedgerContent(_StrictModel):
     utterances: list[LedgerUtterance]
+
+
+class LedgerGenerationResponse(_StrictModel):
+    starting_situation: NonEmptyText = Field(description="A concise statement of the immediate situation at the beginning of this Session.")
+    ledger: LedgerContent
+    scene_breakdown: SceneBreakdownContent
+
+    @model_validator(mode="after")
+    def validate_scene_coverage(self) -> Self:
+        # Ordering changes no assignments; canonicalize it without spending another LLM call.
+        for scene in self.scene_breakdown.scenes:
+            scene.ledger_ranges.sort(key=lambda span: span.start_index)
+        self.scene_breakdown.scenes.sort(key=lambda scene: scene.ledger_ranges[0].start_index)
+        self.scene_breakdown.validate_coverage(len(self.ledger.utterances))
+        return self
 
 
 @dataclass(frozen=True)
@@ -161,6 +175,8 @@ class LedgerPromptData:
     known_roles: tuple[str, ...]
     attendees: tuple[Attendee, ...]
     glossary: tuple[GlossaryPromptEntry, ...]
+    validation_feedback: str | None = None
+    rejected_candidate: str | None = None
 
 
 @dataclass(frozen=True)
@@ -180,7 +196,7 @@ def can_generate_ledger(session_folder: Path) -> tuple[bool, str | None]:
 
 def _attendee_warning_count(response: LedgerGenerationResponse, known_players: frozenset[str]) -> int:
     warning_count = 0
-    for utterance in response.utterances:
+    for utterance in response.ledger.utterances:
         if not isinstance(utterance, Question):
             continue
         warning_count += utterance.asker not in known_players
@@ -249,6 +265,11 @@ async def generate_ledger(
                 response = LedgerGenerationResponse.model_validate_json(raw)
             except ValidationError as exc:
                 last_error = exc
+                prompt_data = replace(
+                    prompt_data,
+                    validation_feedback=json.dumps(exc.errors(include_input=False, include_url=False), default=str),
+                    rejected_candidate=raw,
+                )
                 continue
 
             warning_count = _attendee_warning_count(response, known_player_set)
@@ -258,7 +279,8 @@ async def generate_ledger(
                 log.set(
                     attempt_count=attempt,
                     warning_count=0,
-                    generated_utterance_count=len(response.utterances),
+                    generated_utterance_count=len(response.ledger.utterances),
+                    generated_scene_count=len(response.scene_breakdown.scenes),
                     starting_situation_chars=len(response.starting_situation),
                     failed=False,
                 )
@@ -270,7 +292,8 @@ async def generate_ledger(
                 attempt_count=MAX_GENERATION_ATTEMPTS,
                 warning_count=selected.warning_count,
                 selected_attempt=selected.attempt,
-                generated_utterance_count=len(selected.response.utterances),
+                generated_utterance_count=len(selected.response.ledger.utterances),
+                generated_scene_count=len(selected.response.scene_breakdown.scenes),
                 starting_situation_chars=len(selected.response.starting_situation),
                 failed=False,
             )

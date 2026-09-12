@@ -17,9 +17,9 @@ session are also managed here, since processing depends on them.
   display_name)` map): the input audio, the transcript (json + human-readable),
   the Ledger, and the session summary. The filesystem
   is the source of truth for whether each of these exists — there is no
-  database table tracking file presence or versions. Every artifact's
-  `category` (`imported`, `from_audio`, `from_transcript`, or `from_log`) drives invalidation
-  generically — see Invalidation below. `should_show_in_ui`/`display_name`
+  database table tracking file presence or versions. Each artifact's
+  `category` (`imported`, `from_audio`, `from_transcript`, or `from_log`) groups it for explicit
+  cleanup; a dependency graph computes freshness. `should_show_in_ui`/`display_name`
   drive the indicator panel (see Indicators below) — the panel is generated
   from this registry rather than hand-listing artifacts in the screen.
 - **Input audio** — the raw recording, brought into the session folder by the
@@ -39,8 +39,8 @@ session are also managed here, since processing depends on them.
   filesystem modification time, displayed in local time as `YYYY-MM-DD HH:MM`. It is blank when
   `transcript.json` does not exist and refreshes with the artifact indicators.
 - **Reviewed transcript** — `transcript_reviewed.json`, a completed Manual Review held separately
-  from the machine transcript. It is shown in the artifact panel, exportable, and deleted when
-  the transcript is rebuilt or input audio/attendance changes.
+  from the machine transcript. It is shown in the artifact panel and exportable. When the
+  transcript is rebuilt or input audio/attendance changes, it remains on disk but becomes stale.
 - **Role transcript** — `role_transcript.json`: the preferred transcript (reviewed, otherwise
   machine — both already backchannel-cleaned by Transcribe's pre-review pass) with any leftover
   still-unassigned backchannels dropped and every assigned speaker's name replaced by their
@@ -51,8 +51,11 @@ session are also managed here, since processing depends on them.
   current Session, plus its human-readable `ledger.md` companion. Its v4 format and generation
   behavior are defined in `canonical_ledger_format_v4.md` and `generate_ledger.md`. Transcript
   sectioning routes starting context and the current-session suffix before Ledger generation.
+- **Scene Breakdown** — `scene_breakdown.json`, generated jointly with the Ledger and hidden from
+  the indicator panel and export picker. It supplies the narrative source for `recap_summary.md`.
 - **Session summary** — a generated Markdown output derived from the Ledger (`ledger.json`), the
-  session's attendees, and the campaign glossary. It is Generate's third and final phase. See
+  session's attendees, and the campaign glossary, composed with the previous session's recap and
+  current Player Introductions. It is Generate's sixth and final phase. See
   `generate_summary.md`.
 - **Attendance** — the set of campaign-roster players attending this session,
   each with one or more free-form roles (supports cases like a GM also playing
@@ -64,8 +67,8 @@ session are also managed here, since processing depends on them.
   those three bindings fires, then populated with whatever that run actually encountered; an
   empty table after a run is itself the "no errors" signal. Every error shown here also fires the
   usual toast — the table is the durable record, the toast is immediate feedback.
-- **Indicators** — the status readout, driven by `ARTIFACTS`' `should_show_in_ui`
-  flag: Input Audio / Transcript / Reviewed Transcript / Role Transcript / Ledger / Summary are
+- **Indicators** — the Current (`●`), Stale (`◐`), or Missing (`○`) status readout, driven by `ARTIFACTS`' `should_show_in_ui`
+  flag: Input Audio / Transcript / Reviewed Transcript / Role Transcript / Ledger / Recap Summary / Summary are
   shown (Transcript's `.json` twin and other internal artifacts are hidden). The stored
   `Session.status` is not shown on Session Detail or in Campaign Detail's Sessions table.
 
@@ -90,9 +93,8 @@ aren't met, that surfaces as an error rather than blocking Import.
 5. A progress modal opens (`run_with_progress`) while the file is cleaned (noise/voice
    enhancement, plus loudness normalization if `session_audio_import.normalize_volume` is
    enabled) into a temp file in the session folder.
-6. Once cleaning succeeds: any stale derived artifacts (transcript, reviewed transcript, Ledger,
-   summary) are deleted, then the cleaned temp file is renamed into place as `input_audio.wav`.
-   If cleaning fails, nothing is deleted and nothing is overwritten -- the session is left exactly
+6. Once cleaning succeeds, the cleaned temp file is renamed into place as `input_audio.wav`.
+   Existing derived artifacts remain on disk and compute as stale. If cleaning fails, nothing is overwritten -- the session is left exactly
    as it was, and the failure is recorded as an error.
 7. With the new audio in place, `can_transcribe_audio`'s precondition (at least 1 attendee, every
    attendee has a computed voice centroid) is checked. If unmet, its reason is recorded as an
@@ -112,22 +114,20 @@ aren't met, that surfaces as an error rather than blocking Import.
 10. On success, `transcript.json` and `transcript.md` are written and a single toast merges both
     phases: "Audio imported and transcribed.", plus how many utterances came back "Unassigned
     Speaker" (if any need manual review) and how many backchannels were removed (if any).
-11. Re-running `A` overwrites the machine transcript files the same way and invalidates
-    transcript derivatives (`transcript_reviewed.json`, the role transcript, the benchmark, the
-    Ledger, and the summary) -- including any completed Manual Review's hand corrections, with no
-    confirmation naming that loss (unlike the old Transcribe binding).
+11. Re-running `A` overwrites the machine transcript files. Transcript derivatives remain
+    available but compute as stale, including a completed Manual Review's hand corrections.
 
 ### Review Transcript
 
-1. Available (`R` enabled) only when `transcript.json` exists — no attendee or centroid
+1. Available (`V` enabled) only when the Transcript is current — no attendee or centroid
    precondition, since this reviews whatever the transcript already has, correct or not.
 2. Opens `ManualReviewScreen`, a fast, keyboard-first tool for correcting each utterance's
    speaker and displayed text in a working copy. See
    `.documentation/speaker_review_screen.md` for the full design.
 3. Complete writes `transcript_reviewed.json` without changing `transcript.json`; Cancel discards
    the current working copy. Double-clicking a row opens a speaker/text editor. Existing number
-   assignments, playback, and player-focus shortcuts remain available. Complete also invalidates
-   any role transcript, Ledger, benchmark, or summary derived from the previous source.
+   assignments, playback, and player-focus shortcuts remain available. Completing review makes
+   older consumers stale without deleting them.
 
 ### Generate benchmark transcript
 
@@ -153,36 +153,44 @@ aren't met, that surfaces as an error rather than blocking Import.
 
 ### Generate Outputs
 
-`G` runs Role Transcript generation, Ledger generation, and Summary generation back to back in
-one call, with no intermediate confirmation and no picker -- every step writes via
-temp-then-rename, so there's nothing to lose by running immediately. Role Transcript generation
-is presented to the user as an internal phase of Generate, not a separately named output the way
-it briefly was; the three artifact indicators it touches (Role Transcript, Ledger, Summary) still
-refresh individually once the whole run finishes.
+`G` evaluates Role Transcript, Transcript Sections, joint Ledger and Scene Breakdown, Player
+Introductions, Recap Summary, and detailed Summary in dependency order. It runs only missing or
+stale steps, recursively repairing stale dependencies first. Visible artifact indicators refresh
+once the run finishes. Scene Breakdown is an internal sibling output of the Ledger phase.
 
 1. Available (`G` enabled) only when a completed Manual Review exists (`transcript_reviewed.json`)
    -- Review is now mandatory before Generate can run at all, rather than an optional step whose
    absence silently fell back to the machine transcript.
-2. Pressing `G` runs immediately: no confirmation dialog. A progress modal shows which phase is
-   running.
+2. Pressing `G` runs immediately: no confirmation dialog. A progress modal shows only steps that
+   actually run; a fully current graph reports a successful no-op.
 3. Phase 1, Role Transcript (purely mechanical, no LLM call): reads `transcript_reviewed.json`
    and drops a wordlist-matched candidate only if it's *still* Unassigned Speaker after Manual
    Review — the "was the previous utterance a question?" judgment already happened pre-review, so
    re-asking it here would be redundant. Role assignment then replaces every remaining assigned
    utterance's speaker with that attendee's Session role (falling back to the player name when
    they have none); the Unassigned speaker is never renamed. The result is written as
-   `role_transcript.json`, invalidating any Ledger and Summary derived from the previous copy.
-4. Phase 2, Ledger: see `generate_ledger.md`. Runs one whole-session structured-output attempt,
-   plus up to two retries, reading `role_transcript.json` directly. The selected valid candidate
-   becomes `ledger.json` (plus its `ledger.md` companion) via a temp-file rename.
-5. Phase 3, Summary: see `generate_summary.md`. Generated from `ledger.json`'s raw JSON text, the
-   session's attendees, and the current campaign glossary, written via a temp-then-rename pattern.
-6. A failure in any phase stops the chain there: later phases never run, and whatever earlier
+   `role_transcript.json`, making older dependent outputs stale.
+4. Phase 2, Transcript Sections: identify and validate the opening context and current-session boundary.
+5. Phase 3, Ledger: see `generate_ledger.md`. Generate the shared starting situation, Ledger, and
+   Scene Breakdown from the routed transcript in one structured response, with up to two retries.
+   Validate complete scene coverage and persist the pair plus `ledger.md` as a rollback unit.
+6. Phase 4, Player Introductions: generate the current session's introduction sidecar.
+7. Phase 5, Recap Summary: generate `recap_summary.md` from the current Scene Breakdown.
+8. Phase 6, Summary: see `generate_summary.md`. Generate from the current Ledger, attendees, and
+   glossary; compose with the previous session's recap and current Player Introductions, then
+   atomically replace `summary.md`.
+9. A failure in any phase stops the chain there: later phases never run, and whatever earlier
    phases already wrote stays in place (each phase's own write is independently safe). The error
    names which phase failed (e.g. "Ledger generation failed: ...") and is recorded in the Errors
    table as well as a toast.
-7. On success, all three indicators and artifact export refresh, and a single "Outputs generated."
+10. On success, all visible indicators and artifact export refresh, and a single "Outputs generated."
    toast fires -- there's no per-phase success messaging.
+
+### Regenerate Artifact
+
+`R` opens a selector for a logical build step. Confirming forces that step even when current,
+preserves its old outputs until replacement succeeds, and schedules its downstream consumers.
+The shared Ledger step is labeled `Ledger + Scene Breakdown` because forcing it replaces both.
 
 ### Clean Session
 
@@ -230,26 +238,26 @@ on entry, so these work immediately without an extra Tab in the common case.
 4. `D` removes an attendee (and their roles) from the session, after
    `ConfirmationDialog`. This stays a separate, simpler flow -- not folded
    into `AttendeeDialog`.
-5. Adding/removing an attendee, editing their roles, or reassigning their
-   player is a destructive edit (see Invalidation below).
+5. Adding/removing an attendee, editing their roles, or reassigning their player advances the
+   Session attendance clock. Existing files remain available and affected artifacts become stale.
 
 ## Behaviors & Rules
 
 - **Screen shape**: `composite`, no tabs. Inline metadata form (name, date,
   read-only Last Transcribed value) at top; below it, two columns — attendance list and the
   Errors table stacked on the left, artifact indicators on the right.
-- **Footer bindings**: `N` New, `E` Edit, `D` Delete, `A` Import Audio, `R` Review Transcript,
-  `B` Benchmark, `G` Generate Outputs, `C` Clean Session, `L` Extract Glossary, and `X` Export.
-- **No `session_artifact` table use**: artifact existence and "current" state
-  are not tracked in the database for this screen. One file per artifact type,
-  always overwritten in place.
+- **Footer bindings**: `N` New, `E` Edit, `D` Delete, `A` Import Audio, `V` Review Transcript,
+  `G` Generate Outputs, plus `B` Benchmark, `R` Regenerate Artifact, `C` Clean Session, `L`
+  Extract Glossary, and `X` Export under Other Actions.
+- **No `session_artifact` table use**: file existence and modification times remain on disk.
+  Database-backed inputs expose logical modification clocks on their parent Campaign or Session.
 - **Import Audio (`A`) gating**: always enabled -- there is no precondition on the binding
   itself. The Transcribe phase it always attempts afterward has its own precondition (input audio
   exists, every current attendee has a computed voice centroid, zero attendees also fails this
   vacuously), but an unmet precondition there is reported as an error rather than disabling `A`.
-- **Generate (`G`) gating**: disabled unless a completed Manual Review exists
-  (`transcript_reviewed.json`). No confirmation and no per-step picker -- pressing `G` always runs
-  Role Transcript, then Ledger, then Summary, stopping at the first failure.
+- **Generate (`G`) gating**: disabled unless a completed Manual Review is current. No confirmation
+  and no per-step picker -- pressing `G` recursively runs only missing or stale build steps,
+  stopping at the first failure.
 - **Clean Session (`C`) gating**: disabled unless the session has any artifact at all
   (`can_clean_session`). Destructive: deletes every artifact, including the input audio -- the
   only action in this screen that touches `IMPORTED`-category files.
@@ -262,23 +270,12 @@ on entry, so these work immediately without an extra Tab in the common case.
   error -- the table doesn't replace it, it supplements it with something that outlives the
   toast's timeout. `TableSageScreen.run_with_progress` grew an optional `on_error` callback for
   this; every other screen's calls are unaffected and keep the plain default toast.
-- **Invalidation deletes files immediately, driven by the artifact registry.**
-  Any action the business rules treat as destructive — adding/removing an
-  attendee or editing roles — deletes every artifact whose
-  `ARTIFACTS[...].category` is not `imported` (currently including transcript,
-  Reviewed Transcript, Role Transcript, Ledger, and summary) right away (after confirmation for
-  user-initiated destructive edits), rather than waiting for the next
-  generation step to overwrite them. This keeps the indicator panel always
-  accurate, since existence is the only signal it has, and means a new
-  derived artifact only needs a registry entry to be covered by invalidation
-  — no call site has to be taught about it by hand.
-  - **Import Audio is the one exception to "immediately."** Because cleaning
-    is a slow, failure-prone step (unlike the other destructive edits, which
-    are instant DB/file operations), invalidation is deferred until the
-    new cleaned audio has actually landed — see Import Audio's flow above. Unlike every other
-    destructive path in this screen, there is no confirmation for this deferred deletion at all
-    (see Import audio's flow) -- overwrite-and-clear is unconditional.
-- **Raw input audio is never deleted** by any invalidation path except Clean Session.
+- **Freshness is recursive and non-destructive.** An artifact is current only when all required
+  outputs exist, every dependency is current, and no dependency is newer than the oldest output
+  of its build step. File inputs use nanosecond modification times; glossary, roster, attendance,
+  and other database-backed inputs use explicit logical clocks. Packaged LLM `system.md` files
+  are modification-time dependencies of the steps that invoke them. Ordinary processing preserves
+  old outputs until replacements succeed. Clean Session is the sole broad deletion path.
 - **Failure handling**: a failed Import Audio, Generate Outputs, or Clean Session run shows an
   error toast and adds a row to the permanent Errors table; it does not otherwise block further
   presses of that same binding.
@@ -306,18 +303,14 @@ on entry, so these work immediately without an extra Tab in the common case.
 
 ## Implementation Approach
 
-1. **Model**: no schema changes required for artifact tracking (per the
-   filesystem-is-source-of-truth decision, `session_artifact` stays unused
-   here). The existing `Session.status` column remains in the data model but is not presented on
-   Session Detail or the Campaign Detail Sessions table.
+1. **Model**: no per-artifact rows are added. Campaign carries glossary and roster clocks;
+   Session carries metadata and attendance clocks. The existing `Session.status` column remains
+   in the data model but is not presented on Session Detail or the Campaign Detail Sessions table.
 2. **Application layer** (`tablesage-application`), as actually built:
    - `paths.py`: an `ArtifactName` enum and an `ARTIFACTS: dict[ArtifactName,
      ArtifactSpec]` registry (`filename` + `category`), the single source of
-     truth for every session-folder filename. `session_pipeline/artifacts.py`'s
-     `session_artifacts(session_folder) -> dict[ArtifactName, bool]` and
-     `import_audio.invalidate_downstream` (deletes everything not
-     `imported`-category) are both derived from this registry generically —
-     no per-artifact code to update by hand when a new one is added.
+     truth for every session-folder filename. `session_pipeline/artifact_graph.py` declares
+     multi-output build steps, dependencies, recursive freshness, and generation planning.
    - `session_pipeline/import_audio.py`: `validate_import_source(source_path)`
      and `import_audio(source_path, session_folder, normalize_volume: bool)`.
      No injected callable — this calls `tablesage_tools.audio.clean_clip`
@@ -353,7 +346,7 @@ on entry, so these work immediately without an extra Tab in the common case.
      only if it's still `UNASSIGNED_SPEAKER` (inlined directly here, not in
      `remove_backchannels.py` — nothing left to share between the two passes' implementations),
      then replaces each assigned utterance's speaker with its Session role.
-     Writes `role_transcript.json` (temp-then-rename) and invalidates Ledger/Summary.
+     Writes `role_transcript.json` (temp-then-rename); dependent outputs become stale.
      `render_role_transcript_text(session_folder)` renders the completed `role_transcript.json` to
      Markdown in memory for Ledger generation to consume — no role lookup happens there anymore,
      since the speaker field already holds the role name.
@@ -361,7 +354,7 @@ on entry, so these work immediately without an extra Tab in the common case.
      **Superseded by the bindings-simplification overhaul**: `GenerationStep` and
      `next_generation_step` (which used to compute "which of the three steps runs next" for a
      per-step `G`) and `delete_transcript_and_dependents` (Clean Transcript's audio-preserving
-     backing) are gone -- Generate now always runs all three phases from the TUI layer directly
+     backing) are gone. Generate now executes the dependency plan from the TUI layer
      (see Generate Outputs above), and Clean Session's full wipe replaced Clean Transcript's
      partial one. `session_pipeline/artifacts.py` instead gained `delete_all_artifacts
      (session_folder)`, which deletes every `ArtifactName` unconditionally including
@@ -439,8 +432,8 @@ on entry, so these work immediately without an extra Tab in the common case.
    Session Detail under "Open items deferred") and
    `.documentation/tablesage_implementation_plan.md` to reflect this design
    and its build phase.
-5. **Tests**: application-layer tests for indicator-state computation,
-   invalidation/delete-on-destructive-edit, temp-then-rename write safety, and
-   the shared precondition-check function; TUI tests following the existing
+5. **Tests**: application-layer tests for recursive indicator-state computation,
+   logical-clock updates, non-destructive staleness, multi-output write safety, and generation
+   planning; TUI tests following the existing
    headless `run_test()` + widget-region convention for layout, plus binding
    enabled/disabled state under each precondition combination.

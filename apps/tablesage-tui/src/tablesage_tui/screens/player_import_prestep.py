@@ -38,8 +38,10 @@ class PlayerImportPreStepScreen(TableSageScreen):
 
     section = "players"
 
-    BINDINGS = [
+    HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Cancel", key_display="Esc", show=False),
+    ]
+    COMMON_BINDINGS = [
         Binding("n,N", "new_candidate", "New", key_display="N"),
         Binding("enter,e,E", "edit_candidate", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_candidate", "Delete", key_display="D"),

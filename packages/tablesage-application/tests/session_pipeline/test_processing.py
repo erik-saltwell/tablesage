@@ -123,7 +123,7 @@ def test_import_session_audio_raises_for_missing_file(tmp_path: Path) -> None:
         _import_audio(application, game_session.id, tmp_path / "missing.wav")
 
 
-def test_import_session_audio_invalidates_stale_downstream_artifacts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_import_session_audio_preserves_downstream_artifacts_for_freshness_checks(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(session_pipeline.import_audio, "clean_clip", _async_stub_clean_clip)
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
@@ -140,10 +140,10 @@ def test_import_session_audio_invalidates_stale_downstream_artifacts(tmp_path: P
 
     artifacts = application.session_artifacts(game_session.id)
     assert artifacts[ArtifactName.INPUT_AUDIO]
-    assert not artifacts[ArtifactName.LEDGER]
-    assert not artifacts[ArtifactName.RECAP_SUMMARY]
-    assert not artifacts[ArtifactName.SUMMARY]
-    assert not artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
+    assert artifacts[ArtifactName.LEDGER]
+    assert artifacts[ArtifactName.RECAP_SUMMARY]
+    assert artifacts[ArtifactName.SUMMARY]
+    assert artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
 
 
 def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -420,7 +420,7 @@ def test_export_artifact_overwrites_existing_destination(tmp_path: Path) -> None
     assert destination.read_text() == "new contents"
 
 
-def test_attendance_mutation_invalidates_stale_downstream_artifacts(tmp_path: Path) -> None:
+def test_attendance_mutation_preserves_downstream_artifacts_for_freshness_checks(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
@@ -436,7 +436,7 @@ def test_attendance_mutation_invalidates_stale_downstream_artifacts(tmp_path: Pa
     application.add_attendance(game_session.id, player.id)
 
     artifacts = application.session_artifacts(game_session.id)
-    assert not artifacts[ArtifactName.LEDGER]
-    assert not artifacts[ArtifactName.RECAP_SUMMARY]
-    assert not artifacts[ArtifactName.SUMMARY]
-    assert not artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
+    assert artifacts[ArtifactName.LEDGER]
+    assert artifacts[ArtifactName.RECAP_SUMMARY]
+    assert artifacts[ArtifactName.SUMMARY]
+    assert artifacts[ArtifactName.REVIEWED_TRANSCRIPT]
