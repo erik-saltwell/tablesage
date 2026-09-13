@@ -15,6 +15,12 @@ credentials from `.env` in the OS-standard TableSage user config directory
 workspace; there is no parent-directory workspace search. Only credentials are
 global; workspace behavior stays in `.tablesage/settings.yaml`.
 
+Campaign and session files live at `<workspace>/campaigns/`; player voice clips
+live at `<workspace>/players/`. The database, settings, and logs stay in
+`<workspace>/.tablesage/`. Application path helpers derive these locations from
+the launch directory. Existing workspaces require moving their old
+`.tablesage/campaigns` and `.tablesage/players` folders up one level manually.
+
 ```text
 tablesage-tui → tablesage-application → tablesage-model
                                      → tablesage-tools

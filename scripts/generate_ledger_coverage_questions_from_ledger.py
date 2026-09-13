@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CAMPAIGN_NAME = "Brandonsford"
-CAMPAIGN_DIRECTORY = REPO_ROOT / ".tablesage" / "campaigns" / CAMPAIGN_NAME
+CAMPAIGN_DIRECTORY = REPO_ROOT / "campaigns" / CAMPAIGN_NAME
 UTILITY_PROMPT_PATH = REPO_ROOT / "data_utility_prompts" / "generate_ledger_coverage_questions.md"
 OUTPUT_DIRECTORY = REPO_ROOT / "data_prompts" / "ledger" / "coverage_questions"
 QUESTION_MODEL = LiteLLMConfig(model="anthropic/claude-sonnet-5", timeout=1200)

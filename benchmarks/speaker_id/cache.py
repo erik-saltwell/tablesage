@@ -58,7 +58,7 @@ def widened_utterance_cache_key(
 
 
 def reference_cache_key(embedder: Embedder, clip_path: Path) -> str:
-    """Reference clips live under `.tablesage/players/`, not a frozen fixture -- they can change
+    """Reference clips live under `players/`, not a frozen fixture -- they can change
     between runs (re-import, the player-detail unused-sample cleanup command), so the key is the
     clip's content hash, not its path, to avoid silently reusing a stale embedding for a path
     that now points at different audio.

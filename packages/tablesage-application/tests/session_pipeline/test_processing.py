@@ -60,7 +60,7 @@ def test_session_artifacts_reflect_filesystem_state(tmp_path: Path) -> None:
     assert not artifacts[ArtifactName.RECAP_SUMMARY]
     assert not artifacts[ArtifactName.SUMMARY]
 
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
 
     artifacts = application.session_artifacts(game_session.id)
@@ -128,7 +128,7 @@ def test_import_session_audio_preserves_downstream_artifacts_for_freshness_check
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
     (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")
@@ -154,7 +154,7 @@ def test_import_session_audio_keeps_downstream_artifacts_when_clean_fails(tmp_pa
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
     (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")
@@ -232,8 +232,8 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     assert "Bob" in reason
 
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
-    _write_wav(tmp_path / ".tablesage" / "players" / "Alice" / "clip.wav")
-    _write_wav(tmp_path / ".tablesage" / "players" / "Bob" / "clip.wav")
+    _write_wav(tmp_path / "players" / "Alice" / "clip.wav")
+    _write_wav(tmp_path / "players" / "Bob" / "clip.wav")
     application.recompute_centroid(alice.id)
     application.recompute_centroid(bob.id)
 
@@ -251,7 +251,7 @@ def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
     assert not enabled
     assert reason == "Generate the Ledger first."
 
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / ROLE_TRANSCRIPT_FILENAME).write_text("{}")
 
     enabled, reason = application.can_generate_summary(game_session.id)
@@ -314,7 +314,7 @@ def test_can_transcribe_audio_requires_input_audio_and_attendees(tmp_path: Path,
     assert "Alice" in reason
 
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
-    _write_wav(tmp_path / ".tablesage" / "players" / "Alice" / "clip.wav")
+    _write_wav(tmp_path / "players" / "Alice" / "clip.wav")
     application.recompute_centroid(alice.id)
 
     enabled, reason = application.can_transcribe_audio(game_session.id)
@@ -331,7 +331,7 @@ def test_can_clean_session_requires_any_artifact(tmp_path: Path) -> None:
     assert not enabled
     assert reason == "No artifacts to delete."
 
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_text("audio")
 
     enabled, reason = application.can_clean_session(game_session.id)
@@ -348,7 +348,7 @@ def test_can_export_artifacts_requires_a_user_facing_artifact(tmp_path: Path) ->
     assert not enabled
     assert reason == "No artifacts to export yet."
 
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     enabled, reason = application.can_export_artifacts(game_session.id)
     assert enabled
@@ -364,7 +364,7 @@ def test_exportable_artifacts_excludes_non_ui_artifacts(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
     (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")
@@ -382,7 +382,7 @@ def test_export_artifact_copies_file_without_deleting_source(tmp_path: Path) -> 
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary contents")
     destination = tmp_path / "exported-summary.md"
 
@@ -410,7 +410,7 @@ def test_export_artifact_overwrites_existing_destination(tmp_path: Path) -> None
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / SESSION_SUMMARY_FILENAME).write_text("new contents")
     destination = tmp_path / "exported-summary.md"
     destination.write_text("stale contents")
@@ -427,7 +427,7 @@ def test_attendance_mutation_preserves_downstream_artifacts_for_freshness_checks
     player = application.create_player(Player(name="Alice"))
     application.add_player_to_campaign(campaign.id, player.id, "Zaria")
 
-    folder = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001"
+    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")
     (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")

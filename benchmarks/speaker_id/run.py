@@ -1,7 +1,7 @@
 """Speaker identification benchmark harness entrypoint.
 
 Scores every candidate in candidates.py against the two frozen ground-truth sessions under
-benchmarks/data/. Requires a populated local .tablesage/players/ (reference clips aren't part of
+benchmarks/data/. Requires a populated local players/ (reference clips aren't part of
 the frozen fixtures -- see .documentation/speaker_identification_benchmark.md's "Fixtures"
 section) and, on first run per embedder, downloads that embedder's model.
 

@@ -139,8 +139,8 @@ def test_enhance_players_from_session_extracts_qualifying_clips_and_recomputes_c
     assert result.enhanced_player_count == 2
     assert result.clip_count == 3  # 2 for Alice, 1 for Bob
 
-    alice_folder = tmp_path / ".tablesage" / "players" / "Alice"
-    bob_folder = tmp_path / ".tablesage" / "players" / "Bob"
+    alice_folder = tmp_path / "players" / "Alice"
+    bob_folder = tmp_path / "players" / "Bob"
     assert len(list(alice_folder.glob("session-*.wav"))) == 2
     assert len(list(bob_folder.glob("session-*.wav"))) == 1
 
@@ -166,8 +166,8 @@ def test_enhance_players_from_session_uses_all_assigned_utterances_from_reviewed
     # otherwise-unfiltered selection -- it's below `min_embeddable_clip_seconds`, the
     # embedding model's hard technical floor, not a confidence/quality bound.
     assert result.clip_count == 3
-    assert len(list((tmp_path / ".tablesage" / "players" / "Alice").glob("session-*.wav"))) == 2
-    assert len(list((tmp_path / ".tablesage" / "players" / "Bob").glob("session-*.wav"))) == 1
+    assert len(list((tmp_path / "players" / "Alice").glob("session-*.wav"))) == 2
+    assert len(list((tmp_path / "players" / "Bob").glob("session-*.wav"))) == 1
 
 
 def test_enhance_players_from_session_reports_staged_progress(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -189,7 +189,7 @@ def test_enhance_players_from_session_rerun_replaces_prior_clips_as_a_unit(tmp_p
     application, session_id, alice, _bob = _setup_session(tmp_path, monkeypatch)
 
     application.enhance_players_from_session(session_id)
-    alice_folder = tmp_path / ".tablesage" / "players" / "Alice"
+    alice_folder = tmp_path / "players" / "Alice"
     first_run_clips = {p.name for p in alice_folder.glob("session-*.wav")}
     assert len(first_run_clips) == 2
 
@@ -205,7 +205,7 @@ def test_enhance_players_from_session_zero_qualifying_utterances_still_retracts_
 ) -> None:
     application, session_id, alice, _bob = _setup_session(tmp_path, monkeypatch)
     application.enhance_players_from_session(session_id)
-    alice_folder = tmp_path / ".tablesage" / "players" / "Alice"
+    alice_folder = tmp_path / "players" / "Alice"
     assert len(list(alice_folder.glob("session-*.wav"))) == 2
 
     # Tighten the margin bar so nothing qualifies on the next run -- a fresh Application

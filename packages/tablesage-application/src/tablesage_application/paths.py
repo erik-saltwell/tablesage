@@ -144,11 +144,11 @@ VOICE_CLIP_GLOB = "*.wav"
 
 
 def campaigns_root(cwd: Path) -> Path:
-    return cwd / ".tablesage" / "campaigns"
+    return cwd / "campaigns"
 
 
 def players_root(cwd: Path) -> Path:
-    return cwd / ".tablesage" / "players"
+    return cwd / "players"
 
 
 def logs_root(cwd: Path) -> Path:

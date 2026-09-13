@@ -1,11 +1,11 @@
 """Freeze the two gaming_basement_benchmark sessions' audio and ground truth into
 benchmarks/data/, so they survive TUI use (re-transcribe, re-import) that would
-otherwise overwrite the live .tablesage/campaigns/gaming_basement_benchmark/* artifacts
+otherwise overwrite the live campaigns/gaming_basement_benchmark/* artifacts
 they're copied from.
 
 Rerun this after further hand-correction in Speaker Review, immediately before the
 benchmark harness needs it -- nothing keeps benchmarks/data/*/ground_truth.json in sync
-with .tablesage/ automatically. See .documentation/speaker_identification_benchmark.md.
+with campaigns/ automatically. See .documentation/speaker_identification_benchmark.md.
 
 Usage (from the repo root, inside the venv):
 
@@ -27,8 +27,8 @@ DATA_ROOT = Path(__file__).resolve().parent / "data"
 # matches the session's `name` in the database (e.g. "20260818-end"), not its sequence-number
 # folder name ("001"), so a fixture reads meaningfully without a database lookup.
 SESSIONS = [
-    (REPO_ROOT / ".tablesage/campaigns/gaming_basement_benchmark/001", "20260818-end"),
-    (REPO_ROOT / ".tablesage/campaigns/gaming_basement_benchmark/002", "20260825-end"),
+    (REPO_ROOT / "campaigns/gaming_basement_benchmark/001", "20260818-end"),
+    (REPO_ROOT / "campaigns/gaming_basement_benchmark/002", "20260825-end"),
 ]
 
 

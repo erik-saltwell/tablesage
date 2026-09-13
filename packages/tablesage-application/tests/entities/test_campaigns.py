@@ -46,7 +46,7 @@ def test_create_campaign_creates_a_folder(tmp_path: Path) -> None:
 
     application.create_campaign(Campaign(name="Iron Pact"))
 
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact").is_dir()
 
 
 def test_get_campaign_returns_the_matching_campaign(tmp_path: Path) -> None:
@@ -81,8 +81,8 @@ def test_rename_campaign_renames_folder(tmp_path: Path) -> None:
     renamed = application.rename_campaign(campaign.id, "Iron Pact Reforged")
 
     assert renamed.name == "Iron Pact Reforged"
-    assert not (tmp_path / ".tablesage" / "campaigns" / "Iron Pact").exists()
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact Reforged").is_dir()
+    assert not (tmp_path / "campaigns" / "Iron Pact").exists()
+    assert (tmp_path / "campaigns" / "Iron Pact Reforged").is_dir()
 
 
 def test_rename_campaign_rejects_duplicate_name(tmp_path: Path) -> None:
@@ -101,7 +101,7 @@ def test_delete_campaign_removes_row_but_keeps_folder(tmp_path: Path) -> None:
     application.delete_campaign(campaign.id)
 
     assert application.list_campaigns() == []
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact").is_dir()
 
 
 def test_delete_campaign_cascades_to_roster_and_glossary(tmp_path: Path) -> None:
@@ -147,5 +147,5 @@ def test_cleanup_orphan_campaign_dirs_removes_only_unknown_folders(tmp_path: Pat
     removed = application.cleanup_orphan_campaign_dirs()
 
     assert removed == ["Iron Pact"]
-    assert not (tmp_path / ".tablesage" / "campaigns" / "Iron Pact").exists()
-    assert (tmp_path / ".tablesage" / "campaigns" / "Ashen Crown").is_dir()
+    assert not (tmp_path / "campaigns" / "Iron Pact").exists()
+    assert (tmp_path / "campaigns" / "Ashen Crown").is_dir()

@@ -50,7 +50,7 @@ supported by this harness.
 - `benchmarks/data/<session>/{audio.wav, ground_truth.json}` — committed to the repo as plain
   files (no git-lfs; ~48MB combined for both sessions). These are the two hand-corrected,
   irreplaceable benchmark sessions, frozen so they survive TUI use (re-transcribing, re-processing)
-  that would otherwise overwrite the live `.tablesage/campaigns/gaming_basement_benchmark/*`
+  that would otherwise overwrite the live `campaigns/gaming_basement_benchmark/*`
   artifacts they were copied from.
 - `ground_truth.json` is derived once from the live `transcript_benchmark.json` at freeze time,
   with two utterance classes removed and never regenerated automatically afterward:
@@ -60,11 +60,11 @@ supported by this harness.
     ambiguous — usually near-silent or heavily overlapped audio — so there's no single correct
     answer to score a strategy against).
 - Reference clips are **not** copied into the repo. The harness reads them live from
-  `.tablesage/players/<name>/*.wav` at run time. This is an accepted dependency (the harness
+  `players/<name>/*.wav` at run time. This is an accepted dependency (the harness
   requires a populated local `.tablesage/` to run), not a gap — reference clips are fungible (any
   reasonable sample of a player's voice works) unlike the two sessions' ground truth, which is not.
   Consequence: the reference-clip embedding cache must key on file content (hash or size+mtime),
-  not player name alone, since clips under `.tablesage/players/` can change between runs (re-import,
+  not player name alone, since clips under `players/` can change between runs (re-import,
   the existing unused-sample-cleanup feature).
 - Session attendees (and therefore which players' centroids apply to which session) are derived
   from the distinct `speaker` values present in that session's `ground_truth.json` — no separate

@@ -20,8 +20,8 @@ def test_create_session_assigns_sequence_number_and_creates_folder(tmp_path: Pat
 
     assert first.sequence_number == 1
     assert second.sequence_number == 2
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001").is_dir()
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "002").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact" / "001").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact" / "002").is_dir()
 
 
 def test_attendance_mutation_advances_session_attendance_clock(tmp_path: Path) -> None:
@@ -99,14 +99,14 @@ def test_cleanup_orphan_session_dirs_removes_only_unknown_folders(tmp_path: Path
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     application.create_session(campaign.id, "Session One")
 
-    orphan = tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "999"
+    orphan = tmp_path / "campaigns" / "Iron Pact" / "999"
     orphan.mkdir()
 
     removed = application.cleanup_orphan_session_dirs(campaign.id)
 
     assert removed == ["999"]
     assert not orphan.exists()
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact" / "001").is_dir()
 
 
 def test_session_folder_would_collide_reflects_disk_state(tmp_path: Path) -> None:
@@ -162,7 +162,7 @@ def test_update_session_changes_name_and_date_no_fs_side_effect(tmp_path: Path) 
 
     assert updated.name == "Session One (renamed)"
     assert updated.session_date == date(2026, 3, 1)
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact" / "001").is_dir()
 
 
 def test_delete_session_removes_row_but_keeps_folder(tmp_path: Path) -> None:
@@ -173,7 +173,7 @@ def test_delete_session_removes_row_but_keeps_folder(tmp_path: Path) -> None:
     application.delete_session(game_session.id)
 
     assert application.list_sessions(campaign.id) == []
-    assert (tmp_path / ".tablesage" / "campaigns" / "Iron Pact" / "001").is_dir()
+    assert (tmp_path / "campaigns" / "Iron Pact" / "001").is_dir()
 
 
 def test_create_session_seeds_attendance_from_roster_when_first_session(tmp_path: Path) -> None:

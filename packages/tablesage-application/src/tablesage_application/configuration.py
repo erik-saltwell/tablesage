@@ -23,6 +23,7 @@ PROVIDERS = {
 MODEL_FIELDS = ("llm_model_high", "llm_model", "llm_model_lite")
 # Bundled catalog v1. Custom IDs remain possible within these providers.
 MODEL_PRESETS = (
+    ("anthropic/claude-fable-5-1", "anthropic/claude-fable-5-1"),
     ("openai/gpt-6-astra", "openai/gpt-6-astra"),
     ("openai/gpt-5.6-sol", "openai/gpt-5.6-sol"),
     ("openai/gpt-5.6-terra", "openai/gpt-5.6-terra"),

@@ -30,7 +30,7 @@ def test_list_voice_clips_returns_empty_when_no_clips(tmp_path: Path) -> None:
 def test_list_voice_clips_lists_wav_files_with_duration(tmp_path: Path) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav", num_frames=16000, framerate=16000)
     _write_wav(folder / "clip_002.wav", num_frames=8000, framerate=16000)
     (folder / "notes.txt").write_text("not a clip")
@@ -46,7 +46,7 @@ def test_list_voice_clips_lists_wav_files_with_duration(tmp_path: Path) -> None:
 def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav", num_frames=16000)
     _write_wav(folder / "clip_002.wav", num_frames=8000)
 
@@ -63,7 +63,7 @@ def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: 
 def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav", num_frames=16000)
     _write_wav(folder / "clip_002.wav", num_frames=8000)
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
@@ -77,7 +77,7 @@ def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatc
 def test_recompute_centroid_clears_when_no_clips(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav")
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
     application.recompute_centroid(player.id)
@@ -94,7 +94,7 @@ def test_recompute_centroid_clears_when_no_clips(tmp_path: Path, monkeypatch: py
 def test_delete_voice_clip_removes_file_and_recomputes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav")
     _write_wav(folder / "clip_002.wav")
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
@@ -116,7 +116,7 @@ def test_delete_voice_clip_raises_for_missing_file(tmp_path: Path) -> None:
 def test_cleanup_voice_clips_deletes_duplicate_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav")
     _write_wav(folder / "clip_002.wav")  # identical bytes to clip_001 -> duplicate
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
@@ -132,7 +132,7 @@ def test_cleanup_voice_clips_deletes_duplicate_files(tmp_path: Path, monkeypatch
 def test_cleanup_voice_clips_reports_nothing_deleted_when_all_unique(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav", num_frames=16000)
     _write_wav(folder / "clip_002.wav", num_frames=8000)
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
@@ -147,7 +147,7 @@ def test_cleanup_voice_clips_uses_injected_settings_for_outlier_threshold(tmp_pa
     settings = AppSettings(remove_outliers=RemoveOutliersSettings(min_sample_similarity=0.99, min_samples=1))
     application = Application(tmp_path, settings=settings)
     player = application.create_player(Player(name="Alice"))
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav", num_frames=16000)
     _write_wav(folder / "clip_002.wav", num_frames=8000)
     _write_wav(folder / "clip_003.wav", num_frames=4000)
@@ -200,7 +200,7 @@ def test_import_voice_clips_copies_and_embeds_files(tmp_path: Path, monkeypatch:
     assert result.rejected_filenames == ()
     assert updated.sample_count == 2
 
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     imported_names = [path.name for path in folder.glob("import-*.wav")]
     assert len(imported_names) == 2
     assert all(name.startswith("import-alice-") for name in imported_names)
@@ -241,7 +241,7 @@ def test_import_voice_clips_skips_files_that_fail_to_embed(tmp_path: Path, monke
     assert result.rejected_filenames == ("bad.wav",)
     assert updated.sample_count == 1
 
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     # only one clip should remain on disk -- the rejected copy was cleaned up
     assert len(list(folder.glob("import-*.wav"))) == 1
 
@@ -255,7 +255,7 @@ def test_import_voice_clips_replaces_prior_import_of_same_directory(tmp_path: Pa
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
 
     application.import_voice_clips(player.id, source_dir)
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     first_import_names = {path.name for path in folder.glob("import-*.wav")}
 
     # simulate an updated source directory (one clip removed, a new one added)
@@ -315,7 +315,7 @@ def test_import_voice_clips_with_clean_audio_removes_outliers_from_disk(tmp_path
 
     updated, result = application.import_voice_clips(player.id, source_dir, should_clean_audio=True)
 
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     assert result.imported_count == 2
     assert len(result.removed_outlier_filenames) == 1
     assert len(list(folder.glob("import-*.wav"))) == 1
@@ -332,7 +332,7 @@ def test_import_voice_clips_without_clean_audio_keeps_outliers_on_disk(tmp_path:
 
     updated, result = application.import_voice_clips(player.id, source_dir)
 
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
     assert result.imported_count == 2
     assert result.removed_outlier_filenames == ()
     assert len(list(folder.glob("import-*.wav"))) == 2

@@ -47,9 +47,17 @@ tablesage-rpg
 ```
 
 Each launch directory is an independent workspace. TableSage creates
-`.tablesage/` there for its database, Campaigns, Players, settings, and logs.
+`campaigns/` for campaigns and session artifacts, `players/` for player voice clips,
+and `.tablesage/` for its database, settings, and logs.
 Launching from another directory opens a different workspace; it does not move
 or delete the first one. There is no parent-directory workspace search.
+
+For an existing workspace using the older layout, close TableSage and move
+`.tablesage/campaigns` to `campaigns` and `.tablesage/players` to `players` in the
+workspace directory before reopening it. Leave the database, settings, and logs
+in `.tablesage`. This release does not automatically move existing folders;
+if destination folders already exist, resolve their contents before moving.
+
 On first launch or a required settings update, the landing page shows a toast
 directing you to Settings (S). Review and Save before progressing. Keys
 are optional for setup. Return to Settings with `S` from the landing page to

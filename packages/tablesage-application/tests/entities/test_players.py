@@ -14,7 +14,7 @@ def test_create_player_creates_db_row_and_folder(tmp_path: Path) -> None:
 
     assert created.id is not None
     assert created.sample_count == 0
-    assert (tmp_path / ".tablesage" / "players" / "Alice").is_dir()
+    assert (tmp_path / "players" / "Alice").is_dir()
 
 
 def test_create_player_rejects_duplicate_name(tmp_path: Path) -> None:
@@ -32,8 +32,8 @@ def test_rename_player_renames_folder(tmp_path: Path) -> None:
     renamed = application.rename_player(player.id, "Alicia")
 
     assert renamed.name == "Alicia"
-    assert not (tmp_path / ".tablesage" / "players" / "Alice").exists()
-    assert (tmp_path / ".tablesage" / "players" / "Alicia").is_dir()
+    assert not (tmp_path / "players" / "Alice").exists()
+    assert (tmp_path / "players" / "Alicia").is_dir()
 
 
 def test_rename_player_rejects_duplicate_name(tmp_path: Path) -> None:
@@ -45,7 +45,7 @@ def test_rename_player_rejects_duplicate_name(tmp_path: Path) -> None:
         application.rename_player(bob.id, "Alice")
 
     # rollback should leave Bob's folder untouched under his original name
-    assert (tmp_path / ".tablesage" / "players" / "Bob").is_dir()
+    assert (tmp_path / "players" / "Bob").is_dir()
 
 
 def test_delete_player_removes_row_but_keeps_folder(tmp_path: Path) -> None:
@@ -55,7 +55,7 @@ def test_delete_player_removes_row_but_keeps_folder(tmp_path: Path) -> None:
     application.delete_player(player.id)
 
     assert application.list_players() == []
-    assert (tmp_path / ".tablesage" / "players" / "Alice").is_dir()
+    assert (tmp_path / "players" / "Alice").is_dir()
 
 
 def test_player_folder_exists_reflects_disk_state(tmp_path: Path) -> None:
@@ -88,5 +88,5 @@ def test_cleanup_orphan_player_dirs_removes_only_unknown_folders(tmp_path: Path)
     removed = application.cleanup_orphan_player_dirs()
 
     assert removed == ["Alice"]
-    assert not (tmp_path / ".tablesage" / "players" / "Alice").exists()
-    assert (tmp_path / ".tablesage" / "players" / "Bob").is_dir()
+    assert not (tmp_path / "players" / "Alice").exists()
+    assert (tmp_path / "players" / "Bob").is_dir()

@@ -34,6 +34,9 @@ Thumbs.db
 
 dev.db
 .tablesage/
+/campaigns/
+/players/
+/deployment/
 temp/
 logs/
 

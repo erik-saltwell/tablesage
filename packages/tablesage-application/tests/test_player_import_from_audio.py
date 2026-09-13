@@ -342,7 +342,7 @@ def test_build_players_from_audio_filters_by_duration_and_writes_diarized_clips(
 
     assert result.clip_count == 1
     assert result.affected_player_count == 1
-    alice_folder = tmp_path / ".tablesage" / "players" / "Alice"
+    alice_folder = tmp_path / "players" / "Alice"
     assert len(list(alice_folder.glob("diarized-*.wav"))) == 1
 
 
@@ -404,7 +404,7 @@ def test_build_players_from_audio_rerun_replaces_prior_clips_as_a_unit(tmp_path:
     application = _application(tmp_path, monkeypatch)
     alice = application.create_player(Player(name="Alice"))
     source_audio = tmp_path / "source.wav"
-    folder = tmp_path / ".tablesage" / "players" / "Alice"
+    folder = tmp_path / "players" / "Alice"
 
     def _run() -> None:
         clip_dir = tmp_path / "clips" / uuid.uuid4().hex
