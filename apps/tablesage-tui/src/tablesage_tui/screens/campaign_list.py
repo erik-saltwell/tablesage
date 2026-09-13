@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import date
+from pathlib import Path
 
 from rich.text import Text
 from tablesage_model.model import Campaign
@@ -10,8 +11,11 @@ from textual.binding import Binding
 from textual.containers import Vertical
 from textual.events import Resize
 from textual.widgets import DataTable
+from textual_fspicker import Filters
 
 from ..dialogs import ConfirmationDialog, TextInputDialog
+from ..dialogs.file_picker import FileOpen
+from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
 from .base import TableSageScreen
 from .campaign_detail import CampaignDetailScreen
 
@@ -180,4 +184,28 @@ class CampaignListScreen(TableSageScreen):
         )
 
     def action_import_campaign(self) -> None:
-        self.notify("Importing a campaign is coming soon.")
+        def on_picked(source: Path | None) -> None:
+            if source is None:
+                return
+
+            def on_success(campaign_id: uuid.UUID) -> None:
+                self._reload_campaigns()
+                self.notify("Campaign imported.")
+
+            def on_error(exc: BaseException) -> None:
+                self.app.push_screen(PlayerArchiveErrorsDialog(str(exc), title="Import Campaign Failed"))
+
+            self.run_with_progress(
+                title="Import Campaign",
+                message="Importing campaign database records and files…",
+                work=lambda: self.application.import_campaign(source),
+                on_success=on_success,
+                on_error=on_error,
+            )
+
+        self.app.push_screen(
+            FileOpen(
+                title="Import Campaign", location=Path.home(), filters=Filters(("ZIP archives", lambda path: path.suffix.lower() == ".zip"))
+            ),
+            on_picked,
+        )

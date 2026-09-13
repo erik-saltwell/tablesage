@@ -1,4 +1,5 @@
 from datetime import date
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -9,6 +10,24 @@ from tablesage_tui.screens.campaign_list import CampaignListScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input
+from textual_fspicker import FileOpen
+
+
+@pytest.mark.anyio
+async def test_import_campaign_picker_and_worker(tmp_path: Path) -> None:
+    application = _application()
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+        await pilot.press("i")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, FileOpen)
+        source = tmp_path / "campaign.zip"
+        pilot.app.screen.dismiss(source)
+        await pilot.pause()
+        await pilot.app.workers.wait_for_complete()
+        await pilot.pause()
+        application.import_campaign.assert_called_once_with(source)
+        assert isinstance(pilot.app.screen, CampaignListScreen)
 
 
 def _application(*, campaigns: list | None = None, last_session_dates: dict | None = None) -> MagicMock:

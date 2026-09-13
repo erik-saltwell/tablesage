@@ -4,9 +4,11 @@ import uuid
 from pathlib import Path
 
 from tablesage_application.paths import ArtifactName
+from tablesage_application.player_archive import PlayerArchiveResult
 from tablesage_application.player_import_from_audio import ProposeResult, SpeakerProposal
 from tablesage_application.players_from_session import EnhanceResult, Stage
 from tablesage_model.model import Player
+from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
@@ -14,7 +16,8 @@ from textual.widgets import DataTable
 from textual_fspicker import Filters
 
 from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
-from ..dialogs.file_picker import FileOpen
+from ..dialogs.file_picker import FileOpen, FileSave
+from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
 from ..player_import_run import PlayerImportRun, SpeakerResolution
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
@@ -43,6 +46,8 @@ class PlayersListScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
     ]
     OTHER_BINDINGS = [
+        Binding("i,I", "import_players", "Import Players", key_display="I"),
+        Binding("x,X", "export_players", "Export Players", key_display="X"),
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
     ]
 
@@ -103,11 +108,16 @@ class PlayersListScreen(TableSageScreen):
         def on_dismiss(name: str | None) -> None:
             if not name:
                 return
+            try:
+                validate_player_name(name)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
 
             def proceed() -> None:
                 try:
                     self.application.create_player(Player(name=name))
-                except ValueError as exc:
+                except (ValueError, OSError) as exc:
                     self.notify(str(exc), severity="error")
                     return
                 self._reload_players()
@@ -131,6 +141,55 @@ class PlayersListScreen(TableSageScreen):
                 submit_label="Create Player",
             ),
             on_dismiss,
+        )
+
+    def action_import_players(self) -> None:
+        def on_picked(source: Path | None) -> None:
+            if source is None:
+                return
+
+            def on_success(result: PlayerArchiveResult) -> None:
+                self._reload_players()
+                self.notify(
+                    f"Created {result.created} players; matched {result.matched}. "
+                    f"Imported {result.imported_clips} clips; skipped {result.duplicate_clips} identical clips; "
+                    f"ignored {result.ignored_entries} other entries."
+                )
+
+            def on_error(exc: BaseException) -> None:
+                self.app.push_screen(PlayerArchiveErrorsDialog(str(exc)))
+
+            self.run_with_progress(
+                title="Import Players",
+                message="Importing player folders and computing centroids…",
+                work=lambda: self.application.import_players(source, self.report_progress),
+                on_success=on_success,
+                on_error=on_error,
+            )
+
+        self.app.push_screen(
+            FileOpen(
+                title="Import Players",
+                location=Path.home(),
+                filters=Filters(("ZIP archives", lambda path: path.suffix.lower() == ".zip")),
+            ),
+            on_picked,
+        )
+
+    def action_export_players(self) -> None:
+        def on_picked(destination: Path | None) -> None:
+            if destination is None:
+                return
+            self.run_with_progress(
+                title="Export Players",
+                message="Writing player archive…",
+                work=lambda: self.application.export_players(destination),
+                on_success=lambda _: self.notify(f"Exported players to {destination}."),
+            )
+
+        self.app.push_screen(
+            FileSave(title="Export Players", location=Path.home(), default_file="players.zip"),
+            on_picked,
         )
 
     def action_create_players_from_audio(self) -> None:

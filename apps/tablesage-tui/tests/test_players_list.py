@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from tablesage_application.paths import ArtifactName
+from tablesage_application.player_archive import PlayerArchiveResult
 from tablesage_application.players_from_session import EnhanceResult
 from tablesage_model.model import Campaign, Player
 from tablesage_model.model import Session as GameSession
@@ -14,8 +15,78 @@ from tablesage_tui.screens.player_import_prestep import PlayerImportPreStepScree
 from tablesage_tui.screens.players_list import PlayersListScreen
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input
-from textual_fspicker import FileOpen
+from textual_fspicker import FileOpen, FileSave
 from textual_fspicker.parts.directory_navigation import DirectoryNavigation
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("key", ["i", "I", "x", "X"])
+async def test_archive_interchange_shortcuts(key: str, tmp_path: Path) -> None:
+    application = _application()
+    application.import_players.return_value = PlayerArchiveResult(created=3, matched=2)
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press(key)
+        await pilot.pause()
+        picker = pilot.app.screen
+        assert isinstance(picker, FileOpen if key.lower() == "i" else FileSave)
+        destination = tmp_path / "players.zip"
+        picker.dismiss(destination)
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+        method = application.import_players if key.lower() == "i" else application.export_players
+        assert method.call_count == 1
+        assert method.call_args.args[0] == destination
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_import_validation_errors_are_shown_together(tmp_path: Path) -> None:
+    from tablesage_tui.dialogs.player_archive_errors import PlayerArchiveErrorsDialog
+
+    application = _application()
+    application.import_players.side_effect = ValueError("Alice: invalid\nBob: duplicate")
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press("i")
+        await pilot.pause()
+        pilot.app.screen.dismiss(tmp_path / "players.zip")
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+        assert isinstance(pilot.app.screen, PlayerArchiveErrorsDialog)
+
+        await pilot.press("escape")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+
+
+@pytest.mark.anyio
+async def test_manual_invalid_name_never_checks_or_deletes_folder() -> None:
+    application = _application()
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press("n")
+        await pilot.pause()
+        pilot.app.screen.dismiss("../outside")
+        await pilot.pause()
+        application.player_folder_exists.assert_not_called()
+        application.delete_orphan_player_folder.assert_not_called()
+        application.create_player.assert_not_called()
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("key", ["i", "x"])
+async def test_cancel_archive_picker_does_nothing(key: str) -> None:
+    application = _application()
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_players_list(pilot)
+        await pilot.press(key)
+        await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, PlayersListScreen)
+        application.import_players.assert_not_called()
+        application.export_players.assert_not_called()
 
 
 def _application(*, players: list | None = None) -> MagicMock:

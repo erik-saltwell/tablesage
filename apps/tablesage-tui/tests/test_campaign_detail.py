@@ -14,7 +14,38 @@ from tablesage_tui.screens.session_detail import SessionDetailScreen
 from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
 from textual.widgets import Button, DataTable, Input, Static
-from textual_fspicker import FileOpen
+from textual_fspicker import FileOpen, FileSave
+
+
+@pytest.mark.anyio
+async def test_export_campaign_picker_and_worker(tmp_path: Path) -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("x")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, FileSave)
+        destination = tmp_path / "campaign.zip"
+        pilot.app.screen.dismiss(destination)
+        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
+        application.export_campaign.assert_called_once_with(campaign.id, destination)
+
+
+@pytest.mark.anyio
+async def test_export_campaign_rejects_processing_session() -> None:
+    campaign = Campaign(name="Iron Pact")
+    game_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Busy", status="processing")
+    application = _application(campaign=campaign, sessions=[game_session])
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("x")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        application.export_campaign.assert_not_called()
 
 
 def _application(

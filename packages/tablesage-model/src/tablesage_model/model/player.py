@@ -7,6 +7,8 @@ from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import validates
 from sqlmodel import Field, SQLModel
 
+from ..player_names import validate_player_name
+
 
 class Player(SQLModel, table=True):
     """A top-level participant identity, independent of any campaign.
@@ -29,6 +31,4 @@ class Player(SQLModel, table=True):
 
     @validates("name")
     def validate_name(self, key: str, value: str) -> str:
-        if not value.strip():
-            raise ValueError("name must not be blank")
-        return value
+        return validate_player_name(value)

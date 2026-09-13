@@ -24,7 +24,7 @@ from ..dialogs import (
     RolePickerDialog,
     TextInputDialog,
 )
-from ..dialogs.file_picker import FileOpen
+from ..dialogs.file_picker import FileOpen, FileSave
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -50,6 +50,7 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_item", "Delete", key_display="D"),
     ]
     OTHER_BINDINGS = [
+        Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
@@ -468,6 +469,41 @@ class CampaignDetailScreen(TableSageScreen):
             self._reload_glossary()
 
         self.app.push_screen(ConfirmationDialog(title="Delete Glossary Entry", prompt="Delete this glossary entry?"), on_dismiss)
+
+    def action_export_campaign(self) -> None:
+        def is_busy() -> bool:
+            sessions = self.application.list_sessions(self._campaign_id)
+            session_ids = {session.id for session in sessions}
+            return any(session.status == "processing" for session in sessions) or any(
+                worker.is_running
+                and (
+                    getattr(worker.node, "_campaign_id", None) == self._campaign_id
+                    or getattr(worker.node, "_session_id", None) in session_ids
+                )
+                for worker in self.app.workers
+            )
+
+        if is_busy():
+            self.notify("Wait for campaign processing to finish before exporting.", severity="error")
+            return
+
+        def on_picked(destination: Path | None) -> None:
+            if destination is None:
+                return
+            if is_busy():
+                self.notify("Wait for campaign processing to finish before exporting.", severity="error")
+                return
+            self.run_with_progress(
+                title="Export Campaign",
+                message="Copying the database and campaign files…",
+                work=lambda: self.application.export_campaign(self._campaign_id, destination),
+                on_success=lambda _: self.notify(f"Exported campaign to {destination}."),
+            )
+
+        self.app.push_screen(
+            FileSave(title="Export Campaign", location=Path.home(), default_file="campaign.zip"),
+            on_picked,
+        )
 
     def action_import_legacy_settings(self) -> None:
         def on_picked(source_path: Path | None) -> None:

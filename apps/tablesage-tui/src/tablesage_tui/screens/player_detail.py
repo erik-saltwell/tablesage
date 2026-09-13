@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tablesage_model.model import Player
+from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -95,6 +96,12 @@ class PlayerDetailScreen(TableSageScreen):
     def _commit_name(self, input_widget: CommittingInput) -> None:
         new_name = input_widget.value.strip()
         if not new_name or new_name == self._player_name:
+            input_widget.value = self._player_name
+            return
+        try:
+            validate_player_name(new_name)
+        except ValueError as exc:
+            self.notify(str(exc), severity="error")
             input_widget.value = self._player_name
             return
 

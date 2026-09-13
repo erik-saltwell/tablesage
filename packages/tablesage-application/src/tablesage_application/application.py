@@ -15,6 +15,7 @@ from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import Campaign, CampaignPlayer, GlossaryEntry, Player
 from tablesage_model.model import Session as GameSession
+from tablesage_model.player_names import validate_player_name
 from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
@@ -23,6 +24,7 @@ from . import paths, player_import_from_audio, players_from_session
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt, system_prompt_path
+from .player_archive import PlayerArchiveResult
 from .session_pipeline import artifact_graph as artifact_graph_pipeline
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
@@ -72,6 +74,16 @@ class Application:
         return await test_connection(provider, models, settings.connection_test_timeout)
 
     # Campaigns
+
+    def export_campaign(self, campaign_id: uuid.UUID, destination: Path) -> None:
+        from .campaign_archive import export_campaign
+
+        export_campaign(self._db_path, paths.campaigns_root(self._cwd), campaign_id, destination)
+
+    def import_campaign(self, source: Path) -> uuid.UUID:
+        from .campaign_archive import import_campaign
+
+        return import_campaign(self._db_path, paths.campaigns_root(self._cwd), source)
 
     def has_campaigns(self) -> bool:
         with Session(self._engine) as session:
@@ -138,11 +150,25 @@ class Application:
 
     def player_folder_exists(self, name: str) -> bool:
         """Preflight check for `create_player`/`rename_player` -- would `name` collide with a stray orphan folder?"""
+        validate_player_name(name)
         return named_entity_folder_exists(paths.players_root(self._cwd), name)
 
     def delete_orphan_player_folder(self, name: str) -> None:
         """Delete a stray player folder the user already confirmed clearing, so `create_player`/`rename_player` can proceed."""
+        validate_player_name(name)
         delete_named_entity_folder(paths.players_root(self._cwd), name)
+
+    def import_players(self, source: Path, on_progress: Callable[[int, int], None] | None = None) -> PlayerArchiveResult:
+        from .player_archive import import_players
+
+        return import_players(
+            self._engine, paths.players_root(self._cwd), source, self._embed_clip, self._settings.remove_outliers, on_progress
+        )
+
+    def export_players(self, destination: Path) -> None:
+        from .player_archive import export_players
+
+        export_players(paths.players_root(self._cwd), [player.name for player in self.list_players()], destination)
 
     def list_players(self) -> list[Player]:
         with Session(self._engine) as session:

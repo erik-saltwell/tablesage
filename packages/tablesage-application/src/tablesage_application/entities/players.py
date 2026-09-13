@@ -7,11 +7,13 @@ from pathlib import Path
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 from tablesage_model.model import Player
+from tablesage_model.player_names import validate_player_name
 
 from .._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
 
 
 def create_player(session: Session, player: Player, players_root: Path) -> Player:
+    validate_player_name(player.name)
     session.add(player)
     try:
         session.flush()
