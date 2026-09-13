@@ -33,7 +33,7 @@ def find_backchannel_candidates(transcript: Transcript, max_words: int) -> list[
         if len(utterance.words) > max_words:
             continue
         text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
-        normalized = clean_text_for_evaluation(text, do_mathspell=False)
+        normalized = clean_text_for_evaluation(text)
         if normalized in wordlist:
             candidates.append(index)
     return candidates

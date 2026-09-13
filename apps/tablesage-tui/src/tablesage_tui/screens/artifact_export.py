@@ -8,9 +8,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.widgets import DataTable
-from textual_fspicker import FileSave
 
 from ..dialogs import ConfirmationDialog
+from ..dialogs.file_picker import FileSave
 from .base import TableSageScreen
 
 
@@ -47,6 +47,7 @@ class ArtifactExportScreen(TableSageScreen):
         table = self.query_one("#artifact-export-table", DataTable)
         for name in self._artifacts:
             table.add_row(ARTIFACTS[name].display_name, key=name.value)
+        self.refresh_bindings()
 
     def _selected_artifact(self) -> ArtifactName | None:
         table = self.query_one("#artifact-export-table", DataTable)
@@ -54,6 +55,11 @@ class ArtifactExportScreen(TableSageScreen):
             return None
         row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
         return ArtifactName(row_key) if row_key else None
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "export_selected":
+            return True if self._selected_artifact() is not None else None
+        return True
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         # `DataTable` posts this for both `Enter` on a row and a double-click -- it also owns its

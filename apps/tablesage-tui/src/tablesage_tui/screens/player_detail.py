@@ -10,9 +10,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
-from textual_fspicker import SelectDirectory
 
 from ..dialogs import ConfirmationDialog
+from ..dialogs.file_picker import SelectDirectory
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -161,6 +161,12 @@ class PlayerDetailScreen(TableSageScreen):
             table.move_cursor(row=restored_row)
 
         self.query_one("#player-total-duration-value", Static).update(self._format_duration(total_duration))
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "delete_clip":
+            return True if self._selected_clip_filename() is not None else None
+        return True
 
     @staticmethod
     def _format_duration(total_seconds: float) -> str:

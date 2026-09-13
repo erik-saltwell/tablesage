@@ -214,9 +214,17 @@ class ManualReviewScreen(TableSageScreen):
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action in self._SUGGESTIONS_ACTIONS:
-            return True if self._phase is Phase.SUGGESTIONS else None
+            if self._phase is not Phase.SUGGESTIONS:
+                return None
+            if action in {"edit_suggestion", "delete_suggestion"}:
+                return True if self._selected_suggestion() is not None else None
+            return True
         if action in self._REVIEW_ACTIONS:
-            return True if self._phase is Phase.REVIEW else None
+            if self._phase is not Phase.REVIEW:
+                return None
+            if action == "delete_utterance":
+                return True if self._transcript is not None and self._transcript.utterances else None
+            return True
         return True
 
     def on_mount(self) -> None:
@@ -323,6 +331,7 @@ class ManualReviewScreen(TableSageScreen):
                 restored_row = index
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+        self.refresh_bindings()
 
     def action_new_suggestion(self) -> None:
         def on_dismiss(result: SpellingSuggestionResult | None) -> None:
@@ -435,6 +444,7 @@ class ManualReviewScreen(TableSageScreen):
     # (playback, and forcing Manual mode for anything not driven by our own code).
 
     def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        self.refresh_bindings()
         if not self._table_ready:
             return
         event.stop()

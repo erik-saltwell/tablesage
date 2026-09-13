@@ -4,11 +4,12 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 
 from tablesage_application import Application
+from tablesage_tools.credentials import MissingCredential
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.screen import Screen
-from textual.widgets import Footer
+from textual.widgets import DataTable, Footer
 from textual.worker import Worker, WorkerState
 
 from ..dialogs.generic import ConfirmationDialog
@@ -86,7 +87,7 @@ class TableSageScreen(Screen[None]):
             with Vertical(classes="screen-body"):
                 yield from self.compose_content()
 
-            yield Footer()
+            yield Footer(classes="-has-other-actions" if self.OTHER_BINDINGS else None)
 
     def compose_content(self) -> ComposeResult:
         """Supply the content unique to a particular screen."""
@@ -117,6 +118,10 @@ class TableSageScreen(Screen[None]):
 
     def refresh_data(self) -> None:
         """Reload the data this screen displays. No-op by default; override in screens that show live data."""
+
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        """Keep selection-dependent shortcuts current as the table cursor moves."""
+        self.refresh_bindings()
 
     def run_with_folder_collision_check(
         self,
@@ -232,6 +237,12 @@ class TableSageScreen(Screen[None]):
 
         if event.state == WorkerState.ERROR:
             assert event.worker.error is not None
+            error = event.worker.error
+            while error is not None and not isinstance(error, MissingCredential):
+                error = error.__cause__
+            if isinstance(error, MissingCredential):
+                self.call_after_refresh(self._show_missing_credential, error)
+                return
             if on_error is not None:
                 on_error(event.worker.error)
             else:
@@ -246,3 +257,19 @@ class TableSageScreen(Screen[None]):
             # something else (e.g. F5) forces a further repaint. `call_after_refresh` runs the
             # callback only once the pop's own refresh has gone out.
             self.call_after_refresh(on_success, event.worker.result)
+
+    def _show_missing_credential(self, error: MissingCredential) -> None:
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Provider key required", prompt=str(error), show_cancel=False, no_label="Cancel", yes_label="Open Settings"
+            ),
+            lambda answer: cast("TableSageApp", self.app).action_open_settings() if answer else None,
+        )
+
+    def check_credentials(self, *roles: str, transcription: bool = False) -> bool:
+        try:
+            self.application.require_credentials(*roles, transcription=transcription)
+        except MissingCredential as exc:
+            self._show_missing_credential(exc)
+            return False
+        return True

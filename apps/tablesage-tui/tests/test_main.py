@@ -78,6 +78,7 @@ def test_main_deploys_settings_and_injects_them_into_application(tmp_path: Path,
             captured["settings"] = settings
 
     monkeypatch.setattr(main_app, "Application", FakeApplication)
+    monkeypatch.setattr(main_app, "ensure_media_tools", lambda: None)
     monkeypatch.setattr(main_app.TableSageApp, "run", lambda self: None)
 
     main_app.main()
@@ -86,3 +87,30 @@ def test_main_deploys_settings_and_injects_them_into_application(tmp_path: Path,
     assert settings is not None
     assert settings.remove_outliers.min_sample_similarity == 0.33
     assert settings.remove_outliers.min_samples == 2
+
+
+def test_main_ignores_launch_directory_env_without_overriding_exports(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("TABLESAGE_TEST_LOCAL", raising=False)
+    monkeypatch.setenv("TABLESAGE_TEST_EXPORTED", "shell-value")
+    (tmp_path / ".env").write_text("TABLESAGE_TEST_LOCAL=workspace-value\nTABLESAGE_TEST_EXPORTED=file-value\n", encoding="utf-8")
+    monkeypatch.setattr(main_app, "ensure_media_tools", lambda: None)
+    monkeypatch.setattr(main_app.TableSageApp, "run", lambda self: None)
+
+    main_app.main()
+
+    import os
+
+    assert "TABLESAGE_TEST_LOCAL" not in os.environ
+    assert os.environ["TABLESAGE_TEST_EXPORTED"] == "shell-value"
+
+
+def test_main_stops_before_creating_workspace_when_media_tools_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_tui import startup
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(startup, "which", lambda name: None if name == "ffplay" else "/usr/bin/ffmpeg")
+    with pytest.raises(SystemExit, match="requires ffplay on PATH") as exc:
+        main_app.main()
+    assert "https://ffmpeg.org/download.html" in str(exc.value)
+    assert not (tmp_path / ".tablesage").exists()

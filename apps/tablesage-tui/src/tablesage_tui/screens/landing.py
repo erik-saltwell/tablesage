@@ -1,3 +1,5 @@
+from typing import cast
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Grid, Vertical
@@ -17,6 +19,7 @@ class LandingScreen(TableSageScreen):
     COMMON_BINDINGS = [
         Binding("c,C", "show_campaigns", "Campaigns", key_display="C"),
         Binding("p,P", "show_players", "Players", key_display="P"),
+        Binding("s,S", "app.open_settings", "Settings", key_display="S"),
         # The only screen that shows Quit -- every other screen inherits the
         # app-level binding (still works via ctrl+q) but keeps it out of its
         # footer.
@@ -71,13 +74,38 @@ class LandingScreen(TableSageScreen):
                         yield Static("P", id="players-key", classes="keycap")
                         yield Static(" to browse players")
 
+                    with CommandButton("app.open_settings", id="show-settings-command", classes="call-to-action"):
+                        yield Static("> type ")
+                        yield Static("S", classes="keycap")
+                        yield Static(" to edit settings")
+
+    def on_mount(self) -> None:
+        self._sync_navigation()
+
+    def on_screen_resume(self) -> None:
+        self._sync_navigation()
+
+    def _sync_navigation(self) -> None:
+        for action, button_id in (
+            ("show_campaigns", "show-campaigns-command"),
+            ("show_players", "show-players-command"),
+        ):
+            self.query_one(f"#{button_id}", CommandButton).disabled = not self.check_action(action, ())
+        self.refresh_bindings()
+
     def action_show_campaigns(self) -> None:
-        self.app.push_screen(CampaignListScreen())
+        if self.check_action("show_campaigns", ()):
+            self.app.push_screen(CampaignListScreen())
 
     def action_show_players(self) -> None:
-        self.app.push_screen(PlayersListScreen())
+        if self.check_action("show_players", ()):
+            self.app.push_screen(PlayersListScreen())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        from .main_app import TableSageApp
+
+        if action in {"show_campaigns", "show_players"} and cast(TableSageApp, self.app).settings_review_required:
+            return None
         if action == "refresh_screen":
             # Landing shows no live data (base `TableSageScreen`'s F5 binding is inherited
             # regardless), so hide it rather than advertise a refresh that does nothing.

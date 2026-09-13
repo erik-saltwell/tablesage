@@ -13,9 +13,10 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
-from textual_fspicker import FileOpen, Filters
+from textual_fspicker import Filters
 
 from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog
+from ..dialogs.file_picker import FileOpen
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
@@ -302,6 +303,8 @@ class SessionDetailScreen(TableSageScreen):
                 return
 
             def do_import_and_transcribe(*, should_clean_audio: bool) -> None:
+                if not self.check_credentials("llm_model_lite", transcription=True):
+                    return
                 session_folder = self.application.session_folder(self._session_id)
                 normalize_volume = self.application.settings.session_audio_import.normalize_volume
                 centroids = self.application.session_player_centroids(self._session_id)

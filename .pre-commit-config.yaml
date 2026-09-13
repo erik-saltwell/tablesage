@@ -17,13 +17,28 @@ repos:
 
       - id: ty
         name: ty check
-        entry: uv run ty check packages apps
+        entry: uv run ty check packages apps/tablesage-tui
         language: system
+        pass_filenames: false
+
+      - id: ty-optimization
+        name: ty check prompt optimization
+        entry: uv run --project apps/optimize-prompts ty check --python apps/optimize-prompts/.venv apps/optimize-prompts
+        language: system
+        files: ^apps/optimize-prompts/
         pass_filenames: false
 
       - id: pytest
         name: pytest
         entry: uv run pytest
         language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: pytest-optimization
+        name: pytest prompt optimization
+        entry: uv run --project apps/optimize-prompts pytest apps/optimize-prompts/tests
+        language: system
+        files: ^apps/optimize-prompts/
         pass_filenames: false
         stages: [pre-push]

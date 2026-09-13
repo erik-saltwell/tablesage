@@ -6,11 +6,11 @@ Command-line workflows for optimizing TableSage prompts with the sibling
 From the repository root:
 
 ```bash
-uv sync
-uv run optimize-prompts ledger
-uv run optimize-prompts summary
-uv run optimize-prompts recap-summary
-uv run optimize-prompts section-transcript
+uv sync --project apps/optimize-prompts
+uv run --project apps/optimize-prompts optimize-prompts ledger
+uv run --project apps/optimize-prompts optimize-prompts summary
+uv run --project apps/optimize-prompts optimize-prompts recap-summary
+uv run --project apps/optimize-prompts optimize-prompts section-transcript
 ```
 
 `ledger` uses the joint production response schema. Refresh its routed inputs with

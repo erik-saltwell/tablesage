@@ -89,6 +89,10 @@ async def call_llm(
     """
     import litellm
 
+    from ..credentials import require_credential
+
+    require_credential(model.partition("/")[0], model)
+
     effective_model_options = dict(model_options) if model_options is not None else {}
     if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
         effective_model_options = {**_ASTRA_MEDIUM_THINKING_OPTIONS, **effective_model_options}

@@ -10,6 +10,7 @@ from tablesage_tui.screens.main_app import TableSageApp
 from textual.pilot import Pilot
 from textual.widgets import DataTable
 from textual_fspicker import FileSave
+from textual_fspicker.parts.directory_navigation import DirectoryNavigation
 
 
 def _application(*, exportable: list[ArtifactName] | None = None) -> MagicMock:
@@ -50,6 +51,7 @@ async def test_export_selected_copies_to_chosen_destination(tmp_path: Path) -> N
         await pilot.pause()
         picker = pilot.app.screen
         assert isinstance(picker, FileSave)
+        assert picker.query_one(DirectoryNavigation).show_hidden
 
         picker.dismiss(destination)
         await pilot.pause()

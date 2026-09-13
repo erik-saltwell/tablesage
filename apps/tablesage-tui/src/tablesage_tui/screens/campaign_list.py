@@ -78,6 +78,12 @@ class CampaignListScreen(TableSageScreen):
 
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"open_campaign", "delete_campaign"}:
+            return True if self._selected_campaign_id() is not None else None
+        return True
 
     def _row_cells(self, campaign: Campaign, last_session_dates: dict[uuid.UUID, date]) -> tuple[Text, str, str]:
         description = campaign.description or ""

@@ -70,6 +70,12 @@ class PlayerImportReviewScreen(TableSageScreen):
                 restored_row = index
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"edit_row", "view_transcript"}:
+            return True if self._selected_speaker_id() is not None else None
+        return True
 
     def _selected_speaker_id(self) -> str | None:
         table = self.query_one("#player-import-review-table", DataTable)

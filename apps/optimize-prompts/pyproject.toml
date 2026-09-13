@@ -12,7 +12,7 @@ dependencies = [
     "prompt-model-metrics",
     "pyyaml>=6",
     "python-dotenv>=1",
-    "tablesage-application",
+    "tablesage-rpg",
 ]
 
 [project.scripts]
@@ -22,8 +22,11 @@ optimize-prompts = "optimize_prompts.cli:app"
 requires = ["uv_build>=0.11.2,<0.12.0"]
 build-backend = "uv_build"
 
+[dependency-groups]
+dev = ["pytest>=8", "ty>=0.0.35"]
+
 [tool.uv.sources]
 prompt-forge = { path = "../../../prompt-forge/apps/prompt-forge", editable = true }
 prompt-model = { path = "../../../prompt-forge/packages/prompt-model", editable = true }
 prompt-model-metrics = { path = "../../../prompt-forge/packages/prompt-model-metrics", editable = true }
-tablesage-application = { workspace = true }
+tablesage-rpg = { path = "../..", editable = true }

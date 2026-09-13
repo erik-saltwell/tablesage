@@ -16,6 +16,7 @@ from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input, ProgressBar, Static
 from textual_fspicker import SelectDirectory
+from textual_fspicker.parts.directory_navigation import DirectoryNavigation
 
 
 def _application(*, player: Player | None = None, clips: list[VoiceClip] | None = None) -> MagicMock:
@@ -475,7 +476,9 @@ async def test_directory_import_opens_directory_picker() -> None:
         await pilot.press("f")
         await pilot.pause()
 
-        assert isinstance(pilot.app.screen, SelectDirectory)
+        picker = pilot.app.screen
+        assert isinstance(picker, SelectDirectory)
+        assert picker.query_one(DirectoryNavigation).show_hidden
 
 
 @pytest.mark.anyio

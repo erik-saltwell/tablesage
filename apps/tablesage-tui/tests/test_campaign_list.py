@@ -277,6 +277,11 @@ async def test_delete_with_no_campaigns_does_nothing() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_campaign_list(pilot)
 
+        screen = pilot.app.screen
+        assert isinstance(screen, CampaignListScreen)
+        assert not screen.active_bindings["e"].enabled
+        assert not screen.active_bindings["d"].enabled
+
         await pilot.press("d")
         await pilot.pause()
 

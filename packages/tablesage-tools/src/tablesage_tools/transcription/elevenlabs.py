@@ -5,12 +5,14 @@ from pathlib import Path
 
 from elevenlabs import AsyncElevenLabs, SpeechToTextChunkResponseModel
 
+from ..credentials import require_credential
 from ..model import SpeechType, Transcript, TranscriptionWord
 
 
 async def transcribe_and_diarize(
     input_file: Path, language_code: str, model_id: str, request_timeout: int, tag_audio_events: bool, speaker_count: int | None
 ) -> Transcript:
+    require_credential("elevenlabs", model_id)
     elevenlabs: AsyncElevenLabs = AsyncElevenLabs(
         api_key=os.getenv("ELEVENLABS_API_KEY"),
     )

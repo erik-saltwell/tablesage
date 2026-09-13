@@ -8,6 +8,8 @@ from textual.widgets import Button
 class EqualWidthButtonRow(Horizontal):
     """A Horizontal whose Button descendants share the widest button's width."""
 
+    _BUTTON_BORDER_WIDTH = 2
+
     def on_mount(self) -> None:
         self._equalize_button_widths()
 
@@ -21,4 +23,7 @@ class EqualWidthButtonRow(Horizontal):
         buttons = list(self.query(Button))
         widest_width = max((button.get_content_width(Size(0, 0), Size(0, 0)) for button in buttons), default=0)
         for button in buttons:
-            button.styles.width = widest_width
+            # Explicit width is the whole bordered button, while get_content_width
+            # measures just its label. Reserve both border cells so the widest
+            # label is not clipped (for example, "Discard").
+            button.styles.width = widest_width + self._BUTTON_BORDER_WIDTH

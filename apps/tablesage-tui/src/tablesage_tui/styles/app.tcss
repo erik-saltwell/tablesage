@@ -241,6 +241,72 @@ TableSageHeader {
     }
 }
 
+SettingsScreen {
+    .screen-body { padding: 1 2; }
+    #settings-panel { width: 1fr; height: 1fr; }
+    #settings-scroll {
+        height: 1fr;
+        background: transparent;
+        scrollbar-background: $surface-2-bg;
+        scrollbar-background-hover: $surface-3-bg;
+        scrollbar-background-active: $surface-3-bg;
+        scrollbar-color: $sage-700;
+        scrollbar-color-hover: $sage-600;
+        scrollbar-color-active: $sage-400;
+        scrollbar-corner-color: $surface-2-bg;
+    }
+    #settings-intro {
+        height: auto;
+        padding: 1 0 0 0;
+        margin-bottom: 0;
+        color: $fg-warning;
+        text-style: bold;
+        background: transparent;
+    }
+    Collapsible {
+        height: auto;
+        background: transparent;
+        background-tint: transparent;
+        border-top: solid $surface-border;
+        padding-top: 1;
+        &:focus-within { background-tint: transparent; }
+        & > Contents { background: transparent; }
+        & > CollapsibleTitle {
+            background: transparent;
+            color: $fg-accent;
+            text-style: bold;
+            &:hover { background: $control-hover-bg; }
+            &:focus { background: $control-hover-bg; }
+        }
+    }
+    Input, Select { width: 100%; margin-bottom: 1; }
+    .settings-help { color: $text-muted; height: auto; margin-bottom: 1; }
+    .settings-error { color: $error; height: auto; }
+    .settings-buttons {
+        height: auto;
+        margin: 1 0;
+        align: right middle;
+        Button { margin: 0 0 0 1; }
+    }
+    .credential-row { height: 1; min-height: 1; }
+    #settings-keys { padding-bottom: 1; }
+    #settings-keys > Contents { padding-top: 1; padding-bottom: 0; }
+    .credential-label { width: 27; height: 1; }
+    Input.credential-input {
+        width: 1fr;
+        max-width: 40;
+        height: 1;
+        min-height: 1;
+        border: none;
+        padding: 0 1;
+        margin: 0;
+        background: $surface-3-bg;
+        &:focus { background: $control-hover-bg; }
+    }
+    #settings-panel Select { max-width: 64; }
+    Button { margin-right: 1; }
+}
+
 Footer {
     height: 1;
     min-height: 1;
@@ -287,6 +353,12 @@ Footer {
         background: $surface-2-bg;
         color: $surface-2-fg;
     }
+}
+
+/* Screens with secondary actions put their ? shortcut at the far right,
+   matching LandingScreen's right-docked Quit shortcut. */
+Footer.-has-other-actions FooterKey:last-child {
+    dock: right;
 }
 
 /* ******************************** */
@@ -342,9 +414,19 @@ CommandButton.-active {
 }
 
 CommandButton:disabled {
+    background: transparent;
     color: $control-disabled-fg;
     opacity: 0.5;
     pointer: not-allowed;
+
+    Static {
+        color: $control-disabled-fg;
+    }
+
+    .keycap {
+        background: $control-disabled-bg;
+        color: $control-disabled-fg;
+    }
 }
 
 /* ******************************** */

@@ -80,6 +80,12 @@ class GlossaryReviewScreen(TableSageScreen):
                 restored_row = index
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"edit_entry", "delete_entry"}:
+            return True if self._selected_entry() is not None else None
+        return True
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         event.stop()

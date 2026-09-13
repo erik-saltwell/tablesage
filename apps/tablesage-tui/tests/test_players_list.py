@@ -15,6 +15,7 @@ from tablesage_tui.screens.players_list import PlayersListScreen
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input
 from textual_fspicker import FileOpen
+from textual_fspicker.parts.directory_navigation import DirectoryNavigation
 
 
 def _application(*, players: list | None = None) -> MagicMock:
@@ -84,7 +85,9 @@ async def test_from_audio_action_opens_file_picker() -> None:
         await pilot.press("a")
         await pilot.pause()
 
-        assert isinstance(pilot.app.screen, FileOpen)
+        picker = pilot.app.screen
+        assert isinstance(picker, FileOpen)
+        assert picker.query_one(DirectoryNavigation).show_hidden
 
 
 @pytest.mark.anyio
@@ -374,6 +377,11 @@ async def test_delete_with_no_players_does_nothing() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_players_list(pilot)
+
+        screen = pilot.app.screen
+        assert isinstance(screen, PlayersListScreen)
+        assert not screen.active_bindings["e"].enabled
+        assert not screen.active_bindings["d"].enabled
 
         await pilot.press("d")
         await pilot.pause()

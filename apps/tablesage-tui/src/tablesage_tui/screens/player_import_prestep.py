@@ -79,6 +79,12 @@ class PlayerImportPreStepScreen(TableSageScreen):
             table.add_row(candidate.name, ", ".join(candidate.roles), key=str(index))
         if selected is not None and selected < table.row_count:
             table.move_cursor(row=selected)
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"edit_candidate", "delete_candidate"}:
+            return True if self._selected_candidate_index() is not None else None
+        return True
 
     def _selected_candidate_index(self) -> int | None:
         table = self.query_one("#player-import-candidates-table", DataTable)
@@ -138,6 +144,8 @@ class PlayerImportPreStepScreen(TableSageScreen):
         self._reload_candidates()
 
     def _continue(self) -> None:
+        if not self.check_credentials("llm_model", transcription=True):
+            return
         speaker_count = len(self._run.candidates) if self._run.candidates else None
         self._run.speaker_count = speaker_count
         should_clean_audio = self.query_one("#player-import-clean-audio", Checkbox).value

@@ -49,6 +49,28 @@ class Application:
     def settings(self) -> AppSettings:
         return self._settings
 
+    def apply_settings(self, settings: AppSettings) -> None:
+        """Replace the snapshot used for subsequent operations."""
+        self._settings = settings
+
+    def require_credentials(self, *roles: str, transcription: bool = False) -> None:
+        from tablesage_tools.credentials import require_credential
+
+        if transcription:
+            require_credential("elevenlabs", self._settings.transcription_and_diarization.model_id)
+        for role in roles:
+            model = getattr(self._settings, role)
+            require_credential(model.partition("/")[0], model)
+
+    async def test_provider_connection(self, provider: str) -> str:
+        from tablesage_tools.credentials import test_connection
+
+        from .configuration import MODEL_FIELDS
+
+        settings = self._settings
+        models = [getattr(settings, field) for field in MODEL_FIELDS if getattr(settings, field).startswith(provider + "/")]
+        return await test_connection(provider, models, settings.connection_test_timeout)
+
     # Campaigns
 
     def has_campaigns(self) -> bool:

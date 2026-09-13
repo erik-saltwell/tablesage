@@ -2,6 +2,19 @@
 
 TableSage is organized into four layers. The structure keeps the user interface thin, makes use cases testable, and preserves reusable audio/provider capabilities.
 
+All four layers ship in a single `tablesage-rpg` distribution built from the root
+`pyproject.toml`. The existing source directories and Python import names remain
+layer boundaries, not independently published distributions. Both `tablesage-rpg`
+and `tablesage` console commands invoke the same composition root. The separate
+`optimize-prompts` developer app is outside the runtime distribution.
+
+Startup checks that `ffmpeg` and `ffplay` are on PATH, then loads named personal
+credentials from `.env` in the OS-standard TableSage user config directory
+(`platformdirs`). Inherited shell variables override stored credentials. Workspace
+`.env` files are not read. Each launch directory owns its own `.tablesage`
+workspace; there is no parent-directory workspace search. Only credentials are
+global; workspace behavior stays in `.tablesage/settings.yaml`.
+
 ```text
 tablesage-tui → tablesage-application → tablesage-model
                                      → tablesage-tools
@@ -48,6 +61,15 @@ Tools may compute embeddings and centroids. The application/domain layers decide
 ## Composition and testing
 
 The executable composition root constructs concrete SQLite repositories and tool adapters, then injects them into application use cases. This is the only place that knows all concrete implementations. It's also where `AppSettings` gets loaded (`tablesage_model.setup.ensure_settings`, deploying the TUI's packaged default `settings.yaml` to `.tablesage/settings.yaml` on first run) and injected into `Application` — settings aren't read anywhere below this point.
+
+The Settings screen edits a draft and delegates atomic canonical persistence to
+`tablesage_application.configuration.Configuration`. After Save, `Application`
+receives a replacement settings snapshot for subsequent actions. Credentials
+share the explicit Save lifecycle (in a separate personal file), preserve unrelated dotenv content, and refresh managed process
+variables while preserving their inherited shell overrides. An explicit
+`settings_version` controls mandatory first-run and upgrade review; an unversioned
+file is version zero, and a future version is rejected. Invalid files retain the
+terminal-error repair path. See [the Settings design](../.scratch/settings/design.md).
 
 - Test domain invariants without SQLite or provider dependencies.
 - Test application use cases with fake repositories and fake tools.

@@ -10,7 +10,7 @@ from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.pilot import Pilot
-from textual.widgets import Static
+from textual.widgets import Footer, Static
 
 
 class SecondaryActionScreen(TableSageScreen):
@@ -42,6 +42,8 @@ async def test_other_actions_dialog_dispatches_a_secondary_binding_after_dismiss
         screen = SecondaryActionScreen()
         pilot.app.push_screen(screen)
         await pilot.pause()
+
+        assert screen.query_one(Footer).has_class("-has-other-actions")
 
         await pilot.press("slash")
         await pilot.pause()

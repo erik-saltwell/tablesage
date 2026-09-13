@@ -1,38 +1,65 @@
 [project]
-name = "tablesage-workspace"
+name = "tablesage-rpg"
 version = "0.1.0"
-description = "Workspace root for TableSage."
+description = "Turn tabletop roleplaying session recordings into transcripts, recaps, and campaign summaries."
+readme = "README.md"
+license = "CC-BY-NC-4.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Erik Saltwell", email = "erik.saltwell@gmail.com" }]
 requires-python = ">=3.12"
-# The root project itself ships no code -- these exist so a bare `uv sync`/`uv run` installs
-# every workspace member's full dependency tree (tablesage-tui transitively pulls in
-# tablesage-application, tablesage-tools, tablesage-model). Without this, root's own
-# dependency list was empty, so a plain `uv sync` synced *only* this project (plus the dev
-# group) and silently pruned everything else out of .venv -- including things like the
-# en-core-web-sm spacy model that aren't declared as PyPI-style deps anywhere else.
 dependencies = [
-  "tablesage-application",
-  "tablesage-model",
-  "tablesage-tools",
-  "tablesage-tui",
-  "optimize-prompts",
+  "alembic>=1.18.4",
+  "clearvoice>=0.1.2",
+  "elevenlabs>=2.46.0",
+  "huggingface-hub>=1.14.0",
+  "jinja2>=3.1.0",
+  "jiwer>=3.1.0",
+  "litellm>=1.99.0",
+  "modelscope[framework]>=1.36.3",
+  "numpy>=1.26.4",
+  "punctuators>=0.0.7",
+  "pydantic>=2.12.5",
+  "platformdirs>=4.0",
+  "python-dotenv>=1.0",
+  "pyyaml>=6.0",
+  "soundfile>=0.12.1",
+  "sqlalchemy>=2.0",
+  "sqlmodel>=0.0.39",
+  "structlog>=25.5.0",
+  "textual>=8.2.6",
+  "textual-fspicker>=1.0.1",
+  "torch==2.10.0",
+  "torchaudio==2.10.0",
+  "wespeaker-unofficial>=0.0.2",
+  "widelog-py>=2026.7.2",
 ]
 
-[tool.uv.workspace]
-members = [
-  "packages/*",
-  "apps/*",
+[project.scripts]
+tablesage-rpg = "tablesage_tui.screens:main"
+tablesage = "tablesage_tui.screens:main"
+
+[project.urls]
+Repository = "https://github.com/erik-saltwell/tablesage"
+Issues = "https://github.com/erik-saltwell/tablesage/issues"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "apps/tablesage-tui/src/tablesage_tui",
+  "packages/tablesage-application/src/tablesage_application",
+  "packages/tablesage-model/src/tablesage_model",
+  "packages/tablesage-tools/src/tablesage_tools",
 ]
 
-[tool.uv.sources]
-tablesage-application = { workspace = true }
-tablesage-model = { workspace = true }
-tablesage-tools = { workspace = true }
-tablesage-tui = { workspace = true }
-optimize-prompts = { workspace = true }
-# optimize-prompts invokes the sibling Prompt Forge CLI package during optimization.
-# Keep both packages editable while the two repositories are developed together.
-prompt-forge = { path = "../prompt-forge/apps/prompt-forge", editable = true }
-prompt-model = { path = "../prompt-forge/packages/prompt-model", editable = true }
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "pyproject.toml", "README.md", "LICENSE",
+  "apps/tablesage-tui/src", "packages/tablesage-application/src",
+  "packages/tablesage-model/src", "packages/tablesage-tools/src",
+]
 
 [dependency-groups]
 dev = [
@@ -41,9 +68,6 @@ dev = [
   "mypy>=1.18",
   "ty>=0.0.35",
   "pre-commit>=4.6.0",
-  # Also declared in apps/tablesage-tui's own dev group, but a package-scoped dev group
-  # doesn't sync by default with a bare `uv sync` the way the root's does -- duplicated
-  # here so `textual run --dev` keeps working after one.
   "textual-dev>=1.8.0",
 ]
 
@@ -79,5 +103,5 @@ redundant-cast = "warn"
 [tool.pytest.ini_options]
 testpaths = [
   "packages",
-  "apps",
+  "apps/tablesage-tui",
 ]

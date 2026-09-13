@@ -88,14 +88,15 @@ first-seen path before embedding, so duplicates never inflate the centroid
 or the sample count.
 
 `min_sample_similarity`/`min_samples` are `AppSettings.remove_outliers`
-(`tablesage_model.settings`), loaded once by the TUI composition root
+(`tablesage_model.settings`), initially loaded by the TUI composition root
 (`tablesage_tui.screens.main_app.main`) via `tablesage_model.setup.ensure_settings`
 and injected into `Application`. The TUI ships a default `settings.yaml`
 packaged inside `tablesage_tui/resources/`; `ensure_settings` copies it out to
 `.tablesage/settings.yaml` in the working directory the first time the app
 runs there (including under a `uv tool`/`uvx` install, since the file travels
-inside the installed wheel) and never overwrites it again, so on-disk edits
-persist across runs. `compute_centroid` itself stays settings-agnostic —
+inside the installed wheel). Startup preserves existing files. The Settings
+screen is the supported editor; explicit Save writes validated canonical YAML
+and updates the settings used for subsequent operations. `compute_centroid` itself stays settings-agnostic —
 it only ever sees plain `float`/`int` values, per `system_architecture.md`'s
 rule that `tablesage-tools` doesn't know about `AppSettings`.
 

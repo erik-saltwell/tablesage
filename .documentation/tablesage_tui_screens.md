@@ -60,8 +60,28 @@ These apply uniformly across every screen; specifics below only note where a scr
 
 Kind: hub (not one of the four taxonomy kinds — pure navigation chrome, always the app's home screen regardless of whether any campaigns or players exist).
 
-- Bindings: `C` → Campaigns List, `P` → Players List.
+- Bindings: `C` → Campaigns List, `P` → Players List, `S` → Settings.
+- First-run or settings-schema review stays on the landing page and shows a toast
+  directing users to Settings (S). Ordinary navigation remains blocked until a
+  valid Save. No credential is required merely to finish setup.
+- Campaigns and Players center buttons are disabled and grayed out during this
+  review gate, matching their footer shortcuts; they re-enable on returning after Save.
 - No creation actions live here. (The legacy "new campaign" binding is removed from this screen.)
+
+### Settings
+
+Settings exposes exactly two collapsible sections: LLM and Keys. LLM provides
+High, Medium, and Low model selectors with the common catalog's exact saved model
+IDs plus Custom; choosing Custom opens a model-ID dialog and saved custom IDs remain
+visible in the selector.
+Other processing settings
+are preserved on Save and are not exposed or reset by this screen. Ctrl-S saves; Escape/Back
+offers Save, Discard, or Cancel for dirty drafts, including personal key edits.
+Keys use one-line password inputs with fixed-length masks; untouched fields keep existing keys.
+Ctrl-D stages removal of the focused stored key; Ctrl-T tests the focused provider.
+Keys apply to all workspaces; shell overrides are identified and remain read-only. Explicit
+provider tests require saving edits first and use saved keys and models. Missing workflow credentials offer Open Settings
+or Cancel. See [the complete Settings design](../.scratch/settings/design.md).
 
 ### Campaigns List
 

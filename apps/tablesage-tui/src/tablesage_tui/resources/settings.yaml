@@ -4,6 +4,9 @@
 # directory (this packaged copy is only the seed for that file -- once it
 # exists, your edits there persist and this file is never consulted again).
 
+settings_version: 0
+connection_test_timeout: 30
+
 remove_outliers:
   # Player Detail's "Clean Up" (C) prunes voice clips whose embedding falls
   # below this cosine-similarity bar against the centroid, one worst clip at

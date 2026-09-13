@@ -11,9 +11,10 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
 from textual.widgets import DataTable
-from textual_fspicker import FileOpen, Filters
+from textual_fspicker import Filters
 
 from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
+from ..dialogs.file_picker import FileOpen
 from ..player_import_run import PlayerImportRun, SpeakerResolution
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
@@ -76,6 +77,12 @@ class PlayersListScreen(TableSageScreen):
 
         if restored_row is not None:
             table.move_cursor(row=restored_row)
+        self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"open_player", "delete_player"}:
+            return True if self._selected_player_id() is not None else None
+        return True
 
     def _row_cells(self, player: Player) -> tuple[str, str, str]:
         centroid_status = "ready" if player.centroid_embedding is not None else "no samples"

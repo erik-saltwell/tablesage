@@ -15,7 +15,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.events import Click
 from textual.widgets import ContentSwitcher, DataTable, Input, Static
-from textual_fspicker import FileOpen, Filters
+from textual_fspicker import Filters
 
 from ..dialogs import (
     ConfirmationDialog,
@@ -24,6 +24,7 @@ from ..dialogs import (
     RolePickerDialog,
     TextInputDialog,
 )
+from ..dialogs.file_picker import FileOpen
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
@@ -220,6 +221,8 @@ class CampaignDetailScreen(TableSageScreen):
         self.query_one(f"#{tab}-table", DataTable).focus()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"edit_item", "delete_item"}:
+            return True if self._selected_row_id(f"{self._active_tab}-table") is not None else None
         if action == "cleanup":
             return self._active_tab == "sessions"
         if action == "import_legacy_settings":
@@ -244,6 +247,7 @@ class CampaignDetailScreen(TableSageScreen):
         table.clear()
         for membership, player in self.application.list_roster(self._campaign_id):
             table.add_row(player.name, self._role_label(membership.default_role_name), key=str(membership.id))
+        self.refresh_bindings()
 
     @staticmethod
     def _role_label(default_role_name: str) -> str:
@@ -322,6 +326,7 @@ class CampaignDetailScreen(TableSageScreen):
                 str(session.session_date) if session.session_date else "",
                 key=str(session.id),
             )
+        self.refresh_bindings()
 
     def _new_session(self) -> None:
         def on_dismiss(name: str | None) -> None:
@@ -402,6 +407,7 @@ class CampaignDetailScreen(TableSageScreen):
         table.clear()
         for entry in self.application.list_glossary_entries(self._campaign_id):
             table.add_row(entry.term, entry.description or "", key=str(entry.id))
+        self.refresh_bindings()
 
     def _new_glossary_entry(self) -> None:
         def on_dismiss(result: tuple[str, str | None] | None) -> None:
