@@ -66,6 +66,15 @@ Tools may compute embeddings and centroids. The application/domain layers decide
 
 ## Composition and testing
 
+Campaign-aware Previously On export lives in `tablesage_application.previously_on`, with
+Application loading a validated Campaign snapshot through the existing artifact freshness graph.
+Structured ingredients and scout responses use exact Session UUID/Scene index references.
+The separate `EditorInput` boundary contains only approved Scene records, starting situation,
+and glossary. All three prompts are packaged application resources; model selection uses
+`llm_model_high` and timeouts come from the deployed `previously_on` settings section.
+The TUI owns ephemeral selections and navigation. This external Markdown export does not register
+a Session artifact or alter downstream freshness; its final LLM output is deliberately unvalidated.
+
 The executable composition root constructs concrete SQLite repositories and tool adapters, then injects them into application use cases. This is the only place that knows all concrete implementations. It's also where `AppSettings` gets loaded (`tablesage_model.setup.ensure_settings`, deploying the TUI's packaged default `settings.yaml` to `.tablesage/settings.yaml` on first run) and injected into `Application` — settings aren't read anywhere below this point.
 
 The Settings screen edits a draft and delegates atomic canonical persistence to

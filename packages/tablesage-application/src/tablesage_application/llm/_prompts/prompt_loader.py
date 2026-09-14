@@ -19,6 +19,9 @@ class PromptName(StrEnum):
     SECTION_TRANSCRIPT = "section_transcript"
     GENERATE_PLAYER_INTRODUCTIONS = "generate_player_introductions"
     GENERATE_RECAP_SUMMARY = "generate_recap_summary"
+    PREVIOUSLY_ON_INGREDIENTS = "previously_on_ingredients"
+    PREVIOUSLY_ON_SCOUT = "previously_on_scout"
+    PREVIOUSLY_ON_EDITOR = "previously_on_editor"
 
 
 def system_prompt_path(name: PromptName) -> Path:

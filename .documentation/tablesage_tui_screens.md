@@ -97,6 +97,37 @@ Kind: `composite`.
 
 - Metadata (inline form): name, description, game system.
 - Three child types, tabbed: `R` Roster, `S` Sessions (default tab on open), `G` Glossary.
+- Other actions: `V` **Create Previously On** opens the Campaign recap export workflow.
+  `P` **Prepare Next Session** remains reserved for future AI-assisted planning.
+
+#### Create Previously On
+
+This ephemeral workflow requires a current, valid, complete Scene Breakdown for every
+Session. The action stays available; invoking it reports all affected Sessions and directs
+the GM to **Regenerate All Outputs** if the requirement fails. No regeneration starts automatically.
+
+After a progress dialog generates source-backed ingredients, a split-pane quick-entry view
+shows editable starting situation and upcoming-session notes on the left, and four ingredient
+categories on the right. Starting situation is the highest-sequence Session's `ending_situation`.
+Each category has up to five unselected suggestions; focus shows supporting Scenes. Space or
+Enter selects ingredients. Notes or at least one ingredient are required to **Find Scenes** (`Ctrl-N`).
+
+The scout opens a complete chronological Session → Scene tree. Recommendations are marked
+and preselected; only their Sessions start expanded. Space or Enter toggles Scenes or expands
+Sessions. Every recorded Scene is selectable, with no count limits. Focus shows its full record
+and private scout rationale. Per-Session and total selected counts remain visible; at least one
+Scene is required to save. **Back** preserves quick-entry inputs; scouting again replaces all
+prior Scene choices with the new recommendations.
+
+**Save Markdown…** opens a home-directory file picker suggesting
+`<campaign-name>-<max-session-sequence-plus-one:03d>-previously-on.md`. The destination must be
+a Markdown file outside managed Campaign folders. Replacing an existing file requires confirmation
+before generation. Canceling the picker preserves selection. The recap writer sees selected
+Scenes, starting situation, and glossary only. Success returns directly to Campaign detail;
+the GM reviews the file externally. Provider or save failures preserve inputs, choices, and
+destination for manual retry. Leaving or quitting after edits or Scene review confirms discard.
+
+See [the full proposal](../.scratch/campaign-aware-previously-on/proposal.md) for scope and deferred work.
 
 #### Roster tab
 

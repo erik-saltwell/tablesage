@@ -7,6 +7,12 @@
 settings_version: 0
 connection_test_timeout: 30
 
+# Create Previously On uses llm_model_high for all three stages.
+previously_on:
+  ingredient_timeout: 600
+  scout_timeout: 600
+  editor_timeout: 600
+
 remove_outliers:
   # Player Detail's "Clean Up" (C) prunes voice clips whose embedding falls
   # below this cosine-similarity bar against the centroid, one worst clip at

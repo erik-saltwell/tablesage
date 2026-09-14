@@ -20,7 +20,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 
-from . import paths, player_import_from_audio, players_from_session
+from . import paths, player_import_from_audio, players_from_session, previously_on
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt, system_prompt_path
@@ -74,6 +74,75 @@ class Application:
         return await test_connection(provider, models, settings.connection_test_timeout)
 
     # Campaigns
+
+    def previously_on_history(self, campaign_id: uuid.UUID) -> previously_on.CampaignHistory:
+        """Validate every Session and take an in-memory snapshot without generating artifacts."""
+        with Session(self._engine) as session:
+            campaign = campaigns.get_campaign(session, campaign_id)
+            game_sessions = sorted(sessions.list_sessions(session, campaign_id), key=lambda item: item.sequence_number)
+            if not game_sessions:
+                raise ValueError("This Campaign has no Sessions. Create Sessions and run Regenerate All Outputs first.")
+            graph = self._artifact_graph(session, campaign_id)
+            history: list[previously_on.CampaignSession] = []
+            problems: list[str] = []
+            for game_session in game_sessions:
+                folder = self._session_folder(session, game_session)
+                ref = artifact_graph_pipeline.ArtifactRef(folder, paths.ArtifactName.SCENE_BREAKDOWN)
+                try:
+                    status = graph.status(ref)
+                    if status is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+                        raise ValueError(f"Scene Breakdown is {status.value} or its generation is incomplete")
+                    breakdown = load_current_scene_breakdown(folder)
+                    if breakdown.session_id != game_session.id:
+                        raise ValueError("Scene Breakdown belongs to a different Session")
+                    history.append(previously_on.CampaignSession(sequence_number=game_session.sequence_number, breakdown=breakdown))
+                except (ValueError, OSError) as exc:
+                    problems.append(f"Session {game_session.sequence_number:03d} — {game_session.name}: {exc}")
+            if problems:
+                raise ValueError(
+                    "Every Session needs a current, valid, complete Scene Breakdown.\n\n"
+                    + "\n".join(problems)
+                    + "\n\nRun Regenerate All Outputs from Campaign detail, then try again."
+                )
+            return previously_on.CampaignHistory(
+                campaign_name=campaign.name,
+                sessions=tuple(history),
+                glossary=tuple(
+                    previously_on.GlossaryEntry(term=entry.term, description=entry.description)
+                    for entry in sorted(glossary.list_glossary_entries(session, campaign_id), key=lambda item: item.term.casefold())
+                ),
+            )
+
+    def previously_on_ingredients(self, history: previously_on.CampaignHistory) -> previously_on.Ingredients:
+        with widelog.wide_event(op="previously_on_ingredients", session_count=len(history.sessions)):
+            return asyncio.run(
+                previously_on.generate_ingredients(history, self._settings.llm_model_high, self._settings.previously_on.ingredient_timeout)
+            )
+
+    def previously_on_scout(self, data: previously_on.ScoutInput) -> previously_on.ScoutResult:
+        with widelog.wide_event(op="previously_on_scout", session_count=len(data.history.sessions)):
+            return asyncio.run(previously_on.scout_scenes(data, self._settings.llm_model_high, self._settings.previously_on.scout_timeout))
+
+    def previously_on_destination(self, destination: Path) -> Path:
+        destination = destination.expanduser().resolve()
+        if destination.suffix.lower() != ".md":
+            raise ValueError("Choose a Markdown file with a .md extension.")
+        if destination.is_relative_to(paths.campaigns_root(self._cwd).resolve()):
+            raise ValueError("Save the recap outside managed Campaign data.")
+        if not destination.parent.is_dir() or destination.is_dir():
+            raise ValueError("Choose a file in an existing directory.")
+        return destination
+
+    def export_previously_on(self, data: previously_on.EditorInput, destination: Path, *, overwrite: bool = False) -> None:
+        destination = self.previously_on_destination(destination)
+        if not data.selected_scenes:
+            raise ValueError("Select at least one Scene before exporting.")
+        with widelog.wide_event(op="export_previously_on", scene_count=len(data.selected_scenes)):
+            asyncio.run(
+                previously_on.write_recap(
+                    data, destination, self._settings.llm_model_high, self._settings.previously_on.editor_timeout, overwrite=overwrite
+                )
+            )
 
     def export_campaign(self, campaign_id: uuid.UUID, destination: Path) -> None:
         from .campaign_archive import export_campaign

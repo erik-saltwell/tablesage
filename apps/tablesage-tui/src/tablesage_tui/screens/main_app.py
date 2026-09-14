@@ -46,9 +46,14 @@ class TableSageApp(App):
         self.push_screen(SettingsScreen(self.configuration, required=self.settings_review_required))
 
     async def action_quit(self) -> None:
+        from .previously_on import PreviouslyOnScreen
         from .settings import SettingsScreen
 
-        if isinstance(self.screen, SettingsScreen):
+        if isinstance(self.screen, PreviouslyOnScreen):
+            self.screen.confirm_leave(self.exit)
+        elif any(isinstance(screen, PreviouslyOnScreen) for screen in self.screen_stack):
+            self.notify("Close the current dialog before leaving Previously On.")
+        elif isinstance(self.screen, SettingsScreen):
             self.screen.confirm_leave(self.exit)
         elif any(isinstance(screen, SettingsScreen) and screen._dirty() for screen in self.screen_stack):
             self.notify("Close the current dialog to save or discard your Settings changes before quitting.")

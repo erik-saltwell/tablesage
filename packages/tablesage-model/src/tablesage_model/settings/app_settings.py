@@ -102,10 +102,17 @@ class RemoveBackchannelsSettings(BaseModel, frozen=True):
     question_check_timeout: PositiveInt = 120
 
 
+class PreviouslyOnSettings(BaseModel, frozen=True):
+    ingredient_timeout: PositiveInt = 600
+    scout_timeout: PositiveInt = 600
+    editor_timeout: PositiveInt = 600
+
+
 class AppSettings(BaseModel, frozen=True):
     # Zero means that this workspace has not acknowledged the current schema.
     settings_version: int = Field(default=0, ge=0)
     connection_test_timeout: PositiveInt = 30
+    previously_on: PreviouslyOnSettings = Field(default_factory=PreviouslyOnSettings)
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)

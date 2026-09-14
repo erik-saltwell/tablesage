@@ -1,0 +1,11 @@
+PreviouslyOnScreen #previously-on-stage { height: 1fr; }
+PreviouslyOnScreen .previously-on-panes { height: 1fr; }
+PreviouslyOnScreen .previously-on-pane { width: 1fr; margin: 0 1; }
+PreviouslyOnScreen .previously-on-label { height: auto; text-style: bold; margin: 0 0 1 0; }
+PreviouslyOnScreen TextArea { height: 1fr; border: solid $primary; }
+PreviouslyOnScreen ChoiceTree { height: 2fr; border: solid $primary; }
+PreviouslyOnScreen #previously-on-scenes { height: 1fr; }
+PreviouslyOnScreen .previously-on-actions { height: 3; margin-top: 1; }
+PreviouslyOnScreen .previously-on-actions Button { margin-right: 1; }
+PreviouslyOnScreen #previously-on-error { height: auto; max-height: 6; overflow-y: auto; color: $error; }
+PreviouslyOnScreen #previously-on-destination { height: auto; }

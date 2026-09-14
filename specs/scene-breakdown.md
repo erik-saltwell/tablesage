@@ -64,3 +64,17 @@ Production validates nonempty flat `- ` Markdown bullets with no headings, nesti
 Detailed `summary.md` continues to use the current Ledger. Composition inserts the previous session's recap and the current session's Player Introductions, using the existing marker validation and atomic persistence. The first session has no previous recap. Regenerating a recap makes the following session's existing Summary stale; `Generate Outputs` for that following session rebuilds it.
 
 Implementation: [scene_breakdown.py](../packages/tablesage-application/src/tablesage_application/session_pipeline/scene_breakdown.py), [generate_ledger.py](../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_ledger.py), [generate_recap_summary.py](../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_recap_summary.py).
+
+## Campaign-aware Previously On export
+
+The external Previously On workflow consumes validated current Scene Breakdowns from every
+Campaign Session. It uses the existing freshness graph, paired-output completeness, and interruption
+marker checks without changing the persisted schema or comparing against hand-edited Ledger bytes.
+Session UUID plus zero-based Scene index identifies sources within its in-memory snapshot.
+The highest-sequence Session's `ending_situation` initializes the editable opening situation.
+
+An ingredient generator and scout receive complete Campaign breakdowns. After GM selection, a
+separate editor receives only the selected Scene records in chronology, edited starting situation,
+and glossary spelling/identity guidance. Its complete Markdown is saved verbatim to an external
+GM-chosen file with atomic replacement, without output validation, count limits, managed artifact
+registration, or downstream invalidation. This is separate from `recap_summary.md` above.

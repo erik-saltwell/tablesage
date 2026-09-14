@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 
 from tablesage_application.paths import ArtifactName
+from tablesage_application.previously_on import CampaignHistory, Ingredients
 from tablesage_application.session_pipeline.artifact_graph import (
     GENERATION_LABELS,
     ArtifactStatus,
@@ -55,6 +56,7 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
         Binding("p,P", "prepare_next_session", "Prepare Next Session", key_display="P"),
+        Binding("v,V", "create_previously_on", "Create Previously On", key_display="V"),
     ]
 
     def __init__(self, campaign_id: uuid.UUID) -> None:
@@ -581,6 +583,24 @@ class CampaignDetailScreen(TableSageScreen):
 
     def action_prepare_next_session(self) -> None:
         self.notify("Prepare Next Session was called.")
+
+    def action_create_previously_on(self) -> None:
+        from .previously_on import PreviouslyOnScreen
+
+        def prepare() -> tuple[CampaignHistory, Ingredients]:
+            history = self.application.previously_on_history(self._campaign_id)
+            ingredients = self.application.previously_on_ingredients(history)
+            return history, ingredients
+
+        def open_flow(result: tuple[CampaignHistory, Ingredients]) -> None:
+            self.app.push_screen(PreviouslyOnScreen(*result))
+
+        self.run_with_progress(
+            title="Create Previously On",
+            message="Checking Scene Breakdowns and recalling Campaign ingredients…",
+            work=prepare,
+            on_success=open_flow,
+        )
 
     # Dispatch
 

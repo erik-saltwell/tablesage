@@ -52,6 +52,25 @@ This document describes product behaviour. The relational data that supports it 
 - Removing a campaign requires confirmation and should be distinguishable from archival.
 - A future maintenance action may permanently remove a campaign and its local media after explicit confirmation.
 
+### Export a Campaign-aware Previously On
+
+**Goal:** Restore relevant memories from across the Campaign as a concise television-style
+recap, ending with the upcoming Session's starting situation.
+
+- Every Session must have a current, valid, complete Scene Breakdown. Failures identify all
+  affected Sessions and direct the GM to Regenerate All Outputs.
+- The GM reviews source-backed ingredient suggestions, optionally edits the last ending
+  situation, and supplies upcoming-session notes or selects ingredients.
+- A scout reads all Scene Breakdowns and the GM's input to propose relevant Scenes. The GM
+  can select any Scene in the complete Session/Scene catalog, without numerical limits.
+- A separate writer receives only approved Scenes in chronology, the edited starting situation,
+  and glossary spelling/identity guidance. It cannot see upcoming-session notes or scout rationales.
+- The GM chooses an external Markdown destination and confirms any replacement before generation.
+  The complete model response is written verbatim through a temporary file and atomic replacement.
+- The app returns to Campaign detail after saving. The GM reviews and edits the file externally.
+  No Session record, managed artifact, preview, or resumable draft is created. Failure preserves
+  an existing destination and retains active inputs for retry.
+
 ## Campaign glossary
 
 ### Maintain glossary entries
