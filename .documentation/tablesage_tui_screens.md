@@ -98,7 +98,21 @@ Kind: `composite`.
 - Metadata (inline form): name, description, game system.
 - Three child types, tabbed: `R` Roster, `S` Sessions (default tab on open), `G` Glossary.
 - Other actions: `V` **Create Previously On** opens the Campaign recap export workflow.
-  `P` **Prepare Next Session** remains reserved for future AI-assisted planning.
+  `P` **Generate Opportunities** opens ephemeral AI-assisted reincorporation planning.
+
+#### Generate Opportunities
+
+Requires current, valid, complete Scene Breakdowns for every Session. The screen
+shows the Campaign ending situation and a required editable upcoming-session prompt.
+Ctrl-G generates up to five short pitches from the complete Campaign Scene Recap;
+successful regeneration replaces the displayed set, while failures preserve it.
+Each pitch has a title, From the Campaign, and Opportunity, without source citations
+or expansion controls. An empty set invites revising the prompt.
+
+Ctrl-S saves the entire displayed set and its original generating prompt as Markdown
+outside managed Campaign data, confirming replacement of existing files. Saving
+stays on the screen. Escape returns to Campaign Detail; there is no persisted draft
+or suggestion history. See the [feature proposal](../.scratch/reincorporation-assistant/proposal.md).
 
 #### Create Previously On
 

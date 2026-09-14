@@ -1,6 +1,6 @@
 from datetime import date
 from pathlib import Path
-from unittest.mock import ANY, MagicMock, patch
+from unittest.mock import ANY, MagicMock
 
 import pytest
 from tablesage_application.paths import ArtifactName
@@ -126,19 +126,29 @@ async def test_regenerate_all_outputs_processes_only_reviewed_audio_sessions() -
 
 
 @pytest.mark.anyio
-async def test_prepare_next_session_notifies_that_it_was_called() -> None:
+async def test_generate_opportunities_secondary_binding_opens_screen() -> None:
+    from tablesage_application.campaign_recap import CampaignSceneRecap
+    from tablesage_tui.screens.opportunities import OpportunitiesScreen
+
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
+    application.create_campaign_scene_recap.return_value = CampaignSceneRecap(
+        campaign_id=campaign.id, campaign_name=campaign.name, starting_situation="Start", scenes=(), ending_situation="End"
+    )
+
+    binding = next(binding for binding in CampaignDetailScreen.OTHER_BINDINGS if binding.action == "generate_opportunities")
+    assert (binding.key, binding.description, binding.key_display) == ("p,P", "Generate Opportunities", "P")
+    assert all(binding.action != "prepare_next_session" for binding in CampaignDetailScreen.OTHER_BINDINGS)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
 
-        with patch.object(pilot.app.screen, "notify") as notify:
-            await pilot.press("slash", "p")
-            await pilot.pause()
+        await pilot.press("slash", "p")
+        await _wait_for_progress_worker(pilot)
+        assert isinstance(pilot.app.screen, OpportunitiesScreen)
 
-    notify.assert_called_once_with("Prepare Next Session was called.")
+    application.create_campaign_scene_recap.assert_called_once_with(campaign.id)
 
 
 @pytest.mark.anyio

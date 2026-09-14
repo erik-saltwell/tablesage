@@ -55,7 +55,7 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
-        Binding("p,P", "prepare_next_session", "Prepare Next Session", key_display="P"),
+        Binding("p,P", "generate_opportunities", "Generate Opportunities", key_display="P"),
         Binding("v,V", "create_previously_on", "Create Previously On", key_display="V"),
     ]
 
@@ -581,8 +581,20 @@ class CampaignDetailScreen(TableSageScreen):
             on_success=on_success,
         )
 
-    def action_prepare_next_session(self) -> None:
-        self.notify("Prepare Next Session was called.")
+    def action_generate_opportunities(self) -> None:
+        from tablesage_application.campaign_recap import CampaignSceneRecap
+
+        from .opportunities import OpportunitiesScreen
+
+        def open_opportunities(recap: CampaignSceneRecap) -> None:
+            self.app.push_screen(OpportunitiesScreen(recap))
+
+        self.run_with_progress(
+            title="Generate Opportunities",
+            message="Checking Campaign Scene Breakdowns…",
+            work=lambda: self.application.create_campaign_scene_recap(self._campaign_id),
+            on_success=open_opportunities,
+        )
 
     def action_create_previously_on(self) -> None:
         from .previously_on import PreviouslyOnScreen

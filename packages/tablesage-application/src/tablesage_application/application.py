@@ -20,7 +20,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 
-from . import campaign_recap, paths, player_import_from_audio, players_from_session, previously_on
+from . import campaign_recap, opportunities, paths, player_import_from_audio, players_from_session, previously_on
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt, system_prompt_path
@@ -123,6 +123,17 @@ class Application:
             return asyncio.run(
                 previously_on.generate_ingredients(history, self._settings.llm_model_high, self._settings.previously_on.ingredient_timeout)
             )
+
+    def generate_opportunities(self, campaign_id: uuid.UUID, prompt: str) -> opportunities.OpportunityResult:
+        if not prompt.strip():
+            raise ValueError("Describe what might happen next Session first.")
+        recap = self.create_campaign_scene_recap(campaign_id)
+        with widelog.wide_event(op="generate_opportunities", scene_count=len(recap.scenes)):
+            return asyncio.run(opportunities.generate(recap, prompt, self._settings.llm_model_high, self._settings.opportunities_timeout))
+
+    def save_opportunities(self, result: opportunities.OpportunityResult, destination: Path, *, overwrite: bool = False) -> None:
+        destination = self.previously_on_destination(destination)
+        opportunities.save(result, destination, overwrite=overwrite)
 
     def previously_on_scout(self, data: previously_on.ScoutInput) -> previously_on.ScoutResult:
         with widelog.wide_event(op="previously_on_scout", session_count=len(data.history.sessions)):

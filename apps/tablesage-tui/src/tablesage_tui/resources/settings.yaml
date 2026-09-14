@@ -6,6 +6,7 @@
 
 settings_version: 0
 connection_test_timeout: 30
+opportunities_timeout: 600  # Generate Opportunities uses llm_model_high.
 
 # Create Previously On uses llm_model_high for all three stages.
 previously_on:

@@ -22,6 +22,7 @@ class PromptName(StrEnum):
     PREVIOUSLY_ON_INGREDIENTS = "previously_on_ingredients"
     PREVIOUSLY_ON_SCOUT = "previously_on_scout"
     PREVIOUSLY_ON_EDITOR = "previously_on_editor"
+    GENERATE_OPPORTUNITIES = "generate_opportunities"
 
 
 def system_prompt_path(name: PromptName) -> Path:

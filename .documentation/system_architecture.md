@@ -66,6 +66,13 @@ Tools may compute embeddings and centroids. The application/domain layers decide
 
 ## Composition and testing
 
+Generate Opportunities lives in `tablesage_application.opportunities`. Application
+reloads the complete validated Campaign Scene Recap for each generation. A packaged
+prompt uses `llm_model_high` and deployed `opportunities_timeout`; its structured
+response contains at most five pitches. The TUI holds ephemeral results paired with
+their generating prompt. Markdown export performs no further model call and does
+not register artifacts, write planning history, or affect freshness.
+
 Campaign-aware Previously On export lives in `tablesage_application.previously_on`, with
 Application loading a validated Campaign snapshot through the existing artifact freshness graph.
 Structured ingredients and scout responses use exact Session UUID/Scene index references.
