@@ -222,6 +222,37 @@ def test_history_uses_real_freshness_graph_without_mutating_campaign(tmp_path: P
     assert len(app.list_sessions(campaign_id)) == 2
 
 
+def test_campaign_scene_recap_brackets_every_scene_with_campaign_endpoints(tmp_path: Path) -> None:
+    app, campaign_id, _ = _ready_campaign(tmp_path)
+
+    recap = app.create_campaign_scene_recap(campaign_id)
+
+    assert recap.campaign_id == campaign_id
+    assert recap.campaign_name == "Brandonsford"
+    assert recap.starting_situation == "Outside the gate."
+    assert [scene.title for scene in recap.scenes] == [
+        "Old warning 0",
+        "Old warning 1",
+        "Old warning 2",
+        "Old warning 3",
+        "Last session 0",
+        "Last session 1",
+        "Last session 2",
+        "Last session 3",
+    ]
+    assert set(recap.model_dump()["scenes"][0]) == {
+        "title",
+        "location",
+        "participants",
+        "situation",
+        "outcome",
+        "carry_forward",
+        "signature_detail",
+        "ledger_ranges",
+    }
+    assert recap.ending_situation == "Ending of Last session."
+
+
 @pytest.mark.parametrize("problem", ["missing", "invalid", "incomplete", "stale", "interrupted", "wrong-session", "gap"])
 def test_history_blocks_any_bad_session_and_lists_all_affected(tmp_path: Path, problem: str) -> None:
     app, campaign_id, folders = _ready_campaign(tmp_path)

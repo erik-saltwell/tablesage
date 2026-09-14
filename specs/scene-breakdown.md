@@ -67,6 +67,13 @@ Implementation: [scene_breakdown.py](../packages/tablesage-application/src/table
 
 ## Campaign-aware Previously On export
 
+The application also exposes a read-only Campaign Scene Recap. It brackets every Scene from
+every current Campaign Scene Breakdown with the first Session's `starting_situation` and the
+last Session's `ending_situation`. Scenes are flattened in Session sequence and then Scene-array
+order without Session metadata, keeping the representation compact. The view uses the same
+freshness, completeness, interruption-marker, and schema validation as the Previously On history
+snapshot; it is not persisted and does not affect artifact invalidation.
+
 The external Previously On workflow consumes validated current Scene Breakdowns from every
 Campaign Session. It uses the existing freshness graph, paired-output completeness, and interruption
 marker checks without changing the persisted schema or comparing against hand-edited Ledger bytes.

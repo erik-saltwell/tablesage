@@ -20,7 +20,7 @@ from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 
-from . import paths, player_import_from_audio, players_from_session, previously_on
+from . import campaign_recap, paths, player_import_from_audio, players_from_session, previously_on
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, roster, sessions
 from .llm import PromptName, call_llm_with_prompt, system_prompt_path
@@ -112,6 +112,11 @@ class Application:
                     for entry in sorted(glossary.list_glossary_entries(session, campaign_id), key=lambda item: item.term.casefold())
                 ),
             )
+
+    def create_campaign_scene_recap(self, campaign_id: uuid.UUID) -> campaign_recap.CampaignSceneRecap:
+        """Create a chronological Campaign recap from every current Scene Breakdown."""
+        history = self.previously_on_history(campaign_id)
+        return campaign_recap.create_campaign_scene_recap(campaign_id, history)
 
     def previously_on_ingredients(self, history: previously_on.CampaignHistory) -> previously_on.Ingredients:
         with widelog.wide_event(op="previously_on_ingredients", session_count=len(history.sessions)):
