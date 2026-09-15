@@ -20,7 +20,7 @@ class SessionFromCampaignPickerDialog(ModalScreen[uuid.UUID | None]):
     Sessions without a transcript are listed but grayed out (visible, not selectable) --
     the user should see "this session exists but hasn't been transcribed yet," not wonder
     why a session they know about is missing. See
-    `.documentation/enhance_players_from_session.md`.
+    the local archive's session-enhancement guide.
     """
 
     BINDINGS = [

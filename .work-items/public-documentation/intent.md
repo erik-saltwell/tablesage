@@ -15,8 +15,8 @@ Markdown-first and is a natural fit for the project's Python ecosystem.
 
 The immediate audience is a game master evaluating or using TableSage for the
 first time. Contributor and developer documentation are out of scope for the
-public site for now. Existing internal material in [`.documentation/`](../../.documentation/)
-can remain separate from the public navigation.
+public site for now. Any locally retained internal material remains separate from the
+public navigation.
 
 ## Information architecture
 

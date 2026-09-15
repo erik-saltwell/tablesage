@@ -1,6 +1,6 @@
 """On-disk embedding cache, so re-running the harness after registering a new matcher (which
 reuses an already-registered embedder) doesn't re-pay full embedding cost -- embedding, not
-matching, is the expensive step. See .documentation/speaker_identification_benchmark.md's
+matching, is the expensive step. See the local archive's speaker-identification benchmark guide's
 "Fixtures" section for why utterance and reference-clip keys are built differently.
 """
 

@@ -2,7 +2,7 @@
 
 Scores every candidate in candidates.py against the two frozen ground-truth sessions under
 benchmarks/data/. Requires a populated local players/ (reference clips aren't part of
-the frozen fixtures -- see .documentation/speaker_identification_benchmark.md's "Fixtures"
+the frozen fixtures -- see the local archive's speaker-identification benchmark guide's "Fixtures"
 section) and, on first run per embedder, downloads that embedder's model.
 
 Usage (from the repo root, inside the venv):

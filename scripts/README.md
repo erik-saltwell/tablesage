@@ -23,4 +23,4 @@ uv run python scripts/review_transcript_sections.py "Campaign Name" "Session Nam
 The supplied transcript is used as-is. It must preserve the original utterance indices and contain enough of the
 opening to support the ranges and active-play boundary under review.
 
-The current script's printed Sol/Fable juror labels are historical and do not match all model selections. It validates the complete recommendation's bounds/version/hash but does not require every explanatory value-review entry. See the [review utility guide](../.documentation/developer/transcript-sections-review-utility.md). Calls use provider credentials and incur usage; the canonical sections file is never overwritten.
+The current script's printed Sol/Fable juror labels are historical and do not match all model selections. It validates the complete recommendation's bounds/version/hash but does not require every explanatory value-review entry. The former review-utility guide is retained only in the local archive. Calls use provider credentials and incur usage; the canonical sections file is never overwritten.

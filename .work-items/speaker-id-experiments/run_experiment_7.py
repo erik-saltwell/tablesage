@@ -1,7 +1,7 @@
 """Experiment #7 driver: sweep `MarginAndSimilarityMatcher`'s three knobs (base margin,
 best-similarity OR-gate, and a duration-conditioned margin override) against `production`, using
 production's actual embedder (`wespeaker-resnet34`). See
-`.documentation/research/speaker-id-experiments/experiments-log.md`'s experiment #7 row and
+the locally archived speaker-identification experiment log's experiment #7 row and
 `benchmarks/speaker_id/matchers.py`'s `MarginAndSimilarityMatcher` docstring.
 
 Reuses the cached embeddings from prior experiments -- no new embedding computation, this is a

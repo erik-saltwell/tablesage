@@ -1,5 +1,5 @@
 """The strategy contract: embedder + matcher, per
-.documentation/speaker_identification_benchmark.md.
+the local archive's speaker-identification benchmark guide.
 
 No single-stage escape hatch -- a strategy that cannot be expressed as one of each is out of
 scope for this harness (see that doc's "Pipeline" section).

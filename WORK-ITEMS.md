@@ -8,4 +8,4 @@
 | Scene Breakdown artifact contract | complete | [.work-items/scene-breakdown-artifact-contract/](.work-items/scene-breakdown-artifact-contract/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
 
-Historical designs, research and maintenance records are reference material, not additional active work items. See the [internal documentation index](.documentation/INDEX.md) and [engineering workflow](.work-items/workflow.md).
+Historical designs, research and maintenance records are reference material, not additional active work items. Some may be retained locally in the Git-ignored `.archive/`; see the [engineering workflow](.work-items/workflow.md).

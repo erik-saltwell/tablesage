@@ -1,5 +1,5 @@
 """Orchestration: load the frozen ground-truth sessions, run each registered candidate, score,
-report. See run.py for the entrypoint and .documentation/speaker_identification_benchmark.md for
+report. See run.py for the entrypoint and the local archive's speaker-identification benchmark guide for
 the design this implements.
 """
 

@@ -1,6 +1,6 @@
 # Scene Breakdown and Recap
 
-Scene Breakdown is a compact, machine-readable account of every scene in one session. It supports recap generation and campaign-scale reading without sending complete Ledgers. The [design discussion](../../.documentation/designs/scene-breakdown/design.md) records the product decisions; this specification defines their implementation.
+Scene Breakdown is a compact, machine-readable account of every scene in one session. It supports recap generation and campaign-scale reading without sending complete Ledgers. A locally retained design discussion may record the product decisions; this specification defines their implementation.
 
 ## Joint generation and source boundaries
 

@@ -49,8 +49,7 @@ class ArtifactSpec:
 
 # Fixed filenames within a session folder -- the filesystem is the only
 # source of truth for artifact existence, there is no `session_artifact`
-# table. See `.documentation/import_player_from_filesystem.md`'s sibling doc,
-# `.documentation/session_detail_screen.md`.
+# table.
 #
 # Order here is pipeline order, and drives both the indicator panel's layout
 # and `should_show_in_ui`'s filtering -- entries stay in this order whether

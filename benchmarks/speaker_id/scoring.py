@@ -1,4 +1,4 @@
-"""Cost model and reporting. See .documentation/speaker_identification_benchmark.md's "Scoring"
+"""Cost model and reporting. See the local archive's speaker-identification benchmark guide's "Scoring"
 section: correct=0, unassigned=0.4, wrong=1.0, unweighted per utterance -- two abstentions cost a
 little less than one error, matching the requirement to penalize unassigned output but penalize
 errors more.

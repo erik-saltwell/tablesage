@@ -22,7 +22,7 @@ class TranscriptViewDialog(ModalScreen[None]):
     """Stage 4's "show me everything Speaker N said" view.
 
     There's no way to reassign or exclude an individual utterance here (see
-    `.documentation/import_players_from_audio_file.md` -- editing stays speaker-ID
+    the local archive's audio-import guide -- editing stays speaker-ID
     level), but pressing `P` (or the "Play Clip" button -- every other action in this app
     is reachable without memorizing a key, so this one is too) plays the selected row's
     clip to help judge it, since transcript text alone doesn't always settle "is this

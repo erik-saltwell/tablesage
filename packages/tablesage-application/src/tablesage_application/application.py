@@ -1340,7 +1340,7 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return transcribe_audio.can_transcribe_audio(session, session_id, self._session_folder(session, game_session))
 
-    # Manual review -- see `.documentation/speaker_review_screen.md`.
+    # Manual review.
 
     def extract_review_clips(self, session_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
         with Session(self._engine) as session:

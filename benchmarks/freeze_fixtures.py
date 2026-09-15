@@ -5,7 +5,7 @@ they're copied from.
 
 Rerun this after further hand-correction in Speaker Review, immediately before the
 benchmark harness needs it -- nothing keeps benchmarks/data/*/ground_truth.json in sync
-with campaigns/ automatically. See .documentation/speaker_identification_benchmark.md.
+with campaigns/ automatically. See the local archive's speaker-identification benchmark guide when available.
 
 Usage (from the repo root, inside the venv):
 

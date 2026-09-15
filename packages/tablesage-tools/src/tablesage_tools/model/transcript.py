@@ -30,7 +30,7 @@ class Utterance(BaseModel):
     # UNASSIGNED_SPEAKER), None only for a transcript produced before this field existed.
     similarity_margin: float | None = None
     # True once a human has changed this utterance's speaker or displayed text in Manual
-    # Review (see `.documentation/speaker_review_screen.md`). Narrower than "reviewed" --
+    # Review. Narrower than "reviewed" --
     # confirming an unchanged row or auto-playing past it untouched never sets this. The
     # marker lives only in the separate completed-review artifact.
     adjusted: bool = False

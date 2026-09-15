@@ -23,7 +23,7 @@ from ..entities.players import get_player
 from ..paths import VOICE_CLIP_GLOB
 
 # `import-<player_slug>-<sourcehash8>-<uuid4hex>.wav` -- see
-# `.documentation/import_player_from_filesystem.md`. The hash segment is the
+# The hash segment is the
 # only part matching relies on (see `find_clips_by_hash_segment`); the slug
 # is a cosmetic, as-of-import-time snapshot that goes stale (harmlessly) if
 # the player is later renamed.

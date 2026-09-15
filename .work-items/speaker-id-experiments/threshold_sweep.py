@@ -1,7 +1,7 @@
 """Experiment #1 driver: sweep `similarity_margin_threshold` and score each value against the
 frozen benchmark sessions, to see whether production's default (0.1) is actually optimal.
 
-Not a permanent harness feature -- .documentation/speaker_identification_benchmark.md defers a
+Not a permanent harness feature -- the locally archived speaker-identification benchmark defers a
 "first-class threshold-sweep mode" (curve instead of point comparisons) out of v1 scope on
 purpose. This script reuses the harness's existing embedder/centroid/matcher/scoring stages as a
 library, the same way candidates.py's Workflow section says threshold variations should be

@@ -55,7 +55,7 @@ def select_enhancement_utterances(
     Comparing `utterance.speaker == player_name` already excludes every other attendee's
     utterances and `UNASSIGNED_SPEAKER` (never a real player name) in one check. A `None`
     margin fails the filter rather than passing it -- see
-    `.documentation/enhance_players_from_session.md`. `min_embeddable_seconds` is a hard
+    `min_embeddable_seconds` is a hard
     technical floor (the embedding model can't compute a feature window below it), not a
     quality bound like `min_seconds`/`max_seconds` -- in practice `min_seconds` is already
     configured above it, but this guards against a misconfigured (too-low) `min_seconds` too.

@@ -55,7 +55,7 @@ class MarginThresholdMatcher:
 
 @dataclass
 class MarginAndSimilarityMatcher:
-    """Experiment #7 (.documentation/research/speaker-id-experiments/experiments-log.md): a richer decision rule
+    """Experiment #7: a richer decision rule
     than `MarginThresholdMatcher`'s margin-only threshold. `SimilarityResult` already computes
     `best_match_similarity` (the absolute cosine similarity to the winning centroid, not just its
     margin over the runner-up) and the harness already knows each utterance's duration -- both are

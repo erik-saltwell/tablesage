@@ -1,5 +1,5 @@
 """Registered candidates. Add a new algorithm/threshold/embedder by adding one entry here -- see
-.documentation/speaker_identification_benchmark.md's "Workflow" section for why this is a plain
+the local archive's speaker-identification benchmark guide's "Workflow" section for why this is a plain
 list in code rather than a CLI.
 """
 

@@ -17,7 +17,7 @@ from .base import TableSageScreen
 class ArtifactExportScreen(TableSageScreen):
     """Work item 17: copy one of this session's user-facing artifacts to a chosen destination.
 
-    A plain copy, never a move -- see `.documentation/export_artifact.md`. Stays open after a
+    A plain copy, never a move. Stays open after a
     successful export so the user can export more than one artifact in the same visit.
     """
 

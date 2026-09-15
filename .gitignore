@@ -18,6 +18,9 @@ build/
 dist/
 *.egg-info/
 
+# Local archive of superseded internal documentation.
+.archive/
+
 # Coverage
 .coverage
 htmlcov/

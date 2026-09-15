@@ -30,7 +30,7 @@ class SpeakerResolutionDialog(ModalScreen[SpeakerResolutionResult | None]):
 
     `DataTable` cells can't host a live `Select`/`Input`/toggle, so editing a review row
     pushes this dialog instead -- mirroring `AttendeeDialog`'s own workaround for the same
-    constraint (see `.documentation/import_players_from_audio_file.md`).
+    constraint documented in the local archive when available.
     """
 
     BINDINGS = [
