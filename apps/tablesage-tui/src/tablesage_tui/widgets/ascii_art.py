@@ -5,7 +5,7 @@ from typing import Self
 
 from textual.widgets import Static
 
-from ..resources import load_resource
+from ..resources import load_ascii_art
 
 
 class AsciiArt(Static):
@@ -49,7 +49,7 @@ class AsciiArt(Static):
         disabled: bool = False,
     ) -> Self:
         return cls(
-            load_resource(filepath, encoding=encoding),
+            load_ascii_art(filepath, encoding=encoding),
             markup=markup,
             expand=expand,
             shrink=shrink,

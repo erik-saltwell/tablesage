@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from tablesage_tui.resources import ASCII_ART_DIRECTORY, load_ascii_art
 from tablesage_tui.screens.campaign_list import CampaignListScreen
 from tablesage_tui.screens.landing import LandingScreen
 from tablesage_tui.screens.main_app import TableSageApp
@@ -72,3 +73,42 @@ async def test_f5_is_hidden_on_landing() -> None:
         assert isinstance(screen, LandingScreen)
 
         assert "f5" not in screen.active_bindings
+
+
+def test_ascii_art_assets_are_consolidated_under_tui_resources() -> None:
+    expected = {
+        "acorn.txt",
+        "alpha_tree.txt",
+        "dead_tree.txt",
+        "house_plant1.txt",
+        "oak_tree.txt",
+        "sage_bush.txt",
+        "sage_computer.txt",
+        "sage_leaf.txt",
+        "sage_leaf_50.txt",
+        "sage_leaf_60.txt",
+        "sage_leaf_70.txt",
+        "sage_leaf_80.txt",
+        "sage_leaf_detailed.txt",
+        "sage_standard.txt",
+        "sage_tree.txt",
+        "small_bush.txt",
+        "sun_1.txt",
+        "sun_2.txt",
+        "sun_2_small.txt",
+        "sun_3_small.txt",
+        "table_computer.txt",
+        "table_standard.txt",
+        "tablesage_computer.txt",
+        "tablesage_standard.txt",
+        "three_leaves.txt",
+        "wordmark_combined_1.txt",
+        "wordmark_combined_2.txt",
+        "wordmark_combined_3.txt",
+        "wordmark_computer_1.txt",
+        "wordmark_computer_2.txt",
+        "wordmark_standard.txt",
+    }
+
+    assert {path.name for path in ASCII_ART_DIRECTORY.iterdir()} == expected
+    assert all(load_ascii_art(filename) for filename in expected)

@@ -57,7 +57,7 @@ G asks Application to build missing/stale targets recursively and skip current s
 
 These are dependency-ordered targets, not six unconditional calls. The prior-session recap may be rebuilt recursively when needed; ordering for Summary uses dated sessions first, then sequence for ties/undated sessions. Later sessions are not automatically rebuilt by this screen's G.
 
-A failure stops the plan while preserving successful earlier steps and each failed step's previously committed outputs according to its write contract. A fully current plan reports a successful no-op. R chooses a build step, confirms forced regeneration, then refreshes its downstream outputs; choosing Ledger replaces both Ledger and Scene Breakdown. See [dependency tracking](../.scratch/artifact-dependency-tracking/design.md) and the [artifact specifications](../specs/).
+A failure stops the plan while preserving successful earlier steps and each failed step's previously committed outputs according to its write contract. A fully current plan reports a successful no-op. R chooses a build step, confirms forced regeneration, then refreshes its downstream outputs; choosing Ledger replaces both Ledger and Scene Breakdown. See [dependency tracking](designs/artifact-dependency-tracking/design.md) and the [artifact contracts](INDEX.md#artifact-contracts).
 
 ## Attendance, glossary and cleanup
 
@@ -71,4 +71,4 @@ C confirms deletion of every registered Session artifact, including imported aud
 
 The graph combines file modification times, metadata/attendance/glossary/player clocks, deployed settings-file modification time and packaged system-prompt modification times. Shared-output completeness and interrupted-pair markers also matter. Timestamp-preserving external edits may require forced regeneration.
 
-Settings are loaded at the composition root and injected into Application; calls into tools receive plain values. Keep code and the specific [Ledger](../specs/ledger.md), [Scene Breakdown](../specs/scene-breakdown.md), [Transcript Sections](../specs/transcript-sections.md) and [Player Introductions](../specs/player-introductions.md) contracts aligned when changing the pipeline.
+Settings are loaded at the composition root and injected into Application; calls into tools receive plain values. Keep code and the specific [Ledger](../.work-items/ledger-artifact-contract/specification.md), [Scene Breakdown](../.work-items/scene-breakdown-artifact-contract/specification.md), [Transcript Sections](../.work-items/transcript-sections-artifact-contract/specification.md) and [Player Introductions](../.work-items/player-introductions-artifact-contract/specification.md) contracts aligned when changing the pipeline.

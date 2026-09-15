@@ -35,7 +35,7 @@ def ledger(
             border_style="cyan",
         )
     )
-    optimize_ledger(Path("data_prompts/ledger"), console, run=run, resume=resume)
+    optimize_ledger(Path("prompt_optimization/ledger"), console, run=run, resume=resume)
 
 
 @app.command()
@@ -51,7 +51,7 @@ def summary(
             border_style="cyan",
         )
     )
-    optimize_summary(Path("data_prompts/summary"), console, run=run, resume=resume)
+    optimize_summary(Path("prompt_optimization/summary"), console, run=run, resume=resume)
 
 
 @app.command("recap-summary")
@@ -72,7 +72,7 @@ def recap_summary(
         )
     )
     optimize_recap_summary(
-        Path("data_prompts/recap_summary"),
+        Path("prompt_optimization/recap_summary"),
         console,
         run=run,
         resume=resume,
@@ -102,7 +102,7 @@ def section_transcript(
         )
     )
     optimize_section_transcript(
-        Path("data_prompts/section_transcript"),
+        Path("prompt_optimization/section_transcript"),
         console,
         run=run,
         resume=resume,

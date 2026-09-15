@@ -20,7 +20,7 @@ from tablesage_application.session_pipeline.generate_recap_summary import Attend
 from tablesage_application.session_pipeline.scene_breakdown import load_current_scene_breakdown
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT_DIRECTORY = REPO_ROOT / "data_prompts" / "recap_summary" / "inputs"
+DEFAULT_OUTPUT_DIRECTORY = REPO_ROOT / "prompt_optimization" / "recap_summary" / "inputs"
 
 
 def _arguments() -> argparse.Namespace:

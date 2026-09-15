@@ -94,10 +94,10 @@ share the explicit Save lifecycle (in a separate personal file), preserve unrela
 variables while preserving their inherited shell overrides. An explicit
 `settings_version` controls mandatory first-run and upgrade review; an unversioned
 file is version zero, and a future version is rejected. Invalid files retain the
-terminal-error repair path. See [the Settings design](../.scratch/settings/design.md).
+terminal-error repair path. See [the Settings design](designs/settings/design.md).
 
 ## Artifact lifecycle and verification
 
-[Artifact dependency tracking](../.scratch/artifact-dependency-tracking/design.md) describes the implemented freshness graph. Normal input changes preserve old files and make dependent outputs stale. Generate Outputs ensures dependencies and skips current work; Clean Session explicitly deletes session artifacts, including audio.
+[Artifact dependency tracking](designs/artifact-dependency-tracking/design.md) describes the implemented freshness graph. Normal input changes preserve old files and make dependent outputs stale. Generate Outputs ensures dependencies and skips current work; Clean Session explicitly deletes session artifacts, including audio.
 
-Use the [artifact specs](../specs/) for schema and routing contracts. Follow the repository's [verification policy](../.work-items/workflow.md#verification-policy); this architecture does not prescribe a new test suite or an unimplemented fake-repository seam.
+Use the [artifact contracts](INDEX.md#artifact-contracts) for schema and routing contracts. Follow the repository's [verification policy](../.work-items/workflow.md#verification-policy); this architecture does not prescribe a new test suite or an unimplemented fake-repository seam.

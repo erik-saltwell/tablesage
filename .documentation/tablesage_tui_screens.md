@@ -18,7 +18,7 @@ FileOpen, FileSave and SelectDirectory use shared application wrappers. Existing
 
 Landing is always home, even in an empty workspace: C Campaigns, P Players, S Settings. Required first-run/settings-version review disables ordinary navigation until a valid Settings Save. Credentials need not be populated just to save setup.
 
-Settings has LLM and Keys sections. It edits three model selectors (including custom IDs) and personal credentials; other YAML fields are preserved, not exposed or reset. Ctrl-S saves. Dirty exit offers Save/Discard/Cancel; provider tests require saving edits first. See [Settings](../.scratch/settings/design.md).
+Settings has LLM and Keys sections. It edits three model selectors (including custom IDs) and personal credentials; other YAML fields are preserved, not exposed or reset. Ctrl-S saves. Dirty exit offers Save/Discard/Cancel; provider tests require saving edits first. See [Settings](designs/settings/design.md).
 
 ## Campaigns List
 
@@ -47,7 +47,7 @@ or expansion controls. An empty set invites revising the prompt.
 Ctrl-S saves the entire displayed set and its original generating prompt as Markdown
 outside managed Campaign data, confirming replacement of existing files. Saving
 stays on the screen. Escape returns to Campaign Detail; there is no persisted draft
-or suggestion history. See the [feature proposal](../.scratch/reincorporation-assistant/proposal.md).
+or suggestion history. See the [feature proposal](designs/reincorporation-assistant/proposal.md).
 
 #### Create Previously On
 
@@ -76,7 +76,7 @@ Scenes, starting situation, and glossary only. Success returns directly to Campa
 the GM reviews the file externally. Provider or save failures preserve inputs, choices, and
 destination for manual retry. Leaving or quitting after edits or Scene review confirms discard.
 
-See [the full proposal](../.scratch/campaign-aware-previously-on/proposal.md) for scope and deferred work.
+See [the full proposal](designs/campaign-aware-previously-on/proposal.md) for scope and deferred work.
 
 
 ## Players List

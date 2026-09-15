@@ -15,8 +15,8 @@ from tablesage_application.paths import ARTIFACTS, ArtifactName
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CAMPAIGN_NAME = "Brandonsford"
-OUTPUT_DIRECTORY = REPO_ROOT / "data_prompts" / "summary" / "coverage_questions"
-UTILITY_PROMPT_PATH = REPO_ROOT / "data_utility_prompts" / "generate_questions.md"
+OUTPUT_DIRECTORY = REPO_ROOT / "prompt_optimization" / "summary" / "coverage_questions"
+UTILITY_PROMPT_PATH = REPO_ROOT / "utility_prompts" / "generate_questions.md"
 QUESTION_MODEL = LiteLLMConfig(model="anthropic/claude-sonnet-5")
 
 

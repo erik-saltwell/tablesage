@@ -14,7 +14,7 @@ from tablesage_application.session_pipeline.generate_summary import Attendee, Gl
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CAMPAIGN_NAME = "Brandonsford"
-OUTPUT_DIR = REPO_ROOT / "data_prompts" / "summary" / "inputs"
+OUTPUT_DIR = REPO_ROOT / "prompt_optimization" / "summary" / "inputs"
 
 
 def slugify(value: str) -> str:

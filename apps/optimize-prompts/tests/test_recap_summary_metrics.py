@@ -179,7 +179,7 @@ def test_exclusions_require_absence_not_denial(answer: AnswerValue, score: float
 
 
 def test_checked_in_corpus_preflight() -> None:
-    directory = Path(__file__).resolve().parents[3] / "data_prompts" / "recap_summary"
+    directory = Path(__file__).resolve().parents[3] / "prompt_optimization" / "recap_summary"
     cases = _load_eval_cases(directory / "inputs")
     assert len(cases) == 3
     settings = _load_settings(directory / "settings.yaml")
@@ -205,7 +205,7 @@ def test_alignment_receives_only_ledger_and_keeps_case_identity(monkeypatch: pyt
 
 
 def test_provenance_detects_modified_snapshot() -> None:
-    directory = Path(__file__).resolve().parents[3] / "data_prompts" / "recap_summary" / "inputs"
+    directory = Path(__file__).resolve().parents[3] / "prompt_optimization" / "recap_summary" / "inputs"
     cases = _load_eval_cases(directory)
     cases[0] = cases[0].model_copy(update={"input": cases[0].input.replace("Brandonsford", "Altered")})
     with pytest.raises(ValueError, match="differs from its manifest"):
@@ -213,7 +213,7 @@ def test_provenance_detects_modified_snapshot() -> None:
 
 
 def test_provenance_detects_template_drift(monkeypatch: pytest.MonkeyPatch) -> None:
-    directory = Path(__file__).resolve().parents[3] / "data_prompts" / "recap_summary" / "inputs"
+    directory = Path(__file__).resolve().parents[3] / "prompt_optimization" / "recap_summary" / "inputs"
     monkeypatch.setattr("optimize_prompts.optimize_recap_summary.read_prompt_template", lambda name: "changed template")
     with pytest.raises(ValueError, match="template changed"):
         validate_source_manifests(directory, _load_eval_cases(directory))

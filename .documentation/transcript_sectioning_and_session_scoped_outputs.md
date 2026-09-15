@@ -1,6 +1,6 @@
 # Transcript sectioning and session-scoped outputs
 
-TableSage separates opening context from current-session play so the Ledger does not repeat a spoken recap or roll call. This is an overview of the implemented pipeline; the [artifact specs](../specs/) own exact schemas and validation.
+TableSage separates opening context from current-session play so the Ledger does not repeat a spoken recap or roll call. This is an overview of the implemented pipeline; the [artifact contracts](INDEX.md#artifact-contracts) own exact schemas and validation.
 
 ## Sources and routes
 
@@ -15,7 +15,7 @@ Role Transcript contains ordered `index`, `speaker`, `text` records. Indices are
 
 Ranges may overlap, including a mixed opening-to-play utterance. Ambiguity favors preserving active-play material. Sectioning does not filter rules talk or breaks after the boundary. Setup-only recordings may put the boundary at the utterance count. Downstream complete routing requires starting context rather than inventing a situation.
 
-The routed slices contain speaker/text pairs; source indices remain in the Role Transcript/routing artifacts. [Transcript Sections](../specs/transcript-sections.md) defines exact bounds and digest checks.
+The routed slices contain speaker/text pairs; source indices remain in the Role Transcript/routing artifacts. [Transcript Sections](../.work-items/transcript-sections-artifact-contract/specification.md) defines exact bounds and digest checks.
 
 ## Generated artifacts
 
@@ -50,4 +50,4 @@ Handled joint-write failures restore the previous Ledger JSON, Markdown and Scen
 
 Normal input edits preserve old files. Freshness follows recursive file times, database input clocks, settings and packaged system prompts. Ledger and Scene Breakdown are siblings, not freshness dependencies of each other: their cross-references are generation-time provenance, not a requirement to compare against later hand-edited Ledger bytes. Replacing a recap makes the later Summary that consumes it stale; that later Summary is rebuilt when included in a generation scope, not immediately.
 
-See [dependency tracking](../.scratch/artifact-dependency-tracking/design.md), [Ledger](../specs/ledger.md), [Scene Breakdown and Recap](../specs/scene-breakdown.md), [Player Introductions](../specs/player-introductions.md) and [Summary generation](generate_summary.md).
+See [dependency tracking](designs/artifact-dependency-tracking/design.md), [Ledger](../.work-items/ledger-artifact-contract/specification.md), [Scene Breakdown and Recap](../.work-items/scene-breakdown-artifact-contract/specification.md), [Player Introductions](../.work-items/player-introductions-artifact-contract/specification.md) and [Summary generation](generate_summary.md).

@@ -89,4 +89,4 @@ migrated; Sessions are reprocessed to create v4.
 - The application owns Session metadata, source-fingerprint verification, slicing, and atomic
   persistence.
 - The LLM owns the shared starting situation, ordered semantic entries, and scene content. It returns no scratchpad.
-- [Scene Breakdown](../specs/scene-breakdown.md) is registered but hidden in the UI and has no Markdown companion. Recap generation reads it; detailed Summary generation continues reading the Ledger.
+- [Scene Breakdown](../.work-items/scene-breakdown-artifact-contract/specification.md) is registered but hidden in the UI and has no Markdown companion. Recap generation reads it; detailed Summary generation continues reading the Ledger.

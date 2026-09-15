@@ -29,7 +29,7 @@ from tablesage_application.session_pipeline.transcript_sections import (
 from tablesage_model.model import Session as GameSession
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-FIXTURES_DIRECTORY = REPO_ROOT / "data_prompts" / "section_transcript"
+FIXTURES_DIRECTORY = REPO_ROOT / "prompt_optimization" / "section_transcript"
 
 
 def _attendees_from_ledger(ledger_path: Path) -> tuple[Attendee, ...]:

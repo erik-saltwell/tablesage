@@ -55,7 +55,7 @@ def _local_model_dir() -> Path:
 @dataclass
 class EmbeddingFactory:
     """Speaker embedding extractor using WeSpeaker's ResNet34-LM (VoxCeleb2-trained, English) --
-    see `.scratch/speaker-id-experiments/03-wespeaker-resnet34-embedder.md` and
+    see `.documentation/research/speaker-id-experiments/03-wespeaker-resnet34-embedder.md` and
     `05-threshold-sweep-leaders.md` for why this replaced `eres2netv2.EmbeddingFactory` (a
     Mandarin-trained model previously used off-domain on English speech) as the production
     embedder.

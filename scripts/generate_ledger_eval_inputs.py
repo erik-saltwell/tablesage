@@ -47,7 +47,7 @@ def main() -> None:
             glossary=glossary,
         )
         rendered[f"{campaign.name}_{session.sequence_number:03d}.txt"] = template.render(**vars(data)).rstrip() + "\n"
-    target = root / "data_prompts" / "ledger" / "inputs"
+    target = root / "prompt_optimization" / "ledger" / "inputs"
     target.mkdir(parents=True, exist_ok=True)
     for name, text in rendered.items():
         (target / name).write_text(text, encoding="utf-8")

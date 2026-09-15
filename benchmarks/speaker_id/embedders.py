@@ -19,7 +19,7 @@ class Eres2NetV2Embedder:
     """Wraps `tablesage_tools.embeddings.eres2netv2.EmbeddingFactory` -- ModelScope's ERes2NetV2, a
     Mandarin-trained model used off-domain on English speech. Production's embedder until
     `wespeaker-resnet34` replaced it; kept here as a historical comparison baseline -- see
-    `.scratch/speaker-id-experiments/experiments-log.md` and
+    `.documentation/research/speaker-id-experiments/experiments-log.md` and
     `05-threshold-sweep-leaders.md` for the historical evidence behind the swap.
     """
 
@@ -44,7 +44,7 @@ class Eres2NetV2Embedder:
 class WeSpeakerResNet34Embedder:
     """Wraps `tablesage_tools.embeddings.wespeaker.EmbeddingFactory` (WeSpeaker ResNet34-LM,
     VoxCeleb2-trained, English) -- production's embedder as of
-    `.scratch/speaker-id-experiments/03-wespeaker-resnet34-embedder.md`.
+    `.documentation/research/speaker-id-experiments/03-wespeaker-resnet34-embedder.md`.
     """
 
     version: int = 1  # bump when preprocessing changes

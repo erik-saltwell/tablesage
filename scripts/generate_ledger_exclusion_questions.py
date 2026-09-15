@@ -12,9 +12,9 @@ from prompt_model.helpers import acomplete
 from prompt_model_metrics.summarization.prompt_schemas import PromptQuestions
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-INPUT_DIRECTORY = REPO_ROOT / "data_prompts" / "ledger" / "inputs"
-OUTPUT_DIRECTORY = REPO_ROOT / "data_prompts" / "ledger" / "exclusion_questions"
-UTILITY_PROMPT_PATH = REPO_ROOT / "data_utility_prompts" / "generate_exclusion_questions.md"
+INPUT_DIRECTORY = REPO_ROOT / "prompt_optimization" / "ledger" / "inputs"
+OUTPUT_DIRECTORY = REPO_ROOT / "prompt_optimization" / "ledger" / "exclusion_questions"
+UTILITY_PROMPT_PATH = REPO_ROOT / "utility_prompts" / "generate_exclusion_questions.md"
 INPUT_FILENAMES = ("Brandonsford_001.txt", "Brandonsford_002.txt", "Brandonsford_003.txt")
 QUESTION_MODEL = LiteLLMConfig(model="anthropic/claude-sonnet-5")
 

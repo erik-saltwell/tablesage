@@ -47,7 +47,7 @@ Transcription requires attendees with computed voice centroids. It transcribes/d
 5. Selective Recap Summary from Scene Breakdown.
 6. Detailed Summary from Ledger, with current introductions and the preceding Session's recap.
 
-The [specs](../specs/) define exact source restrictions, schemas and failure behavior. Ledger condenses reusable current-session fiction rather than serving as a lossless transcript. Scene Breakdown supplies a compact complete scene history. The brief recap selects continuity; it is not one mandatory bullet per scene.
+The [artifact contracts](INDEX.md#artifact-contracts) define exact source restrictions, schemas and failure behavior. Ledger condenses reusable current-session fiction rather than serving as a lossless transcript. Scene Breakdown supplies a compact complete scene history. The brief recap selects continuity; it is not one mandatory bullet per scene.
 
 Input changes preserve existing files and mark affected outputs stale. Regenerate Artifact forces a selected producer and updates downstream work; Campaign Detail's Regenerate All Outputs applies the wider campaign operation. A selected Summary can require rebuilding stale prerequisites, so “summary-only” is not a promise that no upstream generator runs. No database ProcessingRun history or versioned artifact catalog is maintained.
 
@@ -55,12 +55,12 @@ Session Detail shows freshness and errors; generated documents are inspected ext
 
 ## Prepare the next session
 
-**Create Previously On** requires current, valid, complete Scene Breakdowns for every Session. It proposes ingredients, scouts relevant scenes, lets the GM select any scenes, then writes external Markdown. The writer sees approved scenes, the edited starting situation and glossary—not upcoming notes or private scout rationale. There is no managed artifact or resumable draft. See [the implemented design](../.scratch/campaign-aware-previously-on/proposal.md).
+**Create Previously On** requires current, valid, complete Scene Breakdowns for every Session. It proposes ingredients, scouts relevant scenes, lets the GM select any scenes, then writes external Markdown. The writer sees approved scenes, the edited starting situation and glossary—not upcoming notes or private scout rationale. There is no managed artifact or resumable draft. See [the implemented design](designs/campaign-aware-previously-on/proposal.md).
 
-**Generate Opportunities** uses the complete validated Campaign Scene Recap and a required upcoming-session prompt to produce up to five reincorporation pitches. Results and their original prompt are ephemeral; saving exports the displayed set without another model call. Failure preserves the prior displayed set. See [the implemented design](../.scratch/reincorporation-assistant/proposal.md).
+**Generate Opportunities** uses the complete validated Campaign Scene Recap and a required upcoming-session prompt to produce up to five reincorporation pitches. Results and their original prompt are ephemeral; saving exports the displayed set without another model call. Failure preserves the prior displayed set. See [the implemented design](designs/reincorporation-assistant/proposal.md).
 
 ## Configuration and operational feedback
 
-Settings exposes High/Medium/Low model choices and personal API keys, not every processing knob. Other deployed YAML settings remain preserved on Save. Keys use the personal user-config directory and inherited shell overrides; workspace configuration stays local. Mandatory version review blocks ordinary landing navigation until a valid Save. See [Settings](../.scratch/settings/design.md).
+Settings exposes High/Medium/Low model choices and personal API keys, not every processing knob. Other deployed YAML settings remain preserved on Save. Keys use the personal user-config directory and inherited shell overrides; workspace configuration stays local. Mandatory version review blocks ordinary landing navigation until a valid Save. See [Settings](designs/settings/design.md).
 
 Long operations use modal stage/progress feedback, usually without mid-flight cancellation. Errors surface as notifications and logs; Session Detail additionally retains an in-memory error table for its import/generate/clean actions. Correct inputs and retry explicitly; the UI does not offer arbitrary concurrent navigation or automatic recovery for every failure.

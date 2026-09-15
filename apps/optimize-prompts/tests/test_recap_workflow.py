@@ -69,7 +69,7 @@ def test_judge_failure_preserves_raw_output_and_partial_metrics(tmp_path: Path, 
 
 @pytest.fixture
 def corpus(tmp_path: Path) -> Path:
-    source = Path(__file__).resolve().parents[3] / "data_prompts/recap_summary"
+    source = Path(__file__).resolve().parents[3] / "prompt_optimization/recap_summary"
     for name in ("inputs", "coverage_questions", "recognition_questions", "exclusion_questions"):
         shutil.copytree(source / name, tmp_path / name)
     for name in ("seed_prompt.txt", "settings.yaml"):
