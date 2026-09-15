@@ -1,10 +1,8 @@
 # Experiment 8 — diarization-cluster propagation
 
-Status: Tried. Result: **Success** — a conservative rescue-only variant produces the largest clean
-gain since the embedder swap. Recommend checking in that variant; do not adopt the unconstrained
-pooled-score maximum.
+Status: Tried; the conservative variant was adopted with widening after [experiment 12](12-production-composition-8-9.md). The aggressive pooled maximum was not adopted.
 
-Implementation is shelved in git stash `experiment-8 diarization cluster propagation`.
+The results below compare against experiment 7's historical production baseline. Today's [production candidate](../../benchmarks/speaker_id/candidates.py) includes both algorithms; [deployed settings](../../apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml) expose cluster_propagation controls. Recorded measurements are historical, not rerun here. The original experiment runner was shelved separately; local stash availability is not assumed.
 
 ## Fixture prerequisite and cluster quality
 
@@ -80,7 +78,5 @@ identity is far more reliable than trusting the clip's own embedding. Restrictin
 real work: if even a short utterance has modest evidence against its cluster, retain production's
 abstention.
 
-**Recommend checking in the conservative variant**, not the aggressive maximum. Preserve its
-exact fixed parameters for out-of-sample evaluation, log cluster mappings/purity, and keep an easy
-rollback setting. The main risk is provider cluster drift: the second session's 83.1% purity shows
+**The conservative variant is implemented**, not the aggressive maximum. Production exposes an enabled toggle, evidence floor 0.5 seconds, rescue cap 0.5 seconds, cluster margin 0.0 and contradiction veto 0.02, with diagnostics. Future out-of-sample evaluation should distinguish this adopted configuration from the experimental grid. The main risk is provider cluster drift: the second session's 83.1% purity shows
 that ElevenLabs clusters are useful but not ground truth.

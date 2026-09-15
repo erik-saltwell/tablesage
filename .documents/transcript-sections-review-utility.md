@@ -29,10 +29,10 @@ The review transcript must preserve original utterance indices and contain the o
 1. Resolve the exact campaign and session; fail if the session name is missing or ambiguous.
 2. Load the existing sections artifact and session attendees.
 3. Run two independent reviews concurrently:
-   - Sol with high thinking.
-   - Fable 5.1 with high thinking.
+   - Astra (`openai/gpt-6-astra`) with high reasoning.
+   - Fable 5.1 (`anthropic/claude-fable-5-1`) with high reasoning.
 4. Print both independent review responses.
-5. Send both responses, the review transcript, attendee data, and existing sections to Fable 5.1 with ultra thinking.
+5. Send both responses, the review transcript, attendee data, and existing sections to Astra with high reasoning.
 6. Print the final jury response.
 7. Save only the final response in the session folder using a `_generated_` filename prefix.
 
@@ -41,7 +41,7 @@ The review transcript must preserve original utterance indices and contain the o
 Each reviewer returns a parseable response containing:
 
 - A readable `scratchpad` synthesis first.
-- Structured reviews for every routing decision:
+- Structured value reviews, requested for each routing decision:
   - Each nullable range's presence or absence.
   - Each non-null range's start and end index.
   - `session_start_index`.
@@ -50,7 +50,7 @@ Each reviewer returns a parseable response containing:
 - Each argument cites one or more utterance indices and short verbatim excerpts.
 - A complete `recommended_sections` object.
 
-The final juror uses the independent arguments as evidence, then issues one internally coherent recommended sections object.
+The final juror uses the independent arguments as evidence, then issues one internally coherent recommended sections object. Current calls pass `require_complete_coverage=False`, so the validator permits omitted/consolidated value-review entries; the recommendation must still be complete and within transcript bounds. Prompt instructions to cite grounded excerpts are not an automated semantic truth check.
 
 ## Behaviors & Rules
 
@@ -60,3 +60,9 @@ The final juror uses the independent arguments as evidence, then issues one inte
 - The juror may resolve conflicts among individual reviews to ensure the final ranges and active-play boundary work together.
 - `version` and `role_transcript_sha256` are copied unchanged into the recommendation.
 - The utility never overwrites the existing `transcript_sections.json`.
+
+## Implementation and invocation
+
+Run `uv run python scripts/review_transcript_sections.py "Campaign Name" "Session Name" /path/to/role_transcript_prefix.json` from the repository root. This invokes providers and writes a generated recommendation, not the canonical sections artifact. See [the script](../scripts/review_transcript_sections.py).
+
+The script still prints historical “Sol review” and “Final Fable juror review” labels and uses corresponding internal result keys. Actual model selection comes from ASTRA_MODEL/FABLE_MODEL and the calls above; those labels do not identify the provider used. The generated filename includes a UTC timestamp. No model or label code was changed by the documentation cleanup.

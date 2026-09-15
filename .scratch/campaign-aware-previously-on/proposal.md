@@ -2,8 +2,7 @@
 
 ## Status
 
-Fleshed-out feature design. This document records the agreed direct-recap
-workflow and its boundaries. It does not authorize implementation.
+Implemented feature design. This document describes the direct-recap workflow and its boundaries. Code lives in [previously_on.py](../../packages/tablesage-application/src/tablesage_application/previously_on.py), [Application](../../packages/tablesage-application/src/tablesage_application/application.py), and [PreviouslyOnScreen](../../apps/tablesage-tui/src/tablesage_tui/screens/previously_on.py).
 
 ## Purpose
 
@@ -32,9 +31,7 @@ This is an external export workflow, not part of the Session artifact pipeline:
 - It does not replace `recap_summary.md`, affect artifact freshness, or feed a
   later Session Summary.
 
-Campaign detail receives a separate **Create Previously On** action. The
-existing **Prepare Next Session** action remains reserved for future
-AI-assisted planning.
+Campaign Detail exposes **V — Create Previously On** separately from **P — Generate Opportunities**, the implemented [reincorporation assistant](../reincorporation-assistant/proposal.md). Neither action registers a Session artifact.
 
 ## Experience principles
 
@@ -58,8 +55,7 @@ workflow.
 
 The **Create Previously On** action remains visible and available when the
 precondition fails. Invoking it shows a blocking message that names the
-affected Sessions and directs the GM to **Regenerate All Outputs**. It does not
-start regeneration automatically.
+affected Sessions and directs the GM to **Regenerate All Outputs**. That campaign action processes only audio sessions with a current completed review and skips already-current output phases; it cannot repair missing reviews. This workflow does not start regeneration automatically.
 
 At least one Scene must ultimately be selected before export.
 
@@ -319,11 +315,7 @@ preferred tools. It creates no new managed artifact lifecycle.
 
 ### AI-assisted session planning
 
-Design a separate planning experience that can analyze player trajectory,
-nearby NPCs and factions, unresolved threads, NPC agendas, active pressures,
-and plausible developments. Determine how it enters recap creation and whether
-the two paths share interface or data structures. The existing **Prepare Next
-Session** Campaign action remains reserved for this work.
+Generate Opportunities now provides the separate, five-pitch reincorporation workflow. Richer NPC-agenda/trajectory planning and an integrated handoff into recap creation remain possible future work; they are not implemented by this export workflow.
 
 ### Campaign Seasons
 
@@ -354,4 +346,3 @@ feature neither truncates old Sessions nor defines this behavior.
 Consider optional control over voice, tone, or other presentation choices if a
 single concise television-recap prompt proves too restrictive. Numeric Scene
 and word limits are not part of the current design.
-

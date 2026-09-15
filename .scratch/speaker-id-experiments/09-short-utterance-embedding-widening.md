@@ -1,5 +1,7 @@
 # Experiment 9 — short-utterance embedding widening
 
+Status: implemented in production as the conservative composition with cluster propagation; see [experiment 12](12-production-composition-8-9.md). The standalone experiment results below are historical and have not been rerun during documentation cleanup.
+
 ## Question
 
 Can WeSpeaker identify short utterances more reliably if their audio is concatenated with nearby
@@ -15,7 +17,7 @@ entered the widened clip. The experiment varied:
 - decision-rule duration: the original utterance duration or the total widened evidence duration.
 
 That produced 72 configurations over the same 438 frozen utterances used by the production
-benchmark. Production is experiment #7's rule: margin ≥0.10 below 1 second and ≥0.04 at or above
+benchmark. The historical control was experiment #7's rule: margin ≥0.10 below 1 second and ≥0.04 at or above
 1 second.
 
 ## Results
@@ -62,8 +64,7 @@ The conservative candidate's changes are confined to the intended buckets:
 | 0.75–1.00s | 50 | 35 / 15 / 0 | unchanged |
 | ≥1.00s | 296 | 278 / 12 / 6 | unchanged |
 
-The experiment runner includes this duration-bucket reporting; it should be ported into the
-permanent benchmark even if the widening algorithm is not adopted.
+Duration-bucket reporting is now part of the permanent benchmark, alongside the adopted widening behavior.
 
 ## WeSpeaker minimum-duration probe
 
@@ -82,13 +83,11 @@ WeSpeaker silently returns non-finite vectors through 0.10 seconds. Although 0.1
 technically finite, this small probe shows no identity-quality advantage over the current floor.
 Keep `MIN_UTTERANCE_DURATION_SECONDS=0.15`.
 
-## Recommendation
+## Adopted behavior
 
-**Recommend checking in the conservative widening rule**, guarded by the original-duration
-margin and the 2-second locality cap. It gives a larger score gain than experiment #7 without a
+**The conservative widening rule is implemented**, guarded by the original-duration margin and the 2-second locality cap. It gives a larger score gain than experiment #7 without a
 net error-count increase, though the two newly introduced errors warrant diagnostics and easy
-rollback. Independently, check in duration-bucket benchmark reporting. Do not adopt the
+rollback. Duration-bucket benchmark reporting is implemented. Do not adopt the
 aggressive widened-duration threshold, and do not lower the 0.15-second embedding floor.
 
-The experiment runner, result CSV, and embedding cache are shelved as
-`experiment-9 short-utterance embedding widening` (`git stash list` on `refactor`).
+The historical runner, result grid and cache were shelved separately from the production port; stash availability is not guaranteed. The shipped configuration is in [settings.yaml](../../apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml), and the [production benchmark candidate](../../benchmarks/speaker_id/candidates.py) uses the same span-selection primitives.

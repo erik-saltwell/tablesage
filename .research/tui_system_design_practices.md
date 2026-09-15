@@ -1,6 +1,14 @@
 # TUI System Design Practices
 
-A reference of design patterns distilled from studying influential TUIs in `awesome_tuis.md` — including lazygit, k9s, helix, yazi, btop++, fzf, harlequin, posting, and the major frameworks (Textual, Ratatui, Bubble Tea / Lipgloss).
+Historical research notes about TUI patterns, including lazygit, k9s, helix, yazi, btop++, fzf, harlequin, posting and major frameworks. The original source inventory was not retained in this checkout; tool-specific observations below have not been independently reverified. Treat them as research leads, not a sourced compatibility/reference manual.
+
+## Relation to current TableSage
+
+This is optional design guidance, not a specification of implemented behavior or a mandatory shipping checklist. The [screen inventory](../.documentation/tablesage_tui_screens.md) and [screen code](../apps/tablesage-tui/src/tablesage_tui/screens/) define TableSage's current UI.
+
+TableSage uses contextual footers, inline entity metadata, modal progress and explicit destructive-action confirmations. It differs from some suggestions below: Ctrl-Q is its global quit binding, its command palette is disabled, C is contextual, and long-running progress dialogs usually do not support cancellation. Working-copy deletions in review are not immediate file deletions. Accessibility, small-terminal layouts and palette/search ideas below must not be assumed implemented merely because they appear in this research.
+
+
 
 This document is organized by **design concern**, not by tool. Each section ends with concrete examples and rules of thumb.
 
@@ -415,9 +423,9 @@ Patterns observed across multiple TUIs, with the canonical exemplar:
 
 ---
 
-## 16. Design Checklist (Use Before Shipping)
+## 16. Optional research checklist
 
-A practical pre-flight for any TUI:
+Potential evaluation questions for a future UI review, not TableSage requirements or verified capabilities:
 
 **Layout**
 - [ ] Renders correctly at 80×24, 120×40, and 200×60
@@ -460,9 +468,9 @@ A practical pre-flight for any TUI:
 
 ---
 
-## 17. Recommended Reading by Tool
+## 17. Historical study leads by tool
 
-The TUIs in `awesome_tuis.md` most worth studying for specific patterns:
+The original notes grouped further study by these patterns; the missing source inventory is not a prerequisite for using TableSage:
 
 - **Layout & dashboard:** btop++, bottom, lazygit, gh-dash
 - **Navigation & focus:** helix, kakoune, yazi

@@ -1,21 +1,9 @@
-# Issue tracker
+# Work tracking
 
-This repository tracks issues and PRDs as local Markdown files under `.scratch/`.
+New tracked work uses [WORK-ITEMS.md](../../WORK-ITEMS.md) and per-item folders under `.work-items/`. Read the [engineering workflow](../../.work-items/workflow.md) for registration, artifact contents, canonical statuses and verification.
 
-Use one directory per feature or workstream:
+Existing `.scratch/` designs and experiment records remain supporting documentation. They are not a competing default tracker, and do not become active work merely because they remain in the repository. Link a relevant existing design from an item rather than copying it or bulk-registering historical features.
 
-```text
-.scratch/<feature>/
-```
+Registration-only capture creates a folder/index row. A substantive capture-for-later has an item.md with `status: captured`; active stages follow the workflow. Preserve decisions and unresolved questions when saving.
 
-Keep the directory self-contained. Store the PRD, implementation notes, and individual issues there with clear Markdown filenames. Link related files using relative paths.
-
-When creating an issue, include:
-
-- a concise title;
-- the problem or desired outcome;
-- acceptance criteria;
-- relevant implementation context;
-- the current triage state, using the names in `triage-labels.md`.
-
-Do not publish issues to an external tracker unless the user explicitly requests it.
+Do not publish issues to an external tracker unless the user explicitly requests it. See [triage guidance](triage-labels.md) for interpreting older issue labels.

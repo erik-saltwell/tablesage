@@ -6,7 +6,7 @@ Implemented design. This document describes TableSage's build-system-style depen
 
 This design is reflected in [Ledger](../../specs/ledger.md), [Scene Breakdown and Recap](../../specs/scene-breakdown.md), [Player Introductions](../../specs/player-introductions.md), and [Transcript Sections](../../specs/transcript-sections.md).
 
-## Intended behavior
+## Implemented behavior
 
 TableSage treats processing as a directed acyclic build graph. A build step declares:
 
@@ -53,7 +53,7 @@ Filesystem comparisons should use nanosecond modification times where available.
 
 ### Database-backed inputs
 
-Database state participates through explicit logical modification timestamps updated in the same transaction as the underlying change. Candidate timestamps include:
+Database state participates through explicit logical modification timestamps updated in the same transaction as the underlying change. The model supplies these timestamps (not every clock is a dependency of every step):
 
 - Campaign glossary modification time (`Campaign.glossary_updated_at`);
 - Campaign roster modification time (`Campaign.roster_updated_at`);
@@ -137,7 +137,7 @@ Consequently:
 - hand-editing `scene_breakdown.json` stales Recap Summary but does not stale Ledger or the detailed Summary; and
 - rebuilding Role Transcript or Transcript Sections stales the shared producer, which replaces both siblings and consequently stales both downstream branches.
 
-This supersedes the current exact-byte lifecycle binding from Scene Breakdown to Ledger. A shared generation identifier may remain as provenance, but it must not cause editing one sibling to invalidate or suppress the other.
+This replaced the earlier exact-byte lifecycle binding from Scene Breakdown to Ledger. A shared generation identifier may remain as provenance, but it must not cause editing one sibling to invalidate or suppress the other.
 
 ## Representative dependency graph
 
@@ -178,7 +178,7 @@ Each node may have multiple additional inputs. Summary, for example, also consum
 3. skip the target if it is current; and
 4. generate it if it is missing or stale.
 
-This replaces the current fixed six-phase behavior and prevents stale transitive content from surviving a successful run.
+This replaced the earlier fixed six-phase behavior and prevents stale transitive content from surviving a successful run.
 
 ### Forced regeneration
 
@@ -198,7 +198,7 @@ If generation fails, existing artifacts remain available. If a process stops aft
 
 Freshness guarantees apply to the targets included in a Generate operation. A current Session's Summary may recursively ensure a previous Session's Recap Summary because it is an upstream dependency. The inverse is not automatically true: regenerating a Session's recap does not necessarily rebuild a later Session's Summary unless later Sessions are included in the operation's target scope.
 
-Whether `Generate Outputs` remains Session-scoped or gains a Campaign-wide mode is not yet decided.
+Session Detail G is session-scoped. Campaign Detail O, **Regenerate All Outputs**, is also implemented: it visits sessions in sequence order, selects those with imported audio and a current reviewed transcript, and calls the same stale-aware generate_outputs for each. It does not force already-current phases despite its label. Sessions awaiting review are skipped and counted; sessions without imported audio are outside this operation. A failure stops the run rather than guaranteeing that every campaign session becomes ready.
 
 ## UI design
 
@@ -226,7 +226,7 @@ Keep `G — Generate Outputs`, with changed behavior:
 
 ### Regenerate Artifact
 
-Add `R — Regenerate Artifact`. It opens a selector of user-meaningful logical artifacts or build steps, including shared steps labeled by all canonical outputs they replace, for example `Ledger + Scene Breakdown`.
+`R — Regenerate Artifact` is implemented. It opens a selector of user-meaningful logical artifacts or build steps, including shared steps labeled by all canonical outputs they replace, for example `Ledger + Scene Breakdown`.
 
 Before starting, the confirmation may list the artifacts that will be replaced and the downstream artifacts expected to update. It does not need to display dependency reasoning or explain stale status.
 
@@ -263,7 +263,7 @@ Generators do not broadly delete downstream artifacts. Replacing an output advan
 
 ## Changes to existing lifecycle contracts
 
-Implementation requires revising the current specifications and code that:
+The implementation replaced the earlier contracts that:
 
 - delete all downstream artifacts whenever an upstream generator runs;
 - represent only artifact presence rather than Current, Stale, and Missing;
@@ -277,7 +277,7 @@ The current Transcript Sections digest remains an integrity check at its consume
 
 ### Cross-session generation scope
 
-`Generate Outputs` is Session-scoped. It may recursively rebuild an earlier Session's Recap Summary when required by the selected Session's Summary, but it does not proactively rebuild later Sessions that consume a recap changed in the selected Session.
+Session Detail Generate Outputs is Session-scoped. It may recursively rebuild an earlier Session's Recap Summary required by its Summary, but does not proactively rebuild later consumers. The separate Campaign Detail O operation includes all eligible reviewed audio sessions as described under Processing scope.
 
 ### Scene Breakdown references after Ledger edits
 
@@ -286,3 +286,11 @@ Scene Breakdown's Ledger index ranges and digest are generation-time provenance.
 ### Timestamp limitations
 
 The initial design accepts modification-time limitations in exchange for a small, understandable implementation. Hash-based provenance remains a possible later enhancement rather than an initial requirement.
+
+## Current implementation and limits
+
+[Application._artifact_graph and generation_plan](../../packages/tablesage-application/src/tablesage_application/application.py) declare inputs and plan builds; [artifact_graph.py](../../packages/tablesage-application/src/tablesage_application/session_pipeline/artifact_graph.py) evaluates freshness; [Campaign Detail](../../apps/tablesage-tui/src/tablesage_tui/screens/campaign_detail.py) owns the campaign loop. Deployed settings.yaml modification time is also a dependency of processing/generation steps. Transcript depends on attendee identity/profile clocks as well as attendance and audio.
+
+Manual Review, benchmark generation and From Session voice enhancement prefer a current reviewed transcript, fall back to a current machine transcript, and reject the operation when neither is current. Application validates recursive freshness before passing the selected source to the pipeline. Direct pipeline callers only get file-age selection unless they pass a validated source. The benchmark dependency follows the review when it is no older than the machine transcript, otherwise the machine transcript; transitive freshness still accounts for upstream inputs.
+
+Export and glossary extraction still select sources by file existence. Do not infer that every operation enforces the graph merely because the indicator panel does.

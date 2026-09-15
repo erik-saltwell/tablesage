@@ -19,8 +19,8 @@ class Eres2NetV2Embedder:
     """Wraps `tablesage_tools.embeddings.eres2netv2.EmbeddingFactory` -- ModelScope's ERes2NetV2, a
     Mandarin-trained model used off-domain on English speech. Production's embedder until
     `wespeaker-resnet34` replaced it; kept here as a historical comparison baseline -- see
-    `.scratch/speaker-id-experiments/01-similarity-threshold-sweep.md` through
-    `05-threshold-sweep-leaders.md` for the experiments that led to the swap.
+    `.scratch/speaker-id-experiments/experiments-log.md` and
+    `05-threshold-sweep-leaders.md` for the historical evidence behind the swap.
     """
 
     model_id: str = "iic/speech_eres2netv2_sv_zh-cn_16k-common"

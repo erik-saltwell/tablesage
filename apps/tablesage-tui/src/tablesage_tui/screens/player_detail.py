@@ -323,6 +323,13 @@ class PlayerDetailScreen(TableSageScreen):
         self._refresh_centroid_display(player)
         self._reload_voice_clips()
 
+        if import_result.imported_count == 0:
+            self.notify(
+                f"No usable clips imported; voice profile unchanged. Skipped {len(import_result.rejected_filenames)} clip(s).",
+                severity="warning",
+            )
+            return
+
         message = f"Imported {import_result.imported_count} clip(s)."
         if import_result.replaced_count:
             message += f" Replaced {import_result.replaced_count} prior clip(s)."

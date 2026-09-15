@@ -15,6 +15,7 @@ from tablesage_tools.model import Transcript, Utterance
 
 from .entities.sessions import list_attendance
 from .paths import ARTIFACTS, ArtifactName
+from .session_pipeline.transcript_review import preferred_transcript_artifact
 from .voice_clips import clips
 
 
@@ -107,12 +108,15 @@ def enhance_players_from_session(
     enhance_settings: EnhanceVoicesSettings,
     outlier_settings: RemoveOutliersSettings,
     on_progress: OnProgress | None = None,
+    *,
+    source: ArtifactName | None = None,
 ) -> EnhanceResult:
     """Pull voice clips for every attendee out of the best available session transcript.
 
-    A completed Manual Review is trusted as human ground truth, so every utterance assigned
-    to an attendee is imported without similarity-margin or duration filtering. Without that
-    artifact, the machine transcript retains the configured confidence and duration filters.
+    Application selects a current source using the artifact graph. A current completed Manual
+    Review is trusted as human ground truth, bypassing similarity-margin and quality-duration
+    filters (but not the technical embedding-duration floor). Otherwise the current machine
+    transcript retains the configured confidence and duration filters.
 
     For each attendee: capture their prior clips from this session (by filename hash
     segment), extract fresh qualifying clips from the transcript, then delete the
@@ -123,9 +127,10 @@ def enhance_players_from_session(
     Every attendee's centroid is recomputed afterward, regardless of whether they got new
     clips, since a zero-new-clips attendee may still have had stale clips retracted.
     """
-    reviewed_path = session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
-    has_reviewed_transcript = reviewed_path.is_file()
-    transcript_path = reviewed_path if has_reviewed_transcript else session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
+    # Application passes a graph-validated source; direct callers still reject older reviews.
+    source = source or preferred_transcript_artifact(session_folder)
+    has_reviewed_transcript = source is ArtifactName.REVIEWED_TRANSCRIPT
+    transcript_path = session_folder / ARTIFACTS[source].filename
     transcript = Transcript.load(transcript_path)
     input_audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
     session_hash = clips.hash8(str(session_id))

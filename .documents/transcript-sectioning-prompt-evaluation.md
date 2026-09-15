@@ -19,7 +19,7 @@ Prompt optimization evaluates how accurately a transcript-sectioning prompt iden
 3. Compare each routing value with its golden value.
 4. Calculate component scores for recap, introductions, starting context, and session start.
 5. Combine component scores into the case score.
-6. Run three rotations: optimize on two reviewed sessions and validate on the remaining session.
+6. Choose an execution mode: full-corpus training, leave-one-case-out rotations across all cases (`--run --cross-validate`, at least two cases), or a source-filename-prefix group holdout (`--run --holdout-prefix <prefix>`, at least one training and one held-out case). The corpus is not fixed at three sessions.
 
 ## Component Scores
 
@@ -62,3 +62,9 @@ For `session_start_index`:
 ## Structural Validity
 
 Malformed JSON, unexpected fields, invalid indices, reversed ranges, or any other response that cannot be persisted and routed causes the entire evaluation case to score `0`.
+
+## Running and evidence
+
+Use `uv run --project apps/optimize-prompts optimize-prompts section-transcript` from the repository root for preflight, adding `--run` and the selected mode for paid optimization/evaluation. See the [corpus guide](../data_prompts/section_transcript/README.md) and [implementation](../apps/optimize-prompts/src/optimize_prompts/optimize_section_transcript.py).
+
+Cross-validation saves the selected prompt and rotation evidence; selection on held-out scores is not an independent final generalization test. The group holdout separates cases by source filename prefix, so use a consistent campaign prefix. Optimization writes candidate outputs but does not automatically deploy a production prompt.

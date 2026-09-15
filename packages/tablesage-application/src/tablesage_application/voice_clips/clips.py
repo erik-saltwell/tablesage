@@ -260,8 +260,9 @@ def import_voice_clips(
     Copy-then-delete, not delete-then-copy: a re-import of the same source
     directory replaces its prior clips as a unit (see
     `find_prior_import_clips`), but the old clips are only deleted after the
-    new ones are safely copied and embedded, so a bad import leaves the
-    player's previous samples intact rather than gone. Each source file is
+    new ones are safely copied and at least one embeds successfully. An all-rejected
+    import preserves the previous clips and stored centroid without recomputation.
+    This is not a general rollback guarantee for failures after replacement. Each source file is
     copied and embedded independently -- a file that fails to embed is
     skipped and reported rather than aborting the whole import, matching how
     `compute_centroid` already treats duplicates/outliers as "exclude, don't
@@ -318,6 +319,13 @@ def import_voice_clips(
         finally:
             if clean_dir is not None:
                 shutil.rmtree(clean_dir, ignore_errors=True)
+
+        if imported_count == 0:
+            # A failed replacement must not retract the last successful source contribution
+            # or advance its centroid clock (which would also stale session artifacts).
+            player = get_player(session, player_id)
+            log.set(imported_count=0, replaced_count=0, rejected_count=len(rejected), removed_outlier_count=0)
+            return player, ImportResult(imported_count=0, replaced_count=0, rejected_filenames=tuple(rejected))
 
         for old_clip in prior_clips:
             old_clip.unlink(missing_ok=True)

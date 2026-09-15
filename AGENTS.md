@@ -4,15 +4,15 @@
 
 ### Issue tracker
 
-Issues and PRDs use local Markdown under `.scratch/`. See [the issue-tracker guide](docs/agents/issue-tracker.md).
+New tracked work uses `WORK-ITEMS.md` and `.work-items/`; existing `.scratch/` designs are supporting references. See [the issue-tracker guide](docs/agents/issue-tracker.md).
 
 ### Triage labels
 
-Triage uses the default canonical state names. See [the triage-label guide](docs/agents/triage-labels.md).
+Current work uses the canonical work-item statuses; older triage labels are historical. See [the triage-label guide](docs/agents/triage-labels.md).
 
 ### Domain docs
 
-This repository uses a single-context domain-doc layout. See [the domain guide](docs/agents/domain.md).
+Artifact contracts live in `specs/`; implementation guides live in `.documentation/`. See [the domain guide](docs/agents/domain.md).
 
 ## TTRPG reincorporation
 
@@ -36,6 +36,12 @@ Read the relevant specification before changing an artifact's schema, prompt con
 
 Whenever you add code where `tablesage-tui` (directly, or via `tablesage-application`) calls into `tablesage-tools`, any tunable knob for that call must be read from the TUI's deployed `settings.yaml` (`AppSettings`, loaded by `tablesage_model.setup.ensure_settings` and injected into `Application` at `tablesage_tui.screens.main_app.main`'s composition root) rather than hardcoded.
 
-The settings-agnostic boundary is `tablesage-tools` itself: it only ever receives plain values (`float`, `int`, etc.), never an `AppSettings` object or one of its sections; see `system_architecture.md`'s "Tools operate on generic inputs... They do not know about... `AppSettings`" rule. `tablesage-application` (including `session_pipeline`) is not bound by that rule — it may accept `AppSettings` section objects (for example, `TranscriptionAndDiarizationSettings`) directly as parameters, unpacking them into plain values only at the calls it makes into `tablesage-tools`.
+The settings-agnostic boundary is `tablesage-tools` itself: it only ever receives plain values (`float`, `int`, etc.), never an `AppSettings` object or one of its sections; see [system_architecture.md](.documentation/system_architecture.md)'s "Tools operate on generic inputs... They do not know about... `AppSettings`" rule. `tablesage-application` (including `session_pipeline`) is not bound by that rule — it may accept `AppSettings` section objects (for example, `TranscriptionAndDiarizationSettings`) directly as parameters, unpacking them into plain values only at the calls it makes into `tablesage-tools`.
 
 The packaged default lives at `apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml`; add new knobs there and to `RemoveOutliersSettings`-style sections of `AppSettings` in `tablesage_model.settings`, following the `remove_outliers` precedent used by the centroid clean-up path.
+
+<!-- engineering-workflow:start -->
+## Engineering workflow
+
+Read [.work-items/workflow.md](.work-items/workflow.md) before engineering work and follow its work-item, saving, status, and verification conventions. Use [WORK-ITEMS.md](WORK-ITEMS.md) to find tracked work. Keep shared workflow rules in `.work-items/workflow.md` rather than duplicating them here.
+<!-- engineering-workflow:end -->

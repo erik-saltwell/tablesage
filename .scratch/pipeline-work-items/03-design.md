@@ -9,7 +9,7 @@ and completes them.
 
 ## Extraction
 
-- Session Detail exposes `L` — **Extract Glossary** whenever `role_transcript.json` exists.
+- Session Detail exposes `L` — **Extract Glossary** whenever `role_transcript.json` exists. This gate checks presence, not artifact freshness; regenerate a stale Role Transcript before extracting terms from it.
 - Extraction is independent of Generate and can be rerun.
 - The LLM proposes campaign-specific terms supported by the transcript, including NPCs, places,
   factions, artifacts, customs, and campaign-specific rules or concepts.
@@ -52,5 +52,9 @@ Duplicate comparison uses trimmed, case-insensitive terms. On Complete:
 
 The duplicate check is repeated at completion to cover review edits and glossary changes made
 while review was open. Completed entries are ordinary campaign `GlossaryEntry` records with no
-source-session provenance. Completion does not invalidate existing Ledger or Summary artifacts.
+source-session provenance. When accepted entries are added, completion advances Campaign.glossary_updated_at. Existing Ledger/Scene Breakdown, introductions, recap and Summary files remain on disk but become stale through the dependency graph. A zero-addition completion does not advance this clock. Regeneration is a separate action.
 
+
+## Implementation
+
+[extract_glossary.py](../../packages/tablesage-application/src/tablesage_application/session_pipeline/extract_glossary.py) owns proposal filtering and the existence gate. [Application](../../packages/tablesage-application/src/tablesage_application/application.py) commits accepted entries and their glossary clock; [Glossary Review](../../apps/tablesage-tui/src/tablesage_tui/screens/glossary_review.py) owns the draft.

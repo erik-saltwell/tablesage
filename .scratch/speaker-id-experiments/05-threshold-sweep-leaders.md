@@ -3,14 +3,18 @@
 Status: Tried. Result: **Success** (as a decision-informing experiment — confirms the tie between
 experiments #3 and #4 survives per-embedder threshold tuning, and narrows it further).
 
-## Method
+## Current status
+
+WeSpeaker was adopted; this is historical decision evidence, not an outstanding choice between embedders. The 0.08 threshold below was the margin-only production rule at that time. [Experiment 7](07-richer-decision-rule.md) replaced it with duration-conditioned thresholds; [experiment 12](12-production-composition-8-9.md) added widening and propagation. Results below retain their original baselines and were not rerun during documentation cleanup.
+
+## Historical method
 
 Experiments #3 (`wespeaker-resnet34`, pooled score 0.902) and #4 (`titanet-large`, 0.906) were both
 run at `similarity_margin_threshold: 0.07` — tuned for `eres2netv2` in experiment #1, not for
 either of these embedders. Swept 0.00–0.40 (step 0.01) for each, via `threshold_sweep_leaders.py`
 (since removed along with `TitanetLargeEmbedder` once `wespeaker-resnet34` was adopted -- the CSV
 results below are the surviving record), reusing the harness's existing stages as a library — same
-method as experiment #1, not a first-class sweep mode (see that experiment's doc for why). Embeddings for both models at threshold 0.07 were already cached from experiments #3
+a historical parameter sweep, not a first-class harness CLI mode. Embeddings for both models at threshold 0.07 were already cached from experiments #3
 and #4, so only the uncached thresholds needed fresh matching + scoring.
 
 ## Results
@@ -58,20 +62,14 @@ threshold matters much less once the *embedder* is a good fit for the domain. Th
 experiment #4's conclusion that embedder choice dominates threshold choice — and now also shows
 that, among the two leading embedders, threshold choice barely differentiates them either.
 
-## Recommendation
+## Historical recommendation and adopted decision
 
 Given a ~statistical tie (0.904 vs. 0.906, well within noise for 438 utterances) after both are
 threshold-tuned, **deployment cost should decide, not score**: `wespeaker-resnet34` needs only
 `wespeaker-unofficial` plus two small environment shims; `titanet-large` needs the much heavier
 `nemo_toolkit[asr]` and a real dependency-conflict pin (`onnx<1.18`, worked around in experiment
-#4). Recommend adopting `wespeaker-resnet34` at `similarity_margin_threshold: 0.08` as the
-production candidate, unless a reason to prefer NeMo's dependency footprint emerges.
+#4). That recommendation was adopted: WeSpeaker at 0.08 became the production candidate before the later matcher changes.
 
-## Next steps
+## Current implementation references
 
-- Decide whether to actually adopt `wespeaker-resnet34` (or `titanet-large`) in production — this
-  requires a matching swap in `tablesage-tools`' real embedder, not just this benchmark harness,
-  and updating `settings.yaml`'s `similarity_margin_threshold` to the new embedder's tuned value.
-- If adopted, re-run experiment #1's style of threshold verification once integrated into
-  production code paths, since this harness's centroid-builder and matcher mirror but don't
-  literally share code with `tablesage_tools.speakers.identify_speakers`.
+[Production candidates](../../benchmarks/speaker_id/candidates.py) retain a margin-only WeSpeaker baseline for comparison. [Settings defaults](../../apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml) and the [WeSpeaker adapter](../../packages/tablesage-tools/src/tablesage_tools/embeddings/wespeaker.py) define the shipped behavior. The legacy TitaNet runner is removed; the linked CSV curves preserve these measurements.

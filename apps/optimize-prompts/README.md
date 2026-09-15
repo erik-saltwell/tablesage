@@ -1,7 +1,7 @@
 # optimize-prompts
 
 Command-line workflows for optimizing TableSage prompts with the sibling
-[`prompt-forge`](../../../../prompt-forge) checkout.
+[`prompt-forge`](../../../prompt-forge) checkout.
 
 From the repository root:
 

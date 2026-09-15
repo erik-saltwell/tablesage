@@ -33,14 +33,23 @@ def _artifact_path(session_folder: Path, name: ArtifactName) -> Path:
     return session_folder / ARTIFACTS[name].filename
 
 
-def load_review_transcript(session_folder: Path) -> Transcript:
-    """Load the last completed review when present, otherwise the machine transcript."""
+def preferred_transcript_artifact(session_folder: Path) -> ArtifactName:
+    """Choose by file age; Application additionally checks recursive graph freshness."""
     reviewed_path = _artifact_path(session_folder, ArtifactName.REVIEWED_TRANSCRIPT)
-    source = reviewed_path if reviewed_path.is_file() else _artifact_path(session_folder, ArtifactName.TRANSCRIPT)
-    return Transcript.load(source)
+    machine_path = _artifact_path(session_folder, ArtifactName.TRANSCRIPT)
+    if reviewed_path.is_file() and machine_path.is_file() and reviewed_path.stat().st_mtime_ns >= machine_path.stat().st_mtime_ns:
+        return ArtifactName.REVIEWED_TRANSCRIPT
+    return ArtifactName.TRANSCRIPT
 
 
-def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
+def load_review_transcript(session_folder: Path, *, source: ArtifactName | None = None) -> Transcript:
+    """Load an explicitly selected source, or prefer a review no older than its machine input."""
+    return Transcript.load(_artifact_path(session_folder, source or preferred_transcript_artifact(session_folder)))
+
+
+def extract_review_clips(
+    session_folder: Path, on_progress: Callable[[int, int], None] | None = None, *, source: ArtifactName | None = None
+) -> tuple[Transcript, Path]:
     """Load the review source and pre-extract every utterance's audio into `speaker_review_clips/`.
 
     Runs entirely up front (behind a progress dialog, per the caller) so Manual Review's
@@ -57,7 +66,7 @@ def extract_review_clips(session_folder: Path, on_progress: Callable[[int, int],
     file rather than erroring -- there's nothing to play, but the utterance is still reviewable
     and assignable from its text.
     """
-    transcript = load_review_transcript(session_folder)
+    transcript = load_review_transcript(session_folder, source=source)
     clip_dir = review_clips_folder(session_folder)
     clip_dir.mkdir(parents=True, exist_ok=True)
 
@@ -208,7 +217,7 @@ class BenchmarkTranscriptResult:
     excluded_count: int
 
 
-def generate_benchmark_transcript(session_folder: Path) -> BenchmarkTranscriptResult:
+def generate_benchmark_transcript(session_folder: Path, *, source: ArtifactName | None = None) -> BenchmarkTranscriptResult:
     """Write `transcript_benchmark.json` from the completed review (or machine transcript) with every utterance under
     `MIN_UTTERANCE_DURATION_SECONDS` dropped.
 
@@ -220,12 +229,13 @@ def generate_benchmark_transcript(session_folder: Path) -> BenchmarkTranscriptRe
 
     This is a derived, disposable, on-demand artifact, not a second source of truth: it is never
     read by any other pipeline step, never hand-edited, and always regenerated wholesale from
-    the completed review when it exists, otherwise from `transcript.json`. The canonical
+    the current completed review, otherwise from the current `transcript.json`. Application
+    validates recursive freshness before passing the source. The canonical
     transcript (including the short utterances) stays exactly what `T` writes. A benchmark
     script should always regenerate this immediately before scoring rather than trusting an old
     copy, since nothing keeps it in sync with `transcript.json` automatically.
     """
-    transcript = load_review_transcript(session_folder)
+    transcript = load_review_transcript(session_folder, source=source)
     kept = [utterance for utterance in transcript.utterances if utterance.end - utterance.start >= MIN_UTTERANCE_DURATION_SECONDS]
     excluded_count = len(transcript.utterances) - len(kept)
 

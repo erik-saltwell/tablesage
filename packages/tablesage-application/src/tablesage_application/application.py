@@ -710,11 +710,7 @@ class Application:
                     artifact_graph_pipeline.BuildStep(
                         paths.ArtifactName.TRANSCRIPT_BENCHMARK,
                         (ref(paths.ArtifactName.TRANSCRIPT_BENCHMARK),),
-                        (
-                            ref(paths.ArtifactName.REVIEWED_TRANSCRIPT)
-                            if ref(paths.ArtifactName.REVIEWED_TRANSCRIPT).path.is_file()
-                            else ref(paths.ArtifactName.TRANSCRIPT),
-                        ),
+                        (ref(transcript_review.preferred_transcript_artifact(folder)),),
                     ),
                     artifact_graph_pipeline.BuildStep(
                         paths.ArtifactName.ROLE_TRANSCRIPT,
@@ -814,6 +810,14 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             graph = self._artifact_graph(session, game_session.campaign_id)
             return graph.session_statuses(self._session_folder(session, game_session))
+
+    def _current_transcript_source(self, session: Session, game_session: GameSession) -> paths.ArtifactName:
+        graph = self._artifact_graph(session, game_session.campaign_id)
+        folder = self._session_folder(session, game_session)
+        for name in (paths.ArtifactName.REVIEWED_TRANSCRIPT, paths.ArtifactName.TRANSCRIPT):
+            if graph.status(artifact_graph_pipeline.ArtifactRef(folder, name)) is artifact_graph_pipeline.ArtifactStatus.CURRENT:
+                return name
+        raise ValueError("No current transcript is available. Transcribe the session again before continuing.")
 
     def generation_plan(
         self, session_id: uuid.UUID, *, force: paths.ArtifactName | None = None
@@ -1341,7 +1345,9 @@ class Application:
     def extract_review_clips(self, session_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return transcript_review.extract_review_clips(self._session_folder(session, game_session), on_progress)
+            return transcript_review.extract_review_clips(
+                self._session_folder(session, game_session), on_progress, source=self._current_transcript_source(session, game_session)
+            )
 
     def suggest_spelling_corrections(
         self, session_id: uuid.UUID, transcript: Transcript
@@ -1396,7 +1402,9 @@ class Application:
     def generate_benchmark_transcript(self, session_id: uuid.UUID) -> transcript_review.BenchmarkTranscriptResult:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            return transcript_review.generate_benchmark_transcript(self._session_folder(session, game_session))
+            return transcript_review.generate_benchmark_transcript(
+                self._session_folder(session, game_session), source=self._current_transcript_source(session, game_session)
+            )
 
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:
@@ -1468,6 +1476,7 @@ class Application:
                 self._settings.enhance_voices,
                 self._settings.remove_outliers,
                 on_progress,
+                source=self._current_transcript_source(session, game_session),
             )
             session.commit()
             return result

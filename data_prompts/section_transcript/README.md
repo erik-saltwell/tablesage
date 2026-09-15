@@ -17,25 +17,25 @@ Copy the current production sectioning system prompt to `seed_prompt.txt` before
 Validate the corpus with:
 
 ```bash
-uv run optimize-prompts section-transcript
+uv run --project apps/optimize-prompts optimize-prompts section-transcript
 ```
 
 Run optimization with all reviewed sessions:
 
 ```bash
-uv run optimize-prompts section-transcript --run
+uv run --project apps/optimize-prompts optimize-prompts section-transcript --run
 ```
 
 Run leave-one-case-out rotations across the full corpus:
 
 ```bash
-uv run optimize-prompts section-transcript --run --cross-validate
+uv run --project apps/optimize-prompts optimize-prompts section-transcript --run --cross-validate
 ```
 
 Run a campaign-level holdout for the Dread Gods Teeth cases:
 
 ```bash
-uv run optimize-prompts section-transcript --run --holdout-prefix dread_gods_teeth_
+uv run --project apps/optimize-prompts optimize-prompts section-transcript --run --holdout-prefix dread_gods_teeth_
 ```
 
 Each optimization run overwrites `outputs/best_prompt.md` with its selected

@@ -386,7 +386,11 @@ class SessionDetailScreen(TableSageScreen):
     # Fast, in-memory, synchronous: no progress dialog, unlike the pipeline actions above.
 
     def action_generate_benchmark_transcript(self) -> None:
-        result = self.application.generate_benchmark_transcript(self._session_id)
+        try:
+            result = self.application.generate_benchmark_transcript(self._session_id)
+        except ValueError as exc:
+            self.notify(str(exc), severity="error")
+            return
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
     # Generate Outputs -- evaluates the dependency graph and runs only missing or stale phases.

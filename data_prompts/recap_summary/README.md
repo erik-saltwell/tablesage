@@ -14,15 +14,15 @@ Each input filename has matching JSON files in `coverage_questions/`, `recogniti
 
 ```bash
 uv run python scripts/generate_recap_summary_eval_inputs.py Brandonsford
-uv run optimize-prompts recap-summary
-uv run optimize-prompts recap-summary --evaluate
-uv run optimize-prompts recap-summary --evaluate --case Brandonsford_001.txt
-uv run optimize-prompts recap-summary --evaluate --prompt path/to/candidate.md
-uv run optimize-prompts recap-summary --run
-uv run optimize-prompts recap-summary --run --iterations 1
+uv run --project apps/optimize-prompts optimize-prompts recap-summary
+uv run --project apps/optimize-prompts optimize-prompts recap-summary --evaluate
+uv run --project apps/optimize-prompts optimize-prompts recap-summary --evaluate --case Brandonsford_001.txt
+uv run --project apps/optimize-prompts optimize-prompts recap-summary --evaluate --prompt path/to/candidate.md
+uv run --project apps/optimize-prompts optimize-prompts recap-summary --run
+uv run --project apps/optimize-prompts optimize-prompts recap-summary --run --iterations 1
 ```
 
-The first command reads local Campaign data, validates every Session's matched Ledger and Scene Breakdown, and refreshes the input snapshots. A missing, invalid, stale, or interrupted pair fails before replacing any input. Attendees, glossary entries, and Sessions are ordered consistently. `<campaign>_sources.json` records the production template hash and the hash of each embedded Scene Breakdown (excluding surrounding whitespace). The optimizer verifies those hashes during preflight. This checks snapshot integrity and template drift; it cannot determine whether an unavailable local Campaign has newer data.
+The first command reads local Campaign data and validates each stored Scene Breakdown's schema, Session identity and absence of an interrupted-pair marker before refreshing inputs. It does not evaluate the full artifact freshness graph or compare a hand-edited Ledger against generation-time digest/ranges. Generate current outputs first; a successful snapshot refresh alone does not prove current upstream data. Validation of all Sessions precedes writing inputs, but the input-file writes themselves are not one rollback transaction. Attendees, glossary entries, and Sessions are ordered consistently. `<campaign>_sources.json` records the production template hash and the hash of each embedded Scene Breakdown (excluding surrounding whitespace). The optimizer verifies those hashes during preflight. This checks snapshot integrity and template drift; it cannot determine whether an unavailable local Campaign has newer data.
 
 The default optimizer command validates configuration, Scene Breakdown v1 inputs, question sets, and provenance without calling an LLM. `--evaluate` generates and scores the seed (or `--prompt`) without revising it; `--case` selects one exact input filename for this mode only. `--run` evaluates the baseline, searches the full corpus, then independently generates and scores the selected prompt on every case. `--iterations` limits a search while retaining full-corpus evaluation. These execution modes make paid LLM calls. The CLI loads `.env` without overriding exported credentials.
 
@@ -54,7 +54,7 @@ Several old expectations were corrected or removed:
 - Dirk wants to return home; Trout's reporting instruction does not establish Dirk's agreement to continue.
 - Dunk's apparent five-hour unconsciousness is retracted. The recap must use the corrected outcome without inventing lost time.
 
-Assertions like these belong in faithfulness review, not in exclusion questions that would also penalize a legitimate correction or expression of uncertainty. The real cases already exercise interleaved play, reported claims, corrections, plans, and vague time pressure. Unit tests cover nullable signature details, empty sessions, interleaved ranges, and stale pair rejection.
+Assertions like these belong in faithfulness review, not in exclusion questions that would also penalize a legitimate correction or expression of uncertainty. The real cases already exercise interleaved play, reported claims, corrections, plans, and vague time pressure. Schema validation covers nullable signature details, empty sessions and interleaved ranges; interruption markers block unusable snapshots. Artifact freshness is a separate graph check, not a Ledger-byte equality check.
 
 ## Metrics and scoring
 
@@ -73,7 +73,7 @@ Search uses a separate graded reward so imperfect candidates do not all tie at z
 
 The provisional output budget is configured in `settings.yaml`: target 180 words, maximum 240 words, maximum six bullets. Length scores `1.0` at or below the target, `target_words / output_words` between target and maximum, and zero beyond either maximum. There is no incentive to delete useful wording below the target. The seed states the same budget; revise its length instruction when deliberately changing these settings.
 
-The default configuration permits five iterations and two children per parent, with three floor evaluations and three seed warmup pulls for this three-case corpus. Models remain explicitly configured in `settings.yaml`. The unsupported actor temperature override was removed after a live provider rejection. Optimization targets `openai/gpt-6-astra`; production uses its separately deployed `llm_model_high`, so evaluate with the intended deployment model before adopting a prompt.
+The current configuration permits five iterations and two children per parent, with three floor evaluations and three seed warmup pulls for this three-case corpus. [settings.yaml](settings.yaml) currently selects `openai/gpt-5.6-sol` for target (low effort), actor and judge (medium effort), with actor temperature 1.0. These are developer optimizer settings, separate from production's deployed `llm_model_high`; evaluate with the intended deployment model before adopting a prompt. A preflight validates configuration/corpus but does not verify provider acceptance of model parameters.
 
 Each invocation writes evidence under `outputs/runs/<id>/`: settings/fingerprint, baseline or standalone evaluation, raw generated Markdown, input snapshots, complete metric results, and (for searches) append-only candidate events plus fresh final validation. Outputs and completed metric results survive later judge failures. The selected prompt and search result are retained before final validation.
 

@@ -13,13 +13,13 @@ speaker-attributed transcript, so there is no proposal or per-speaker resolution
 
 The artifact boundary determines how utterances are selected:
 
-1. If `transcript_reviewed.json` exists, load it. A completed Manual Review is treated as human
+1. If `transcript_reviewed.json` is current, load it. A current completed Manual Review is treated as human
    ground truth, so every utterance whose `speaker` exactly matches an attendee name is eligible.
    Similarity margin and quality-duration bounds (`min_clip_seconds`/`max_clip_seconds`) are not
    inspected -- but duration is still checked against `enhance_voices.min_embeddable_clip_seconds`,
    a hard technical floor (the embedding model can't compute a feature window below it), not a
    quality filter. See Settings below.
-2. Otherwise load `transcript.json`. An utterance is eligible only when:
+2. Otherwise load `transcript.json` if current, or ask for retranscription if not. An utterance is eligible only when:
    - `speaker == attendee.player_name`;
    - `similarity_margin >= enhance_voices.min_margin_for_voice_sample`;
    - duration is at least `enhance_voices.min_clip_seconds`;
@@ -58,7 +58,7 @@ while the reviewed path deliberately trusts the human decision.
 
 ## Settings
 
-No new settings are needed. When the machine transcript is used, the flow reuses:
+The flow uses these deployed settings:
 
 - `enhance_voices.min_margin_for_voice_sample`
 - `enhance_voices.min_clip_seconds`
@@ -73,10 +73,9 @@ The reviewed-transcript path intentionally bypasses `min_margin_for_voice_sample
 
 ## Artifact lifecycle dependency
 
-Manual Review writes `transcript_reviewed.json` only on Complete. A transcript rebuild, successful
-audio re-import, or attendance mutation deletes that reviewed artifact. The next From Session run
-therefore falls back automatically to the filtered machine transcript instead of trusting stale
-human assignments.
+Manual Review writes `transcript_reviewed.json` only on Complete. Rebuilding the transcript or changing audio/attendance preserves the reviewed file while the artifact graph marks affected outputs stale.
+
+From Session checks recursive artifact freshness in Application before extracting or deleting clips. It prefers a current reviewed transcript, otherwise uses a current machine transcript with the configured confidence/duration filters. If neither is current, it asks for retranscription without changing voice profiles. The picker still lists sessions by transcript existence; Application enforces freshness after selection. Recomputing attendee centroids changes an input to transcription, so another enhancement run may require retranscription first.
 
 Previously extracted player-side clips are not proactively removed when a transcript artifact is
 invalidated. They are replaced the next time From Session runs for that source session.
@@ -90,5 +89,4 @@ invalidated. They are replaced the next time From Session runs for that source s
 - `Application.enhance_players_from_session`: resolves database entities and player/session paths.
 - `PlayersListScreen.action_enhance_from_session`: picker, progress, and result notification.
 
-Tests cover filter boundaries, reviewed-artifact bypass, unassigned exclusion, staged progress,
-rerun replacement, and zero-new-clip retraction.
+See the implementation for filter boundaries, reviewed-artifact bypass, staged progress and zero-new-clip retraction. These descriptions do not imply that a provider-backed enhancement was rerun during documentation maintenance.

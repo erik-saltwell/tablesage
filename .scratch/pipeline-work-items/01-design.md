@@ -1,19 +1,17 @@
 # Design: pre-review backchannel removal (batched)
 
-Design notes from a brainstorm session (2026-08-31), resolving
-[01-pre-review-backchannel-removal-batched.md](01-pre-review-backchannel-removal-batched.md)'s
-open question. This is the implementation-ready spec for that item.
+Implemented design, originally discussed on 2026-08-31. The completed implementation ticket was removed during documentation cleanup; this file retains the two-pass rationale and batching contract.
 
 ## Summary
 
 Backchannel removal splits into two passes with genuinely different rules, not one function
 called twice:
 
-- **Pre-review pass** (new, this item): runs automatically inside Transcribe, after punctuation.
+- **Pre-review pass**: runs automatically inside Transcribe, after punctuation.
   Judges every wordlist-matched candidate via a batched, concurrent LLM call ("was the previous
   utterance a question?"), regardless of the candidate's current speaker label. Mutates
   `transcript.json` directly.
-- **Post-review pass** (existing, simplified by this item): runs inside Generate's Role Transcript
+- **Post-review pass**: runs inside Generate's Role Transcript
   step. Mechanical only — removes a wordlist-matched candidate if it is *still* `Unassigned
   Speaker` after human review. No LLM call.
 

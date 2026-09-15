@@ -1,88 +1,31 @@
-# Export Artifact
+# Export a session artifact
 
-## Overview
+Session Detail's **X — Export** opens `ArtifactExportScreen`, a single-row-at-a-time export picker. This is separate from campaign/player ZIP transfer and the campaign preparation Markdown exporters.
 
-This is work item 17 (`.scratch/implementation-plan/work-items.md`): a new
-`X` binding on Session Detail that lets the user copy one of that session's
-user-facing artifacts (input audio, transcript, reviewed transcript, Ledger, summary) out to a
-filesystem location of their choosing. Purely a convenience copy — the
-source artifact is untouched, nothing is deleted, and no new artifact type
-or metadata is introduced.
+## Selection and flow
 
-`ARTIFACTS` (`tablesage_application.paths`) is inherently session-scoped —
-there is no equivalent registry for player-level files — so this feature
-lives entirely on Session Detail, not as a standalone top-level screen.
+The list contains `ARTIFACTS` entries whose `should_show_in_ui` flag is true and whose files are present according to `session_artifacts`. Current visible entries include Input Audio, Transcript (Markdown), Reviewed Transcript, Role Transcript, Ledger, Recap Summary and Summary. Internal JSON transcript, routing, introductions, benchmark and Scene Breakdown files are not offered.
 
-## Flow
+**Export is existence-based, not freshness-gated.** An old file can be exported even when Session Detail marks it stale. An interrupted Ledger-pair marker suppresses the affected Ledger/Scene Breakdown/recap/summary entries in the presence helper.
 
-1. User presses `X` on Session Detail. Disabled (mirroring the
-   `can_transcribe_audio`/`can_generate_summary`/`can_process_session`
-   family) when a new `Application.can_export_artifacts(session_id)` gate
-   returns `False` — no artifact in `ARTIFACTS` both has
-   `should_show_in_ui=True` and currently exists on disk.
-2. A new pushed `Screen`, `ArtifactExportScreen(session_id)`, lists every
-   qualifying artifact as one row (`display_name` only — "Input Audio",
-   "Transcript", "Reviewed Transcript", "Summary") using the same filter as the indicator panel:
-   `ARTIFACTS[name].should_show_in_ui and session_artifacts(session_folder)[name]`.
-3. For Ledger, the app first asks whether to export the human-readable Markdown view or canonical
-   JSON. Markdown selection deterministically creates or refreshes `ledger.md` from `ledger.json`,
-   allowing historical Ledgers to gain the view without another LLM call. Other artifacts proceed
-   directly to file selection.
-4. `E`, `Enter` on the selected row, or a double-click on a row then open
-   `textual_fspicker.FileSave`. Enter and the double-click both arrive as `DataTable`'s
-   `RowSelected` message (`on_data_table_row_selected`) rather than the screen-level `enter`
-   binding -- `DataTable` owns its own `enter` binding and shadows the screen's while the table
-   has focus, so `RowSelected` is what actually needs handling for both gestures:
-   `location=Path.home()` (same default `FileOpen` uses for Import Audio),
-   `default_file=ARTIFACTS[name].filename`, `can_overwrite=True` (no extra
-   confirmation step — this is a plain "Save As" over a user-owned
-   destination, not a mutation of anything the app manages, so the
-   `ConfirmationDialog` pattern reserved for destructive app-data changes
-   doesn't apply here).
-5. On confirm, `Application.export_artifact(session_id, artifact_name, destination)` (or
-   `Application.export_ledger_markdown(...)` for readable Ledger export)
-   copies the file. On success: `notify()`, list unchanged, screen stays
-   open — repeatable for every other qualifying artifact in the same visit,
-   matching how every other list screen in this app stays put after a row
-   action rather than popping. On cancel: nothing happens, screen stays
-   open.
+1. Select a row and use E, Enter or double-click.
+2. Ledger asks for readable Markdown or canonical JSON. Markdown regenerates `ledger.md` deterministically from the canonical JSON without an LLM call.
+3. The shared FileSave picker starts at the user's home directory and suggests the artifact filename.
+4. Confirming copies the selected file to the destination. The screen stays open for another export; cancelling leaves it unchanged.
 
-## Behaviors & Rules
+FileSave allows overwrite without the additional confirmation used by campaign preparation exporters. Do not assume all export screens have identical overwrite or destination policies.
 
-- **Copy, never move.** The source file is never deleted or altered.
-- **Ledger has two export representations.** `ledger.json` remains canonical; `ledger.md` is a
-  reproducible companion that is overwritten from JSON rather than treated as user-authored text.
-- **No confirmation on overwrite.** `can_overwrite=True` on `FileSave`
-  silently allows overwriting an existing file at the chosen destination —
-  matches native "Save As" dialog behavior, and repeatedly re-exporting the
-  same artifact (e.g. a regenerated summary) shouldn't require confirming
-  every time.
-- **List reflects existence at screen-open time only**, same as every other
-  DataTable snapshot in this app — it does not live-update if a background
-  operation changes artifact existence while the screen is open (nothing in
-  this app runs a long operation concurrently with this screen anyway).
+## Source behavior
 
-## Implementation Approach
+Ordinary export uses `shutil.copyfile` and does not move/delete the source or create a new artifact record. Readable Ledger export is the exception to a strictly read-only source operation: it refreshes the reproducible `ledger.md` companion before copying. Canonical `ledger.json` remains unchanged.
 
-- `tablesage-application`: one new function,
-  `paths.export_artifact(session_folder: Path, artifact_name: ArtifactName, destination: Path) -> None`
-  — `shutil.copyfile(session_folder / ARTIFACTS[artifact_name].filename, destination)`.
-  Unit-testable directly (no DB, no TUI). A new `Application.can_export_artifacts`
-  and `Application.export_artifact` facade pair wires it to settings-free,
-  session-folder-only inputs, mirroring `Application.session_artifacts`'s
-  existing shape.
-- `tablesage-tui`: `ArtifactExportScreen` (new `Screen`, DataTable, one
-  column), wired to `SessionDetailScreen`'s new `X` binding; reuses
-  `textual_fspicker.FileSave`/`Filters` directly, no new dialog wrapper
-  (same precedent as Import Audio's `FileOpen`).
-- No new `AppSettings` fields. New user-facing artifacts become exportable by registering them
-  in `ARTIFACTS`; the reviewed transcript uses this existing extension point.
+The list refreshes when loaded/refreshed rather than watching background filesystem changes.
 
-## Out of Scope
+## Implementation
 
-- Exporting artifacts with `should_show_in_ui=False` (such as the machine `transcript.json`) —
-  would require deliberately flipping that flag,
-  not a special case in this screen.
-- Multi-select / export-all-in-one-action — one row, one export, repeatable.
-- Player-level exports (voice clips) — `ARTIFACTS` doesn't cover players;
-  out of scope for this work item entirely.
+- [paths.py](../packages/tablesage-application/src/tablesage_application/paths.py): artifact registry and visibility.
+- [session_pipeline/artifacts.py](../packages/tablesage-application/src/tablesage_application/session_pipeline/artifacts.py): presence filter, export gate and copy helper.
+- [Application](../packages/tablesage-application/src/tablesage_application/application.py): session resolution and Ledger Markdown rendering.
+- [artifact_export.py](../apps/tablesage-tui/src/tablesage_tui/screens/artifact_export.py): list, representation choice and shared FileSave wrapper.
+
+No extra settings, multi-select or export-all session action is involved. Player and campaign archive exports are implemented elsewhere, not through this registry.

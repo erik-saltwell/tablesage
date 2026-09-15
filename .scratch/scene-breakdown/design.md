@@ -2,7 +2,7 @@
 
 ## Status and purpose
 
-Agreed design, awaiting implementation. This document supersedes the tentative choices in [the original concept sketch](../../.ideas/ledger-scene-breakdown.md). The current implementation and [Ledger specification](../../specs/ledger.md) have not yet been changed. Implementation, including the Ledger generation prompt change, is a separate step.
+Implemented design. [Scene Breakdown and Recap](../../specs/scene-breakdown.md) defines the resolved production contract; [Ledger](../../specs/ledger.md) defines the paired v4 record. This document retains the product rationale.
 
 Scene Breakdown is a compact, structured account of every scene in a Session. It serves two uses:
 
@@ -40,7 +40,7 @@ Preserve the boundaries defined by [Transcript Sections](../../specs/transcript-
 - Use phrases spoken in the Session for titles and locations when appropriate to recognition. Do not invent quotations, atmosphere, motives, humor, or thematic symbolism.
 - Keep the existing glossary and attribution constraints; glossary information does not authorize introducing absent facts.
 
-Joint generation preserves access to original evidence, but does not guarantee agreement or quality. Whether the combined task harms Ledger quality remains an empirical question to evaluate during implementation.
+Joint generation preserves access to original evidence, but does not guarantee agreement or quality. Whether the combined task harms Ledger quality remains an empirical quality question; structural validation alone does not establish semantic quality.
 
 ## Scene contents
 
@@ -49,15 +49,15 @@ JSON is the persisted structured format, validated with Pydantic. The agreed sem
 | Field | Meaning |
 | --- | --- |
 | `title` | A short, recognizable scene title; reuse appropriate Session phrasing. |
-| `location` | One source-supported location name or phrase. No separate canonical-name and remembered-phrase fields. |
+| `location` | One source-supported location name or phrase, or null if unknown. No separate canonical-name and remembered-phrase fields. |
 | `participants` | Characters and groups central to the scene. |
 | `situation` | Circumstances or problem at the scene's start, incorporating a goal when established. No separate goal field. |
 | `outcome` | What happened, including failure, interruption, or an unresolved ending. |
 | `carry_forward` | A list of concise strings preserving additional discoveries, commitments, relationships, possessions, threats, and other facts useful for continuity. |
 | `signature_detail` | A required, nullable field for one distinctive sensory, thematic, or personal detail. |
-| Ledger ranges | References assigning Ledger entries to this scene, including multiple noncontiguous ranges when needed. Exact field and endpoint representation remain to be specified. |
+| `ledger_ranges` | Nonempty list of inclusive zero-based `{start_index, end_index}` references; multiple noncontiguous ranges support interleaving. |
 
-At Session level, the persisted breakdown contains the shared `starting_situation`, its `ending_situation`, and the ordered scenes. Exact metadata fields, schema version, and nullability for fields other than `signature_detail` remain implementation details to resolve.
+At Session level, the strict persisted v1 schema contains session_id, session_name, starting_situation, ledger_sha256, ending_situation and ordered scenes. Application supplies identity and the generation-time Ledger digest. Text is trimmed/nonempty; participants and carry_forward are string lists; an empty Ledger has an empty scene list.
 
 ### Compression
 
@@ -73,7 +73,7 @@ Prefer the detail a player would use to remind another player which scene this w
 
 Use the most recognizable supported detail available, even if ordinary. Allow `null` when no useful detail exists rather than manufacturing distinctiveness. The field itself remains required.
 
-For example, in Brandonsford Session 002, Trout accidentally hitting Squints with his sling during the rescue is a strong signature detail. George's account of amputating his poisoned arm gives his dragon warning a personal identity. These illustrative examples come from the [local Session Ledger](../../.tablesage/campaigns/Brandonsford/002/ledger.json), which may not exist in another checkout; the original concept sketch preserves fuller examples.
+For example, in Brandonsford Session 002, Trout accidentally hitting Squints with his sling during the rescue is a strong signature detail. George's account of amputating his poisoned arm gives his dragon warning a personal identity. These are historical examples from Brandonsford Session 002; they are explanatory, not bundled fixtures or prerequisites. Do not invent an absent detail merely to fill a signature field.
 
 ### Time pressure
 
@@ -106,7 +106,7 @@ Treat the Ledger and Scene Breakdown as a matched pair:
 - Validate both payloads and their cross-artifact coverage before saving either.
 - Accept or reject a generation candidate as a pair; never combine artifacts from different attempts.
 - Build both persisted artifacts with the same generated starting situation.
-- Preserve the pair's consistency when replacing files. The exact transaction or recovery mechanism remains to be designed.
+- Preserve the pair's consistency when replacing files. Stage Ledger JSON, Ledger Markdown and Scene Breakdown as one rollback unit. Handled failures restore previous bytes; interruption or failed rollback leaves `.ledger-generation-incomplete` to block readiness until regeneration.
 
 The Ledger retains its existing deterministic `ledger.md` companion. Scene Breakdown has no equivalent companion.
 
@@ -119,28 +119,16 @@ Role Transcript + Transcript Sections
         -> Scene Breakdown -> existing Recap Summary
 ```
 
-The recap's narrative source becomes Scene Breakdown rather than Ledger. The detailed Summary continues to use the Ledger. Existing non-narrative inputs such as Session metadata are not redesigned here.
+The recap's narrative source is Scene Breakdown rather than Ledger. The detailed Summary continues to use the Ledger. Existing non-narrative inputs such as Session metadata are not redesigned here.
 
-Register Scene Breakdown in `ArtifactName` and `ARTIFACTS` in [paths.py](../../packages/tablesage-application/src/tablesage_application/paths.py), with filename `scene_breakdown.json`, display name `Scene Breakdown`, `should_show_in_ui=False`, and no companion filenames. Its joint transcript-based provenance should be reflected in invalidation; the current registry's `FROM_TRANSCRIPT` category matches that provenance. Artifact existence remains available to code even though the artifact is hidden from the UI display.
+Scene Breakdown is registered in `ArtifactName` and `ARTIFACTS` in [paths.py](../../packages/tablesage-application/src/tablesage_application/paths.py), with filename `scene_breakdown.json`, display name `Scene Breakdown`, `should_show_in_ui=False`, and no companion filenames. Its registry category is `FROM_TRANSCRIPT`; the dependency graph, not category-based deletion, controls freshness. Artifact existence remains available to code even though the artifact is hidden from the UI display.
 
-Upstream changes that invalidate the Ledger must invalidate its paired Scene Breakdown. Replacing the pair invalidates dependent recap and summary outputs. Recap readiness must depend on the breakdown's availability rather than merely the presence of a Ledger. Handling Sessions that already have a Ledger but no breakdown remains a compatibility detail for implementation.
+Upstream changes make the shared producer stale and regenerate both siblings. Editing one sibling affects only its actual consumers; ranges and digest are generation-time provenance and are not revalidated against later Ledger edits. A Session with Ledger but no breakdown has an incomplete producer and must regenerate it before using the breakdown.
 
-## Implementation status
+## Resolved mechanics and remaining quality work
 
-The production implementation and resolved mechanics are specified in [Scene Breakdown and Recap](../../specs/scene-breakdown.md). The discussion below records what remained open at design time; use that specification for the current schema, zero-based ranges, digest binding, failure recovery, and legacy-artifact behavior.
+The response contains exactly starting_situation, ledger and scene_breakdown; there is no generation scratchpad. Ranges are canonicalized by first Ledger index and must partition the Ledger exactly once. Candidates are accepted/rejected as pairs with bounded retries. Recap uses Scene Breakdown, validates flat bullets, adds the Recap heading and persists atomically; production does not reject on its prompt's word budget.
 
-## Implementation implications and unresolved mechanics
+For implementation details see [scene_breakdown.py](../../packages/tablesage-application/src/tablesage_application/session_pipeline/scene_breakdown.py), [Ledger generation](../../.documentation/generate_ledger.md), [recap generation](../../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_recap_summary.py) and [dependency tracking](../artifact-dependency-tracking/design.md).
 
-This design requires more than a prompt-only edit. The separate implementation step must align the structured response model, artifact construction, validation, persistence, registry, invalidation, and recap consumer with the new prompt contract.
-
-Relevant current code and documentation:
-
-- [Ledger generation flow](../../.documentation/generate_ledger.md) and [generator](../../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_ledger.py).
-- [Ledger system prompt](../../packages/tablesage-application/src/tablesage_application/llm/_prompts/generate_ledger/system.md).
-- [Recap generation](../../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_recap_summary.py), currently accepting `ledger` and checking for `ledger.json`.
-- [Application orchestration](../../packages/tablesage-application/src/tablesage_application/application.py).
-- [Artifact registry](../../packages/tablesage-application/src/tablesage_application/paths.py), which already supports hidden artifacts through `should_show_in_ui`.
-
-Mechanical choices not settled in the discussion include exact range endpoint conventions, metadata/version fields, empty-session behavior, failure-safe replacement of multiple files, compatibility with existing artifacts, and how the current generation-only scratchpad fits a response with three top-level components. The current Ledger permits an empty utterance list, so the new schema must handle that case deliberately. None of these open mechanics changes the agreed product behavior above.
-
-During implementation, quality review should check a complete real Session for scene coverage, interleaved interactions, corrections, supported recognizable phrasing, compactness, and the usefulness of a recap generated solely from the breakdown. The existing three illustrative scenes do not constitute that full evaluation.
+Full-session semantic quality evaluation remains distinct from schema validation. Review should examine interleaved interactions, corrected facts, recognizable source phrasing, compactness and recap usefulness. The illustrative scenes above do not constitute that evaluation.

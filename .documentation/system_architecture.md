@@ -31,30 +31,33 @@ tablesage-tools → no project packages
 
 ## `tablesage-tui`
 
-The Textual user interface. It presents data, collects input, renders progress/errors, and invokes application use cases. It does not access SQLite repositories or media/provider adapters directly.
+The Textual user interface. It presents data, collects input, renders progress/errors, and invokes application use cases. Persistence is delegated to Application. Most processing is also delegated there; Session Detail currently invokes the application-layer import_audio helper directly before requesting transcription.
 
 ## `tablesage-application`
 
 The orchestration layer. It implements use cases such as campaign management, campaign roster management, player management, session processing, voice-profile seeding/enhancement, transcript review, and summary generation.
 
-Application use cases validate inputs, own transaction boundaries, coordinate repositories and tools, emit progress, and return UI-friendly results. They depend on repository interfaces, never on a concrete SQLite implementation.
+Application use cases validate inputs, own transaction boundaries, coordinate repositories and tools, emit progress, and return UI-friendly results. They use concrete SQLModel sessions and the helpers in `entities/`; Application owns the SQLite engine. There is no repository-interface or unit-of-work abstraction between these layers.
 
-Organize this package by use case rather than technical helper type, for example `campaigns`, `players`, `sessions`, `voice_profiles`, `transcript_review`, and `summaries`. `players` is independent of `campaigns` — a player is not owned by any single campaign, so player CRUD and voice-profile management live outside the `campaigns` module, linked only through the roster (`campaign_player`).
+Current modules include `entities/` for database operations, `session_pipeline/` for artifact processing, `voice_clips/`, player/campaign archive helpers, `configuration`, `previously_on` and `opportunities`. Players are workspace-global; the CampaignPlayer roster links them to campaigns.
 
 ## `tablesage-model`
 
-The domain and persistence package. It contains domain entities such as campaigns, sessions, players, voice samples, discourse, and summaries; it also defines repository and unit-of-work interfaces.
+The concrete domain/persistence package. SQLModel tables live in `model/`:
 
-SQLite is initially implemented here, but behind an explicit internal seam:
+| Model | Responsibility |
+| --- | --- |
+| Campaign | Campaign metadata and metadata/glossary/roster change clocks |
+| Player | Global player identity and computed voice centroid metadata |
+| CampaignPlayer | Campaign roster membership |
+| Session | Campaign session, sequence/date/status and metadata/attendance clocks |
+| SessionAttendance | A session's player attendance |
+| SessionAttendanceRole | One or more roles for an attendee |
+| GlossaryEntry | Campaign spelling/vocabulary guidance |
 
-```text
-tablesage_model/
-  domain/       domain entities and invariants
-  repository/   repository and unit-of-work interfaces
-  sqlite/       SQLModel mappings, SQLite repositories, Alembic migrations
-```
+Voice clips are files, not VoiceSample rows. Transcripts, Ledger, Scene Breakdown and generated summaries are session files, not separate database tables. `setup/` applies Alembic migrations from `_migrations/` and creates a SQLite engine with foreign keys enabled. `settings/` defines AppSettings; `_paths.py` defines workspace configuration/database locations.
 
-The SQLite adapter must not leak SQLAlchemy/SQLModel sessions through repository interfaces. This makes moving `sqlite/` into a separate package possible later without changing application use cases.
+There are no `domain/`, `repository/` or `sqlite/` subpackages or abstract repository seam. For exact fields and constraints consult [the SQLModel declarations](../packages/tablesage-model/src/tablesage_model/model/); migrations define existing database upgrades.
 
 ## `tablesage-tools`
 
@@ -64,7 +67,7 @@ Tools operate on generic inputs, outputs, and explicitly supplied paths. They do
 
 Tools may compute embeddings and centroids. The application/domain layers decide whether a result becomes a player voice profile, which clips are accepted, and how provenance is persisted.
 
-## Composition and testing
+## Composition and configuration
 
 Generate Opportunities lives in `tablesage_application.opportunities`. Application
 reloads the complete validated Campaign Scene Recap for each generation. A packaged
@@ -82,7 +85,7 @@ and glossary. All three prompts are packaged application resources; model select
 The TUI owns ephemeral selections and navigation. This external Markdown export does not register
 a Session artifact or alter downstream freshness; its final LLM output is deliberately unvalidated.
 
-The executable composition root constructs concrete SQLite repositories and tool adapters, then injects them into application use cases. This is the only place that knows all concrete implementations. It's also where `AppSettings` gets loaded (`tablesage_model.setup.ensure_settings`, deploying the TUI's packaged default `settings.yaml` to `.tablesage/settings.yaml` on first run) and injected into `Application` — settings aren't read anywhere below this point.
+The executable composition root, `tablesage_tui.screens.main_app.main`, checks media tools, creates Configuration, configures logging, loads AppSettings with `ensure_settings`, validates model selections, and constructs Application with that settings snapshot. Application initializes/migrates its database and constructs the SQLite engine itself. `ensure_settings` deploys the TUI's packaged default to `.tablesage/settings.yaml` on first run. Application and session-pipeline helpers may accept settings sections; calls into tools unpack them into plain values.
 
 The Settings screen edits a draft and delegates atomic canonical persistence to
 `tablesage_application.configuration.Configuration`. After Save, `Application`
@@ -93,7 +96,8 @@ variables while preserving their inherited shell overrides. An explicit
 file is version zero, and a future version is rejected. Invalid files retain the
 terminal-error repair path. See [the Settings design](../.scratch/settings/design.md).
 
-- Test domain invariants without SQLite or provider dependencies.
-- Test application use cases with fake repositories and fake tools.
-- Test tools against adapter contracts and provider/media fixtures.
-- Test SQLite repositories and Alembic migrations as integration tests.
+## Artifact lifecycle and verification
+
+[Artifact dependency tracking](../.scratch/artifact-dependency-tracking/design.md) describes the implemented freshness graph. Normal input changes preserve old files and make dependent outputs stale. Generate Outputs ensures dependencies and skips current work; Clean Session explicitly deletes session artifacts, including audio.
+
+Use the [artifact specs](../specs/) for schema and routing contracts. Follow the repository's [verification policy](../.work-items/workflow.md#verification-policy); this architecture does not prescribe a new test suite or an unimplemented fake-repository seam.

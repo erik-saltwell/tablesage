@@ -1,14 +1,14 @@
 # Experiment 3 — WeSpeaker ResNet34-LM embedder
 
-Status: Tried. Result: **Success** — the best result so far. Beats both `production` and
-experiment #2's `ecapa-tdnn`. Not yet adopted in production — see "Next steps."
+Status: Tried; WeSpeaker was adopted as the production embedder. This file preserves the original experiment, whose `production` label means the historical eres2netv2/0.07 baseline, not today's candidate.
 
-## Method
+Current code: [WeSpeaker adapter](../../packages/tablesage-tools/src/tablesage_tools/embeddings/wespeaker.py), [benchmark candidates](../../benchmarks/speaker_id/candidates.py), and [deployed defaults](../../apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml). Production now composes duration-conditioned assignment with experiments 8 and 9; see [experiment 12](12-production-composition-8-9.md). The measurements below have not been rerun as part of documentation cleanup.
+
+## Historical method
 
 Added `WeSpeakerResNet34Embedder` to `benchmarks/speaker_id/embedders.py`, wrapping WeSpeaker's
 `Wespeaker/wespeaker-voxceleb-resnet34-LM` (VoxCeleb2-trained, English) checkpoint, loaded via the
-`wespeaker-unofficial` PyPI package (there is no official `wespeaker` PyPI package; added to root
-`pyproject.toml`'s dev group). Registered as the `wespeaker-resnet34` candidate in
+`wespeaker-unofficial` PyPI package (the experiment added it as a developer dependency; it is now also a runtime dependency). Registered as the `wespeaker-resnet34` candidate in
 `benchmarks/speaker_id/candidates.py`, at the same `similarity_margin_threshold: 0.07` as
 `production`, to isolate the embedder-swap effect. Ran via
 [`run_experiment_3.py`](run_experiment_3.py) alongside `production`, for the same
@@ -68,7 +68,7 @@ pairs tied) — same "broad improvement, not one fixed case" pattern as `ecapa-t
 Further confirms the domain-mismatch hypothesis from experiments #1 and #2: both English/VoxCeleb
 -trained alternatives beat the Mandarin-trained `eres2netv2` by a wide margin, and the two
 English-trained models are much closer to each other (0.884 vs. 0.902) than either is to production
-(0.797). `wespeaker-resnet34` currently leads, but the gap to `ecapa-tdnn` (+0.018) is much smaller
+(0.797). `wespeaker-resnet34` led at this experiment's stage, but the gap to `ecapa-tdnn` (+0.018) is much smaller
 than the gap either has over `production` (+0.087 / +0.105) — worth treating as "both are strong
 candidates" rather than a decisive win until threshold-tuned.
 
@@ -76,12 +76,10 @@ Same caveats as experiments #1 and #2 apply: two frozen sessions, five recurring
 threshold (0.07) was tuned for `eres2netv2`'s similarity scale, not this model's — this result is a
 lower bound on `wespeaker-resnet34`, not its ceiling.
 
-## Next steps
+## Decision and subsequent implementation
 
-- Run experiment #4 (NVIDIA NeMo TitaNet-Large) for the third and final proposed embedder
-  comparison.
-- Once all three are tried, sweep the threshold for whichever embedder(s) are still in contention
-  (same method as experiment #1) before deciding what to adopt — `ecapa-tdnn` and
-  `wespeaker-resnet34` are close enough pooled that threshold tuning could change the ranking.
-- If adopted, needs a matching production-side swap in `tablesage-tools` (not just this benchmark
-  harness) — out of scope for this benchmark-only experiment.
+The later TitaNet comparison and [threshold sweep](05-threshold-sweep-leaders.md) found a near tie. WeSpeaker was selected for its lighter deployment footprint and ported into tools, so there is no pending production embedder swap.
+
+The old 0.07/0.08 experiment thresholds are not today's general assignment setting. Current session identification uses margin 0.10 below one second and 0.04 at or above one second, then the conservative widening/propagation composition. The existing-player recommendation in From Audio separately retains its own 0.08 setting.
+
+The environment workarounds above describe this experiment's setup, not a promise about all installed dependency versions. Use the current adapter and package metadata for executable setup.
