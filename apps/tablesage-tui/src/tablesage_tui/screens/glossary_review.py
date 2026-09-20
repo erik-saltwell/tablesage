@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 import uuid
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, replace
 
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
@@ -38,9 +38,18 @@ class GlossaryReviewScreen(TableSageScreen):
         Binding("c,C", "complete", "Complete", key_display="C"),
     ]
 
-    def __init__(self, session_id: uuid.UUID, proposals: Sequence[GlossaryProposal]) -> None:
+    def __init__(
+        self,
+        session_id: uuid.UUID,
+        proposals: Sequence[GlossaryProposal],
+        *,
+        on_complete: Callable[[], None] | None = None,
+        on_cancel: Callable[[], None] | None = None,
+    ) -> None:
         super().__init__()
         self._session_id = session_id
+        self._on_complete = on_complete
+        self._on_cancel = on_cancel
         self._entries = [_DraftEntry(id=uuid.uuid4(), term=proposal.term, description=proposal.description) for proposal in proposals]
         self._sort_entries()
 
@@ -174,6 +183,8 @@ class GlossaryReviewScreen(TableSageScreen):
         proposals = [GlossaryProposal(term=entry.term.strip(), description=entry.description) for entry in self._entries]
         result = self.application.complete_glossary_extraction(self._session_id, proposals)
         self.app.pop_screen()
+        if self._on_complete is not None:
+            self.app.call_after_refresh(self._on_complete)
         added_word = "entry" if result.added_count == 1 else "entries"
         message = f"Added {result.added_count} glossary {added_word}."
         if result.skipped_duplicate_count:
@@ -183,3 +194,5 @@ class GlossaryReviewScreen(TableSageScreen):
 
     def action_cancel(self) -> None:
         self.app.pop_screen()
+        if self._on_cancel is not None:
+            self.app.call_after_refresh(self._on_cancel)

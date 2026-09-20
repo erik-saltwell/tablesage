@@ -48,6 +48,7 @@ def _application(
     return MagicMock(
         session_folder=MagicMock(return_value=session_folder),
         list_attendance=MagicMock(return_value=[_attendee("Alice")]),
+        extract_glossary=MagicMock(return_value=[]),
         extract_review_clips=MagicMock(return_value=(transcript, clip_dir)),
         suggest_spelling_corrections=MagicMock(return_value=suggestions if suggestions is not None else []),
         save_reviewed_transcript=MagicMock(),

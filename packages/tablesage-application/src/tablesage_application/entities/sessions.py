@@ -8,7 +8,7 @@ from pathlib import Path
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
-from tablesage_model.model import GAME_MASTER_ROLE, CampaignPlayer, Player, SessionAttendance, SessionAttendanceRole
+from tablesage_model.model import Player, SessionAttendance, SessionAttendanceRole
 from tablesage_model.model import Session as GameSession
 
 from .._fs import cleanup_orphan_dirs, create_named_entity_folder
@@ -52,24 +52,18 @@ def get_session(session: Session, session_id: uuid.UUID) -> GameSession:
     return game_session
 
 
-def get_previous_session(session: Session, game_session: GameSession) -> GameSession | None:
-    """Return the preceding Session in campaign-local chronological order.
+def find_prior_session(session: Session, campaign_id: uuid.UUID, current_session_date: date | None) -> GameSession | None:
+    """Find the campaign's latest dated Session before ``current_session_date``.
 
-    Dated Sessions sort first by date and then by sequence number. Undated Sessions sort after
-    dated Sessions and use sequence number among themselves, giving the ordering a deterministic
-    fallback when dates are unavailable.
+    When the current Session has no date, return the latest dated Session in the campaign.
+    Undated Sessions are never considered prior because their chronological position is unknown.
     """
-    campaign_sessions = list_sessions(session, game_session.campaign_id)
-    ordered = sorted(
-        campaign_sessions,
-        key=lambda candidate: (
-            candidate.session_date is None,
-            candidate.session_date or date.max,
-            candidate.sequence_number,
-        ),
-    )
-    position = next(index for index, candidate in enumerate(ordered) if candidate.id == game_session.id)
-    return ordered[position - 1] if position else None
+    candidates = [
+        candidate
+        for candidate in list_sessions(session, campaign_id)
+        if candidate.session_date is not None and (current_session_date is None or candidate.session_date < current_session_date)
+    ]
+    return max(candidates, key=lambda candidate: (candidate.session_date, candidate.sequence_number), default=None)
 
 
 def update_session(session: Session, session_id: uuid.UUID, name: str, session_date: date | None) -> GameSession:
@@ -117,10 +111,6 @@ class Attendee:
     roles: tuple[str, ...]
 
 
-def _seed_role_name(default_role_name: str) -> str:
-    return "Game Master" if default_role_name == GAME_MASTER_ROLE else default_role_name
-
-
 def list_attendance(session: Session, session_id: uuid.UUID) -> list[Attendee]:
     rows = session.exec(
         select(SessionAttendance, Player).where(SessionAttendance.session_id == session_id).where(SessionAttendance.player_id == Player.id)
@@ -133,13 +123,9 @@ def list_attendance(session: Session, session_id: uuid.UUID) -> list[Attendee]:
     return attendees
 
 
-def add_attendance(session: Session, campaign_id: uuid.UUID, session_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
-    membership = session.exec(
-        select(CampaignPlayer).where(CampaignPlayer.campaign_id == campaign_id).where(CampaignPlayer.player_id == player_id)
-    ).first()
-    if membership is None:
-        raise ValueError("This player is not a member of the campaign roster.")
-
+def add_attendance(session: Session, session_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
+    if session.get(Player, player_id) is None:
+        raise ValueError("Player not found.")
     attendance = SessionAttendance(session_id=session_id, player_id=player_id)
     session.add(attendance)
     try:
@@ -148,72 +134,43 @@ def add_attendance(session: Session, campaign_id: uuid.UUID, session_id: uuid.UU
         session.rollback()
         raise ValueError("This player is already attending the session.") from exc
 
-    seed_role = _seed_role_name(membership.default_role_name)
-    session.add(SessionAttendanceRole(attendance_id=attendance.id, name=seed_role))
-    session.flush()
-
     player = session.get(Player, player_id)
     assert player is not None
-    return Attendee(attendance_id=attendance.id, player_id=player_id, player_name=player.name, roles=(seed_role,))
+    return Attendee(attendance_id=attendance.id, player_id=player_id, player_name=player.name, roles=())
 
 
-def seed_attendance_from_previous_session_or_roster(session: Session, campaign_id: uuid.UUID, new_session_id: uuid.UUID) -> list[Attendee]:
-    """Populate a newly-created session's attendance from the campaign's most recent prior session.
+def seed_attendance_from_previous_session(session: Session, campaign_id: uuid.UUID, new_session_id: uuid.UUID) -> list[Attendee]:
+    """Copy attendees and roles from the campaign's most recent prior session.
 
-    Falls back to seeding one attendee per campaign roster member (each getting
-    their `CampaignPlayer.default_role_name`, via `add_attendance`) when there is
-    no prior session -- i.e. this is the campaign's first. When a prior session
-    exists, each of its attendees' full role list is carried over verbatim
-    instead, since that's a strictly richer source than the roster's one
-    default role per player. A player who was removed from the roster since the
-    prior session is silently skipped rather than failing the whole import --
-    `add_attendance` enforces roster membership, and a stale carry-over
-    shouldn't block creating the new session.
+    A campaign's first session begins empty so its attendees can be selected
+    directly from the workspace-wide player list.
     """
-    other_sessions = session.exec(
-        select(GameSession).where(GameSession.campaign_id == campaign_id).where(GameSession.id != new_session_id)
-    ).all()
-    previous_session = max(other_sessions, key=lambda s: s.sequence_number, default=None)
+    new_session = get_session(session, new_session_id)
+    previous_session = find_prior_session(session, campaign_id, new_session.session_date)
 
     if previous_session is None:
-        memberships = session.exec(select(CampaignPlayer).where(CampaignPlayer.campaign_id == campaign_id)).all()
-        return [add_attendance(session, campaign_id, new_session_id, membership.player_id) for membership in memberships]
+        return []
 
-    seeded: list[Attendee] = []
-    for attendee in list_attendance(session, previous_session.id):
-        try:
-            seeded.append(add_attendance_with_roles(session, campaign_id, new_session_id, attendee.player_id, list(attendee.roles)))
-        except ValueError:
-            continue
-    return seeded
+    return [
+        add_attendance_with_roles(session, new_session_id, attendee.player_id, list(attendee.roles))
+        for attendee in list_attendance(session, previous_session.id)
+    ]
 
 
-def add_attendance_with_roles(
-    session: Session, campaign_id: uuid.UUID, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]
-) -> Attendee:
-    """Create a new attendance row for `player_id`, then set its role list to `roles`.
-
-    Combines `add_attendance` (which seeds one default role from the
-    campaign membership) with `set_attendance_roles` (which overwrites it) --
-    the caller is the attendee dialog, where roles are chosen directly, so
-    the end result should be exactly the roles the user picked, not the
-    seeded default plus them.
-    """
-    attendee = add_attendance(session, campaign_id, session_id, player_id)
-    return set_attendance_roles(session, attendee.attendance_id, roles)
+def add_attendance_with_roles(session: Session, session_id: uuid.UUID, player_id: uuid.UUID, roles: list[str]) -> Attendee:
+    """Create a new attendance row for `player_id`, then set its role list to `roles`."""
+    attendee = add_attendance(session, session_id, player_id)
+    return set_attendance_roles(session, attendee.attendance_id, roles) if roles else attendee
 
 
-def set_attendance_player(session: Session, campaign_id: uuid.UUID, attendance_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
-    """Reassign an existing attendance row to a different roster player."""
+def set_attendance_player(session: Session, attendance_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
+    """Reassign an existing attendance row to another workspace player."""
     attendance = session.get(SessionAttendance, attendance_id)
     if attendance is None:
         raise ValueError("Attendance not found.")
 
-    membership = session.exec(
-        select(CampaignPlayer).where(CampaignPlayer.campaign_id == campaign_id).where(CampaignPlayer.player_id == player_id)
-    ).first()
-    if membership is None:
-        raise ValueError("This player is not a member of the campaign roster.")
+    if session.get(Player, player_id) is None:
+        raise ValueError("Player not found.")
 
     attendance.player_id = player_id
     session.add(attendance)

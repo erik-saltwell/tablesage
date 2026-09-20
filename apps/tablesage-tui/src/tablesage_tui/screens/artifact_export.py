@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 
 from tablesage_application.paths import ARTIFACTS, ArtifactName
+from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
@@ -73,6 +74,26 @@ class ArtifactExportScreen(TableSageScreen):
         if artifact_name is None:
             return
 
+        if self.application.session_artifact_states(self._session_id).get(artifact_name) is ArtifactStatus.STALE:
+
+            def on_confirm(confirmed: bool | None) -> None:
+                if confirmed:
+                    self._continue_export(artifact_name)
+
+            self.app.push_screen(
+                ConfirmationDialog(
+                    title="Artifact Is Stale",
+                    prompt=f"{ARTIFACTS[artifact_name].display_name} is stale. Export it anyway?",
+                    no_label="Back",
+                    yes_label="Continue",
+                ),
+                on_confirm,
+            )
+            return
+
+        self._continue_export(artifact_name)
+
+    def _continue_export(self, artifact_name: ArtifactName) -> None:
         if artifact_name is ArtifactName.LEDGER:
             self.app.push_screen(
                 ConfirmationDialog(

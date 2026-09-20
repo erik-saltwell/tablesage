@@ -10,32 +10,29 @@ from tablesage_application.session_pipeline.artifact_graph import (
     ArtifactStatus,
     GenerationTask,
 )
-from tablesage_model.model import GAME_MASTER_ROLE, GlossaryEntry
+from tablesage_model.model import GlossaryEntry
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.events import Click
 from textual.widgets import ContentSwitcher, DataTable, Input, Static
-from textual_fspicker import Filters
 
 from ..dialogs import (
     ConfirmationDialog,
     GlossaryEntryDialog,
-    PlayerPickerDialog,
-    RolePickerDialog,
     TextInputDialog,
 )
-from ..dialogs.file_picker import FileOpen, FileSave
+from ..dialogs.file_picker import FileSave
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
 from .session_detail import SessionDetailScreen
 
-_TABS = ("roster", "sessions", "glossary")
+_TABS = ("sessions", "glossary")
 
 
 class CampaignDetailScreen(TableSageScreen):
-    """A single campaign's metadata plus its roster, sessions, and glossary."""
+    """A single campaign's metadata, sessions, and glossary."""
 
     section = "campaign detail"
     AUTO_FOCUS = ""
@@ -43,7 +40,6 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("r,R", "show_roster", "Roster", key_display="R"),
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
         Binding("n,N", "new_item", "New", key_display="N"),
@@ -53,7 +49,6 @@ class CampaignDetailScreen(TableSageScreen):
     OTHER_BINDINGS = [
         Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
-        Binding("i,I", "import_legacy_settings", "Import Legacy Settings", key_display="I"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
         Binding("p,P", "generate_opportunities", "Generate Opportunities", key_display="P"),
         Binding("v,V", "create_previously_on", "Create Previously On", key_display="V"),
@@ -83,18 +78,10 @@ class CampaignDetailScreen(TableSageScreen):
                     yield CommittingInput(id="campaign-game-system-input", placeholder="Optional game system")
 
             with Horizontal(id="campaign-detail-tabs"):
-                yield Static("[R] Roster", id="tab-label-roster", classes="tab-label")
                 yield Static("[S] Sessions", id="tab-label-sessions", classes="tab-label")
                 yield Static("[G] Glossary", id="tab-label-glossary", classes="tab-label")
 
             with ContentSwitcher(id="campaign-detail-switcher", initial="sessions-tab"):
-                with Vertical(id="roster-tab"):
-                    roster_table: DataTable[str] = DataTable(
-                        id="roster-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
-                    )
-                    roster_table.add_column("Player", key="player")
-                    roster_table.add_column("Default Role", key="role")
-                    yield roster_table
                 with Vertical(id="sessions-tab"):
                     sessions_table: DataTable[str] = DataTable(
                         id="sessions-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
@@ -132,7 +119,6 @@ class CampaignDetailScreen(TableSageScreen):
         self.query_one("#campaign-description-input", CommittingInput).value = self._description or ""
         self.query_one("#campaign-game-system-input", CommittingInput).value = self._game_system or ""
 
-        self._reload_roster()
         self._reload_sessions()
         self._reload_glossary()
 
@@ -200,9 +186,6 @@ class CampaignDetailScreen(TableSageScreen):
 
     # Tabs
 
-    def action_show_roster(self) -> None:
-        self._set_active_tab("roster")
-
     def action_show_sessions(self) -> None:
         self._set_active_tab("sessions")
 
@@ -226,10 +209,6 @@ class CampaignDetailScreen(TableSageScreen):
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action in {"edit_item", "delete_item"}:
             return True if self._selected_row_id(f"{self._active_tab}-table") is not None else None
-        if action == "cleanup":
-            return self._active_tab == "sessions"
-        if action == "import_legacy_settings":
-            return self._active_tab == "glossary"
         return True
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
@@ -242,79 +221,6 @@ class CampaignDetailScreen(TableSageScreen):
             return None
         row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
         return uuid.UUID(row_key) if row_key else None
-
-    # Roster
-
-    def _reload_roster(self) -> None:
-        table = self.query_one("#roster-table", DataTable)
-        table.clear()
-        for membership, player in self.application.list_roster(self._campaign_id):
-            table.add_row(player.name, self._role_label(membership.default_role_name), key=str(membership.id))
-        self.refresh_bindings()
-
-    @staticmethod
-    def _role_label(default_role_name: str) -> str:
-        return "Game Master" if default_role_name == GAME_MASTER_ROLE else default_role_name
-
-    def _new_roster_member(self) -> None:
-        rostered_ids = {player.id for _, player in self.application.list_roster(self._campaign_id)}
-        available = [player for player in self.application.list_players() if player.id not in rostered_ids]
-
-        def after_player_picked(player_id: uuid.UUID | None) -> None:
-            if player_id is None:
-                return
-            player_name = next((player.name for player in available if player.id == player_id), "")
-
-            def after_role_picked(role: str | None) -> None:
-                if role is None:
-                    return
-                try:
-                    self.application.add_player_to_campaign(self._campaign_id, player_id, role)
-                except ValueError as exc:
-                    self.notify(str(exc), severity="error")
-                    return
-                self._reload_roster()
-
-            self.app.push_screen(RolePickerDialog(player_name=player_name), after_role_picked)
-
-        self.app.push_screen(PlayerPickerDialog(players=available), after_player_picked)
-
-    def _edit_roster_member(self) -> None:
-        membership_id = self._selected_row_id("roster-table")
-        if membership_id is None:
-            return
-
-        membership, player = next(((m, p) for m, p in self.application.list_roster(self._campaign_id) if m.id == membership_id))
-
-        def after_role_picked(role: str | None) -> None:
-            if role is None:
-                return
-            self.application.update_default_role(membership_id, role)
-            self._reload_roster()
-
-        self.app.push_screen(
-            RolePickerDialog(player_name=player.name, current_role=self._role_label(membership.default_role_name)),
-            after_role_picked,
-        )
-
-    def _delete_roster_member(self) -> None:
-        membership_id = self._selected_row_id("roster-table")
-        if membership_id is None:
-            return
-
-        def on_dismiss(confirmed: bool | None) -> None:
-            if not confirmed:
-                return
-            self.application.remove_from_roster(membership_id)
-            self._reload_roster()
-
-        self.app.push_screen(
-            ConfirmationDialog(
-                title="Remove From Roster",
-                prompt="Remove this player from the campaign roster? Their profile and other memberships are unaffected.",
-            ),
-            on_dismiss,
-        )
 
     # Sessions
 
@@ -383,9 +289,6 @@ class CampaignDetailScreen(TableSageScreen):
         )
 
     def action_cleanup(self) -> None:
-        if self._active_tab != "sessions":
-            return
-
         def on_dismiss(confirmed: bool | None) -> None:
             if not confirmed:
                 return
@@ -507,24 +410,6 @@ class CampaignDetailScreen(TableSageScreen):
             on_picked,
         )
 
-    def action_import_legacy_settings(self) -> None:
-        def on_picked(source_path: Path | None) -> None:
-            if source_path is None:
-                return
-            try:
-                imported_count = self.application.import_legacy_glossary(self._campaign_id, source_path)
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
-            self._reload_glossary()
-            self.notify(f"Imported {imported_count} glossary term(s).")
-
-        yaml_filter = Filters(("YAML settings files", lambda path: path.suffix.lower() == ".yaml"))
-        self.app.push_screen(
-            FileOpen(title="Import Legacy Settings", location=Path.home(), filters=yaml_filter),
-            on_picked,
-        )
-
     def action_regenerate_all_outputs(self) -> None:
         """Run the same stale-aware output generation as ``G`` for reviewed audio sessions."""
         sessions = sorted(self.application.list_sessions(self._campaign_id), key=lambda item: item.sequence_number)
@@ -617,25 +502,19 @@ class CampaignDetailScreen(TableSageScreen):
     # Dispatch
 
     def action_new_item(self) -> None:
-        if self._active_tab == "roster":
-            self._new_roster_member()
-        elif self._active_tab == "glossary":
+        if self._active_tab == "glossary":
             self._new_glossary_entry()
         else:
             self._new_session()
 
     def action_edit_item(self) -> None:
-        if self._active_tab == "roster":
-            self._edit_roster_member()
-        elif self._active_tab == "glossary":
+        if self._active_tab == "glossary":
             self._edit_glossary_entry()
         else:
             self._open_session()
 
     def action_delete_item(self) -> None:
-        if self._active_tab == "roster":
-            self._delete_roster_member()
-        elif self._active_tab == "glossary":
+        if self._active_tab == "glossary":
             self._delete_glossary_entry()
         else:
             self._delete_session()

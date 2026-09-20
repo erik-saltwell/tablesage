@@ -20,11 +20,9 @@ NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_lengt
 MAX_GENERATION_ATTEMPTS = 3
 LEDGER_MARKDOWN_FILENAME = "ledger.md"
 
-# The human-readable role name seeded for a campaign's GM (mirrors `attendee_editor.py`'s
-# `_GAME_MASTER_LABEL` and `entities/sessions.py`'s equivalent translation of the
-# `GAME_MASTER_ROLE` magic value -- there's no shared constant for this literal today, this
-# module follows the same precedent). `source` is otherwise an unvalidated free-text field
-# (see `generate_ledger.md`), so this match is a heuristic, not a guarantee.
+# The human-readable session role created by `attendee_editor.py`'s GM shortcut.
+# `source` is otherwise an unvalidated free-text field, so this match is a
+# heuristic, not a guarantee.
 _GAME_MASTER_LABEL = "Game Master"
 
 

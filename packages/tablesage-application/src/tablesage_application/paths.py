@@ -55,6 +55,7 @@ class ArtifactSpec:
 # and `should_show_in_ui`'s filtering -- entries stay in this order whether
 # or not they're shown.
 LEDGER_PAIR_MARKER = ".ledger-generation-incomplete"
+SUMMARY_INPUTS_FILENAME = ".summary-inputs.json"
 
 ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ArtifactName.INPUT_AUDIO: ArtifactSpec(
@@ -134,7 +135,13 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         should_show_in_ui=True,
         display_name="Recap Summary",
     ),
-    ArtifactName.SUMMARY: ArtifactSpec("summary.md", ArtifactCategory.FROM_LOG, should_show_in_ui=True, display_name="Summary"),
+    ArtifactName.SUMMARY: ArtifactSpec(
+        "summary.md",
+        ArtifactCategory.FROM_LOG,
+        should_show_in_ui=True,
+        display_name="Summary",
+        companion_filenames=(SUMMARY_INPUTS_FILENAME,),
+    ),
 }
 
 AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".flac", ".ogg"})

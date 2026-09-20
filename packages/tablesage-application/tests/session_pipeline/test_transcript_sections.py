@@ -187,8 +187,9 @@ def test_application_generates_sections_with_attendees_high_model_and_atomic_per
     application = Application(tmp_path, AppSettings(llm_model_high="high-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     game_session = application.create_session(campaign.id, "Session One")
+    attendee = application.add_attendance(game_session.id, player.id)
+    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria"])
     session_folder = application.session_folder(game_session.id)
     role_path = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
     _transcript().save(role_path)

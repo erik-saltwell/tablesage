@@ -69,7 +69,6 @@ def _application() -> tuple[MagicMock, CampaignHistory, Ingredients, ScoutResult
     app = MagicMock(spec=Application)
     app.get_campaign.return_value = Campaign(name=history.campaign_name)
     app.list_sessions.return_value = []
-    app.list_roster.return_value = []
     app.list_glossary_entries.return_value = []
     app.previously_on_history.return_value = history
     app.previously_on_ingredients.return_value = ingredients

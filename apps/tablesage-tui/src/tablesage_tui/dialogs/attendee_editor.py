@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 
-from tablesage_model.model import GAME_MASTER_ROLE, Player
+from tablesage_model.model import Player
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -14,9 +14,7 @@ from textual.widgets.select import NoSelection
 from ..widgets import EqualWidthButtonRow
 from .generic import TextInputDialog
 
-# The human-readable role name seeded for a campaign's GM (mirrors
-# `application.sessions._seed_role_name` and `campaign_detail.py`'s equivalent
-# translation of the `GAME_MASTER_ROLE` magic value).
+# The human-readable session role created by the one-click GM shortcut.
 _GAME_MASTER_LABEL = "Game Master"
 
 
@@ -55,7 +53,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
         player_id: uuid.UUID | None = None,
         player_name: str = "",
         roles: list[str] | None = None,
-        default_roles: dict[uuid.UUID, str] | None = None,
         allow_new_player: bool = False,
     ) -> None:
         super().__init__()
@@ -64,7 +61,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
         self._player_id = player_id
         self._player_name = player_name
         self._roles: list[str] = list(roles) if roles is not None else []
-        self._default_roles = default_roles or {}
         self._allow_new_player = allow_new_player
 
     def compose(self) -> ComposeResult:
@@ -153,9 +149,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
         if isinstance(player_id, NoSelection):
             return
 
-        default_role = self._default_roles.get(player_id, "")
-        initial_value = "" if default_role.strip().casefold() == GAME_MASTER_ROLE.casefold() else default_role
-
         def on_named(name: str | None) -> None:
             if name:
                 self._add_role(name)
@@ -166,7 +159,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
                 prompt="Enter the character name",
                 placeholder="Character name",
                 submit_label="Add",
-                initial_value=initial_value,
             ),
             on_named,
         )

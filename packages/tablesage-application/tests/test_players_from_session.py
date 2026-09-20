@@ -8,7 +8,7 @@ import tablesage_application.players_from_session as players_from_session_module
 from tablesage_application import Application
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.players_from_session import Stage, select_assigned_utterances, select_enhancement_utterances
-from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
+from tablesage_model.model import Campaign, Player
 from tablesage_tools.embeddings import Embedding
 from tablesage_tools.model import Transcript, Utterance
 
@@ -106,11 +106,9 @@ def _setup_session(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[App
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     alice = application.create_player(Player(name="Alice"))
     bob = application.create_player(Player(name="Bob"))
-    application.add_player_to_campaign(campaign.id, alice.id, GAME_MASTER_ROLE)
-    application.add_player_to_campaign(campaign.id, bob.id, "Bob's Character")
-
-    # roster membership predates session creation, so both are auto-seeded as attendees
     game_session = application.create_session(campaign.id, "Session One")
+    application.add_attendance(game_session.id, alice.id)
+    application.add_attendance(game_session.id, bob.id)
 
     session_folder = application.session_folder(game_session.id)
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")

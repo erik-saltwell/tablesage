@@ -7,7 +7,7 @@ import pytest
 from sqlmodel import Session
 from tablesage_application import Application
 from tablesage_application.entities import sessions as sessions_module
-from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
+from tablesage_model.model import Campaign, Player
 from tablesage_model.model import Session as GameSession
 
 
@@ -29,7 +29,6 @@ def test_attendance_mutation_advances_session_attendance_clock(tmp_path: Path) -
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Alice")
     old_clock = datetime(2000, 1, 1, tzinfo=UTC)
     with Session(application._engine) as session:
         stored = session.get(GameSession, game_session.id)
@@ -63,7 +62,7 @@ def test_list_sessions_scoped_to_campaign(tmp_path: Path) -> None:
     assert [s.name for s in sessions_a] == ["A1"]
 
 
-def test_previous_session_uses_campaign_date_then_sequence_with_undated_sessions_last(tmp_path: Path) -> None:
+def test_find_prior_session_uses_latest_earlier_date_or_latest_date_for_undated_current_session(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     later_created_first = application.create_session(campaign.id, "January 10, first", date(2026, 1, 10))
@@ -74,12 +73,12 @@ def test_previous_session_uses_campaign_date_then_sequence_with_undated_sessions
     application.create_session(other_campaign.id, "Unrelated", date(2025, 1, 1))
 
     with Session(application._engine) as session:
-        assert sessions_module.get_previous_session(session, earlier_date) is None
-        before_later_created_first = sessions_module.get_previous_session(session, later_created_first)
-        before_same_day_later_sequence = sessions_module.get_previous_session(session, same_day_later_sequence)
-        before_undated = sessions_module.get_previous_session(session, undated)
+        assert sessions_module.find_prior_session(session, campaign.id, earlier_date.session_date) is None
+        before_later_created_first = sessions_module.find_prior_session(session, campaign.id, later_created_first.session_date)
+        before_same_day_later_sequence = sessions_module.find_prior_session(session, campaign.id, same_day_later_sequence.session_date)
+        before_undated = sessions_module.find_prior_session(session, campaign.id, undated.session_date)
         assert before_later_created_first is not None and before_later_created_first.id == earlier_date.id
-        assert before_same_day_later_sequence is not None and before_same_day_later_sequence.id == later_created_first.id
+        assert before_same_day_later_sequence is not None and before_same_day_later_sequence.id == earlier_date.id
         assert before_undated is not None and before_undated.id == same_day_later_sequence.id
 
 
@@ -176,80 +175,44 @@ def test_delete_session_removes_row_but_keeps_folder(tmp_path: Path) -> None:
     assert (tmp_path / "campaigns" / "Iron Pact" / "001").is_dir()
 
 
-def test_create_session_seeds_attendance_from_roster_when_first_session(tmp_path: Path) -> None:
+def test_first_session_begins_without_attendees(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    gm = application.create_player(Player(name="Gary"))
-    application.add_player_to_campaign(campaign.id, gm.id, GAME_MASTER_ROLE)
-    character = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, character.id, "Zaria the Bold")
+    application.create_player(Player(name="Gary"))
+    application.create_player(Player(name="Alice"))
 
     game_session = application.create_session(campaign.id, "Session One")
 
-    attendance = application.list_attendance(game_session.id)
-    assert {(a.player_id, a.roles) for a in attendance} == {(gm.id, ("Game Master",)), (character.id, ("Zaria the Bold",))}
+    assert application.list_attendance(game_session.id) == []
 
 
 def test_create_session_seeds_attendance_from_previous_session_when_one_exists(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     gm = application.create_player(Player(name="Gary"))
-    application.add_player_to_campaign(campaign.id, gm.id, GAME_MASTER_ROLE)
-    character = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, character.id, "Zaria the Bold")
 
-    first = application.create_session(campaign.id, "Session One")
-    # session one auto-seeded from the roster; drop the character so only the GM attended
-    character_attendee = next(a for a in application.list_attendance(first.id) if a.player_id == character.id)
-    application.remove_attendance(first.id, character_attendee.attendance_id)
-    gm_attendee = next(a for a in application.list_attendance(first.id) if a.player_id == gm.id)
+    first = application.create_session(campaign.id, "Session One", date(2026, 1, 1))
+    gm_attendee = application.add_attendance(first.id, gm.id)
     application.set_attendance_roles(first.id, gm_attendee.attendance_id, ["Game Master", "Narrator"])
 
-    second = application.create_session(campaign.id, "Session Two")
+    second = application.create_session(campaign.id, "Session Two", date(2026, 1, 8))
 
     attendance = application.list_attendance(second.id)
     assert [(a.player_id, a.roles) for a in attendance] == [(gm.id, ("Game Master", "Narrator"))]
 
 
-def test_create_session_skips_previous_attendees_removed_from_roster(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    player = application.create_player(Player(name="Alice"))
-    membership = application.add_player_to_campaign(campaign.id, player.id, "Zaria")
-
-    # session one auto-seeds "Alice" as an attendee from the roster
-    application.create_session(campaign.id, "Session One")
-    application.remove_from_roster(membership.id)
-
-    second = application.create_session(campaign.id, "Session Two")
-
-    assert application.list_attendance(second.id) == []
-
-
-def test_add_attendance_seeds_role_translating_game_master(tmp_path: Path) -> None:
+def test_add_attendance_starts_without_roles(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     gm = application.create_player(Player(name="Gary"))
-    application.add_player_to_campaign(campaign.id, gm.id, GAME_MASTER_ROLE)
     character = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, character.id, "Zaria the Bold")
 
     gm_attendee = application.add_attendance(game_session.id, gm.id)
     character_attendee = application.add_attendance(game_session.id, character.id)
 
-    assert gm_attendee.roles == ("Game Master",)
-    assert character_attendee.roles == ("Zaria the Bold",)
-
-
-def test_add_attendance_rejects_non_roster_player(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    game_session = application.create_session(campaign.id, "Session One")
-    player = application.create_player(Player(name="Alice"))
-
-    with pytest.raises(ValueError, match="not a member of the campaign roster"):
-        application.add_attendance(game_session.id, player.id)
+    assert gm_attendee.roles == ()
+    assert character_attendee.roles == ()
 
 
 def test_add_attendance_rejects_duplicate(tmp_path: Path) -> None:
@@ -257,7 +220,6 @@ def test_add_attendance_rejects_duplicate(tmp_path: Path) -> None:
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Alice's Character")
     application.add_attendance(game_session.id, player.id)
 
     with pytest.raises(ValueError, match="already attending"):
@@ -269,7 +231,6 @@ def test_remove_attendance_removes_row(tmp_path: Path) -> None:
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Alice's Character")
     attendee = application.add_attendance(game_session.id, player.id)
 
     application.remove_attendance(game_session.id, attendee.attendance_id)
@@ -282,7 +243,6 @@ def test_set_attendance_roles_replaces_full_set(tmp_path: Path) -> None:
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     attendee = application.add_attendance(game_session.id, player.id)
 
     updated = application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria the Bold", "Narrator"])
@@ -295,7 +255,6 @@ def test_set_attendance_roles_rejects_empty_list(tmp_path: Path) -> None:
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     attendee = application.add_attendance(game_session.id, player.id)
 
     with pytest.raises(ValueError, match="At least one role"):

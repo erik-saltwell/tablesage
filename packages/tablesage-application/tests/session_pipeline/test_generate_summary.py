@@ -81,11 +81,12 @@ def test_application_generate_summary_reads_ledger_sorts_glossary_and_replaces_a
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     application.update_campaign(campaign.id, None, "Blades in the Dark")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Zaria", description="a wizard"))
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Aldor", description=None))
     previous_session = application.create_session(campaign.id, "Previous Session", date(2026, 8, 11))
     game_session = application.create_session(campaign.id, "Session One", date(2026, 8, 18))
+    attendee = application.add_attendance(game_session.id, player.id)
+    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria"])
 
     session_folder = application.session_folder(game_session.id)
     previous_folder = application.session_folder(previous_session.id)
@@ -293,8 +294,6 @@ def test_application_preserves_existing_summary_when_sidecar_validation_fails(
 ) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     previous_session = application.create_session(campaign.id, "Previous Session", date(2026, 8, 11))
     game_session = application.create_session(campaign.id, "Session One")
     session_folder = application.session_folder(game_session.id)

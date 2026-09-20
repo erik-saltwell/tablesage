@@ -8,12 +8,7 @@ from sqlmodel import Field, SQLModel
 
 
 class SessionAttendance(SQLModel, table=True):
-    """Joins a campaign-roster player to a session.
-
-    Only players who are members of the session's campaign (via
-    ``CampaignPlayer``) should be added here; that rule is enforced at the
-    application layer, not the database.
-    """
+    """Joins a workspace-wide player to a session."""
 
     __tablename__ = "session_attendance"
     __table_args__ = (UniqueConstraint("session_id", "player_id", name="uq_session_attendance_session_id_player_id"),)

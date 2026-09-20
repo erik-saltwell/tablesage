@@ -27,6 +27,7 @@ def configuration(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Configurat
 def application() -> MagicMock:
     result = MagicMock(settings=AppSettings())
     result.apply_settings.side_effect = lambda settings: setattr(result, "settings", settings)
+    result.verify_setup.return_value = None
     return result
 
 
@@ -70,8 +71,6 @@ async def test_inline_keys_are_single_line_masked_and_saved_together(configurati
         gemini.focus()
         await pilot.press("n", "e", "w")
         assert configuration.stored.get("GEMINI_API_KEY") is None
-        await pilot.press("ctrl+t")
-        cast(MagicMock, app.application).test_provider_connection.assert_not_called()
         await pilot.press("ctrl+s")
         await pilot.pause()
         assert configuration.stored["GEMINI_API_KEY"] == "new"

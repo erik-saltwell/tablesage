@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 
 
 class MissingCredential(ValueError):
@@ -23,7 +24,13 @@ def require_credential(provider: str, model: str) -> None:
         raise MissingCredential(provider, model)
 
 
-async def test_connection(provider: str, models: list[str], timeout: int) -> str:
+@dataclass(frozen=True)
+class ConnectionTestResult:
+    ok: bool
+    message: str
+
+
+async def test_connection(provider: str, models: list[str], timeout: int) -> ConnectionTestResult:
     """Exercise saved models; do not return raw exceptions that may contain secrets."""
     try:
         require_credential(provider, ", ".join(models) or "account")
@@ -32,23 +39,25 @@ async def test_connection(provider: str, models: list[str], timeout: int) -> str
 
             client = AsyncElevenLabs(api_key=os.environ["ELEVENLABS_API_KEY"], timeout=timeout)
             await client.user.get(request_options={"timeout_in_seconds": timeout})
-            return "Success: ElevenLabs account is accessible. Transcription was not run."
+            return ConnectionTestResult(True, "Success: ElevenLabs account is accessible. Transcription was not run.")
         if not models:
-            return "No saved model role uses this provider. Select and save a model before testing."
+            return ConnectionTestResult(False, "No saved model role uses this provider. Select and save a model before testing.")
         import litellm
 
+        # LiteLLM prints help banners to stdout on failures, which corrupts the TUI's screen.
+        litellm.suppress_debug_info = True
         for model in dict.fromkeys(models):
             await litellm.acompletion(model=model, messages=[{"role": "user", "content": "Reply OK."}], timeout=timeout)
-        return "Success: " + ", ".join(dict.fromkeys(models))
+        return ConnectionTestResult(True, "Success: " + ", ".join(dict.fromkeys(models)))
     except MissingCredential as exc:
-        return str(exc)
+        return ConnectionTestResult(False, str(exc))
     except Exception as exc:
         status = getattr(exc, "status_code", None)
         name = type(exc).__name__.lower()
         if status in (401, 403) or "authentication" in name or "permission" in name:
-            return "Authentication or permission failed. Check the key and its model/account access."
+            return ConnectionTestResult(False, "Authentication or permission failed. Check the key and its model/account access.")
         if status == 429 or "ratelimit" in name:
-            return "Quota or rate limit reached. Check billing and retry later."
+            return ConnectionTestResult(False, "Quota or rate limit reached. Check billing and retry later.")
         if "timeout" in name or "connection" in name:
-            return "Network connection failed or timed out. Check connectivity and retry."
-        return "Provider request failed. Check the saved model ID and account access."
+            return ConnectionTestResult(False, "Network connection failed or timed out. Check connectivity and retry.")
+        return ConnectionTestResult(False, "Provider request failed. Check the saved model ID and account access.")

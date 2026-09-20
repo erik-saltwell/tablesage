@@ -65,8 +65,9 @@ def test_application_extracts_context_and_filters_existing_terms(tmp_path: Path,
     application = Application(tmp_path, AppSettings(llm_model="test-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Erik"))
-    application.add_player_to_campaign(campaign.id, player.id, "Aria")
     game_session = application.create_session(campaign.id, "Session One")
+    attendee = application.add_attendance(game_session.id, player.id)
+    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Aria"])
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ironhold", description="A city."))
     _role_transcript(application.session_folder(game_session.id))
     captured: dict[str, object] = {}

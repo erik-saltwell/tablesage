@@ -97,7 +97,6 @@ async def test_resuming_the_screen_after_editing_a_campaign_reloads_it() -> None
     campaign = Campaign(name="Iron Pact")
     application = _application(campaigns=[campaign])
     application.get_campaign = MagicMock(return_value=campaign)
-    application.list_roster = MagicMock(return_value=[])
     application.list_sessions = MagicMock(return_value=[])
     application.list_glossary_entries = MagicMock(return_value=[])
 
@@ -155,7 +154,6 @@ async def test_enter_on_selected_campaign_pushes_campaign_detail() -> None:
     campaign = Campaign(name="Iron Pact")
     application = _application(campaigns=[campaign])
     application.get_campaign = MagicMock(return_value=campaign)
-    application.list_roster = MagicMock(return_value=[])
     application.list_sessions = MagicMock(return_value=[])
     application.list_glossary_entries = MagicMock(return_value=[])
 

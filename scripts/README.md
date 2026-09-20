@@ -10,6 +10,20 @@ Keep each utility in a single `.py` file when practical. Scripts should:
 - use `argparse` for command-line arguments;
 - avoid becoming application code imported by production packages.
 
+## Documentation sample data
+
+`seed_docs_data.py --cwd .for-docs` populates an initialized, empty documentation
+deployment with fictional players and campaigns. Run it with a Python environment
+containing TableSage. It uses `seed_sample_data.py` for the basic entities and adds
+three complete Iron Pact sessions with transcripts, Ledgers, scenes, introductions,
+recaps, and summaries. All outputs are authored fixtures; the WAV files contain
+silence, and no provider calls or real voice profiles are involved.
+
+The script backs up the empty database before seeding, refuses existing user data,
+and verifies a marked fixture on subsequent runs without overwriting edits.
+Deployment details and Textual MCP launch instructions are recorded in
+[the public documentation work item](../.work-items/public-documentation/progress.md).
+
 ## Transcript-section review
 
 `review_transcript_sections.py` asks Astra (`openai/gpt-6-astra`) and Fable 5.1 (`anthropic/claude-fable-5-1`) for independent high-reasoning reviews of an existing

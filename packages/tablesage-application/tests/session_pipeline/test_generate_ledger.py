@@ -446,10 +446,9 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     application = Application(tmp_path, AppSettings(llm_model_high="test-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ashmoor", description="The blighted moorland."))
     game_session = application.create_session(campaign.id, "Session One")
-    attendee = application.list_attendance(game_session.id)[0]
+    attendee = application.add_attendance(game_session.id, player.id)
     application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria", "Narrator"])
     session_folder = application.session_folder(game_session.id)
 

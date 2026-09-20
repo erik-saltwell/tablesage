@@ -218,8 +218,9 @@ def test_application_generates_introductions_from_selected_range_and_context(tmp
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     application.update_campaign(campaign.id, None, "Blades in the Dark")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
     game_session = application.create_session(campaign.id, "Session One", date(2026, 9, 6))
+    attendee = application.add_attendance(game_session.id, player.id)
+    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria"])
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ashmoor", description="A moorland."))
     session_folder = application.session_folder(game_session.id)
     role_transcript = RoleTranscript(

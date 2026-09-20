@@ -8,11 +8,7 @@ from sqlmodel import Field, SQLModel
 
 
 class SessionAttendanceRole(SQLModel, table=True):
-    """Allows one session attendee to have zero or more free-form roles.
-
-    Seeded from the matching ``CampaignPlayer.default_role_name`` when
-    attendance is created; the user may add, edit, or remove roles after.
-    """
+    """Allows one session attendee to have zero or more free-form roles."""
 
     __tablename__ = "session_attendance_role"
     __table_args__ = (

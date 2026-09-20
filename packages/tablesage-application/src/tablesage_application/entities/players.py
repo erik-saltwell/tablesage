@@ -6,7 +6,7 @@ from pathlib import Path
 
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
-from tablesage_model.model import Player
+from tablesage_model.model import Player, SessionAttendance
 from tablesage_model.player_names import validate_player_name
 
 from .._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
@@ -48,12 +48,28 @@ def rename_player(session: Session, player_id: uuid.UUID, new_name: str, players
     return player
 
 
+def can_delete_player(session: Session, player_id: uuid.UUID) -> tuple[bool, str | None]:
+    """Whether ``player_id`` can be deleted -- false once they have attended any session.
+
+    Checked up front so the UI can explain the block before asking for
+    confirmation, rather than only discovering it via `delete_player`'s
+    `IntegrityError` fallback after the user has already confirmed.
+    """
+    has_attended = session.exec(select(SessionAttendance.id).where(SessionAttendance.player_id == player_id).limit(1)).first() is not None
+    if has_attended:
+        return False, "This player has attended one or more sessions and cannot be deleted. Remove their attendance first."
+    return True, None
+
+
 def delete_player(session: Session, player_id: uuid.UUID) -> None:
     player = get_player(session, player_id)
     session.delete(player)
     try:
         session.flush()
     except IntegrityError as exc:
+        # Defense in depth: `can_delete_player` is the UI's up-front check, but attendance
+        # could change between that check and this call (e.g. a concurrent session), so the
+        # constraint here remains the actual guarantee.
         session.rollback()
         raise ValueError("This player has attended sessions and cannot be deleted.") from exc
 

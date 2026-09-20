@@ -35,13 +35,6 @@ def _get_or_create_player(app: Application, name: str) -> Player:
     return app.create_player(Player(name=name))
 
 
-def _ensure_roster(app: Application, campaign: Campaign, player: Player, default_role_name: str) -> None:
-    existing = {p.id for _, p in app.list_roster(campaign.id)}
-    if player.id in existing:
-        return
-    app.add_player_to_campaign(campaign.id, player.id, default_role_name)
-
-
 def _ensure_glossary_entry(app: Application, campaign: Campaign, term: str, description: str) -> None:
     existing = {entry.term for entry in app.list_glossary_entries(campaign.id)}
     if term in existing:
@@ -58,10 +51,10 @@ def _ensure_sessions(app: Application, campaign: Campaign, sessions: list[tuple[
 
 
 def seed(app: Application) -> None:
-    alice = _get_or_create_player(app, "Alice")
-    bob = _get_or_create_player(app, "Bob")
-    priya = _get_or_create_player(app, "Priya")
-    sam = _get_or_create_player(app, "Sam")
+    _get_or_create_player(app, "Alice")
+    _get_or_create_player(app, "Bob")
+    _get_or_create_player(app, "Priya")
+    _get_or_create_player(app, "Sam")
 
     # A player with no voice clips/centroid yet, to exercise that empty state.
     _get_or_create_player(app, "Jordan")
@@ -84,20 +77,8 @@ def seed(app: Application) -> None:
         description="Heist crew in a dying star system.",
         game_system="Blades in the Dark",
     )
-    # A campaign with no roster/sessions/glossary yet, to exercise that empty state.
+    # A campaign with no sessions/glossary yet, to exercise that empty state.
     _get_or_create_campaign(app, "New Campaign (Empty)")
-
-    _ensure_roster(app, iron_pact, alice, "game-master")
-    _ensure_roster(app, iron_pact, bob, "Thorgrim")
-    _ensure_roster(app, iron_pact, priya, "Lyra")
-
-    _ensure_roster(app, ashen_crown, bob, "game-master")
-    _ensure_roster(app, ashen_crown, sam, "Kestrel")
-    _ensure_roster(app, ashen_crown, priya, "Nadia")
-
-    _ensure_roster(app, voidfall, priya, "game-master")
-    _ensure_roster(app, voidfall, alice, "Vex")
-    _ensure_roster(app, voidfall, sam, "Juno")
 
     _ensure_glossary_entry(app, iron_pact, "Ironhold", "The dwarven capital city, built into the Ashspine range.")
     _ensure_glossary_entry(app, iron_pact, "The Sundering", "The cataclysm that split the continent centuries ago.")

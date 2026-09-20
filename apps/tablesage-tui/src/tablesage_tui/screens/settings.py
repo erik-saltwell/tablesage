@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from collections.abc import Callable
 from typing import Any, cast
 
@@ -26,7 +25,6 @@ class SettingsScreen(TableSageScreen):
     section = "settings"
     COMMON_BINDINGS = [
         Binding("ctrl+s", "save", "Save", key_display="Ctrl+S"),
-        Binding("ctrl+t", "test_key", "Test key", key_display="^T", priority=True),
         Binding("ctrl+d", "remove_key", "Remove key", key_display="^D", priority=True),
     ]
     HIDDEN_BINDINGS = [Binding("escape", "leave", "Back", show=False)]
@@ -66,6 +64,7 @@ class SettingsScreen(TableSageScreen):
                         )
                         if self.configuration.shell_provided(provider):
                             key_input.tooltip = "Provided by shell environment; overrides the stored key."
+                            key_input.disabled = True
                         yield key_input
             with Collapsible(title="LLM", collapsed=False):
                 for path in MODEL_FIELDS:
@@ -87,13 +86,11 @@ class SettingsScreen(TableSageScreen):
                 yield Button("Back", id="settings-back")
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action in {"test_key", "remove_key"}:
+        if action == "remove_key":
             provider = self._focused_provider()
-            if provider is None:
+            if provider is None or self.configuration.shell_provided(provider):
                 return None
-            if action == "remove_key" and not (
-                self.configuration.stored.get(PROVIDERS[provider]) or self.query_one(f"#key-{provider}", Input).value
-            ):
+            if not (self.configuration.stored.get(PROVIDERS[provider]) or self.query_one(f"#key-{provider}", Input).value):
                 return None
         return False if action == "refresh_screen" else True
 
@@ -186,8 +183,35 @@ class SettingsScreen(TableSageScreen):
         cast(TableSageApp, self.app).settings_review_required = False
         self.required = False
         self.query_one("#settings-intro", Static).update("Settings saved. Changes apply to subsequent actions.")
-        self.notify("Settings and keys saved.")
         return True
+
+    def _save_and_verify(self, finish: Callable[[], object]) -> None:
+        """Save, then test every configured model and fetch missing local models before `finish`.
+
+        A failed check keeps the (already saved) settings on screen with the reason, so the
+        user can correct a key or model and save again.
+        """
+        if not self._save():
+            return
+
+        def verified(failure: str | None) -> None:
+            if failure is None:
+                self.notify("Settings saved. Models responded and local models are ready.")
+                finish()
+            else:
+                show_failure(failure)
+
+        def show_failure(message: str) -> None:
+            self.query_one("#settings-error", Static).update(f"Settings saved, but the check failed. {message}")
+            self.notify(message, title="Settings check failed", severity="error")
+
+        self.run_with_progress(
+            title="Checking settings",
+            message="Testing models…",
+            work=lambda: self.application.verify_setup(on_progress=lambda message: self.report_stage_progress(message, 0, 0)),
+            on_success=verified,
+            on_error=lambda error: show_failure(str(error)),
+        )
 
     def _reveal_field(self, path: str) -> None:
         widget = self.query_one(f"#field-{field_id(path)}")
@@ -197,8 +221,7 @@ class SettingsScreen(TableSageScreen):
         self.call_after_refresh(widget.scroll_visible)
 
     def action_save(self) -> None:
-        if self._save():
-            self.app.pop_screen()
+        self._save_and_verify(self.app.pop_screen)
 
     def action_leave(self) -> None:
         def finish() -> None:
@@ -215,8 +238,8 @@ class SettingsScreen(TableSageScreen):
             return
 
         def chosen(result: bool | None) -> None:
-            if result is True and self._save():
-                finish()
+            if result is True:
+                self._save_and_verify(finish)
             elif result is False:
                 if self.required:
                     self._restore(self._initial)
@@ -284,17 +307,3 @@ class SettingsScreen(TableSageScreen):
         widget.placeholder = self._key_placeholder(provider)
         self.notify("Removal takes effect on Save. Shell keys remain active.")
         self.refresh_bindings()
-
-    def action_test_key(self) -> None:
-        provider = self._focused_provider()
-        if provider is None:
-            return
-        if self._dirty():
-            self.notify("Save your changes before testing a key.", severity="warning")
-            return
-        self.run_with_progress(
-            title="Test connection",
-            message="Testing saved provider configuration…",
-            work=lambda: asyncio.run(self.application.test_provider_connection(provider)),
-            on_success=lambda result: self.notify(result),
-        )

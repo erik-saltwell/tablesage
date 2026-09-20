@@ -11,7 +11,7 @@ from tablesage_application.session_pipeline.artifact_graph import GENERATION_ORD
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_application.session_pipeline.transcribe_audio import TranscriptionResult
 from tablesage_application.session_pipeline.transcript_review import BenchmarkTranscriptResult
-from tablesage_model.model import CampaignPlayer, Player
+from tablesage_model.model import Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tools.model import Transcript
@@ -58,6 +58,7 @@ def _application(
     *,
     session: GameSession | None = None,
     attendees: list[Attendee] | None = None,
+    players: list[Player] | None = None,
     artifacts: dict[ArtifactName, bool] | None = None,
     can_transcribe: tuple[bool, str | None] = (False, "Import input audio first."),
     can_clean_session: tuple[bool, str | None] = (False, "No artifacts to delete."),
@@ -70,18 +71,21 @@ def _application(
     return MagicMock(
         get_session=MagicMock(return_value=session),
         list_attendance=MagicMock(return_value=attendees or []),
+        list_players=MagicMock(return_value=players or []),
         session_artifacts=MagicMock(return_value=artifact_presence),
         session_artifact_states=MagicMock(
             return_value={
                 name: ArtifactStatus.CURRENT if present else ArtifactStatus.MISSING for name, present in artifact_presence.items()
             }
         ),
-        generation_plan=MagicMock(return_value=GENERATION_ORDER),
+        generation_plan=MagicMock(return_value=tuple(GenerationTask(session.id, name) for name in GENERATION_ORDER)),
         generate_outputs=MagicMock(return_value=tuple(GenerationTask(session.id, name) for name in GENERATION_ORDER)),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
         can_clean_session=MagicMock(return_value=can_clean_session),
         can_export_artifacts=MagicMock(return_value=can_export),
         can_extract_glossary=MagicMock(return_value=can_extract_glossary),
+        extract_glossary=MagicMock(return_value=[]),
+        suggest_spelling_corrections=MagicMock(return_value=[]),
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
@@ -839,13 +843,7 @@ async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_a
     already_attending = Player(name="Bob")
     available_player = Player(name="Alice")
     attendee = Attendee(attendance_id=session.id, player_id=already_attending.id, player_name="Bob", roles=("Bob",))
-    application = _application(session=session, attendees=[attendee])
-    application.list_roster = MagicMock(
-        return_value=[
-            (CampaignPlayer(campaign_id=session.campaign_id, player_id=already_attending.id, default_role_name="Bob"), already_attending),
-            (CampaignPlayer(campaign_id=session.campaign_id, player_id=available_player.id, default_role_name="Alice"), available_player),
-        ]
-    )
+    application = _application(session=session, attendees=[attendee], players=[already_attending, available_player])
     application.add_attendance_with_roles = MagicMock(
         return_value=Attendee(attendance_id=session.id, player_id=available_player.id, player_name="Alice", roles=("Game Master",))
     )
@@ -875,15 +873,10 @@ async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_a
 
 
 @pytest.mark.anyio
-async def test_new_attendee_character_uses_campaign_default_role() -> None:
+async def test_new_attendee_character_name_starts_blank() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     available_player = Player(name="Alice")
-    application = _application(session=session)
-    application.list_roster = MagicMock(
-        return_value=[
-            (CampaignPlayer(campaign_id=session.campaign_id, player_id=available_player.id, default_role_name="Zaria"), available_player),
-        ]
-    )
+    application = _application(session=session, players=[available_player])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
@@ -898,7 +891,7 @@ async def test_new_attendee_character_uses_campaign_default_role() -> None:
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, TextInputDialog)
-        assert pilot.app.screen.query_one("#text-input-value", Input).value == "Zaria"
+        assert pilot.app.screen.query_one("#text-input-value", Input).value == ""
 
 
 @pytest.mark.anyio
@@ -942,10 +935,7 @@ async def test_edit_attendee_opens_attendee_dialog_and_saves_roles() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     player = Player(name="Alice")
     attendee = Attendee(attendance_id=session.id, player_id=player.id, player_name="Alice", roles=("Zaria",))
-    application = _application(session=session, attendees=[attendee])
-    application.list_roster = MagicMock(
-        return_value=[(CampaignPlayer(campaign_id=session.campaign_id, player_id=player.id, default_role_name="Alice"), player)]
-    )
+    application = _application(session=session, attendees=[attendee], players=[player])
     application.set_attendance_roles = MagicMock(
         return_value=Attendee(
             attendance_id=attendee.attendance_id, player_id=attendee.player_id, player_name="Alice", roles=("Zaria", "Narrator")
@@ -982,13 +972,7 @@ async def test_edit_attendee_reassigning_player_calls_set_attendance_player() ->
     original_player = Player(name="Alice")
     other_player = Player(name="Priya")
     attendee = Attendee(attendance_id=session.id, player_id=original_player.id, player_name="Alice", roles=("Zaria",))
-    application = _application(session=session, attendees=[attendee])
-    application.list_roster = MagicMock(
-        return_value=[
-            (CampaignPlayer(campaign_id=session.campaign_id, player_id=original_player.id, default_role_name="Alice"), original_player),
-            (CampaignPlayer(campaign_id=session.campaign_id, player_id=other_player.id, default_role_name="Priya"), other_player),
-        ]
-    )
+    application = _application(session=session, attendees=[attendee], players=[original_player, other_player])
     application.set_attendance_player = MagicMock(
         return_value=Attendee(attendance_id=attendee.attendance_id, player_id=other_player.id, player_name="Priya", roles=("Zaria",))
     )
@@ -1018,10 +1002,7 @@ async def test_attendee_dialog_add_role_rejects_duplicate() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     player = Player(name="Alice")
     attendee = Attendee(attendance_id=session.id, player_id=player.id, player_name="Alice", roles=("Narrator",))
-    application = _application(session=session, attendees=[attendee])
-    application.list_roster = MagicMock(
-        return_value=[(CampaignPlayer(campaign_id=session.campaign_id, player_id=player.id, default_role_name="Alice"), player)]
-    )
+    application = _application(session=session, attendees=[attendee], players=[player])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)

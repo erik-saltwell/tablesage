@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import time
 import uuid
-from datetime import UTC, datetime
+from datetime import date
 from pathlib import Path
 from unittest.mock import patch
 
@@ -192,7 +192,7 @@ def test_application_runs_the_stale_generation_plan_in_order(tmp_path: Path) -> 
         patch.object(application, "generate_ledger", side_effect=lambda *_args: call_order.append("ledger")),
         patch.object(application, "generate_player_introductions", side_effect=lambda *_args: call_order.append("introductions")),
         patch.object(application, "generate_recap_summary", side_effect=lambda *_args: call_order.append("recap")),
-        patch.object(application, "generate_summary", side_effect=lambda *_args: call_order.append("summary")),
+        patch.object(application, "generate_summary", side_effect=lambda *_args, **_kwargs: call_order.append("summary")),
     ):
         assert (
             application.generate_outputs(
@@ -240,7 +240,7 @@ def test_hand_edited_scene_rebuilds_only_its_true_consumer(tmp_path: Path) -> No
     assert application.generation_plan(game_session.id) == (GenerationTask(game_session.id, ArtifactName.RECAP_SUMMARY),)
 
 
-def test_glossary_clock_stales_every_output_that_consumes_it(tmp_path: Path) -> None:
+def test_glossary_changes_do_not_stale_session_artifacts(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
@@ -249,16 +249,11 @@ def test_glossary_clock_stales_every_output_that_consumes_it(tmp_path: Path) -> 
     with Session(application._engine) as session:
         stored = session.get(Campaign, campaign.id)
         assert stored is not None
-        stored.glossary_updated_at = datetime.fromtimestamp((baseline + 2_000_000_000) / 1_000_000_000, tz=UTC)
+        stored.glossary_updated_at = stored.glossary_updated_at.replace(year=stored.glossary_updated_at.year + 1)
         session.commit()
 
     states = application.session_artifact_states(game_session.id)
-    assert states[ArtifactName.ROLE_TRANSCRIPT] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.TRANSCRIPT_SECTIONS] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.LEDGER] is ArtifactStatus.STALE
-    assert states[ArtifactName.PLAYER_INTRODUCTIONS] is ArtifactStatus.STALE
-    assert states[ArtifactName.RECAP_SUMMARY] is ArtifactStatus.STALE
-    assert states[ArtifactName.SUMMARY] is ArtifactStatus.STALE
+    assert all(status is ArtifactStatus.CURRENT for status in states.values())
 
 
 def test_force_rebuilds_selected_step_and_its_downstream_consumers(tmp_path: Path) -> None:
@@ -277,11 +272,14 @@ def test_force_rebuilds_selected_step_and_its_downstream_consumers(tmp_path: Pat
 def test_current_summary_plan_recursively_repairs_previous_session_recap(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    previous = application.create_session(campaign.id, "Previous")
-    current = application.create_session(campaign.id, "Current")
+    previous = application.create_session(campaign.id, "Previous", date(2026, 1, 1))
+    current = application.create_session(campaign.id, "Current", date(2026, 1, 8))
     baseline = time.time_ns() + 1_000_000_000
     _write_complete_session(application.session_folder(previous.id), baseline)
     _write_complete_session(application.session_folder(current.id), baseline + 20)
+    (application.session_folder(current.id) / ".summary-inputs.json").write_text(
+        f'{{"previous_session_id": "{previous.id}"}}\n', encoding="utf-8"
+    )
     _write_at(application.session_folder(previous.id), ArtifactName.ROLE_TRANSCRIPT, baseline + 10)
 
     assert application.generation_plan(current.id) == (

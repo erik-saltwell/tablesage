@@ -396,9 +396,48 @@ class SessionDetailScreen(TableSageScreen):
     # Generate Outputs -- evaluates the dependency graph and runs only missing or stale phases.
 
     def action_generate(self) -> None:
-        self._run_generate()
+        self._prepare_generate()
 
-    def _run_generate(self, *, force: ArtifactName | None = None) -> None:
+    def _prepare_generate(self, *, force: ArtifactName | None = None) -> None:
+        try:
+            plan = self.application.generation_plan(self._session_id, force=force)
+        except Exception as exc:
+            self._record_error("Generate Outputs", str(exc))
+            return
+
+        prior_tasks = tuple(task for task in plan if task.session_id != self._session_id)
+        if not prior_tasks:
+            self._run_generate(force=force)
+            return
+
+        prior_session_count = len({task.session_id for task in prior_tasks})
+        phase_label = "phase" if len(prior_tasks) == 1 else "phases"
+        session_label = "Session" if prior_session_count == 1 else "Sessions"
+
+        def on_choice(choice: bool | None) -> None:
+            if choice is True:
+                self._run_generate(force=force)
+            elif choice is False:
+                self._run_generate(force=force, rebuild_prior_sessions=False)
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Prior Sessions Are Out of Date",
+                prompt=(
+                    f"This action requires rebuilding {len(prior_tasks)} output {phase_label} in "
+                    f"{prior_session_count} prior {session_label}.\n\n"
+                    "Regenerate Prior rebuilds them first. Current Only processes this Session and places a note "
+                    "in the Summary instead of including a stale prior recap. Cancel does nothing."
+                ),
+                yes_label="Regenerate Prior",
+                no_label="Current Only",
+            ),
+            on_choice,
+        )
+
+    def _run_generate(self, *, force: ArtifactName | None = None, rebuild_prior_sessions: bool = True) -> None:
+        if not self.check_credentials("llm_model_high"):
+            return
         self._clear_errors()
 
         def work() -> tuple[GenerationTask, ...]:
@@ -410,9 +449,17 @@ class SessionDetailScreen(TableSageScreen):
                 ArtifactName.RECAP_SUMMARY: "Generating Recap Summary…",
                 ArtifactName.SUMMARY: "Generating Summary…",
             }
+            if rebuild_prior_sessions:
+                return self.application.generate_outputs(
+                    self._session_id,
+                    force=force,
+                    on_stage=lambda task, _completed, _total: self.report_stage_progress(messages[task.artifact_name], 0, 0),
+                    on_clean_progress=self._on_clean_progress,
+                )
             return self.application.generate_outputs(
                 self._session_id,
                 force=force,
+                rebuild_prior_sessions=False,
                 on_stage=lambda task, _completed, _total: self.report_stage_progress(messages[task.artifact_name], 0, 0),
                 on_clean_progress=self._on_clean_progress,
             )
@@ -439,7 +486,7 @@ class SessionDetailScreen(TableSageScreen):
 
             def on_confirm(confirmed: bool | None) -> None:
                 if confirmed:
-                    self._run_generate(force=selected)
+                    self._prepare_generate(force=selected)
 
             self.app.push_screen(
                 ConfirmationDialog(
@@ -534,11 +581,8 @@ class SessionDetailScreen(TableSageScreen):
         )
 
     def action_new_attendee(self) -> None:
-        game_session = self.application.get_session(self._session_id)
         attending_ids = {attendee.player_id for attendee in self.application.list_attendance(self._session_id)}
-        roster = self.application.list_roster(game_session.campaign_id)
-        available = [player for _, player in roster if player.id not in attending_ids]
-        default_roles = {player.id: membership.default_role_name for membership, player in roster}
+        available = [player for player in self.application.list_players() if player.id not in attending_ids]
 
         def on_saved(result: AttendeeResult | None) -> None:
             if result is None:
@@ -557,19 +601,16 @@ class SessionDetailScreen(TableSageScreen):
 
             do_add()
 
-        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee", default_roles=default_roles), on_saved)
+        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee"), on_saved)
 
     def action_edit_attendee(self) -> None:
         attendee = self._selected_attendee()
         if attendee is None:
             return
 
-        game_session = self.application.get_session(self._session_id)
         attending_ids = {a.player_id for a in self.application.list_attendance(self._session_id)}
         available = [
-            player
-            for _, player in self.application.list_roster(game_session.campaign_id)
-            if player.id not in attending_ids or player.id == attendee.player_id
+            player for player in self.application.list_players() if player.id not in attending_ids or player.id == attendee.player_id
         ]
 
         def on_saved(result: AttendeeResult | None) -> None:

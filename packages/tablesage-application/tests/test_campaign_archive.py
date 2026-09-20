@@ -15,8 +15,9 @@ def _source(tmp_path: Path) -> tuple[Application, Campaign, GameSession, Path]:
     app = Application(tmp_path / "source")
     campaign = app.create_campaign(Campaign(name="Iron Pact"))
     player = app.create_player(Player(name="Alice"))
-    app.add_player_to_campaign(campaign.id, player.id, "Wizard")
     game_session = app.create_session(campaign.id, "Opening")
+    attendee = app.add_attendance(game_session.id, player.id)
+    app.set_attendance_roles(game_session.id, attendee.attendance_id, ["Wizard"])
     app.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Avernus", description="A place"))
     app.create_campaign(Campaign(name="Unrelated"))
     artifact = tmp_path / "source/campaigns/Iron Pact/001/ledger.json"
@@ -38,7 +39,6 @@ def test_roundtrip_selective_rows_uuid_mapping_and_mtimes(tmp_path: Path) -> Non
     assert [c.name for c in target.list_campaigns()] == ["Iron Pact"]
     assert target.get_campaign(campaign.id).model_dump() == source.get_campaign(campaign.id).model_dump()
     assert target.list_sessions(campaign.id)[0].id == game_session.id
-    assert target.list_roster(campaign.id)[0][1].id == alice.id
     assert target.list_glossary_entries(campaign.id)[0].term == "Avernus"
     with sqlite3.connect(target._db_path) as database:
         assert database.execute("SELECT player_id FROM session_attendance").fetchone()[0] == alice.id.hex
@@ -100,7 +100,7 @@ def test_failed_import_preserves_db_and_orphan(tmp_path: Path, failure: str) -> 
     assert (orphan / "precious.txt").read_text() == "keep"
     assert not (orphan / "001").exists()
     with sqlite3.connect(target._db_path) as database:
-        for table in ["campaign_player", "session", "session_attendance", "session_attendance_role", "glossary_entry"]:
+        for table in ["session", "session_attendance", "session_attendance_role", "glossary_entry"]:
             assert database.execute(f"SELECT count(*) FROM {table}").fetchone()[0] == 0
 
 
@@ -137,16 +137,3 @@ def test_empty_campaign_round_trip(tmp_path: Path) -> None:
     source.export_campaign(campaign.id, archive)
     target = Application(tmp_path / "target")
     assert target.import_campaign(archive) == campaign.id
-
-
-def test_past_attendance_survives_roster_removal(tmp_path: Path) -> None:
-    source, campaign, _, archive = _source(tmp_path)
-    with sqlite3.connect(source._db_path) as database:
-        database.execute("DELETE FROM campaign_player")
-    source.export_campaign(campaign.id, archive)
-    target = Application(tmp_path / "target")
-    alice = target.create_player(Player(name="Alice"))
-    target.import_campaign(archive)
-    assert target.list_roster(campaign.id) == []
-    with sqlite3.connect(target._db_path) as database:
-        assert database.execute("SELECT player_id FROM session_attendance").fetchone()[0] == alice.id.hex

@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
+from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -29,6 +30,7 @@ from ..dialogs import (
 )
 from ..widgets import EqualWidthButtonRow
 from .base import TableSageScreen
+from .glossary_review import GlossaryReviewScreen
 
 if TYPE_CHECKING:
     from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
@@ -234,6 +236,27 @@ class ManualReviewScreen(TableSageScreen):
         self._attendee_names = self._all_attendee_names[:_MAX_ASSIGNABLE_ATTENDEES]
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
+        self.run_with_progress(
+            title="Manual Review",
+            message="Finding glossary entries…",
+            work=lambda: self.application.extract_glossary(self._session_id),
+            on_success=self._after_extract_glossary,
+        )
+
+    def _after_extract_glossary(self, proposals: list[GlossaryProposal]) -> None:
+        if proposals:
+            self.app.push_screen(
+                GlossaryReviewScreen(
+                    self._session_id,
+                    proposals,
+                    on_complete=self._prepare_transcript_review,
+                    on_cancel=self.action_cancel,
+                )
+            )
+            return
+        self._prepare_transcript_review()
+
+    def _prepare_transcript_review(self) -> None:
         def work() -> tuple[Transcript, Path, list[SpellingSuggestion]]:
             assert self._session_folder is not None
             transcript, clip_dir = self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)

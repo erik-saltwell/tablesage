@@ -12,7 +12,6 @@ from sqlmodel import Session as DBSession
 from sqlmodel import create_engine
 from tablesage_model.model import (
     Campaign,
-    CampaignPlayer,
     GlossaryEntry,
     Player,
     Session,
@@ -53,39 +52,6 @@ def test_player_has_no_campaign_dependency_and_unique_name(tmp_path: Path) -> No
 def test_player_rejects_blank_name() -> None:
     with pytest.raises(ValueError, match="name must not be blank"):
         Player(name="   ")
-
-
-def test_campaign_player_links_and_default_role(tmp_path: Path) -> None:
-    db_path = tmp_path / "test.db"
-    _upgrade_head(db_path)
-
-    engine = create_engine(f"sqlite:///{db_path}")
-    with DBSession(engine) as session:
-        campaign = Campaign(name="Iron Pact")
-        player = Player(name="Alice")
-        session.add(campaign)
-        session.add(player)
-        session.commit()
-        session.refresh(campaign)
-        session.refresh(player)
-
-        membership = CampaignPlayer(campaign_id=campaign.id, player_id=player.id, default_role_name="game-master")
-        session.add(membership)
-        session.commit()
-
-        # same player can join a second campaign with a different default role
-        other_campaign = Campaign(name="Second Campaign")
-        session.add(other_campaign)
-        session.commit()
-        session.refresh(other_campaign)
-
-        session.add(CampaignPlayer(campaign_id=other_campaign.id, player_id=player.id, default_role_name="Thorgrim"))
-        session.commit()
-
-        # duplicate (campaign, player) pair is rejected
-        session.add(CampaignPlayer(campaign_id=campaign.id, player_id=player.id, default_role_name="Someone Else"))
-        with pytest.raises(IntegrityError):
-            session.commit()
 
 
 def test_glossary_entry_scoped_and_unique_term_per_campaign(tmp_path: Path) -> None:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 import wave
+from datetime import date
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -9,7 +10,7 @@ import pytest
 from sqlmodel import Session
 from tablesage_application import Application, session_pipeline
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_model.model import GAME_MASTER_ROLE, Campaign, Player
+from tablesage_model.model import Campaign, Player
 from tablesage_tools.embeddings import Embedding
 
 LEDGER_FILENAME = ARTIFACTS[ArtifactName.LEDGER].filename
@@ -214,7 +215,6 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     _import_audio(application, game_session.id, source)
 
     alice = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, alice.id, GAME_MASTER_ROLE)
     application.add_attendance(game_session.id, alice.id)
 
     enabled, reason = _can_process_session(application, game_session.id)
@@ -222,7 +222,6 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
     assert reason == "At least 2 attendees are required."
 
     bob = application.create_player(Player(name="Bob"))
-    application.add_player_to_campaign(campaign.id, bob.id, "Bob's Character")
     application.add_attendance(game_session.id, bob.id)
 
     enabled, reason = _can_process_session(application, game_session.id)
@@ -245,7 +244,7 @@ def test_can_process_session_requires_input_audio_two_attendees_and_centroids(tm
 def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    game_session = application.create_session(campaign.id, "Session One")
+    game_session = application.create_session(campaign.id, "Session One", date(2026, 1, 1))
 
     enabled, reason = application.can_generate_summary(game_session.id)
     assert not enabled
@@ -270,7 +269,7 @@ def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
     assert enabled
     assert reason is None
 
-    next_session = application.create_session(campaign.id, "Session Two")
+    next_session = application.create_session(campaign.id, "Session Two", date(2026, 1, 8))
     next_folder = application.session_folder(next_session.id)
     (next_folder / LEDGER_FILENAME).write_text("{}")
     (next_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("{}")
@@ -280,6 +279,21 @@ def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
     assert reason == "Generate the previous Session's Recap Summary first."
 
     (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")
+
+    enabled, reason = application.can_generate_summary(next_session.id)
+    assert enabled
+    assert reason is None
+
+
+def test_can_generate_summary_does_not_require_a_recap_from_an_undated_session(tmp_path: Path) -> None:
+    """Undated Sessions are never prior, so a following undated Session needs no recap."""
+    application = Application(tmp_path)
+    campaign = application.create_campaign(Campaign(name="Iron Pact"))
+    application.create_session(campaign.id, "Session One")
+    next_session = application.create_session(campaign.id, "Session Two")
+    next_folder = application.session_folder(next_session.id)
+    (next_folder / LEDGER_FILENAME).write_text("{}")
+    (next_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("{}")
 
     enabled, reason = application.can_generate_summary(next_session.id)
     assert enabled
@@ -305,7 +319,6 @@ def test_can_transcribe_audio_requires_input_audio_and_attendees(tmp_path: Path,
     assert reason == "Add attendees before transcribing."
 
     alice = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, alice.id, GAME_MASTER_ROLE)
     application.add_attendance(game_session.id, alice.id)
 
     enabled, reason = application.can_transcribe_audio(game_session.id)
@@ -425,8 +438,6 @@ def test_attendance_mutation_preserves_downstream_artifacts_for_freshness_checks
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "Zaria")
-
     folder = tmp_path / "campaigns" / "Iron Pact" / "001"
     (folder / LEDGER_FILENAME).write_text("{}")
     (folder / SESSION_SUMMARY_FILENAME).write_text("summary")

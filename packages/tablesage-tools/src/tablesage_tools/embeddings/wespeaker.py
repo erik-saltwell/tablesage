@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ..local_models import WESPEAKER_DIR, download_wespeaker, wespeaker_downloaded
 from .types import Embedding
 
 
@@ -29,27 +30,11 @@ from .eres2netv2 import _patch_torchaudio_sox_effects  # noqa: E402
 
 _patch_torchaudio_sox_effects()
 
-_MODEL_SOURCE = "Wespeaker/wespeaker-voxceleb-resnet34-LM"
-
 
 def _local_model_dir() -> Path:
-    """Download `config.yaml` + `avg_model` from the model's Hugging Face repo (there's no
-    official PyPI `wespeaker` hub alias for this specific checkpoint -- its bundled `"english"`
-    shortcut resolves to a different, larger model) into our own stable cache directory, renaming
-    `avg_model` -> `avg_model.pt` to match `wespeaker.load_model_pt`'s expected layout. Writing
-    into `huggingface_hub`'s own managed cache dir alongside its snapshot would work too, but this
-    keeps us independent of that cache's internal layout.
-    """
-    from huggingface_hub import hf_hub_download
-
-    local_dir = Path.home() / ".cache" / "tablesage" / "wespeaker-voxceleb-resnet34-lm"
-    local_dir.mkdir(parents=True, exist_ok=True)
-    if not (local_dir / "avg_model.pt").exists():
-        config_path = Path(hf_hub_download(_MODEL_SOURCE, "config.yaml"))
-        avg_model_path = Path(hf_hub_download(_MODEL_SOURCE, "avg_model"))
-        (local_dir / "config.yaml").write_bytes(config_path.read_bytes())
-        (local_dir / "avg_model.pt").write_bytes(avg_model_path.read_bytes())
-    return local_dir
+    if not wespeaker_downloaded():
+        download_wespeaker()
+    return WESPEAKER_DIR
 
 
 @dataclass

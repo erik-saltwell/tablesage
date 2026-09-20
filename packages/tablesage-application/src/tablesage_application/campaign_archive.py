@@ -14,7 +14,7 @@ from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
 
 from tablesage_model.player_names import validate_player_name
 
-_TABLES = ("campaign", "campaign_player", "glossary_entry", "session", "session_attendance", "session_attendance_role")
+_TABLES = ("campaign", "glossary_entry", "session", "session_attendance", "session_attendance_role")
 _MTIME_TAG = 0x5453
 
 
@@ -151,7 +151,6 @@ def _merge(source: sqlite3.Connection, target: sqlite3.Connection, name: str) ->
     campaign_id = campaign[0]["id"]
     records = {
         "campaign": campaign,
-        "campaign_player": _rows(source, "campaign_player", "campaign_id=?", campaign_id),
         "glossary_entry": _rows(source, "glossary_entry", "campaign_id=?", campaign_id),
         "session": _rows(source, "session", "campaign_id=?", campaign_id),
         "session_attendance": _rows(
@@ -167,13 +166,12 @@ def _merge(source: sqlite3.Connection, target: sqlite3.Connection, name: str) ->
     local_players = {row["name"]: row["id"] for row in target.execute("SELECT id, name FROM player")}
     archived_players = {row["id"]: row["name"] for row in source.execute("SELECT id, name FROM player")}
     errors: list[str] = []
-    for table in ("campaign_player", "session_attendance"):
-        for row in records[table]:
-            player_name = archived_players.get(row["player_id"])
-            if player_name not in local_players:
-                errors.append(f"Missing player: {player_name or row['player_id']}")
-            else:
-                row["player_id"] = local_players[player_name]
+    for row in records["session_attendance"]:
+        player_name = archived_players.get(row["player_id"])
+        if player_name not in local_players:
+            errors.append(f"Missing player: {player_name or row['player_id']}")
+        else:
+            row["player_id"] = local_players[player_name]
     for table, rows in records.items():
         for row in rows:
             if target.execute(f'SELECT 1 FROM "{table}" WHERE id=?', (row["id"],)).fetchone():

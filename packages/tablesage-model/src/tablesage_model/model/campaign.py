@@ -18,7 +18,6 @@ class Campaign(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     glossary_updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    roster_updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @validates("name")
     def validate_name(self, key: str, value: str) -> str:

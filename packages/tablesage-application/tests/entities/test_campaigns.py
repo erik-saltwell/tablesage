@@ -104,11 +104,10 @@ def test_delete_campaign_removes_row_but_keeps_folder(tmp_path: Path) -> None:
     assert (tmp_path / "campaigns" / "Iron Pact").is_dir()
 
 
-def test_delete_campaign_cascades_to_roster_and_glossary(tmp_path: Path) -> None:
+def test_delete_campaign_cascades_to_glossary_but_keeps_players(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     player = application.create_player(Player(name="Alice"))
-    application.add_player_to_campaign(campaign.id, player.id, "game-master")
     application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Ironhold"))
 
     application.delete_campaign(campaign.id)

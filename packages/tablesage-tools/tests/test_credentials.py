@@ -24,7 +24,7 @@ async def test_model_checks_deduplicate_and_use_timeout(monkeypatch: pytest.Monk
 
     monkeypatch.setattr(litellm, "acompletion", completion)
     result = await check_connection("gemini", ["gemini/test-model", "gemini/test-model", "gemini/test-other"], 17)
-    assert result.startswith("Success")
+    assert result.ok and result.message.startswith("Success")
     assert [call["model"] for call in calls] == ["gemini/test-model", "gemini/test-other"]
     assert all(call["timeout"] == 17 for call in calls)
 
@@ -40,11 +40,11 @@ async def test_failed_test_does_not_leak_provider_exception(monkeypatch: pytest.
 
     monkeypatch.setattr(litellm, "acompletion", completion)
     result = await check_connection("openai", ["openai/test-model"], 30)
-    assert "Provider request failed" in result
-    assert "dummy-openai-value" not in result
+    assert not result.ok and "Provider request failed" in result.message
+    assert "dummy-openai-value" not in result.message
 
 
 @pytest.mark.anyio
 async def test_unused_provider_does_not_make_request(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ANTHROPIC_API_KEY", "dummy-anthropic-value")
-    assert "No saved model" in await check_connection("anthropic", [], 30)
+    assert "No saved model" in (await check_connection("anthropic", [], 30)).message

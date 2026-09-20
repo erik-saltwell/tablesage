@@ -10,6 +10,7 @@ from ..llm import PromptName, call_llm_with_prompt
 
 RECAP_MARKER = "<!-- RECAP -->"
 PLAYER_INTRODUCTIONS_MARKER = "<!-- PLAYER_INTRODUCTIONS -->"
+STALE_RECAP_PLACEHOLDER = "[The prior Session recap is stale and could not be included.]"
 MAX_GENERATION_ATTEMPTS = 3
 
 

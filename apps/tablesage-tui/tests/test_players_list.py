@@ -99,6 +99,7 @@ def _application(*, players: list | None = None) -> MagicMock:
         audio_import_extensions=MagicMock(return_value=frozenset({".wav", ".mp3"})),
         validate_import_audio_source=MagicMock(),
         player_folder_exists=MagicMock(return_value=False),
+        can_delete_player=MagicMock(return_value=(True, None)),
     )
 
 
@@ -409,19 +410,22 @@ async def test_delete_player_confirms_then_deletes() -> None:
 
 @pytest.mark.anyio
 async def test_delete_player_shows_error_when_player_has_attended_sessions() -> None:
+    """The attendance block is explained before any confirmation is shown (see UBF-08.01)."""
     player = Player(name="Alice")
     application = _application(players=[player])
-    application.delete_player = MagicMock(side_effect=ValueError("This player has attended sessions and cannot be deleted."))
+    application.can_delete_player = MagicMock(
+        return_value=(False, "This player has attended one or more sessions and cannot be deleted. Remove their attendance first.")
+    )
+    application.delete_player = MagicMock()
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_players_list(pilot)
 
         await pilot.press("d")
         await pilot.pause()
-        await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
 
         assert isinstance(pilot.app.screen, PlayersListScreen)
+        application.delete_player.assert_not_called()
 
 
 @pytest.mark.anyio
