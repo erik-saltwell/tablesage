@@ -42,9 +42,12 @@ class CampaignDetailScreen(TableSageScreen):
     COMMON_BINDINGS = [
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
-        Binding("n,N", "new_item", "New", key_display="N"),
-        Binding("enter,e,E", "edit_item", "Edit", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_item", "Delete", key_display="D"),
+        Binding("n,N", "new_session_item", "New Session", key_display="N"),
+        Binding("n,N", "new_glossary_item", "New Entry", key_display="N"),
+        Binding("enter,e,E", "edit_session_item", "Edit Session", key_display="E"),
+        Binding("enter,e,E", "edit_glossary_item", "Edit Entry", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_session_item", "Delete Session", key_display="D"),
+        Binding("d,D,delete,backspace", "delete_glossary_item", "Delete Entry", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
@@ -207,13 +210,31 @@ class CampaignDetailScreen(TableSageScreen):
         self.query_one(f"#{tab}-table", DataTable).focus()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action in {"edit_item", "delete_item"}:
+        if action == "show_sessions":
+            return True if self._active_tab != "sessions" else False
+        if action == "show_glossary":
+            return True if self._active_tab != "glossary" else False
+        if action in {"new_session_item", "new_glossary_item"}:
+            expected_tab = "sessions" if action == "new_session_item" else "glossary"
+            return True if self._active_tab == expected_tab else False
+        if action in {
+            "edit_session_item",
+            "edit_glossary_item",
+            "delete_session_item",
+            "delete_glossary_item",
+        }:
+            expected_tab = "sessions" if action.endswith("session_item") else "glossary"
+            if self._active_tab != expected_tab:
+                return False
             return True if self._selected_row_id(f"{self._active_tab}-table") is not None else None
         return True
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         event.stop()
-        self.action_edit_item()
+        if self._active_tab == "glossary":
+            self.action_edit_glossary_item()
+        else:
+            self.action_edit_session_item()
 
     def _selected_row_id(self, table_id: str) -> uuid.UUID | None:
         table = self.query_one(f"#{table_id}", DataTable)
@@ -501,20 +522,20 @@ class CampaignDetailScreen(TableSageScreen):
 
     # Dispatch
 
-    def action_new_item(self) -> None:
-        if self._active_tab == "glossary":
-            self._new_glossary_entry()
-        else:
-            self._new_session()
+    def action_new_session_item(self) -> None:
+        self._new_session()
 
-    def action_edit_item(self) -> None:
-        if self._active_tab == "glossary":
-            self._edit_glossary_entry()
-        else:
-            self._open_session()
+    def action_new_glossary_item(self) -> None:
+        self._new_glossary_entry()
 
-    def action_delete_item(self) -> None:
-        if self._active_tab == "glossary":
-            self._delete_glossary_entry()
-        else:
-            self._delete_session()
+    def action_edit_session_item(self) -> None:
+        self._open_session()
+
+    def action_edit_glossary_item(self) -> None:
+        self._edit_glossary_entry()
+
+    def action_delete_session_item(self) -> None:
+        self._delete_session()
+
+    def action_delete_glossary_item(self) -> None:
+        self._delete_glossary_entry()

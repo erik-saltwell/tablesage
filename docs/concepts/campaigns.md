@@ -1,7 +1,9 @@
 # Campaigns and Glossaries
 
-A **Campaign** is the long-lived home for related Sessions and the shared
-language that keeps their record coherent over time.
+A **Campaign** is the long-lived home for a collection of Sessions played one after
+another and played by a similar group of players.  TableSage supports changes
+in players across Sessions, but does expect that each Session picks up where another
+leaves off.
 
 ## Campaigns
 
@@ -10,9 +12,7 @@ description and game system, but its most important work is to organize the
 Sessions that belong to that game and the Glossary they share.
 
 A Campaign does not own a roster of Players or Roles. Players attend individual
-Sessions, and their Roles belong to that particular attendance. This keeps the
-Campaign focused on the history and setting of the game rather than on a
-separate membership list.
+Sessions, and their Roles belong to that Session.
 
 ## Sessions in a Campaign
 

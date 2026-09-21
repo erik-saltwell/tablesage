@@ -120,7 +120,8 @@ async def _add_candidate(pilot: Pilot, name: str, *roles: str) -> None:
     pilot.app.screen.query_one("#attendee-name", Input).value = name
     await pilot.pause()
     for role in roles:
-        pilot.app.screen.query_one("#attendee-add-role", Button).press()
+        pilot.app.screen.query_one("#attendee-role-table", DataTable).focus()
+        await pilot.press("r")
         await pilot.pause()
         pilot.app.screen.query_one("#text-input-value", Input).value = role
         await pilot.press("enter")

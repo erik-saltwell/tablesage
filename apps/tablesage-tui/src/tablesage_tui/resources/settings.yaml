@@ -23,9 +23,8 @@ remove_outliers:
   min_samples: 5
 
 session_audio_import:
-  # Session Detail's "Import Audio" (I) always runs the imported recording
-  # through the audio-cleaning pipeline; this toggles loudness normalization
-  # on top of that cleaning.
+  # Process -> Audio runs an imported recording through the audio-cleaning
+  # pipeline; this toggles loudness normalization on top of that cleaning.
   normalize_volume: false
 
 audio_cleaning:
@@ -35,8 +34,8 @@ audio_cleaning:
   normalize_volume: false
 
 transcription_and_diarization:
-  # Session Detail's "Transcribe" (T) sends the session's input audio to
-  # ElevenLabs Scribe for transcription and speaker diarization.
+  # Process -> Audio sends the Session's input audio to ElevenLabs Scribe for
+  # transcription and speaker diarization.
   timeout: 7200
   language_code: eng
   tag_audio_events: false
@@ -75,7 +74,7 @@ speaker_identification:
   # unaffected either way; they're still left "Unassigned Speaker" since there's no similarity
   # comparison to make for them in the first place.
   allow_unassigned: true
-  # When true, "Transcribe" (T) writes an initial-match line per utterance to
+  # When true, Process -> Audio writes an initial-match line per utterance to
   # .tablesage/logs/speaker_identification.log -- best/second-best speaker
   # match, the full per-speaker similarity vector, and why the utterance
   # landed where it did. Cluster-propagated utterances get a second override
@@ -102,15 +101,15 @@ enhance_voices:
 
 remove_backchannels:
   # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):
-  #   - Pre-review, automatic as part of Transcribe (T): speaker assignment
+  #   - Pre-review, automatic as part of Process -> Audio: speaker assignment
   #     isn't human-confirmed yet, so every wordlist-matching candidate is
   #     judged the same way regardless of speaker, via a batched LLM call
   #     (llm_model_lite below) asking whether the utterance right before it
   #     was a question -- a real short answer ("Yeah.") isn't mistaken for an
   #     acknowledgment.
-  #   - Post-review, part of Session Detail's Generate (G) Role Transcript
-  #     step: purely mechanical, no LLM call -- a candidate is dropped only if
-  #     it's still Unassigned Speaker after a human had the chance to fix it.
+  #   - Post-review, part of Process -> Outputs' Role Transcript step: purely
+  #     mechanical, no LLM call -- a candidate is dropped only if it's still
+  #     Unassigned Speaker after a human had the chance to fix it.
   #
   # An utterance longer than this many words is never considered a
   # backchannel candidate, regardless of wordlist match. Shared by both

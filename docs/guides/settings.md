@@ -86,8 +86,8 @@ and writing that produces what you keep from each session — see
 [session artifacts](../concepts/session-artifacts.md) for what each generated
 document actually is:
 
-- **Generate Outputs**, **Regenerate Artifact**, and **Regenerate All Outputs**: the
-  model processes raw transcripts and generates summaries.
+- **Process → Outputs**, **Regenerate Artifact**, and **Regenerate All Outputs**:
+  the model processes reviewed transcripts and generates summaries.
 - **Create Previously On**: the model generates the recap.
 - **Generate Opportunities**: the model generates opportunities.
 - **From Audio**: In the players screen, the model infers who is speaking from the transcript.
@@ -96,14 +96,16 @@ These are the longest and most expensive calls TableSage makes.
 
 **Medium model.** Handles moderate tasks where you check the result:
 
-- **Review Transcript**: The model proposes corrections based on the
-  [campaign glossary](../concepts/campaign.md#glossary).
+- **Process → Transcript**: The model proposes corrections based on the
+  [Campaign glossary](../concepts/campaigns.md#glossary).
 - **Extract Glossary**, the model proposes new glossary entries based on the transcript.
 
 **Low model.** Handles operations where a fast, inexpensive model is enough.
-- **Import Audio**: the model removes small backchannels and disfluencies like
-  "yeah" and "ummm" — see [from recording to record](../concepts/session-processing.md)
-  for where this fits in the larger pipeline.
+
+- **Process → Audio**: while transcribing, the model removes small
+  backchannels and disfluencies like "yeah" and "ummm" — see
+  [processing a Session](../concepts/sessions.md#processing-a-session) for
+  where this fits in the larger pipeline.
 
 ## Saving
 

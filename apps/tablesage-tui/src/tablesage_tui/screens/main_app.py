@@ -48,11 +48,16 @@ class TableSageApp(App):
     async def action_quit(self) -> None:
         from .previously_on import PreviouslyOnScreen
         from .settings import SettingsScreen
+        from .speaker_review import ManualReviewScreen
 
         if isinstance(self.screen, PreviouslyOnScreen):
             self.screen.confirm_leave(self.exit)
+        elif isinstance(self.screen, ManualReviewScreen):
+            self.screen.confirm_leave(self.exit)
         elif any(isinstance(screen, PreviouslyOnScreen) for screen in self.screen_stack):
             self.notify("Close the current dialog before leaving Previously On.")
+        elif any(isinstance(screen, ManualReviewScreen) for screen in self.screen_stack):
+            self.notify("Close the current dialog before saving or discarding transcript edits.")
         elif isinstance(self.screen, SettingsScreen):
             self.screen.confirm_leave(self.exit)
         elif any(isinstance(screen, SettingsScreen) and screen._dirty() for screen in self.screen_stack):

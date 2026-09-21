@@ -8,7 +8,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen
-from textual.widgets import Button, DataTable, Input, Select, Static
+from textual.widgets import Button, DataTable, Footer, Input, Select, Static
 from textual.widgets.select import NoSelection
 
 from ..widgets import EqualWidthButtonRow
@@ -43,6 +43,10 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
 
     BINDINGS = [
         Binding("escape", "cancel", "Cancel", show=False),
+        Binding("r,R", "add_role", "Add Role", key_display="R"),
+        Binding("g,G", "add_game_master", "Add Game Master", key_display="G"),
+        Binding("e,E", "edit_role", "Edit Role", key_display="E"),
+        Binding("d,D", "delete_role", "Delete Role", key_display="D"),
     ]
 
     def __init__(
@@ -64,47 +68,40 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
         self._allow_new_player = allow_new_player
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="attendee-dialog") as dialog:
-            dialog.border_title = self._title
+        with Vertical(id="attendee-dialog-frame"):
+            with Vertical(id="attendee-dialog") as dialog:
+                dialog.border_title = self._title
 
-            if not self._players and not self._allow_new_player:
-                yield Static("No players are available to add.", id="attendee-empty")
-                with Horizontal(classes="dialog-actions"):
-                    yield Button("Close", id="attendee-close")
-                return
+                if not self._players and not self._allow_new_player:
+                    yield Static("No players are available to add.", id="attendee-empty")
+                    with Horizontal(classes="dialog-actions"):
+                        yield Button("Close", id="attendee-close")
+                    return
 
-            if self._allow_new_player:
-                with Horizontal(id="attendee-name-row"):
-                    yield Static("New Player Name", classes="field-label")
-                    yield Input(id="attendee-name", value=self._player_name)
-            else:
-                with Horizontal(id="attendee-player-row"):
-                    yield Static("Player", classes="field-label")
-                    yield Select[uuid.UUID](
-                        [(player.name, player.id) for player in self._players],
-                        id="attendee-player-select",
-                        value=self._player_id if self._player_id is not None else Select.NULL,
-                        prompt="Choose a player…",
-                    )
+                if self._allow_new_player:
+                    with Horizontal(id="attendee-name-row"):
+                        yield Static("New Player Name", classes="field-label")
+                        yield Input(id="attendee-name", value=self._player_name)
+                else:
+                    with Horizontal(id="attendee-player-row"):
+                        yield Static("Player", classes="field-label")
+                        yield Select[uuid.UUID](
+                            [(player.name, player.id) for player in self._players],
+                            id="attendee-player-select",
+                            value=self._player_id if self._player_id is not None else Select.NULL,
+                            prompt="Choose a player…",
+                        )
 
-            yield Static("Roles", classes="section-title")
-            table: DataTable[str] = DataTable(id="attendee-role-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
-            table.add_column("Role", key="role")
-            yield table
+                table: DataTable[str] = DataTable(
+                    id="attendee-role-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+                )
+                table.add_column("Role", key="role")
+                yield table
 
-            with EqualWidthButtonRow(id="attendee-role-actions"):
-                with Horizontal(id="attendee-role-actions-add"):
-                    yield Button("Add Role", id="attendee-add-role")
-                    if not self._allow_new_player:
-                        yield Button("Character", id="attendee-add-character")
-                    yield Button("Add Game Master", id="attendee-add-gm")
-                with Horizontal(id="attendee-role-actions-edit"):
-                    yield Button("Edit", id="attendee-edit-role")
-                    yield Button("Remove", id="attendee-remove-role")
-
-            with EqualWidthButtonRow(classes="dialog-actions"):
-                yield Button("Cancel", id="attendee-cancel")
-                yield Button("Save", id="attendee-save", variant="primary", disabled=True)
+                with EqualWidthButtonRow(id="attendee-submit-actions"):
+                    yield Button("Cancel", id="attendee-cancel")
+                    yield Button("Save", id="attendee-save", variant="primary", disabled=True)
+            yield Footer(id="attendee-footer")
 
     def on_mount(self) -> None:
         if not self._players and not self._allow_new_player:
@@ -119,6 +116,7 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
         for role in self._roles:
             table.add_row(role, key=role)
         self._update_save_enabled()
+        self.refresh_bindings()
 
     def _selected_role(self) -> str | None:
         table = self.query_one("#attendee-role-table", DataTable)
@@ -140,26 +138,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
 
         self.app.push_screen(
             TextInputDialog(title="Add Role", prompt="Enter a role name", submit_label="Add"),
-            on_named,
-        )
-
-    def _add_character_role(self) -> None:
-        player_select = self.query_one("#attendee-player-select", Select)
-        player_id = player_select.value
-        if isinstance(player_id, NoSelection):
-            return
-
-        def on_named(name: str | None) -> None:
-            if name:
-                self._add_role(name)
-
-        self.app.push_screen(
-            TextInputDialog(
-                title="Add Character",
-                prompt="Enter the character name",
-                placeholder="Character name",
-                submit_label="Add",
-            ),
             on_named,
         )
 
@@ -207,22 +185,33 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
             event.stop()
             self._update_save_enabled()
 
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if event.data_table.id == "attendee-role-table":
+            self.refresh_bindings()
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action in {"edit_role", "delete_role"}:
+            return True if self._selected_role() is not None else None
+        return True
+
+    def action_add_role(self) -> None:
+        self._add_custom_role()
+
+    def action_add_game_master(self) -> None:
+        self._add_role(_GAME_MASTER_LABEL)
+
+    def action_edit_role(self) -> None:
+        self._edit_selected_role()
+
+    def action_delete_role(self) -> None:
+        self._remove_selected_role()
+
     # Dismissal
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
         if button_id in ("attendee-cancel", "attendee-close"):
             self.dismiss(None)
-        elif button_id == "attendee-add-role":
-            self._add_custom_role()
-        elif button_id == "attendee-add-character":
-            self._add_character_role()
-        elif button_id == "attendee-add-gm":
-            self._add_role(_GAME_MASTER_LABEL)
-        elif button_id == "attendee-edit-role":
-            self._edit_selected_role()
-        elif button_id == "attendee-remove-role":
-            self._remove_selected_role()
         elif button_id == "attendee-save":
             self._submit()
 

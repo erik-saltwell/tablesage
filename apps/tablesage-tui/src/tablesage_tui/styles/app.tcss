@@ -362,6 +362,83 @@ Footer.-has-other-actions FooterKey:last-child {
 }
 
 /* ******************************** */
+/*        process workflow rail     */
+/* ******************************** */
+
+WorkflowRail {
+    width: 1fr;
+    height: 1;
+    min-height: 1;
+    layout: horizontal;
+    padding: 0 1;
+    background: $surface-3-bg;
+    color: $fg-muted;
+}
+
+.workflow-step {
+    width: 1fr;
+    height: 1;
+    min-width: 0;
+    content-align: center middle;
+    text-align: center;
+    color: $fg-muted;
+}
+
+.workflow-step.-status-current { color: $fg-accent; }
+.workflow-step.-status-in-progress { color: $fg-warning; }
+.workflow-step.-status-error { color: $fg-danger; text-style: bold; }
+
+.workflow-step.-active {
+    background: $selected-bg;
+    color: $selected-fg;
+    text-style: bold;
+}
+
+AudioProcessingScreen {
+    .screen-body { padding: 1 2; }
+    #audio-processing-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+    #audio-processing-status {
+        height: auto;
+        margin-bottom: 1;
+    }
+    .processing-error {
+        height: auto;
+        margin-bottom: 1;
+        color: $fg-danger;
+    }
+    Button {
+        width: 100%;
+        margin-bottom: 1;
+    }
+}
+
+OutputsProcessingScreen {
+    .screen-body { padding: 1 2; }
+    #outputs-processing-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+    #outputs-processing-summary,
+    #outputs-processing-error {
+        height: auto;
+        margin-bottom: 1;
+    }
+    #outputs-status-list {
+        height: 1fr;
+    }
+    .output-status {
+        height: 1;
+        margin-bottom: 1;
+    }
+    Button {
+        width: 100%;
+    }
+}
+
+/* ******************************** */
 /*             widgets              */
 /* ******************************** */
 
@@ -745,11 +822,19 @@ OtherActionsDialog {
         height: 20;
     }
 
-    #attendee-dialog,
     #session-picker-dialog,
     #manual-review-utterance-dialog,
     #speaker-resolution-dialog {
         width: 90;
+    }
+
+    #attendee-dialog-frame {
+        width: 90;
+        height: auto;
+    }
+
+    #attendee-dialog {
+        width: 1fr;
     }
 
     #manual-review-utterance-dialog .field-row {
@@ -852,25 +937,19 @@ OtherActionsDialog {
         margin: 0 0 1 0;
     }
 
-    #attendee-role-actions {
+    #attendee-submit-actions {
         width: 1fr;
         height: auto;
-        margin: 0 0 1 0;
+        align: right middle;
 
         Button {
             margin: 0 1 0 0;
         }
+    }
 
-        #attendee-role-actions-add {
-            width: 1fr;
-            height: auto;
-        }
-
-        #attendee-role-actions-edit {
-            width: auto;
-            height: auto;
-            dock: right;
-        }
+    #attendee-footer {
+        width: 1fr;
+        margin: 0;
     }
 
     #speaker-resolution-player-row,

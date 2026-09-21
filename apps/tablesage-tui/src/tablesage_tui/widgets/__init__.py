@@ -3,6 +3,7 @@ from .command_button import CommandButton
 from .committing_input import CommittingInput
 from .empty_widget import EmptyWidget
 from .equal_width_button_row import EqualWidthButtonRow
+from .workflow_rail import WorkflowRail, WorkflowStepStatus
 
 __all__ = [
     "AsciiArt",
@@ -10,4 +11,6 @@ __all__ = [
     "CommittingInput",
     "EmptyWidget",
     "EqualWidthButtonRow",
+    "WorkflowRail",
+    "WorkflowStepStatus",
 ]

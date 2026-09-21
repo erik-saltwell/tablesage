@@ -10,6 +10,7 @@ from tablesage_model.model import (  # noqa
     Session,
     SessionAttendance,
     SessionAttendanceRole,
+    SessionProcessingState,
 )
 
 # this is the Alembic Config object, which provides

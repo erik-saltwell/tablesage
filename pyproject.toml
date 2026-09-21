@@ -96,6 +96,11 @@ select = [
 [tool.ty]
 environment.root = ["./packages", "./apps", "./benchmarks"]
 
+[tool.ty.src]
+# Prompt optimization is optional tooling with its own dependency set; scripts
+# are standalone operational utilities rather than shipped application modules.
+exclude = ["apps/optimize-prompts", "scripts"]
+
 [tool.ty.rules]
 unused-ignore-comment = "warn"
 redundant-cast = "warn"

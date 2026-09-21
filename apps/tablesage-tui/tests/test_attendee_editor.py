@@ -45,7 +45,7 @@ async def test_add_custom_role_via_dialog() -> None:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-add-role", Button).press()
+        await pilot.press("r")
         await pilot.pause()
         assert isinstance(pilot.app.screen, TextInputDialog)
 
@@ -59,22 +59,23 @@ async def test_add_custom_role_via_dialog() -> None:
 
 
 @pytest.mark.anyio
-async def test_character_role_starts_with_a_blank_name() -> None:
+async def test_role_actions_offer_add_role_and_add_game_master() -> None:
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Add Attendee"))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-player-select", Select).value = _ALICE.id
-        await pilot.pause()
-        pilot.app.screen.query_one("#attendee-add-character", Button).press()
-        await pilot.pause()
-
-        assert isinstance(pilot.app.screen, TextInputDialog)
-        assert pilot.app.screen.query_one("#text-input-value", Input).value == ""
+        bindings = {binding.action: binding for binding in AttendeeDialog.BINDINGS}
+        assert bindings["add_role"].key_display == "R"
+        assert bindings["add_game_master"].key_display == "G"
+        assert bindings["edit_role"].key_display == "E"
+        assert bindings["delete_role"].key_display == "D"
+        assert pilot.app.screen.query_one("#attendee-footer")
+        assert not pilot.app.screen.query("#attendee-role-actions")
+        assert not pilot.app.screen.query("#attendee-add-character")
 
 
 @pytest.mark.anyio
-async def test_character_role_stays_blank_when_attendee_already_has_game_master_role() -> None:
+async def test_add_game_master_is_a_no_op_when_it_is_already_present() -> None:
     async with TableSageApp().run_test() as pilot:
         pilot.app.push_screen(
             AttendeeDialog(
@@ -86,11 +87,10 @@ async def test_character_role_stays_blank_when_attendee_already_has_game_master_
         )
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-add-character", Button).press()
+        await pilot.press("g")
         await pilot.pause()
 
-        assert isinstance(pilot.app.screen, TextInputDialog)
-        assert pilot.app.screen.query_one("#text-input-value", Input).value == ""
+        assert pilot.app.screen.query_one("#attendee-role-table", DataTable).row_count == 1
 
 
 @pytest.mark.anyio
@@ -99,7 +99,7 @@ async def test_add_duplicate_custom_role_is_a_no_op() -> None:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-add-role", Button).press()
+        await pilot.press("r")
         await pilot.pause()
         pilot.app.screen.query_one("#text-input-value", Input).value = "Zaria"
         await pilot.press("enter")
@@ -114,7 +114,7 @@ async def test_add_game_master_role_is_one_click() -> None:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Zaria"]))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        await pilot.press("g")
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
@@ -128,7 +128,7 @@ async def test_add_duplicate_game_master_role_is_a_no_op() -> None:
         pilot.app.push_screen(AttendeeDialog(players=[_ALICE], title="Edit Attendee", player_id=_ALICE.id, roles=["Game Master"]))
         await pilot.pause()
 
-        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        await pilot.press("g")
         await pilot.pause()
 
         assert pilot.app.screen.query_one("#attendee-role-table", DataTable).row_count == 1
@@ -142,7 +142,8 @@ async def test_edit_selected_role_renames_it() -> None:
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
         table.move_cursor(row=0)
-        pilot.app.screen.query_one("#attendee-edit-role", Button).press()
+        table.focus()
+        await pilot.press("e")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, TextInputDialog)
@@ -163,7 +164,8 @@ async def test_edit_selected_role_rejects_renaming_to_an_existing_role() -> None
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
         table.move_cursor(row=0)
-        pilot.app.screen.query_one("#attendee-edit-role", Button).press()
+        table.focus()
+        await pilot.press("e")
         await pilot.pause()
         pilot.app.screen.query_one("#text-input-value", Input).value = "Narrator"
         await pilot.press("enter")
@@ -181,7 +183,8 @@ async def test_remove_selected_role() -> None:
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
         table.move_cursor(row=0)
-        pilot.app.screen.query_one("#attendee-remove-role", Button).press()
+        table.focus()
+        await pilot.press("d")
         await pilot.pause()
 
         rows = [str(table.get_row_at(i)[0]) for i in range(table.row_count)]
@@ -196,7 +199,8 @@ async def test_removing_last_role_disables_save() -> None:
 
         table = pilot.app.screen.query_one("#attendee-role-table", DataTable)
         table.move_cursor(row=0)
-        pilot.app.screen.query_one("#attendee-remove-role", Button).press()
+        table.focus()
+        await pilot.press("d")
         await pilot.pause()
 
         assert pilot.app.screen.query_one("#attendee-save", Button).disabled
@@ -212,7 +216,7 @@ async def test_save_dismisses_with_chosen_player_and_roles() -> None:
 
         pilot.app.screen.query_one("#attendee-player-select", Select).value = _BOB.id
         await pilot.pause()
-        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        await pilot.press("g")
         await pilot.pause()
         pilot.app.screen.query_one("#attendee-save", Button).press()
         await pilot.pause()
@@ -307,7 +311,8 @@ async def test_allow_new_player_submitting_free_form_name() -> None:
 
         pilot.app.screen.query_one("#attendee-name", Input).value = "Zara"
         await pilot.pause()
-        pilot.app.screen.query_one("#attendee-add-gm", Button).press()
+        pilot.app.screen.query_one("#attendee-role-table", DataTable).focus()
+        await pilot.press("g")
         await pilot.pause()
         assert not pilot.app.screen.query_one("#attendee-save", Button).disabled
         pilot.app.screen.query_one("#attendee-save", Button).press()

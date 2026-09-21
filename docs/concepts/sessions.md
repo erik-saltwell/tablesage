@@ -29,7 +29,9 @@ that speaker in role-attributed transcripts and other artifacts. See
 ## Processing a Session
 
 Processing turns a recording into material the group can read, review, and
-reuse. The typical flow is:
+reuse. From Session Detail, press **P** to open **Process**. Once audio exists,
+the same binding is labeled **Continue Processing**. The workflow rail shows
+the state of Audio, Transcript, and Outputs while you move through these steps:
 
 1. Add the Session's input audio. TableSage imports and, when needed, cleans
    the audio; transcribes it using ElevenLabs' Scribe v2 engine; and uses the
@@ -48,6 +50,15 @@ record should say. Artifacts are built from the reviewed material, so a source
 correction can be reflected by regenerating the affected outputs. In addition,
 a well-reviewed session can be used as a source of new voice samples, improving
 later quality.
+
+You can use **Back** to revisit an earlier step without deleting completed
+work, or **Exit** to return to Session Detail. If you exit after editing the
+transcript, TableSage asks whether to save those edits as an unfinished draft.
+Either choice resumes at Transcript next time; only **Complete** creates the
+reviewed transcript used to generate outputs. Failed Audio or Outputs work
+remains at that step with an error you can retry, and completed work is not
+repeated. A fully processed Session opens at Outputs and reports that all
+outputs are current.
 
 ## Session Artifacts
 

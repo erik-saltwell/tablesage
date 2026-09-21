@@ -13,7 +13,13 @@ import widelog
 import yaml
 from sqlmodel import Session
 from tablesage_model import setup
-from tablesage_model.model import Campaign, GlossaryEntry, Player
+from tablesage_model.model import (
+    Campaign,
+    GlossaryEntry,
+    Player,
+    SessionProcessingPhase,
+    SessionProcessingState,
+)
 from tablesage_model.model import Session as GameSession
 from tablesage_model.player_names import validate_player_name
 from tablesage_model.settings import AppSettings
@@ -23,6 +29,7 @@ from tablesage_tools.model import Transcript
 from . import campaign_recap, opportunities, paths, player_import_from_audio, players_from_session, previously_on
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, sessions
+from .entities import session_processing as session_processing_entities
 from .llm import PromptName, call_llm_with_prompt, system_prompt_path
 from .player_archive import PlayerArchiveResult
 from .session_pipeline import artifact_graph as artifact_graph_pipeline
@@ -33,6 +40,7 @@ from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_player_introductions as player_introductions_pipeline
 from .session_pipeline import generate_recap_summary as recap_summary_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
+from .session_pipeline import session_processing as session_processing_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
 from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
@@ -915,6 +923,57 @@ class Application:
     def audio_import_extensions(self) -> frozenset[str]:
         return paths.AUDIO_EXTENSIONS
 
+    def import_and_transcribe_audio(
+        self,
+        session_id: uuid.UUID,
+        source_path: Path,
+        *,
+        should_clean_audio: bool,
+        on_progress: transcribe_audio.OnProgress | None = None,
+    ) -> transcribe_audio.TranscriptionResult:
+        """Atomically replace input audio, invalidate an incompatible draft, and transcribe it.
+
+        The input-audio replacement remains atomic inside the import pipeline. Only after that
+        replacement succeeds do we clear a saved review draft, because its source can no longer
+        match. A subsequent transcription failure leaves the newly imported audio available for
+        an explicit retry.
+        """
+        self.validate_import_audio_source(source_path)
+        session_folder = self.session_folder(session_id)
+        import_audio.import_audio(
+            source_path,
+            session_folder,
+            self._settings.session_audio_import.normalize_volume,
+            should_clean_audio=should_clean_audio,
+        )
+        self.discard_review_draft(session_id)
+        return self.transcribe_session_audio(session_id, on_progress=on_progress)
+
+    def transcribe_session_audio(
+        self,
+        session_id: uuid.UUID,
+        *,
+        on_progress: transcribe_audio.OnProgress | None = None,
+    ) -> transcribe_audio.TranscriptionResult:
+        """Transcribe the currently imported audio using deployed application settings."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = transcribe_audio.can_transcribe_audio(session, session_id, session_folder)
+            if not enabled:
+                raise RuntimeError(reason or "Cannot transcribe audio.")
+
+        return transcribe_audio.transcribe_audio(
+            session_folder,
+            self.session_player_centroids(session_id),
+            self.embedding_factory(),
+            self._settings.transcription_and_diarization,
+            self._settings.speaker_identification,
+            self._settings.remove_backchannels,
+            self._settings.llm_model_lite,
+            on_progress=on_progress,
+        )
+
     def can_clean_session(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
@@ -930,6 +989,9 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
+            session_processing_entities.delete_state(session, session_id)
+            session.commit()
+        session_processing_pipeline.discard_review_draft(session_folder)
         artifacts.delete_all_artifacts(session_folder)
 
     def clean_transcript(
@@ -1311,6 +1373,158 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return transcribe_audio.can_transcribe_audio(session, session_id, self._session_folder(session, game_session))
+
+    # Session processing state and transcript-review drafts.
+
+    def session_processing_state(self, session_id: uuid.UUID) -> SessionProcessingState | None:
+        """Return persisted navigation/error metadata without creating a record."""
+        with Session(self._engine) as session:
+            sessions.get_session(session, session_id)
+            return session_processing_entities.get_state(session, session_id)
+
+    def set_session_processing_phase(self, session_id: uuid.UUID, phase: SessionProcessingPhase) -> SessionProcessingState:
+        """Persist the stage the primary Process flow should reopen."""
+        with Session(self._engine) as session:
+            sessions.get_session(session, session_id)
+            state = session_processing_entities.set_phase(session, session_id, phase)
+            session.commit()
+            session.refresh(state)
+            return state
+
+    def record_session_processing_failure(
+        self, session_id: uuid.UUID, phase: SessionProcessingPhase, message: str
+    ) -> SessionProcessingState:
+        """Persist a recoverable phase error and log only its Session and phase.
+
+        The user-facing message remains in workflow state so the stage can explain what
+        happened. It is deliberately excluded from the wide event because provider errors
+        can include excerpts of transcript content.
+        """
+        with widelog.wide_event(
+            op="session_processing_failure",
+            session_id=str(session_id),
+            processing_phase=phase.value,
+            workflow_failed=True,
+        ) as log:
+            with Session(self._engine) as session:
+                sessions.get_session(session, session_id)
+                state = session_processing_entities.record_failure(session, session_id, phase, message)
+                session.commit()
+                session.refresh(state)
+            log.set(failure_recorded=True)
+            return state
+
+    def clear_session_processing_failure(self, session_id: uuid.UUID) -> None:
+        """Clear the saved Process-flow error while retaining its navigation state."""
+        with Session(self._engine) as session:
+            sessions.get_session(session, session_id)
+            session_processing_entities.clear_failure(session, session_id)
+            session.commit()
+
+    def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+        """Atomically save noncanonical review work and then record its current source fingerprint.
+
+        The file is written first. If recording metadata fails, the resulting orphan file is
+        ignored because no database record points to it; it can never be consumed by generation.
+        """
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            source = self._current_transcript_source(session, game_session)
+            source_path = session_folder / paths.ARTIFACTS[source].filename
+            source_modified_ns = source_path.stat().st_mtime_ns
+
+        session_processing_pipeline.save_review_draft(session_folder, transcript)
+
+        with Session(self._engine) as session:
+            sessions.get_session(session, session_id)
+            session_processing_entities.set_draft_source(session, session_id, source.value, source_modified_ns)
+            session_processing_entities.set_phase(session, session_id, SessionProcessingPhase.TRANSCRIPT)
+            session.commit()
+
+    def load_review_draft(self, session_id: uuid.UUID) -> Transcript | None:
+        """Return a draft only when its database fingerprint still matches a current source.
+
+        Filesystem artifacts decide whether a draft is valid. Missing or mismatched state is
+        repaired by clearing the database pointer; any unreferenced draft file is deliberately
+        ignored rather than promoted to a reviewed transcript.
+        """
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            state = session_processing_entities.get_state(session, session_id)
+            if state is None or state.draft_source_artifact is None or state.draft_source_modified_ns is None:
+                return None
+
+            try:
+                source = paths.ArtifactName(state.draft_source_artifact)
+            except ValueError:
+                session_processing_entities.clear_draft_source(session, session_id)
+                session.commit()
+                return None
+
+            session_folder = self._session_folder(session, game_session)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+            source_ref = artifact_graph_pipeline.ArtifactRef(session_folder, source)
+            is_current = graph.status(source_ref) is artifact_graph_pipeline.ArtifactStatus.CURRENT
+            source_path = source_ref.path
+            fingerprint_matches = source_path.is_file() and source_path.stat().st_mtime_ns == state.draft_source_modified_ns
+            if not is_current or not fingerprint_matches:
+                session_processing_entities.clear_draft_source(session, session_id)
+                session.commit()
+                return None
+
+        try:
+            draft = session_processing_pipeline.load_review_draft(session_folder)
+        except Exception:
+            self.discard_review_draft(session_id)
+            return None
+        if draft is not None:
+            return draft
+
+        with Session(self._engine) as session:
+            sessions.get_session(session, session_id)
+            session_processing_entities.clear_draft_source(session, session_id)
+            session.commit()
+        return None
+
+    def discard_review_draft(self, session_id: uuid.UUID) -> None:
+        """Clear the draft pointer before best-effort removal of its working-copy file."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            session_processing_entities.clear_draft_source(session, session_id)
+            session.commit()
+        session_processing_pipeline.discard_review_draft(session_folder)
+
+    def clear_session_processing_state(self, session_id: uuid.UUID) -> None:
+        """Remove a Session's Process-flow metadata and noncanonical transcript draft."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            session_processing_entities.delete_state(session, session_id)
+            session.commit()
+        session_processing_pipeline.discard_review_draft(session_folder)
+
+    def resolve_session_processing_phase(self, session_id: uuid.UUID) -> SessionProcessingPhase:
+        """Choose a safe Process-flow destination, clamping stored navigation to valid artifacts."""
+        states = self.session_artifact_states(session_id)
+        if (
+            states[paths.ArtifactName.INPUT_AUDIO] is not artifact_graph_pipeline.ArtifactStatus.CURRENT
+            or states[paths.ArtifactName.TRANSCRIPT] is not artifact_graph_pipeline.ArtifactStatus.CURRENT
+        ):
+            return SessionProcessingPhase.AUDIO
+        if self.load_review_draft(session_id) is not None:
+            return SessionProcessingPhase.TRANSCRIPT
+        if states[paths.ArtifactName.REVIEWED_TRANSCRIPT] is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+            return SessionProcessingPhase.TRANSCRIPT
+
+        state = self.session_processing_state(session_id)
+        if state is None:
+            return SessionProcessingPhase.OUTPUTS
+        try:
+            return SessionProcessingPhase(state.phase)
+        except ValueError:
+            return SessionProcessingPhase.OUTPUTS
 
     # Manual review.
 

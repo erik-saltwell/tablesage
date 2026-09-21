@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
+from tablesage_model.model import SessionProcessingPhase
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -21,6 +22,7 @@ from textual.widgets.data_table import CursorType
 
 from ..audio_playback import ClipPlayer
 from ..dialogs import (
+    ConfirmationDialog,
     FindReplaceDialog,
     FindReplaceResult,
     ManualReviewUtteranceDialog,
@@ -29,8 +31,8 @@ from ..dialogs import (
     SpellingSuggestionResult,
 )
 from ..widgets import EqualWidthButtonRow
-from .base import TableSageScreen
 from .glossary_review import GlossaryReviewScreen
+from .session_processing import SessionProcessingScreen, register_processing_screen
 
 if TYPE_CHECKING:
     from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
@@ -111,7 +113,7 @@ class _ReviewTable(DataTable[object]):
             self.move_cursor(row=candidate)
 
 
-class ManualReviewScreen(TableSageScreen):
+class ManualReviewScreen(SessionProcessingScreen):
     """Two-phase review of a working copy of the transcript: spelling-correction suggestions first, then speaker labels and text.
 
     Both phases share one in-memory `Transcript` (see `Phase`). Edits stay in memory until
@@ -120,15 +122,14 @@ class ManualReviewScreen(TableSageScreen):
     transcript and any previously completed review unchanged.
     """
 
-    section = "session detail"
+    section = "process · transcript"
+    phase = SessionProcessingPhase.TRANSCRIPT
 
     _SUGGESTIONS_ACTIONS = frozenset({"new_suggestion", "edit_suggestion", "delete_suggestion", "complete_suggestions"})
     _REVIEW_ACTIONS = frozenset({"toggle_mode", "replay", "delete_utterance", "find_replace", "assign_speaker", "toggle_focus"})
 
-    HIDDEN_BINDINGS = [
-        Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
-    ]
     COMMON_BINDINGS = [
+        *SessionProcessingScreen.COMMON_BINDINGS,
         # Suggestions phase.
         Binding("n,N", "new_suggestion", "New", key_display="N"),
         Binding("enter,e,E", "edit_suggestion", "Edit", key_display="E"),
@@ -151,8 +152,7 @@ class ManualReviewScreen(TableSageScreen):
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:
-        super().__init__()
-        self._session_id = session_id
+        super().__init__(session_id)
         self._session_folder: Path | None = None
         self._transcript: Transcript | None = None
         # `_clip_indices[i]` is the on-disk clip filename index (from `extract_review_clips`'s
@@ -173,6 +173,7 @@ class ManualReviewScreen(TableSageScreen):
         self._current_duration = 0.0
         self._phase = Phase.SUGGESTIONS
         self._suggestions: list[_DraftSuggestion] = []
+        self._visit_baseline: Transcript | None = None
 
     def compose_content(self) -> ComposeResult:
         with Vertical(id="spelling-suggestions-panel", classes="panel surface-2") as panel:
@@ -187,7 +188,7 @@ class ManualReviewScreen(TableSageScreen):
             suggestions_table.add_column("Case Sensitive", key="case_sensitive")
             yield suggestions_table
             with EqualWidthButtonRow(id="spelling-suggestions-actions"):
-                yield Button("Cancel", id="spelling-suggestions-cancel")
+                yield Button("Exit", id="spelling-suggestions-cancel")
                 yield Button("Apply & Continue", id="spelling-suggestions-complete", variant="primary")
 
         with Vertical(id="manual-review-panel", classes="panel surface-2") as panel:
@@ -211,7 +212,7 @@ class ManualReviewScreen(TableSageScreen):
             table.add_column("Text", key="text")
             yield table
             with EqualWidthButtonRow(id="manual-review-actions"):
-                yield Button("Cancel", id="manual-review-cancel")
+                yield Button("Exit", id="manual-review-cancel")
                 yield Button("Complete", id="manual-review-complete", variant="primary")
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
@@ -230,11 +231,17 @@ class ManualReviewScreen(TableSageScreen):
         return True
 
     def on_mount(self) -> None:
+        super().on_mount()
         self._session_folder = self.application.session_folder(self._session_id)
         attendees = sorted(self.application.list_attendance(self._session_id), key=lambda attendee: attendee.player_name.casefold())
         self._all_attendee_names = [attendee.player_name for attendee in attendees]
         self._attendee_names = self._all_attendee_names[:_MAX_ASSIGNABLE_ATTENDEES]
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
+
+        draft = self.application.load_review_draft(self._session_id)
+        if draft is not None:
+            self._restore_draft(draft)
+            return
 
         self.run_with_progress(
             title="Manual Review",
@@ -242,6 +249,44 @@ class ManualReviewScreen(TableSageScreen):
             work=lambda: self.application.extract_glossary(self._session_id),
             on_success=self._after_extract_glossary,
         )
+
+    def _restore_draft(self, draft: Transcript) -> None:
+        """Extract playback clips from the current source, then resume directly in Review."""
+
+        def work() -> tuple[Transcript, Path]:
+            return self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
+
+        self.run_with_progress(
+            title="Manual Review",
+            message="Restoring saved transcript edits…",
+            work=work,
+            on_success=lambda result: self._after_restore_draft(draft, result),
+        )
+
+    def _after_restore_draft(self, draft: Transcript, result: tuple[Transcript, Path]) -> None:
+        source, _clip_dir = result
+        self._transcript = draft
+        self._clip_indices = self._draft_clip_indices(source, draft)
+        self._phase = Phase.REVIEW
+        self._visit_baseline = draft.model_copy(deep=True)
+        self.query_one("#manual-review-panel").display = True
+        self._enter_review_phase()
+
+    @staticmethod
+    def _draft_clip_indices(source: Transcript, draft: Transcript) -> list[int]:
+        """Match saved utterances to source clips by their immutable time spans.
+
+        A saved draft may have deleted rows, so its current position is not reliably the source
+        clip filename. An unmatched row gets a nonexistent index; playback then safely no-ops.
+        """
+        available: dict[tuple[float, float], list[int]] = {}
+        for index, utterance in enumerate(source.utterances):
+            available.setdefault((utterance.start, utterance.end), []).append(index)
+        indices: list[int] = []
+        for utterance in draft.utterances:
+            matches = available.get((utterance.start, utterance.end), [])
+            indices.append(matches.pop(0) if matches else -1)
+        return indices
 
     def _after_extract_glossary(self, proposals: list[GlossaryProposal]) -> None:
         if proposals:
@@ -296,6 +341,7 @@ class ManualReviewScreen(TableSageScreen):
 
         self._phase = Phase.REVIEW
         self.query_one("#manual-review-panel").display = True
+        self._visit_baseline = transcript.model_copy(deep=True)
         self._enter_review_phase()
 
     def _enter_review_phase(self) -> None:
@@ -426,6 +472,7 @@ class ManualReviewScreen(TableSageScreen):
         self._phase = Phase.REVIEW
         self.query_one("#spelling-suggestions-panel").display = False
         self.query_one("#manual-review-panel").display = True
+        self._visit_baseline = self._transcript.model_copy(deep=True)
         self._enter_review_phase()
 
     # Row rendering
@@ -724,17 +771,74 @@ class ManualReviewScreen(TableSageScreen):
     def action_complete(self) -> None:
         if self._transcript is None:
             return
+        from .outputs_processing import OutputsProcessingScreen
+
         self.application.save_reviewed_transcript(self._session_id, self._transcript)
+        self.application.discard_review_draft(self._session_id)
+        self.application.clear_session_processing_failure(self._session_id)
+        self.application.set_session_processing_phase(self._session_id, SessionProcessingPhase.OUTPUTS)
         self.notify("Reviewed transcript saved.")
-        self._close()
+        self._leave(
+            lambda: self.app.switch_screen(OutputsProcessingScreen(self._session_id)),
+            phase=SessionProcessingPhase.OUTPUTS,
+        )
 
     def action_cancel(self) -> None:
-        self._close()
+        self.action_exit_processing()
 
-    def _close(self) -> None:
+    def action_exit_processing(self) -> None:
+        """Leave review, optionally saving changed transcript work as a draft."""
+        self._request_leave(self.app.pop_screen)
+
+    def action_back_processing(self) -> None:
+        """Use the same draft decision as Exit before returning to Audio."""
+        self._request_leave(lambda: self.switch_to_processing_phase(SessionProcessingPhase.AUDIO))
+
+    def confirm_leave(self, on_confirm: Callable[[], object]) -> None:
+        """Give the application quit path the same save/discard decision as Exit."""
+        self._request_leave(on_confirm)
+
+    def _request_leave(self, after_leave: Callable[[], object]) -> None:
+        if not self._has_unsaved_transcript_changes():
+            self._leave(after_leave)
+            return
+
+        def on_choice(choice: bool | None) -> None:
+            if choice is None:
+                return
+            if choice:
+                assert self._transcript is not None
+                try:
+                    self.application.save_review_draft(self._session_id, self._transcript)
+                except Exception as exc:
+                    self.notify(f"Could not save transcript edits: {exc}", severity="error")
+                    return
+            self._leave(after_leave)
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Save Transcript Edits?",
+                prompt="Save your transcript edits so you can continue reviewing them later?",
+                no_label="Don't Save",
+                yes_label="Save",
+            ),
+            on_choice,
+        )
+
+    def _has_unsaved_transcript_changes(self) -> bool:
+        return self._transcript is not None and self._visit_baseline is not None and self._transcript != self._visit_baseline
+
+    def _leave(self, after_leave: Callable[[], object], *, phase: SessionProcessingPhase = SessionProcessingPhase.TRANSCRIPT) -> None:
+        self.application.set_session_processing_phase(self._session_id, phase)
+        self._stop_review_resources()
+        after_leave()
+
+    def _stop_review_resources(self) -> None:
         self._player.stop()
         if self._advance_timer is not None:
             self._advance_timer.stop()
             self._advance_timer = None
         self.application.discard_review_clips(self._session_id)
-        super().action_pop_screen()
+
+
+register_processing_screen(SessionProcessingPhase.TRANSCRIPT, ManualReviewScreen)

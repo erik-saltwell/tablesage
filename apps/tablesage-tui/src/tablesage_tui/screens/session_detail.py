@@ -2,42 +2,27 @@ from __future__ import annotations
 
 import uuid
 from datetime import date, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_application.session_pipeline import clean_transcript, import_audio, transcribe_audio
 from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus, GenerationTask
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
+from tablesage_model.model import SessionProcessingPhase
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
-from textual_fspicker import Filters
 
 from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog
-from ..dialogs.file_picker import FileOpen
+from ..generation_runner import GenerationRunner
 from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
 from .glossary_review import GlossaryReviewScreen
-from .speaker_review import ManualReviewScreen
 
 if TYPE_CHECKING:
     from tablesage_application.entities.sessions import Attendee
-
-_STAGE_LABELS = {
-    transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
-    transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
-    transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
-    transcribe_audio.Stage.REMOVING_BACKCHANNELS: "Removing backchannels (this may take a while)…",
-}
-
-_CLEAN_STAGE_LABELS = {
-    clean_transcript.Stage.REMOVING_BACKCHANNELS: "Removing leftover backchannels…",
-    clean_transcript.Stage.ASSIGNING_ROLES: "Assigning roles…",
-}
 
 _ATTENDANCE_ACTIONS = frozenset({"new_attendee", "edit_attendee", "delete_attendee"})
 
@@ -51,12 +36,11 @@ class SessionDetailScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("n,N", "new_attendee", "New", key_display="N"),
-        Binding("enter,e,E", "edit_attendee", "Edit", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_attendee", "Delete", key_display="D"),
-        Binding("a,A", "import_audio", "Import Audio", key_display="A"),
-        Binding("v,V", "review_transcript", "Review Transcript", key_display="V"),
-        Binding("g,G", "generate", "Generate Outputs", key_display="G"),
+        Binding("p,P", "process", "Process", key_display="P"),
+        Binding("p,P", "continue_processing", "Continue Processing", key_display="P"),
+        Binding("n,N", "new_attendee", "New Player", key_display="N"),
+        Binding("enter,e,E", "edit_attendee", "Edit Player", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_attendee", "Delete Player", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("b,B", "generate_benchmark_transcript", "Benchmark", key_display="B"),
@@ -246,15 +230,13 @@ class SessionDetailScreen(TableSageScreen):
             if action in ("edit_attendee", "delete_attendee") and self._selected_attendee() is None:
                 return None
             return True
-        if action == "review_transcript":
-            states = self._artifact_states()
-            return True if states[ArtifactName.TRANSCRIPT] is ArtifactStatus.CURRENT else None
+        if action == "process":
+            return True if not self.application.session_artifacts(self._session_id)[ArtifactName.INPUT_AUDIO] else False
+        if action == "continue_processing":
+            return True if self.application.session_artifacts(self._session_id)[ArtifactName.INPUT_AUDIO] else False
         if action == "generate_benchmark_transcript":
             states = self._artifact_states()
             return True if states[ArtifactName.TRANSCRIPT] is ArtifactStatus.CURRENT else None
-        if action == "generate":
-            states = self._artifact_states()
-            return True if states[ArtifactName.REVIEWED_TRANSCRIPT] is ArtifactStatus.CURRENT else None
         if action == "regenerate":
             states = self._artifact_states()
             return True if states[ArtifactName.REVIEWED_TRANSCRIPT] is ArtifactStatus.CURRENT else None
@@ -269,10 +251,9 @@ class SessionDetailScreen(TableSageScreen):
             return True if enabled else None
         return True
 
-    # Errors -- a permanent, table-shaped record of what went wrong the last time Import Audio,
-    # Generate Outputs, or Clean Session ran. Cleared the instant one of those three bindings
-    # fires (before any picker/dialog/validation), then populated with whatever that run
-    # actually encountered. An empty table after a run is itself the "no errors" signal.
+    # Errors -- a table-shaped record for specialist actions that remain on Session Detail,
+    # including forced regeneration and Clean Session. Process-flow failures are persisted and
+    # displayed by their stage screens instead.
 
     def _clear_errors(self) -> None:
         self.query_one("#error-table", DataTable).clear()
@@ -281,106 +262,26 @@ class SessionDetailScreen(TableSageScreen):
         self.query_one("#error-table", DataTable).add_row(action_label, message)
         self.notify(message, severity="error")
 
-    # Import audio -- combines today's Import and Transcribe into one action. Import replaces
-    # input_audio.wav; existing derived artifacts remain visible and become stale. Transcribe is
-    # then always attempted. If Transcribe's own preconditions (attendees/centroids) aren't
-    # met, that failure is reported as an error rather than blocking Import itself -- the audio
-    # is already imported by that point. The only remaining prompt is "Clean Audio?" for a .wav
-    # file, which is a functional choice (skip cleaning if it's already been cleaned), not a
-    # safety confirmation.
+    # Process is the only primary entry point for the three-stage workflow.
 
-    def action_import_audio(self) -> None:
-        self._clear_errors()
+    def action_process(self) -> None:
+        self._start_processing()
 
-        def on_picked(source_path: Path | None) -> None:
-            if source_path is None:
-                return
+    def action_continue_processing(self) -> None:
+        self._start_processing()
 
-            try:
-                self.application.validate_import_audio_source(source_path)
-            except ValueError as exc:
-                self._record_error("Import Audio", str(exc))
-                return
+    def _start_processing(self) -> None:
+        from .audio_processing import AudioProcessingScreen
+        from .outputs_processing import OutputsProcessingScreen
+        from .speaker_review import ManualReviewScreen
 
-            def do_import_and_transcribe(*, should_clean_audio: bool) -> None:
-                if not self.check_credentials("llm_model_lite", transcription=True):
-                    return
-                session_folder = self.application.session_folder(self._session_id)
-                normalize_volume = self.application.settings.session_audio_import.normalize_volume
-                centroids = self.application.session_player_centroids(self._session_id)
-                settings = self.application.settings
-
-                def work() -> transcribe_audio.TranscriptionResult:
-                    import_audio.import_audio(source_path, session_folder, normalize_volume, should_clean_audio=should_clean_audio)
-                    enabled, reason = self.application.can_transcribe_audio(self._session_id)
-                    if not enabled:
-                        raise RuntimeError(reason or "Cannot transcribe audio.")
-                    embed = self.application.embedding_factory()
-                    return transcribe_audio.transcribe_audio(
-                        session_folder,
-                        centroids,
-                        embed,
-                        settings.transcription_and_diarization,
-                        settings.speaker_identification,
-                        settings.remove_backchannels,
-                        settings.llm_model_lite,
-                        on_progress=self._on_transcribe_progress,
-                    )
-
-                self.run_with_progress(
-                    title="Import Audio",
-                    message="Cleaning audio…" if should_clean_audio else "Importing audio…",
-                    work=work,
-                    on_success=self._after_import_and_transcribe,
-                    on_error=lambda exc: self._record_error("Import Audio", str(exc)),
-                )
-
-            if source_path.suffix.lower() == ".wav":
-
-                def on_clean_choice(should_clean_audio: bool | None) -> None:
-                    if should_clean_audio is None:
-                        return
-                    do_import_and_transcribe(should_clean_audio=should_clean_audio)
-
-                self.app.push_screen(
-                    ConfirmationDialog(
-                        title="Clean Audio?",
-                        prompt="Run this .wav through noise-cleaning before import? Skip if it's already been cleaned.",
-                    ),
-                    on_clean_choice,
-                )
-            else:
-                do_import_and_transcribe(should_clean_audio=True)
-
-        extensions = self.application.audio_import_extensions()
-        audio_filter = Filters(
-            (
-                "Audio files",
-                lambda path: path.suffix.lower() in extensions,
-            ),
-        )
-        self.app.push_screen(
-            FileOpen(title="Import Audio", location=Path.home(), filters=audio_filter),
-            on_picked,
-        )
-
-    def _on_transcribe_progress(self, stage: transcribe_audio.Stage, completed: int, total: int) -> None:
-        self.report_stage_progress(_STAGE_LABELS[stage], completed, total)
-
-    def _after_import_and_transcribe(self, result: transcribe_audio.TranscriptionResult) -> None:
-        self._refresh_indicators()
-        message = "Audio imported and transcribed."
-        if result.unassigned_speaker_count:
-            message += f" {result.unassigned_speaker_count} of {result.utterance_count} utterances need manual review."
-        if result.removed_backchannel_count:
-            plural = "" if result.removed_backchannel_count == 1 else "s"
-            message += f" {result.removed_backchannel_count} backchannel{plural} removed."
-        self.notify(message)
-
-    # Review Transcript -- gated on the machine transcript being current (see check_action).
-
-    def action_review_transcript(self) -> None:
-        self.app.push_screen(ManualReviewScreen(self._session_id))
+        phase = self.application.resolve_session_processing_phase(self._session_id)
+        if phase is SessionProcessingPhase.AUDIO:
+            self.app.push_screen(AudioProcessingScreen(self._session_id))
+        elif phase is SessionProcessingPhase.TRANSCRIPT:
+            self.app.push_screen(ManualReviewScreen(self._session_id))
+        else:
+            self.app.push_screen(OutputsProcessingScreen(self._session_id))
 
     # Benchmark transcript -- gated on the machine transcript being current (see check_action).
     # Fast, in-memory, synchronous: no progress dialog, unlike the pipeline actions above.
@@ -393,91 +294,19 @@ class SessionDetailScreen(TableSageScreen):
             return
         self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
 
-    # Generate Outputs -- evaluates the dependency graph and runs only missing or stale phases.
-
-    def action_generate(self) -> None:
-        self._prepare_generate()
-
-    def _prepare_generate(self, *, force: ArtifactName | None = None) -> None:
-        try:
-            plan = self.application.generation_plan(self._session_id, force=force)
-        except Exception as exc:
-            self._record_error("Generate Outputs", str(exc))
-            return
-
-        prior_tasks = tuple(task for task in plan if task.session_id != self._session_id)
-        if not prior_tasks:
-            self._run_generate(force=force)
-            return
-
-        prior_session_count = len({task.session_id for task in prior_tasks})
-        phase_label = "phase" if len(prior_tasks) == 1 else "phases"
-        session_label = "Session" if prior_session_count == 1 else "Sessions"
-
-        def on_choice(choice: bool | None) -> None:
-            if choice is True:
-                self._run_generate(force=force)
-            elif choice is False:
-                self._run_generate(force=force, rebuild_prior_sessions=False)
-
-        self.app.push_screen(
-            ConfirmationDialog(
-                title="Prior Sessions Are Out of Date",
-                prompt=(
-                    f"This action requires rebuilding {len(prior_tasks)} output {phase_label} in "
-                    f"{prior_session_count} prior {session_label}.\n\n"
-                    "Regenerate Prior rebuilds them first. Current Only processes this Session and places a note "
-                    "in the Summary instead of including a stale prior recap. Cancel does nothing."
-                ),
-                yes_label="Regenerate Prior",
-                no_label="Current Only",
-            ),
-            on_choice,
-        )
-
-    def _run_generate(self, *, force: ArtifactName | None = None, rebuild_prior_sessions: bool = True) -> None:
-        if not self.check_credentials("llm_model_high"):
-            return
-        self._clear_errors()
-
-        def work() -> tuple[GenerationTask, ...]:
-            messages = {
-                ArtifactName.ROLE_TRANSCRIPT: _CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
-                ArtifactName.TRANSCRIPT_SECTIONS: "Generating Transcript Sections…",
-                ArtifactName.LEDGER: "Generating Ledger and Scene Breakdown…",
-                ArtifactName.PLAYER_INTRODUCTIONS: "Generating Player Introductions…",
-                ArtifactName.RECAP_SUMMARY: "Generating Recap Summary…",
-                ArtifactName.SUMMARY: "Generating Summary…",
-            }
-            if rebuild_prior_sessions:
-                return self.application.generate_outputs(
-                    self._session_id,
-                    force=force,
-                    on_stage=lambda task, _completed, _total: self.report_stage_progress(messages[task.artifact_name], 0, 0),
-                    on_clean_progress=self._on_clean_progress,
-                )
-            return self.application.generate_outputs(
-                self._session_id,
-                force=force,
-                rebuild_prior_sessions=False,
-                on_stage=lambda task, _completed, _total: self.report_stage_progress(messages[task.artifact_name], 0, 0),
-                on_clean_progress=self._on_clean_progress,
-            )
-
-        self.run_with_progress(
-            title="Generate Outputs",
-            message=_CLEAN_STAGE_LABELS[clean_transcript.Stage.REMOVING_BACKCHANNELS],
-            work=work,
-            on_success=self._after_generate,
-            on_error=lambda exc: self._record_error("Generate Outputs", str(exc)),
-        )
-
-    def _on_clean_progress(self, stage: clean_transcript.Stage, completed: int, total: int) -> None:
-        self.report_stage_progress(_CLEAN_STAGE_LABELS[stage], completed, total)
-
-    def _after_generate(self, result: tuple[GenerationTask, ...]) -> None:
+    def _after_forced_generation(self, result: tuple[GenerationTask, ...]) -> None:
         self._refresh_indicators()
         self.notify("Outputs generated." if result else "All outputs are current.")
+
+    def _run_forced_generation(self, artifact: ArtifactName) -> None:
+        runner = GenerationRunner(
+            self,
+            self._session_id,
+            on_start=self._clear_errors,
+            on_success=self._after_forced_generation,
+            on_error=lambda exc: self._record_error("Regenerate Artifact", str(exc)),
+        )
+        runner.prepare(force=artifact)
 
     def action_regenerate(self) -> None:
         def on_selected(selected: ArtifactName | None) -> None:
@@ -486,7 +315,7 @@ class SessionDetailScreen(TableSageScreen):
 
             def on_confirm(confirmed: bool | None) -> None:
                 if confirmed:
-                    self._prepare_generate(force=selected)
+                    self._run_forced_generation(selected)
 
             self.app.push_screen(
                 ConfirmationDialog(

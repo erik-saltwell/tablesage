@@ -87,10 +87,16 @@ class TableSageScreen(Screen[None]):
             with Vertical(classes="screen-body"):
                 yield from self.compose_content()
 
+            yield from self.compose_above_footer()
+
             yield Footer(classes="-has-other-actions" if self.OTHER_BINDINGS else None)
 
     def compose_content(self) -> ComposeResult:
         """Supply the content unique to a particular screen."""
+        yield from ()
+
+    def compose_above_footer(self) -> ComposeResult:
+        """Supply optional shared UI immediately above the application footer."""
         yield from ()
 
     @property
