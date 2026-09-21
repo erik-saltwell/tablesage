@@ -16,6 +16,7 @@ from .generic import TextInputDialog
 
 # The human-readable session role created by the one-click GM shortcut.
 _GAME_MASTER_LABEL = "Game Master"
+_NEW_PLAYER_VALUE = "new-player"
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,7 @@ class AttendeeResult:
     player_id: uuid.UUID | None
     player_name: str
     roles: tuple[str, ...]
+    create_player: bool = False
 
 
 class AttendeeDialog(ModalScreen[AttendeeResult | None]):
@@ -85,8 +87,8 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
                 else:
                     with Horizontal(id="attendee-player-row"):
                         yield Static("Player", classes="field-label")
-                        yield Select[uuid.UUID](
-                            [(player.name, player.id) for player in self._players],
+                        yield Select[uuid.UUID | str](
+                            [(player.name, player.id) for player in self._players] + [("<New player…>", _NEW_PLAYER_VALUE)],
                             id="attendee-player-select",
                             value=self._player_id if self._player_id is not None else Select.NULL,
                             prompt="Choose a player…",
@@ -178,6 +180,9 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
 
     def on_select_changed(self, event: Select.Changed) -> None:
         event.stop()
+        if event.select.id == "attendee-player-select" and event.value == _NEW_PLAYER_VALUE:
+            self.dismiss(AttendeeResult(player_id=None, player_name="", roles=tuple(self._roles), create_player=True))
+            return
         self._update_save_enabled()
 
     def on_input_changed(self, event: Input.Changed) -> None:

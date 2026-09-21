@@ -18,6 +18,7 @@ from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextI
 from ..dialogs.file_picker import FileOpen, FileSave
 from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
 from ..player_import_run import PlayerImportRun
+from ..widgets import SampleCountDataTable, sample_count_cell
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
 from .player_import_prestep import PlayerImportPreStepScreen
@@ -51,9 +52,11 @@ class PlayersListScreen(TableSageScreen):
     def compose_content(self) -> ComposeResult:
         with Vertical(id="players-list-panel", classes="panel surface-2") as panel:
             panel.border_title = " players "
-            table: DataTable[str] = DataTable(id="players-table", cursor_type="row", zebra_stripes=True)
+            table = SampleCountDataTable(
+                id="players-table", cursor_type="row", zebra_stripes=True, zero_sample_tooltip="No samples yet for this player."
+            )
+            table.add_column("Samples", key="samples")
             table.add_column("Player", key="name")
-            table.add_column("Samples", key="sample_count")
             table.add_column("Centroid", key="centroid_status")
             yield table
 
@@ -86,9 +89,9 @@ class PlayersListScreen(TableSageScreen):
             return True if self._selected_player_id() is not None else None
         return True
 
-    def _row_cells(self, player: Player) -> tuple[str, str, str]:
+    def _row_cells(self, player: Player) -> tuple[object, str, str]:
         centroid_status = "ready" if player.centroid_embedding is not None else "no samples"
-        return player.name, str(player.sample_count), centroid_status
+        return sample_count_cell(player.sample_count), player.name, centroid_status
 
     def _selected_player_id(self) -> uuid.UUID | None:
         table = self.query_one("#players-table", DataTable)

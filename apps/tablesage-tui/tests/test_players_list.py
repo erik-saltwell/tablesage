@@ -128,8 +128,8 @@ async def test_players_table_has_expected_columns() -> None:
 
         table = pilot.app.screen.query_one("#players-table", DataTable)
         assert [str(column.label) for column in table.columns.values()] == [
-            "Player",
             "Samples",
+            "Player",
             "Centroid",
         ]
 
@@ -144,8 +144,8 @@ async def test_players_table_shows_centroid_status() -> None:
         table = pilot.app.screen.query_one("#players-table", DataTable)
         rows = [tuple(str(cell) for cell in table.get_row_at(i)) for i in range(table.row_count)]
         assert rows == [
-            ("Alice", "0", "no samples"),
-            ("Bob", "0", "ready"),
+            ("0", "Alice", "no samples"),
+            ("0", "Bob", "ready"),
         ]
 
 

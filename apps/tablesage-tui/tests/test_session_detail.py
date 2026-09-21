@@ -70,10 +70,17 @@ def _application(
 ) -> MagicMock:
     session = session or GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     artifact_presence = artifacts or _artifacts()
+    player_roster = list(players or [])
+    player_roster.extend(
+        Player(id=attendee.player_id, name=attendee.player_name)
+        for attendee in (attendees or [])
+        if attendee.player_id not in {player.id for player in player_roster}
+    )
     return MagicMock(
         get_session=MagicMock(return_value=session),
         list_attendance=MagicMock(return_value=attendees or []),
-        list_players=MagicMock(return_value=players or []),
+        list_players=MagicMock(return_value=player_roster),
+        get_player=MagicMock(side_effect=lambda player_id: next(player for player in player_roster if player.id == player_id)),
         session_artifacts=MagicMock(return_value=artifact_presence),
         session_artifact_states=MagicMock(
             return_value={
@@ -282,8 +289,9 @@ async def test_attendance_table_shows_players_and_roles() -> None:
         table = pilot.app.screen.query_one("#attendance-table", DataTable)
         assert table.row_count == 1
         row = table.get_row_at(0)
-        assert row[0] == "Alice"
-        assert row[1] == "Game Master, Narrator"
+        assert str(row[0]) == "0"
+        assert row[1] == "Alice"
+        assert row[2] == "Game Master, Narrator"
 
 
 @pytest.mark.anyio
@@ -870,7 +878,7 @@ async def test_new_attendee_excludes_current_attendees_and_saves_chosen_player_a
 
         select = dialog.query_one("#attendee-player-select", Select)
         offered = [label for label, value in select._options if value is not Select.NULL]
-        assert offered == ["Alice"]
+        assert offered == ["Alice", "<New player…>"]
 
         select.value = available_player.id
         await pilot.pause()

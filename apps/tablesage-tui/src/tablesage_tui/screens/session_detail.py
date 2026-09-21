@@ -7,15 +7,16 @@ from typing import TYPE_CHECKING
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus, GenerationTask
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
-from tablesage_model.model import SessionProcessingPhase
+from tablesage_model.model import Player, SessionProcessingPhase
+from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
 
-from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog
+from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog, TextInputDialog
 from ..generation_runner import GenerationRunner
-from ..widgets import CommittingInput
+from ..widgets import CommittingInput, SampleCountDataTable, sample_count_cell
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
@@ -76,9 +77,14 @@ class SessionDetailScreen(TableSageScreen):
                 with Vertical(id="session-attendance-column"):
                     with Vertical(id="attendance-section"):
                         yield Static("Attendance", classes="section-title")
-                        attendance_table: DataTable[str] = DataTable(
-                            id="attendance-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
+                        attendance_table = SampleCountDataTable(
+                            id="attendance-table",
+                            cursor_type="row",
+                            zebra_stripes=True,
+                            classes="tablesage-table",
+                            zero_sample_tooltip="No samples for this player yet. Processing will add samples.",
                         )
+                        attendance_table.add_column("Samples", key="samples")
                         attendance_table.add_column("Player", key="player")
                         attendance_table.add_column("Roles", key="roles")
                         yield attendance_table
@@ -384,7 +390,12 @@ class SessionDetailScreen(TableSageScreen):
         table.clear()
         restored_row: int | None = None
         for index, attendee in enumerate(self.application.list_attendance(self._session_id)):
-            table.add_row(attendee.player_name, ", ".join(attendee.roles), key=str(attendee.attendance_id))
+            table.add_row(
+                sample_count_cell(self.application.get_player(attendee.player_id).sample_count),
+                attendee.player_name,
+                ", ".join(attendee.roles),
+                key=str(attendee.attendance_id),
+            )
             if selected is not None and attendee.attendance_id == selected:
                 restored_row = index
 
@@ -416,6 +427,9 @@ class SessionDetailScreen(TableSageScreen):
         def on_saved(result: AttendeeResult | None) -> None:
             if result is None:
                 return
+            if result.create_player:
+                self._create_player_and_add_attendee(list(result.roles))
+                return
             player_id = result.player_id
             assert player_id is not None  # allow_new_player=False below guarantees this
             roles = list(result.roles)
@@ -431,6 +445,41 @@ class SessionDetailScreen(TableSageScreen):
             do_add()
 
         self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee"), on_saved)
+
+    def _create_player_and_add_attendee(self, roles: list[str]) -> None:
+        def on_named(name: str | None) -> None:
+            if not name:
+                return
+            try:
+                validate_player_name(name)
+            except ValueError as exc:
+                self.notify(str(exc), severity="error")
+                return
+
+            def proceed() -> None:
+                try:
+                    player = self.application.create_player(Player(name=name))
+                    self.application.add_attendance_with_roles(self._session_id, player.id, roles)
+                except (ValueError, OSError) as exc:
+                    self.notify(str(exc), severity="error")
+                    return
+                self._reload_attendance()
+
+            self.run_with_folder_collision_check(
+                title="Player Folder Exists",
+                prompt=(
+                    f"A player folder named '{name}' already exists on disk. "
+                    "This may be left over from a previously deleted player. Delete it and continue?"
+                ),
+                exists=lambda: self.application.player_folder_exists(name),
+                delete_existing=lambda: self.application.delete_orphan_player_folder(name),
+                proceed=proceed,
+            )
+
+        self.app.push_screen(
+            TextInputDialog(title="New Player", prompt="Enter a player name", placeholder="Player name", submit_label="Create Player"),
+            on_named,
+        )
 
     def action_edit_attendee(self) -> None:
         attendee = self._selected_attendee()
