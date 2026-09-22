@@ -23,6 +23,14 @@ _PHASE_LABELS = {
     SessionProcessingPhase.OUTPUTS: "Outputs",
 }
 
+# The expanded bootstrap workflow is persisted before its dedicated overview screen lands.
+# Keep the legacy rail stable until that screen replaces this presentation in Phase 4.
+_RAIL_PHASES = (
+    SessionProcessingPhase.AUDIO,
+    SessionProcessingPhase.TRANSCRIPT,
+    SessionProcessingPhase.OUTPUTS,
+)
+
 _STATUS_SYMBOLS = {
     WorkflowStepStatus.CURRENT: "●",
     WorkflowStepStatus.IN_PROGRESS: "◐",
@@ -41,7 +49,7 @@ class WorkflowRail(Horizontal):
         self._active_phase = active_phase
 
     def compose(self) -> ComposeResult:
-        for phase in SessionProcessingPhase:
+        for phase in _RAIL_PHASES:
             yield Static(id=f"workflow-step-{phase.value}", classes="workflow-step")
 
     def update_workflow(
@@ -52,7 +60,7 @@ class WorkflowRail(Horizontal):
     ) -> None:
         """Render state symbols while styling the active screen independently."""
         self._active_phase = active_phase
-        for phase in SessionProcessingPhase:
+        for phase in _RAIL_PHASES:
             status = statuses[phase]
             step = self.query_one(f"#workflow-step-{phase.value}", Static)
             step.update(f"{_STATUS_SYMBOLS[status]} {_PHASE_LABELS[phase]}")

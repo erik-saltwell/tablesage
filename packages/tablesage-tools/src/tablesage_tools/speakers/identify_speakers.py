@@ -89,6 +89,7 @@ async def identify_speakers(
     cluster_propagation: ClusterPropagationConfig | None = None,
     log_diagnostics: bool = False,
     allow_unassigned: bool = True,
+    absolute_similarity_threshold: float | None = None,
 ) -> Transcript:
     """Relabel each utterance's speaker with the best-matching player name, or UNASSIGNED_SPEAKER.
 
@@ -107,6 +108,10 @@ async def identify_speakers(
     embeddings per diarization cluster and conservatively applies that cluster label to eligible
     per-utterance abstentions.
 
+    With one reference, `absolute_similarity_threshold` is required to assign any row; with
+    zero references every row is unresolved. Callers processing an incomplete reference set
+    should supply the same absolute threshold with two or more references as an additional gate.
+
     `allow_unassigned=False` only disables the margin-confidence check; an utterance too short
     to embed at all is still left UNASSIGNED_SPEAKER either way, since there's no embedding-based
     judgment to skip there -- there's simply nothing to compare.
@@ -120,7 +125,16 @@ async def identify_speakers(
     event so the final label remains reconstructable from the diagnostics.
     """
     names = list(centroids)
-    similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
+    if not names:
+        return Transcript(
+            utterances=[
+                utterance.model_copy(update={"speaker": UNASSIGNED_SPEAKER, "similarity_margin": 0.0})
+                for utterance in transcript.utterances
+            ]
+        )
+    similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names)) if len(names) >= 2 else None
+    if len(names) < 2:
+        cluster_propagation = None
     durations = {index: utterance.end - utterance.start for index, utterance in enumerate(transcript.utterances)}
     cluster_ids = (
         {index: diarization_cluster_id(utterance) for index, utterance in enumerate(transcript.utterances)}
@@ -204,7 +218,11 @@ async def identify_speakers(
                         await extract_clip(audio_path, tmp_file, utterance.start, utterance.end)
 
                     embedding = await embed.extract_async(tmp_file)
-                    result: SimilarityResult = similarity_computer.compute_similarity(embedding)
+                    if similarity_computer is None:
+                        similarity = sum(left * right for left, right in zip(embedding.root, centroids[names[0]].root, strict=True))
+                        result = SimilarityResult(0, similarity, similarity, 0.0, 0, similarity, (similarity,))
+                    else:
+                        result = similarity_computer.compute_similarity(embedding)
                     embeddings[index] = embedding
                     similarity_results[index] = result
 
@@ -224,6 +242,19 @@ async def identify_speakers(
                         nan_margin_count += 1
                         speaker = UNASSIGNED_SPEAKER
                         reason = "nan_similarity"
+                    elif absolute_similarity_threshold is not None and result.best_match_similarity < absolute_similarity_threshold:
+                        below_threshold_count += 1
+                        speaker = UNASSIGNED_SPEAKER
+                        reason = "below_absolute_similarity_threshold"
+                    elif similarity_computer is None:
+                        if absolute_similarity_threshold is None or result.best_match_similarity < absolute_similarity_threshold:
+                            below_threshold_count += 1
+                            speaker = UNASSIGNED_SPEAKER
+                            reason = "below_absolute_similarity_threshold"
+                        else:
+                            assigned_count += 1
+                            speaker = names[0]
+                            reason = "assigned"
                     else:
                         margins.append(result.margin)
                         if allow_unassigned and result.margin < effective_similarity_margin_threshold:

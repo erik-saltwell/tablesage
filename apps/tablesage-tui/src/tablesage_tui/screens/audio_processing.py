@@ -6,6 +6,7 @@ from pathlib import Path
 from tablesage_application.paths import ArtifactName
 from tablesage_application.session_pipeline import transcribe_audio
 from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus
+from tablesage_application.session_pipeline.bootstrap_workflow import BootstrapEligibility
 from tablesage_model.model import SessionProcessingPhase
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -15,6 +16,7 @@ from textual_fspicker import Filters
 
 from ..dialogs import ConfirmationDialog
 from ..dialogs.file_picker import FileOpen
+from .process_overview import ProcessSessionOverviewScreen
 from .session_processing import SessionProcessingScreen, register_processing_screen
 from .speaker_review import ManualReviewScreen
 
@@ -151,12 +153,7 @@ class AudioProcessingScreen(SessionProcessingScreen):
         self.run_with_progress(
             title="Import Audio",
             message="Cleaning audio…" if should_clean_audio else "Importing audio…",
-            work=lambda: self.application.import_and_transcribe_audio(
-                self.session_id,
-                source_path,
-                should_clean_audio=should_clean_audio,
-                on_progress=self._on_transcribe_progress,
-            ),
+            work=lambda: self._prepare_after_import(source_path, should_clean_audio),
             on_success=self._after_transcription,
             on_error=lambda exc: self._report_audio_failure(str(exc)),
         )
@@ -170,7 +167,7 @@ class AudioProcessingScreen(SessionProcessingScreen):
         self.run_with_progress(
             title="Retry Transcription",
             message="Transcribing (this may take a while)…",
-            work=lambda: self.application.transcribe_session_audio(self.session_id, on_progress=self._on_transcribe_progress),
+            work=self._retry_preparation,
             on_success=self._after_transcription,
             on_error=lambda exc: self._report_audio_failure(str(exc)),
         )
@@ -178,7 +175,30 @@ class AudioProcessingScreen(SessionProcessingScreen):
     def _on_transcribe_progress(self, stage: transcribe_audio.Stage, completed: int, total: int) -> None:
         self.report_stage_progress(_STAGE_LABELS[stage], completed, total)
 
-    def _after_transcription(self, result: transcribe_audio.TranscriptionResult) -> None:
+    def _prepare_after_import(self, source_path: Path, should_clean_audio: bool) -> object:
+        eligibility = self.application.bootstrap_eligibility(self.session_id)
+        if not (type(eligibility) is BootstrapEligibility and isinstance(eligibility.targets, tuple) and eligibility.targets):
+            return self.application.import_and_transcribe_audio(
+                self.session_id,
+                source_path,
+                should_clean_audio=should_clean_audio,
+                on_progress=self._on_transcribe_progress,
+            )
+        self.application.import_session_audio(self.session_id, source_path, should_clean_audio=should_clean_audio)
+        return self._retry_preparation()
+
+    def _retry_preparation(self) -> object:
+        eligibility = self.application.bootstrap_eligibility(self.session_id)
+        if type(eligibility) is BootstrapEligibility and isinstance(eligibility.targets, tuple) and eligibility.targets:
+            return self.application.prepare_session_bootstrap(self.session_id, on_progress=self._on_transcribe_progress)
+        return self.application.transcribe_session_audio(self.session_id, on_progress=self._on_transcribe_progress)
+
+    def _after_transcription(self, result: object) -> None:
+        if not isinstance(result, transcribe_audio.TranscriptionResult):
+            self.processing_succeeded(SessionProcessingPhase.BOOTSTRAP_REVIEW)
+            self.notify("Audio prepared. Review the proposed bootstrap candidates.")
+            self.app.switch_screen(ProcessSessionOverviewScreen(self.session_id))
+            return
         self.processing_succeeded(SessionProcessingPhase.TRANSCRIPT)
         message = "Audio imported and transcribed." if self._importing_audio else "Audio transcribed."
         if result.unassigned_speaker_count:

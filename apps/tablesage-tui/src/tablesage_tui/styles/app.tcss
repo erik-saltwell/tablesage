@@ -510,6 +510,37 @@ CommandButton:disabled {
 /*          common controls         */
 /* ******************************** */
 
+ProcessingStepControl {
+    width: 1fr;
+    height: 1;
+    min-height: 1;
+    overflow: hidden hidden;
+
+    .command-entry-binding {
+        width: 3;
+        height: 1;
+        margin-right: 1;
+    }
+
+    .command-entry-complete {
+        width: 2;
+        height: 1;
+        color: $fg-accent;
+    }
+
+    .command-entry-text {
+        width: 1fr;
+        height: 1;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &.-unavailable .command-entry-text {
+        color: $control-disabled-fg;
+    }
+}
+
+
 Input {
     background: $control-bg;
     color: $control-fg;

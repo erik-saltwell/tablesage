@@ -99,6 +99,29 @@ enhance_voices:
   # Review, which otherwise trusts every human-assigned utterance with no duration check.
   min_embeddable_clip_seconds: 0.15
 
+speaker_bootstrap:
+  # Before any automatic identification, Process records the LLM's cited dialogue evidence
+  # for attendees who have no usable profile. Chunks overlap for conversational context; cited
+  # source rows are deduplicated before review so overlap never becomes extra evidence.
+  evidence_chunk_utterances: 120
+  evidence_context_utterances: 12
+  evidence_timeout: 120
+  evidence_max_attempts: 2
+  embedding_concurrency: 2
+  min_speech_seconds: 3.0
+  preferred_min_segment_seconds: 5.0
+  preferred_max_segment_seconds: 12.0
+  min_clips: 3
+  min_independent_exchanges: 2
+  min_total_speech_seconds: 15.0
+  target_total_speech_seconds: 30.0
+  max_clips_per_exchange: 2
+  pairwise_similarity_threshold: 0.75
+  leave_one_out_similarity_threshold: 0.75
+  competitor_margin: 0.08
+  collision_similarity_threshold: 0.9
+  incomplete_reference_absolute_similarity_threshold: 0.65
+
 remove_backchannels:
   # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):
   #   - Pre-review, automatic as part of Process -> Audio: speaker assignment

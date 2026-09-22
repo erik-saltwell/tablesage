@@ -13,6 +13,7 @@ class PromptName(StrEnum):
     SUMMARIZE_SESSION = "summarize_session"
     GENERATE_LEDGER = "generate_ledger"
     PROPOSE_SPEAKERS = "propose_speakers"
+    PROPOSE_BOOTSTRAP_EVIDENCE = "propose_bootstrap_evidence"
     CLASSIFY_BACKCHANNELS = "classify_backchannels"
     EXTRACT_GLOSSARY = "extract_glossary"
     SUGGEST_SPELLING_CORRECTIONS = "suggest_spelling_corrections"

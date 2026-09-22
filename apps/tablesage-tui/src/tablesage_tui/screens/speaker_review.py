@@ -12,6 +12,7 @@ from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_model.model import SessionProcessingPhase
+from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -36,7 +37,6 @@ from .session_processing import SessionProcessingScreen, register_processing_scr
 
 if TYPE_CHECKING:
     from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
-    from tablesage_tools.model import Transcript
 
 _MAX_ASSIGNABLE_ATTENDEES = 9
 _AUTO_ADVANCE_DELAY = 0.25
@@ -174,6 +174,7 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._phase = Phase.SUGGESTIONS
         self._suggestions: list[_DraftSuggestion] = []
         self._visit_baseline: Transcript | None = None
+        self._spelling_checkpoint = False
 
     def compose_content(self) -> ComposeResult:
         with Vertical(id="spelling-suggestions-panel", classes="panel surface-2") as panel:
@@ -239,8 +240,13 @@ class ManualReviewScreen(SessionProcessingScreen):
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
         draft = self.application.load_review_draft(self._session_id)
-        if draft is not None:
+        if isinstance(draft, Transcript):
             self._restore_draft(draft)
+            return
+
+        spelling = self.application.load_spelling_review(self._session_id)
+        if isinstance(spelling, Transcript):
+            self._restore_spelling_checkpoint(spelling)
             return
 
         self.run_with_progress(
@@ -271,6 +277,28 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._visit_baseline = draft.model_copy(deep=True)
         self.query_one("#manual-review-panel").display = True
         self._enter_review_phase()
+
+    def _restore_spelling_checkpoint(self, spelling: Transcript) -> None:
+        """Resume the focused-review spelling checkpoint before canonical transcript review."""
+
+        def work() -> tuple[Transcript, Path, list[SpellingSuggestion]]:
+            source, clip_dir = self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
+            self.report_stage_progress("Finding spelling suggestions…", 0, 0)
+            return source, clip_dir, self.application.suggest_spelling_corrections(self._session_id, spelling)
+
+        self.run_with_progress(
+            title="Spellcheck Against Glossary",
+            message="Restoring spelling review…",
+            work=work,
+            on_success=lambda result: self._after_restore_spelling_checkpoint(spelling, result),
+        )
+
+    def _after_restore_spelling_checkpoint(self, spelling: Transcript, result: tuple[Transcript, Path, list[SpellingSuggestion]]) -> None:
+        source, _clip_dir, suggestions = result
+        self._transcript = spelling
+        self._clip_indices = self._draft_clip_indices(source, spelling)
+        self._spelling_checkpoint = True
+        self._show_suggestions_or_review(suggestions)
 
     @staticmethod
     def _draft_clip_indices(source: Transcript, draft: Transcript) -> list[int]:
@@ -325,7 +353,10 @@ class ManualReviewScreen(SessionProcessingScreen):
         transcript, _clip_dir, suggestions = result
         self._transcript = transcript
         self._clip_indices = list(range(len(transcript.utterances)))
+        self._show_suggestions_or_review(suggestions)
 
+    def _show_suggestions_or_review(self, suggestions: list[SpellingSuggestion]) -> None:
+        """Show spelling suggestions when available, otherwise enter transcript review."""
         if suggestions:
             self._phase = Phase.SUGGESTIONS
             self._suggestions = [
@@ -339,10 +370,19 @@ class ManualReviewScreen(SessionProcessingScreen):
             self.refresh_bindings()
             return
 
+        self._complete_spelling_checkpoint()
         self._phase = Phase.REVIEW
         self.query_one("#manual-review-panel").display = True
-        self._visit_baseline = transcript.model_copy(deep=True)
+        assert self._transcript is not None
+        self._visit_baseline = self._transcript.model_copy(deep=True)
         self._enter_review_phase()
+
+    def _complete_spelling_checkpoint(self) -> None:
+        """Make accepted spelling work the ordinary transcript-review draft exactly once."""
+        if self._spelling_checkpoint:
+            assert self._transcript is not None
+            self.application.complete_spelling_review(self._session_id, self._transcript)
+            self._spelling_checkpoint = False
 
     def _enter_review_phase(self) -> None:
         assert self._transcript is not None
@@ -469,6 +509,7 @@ class ManualReviewScreen(SessionProcessingScreen):
                 f"Applied {len(self._suggestions)} correction{suggestion_plural}, {occurrence_total} occurrence{occurrence_plural}."
             )
 
+        self._complete_spelling_checkpoint()
         self._phase = Phase.REVIEW
         self.query_one("#spelling-suggestions-panel").display = False
         self.query_one("#manual-review-panel").display = True
@@ -784,7 +825,9 @@ class ManualReviewScreen(SessionProcessingScreen):
         )
 
     def action_cancel(self) -> None:
-        self.action_exit_processing()
+        # The explicit Cancel buttons promise to discard this visit's working copy. Exit and
+        # Back retain the separate save-draft decision for an interrupted review.
+        self._leave(self.app.pop_screen)
 
     def action_exit_processing(self) -> None:
         """Leave review, optionally saving changed transcript work as a draft."""
@@ -842,3 +885,4 @@ class ManualReviewScreen(SessionProcessingScreen):
 
 
 register_processing_screen(SessionProcessingPhase.TRANSCRIPT, ManualReviewScreen)
+register_processing_screen(SessionProcessingPhase.SPELLING, ManualReviewScreen)

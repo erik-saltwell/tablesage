@@ -278,11 +278,19 @@ class SessionDetailScreen(TableSageScreen):
 
     def _start_processing(self) -> None:
         from .audio_processing import AudioProcessingScreen
+        from .bootstrap_review import BootstrapCandidateReviewScreen, NewSpeakerReviewScreen
         from .outputs_processing import OutputsProcessingScreen
+        from .process_overview import ProcessSessionOverviewScreen
         from .speaker_review import ManualReviewScreen
 
         phase = self.application.resolve_session_processing_phase(self._session_id)
-        if phase is SessionProcessingPhase.AUDIO:
+        if phase is SessionProcessingPhase.BOOTSTRAP_REVIEW:
+            self.app.push_screen(BootstrapCandidateReviewScreen(self._session_id))
+        elif phase is SessionProcessingPhase.NEW_SPEAKER_REVIEW:
+            self.app.push_screen(NewSpeakerReviewScreen(self._session_id))
+        elif phase is SessionProcessingPhase.SPELLING:
+            self.app.push_screen(ProcessSessionOverviewScreen(self._session_id))
+        elif phase is SessionProcessingPhase.AUDIO:
             self.app.push_screen(AudioProcessingScreen(self._session_id))
         elif phase is SessionProcessingPhase.TRANSCRIPT:
             self.app.push_screen(ManualReviewScreen(self._session_id))

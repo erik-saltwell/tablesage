@@ -1,5 +1,7 @@
 from . import (
     artifacts,
+    bootstrap_speakers,
+    bootstrap_workflow,
     clean_transcript,
     extract_glossary,
     generate_ledger,
@@ -17,6 +19,8 @@ from . import (
 )
 
 __all__ = [
+    "bootstrap_speakers",
+    "bootstrap_workflow",
     "artifacts",
     "clean_transcript",
     "extract_glossary",

@@ -66,7 +66,7 @@ class OutputsProcessingScreen(SessionProcessingScreen):
                 ArtifactStatus.CURRENT: "●",
                 ArtifactStatus.STALE: "◐",
                 ArtifactStatus.MISSING: "○",
-            }[status]
+            }.get(status, "○")
             self.query_one(f"#output-status-{artifact.value}", Static).update(f"{symbol} {GENERATION_LABELS[artifact]}")
 
         self._planning_error = ""
@@ -77,6 +77,7 @@ class OutputsProcessingScreen(SessionProcessingScreen):
             self._planning_error = str(exc)
 
         state = self.application.session_processing_state(self.session_id)
+        finalization_pending = self.application.bootstrap_finalization_pending(self.session_id) is True
         persisted_error = ""
         if state is not None and state.failed_phase == self.phase.value:
             persisted_error = state.failure_message or ""
@@ -88,11 +89,11 @@ class OutputsProcessingScreen(SessionProcessingScreen):
             button.label = "Retry Generation"
         else:
             button.label = "Generate Outputs"
-        button.disabled = not self._plan and not error
+        button.disabled = not self._plan and not error and not finalization_pending
 
         summary = self.query_one("#outputs-processing-summary", Static)
         if not self._plan and not error:
-            summary.update("All outputs are current.")
+            summary.update("Outputs are current; finalize bootstrap profiles." if finalization_pending else "All outputs are current.")
         elif self._plan:
             prior_count = len({task.session_id for task in self._plan if task.session_id != self.session_id})
             prior_note = f" across {prior_count} prior Session{'s' if prior_count != 1 else ''}" if prior_count else ""
@@ -105,7 +106,8 @@ class OutputsProcessingScreen(SessionProcessingScreen):
         if action == "generate_outputs":
             state = self.application.session_processing_state(self.session_id)
             has_error = state is not None and state.failed_phase == self.phase.value
-            return True if self._plan or has_error or self._planning_error else None
+            finalization_pending = self.application.bootstrap_finalization_pending(self.session_id) is True
+            return True if self._plan or has_error or self._planning_error or finalization_pending else None
         return super().check_action(action, parameters)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

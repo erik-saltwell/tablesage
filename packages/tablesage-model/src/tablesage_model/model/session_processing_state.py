@@ -12,6 +12,9 @@ class SessionProcessingPhase(StrEnum):
     """The resumable primary-flow stage a Session should reopen."""
 
     AUDIO = "audio"
+    BOOTSTRAP_REVIEW = "bootstrap_review"
+    NEW_SPEAKER_REVIEW = "new_speaker_review"
+    SPELLING = "spelling"
     TRANSCRIPT = "transcript"
     OUTPUTS = "outputs"
 
@@ -26,7 +29,10 @@ class SessionProcessingState(SQLModel, table=True):
 
     __tablename__ = "session_processing_state"
     __table_args__ = (
-        CheckConstraint("phase in ('audio', 'transcript', 'outputs')", name="ck_session_processing_state_phase_valid"),
+        CheckConstraint(
+            "phase in ('audio', 'bootstrap_review', 'new_speaker_review', 'spelling', 'transcript', 'outputs')",
+            name="ck_session_processing_state_phase_valid",
+        ),
         CheckConstraint(
             "draft_source_artifact is null or draft_source_artifact in ('transcript', 'reviewed_transcript')",
             name="ck_session_processing_state_draft_source_valid",
@@ -37,7 +43,8 @@ class SessionProcessingState(SQLModel, table=True):
             name="ck_session_processing_state_draft_source_complete",
         ),
         CheckConstraint(
-            "failed_phase is null or failed_phase in ('audio', 'transcript', 'outputs')",
+            "failed_phase is null or failed_phase in "
+            "('audio', 'bootstrap_review', 'new_speaker_review', 'spelling', 'transcript', 'outputs')",
             name="ck_session_processing_state_failed_phase_valid",
         ),
     )

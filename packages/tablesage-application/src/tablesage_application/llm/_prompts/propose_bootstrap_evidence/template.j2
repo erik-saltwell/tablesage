@@ -1,0 +1,11 @@
+<bootstrap_targets>
+{% for attendee in attendees %}
+{{ attendee.player_id }} | {{ attendee.player_name }} | {{ attendee.roles | join(", ") }}
+{% endfor %}
+</bootstrap_targets>
+
+<transcript_rows>
+{% for utterance in utterances %}
+[{{ utterance.index }}] speaker={{ utterance.speaker_id }}: {{ utterance.text }}
+{% endfor %}
+</transcript_rows>

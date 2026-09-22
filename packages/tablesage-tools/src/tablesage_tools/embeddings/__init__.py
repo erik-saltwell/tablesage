@@ -1,3 +1,11 @@
+from .bootstrap_selection import (
+    BootstrapCandidate,
+    BootstrapCandidateDiagnostic,
+    BootstrapSelection,
+    BootstrapSelectionConfig,
+    find_bootstrap_collisions,
+    select_bootstrap_candidates,
+)
 from .similarity import (
     DEFAULT_MIN_SAMPLE_SIMILARITY,
     DEFAULT_MIN_SAMPLES,
@@ -18,4 +26,10 @@ __all__ = [
     "SimilarityComputer",
     "SimilarityResult",
     "compute_centroid",
+    "BootstrapCandidate",
+    "BootstrapCandidateDiagnostic",
+    "BootstrapSelection",
+    "BootstrapSelectionConfig",
+    "find_bootstrap_collisions",
+    "select_bootstrap_candidates",
 ]

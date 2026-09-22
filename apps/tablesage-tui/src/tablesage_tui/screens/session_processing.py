@@ -137,7 +137,7 @@ class SessionProcessingScreen(TableSageScreen):
             SessionProcessingPhase.OUTPUTS: all(artifact_states[artifact] is ArtifactStatus.CURRENT for artifact in GENERATION_ORDER),
         }
         statuses: dict[SessionProcessingPhase, WorkflowStepStatus] = {}
-        for phase in SessionProcessingPhase:
+        for phase in (SessionProcessingPhase.AUDIO, SessionProcessingPhase.TRANSCRIPT, SessionProcessingPhase.OUTPUTS):
             if phase is failed_phase:
                 statuses[phase] = WorkflowStepStatus.ERROR
             elif completed[phase]:

@@ -5,10 +5,18 @@ from typing import Self
 from textual import events
 from textual.binding import Binding
 from textual.containers import Horizontal
+from textual.message import Message
 from textual.widget import Widget
 
 
 class CommandButton(Horizontal):
+    class Pressed(Message):
+        """An actionless command button was activated."""
+
+        def __init__(self, button: CommandButton) -> None:
+            super().__init__()
+            self.button = button
+
     BINDINGS = [
         Binding("enter,space", "press", "Press", show=False),
     ]
@@ -17,7 +25,7 @@ class CommandButton(Horizontal):
 
     def __init__(
         self,
-        action: str,
+        action: str | None = None,
         *children: Widget,
         name: str | None = None,
         id: str | None = None,
@@ -36,16 +44,19 @@ class CommandButton(Horizontal):
         self.command_action = action
 
     def press(self) -> Self:
-        if self.disabled or not self.display or self.has_class("-active"):
+        if self.disabled or not self.display or not self.visible or self.has_class("-active"):
             return self
 
         self.add_class("-active")
         self.set_timer(self.active_effect_duration, self._clear_active)
-        self.call_later(
-            self.app.run_action,
-            self.command_action,
-            default_namespace=self.screen,
-        )
+        if self.command_action is None:
+            self.post_message(self.Pressed(self))
+        else:
+            self.call_later(
+                self.app.run_action,
+                self.command_action,
+                default_namespace=self.screen,
+            )
         return self
 
     def action_press(self) -> None:

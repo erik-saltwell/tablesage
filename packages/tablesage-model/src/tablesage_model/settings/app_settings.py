@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, model_validator
 
 from .type_aliases import ScribeLanguageCode, ScribeModelId
 
@@ -78,6 +78,37 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
     min_embeddable_clip_seconds: float = Field(default=0.15, gt=0)
 
 
+class SpeakerBootstrapSettings(BaseModel, frozen=True):
+    """Limits for transcript-backed identity evidence before provisional centroid selection."""
+
+    evidence_chunk_utterances: PositiveInt = 120
+    evidence_context_utterances: int = Field(default=12, ge=0)
+    evidence_timeout: PositiveInt = 120
+    evidence_max_attempts: PositiveInt = 2
+    embedding_concurrency: PositiveInt = 2
+    min_speech_seconds: float = Field(default=3.0, gt=0)
+    preferred_min_segment_seconds: float = Field(default=5.0, gt=0)
+    preferred_max_segment_seconds: float = Field(default=12.0, gt=0)
+    min_clips: PositiveInt = 3
+    min_independent_exchanges: PositiveInt = 2
+    min_total_speech_seconds: float = Field(default=15.0, gt=0)
+    target_total_speech_seconds: float = Field(default=30.0, gt=0)
+    max_clips_per_exchange: PositiveInt = 2
+    pairwise_similarity_threshold: float = Field(default=0.75, ge=-1, le=1)
+    leave_one_out_similarity_threshold: float = Field(default=0.75, ge=-1, le=1)
+    competitor_margin: float = Field(default=0.08, ge=0, le=2)
+    collision_similarity_threshold: float = Field(default=0.9, ge=-1, le=1)
+    incomplete_reference_absolute_similarity_threshold: float = Field(default=0.65, ge=-1, le=1)
+
+    @model_validator(mode="after")
+    def validate_duration_limits(self) -> SpeakerBootstrapSettings:
+        if self.preferred_max_segment_seconds < self.preferred_min_segment_seconds:
+            raise ValueError("preferred_max_segment_seconds must be at least preferred_min_segment_seconds.")
+        if self.target_total_speech_seconds < self.min_total_speech_seconds:
+            raise ValueError("target_total_speech_seconds must be at least min_total_speech_seconds.")
+        return self
+
+
 class RemoveBackchannelsSettings(BaseModel, frozen=True):
     # Shared candidate-detection threshold: an utterance longer than this many words is never
     # considered a backchannel candidate, regardless of wordlist match. Used both by the
@@ -119,6 +150,7 @@ class AppSettings(BaseModel, frozen=True):
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)
     remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
     enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
+    speaker_bootstrap: SpeakerBootstrapSettings = Field(default_factory=SpeakerBootstrapSettings)
     remove_backchannels: RemoveBackchannelsSettings = Field(default_factory=RemoveBackchannelsSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"
     llm_model_lite: str = "anthropic/claude-haiku-4-5"
