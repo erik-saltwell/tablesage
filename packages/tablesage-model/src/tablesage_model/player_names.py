@@ -14,3 +14,8 @@ def validate_player_name(name: object) -> str:
     if len(name.encode("utf-8")) > 255:
         raise ValueError("name must be at most 255 UTF-8 bytes")
     return name
+
+
+def player_name_key(name: str) -> str:
+    """The form player names are compared in: two names with the same key are the same player name."""
+    return name.strip().casefold()

@@ -1,5 +1,7 @@
 # Resumable session processing flow
 
+> **Status note (2026-09-24):** this three-phase direction (Audio → Transcript → Outputs, with a workflow rail) was implemented, then superseded by the Process Session step list. That list is a numbered, artifact-driven sequence of manual and automatic steps with a New Players list and an error list. Its settled design is recorded in [item.md](item.md) and [intent.md](intent.md). The text below is kept as the original idea.
+
 ## Intended effect
 
 Make the normal path from session audio to generated artifacts feel like one coherent process rather than three separate actions, while retaining safe checkpoints when a user stops partway through.

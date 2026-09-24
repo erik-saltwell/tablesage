@@ -24,6 +24,19 @@ def _remove_schema_keyword(value: Any, keyword: str) -> None:
             _remove_schema_keyword(child, keyword)
 
 
+def _make_strict(value: Any) -> None:
+    """Close every object schema in place and require all of its properties, as OpenAI's strict mode demands."""
+    if isinstance(value, dict):
+        if isinstance(value.get("properties"), dict):
+            value["additionalProperties"] = False
+            value["required"] = list(value["properties"])
+        for child in value.values():
+            _make_strict(child)
+    elif isinstance(value, list):
+        for child in value:
+            _make_strict(child)
+
+
 def _json_shape(value: Any, *, depth: int = 0) -> dict[str, Any]:
     """Describe JSON structure without retaining scalar content."""
     if depth >= 5:
@@ -76,12 +89,15 @@ async def call_llm(
     timeout: float | None = None,
     prompt_name: str | None = None,
     model_options: Mapping[str, Any] | None = None,
+    strict_schema: bool = False,
 ) -> str:
     """Send a single-turn system+user prompt to *model* via litellm and return its text response.
 
     If *response_format* is given, it is forwarded to litellm as a schema-constrained output
     request; the caller is responsible for parsing the returned text (e.g. via
     ``response_format.model_validate_json(result)``) -- this function always returns plain text.
+    Without *strict_schema*, OpenAI treats the schema as a hint (an ``enum`` is not enforced);
+    *strict_schema* requests strict mode, which needs every field required and no ``oneOf``.
     *timeout* is forwarded to litellm as-is; `None` (the default) leaves litellm's own default
     (600 seconds) in effect. *prompt_name* is diagnostic context only and is never sent to the
     provider. *model_options* passes provider-specific controls such as reasoning effort through
@@ -106,10 +122,12 @@ async def call_llm(
         # Anthropic structured outputs reject this Pydantic annotation. The
         # oneOf branches and their const type fields preserve the union itself.
         _remove_schema_keyword(response_schema, "discriminator")
+        if strict_schema:
+            _make_strict(response_schema)
     provider_response_format = (
         {
             "type": "json_schema",
-            "json_schema": {"name": response_format.__name__, "schema": response_schema},
+            "json_schema": {"name": response_format.__name__, "schema": response_schema, **({"strict": True} if strict_schema else {})},
         }
         if response_format is not None
         else None
@@ -129,6 +147,7 @@ async def call_llm(
         response_schema=response_schema,
         response_schema_sha256=hashlib.sha256(canonical_schema.encode()).hexdigest() if canonical_schema else None,
         response_schema_supported=litellm.supports_response_schema(model=model) if response_format is not None else None,
+        strict_schema=strict_schema if response_format is not None else None,
         model_options=effective_model_options or None,
     ) as log:
         response = await litellm.acompletion(

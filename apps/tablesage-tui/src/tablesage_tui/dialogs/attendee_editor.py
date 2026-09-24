@@ -74,12 +74,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
             with Vertical(id="attendee-dialog") as dialog:
                 dialog.border_title = self._title
 
-                if not self._players and not self._allow_new_player:
-                    yield Static("No players are available to add.", id="attendee-empty")
-                    with Horizontal(classes="dialog-actions"):
-                        yield Button("Close", id="attendee-close")
-                    return
-
                 if self._allow_new_player:
                     with Horizontal(id="attendee-name-row"):
                         yield Static("New Player Name", classes="field-label")
@@ -106,8 +100,6 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
             yield Footer(id="attendee-footer")
 
     def on_mount(self) -> None:
-        if not self._players and not self._allow_new_player:
-            return
         self._reload_roles()
 
     # Roles (held in-memory here; only written to the DB by the caller after Save)
@@ -215,7 +207,7 @@ class AttendeeDialog(ModalScreen[AttendeeResult | None]):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
-        if button_id in ("attendee-cancel", "attendee-close"):
+        if button_id == "attendee-cancel":
             self.dismiss(None)
         elif button_id == "attendee-save":
             self._submit()

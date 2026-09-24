@@ -286,7 +286,16 @@ def verify(app: Application) -> None:
         validate_player_introductions(introductions, ledger.attendees)
         Transcript.load(folder / "transcript.json")
         Transcript.load(folder / "transcript_reviewed.json")
-        expected = set(ArtifactName) - {ArtifactName.TRANSCRIPT_BENCHMARK, ArtifactName.TRANSCRIPT_ROLES_TEXT}
+        # Registered for the reworked processing flow, but nothing generates them yet.
+        not_yet_generated = {
+            ArtifactName.NEW_SPEAKER_SET,
+            ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
+            ArtifactName.CLEANED_TRANSCRIPT,
+            ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
+            ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT,
+            ArtifactName.SPELLCHECKED_TRANSCRIPT,
+        }
+        expected = set(ArtifactName) - not_yet_generated
         states = app.session_artifact_states(game_session.id)
         invalid = {name.value: states[name].value for name in expected if states[name] != ArtifactStatus.CURRENT}
         if invalid:

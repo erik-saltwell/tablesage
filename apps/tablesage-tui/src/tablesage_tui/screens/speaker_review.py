@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import time
 import uuid
 from collections.abc import Callable
-from dataclasses import dataclass, replace
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -11,25 +9,24 @@ from typing import TYPE_CHECKING
 from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
+from tablesage_application.session_pipeline.suggest_spelling_corrections import apply_corrections
 from tablesage_model.model import SessionProcessingPhase
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.timer import Timer
 from textual.widgets import Button, DataTable, Static
 from textual.widgets.data_table import CursorType
 
-from ..audio_playback import ClipPlayer
+from ..audio_playback import PlaybackMode, ReviewPlayback
+from ..corrections_review import CorrectionsReview, DraftCorrection, applied_message
 from ..dialogs import (
     ConfirmationDialog,
     FindReplaceDialog,
     FindReplaceResult,
     ManualReviewUtteranceDialog,
     ManualReviewUtteranceResult,
-    SpellingSuggestionDialog,
-    SpellingSuggestionResult,
 )
 from ..widgets import EqualWidthButtonRow
 from .glossary_review import GlossaryReviewScreen
@@ -39,13 +36,7 @@ if TYPE_CHECKING:
     from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
 
 _MAX_ASSIGNABLE_ATTENDEES = 9
-_AUTO_ADVANCE_DELAY = 0.25
 _DIM_STYLE = "dim"
-
-
-class PlaybackMode(Enum):
-    MANUAL = "manual"
-    AUTO = "auto"
 
 
 class Phase(Enum):
@@ -61,14 +52,6 @@ class Phase(Enum):
 
     SUGGESTIONS = "suggestions"
     REVIEW = "review"
-
-
-@dataclass(frozen=True)
-class _DraftSuggestion:
-    id: uuid.UUID
-    from_text: str
-    to_text: str
-    case_sensitive: bool
 
 
 class _ReviewTable(DataTable[object]):
@@ -162,17 +145,13 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._clip_indices: list[int] = []
         self._all_attendee_names: list[str] = []
         self._attendee_names: list[str] = []
-        self._player = ClipPlayer()
-        self._mode = PlaybackMode.MANUAL
+        self._playback = ReviewPlayback(self, on_advance=self._auto_advance, on_mode_changed=self._update_mode_indicator)
         self._focus_speaker: str | None = None
         self._playhead = 0
         self._programmatic_move = False
         self._table_ready = False
-        self._advance_timer: Timer | None = None
-        self._clip_started_at = 0.0
-        self._current_duration = 0.0
         self._phase = Phase.SUGGESTIONS
-        self._suggestions: list[_DraftSuggestion] = []
+        self._corrections = CorrectionsReview(self, "#spelling-suggestions-table", noun="Suggestion")
         self._visit_baseline: Transcript | None = None
         self._spelling_checkpoint = False
 
@@ -183,10 +162,7 @@ class ManualReviewScreen(SessionProcessingScreen):
             suggestions_table: DataTable[str] = DataTable(
                 id="spelling-suggestions-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
             )
-            suggestions_table.add_column("From", key="from")
-            suggestions_table.add_column("To", key="to")
-            suggestions_table.add_column("Occurrences", key="occurrences")
-            suggestions_table.add_column("Case Sensitive", key="case_sensitive")
+            CorrectionsReview.add_columns(suggestions_table)
             yield suggestions_table
             with EqualWidthButtonRow(id="spelling-suggestions-actions"):
                 yield Button("Exit", id="spelling-suggestions-cancel")
@@ -359,13 +335,9 @@ class ManualReviewScreen(SessionProcessingScreen):
         """Show spelling suggestions when available, otherwise enter transcript review."""
         if suggestions:
             self._phase = Phase.SUGGESTIONS
-            self._suggestions = [
-                _DraftSuggestion(id=uuid.uuid4(), from_text=s.from_text, to_text=s.to_text, case_sensitive=s.case_sensitive)
-                for s in suggestions
-            ]
-            self._sort_suggestions()
+            assert self._transcript is not None
             self.query_one("#spelling-suggestions-panel").display = True
-            self._reload_suggestions_table()
+            self._corrections.load(self._transcript, suggestions)
             self.query_one("#spelling-suggestions-table", DataTable).focus()
             self.refresh_bindings()
             return
@@ -396,118 +368,37 @@ class ManualReviewScreen(SessionProcessingScreen):
         if not self._transcript.utterances:
             return
         self._playhead = 0
-        self._mode = PlaybackMode.MANUAL
+        self._playback.set_manual()
         self._update_mode_indicator()
         self._update_focus_indicator()
         self._table_ready = True
         self._play(0)
 
-    # Spelling suggestions -- phase one. Reviewed the same way `GlossaryReviewScreen` reviews its
-    # own LLM proposals: New/Edit/Delete on an in-memory list, table fully rebuilt on each change.
-    # Occurrence counts are recomputed live (not the snapshot the LLM call produced) so editing a
-    # row's `from_text` or `case_sensitive` immediately shows what Complete would actually do.
+    # Spelling suggestions -- phase one, reviewed through the shared `CorrectionsReview`.
 
-    def _sort_suggestions(self) -> None:
-        self._suggestions.sort(key=lambda suggestion: suggestion.from_text.casefold())
+    @property
+    def _suggestions(self) -> list[DraftCorrection]:
+        return self._corrections.corrections
 
-    def _selected_suggestion_id(self) -> uuid.UUID | None:
-        table = self.query_one("#spelling-suggestions-table", DataTable)
-        if table.row_count == 0:
-            return None
-        row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value
-        return uuid.UUID(row_key) if row_key else None
-
-    def _selected_suggestion(self) -> _DraftSuggestion | None:
-        suggestion_id = self._selected_suggestion_id()
-        return next((suggestion for suggestion in self._suggestions if suggestion.id == suggestion_id), None)
-
-    def _reload_suggestions_table(self, selected_id: uuid.UUID | None = None) -> None:
-        assert self._transcript is not None
-        table = self.query_one("#spelling-suggestions-table", DataTable)
-        selected_id = selected_id or self._selected_suggestion_id()
-        table.clear()
-        restored_row: int | None = None
-        for index, suggestion in enumerate(self._suggestions):
-            occurrence_count = transcript_review.count_occurrences(self._transcript, suggestion.from_text, suggestion.case_sensitive)
-            table.add_row(
-                suggestion.from_text,
-                suggestion.to_text,
-                str(occurrence_count),
-                "✓" if suggestion.case_sensitive else "",
-                key=str(suggestion.id),
-            )
-            if suggestion.id == selected_id:
-                restored_row = index
-        if restored_row is not None:
-            table.move_cursor(row=restored_row)
-        self.refresh_bindings()
+    def _selected_suggestion(self) -> DraftCorrection | None:
+        return self._corrections.selected()
 
     def action_new_suggestion(self) -> None:
-        def on_dismiss(result: SpellingSuggestionResult | None) -> None:
-            if result is None:
-                return
-            suggestion = _DraftSuggestion(
-                id=uuid.uuid4(), from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
-            )
-            self._suggestions.append(suggestion)
-            self._sort_suggestions()
-            self._reload_suggestions_table(suggestion.id)
-
-        self.app.push_screen(SpellingSuggestionDialog(title="New Suggestion", submit_label="Add Suggestion"), on_dismiss)
+        self._corrections.new()
 
     def action_edit_suggestion(self) -> None:
-        suggestion = self._selected_suggestion()
-        if suggestion is None:
-            return
-
-        def on_dismiss(result: SpellingSuggestionResult | None) -> None:
-            if result is None:
-                return
-            index = self._suggestions.index(suggestion)
-            self._suggestions[index] = replace(
-                suggestion, from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
-            )
-            self._sort_suggestions()
-            self._reload_suggestions_table(suggestion.id)
-
-        self.app.push_screen(
-            SpellingSuggestionDialog(
-                title="Edit Suggestion",
-                submit_label="Save",
-                from_text=suggestion.from_text,
-                to_text=suggestion.to_text,
-                case_sensitive=suggestion.case_sensitive,
-            ),
-            on_dismiss,
-        )
+        self._corrections.edit_selected()
 
     def action_delete_suggestion(self) -> None:
-        suggestion = self._selected_suggestion()
-        if suggestion is None:
-            return
-        index = self._suggestions.index(suggestion)
-        self._suggestions.remove(suggestion)
-        self._reload_suggestions_table()
-        table = self.query_one("#spelling-suggestions-table", DataTable)
-        if table.row_count:
-            table.move_cursor(row=min(index, table.row_count - 1))
+        self._corrections.delete_selected()
 
     def action_complete_suggestions(self) -> None:
         """Apply every surviving suggestion's find/replace, sequentially in table order, then enter the review phase."""
         assert self._transcript is not None
-        occurrence_total = 0
-        for suggestion in self._suggestions:
-            self._transcript, outcome = transcript_review.replace_text(
-                self._transcript, suggestion.from_text, suggestion.to_text, suggestion.case_sensitive
-            )
-            occurrence_total += outcome.occurrence_count
-
-        if occurrence_total:
-            occurrence_plural = "" if occurrence_total == 1 else "s"
-            suggestion_plural = "" if len(self._suggestions) == 1 else "s"
-            self.notify(
-                f"Applied {len(self._suggestions)} correction{suggestion_plural}, {occurrence_total} occurrence{occurrence_plural}."
-            )
+        self._transcript, occurrence_total = apply_corrections(self._transcript, self._suggestions)
+        message = applied_message(len(self._suggestions), occurrence_total)
+        if message is not None:
+            self.notify(message)
 
         self._complete_spelling_checkpoint()
         self._phase = Phase.REVIEW
@@ -574,8 +465,7 @@ class ManualReviewScreen(SessionProcessingScreen):
 
         self._playhead = index
         if not programmatic:
-            self._mode = PlaybackMode.MANUAL
-            self._update_mode_indicator()
+            self._playback.set_manual()
         self._play(index)
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
@@ -636,36 +526,18 @@ class ManualReviewScreen(SessionProcessingScreen):
         """
         assert self._transcript is not None and self._session_folder is not None
         utterance = self._transcript.utterances[index]
-        self._clip_started_at = time.monotonic()
-        self._current_duration = max(0.0, utterance.end - utterance.start)
         clip = transcript_review.clip_path(self._session_folder, self._clip_indices[index])
-        if clip.is_file():
-            self._player.play(clip)
-        self._reschedule_auto_advance()
+        self._playback.play(clip, utterance.end - utterance.start)
 
-    def _reschedule_auto_advance(self) -> None:
-        if self._advance_timer is not None:
-            self._advance_timer.stop()
-            self._advance_timer = None
-        if self._mode is not PlaybackMode.AUTO:
-            return
-        elapsed = time.monotonic() - self._clip_started_at
-        remaining = max(0.0, self._current_duration - elapsed) + _AUTO_ADVANCE_DELAY
-        self._advance_timer = self.set_timer(remaining, self._on_auto_advance_due)
-
-    def _on_auto_advance_due(self) -> None:
-        self._advance_timer = None
+    def _auto_advance(self) -> bool:
         next_index = self._next_enabled_row(self._playhead, 1)
         if next_index is None:
-            self._mode = PlaybackMode.MANUAL
-            self._update_mode_indicator()
-            return
+            return False
         self._move_to(next_index)
+        return True
 
     def action_toggle_mode(self) -> None:
-        self._mode = PlaybackMode.MANUAL if self._mode is PlaybackMode.AUTO else PlaybackMode.AUTO
-        self._update_mode_indicator()
-        self._reschedule_auto_advance()
+        self._playback.toggle_mode()
 
     def action_replay(self) -> None:
         if self._transcript is None:
@@ -673,7 +545,7 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._play(self._playhead)
 
     def _update_mode_indicator(self) -> None:
-        label = "Auto" if self._mode is PlaybackMode.AUTO else "Manual"
+        label = "Auto" if self._playback.mode is PlaybackMode.AUTO else "Manual"
         self.query_one("#manual-review-mode", Static).update(f"Mode: {label}")
 
     def _update_focus_indicator(self) -> None:
@@ -707,10 +579,7 @@ class ManualReviewScreen(SessionProcessingScreen):
         if self._transcript is None or not self._transcript.utterances:
             return
 
-        self._player.stop()
-        if self._advance_timer is not None:
-            self._advance_timer.stop()
-            self._advance_timer = None
+        self._playback.stop()
 
         index = self._playhead
         self._transcript = transcript_review.delete_utterance(self._transcript, index)
@@ -812,7 +681,7 @@ class ManualReviewScreen(SessionProcessingScreen):
     def action_complete(self) -> None:
         if self._transcript is None:
             return
-        from .outputs_processing import OutputsProcessingScreen
+        from .process_session import ProcessSessionScreen
 
         self.application.save_reviewed_transcript(self._session_id, self._transcript)
         self.application.discard_review_draft(self._session_id)
@@ -820,7 +689,7 @@ class ManualReviewScreen(SessionProcessingScreen):
         self.application.set_session_processing_phase(self._session_id, SessionProcessingPhase.OUTPUTS)
         self.notify("Reviewed transcript saved.")
         self._leave(
-            lambda: self.app.switch_screen(OutputsProcessingScreen(self._session_id)),
+            lambda: self.app.switch_screen(ProcessSessionScreen(self._session_id)),
             phase=SessionProcessingPhase.OUTPUTS,
         )
 
@@ -877,10 +746,7 @@ class ManualReviewScreen(SessionProcessingScreen):
         after_leave()
 
     def _stop_review_resources(self) -> None:
-        self._player.stop()
-        if self._advance_timer is not None:
-            self._advance_timer.stop()
-            self._advance_timer = None
+        self._playback.stop()
         self.application.discard_review_clips(self._session_id)
 
 

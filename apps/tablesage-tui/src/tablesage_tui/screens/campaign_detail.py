@@ -53,7 +53,7 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
-        Binding("p,P", "generate_opportunities", "Generate Opportunities", key_display="P"),
+        Binding("y,Y", "generate_opportunities", "Generate Opportunities", key_display="Y"),
         Binding("v,V", "create_previously_on", "Create Previously On", key_display="V"),
     ]
 

@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 from tablesage_model.model import Player, SessionAttendance, SessionAttendanceRole
 from tablesage_model.model import Session as GameSession
+from tablesage_model.player_names import player_name_key
 
 from .._fs import cleanup_orphan_dirs, create_named_entity_folder
 
@@ -123,9 +124,24 @@ def list_attendance(session: Session, session_id: uuid.UUID) -> list[Attendee]:
     return attendees
 
 
+def _require_distinct_attendee_name(
+    session: Session, session_id: uuid.UUID, player: Player, attendance_id: uuid.UUID | None = None
+) -> None:
+    """Attendee names are unique ignoring case; `attendance_id` is the row being reassigned, which doesn't count.
+
+    Player names are already unique ignoring case, so this only catches players created before that rule.
+    """
+    key = player_name_key(player.name)
+    for attendee in list_attendance(session, session_id):
+        if attendee.attendance_id != attendance_id and attendee.player_id != player.id and player_name_key(attendee.player_name) == key:
+            raise ValueError(f"'{attendee.player_name}' is already attending this session; player names must differ by more than case.")
+
+
 def add_attendance(session: Session, session_id: uuid.UUID, player_id: uuid.UUID) -> Attendee:
-    if session.get(Player, player_id) is None:
+    player = session.get(Player, player_id)
+    if player is None:
         raise ValueError("Player not found.")
+    _require_distinct_attendee_name(session, session_id, player)
     attendance = SessionAttendance(session_id=session_id, player_id=player_id)
     session.add(attendance)
     try:
@@ -169,8 +185,10 @@ def set_attendance_player(session: Session, attendance_id: uuid.UUID, player_id:
     if attendance is None:
         raise ValueError("Attendance not found.")
 
-    if session.get(Player, player_id) is None:
+    player = session.get(Player, player_id)
+    if player is None:
         raise ValueError("Player not found.")
+    _require_distinct_attendee_name(session, attendance.session_id, player, attendance_id)
 
     attendance.player_id = player_id
     session.add(attendance)

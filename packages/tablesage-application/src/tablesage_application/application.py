@@ -56,9 +56,13 @@ from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_player_introductions as player_introductions_pipeline
 from .session_pipeline import generate_recap_summary as recap_summary_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
+from .session_pipeline import isolate_new_speakers as isolate_new_speakers_pipeline
+from .session_pipeline import name_corrections as name_corrections_pipeline
+from .session_pipeline import review_new_speaker_assignments as review_new_speaker_assignments_pipeline
 from .session_pipeline import session_processing as session_processing_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
+from .session_pipeline.remove_backchannels import remove_backchannels
 from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
 from .voice_clips import clips
 
@@ -704,20 +708,51 @@ class Application:
                     artifact_graph_pipeline.BuildStep(
                         paths.ArtifactName.TRANSCRIPT,
                         (ref(paths.ArtifactName.TRANSCRIPT), ref(paths.ArtifactName.TRANSCRIPT_TEXT)),
+                        (ref(paths.ArtifactName.INPUT_AUDIO),),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.CLEANED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.CLEANED_TRANSCRIPT),),
                         (
-                            ref(paths.ArtifactName.INPUT_AUDIO),
+                            ref(paths.ArtifactName.TRANSCRIPT),
                             prompt_input(PromptName.CLASSIFY_BACKCHANNELS),
                         ),
                     ),
                     artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.REVIEWED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
-                        (ref(paths.ArtifactName.TRANSCRIPT),),
+                        paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),),
+                        (
+                            ref(paths.ArtifactName.CLEANED_TRANSCRIPT),
+                            prompt_input(PromptName.SUGGEST_NAME_CORRECTIONS),
+                        ),
                     ),
                     artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.TRANSCRIPT_BENCHMARK,
-                        (ref(paths.ArtifactName.TRANSCRIPT_BENCHMARK),),
-                        (ref(transcript_review.preferred_transcript_artifact(folder)),),
+                        paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
+                        (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
+                        (
+                            ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),
+                            prompt_input(PromptName.ISOLATE_NEW_SPEAKERS),
+                        ),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
+                        (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
+                        (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT),),
+                        (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.SPELLCHECKED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
+                        (ref(paths.ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT),),
+                    ),
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.REVIEWED_TRANSCRIPT,
+                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
+                        (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
                     ),
                     artifact_graph_pipeline.BuildStep(
                         paths.ArtifactName.ROLE_TRANSCRIPT,
@@ -1101,6 +1136,33 @@ class Application:
                     if embedding is not None:
                         centroids[player.name] = embedding
             return centroids
+
+    def new_players(self, session_id: uuid.UUID) -> list[isolate_new_speakers_pipeline.NewPlayer]:
+        """This Session's new players -- attendees with no usable voice centroid -- computed live from the database.
+
+        Deliberately not persisted or part of artifact staleness: changing attendance or voice
+        profiles after the new-player steps ran does not invalidate them.
+        """
+        with Session(self._engine) as session:
+            new_players: list[isolate_new_speakers_pipeline.NewPlayer] = []
+            for attendee in sessions.list_attendance(session, session_id):
+                player = session.get(Player, attendee.player_id)
+                assert player is not None
+                if self._usable_player_embedding(player) is None:
+                    new_players.append(isolate_new_speakers_pipeline.NewPlayer(attendee.player_id, attendee.player_name, attendee.roles))
+            return new_players
+
+    def session_processing_blockers(self, session_id: uuid.UUID) -> list[paths.ProcessingBlocker]:
+        """Errors that stop a Process Session step, and every step after it, from running."""
+        blockers: list[paths.ProcessingBlocker] = []
+        if not self.list_attendance(session_id):
+            blockers.append(
+                paths.ProcessingBlocker(
+                    paths.SessionProcessingStageID.IMPORTING_AUDIO,
+                    "This Session has no attendees. Add them on Session Detail.",
+                )
+            )
+        return blockers
 
     @staticmethod
     def _usable_player_embedding(player: Player, expected_dimension: int | None = None) -> Embedding | None:
@@ -1697,17 +1759,171 @@ class Application:
         return self.transcribe_session_audio(session_id, on_progress=on_progress)
 
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path, *, should_clean_audio: bool) -> None:
-        """Replace input audio without choosing a transcription workflow yet."""
+        """Replace input audio; the artifact graph marks everything derived from the old audio stale."""
         self.validate_import_audio_source(source_path)
-        session_folder = self.session_folder(session_id)
         import_audio.import_audio(
             source_path,
-            session_folder,
+            self.session_folder(session_id),
             self._settings.session_audio_import.normalize_volume,
             should_clean_audio=should_clean_audio,
         )
-        self.discard_review_draft(session_id)
-        self.discard_spelling_review(session_id)
+
+    def create_transcript(self, session_id: uuid.UUID, *, on_progress: transcribe_audio.OnProgress | None = None) -> int:
+        """Process Session's Create Transcript step; returns the utterance count."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            session_folder = self._session_folder(session, game_session)
+            enabled, reason = transcribe_audio.can_transcribe_audio(session, session_id, session_folder)
+            if not enabled:
+                raise RuntimeError(reason or "Cannot transcribe audio.")
+            attendee_count = len(sessions.list_attendance(session, session_id))
+        return transcribe_audio.create_transcript(
+            session_folder, attendee_count, self._settings.transcription_and_diarization, on_progress=on_progress
+        )
+
+    def remove_bad_utterances(self, session_id: uuid.UUID, *, on_progress: Callable[[int, int], None] | None = None) -> int:
+        """Process Session's Remove Bad Utterances step: `transcript.json` minus backchannels, written as
+        `cleaned_transcript.json`. Returns the number of utterances removed."""
+        session_folder = self.session_folder(session_id)
+        transcript = Transcript.load(session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT].filename)
+        settings = self._settings.remove_backchannels
+        cleaned = asyncio.run(
+            remove_backchannels(
+                transcript,
+                settings.max_words,
+                self._settings.llm_model_lite,
+                settings.question_check_timeout,
+                settings.batch_size,
+                settings.max_concurrent_batches,
+                on_progress=on_progress,
+            )
+        )
+        cleaned.save(session_folder / paths.ARTIFACTS[paths.ArtifactName.CLEANED_TRANSCRIPT].filename)
+        return len(transcript.utterances) - len(cleaned.utterances)
+
+    def _named_players(self, session_id: uuid.UUID) -> list[name_corrections_pipeline.NamedPlayer]:
+        return [
+            name_corrections_pipeline.NamedPlayer(attendee.player_name, attendee.roles) for attendee in self.list_attendance(session_id)
+        ]
+
+    def suggest_name_corrections(
+        self, session_id: uuid.UUID
+    ) -> tuple[Transcript, list[suggest_spelling_corrections_pipeline.SpellingSuggestion]]:
+        """Process Session's Review Name Corrections step: the cleaned transcript and the LLM's proposed
+        corrections to every attendee's player and character names. Raises when the LLM call fails."""
+        session_folder = self.session_folder(session_id)
+        transcript = name_corrections_pipeline.load_source(session_folder)
+        players = self._named_players(session_id)
+        with widelog.wide_event(
+            op="suggest_name_corrections", session_id=str(session_id), player_count=len(players), utterance_count=len(transcript.utterances)
+        ) as log:
+            suggestions = asyncio.run(
+                name_corrections_pipeline.suggest_name_corrections(
+                    transcript, players, self._settings.llm_model, float(self._settings.name_corrections.timeout)
+                )
+            )
+            log.set(suggestion_count=len(suggestions))
+        return transcript, suggestions
+
+    def save_name_corrections(
+        self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
+    ) -> tuple[bool, int]:
+        """Write the name-corrected transcript from the reviewed corrections; return whether it was written
+        and how many occurrences were replaced."""
+        states = self.session_artifact_states(session_id)
+        return name_corrections_pipeline.save_corrected(
+            self.session_folder(session_id),
+            corrections,
+            saved_is_current=states[paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT] is artifact_graph_pipeline.ArtifactStatus.CURRENT,
+        )
+
+    def isolate_new_speakers(
+        self, session_id: uuid.UUID, *, on_progress: isolate_new_speakers_pipeline.OnProgress | None = None
+    ) -> isolate_new_speakers_pipeline.NewSpeakerAssignments:
+        """Process Session's Isolate New Speakers step: high-confidence utterances for each new player."""
+        session_folder = self.session_folder(session_id)
+        bootstrap = self._settings.speaker_bootstrap
+        isolation = self._settings.isolate_new_speakers
+        outliers = self._settings.remove_outliers
+        return isolate_new_speakers_pipeline.isolate_new_speakers(
+            session_folder,
+            self.new_players(session_id),
+            isolate_new_speakers_pipeline.IsolationSettings(
+                model=self._settings.llm_model,
+                timeout=float(bootstrap.evidence_timeout),
+                max_attempts=bootstrap.evidence_max_attempts,
+                min_speech_seconds=isolation.min_speech_seconds,
+                min_total_speech_seconds=bootstrap.min_total_speech_seconds,
+                target_total_speech_seconds=bootstrap.target_total_speech_seconds,
+                fallback_short_clip_seconds=isolation.fallback_short_clip_seconds,
+                fallback_max_speech_seconds=isolation.fallback_max_speech_seconds,
+                min_seed_speech_seconds=isolation.min_seed_speech_seconds,
+                outlier_min_sample_similarity=outliers.min_sample_similarity,
+                outlier_min_samples=outliers.min_samples,
+            ),
+            self._embed_clip,
+            on_progress=on_progress,
+        )
+
+    def _current_new_speaker_review(
+        self, session_id: uuid.UUID
+    ) -> review_new_speaker_assignments_pipeline.ReviewedNewSpeakerAssignments | None:
+        """The saved reviewed assignments, but only while the artifact graph says they are current."""
+        states = self.session_artifact_states(session_id)
+        if states[paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS] is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+            return None
+        return review_new_speaker_assignments_pipeline.load_reviewed(self.session_folder(session_id))
+
+    def new_speaker_assignment_review(self, session_id: uuid.UUID) -> review_new_speaker_assignments_pipeline.ReviewData:
+        """Process Session's Review New Speaker Assignments step: each new player's proposed utterances,
+        with earlier removals when a current review exists."""
+        session_folder = self.session_folder(session_id)
+        return review_new_speaker_assignments_pipeline.review_data(
+            session_folder,
+            review_new_speaker_assignments_pipeline.load_proposals(session_folder),
+            self._current_new_speaker_review(session_id),
+            self._settings.speaker_bootstrap.min_total_speech_seconds,
+        )
+
+    def extract_new_speaker_review_clips(
+        self, session_id: uuid.UUID, indices: Sequence[int], on_progress: Callable[[int, int], None] | None = None
+    ) -> None:
+        review_new_speaker_assignments_pipeline.extract_clips(self.session_folder(session_id), indices, on_progress)
+
+    def new_speaker_review_clip(self, session_id: uuid.UUID, utterance_index: int) -> Path:
+        return review_new_speaker_assignments_pipeline.clip_path(self.session_folder(session_id), utterance_index)
+
+    def discard_new_speaker_review_clips(self, session_id: uuid.UUID) -> None:
+        review_new_speaker_assignments_pipeline.discard_clips(self.session_folder(session_id))
+
+    def confirm_new_speaker_assignment_review(self, session_id: uuid.UUID, kept: Mapping[uuid.UUID, Sequence[int]]) -> bool:
+        """Save the kept utterances; return whether the file was written (it is not when a current review matches)."""
+        session_folder = self.session_folder(session_id)
+        return review_new_speaker_assignments_pipeline.save_review(
+            session_folder,
+            review_new_speaker_assignments_pipeline.load_proposals(session_folder),
+            kept,
+            self._current_new_speaker_review(session_id),
+        )
+
+    def complete_processing_step_automatically(self, session_id: uuid.UUID, stage: paths.SessionProcessingStageID) -> bool:
+        """Complete a manual step without its screen when it has nothing to review; return whether it did.
+
+        With no new players, Review Name Corrections writes the cleaned transcript unchanged, and
+        Review New Speaker Assignments (whose input is then empty) writes an empty review.
+        """
+        if stage is paths.SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS:
+            if self.new_players(session_id):
+                return False
+            self.save_name_corrections(session_id, ())
+            return True
+        if stage is not paths.SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS:
+            return False
+        proposals = review_new_speaker_assignments_pipeline.load_proposals(self.session_folder(session_id))
+        if proposals.players:
+            return False
+        self.confirm_new_speaker_assignment_review(session_id, {})
+        return True
 
     def bootstrap_candidate_review_data(
         self, session_id: uuid.UUID
@@ -2527,13 +2743,6 @@ class Application:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             return transcript_review.count_adjusted_utterances(self._session_folder(session, game_session))
-
-    def generate_benchmark_transcript(self, session_id: uuid.UUID) -> transcript_review.BenchmarkTranscriptResult:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            return transcript_review.generate_benchmark_transcript(
-                self._session_folder(session, game_session), source=self._current_transcript_source(session, game_session)
-            )
 
     def list_attendance(self, session_id: uuid.UUID) -> list[sessions.Attendee]:
         with Session(self._engine) as session:

@@ -16,7 +16,7 @@ from textual_fspicker import Filters
 
 from ..dialogs import ConfirmationDialog
 from ..dialogs.file_picker import FileOpen
-from .process_overview import ProcessSessionOverviewScreen
+from .process_session import ProcessSessionScreen
 from .session_processing import SessionProcessingScreen, register_processing_screen
 from .speaker_review import ManualReviewScreen
 
@@ -197,7 +197,7 @@ class AudioProcessingScreen(SessionProcessingScreen):
         if not isinstance(result, transcribe_audio.TranscriptionResult):
             self.processing_succeeded(SessionProcessingPhase.BOOTSTRAP_REVIEW)
             self.notify("Audio prepared. Review the proposed bootstrap candidates.")
-            self.app.switch_screen(ProcessSessionOverviewScreen(self.session_id))
+            self.app.switch_screen(ProcessSessionScreen(self.session_id))
             return
         self.processing_succeeded(SessionProcessingPhase.TRANSCRIPT)
         message = "Audio imported and transcribed." if self._importing_audio else "Audio transcribed."

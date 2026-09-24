@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -18,6 +18,16 @@ DEFAULT_MIN_SAMPLES = 5
 class CentroidResult:
     centroid: Embedding
     unused_paths: tuple[Path, ...]
+    # The embedding of every path that *was* used, so a caller can compare those samples against
+    # another reference without embedding them again.
+    embeddings: Mapping[Path, Embedding] = field(default_factory=dict)
+
+
+def cosine_similarity(a: Embedding, b: Embedding) -> float:
+    """Cosine similarity of two embeddings."""
+    return float(
+        torch.nn.functional.cosine_similarity(torch.tensor(a.root, dtype=torch.float32), torch.tensor(b.root, dtype=torch.float32), dim=0)
+    )
 
 
 def _dedupe_by_content(paths: Sequence[Path]) -> tuple[list[Path], list[Path]]:
@@ -86,8 +96,9 @@ def compute_centroid(
     embedding, outliers are pruned one worst-sample-at-a-time (see
     `_remove_outliers`) as long as more than `min_samples` remain.
 
-    Returns the centroid plus every path that was *not* used to compute it
-    (duplicates and pruned outliers, in that order). `on_progress`, if given,
+    Returns the centroid, every path that was *not* used to compute it
+    (duplicates and pruned outliers, in that order), and the embedding of
+    each path that was. `on_progress`, if given,
     is called as `(embedded, total_unique)` after each unique file's
     embedding completes.
     """
@@ -108,7 +119,9 @@ def compute_centroid(
 
     centroid = Embedding(root=tuple(float(x) for x in _mean_normalized(kept_embeddings)))
     unused_paths = (*duplicate_paths, *outlier_paths)
-    return CentroidResult(centroid=centroid, unused_paths=unused_paths)
+    outliers = set(outlier_paths)
+    used = {path: embedding for path, embedding in zip(unique_paths, embeddings, strict=True) if path not in outliers}
+    return CentroidResult(centroid=centroid, unused_paths=unused_paths, embeddings=used)
 
 
 @dataclass

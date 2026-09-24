@@ -35,8 +35,7 @@ UNASSIGNED_SPEAKER: Final[str] = "Unassigned Speaker"
 # WeSpeaker becomes finite at 125ms but remains weak there, so this floor stays at 150ms. Those
 # clips are skipped as too-short instead of reaching the model at all. Public (not module-private):
 # a benchmark that scores this function's output against hand-corrected ground truth needs the
-# identical floor to exclude utterances this function could never have judged in the first place -- see
-# `session_pipeline.transcript_review.generate_benchmark_transcript`.
+# identical floor to exclude utterances this function could never have judged in the first place.
 MIN_UTTERANCE_DURATION_SECONDS: Final[float] = 0.15
 
 # Per-utterance diagnostics live outside widelog's one-line-per-operation model: a single

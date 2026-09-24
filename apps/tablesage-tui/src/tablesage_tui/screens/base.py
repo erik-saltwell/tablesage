@@ -226,6 +226,16 @@ class TableSageScreen(Screen[None]):
         self.app.call_from_thread(dialog.update_message, message)
         self.app.call_from_thread(dialog.set_progress, completed, total)
 
+    def report_progress_title(self, title: str) -> None:
+        """Retitle the visible ProgressDialog -- for work that runs several named steps in one dialog.
+
+        Safe to call from the `run_with_progress` worker thread, like `report_progress`.
+        """
+        dialog = self._progress_dialog
+        if dialog is None:
+            return
+        self.app.call_from_thread(dialog.update_title, title)
+
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
         if event.worker.group != _PROGRESS_WORKER_GROUP:
             return

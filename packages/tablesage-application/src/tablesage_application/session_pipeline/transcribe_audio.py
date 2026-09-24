@@ -136,6 +136,36 @@ def transcribe_and_diarize_audio(
     return asyncio.run(_run())
 
 
+def create_transcript(
+    session_folder: Path,
+    attendee_count: int,
+    transcription_settings: TranscriptionAndDiarizationSettings,
+    on_progress: OnProgress | None = None,
+) -> int:
+    """Process Session's Create Transcript step: transcribe, diarize, and punctuate `input_audio.wav`.
+
+    Speakers keep their anonymous diarization labels -- identification and bad-utterance
+    removal are later steps -- so re-tuning those never forces a re-transcription. Writes
+    `transcript.json` and `transcript.md`; returns the utterance count.
+    """
+    raw_transcript = transcribe_and_diarize_audio(session_folder, attendee_count, transcription_settings, on_progress)
+
+    async def _punctuate() -> Transcript:
+        _report(on_progress, Stage.PUNCTUATING, 0, 0)
+        punctuated = await punctuate_transcript(raw_transcript)
+        _report(on_progress, Stage.PUNCTUATING, 1, 1)
+        return punctuated
+
+    with widelog.wide_event(op="create_transcript", session_folder=str(session_folder), attendee_count=attendee_count) as log:
+        transcript = asyncio.run(_punctuate())
+        transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+        (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text(
+            _render_transcript_text(transcript), encoding="utf-8"
+        )
+        log.set(utterance_count=len(transcript.utterances))
+        return len(transcript.utterances)
+
+
 def identify_raw_transcript(
     session_folder: Path,
     transcript: Transcript,

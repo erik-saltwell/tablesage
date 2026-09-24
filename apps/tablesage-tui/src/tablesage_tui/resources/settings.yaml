@@ -105,7 +105,11 @@ speaker_bootstrap:
   # source rows are deduplicated before review so overlap never becomes extra evidence.
   evidence_chunk_utterances: 120
   evidence_context_utterances: 12
-  evidence_timeout: 120
+  # Isolate New Speakers reads the whole name-corrected transcript in one LLM call (llm_model), so it
+  # uses these two with a generous timeout. It asks for about target_total_speech_seconds per
+  # player and falls back to voice clustering for a player under min_total_speech_seconds (see
+  # isolate_new_speakers below for its own length limits).
+  evidence_timeout: 300
   evidence_max_attempts: 2
   embedding_concurrency: 2
   min_speech_seconds: 3.0
@@ -121,6 +125,21 @@ speaker_bootstrap:
   competitor_margin: 0.08
   collision_similarity_threshold: 0.9
   incomplete_reference_absolute_similarity_threshold: 0.65
+
+isolate_new_speakers:
+  # Process Session's Isolate New Speakers step. Shortest utterance kept as a candidate
+  # voice sample, whether the LLM picked it or the voice fallback added it.
+  min_speech_seconds: 1.0
+  # A player whose picks fall short gets additions from their diarization label. The
+  # fallback drops its shortest additions until they total at most
+  # fallback_max_speech_seconds or all reach fallback_short_clip_seconds, removes voice
+  # outliers, then drops the additions least like the player's voice until under the cap.
+  # The LLM's own picks are never dropped or counted against the cap.
+  fallback_short_clip_seconds: 2.0
+  fallback_max_speech_seconds: 60.0
+  # "The player's voice" is the LLM's picks once they total this much speech; below it,
+  # the additions' own consensus voice is used instead.
+  min_seed_speech_seconds: 5.0
 
 remove_backchannels:
   # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):
@@ -153,6 +172,12 @@ remove_backchannels:
   # Timeout (seconds) per batch (not per whole pass) -- a batch is a small
   # fraction of the old worst-case candidate count.
   question_check_timeout: 120
+
+name_corrections:
+  # Process Session's Review Name Corrections step asks llm_model, in one call
+  # over the whole cleaned transcript, for misheard player and character names.
+  # Timeout (seconds) for that call.
+  timeout: 300
 
 # The default model for high-confidence LLM calls (e.g. proposing speaker
 # identities from a transcript).

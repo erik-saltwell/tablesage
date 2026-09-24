@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import os
+import sys
 from pathlib import Path
+from typing import Any
 
+import widelog
 from tablesage_application import Application
 from tablesage_application.configuration import Configuration, validate_models
 from tablesage_application.observability import configure_logging
@@ -30,6 +34,8 @@ class TableSageApp(App):
         super().__init__()
 
     def on_mount(self) -> None:
+        with widelog.wide_event(op="tablesage.app_started", cwd=str(Path.cwd()), python=sys.version.split()[0], pid=os.getpid()):
+            pass
         if self.settings_review_required:
             self.notify(
                 "Configure and save your settings before progressing. Press S to open Settings.",
@@ -37,6 +43,17 @@ class TableSageApp(App):
                 severity="warning",
                 timeout=float("inf"),
             )
+
+    def exit(self, *args: Any, **kwargs: Any) -> None:
+        # Logged when exit is requested, while screens and workers still exist, so an interrupted
+        # run is distinguishable from one that never started.
+        with widelog.wide_event(
+            op="tablesage.app_exit",
+            screen_stack=[type(screen).__name__ for screen in self.screen_stack],
+            running_workers=[worker.name for worker in self.workers if worker.is_running],
+        ):
+            pass
+        super().exit(*args, **kwargs)
 
     def action_open_settings(self) -> None:
         from .settings import SettingsScreen

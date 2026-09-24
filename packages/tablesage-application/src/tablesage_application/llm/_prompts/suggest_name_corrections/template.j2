@@ -1,0 +1,10 @@
+Players (player name | character names):
+{% for player in players %}- {{ player.player_name }} | {{ player.roles | join(", ") if player.roles else "(no characters)" }}
+{% endfor %}
+
+Allowed replacements (`to_text` must be exactly one of these):
+{% for form in allowed_forms %}- {{ form }}
+{% endfor %}
+
+Transcript:
+{{ transcript }}

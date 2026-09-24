@@ -12,6 +12,18 @@ from .paths import logs_root
 
 _LOGGER_NAME = "tablesage.widelog"
 _SPEAKER_IDENTIFICATION_LOGGER_NAME = "tablesage.speaker_identification"
+_PROMPT_TRACES_DIRNAME = "prompts"
+
+# Set by `configure_logging`; None until then.
+_log_dir: Path | None = None
+
+
+def prompt_traces_dir() -> Path:
+    """Where traced LLM prompts and outputs are written: `prompts/` beside the log files.
+
+    Before `configure_logging` runs (scripts, tests), it falls back to the current directory's logs.
+    """
+    return (_log_dir if _log_dir is not None else logs_root(Path.cwd())) / _PROMPT_TRACES_DIRNAME
 
 
 def configure_logging(cwd: Path) -> None:
@@ -31,8 +43,10 @@ def configure_logging(cwd: Path) -> None:
     line per utterance there, which widelog's one-line-per-*operation* model can't carry
     without either dropping the per-utterance detail or bloating a single event.
     """
+    global _log_dir
     log_dir = logs_root(cwd)
     log_dir.mkdir(parents=True, exist_ok=True)
+    _log_dir = log_dir
 
     handler = RotatingFileHandler(log_dir / "tablesage.log", maxBytes=10_000_000, backupCount=3)
     handler.setFormatter(logging.Formatter("%(message)s"))

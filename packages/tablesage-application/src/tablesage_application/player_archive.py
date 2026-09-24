@@ -16,7 +16,7 @@ from zipfile import ZIP_DEFLATED, BadZipFile, ZipFile, ZipInfo
 from sqlalchemy import Engine
 from sqlmodel import Session
 from tablesage_model.model import Player
-from tablesage_model.player_names import validate_player_name
+from tablesage_model.player_names import player_name_key, validate_player_name
 from tablesage_model.settings import RemoveOutliersSettings
 from tablesage_tools.embeddings import Embedding
 
@@ -78,6 +78,23 @@ def _contents(archive: ZipFile) -> tuple[dict[str, list[ZipInfo]], int]:
     return folders, ignored
 
 
+def _merge_name_variants(folders: dict[str, list[ZipInfo]], existing_names: list[str]) -> dict[str, list[ZipInfo]]:
+    """Fold folders whose names differ only by case or surrounding spaces into one player.
+
+    Player names are unique ignoring case, so each group takes the existing player's name, or else
+    its tidiest spelling (no surrounding spaces, then sort order).
+    """
+    groups: dict[str, list[str]] = {}
+    for name in folders:
+        groups.setdefault(player_name_key(name), []).append(name)
+    existing = {player_name_key(name): name for name in existing_names}
+    merged: dict[str, list[ZipInfo]] = {}
+    for key, names in groups.items():
+        canonical = existing.get(key) or min(names, key=lambda name: (name != name.strip(), name))
+        merged[canonical] = [entry for name in sorted(names) for entry in folders[name]]
+    return merged
+
+
 def _digest(path: Path) -> bytes:
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").digest()
@@ -132,6 +149,7 @@ def _import(
         with Session(engine) as session:
             try:
                 existing = {player.name: player for player in players.list_players(session)}
+                folders = _merge_name_variants(folders, list(existing))
                 for name in folders:
                     _check_folder(root / name)
                 for index, (name, entries) in enumerate(sorted(folders.items()), 1):
@@ -156,6 +174,11 @@ def _import(
                     incoming.mkdir(parents=True)
                     for entry in entries:
                         target = incoming / entry.filename.rsplit("/", 1)[1]
+                        # Merged name variants can hold clips with the same filename.
+                        suffix = 1
+                        while target.exists():
+                            suffix += 1
+                            target = incoming / f"{Path(entry.filename).stem}-{suffix}.wav"
                         with archive.open(entry) as reader, target.open("wb") as writer:
                             shutil.copyfileobj(reader, writer)
                         digest = _digest(target)

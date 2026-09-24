@@ -14,14 +14,12 @@ from tablesage_application.session_pipeline.transcript_review import (
     discard_review_clips,
     edit_utterance,
     extract_review_clips,
-    generate_benchmark_transcript,
     load_review_transcript,
     replace_text,
     review_clips_folder,
     save_reviewed_transcript,
 )
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
-from tablesage_tools.speakers import MIN_UTTERANCE_DURATION_SECONDS
 
 
 def _word(text: str, speaker: str, start: float, end: float) -> TranscriptionWord:
@@ -251,8 +249,6 @@ def test_save_reviewed_transcript_creates_separate_artifact_without_changing_mac
     machine_path = tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
     machine.save(machine_path)
     stale_derivatives = (
-        ArtifactName.TRANSCRIPT_ROLES_TEXT,
-        ArtifactName.TRANSCRIPT_BENCHMARK,
         ArtifactName.ROLE_TRANSCRIPT,
         ArtifactName.TRANSCRIPT_SECTIONS,
         ArtifactName.LEDGER,
@@ -296,49 +292,3 @@ def test_count_adjusted_utterances_is_zero_when_no_transcript_exists_yet(tmp_pat
     """Regression test: the `T` guard calls this unconditionally, including a session's very
     first transcribe attempt, before `transcript.json` exists at all -- must not raise."""
     assert count_adjusted_utterances(tmp_path) == 0
-
-
-def test_generate_benchmark_transcript_drops_utterances_under_the_floor(tmp_path: Path) -> None:
-    session_folder = tmp_path
-    transcript = Transcript.from_words(
-        [
-            _word("hello", "Alice", 0.0, 1.0),  # kept: well above the floor
-            _word("Yeah.", "Bob", 5.0, 5.0),  # excluded: zero duration
-            _word("hi", "Alice", 10.0, 10.0 + MIN_UTTERANCE_DURATION_SECONDS),  # kept: exactly at the floor
-            _word("no", "Bob", 20.0, 20.0 + MIN_UTTERANCE_DURATION_SECONDS / 2),  # excluded: under the floor
-        ]
-    )
-    (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).write_text(transcript.model_dump_json())
-
-    result = generate_benchmark_transcript(session_folder)
-
-    assert result.kept_count == 2
-    assert result.excluded_count == 2
-
-    benchmark = Transcript.load(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename)
-    assert [utterance.text for utterance in benchmark.utterances] == ["hello", "hi"]
-
-
-def test_generate_benchmark_transcript_does_not_modify_the_source_transcript(tmp_path: Path) -> None:
-    session_folder = tmp_path
-    transcript_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
-    transcript = Transcript.from_words([_word("hello", "Alice", 0.0, 1.0), _word("Yeah.", "Bob", 5.0, 5.0)])
-    transcript_path.write_text(transcript.model_dump_json())
-
-    generate_benchmark_transcript(session_folder)
-
-    reloaded = Transcript.load(transcript_path)
-    assert len(reloaded.utterances) == 2
-
-
-def test_generate_benchmark_transcript_prefers_completed_review(tmp_path: Path) -> None:
-    machine = _stub_transcript()
-    reviewed = edit_utterance(machine, 0, "Bob", "Reviewed words")
-    machine.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
-    reviewed.save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
-
-    generate_benchmark_transcript(tmp_path)
-
-    benchmark = Transcript.load(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename)
-    assert benchmark.utterances[0].speaker == "Bob"
-    assert benchmark.utterances[0].punctuated_text == "Reviewed words"

@@ -7,13 +7,22 @@ from pathlib import Path
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 from tablesage_model.model import Player, SessionAttendance
-from tablesage_model.player_names import validate_player_name
+from tablesage_model.player_names import player_name_key, validate_player_name
 
 from .._fs import cleanup_orphan_dirs, create_named_entity_folder, rename_named_entity
 
 
+def _require_unused_name(session: Session, name: str, player_id: uuid.UUID | None = None) -> None:
+    """Player names are unique ignoring case; `player_id` is the player being renamed, whose own name doesn't count."""
+    key = player_name_key(name)
+    for other in list_players(session):
+        if other.id != player_id and player_name_key(other.name) == key:
+            raise ValueError(f"A player named '{other.name}' already exists.")
+
+
 def create_player(session: Session, player: Player, players_root: Path) -> Player:
     validate_player_name(player.name)
+    _require_unused_name(session, player.name)
     session.add(player)
     try:
         session.flush()
@@ -43,6 +52,7 @@ def get_player(session: Session, player_id: uuid.UUID) -> Player:
 
 def rename_player(session: Session, player_id: uuid.UUID, new_name: str, players_root: Path) -> Player:
     player = get_player(session, player_id)
+    _require_unused_name(session, new_name, player_id)
     rename_named_entity(session, player, new_name, players_root, kind="player")
     player.updated_at = datetime.now(UTC)
     return player

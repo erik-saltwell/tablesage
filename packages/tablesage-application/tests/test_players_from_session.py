@@ -124,6 +124,14 @@ def _setup_session(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[App
     )
     transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
     (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).write_text("Machine transcript view")
+    for name in (
+        ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
+        ArtifactName.CLEANED_TRANSCRIPT,
+        ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
+        ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT,
+        ArtifactName.SPELLCHECKED_TRANSCRIPT,
+    ):
+        (session_folder / ARTIFACTS[name].filename).write_text("fixture")
 
     return application, game_session.id, alice, bob
 

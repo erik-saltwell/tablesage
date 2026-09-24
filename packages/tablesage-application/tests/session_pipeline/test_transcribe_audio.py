@@ -101,10 +101,8 @@ def test_transcribe_audio_writes_json_and_text_artifacts(tmp_path: Path) -> None
     assert result == TranscriptionResult(utterance_count=2, unassigned_speaker_count=0, removed_backchannel_count=0)
     transcript_json = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename
     transcript_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename
-    transcript_roles_text = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
     assert transcript_json.is_file()
     assert transcript_text.is_file()
-    assert not transcript_roles_text.exists()
     assert "Alice" in transcript_text.read_text()
     assert "hello." in transcript_text.read_text()
     assert "[00:00:00] **Alice:** hello." in transcript_text.read_text()
@@ -277,14 +275,10 @@ def test_successful_transcription_preserves_existing_derivatives_for_freshness_c
     summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
     ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
     reviewed_path = session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename
-    benchmark_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename
-    role_text_path = session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename
     role_transcript_path = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
     summary_path.write_text("stale summary")
     ledger_path.write_text("{}")
     reviewed_path.write_text("{}")
-    benchmark_path.write_text("{}")
-    role_text_path.write_text("stale role transcript")
     role_transcript_path.write_text("{}")
 
     transcribe_audio(
@@ -299,8 +293,6 @@ def test_successful_transcription_preserves_existing_derivatives_for_freshness_c
 
     assert summary_path.exists()
     assert reviewed_path.exists()
-    assert benchmark_path.exists()
-    assert role_text_path.exists()
     assert role_transcript_path.exists()
     assert ledger_path.exists()
 
@@ -329,7 +321,6 @@ def test_transcribe_audio_writes_nothing_on_failure(tmp_path: Path, monkeypatch:
 
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).exists()
     assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_TEXT].filename).exists()
-    assert not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_ROLES_TEXT].filename).exists()
     assert summary_path.read_text() == "existing summary"
 
 

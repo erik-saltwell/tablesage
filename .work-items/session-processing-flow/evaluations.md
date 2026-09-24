@@ -2,6 +2,8 @@
 
 Evaluated implementation: all six phases recorded in [plan.md](plan.md), using the agreed rubric in [rubric.md](rubric.md).
 
+> **Scope note (2026-09-24):** this evaluation applies to the original three-phase flow only. Much of that flow has since been replaced by the Process Session step list (see [item.md](item.md)), which has not been evaluated. Every dimension is unassessed for the current flow.
+
 ## Guidance clarity — 9/10
 
 Session Detail exposes one dynamic `P` entry, each stage presents only its relevant forward/retry controls, and the persistent rail distinguishes current, in-progress, missing, and failed work. Inline Audio and Outputs errors make recovery local and understandable. The remaining point reflects that real-user comprehension of the compact rail symbols has not yet been observed.

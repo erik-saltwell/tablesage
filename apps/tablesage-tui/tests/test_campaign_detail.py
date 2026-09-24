@@ -133,14 +133,14 @@ async def test_generate_opportunities_secondary_binding_opens_screen() -> None:
     )
 
     binding = next(binding for binding in CampaignDetailScreen.OTHER_BINDINGS if binding.action == "generate_opportunities")
-    assert (binding.key, binding.description, binding.key_display) == ("p,P", "Generate Opportunities", "P")
+    assert (binding.key, binding.description, binding.key_display) == ("y,Y", "Generate Opportunities", "Y")
     assert all(binding.action != "prepare_next_session" for binding in CampaignDetailScreen.OTHER_BINDINGS)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
 
-        await pilot.press("slash", "p")
+        await pilot.press("slash", "y")
         await _wait_for_progress_worker(pilot)
         assert isinstance(pilot.app.screen, OpportunitiesScreen)
 

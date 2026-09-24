@@ -1,0 +1,22 @@
+<new_players>
+{% for player in players %}
+{{ player.player_name }} | roles: {{ player.roles | join(", ") if player.roles else "none" }}
+{% endfor %}
+</new_players>
+
+<coverage_targets>
+Target speech per player: {{ "%.0f" | format(target_total_speech_seconds) }} seconds
+Minimum utterance duration: {{ "%.1f" | format(min_speech_seconds) }} seconds
+</coverage_targets>
+
+<speaker_label_list>
+{% for label in speaker_labels %}
+{{ label.speaker_id }} | {{ label.utterance_count }} utterances | {{ "%.0f" | format(label.speech_seconds) }} seconds of speech
+{% endfor %}
+</speaker_label_list>
+
+<transcript_rows>
+{% for utterance in utterances %}
+[{{ utterance.index }}] speaker={{ utterance.speaker_id }} ({{ "%.1f" | format(utterance.speech_seconds) }}s): {{ utterance.text }}
+{% endfor %}
+</transcript_rows>

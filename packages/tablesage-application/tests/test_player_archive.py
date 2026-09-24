@@ -138,13 +138,14 @@ def test_symlink_archive_rejected(tmp_path: Path) -> None:
         Application(tmp_path).import_players(source)
 
 
-def test_empty_archive_and_exact_names(tmp_path: Path) -> None:
+def test_empty_archive_and_case_variant_names(tmp_path: Path) -> None:
     app = Application(tmp_path)
     source = tmp_path / "empty.zip"
     app.export_players(source)
     assert app.import_players(source).created == 0
     source = _archive(source, {f"players/{name}/": b"" for name in ["Alice", "alice", " Alice "]})
-    assert app.import_players(source).created == 3
+    assert app.import_players(source).created == 1
+    assert [player.name for player in app.list_players()] == ["Alice"]
 
 
 @pytest.mark.parametrize("name", ["", " ", ".", "..", "../Alice", "a/b", "a\\b", "a\x00", "a\n", "a\x7f", "é" * 128])

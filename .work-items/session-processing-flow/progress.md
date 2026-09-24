@@ -1,5 +1,13 @@
 # Implementation progress
 
+> **Scope note (2026-09-24):** the phase sections below record the original three-phase Audio → Transcript → Outputs flow. They're accurate as history, but the later Process Session redesign replaced parts of that flow:
+>
+> - The Outputs screen and the dynamic `Process` / `Continue Processing` label on Session Detail no longer exist.
+> - `P` opens Process Session.
+> - `AudioProcessingScreen` and `ManualReviewScreen` remain, but Process Session doesn't route to them.
+>
+> The current state and next steps are in [item.md](item.md) (see "Current step list" and the resume note). The latest progress is under [Current handoff](#current-handoff-2026-09-24) below.
+
 ## Completed: Phase 1 — workflow state and review-draft contract
 
 The resumable-flow metadata is now database-backed in `session_processing_state`, keyed one-to-one to `session.id` with cascade deletion. It records the selected phase, the fingerprint for a noncanonical transcript-review draft, and the latest phase error. The migration is `e1f2a3b4c5d6_create_session_processing_state_table.py`.
@@ -110,3 +118,16 @@ All planned phases are complete. The final rubric assessment is recorded in `eva
 The retained Session Detail checks now exercise the Process entry and its owning stage screens rather than removed `A`, `V`, and ordinary `G` actions. Audio checks cover the picker, validation, WAV clean/skip choice, operation failure, and result message on `AudioProcessingScreen`. Output checks cover generation, failure persistence, and retry on `OutputsProcessingScreen`. Process routing checks cover Audio and Transcript destinations. This replaces two vacuously passing removed-binding checks with meaningful routing coverage; no tests were deleted.
 
 Verification: `uv run pytest apps/tablesage-tui/tests/test_session_detail.py -q` (44 passed), `uv run pytest apps/tablesage-tui/tests/test_attendee_editor.py -q` (20 passed), Ruff, `uv run ty check`, and `git diff --check` all passed.
+
+## Current handoff (2026-09-24)
+
+- **Implemented:** the New Players list, the Review Name Corrections step, and the skipped-step display from [intent.md](intent.md).
+- **Where it's recorded:** implementation notes, decisions, deviations, and the scripted headless verification are in [item.md](item.md#step-2--review-name-corrections-new-players-list-and-skipped-steps--implemented-2026-09-24).
+- **Deviations:**
+  - Enhance New Speaker Voice Samples is not skipped; this awaits the user's confirmation.
+  - Manual Review's source selection is deferred.
+  - Skipped steps are completed when Process Session opens or resumes.
+- **Final checks:**
+  - `uv run ruff check apps packages`, `ruff format --check`, `uv run ty check`, and `git diff --check` all pass.
+  - The TUI and application test suites: 626 passed.
+- **Next:** Enhance New Speaker Voice Samples, then routing steps `4`–`6`. See the resume note in item.md.

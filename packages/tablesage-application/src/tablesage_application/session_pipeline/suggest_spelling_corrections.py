@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
-from typing import Annotated
+from typing import Annotated, Protocol
 
 from pydantic import BaseModel, ConfigDict, StringConstraints
 from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
-from .transcript_review import count_occurrences
+from .transcript_review import count_occurrences, replace_text
 
 NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
@@ -52,7 +52,33 @@ class SpellingSuggestion:
     occurrence_count: int
 
 
-def _render_transcript(transcript: Transcript) -> str:
+class Correction(Protocol):
+    """A reviewed find/replace row; `SpellingSuggestion` and the review tables' drafts both qualify."""
+
+    @property
+    def from_text(self) -> str: ...
+    @property
+    def to_text(self) -> str: ...
+    @property
+    def case_sensitive(self) -> bool: ...
+
+
+def apply_corrections(transcript: Transcript, corrections: Iterable[Correction], whole_words: bool = False) -> tuple[Transcript, int]:
+    """Apply each correction's find/replace in order; return the new transcript and the total occurrences replaced.
+
+    Replacement only rewrites text, so the result has exactly the same utterances as the input.
+    `whole_words` keeps a match from landing inside a longer word (see `transcript_review.replace_text`).
+    """
+    occurrence_total = 0
+    for correction in corrections:
+        transcript, outcome = replace_text(
+            transcript, correction.from_text, correction.to_text, correction.case_sensitive, whole_words=whole_words
+        )
+        occurrence_total += outcome.occurrence_count
+    return transcript, occurrence_total
+
+
+def render_transcript(transcript: Transcript) -> str:
     lines = []
     for utterance in transcript.utterances:
         text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
@@ -104,7 +130,7 @@ async def suggest_spelling_corrections(
     """
     raw = await call_llm_with_prompt(
         PromptName.SUGGEST_SPELLING_CORRECTIONS,
-        SuggestSpellingCorrectionsPromptData(transcript=_render_transcript(transcript), attendees=attendee_names, glossary=glossary_terms),
+        SuggestSpellingCorrectionsPromptData(transcript=render_transcript(transcript), attendees=attendee_names, glossary=glossary_terms),
         model,
         response_model=SpellingSuggestionsResponse,
     )

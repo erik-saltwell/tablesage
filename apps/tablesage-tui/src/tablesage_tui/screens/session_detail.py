@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from datetime import date, datetime
 from typing import TYPE_CHECKING
 
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus, GenerationTask
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
-from tablesage_model.model import Player, SessionProcessingPhase
+from tablesage_model.model import Player
 from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -37,14 +38,12 @@ class SessionDetailScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("p,P", "process", "Process", key_display="P"),
-        Binding("p,P", "continue_processing", "Continue Processing", key_display="P"),
         Binding("n,N", "new_attendee", "New Player", key_display="N"),
         Binding("enter,e,E", "edit_attendee", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_attendee", "Delete Player", key_display="D"),
+        Binding("p,P", "process", "Process", key_display="P"),
     ]
     OTHER_BINDINGS = [
-        Binding("b,B", "generate_benchmark_transcript", "Benchmark", key_display="B"),
         Binding("r,R", "regenerate", "Regenerate Artifact", key_display="R"),
         Binding("c,C", "clean_session", "Clean Session", key_display="C"),
         Binding("l,L", "extract_glossary", "Extract Glossary", key_display="L"),
@@ -237,12 +236,7 @@ class SessionDetailScreen(TableSageScreen):
                 return None
             return True
         if action == "process":
-            return True if not self.application.session_artifacts(self._session_id)[ArtifactName.INPUT_AUDIO] else False
-        if action == "continue_processing":
-            return True if self.application.session_artifacts(self._session_id)[ArtifactName.INPUT_AUDIO] else False
-        if action == "generate_benchmark_transcript":
-            states = self._artifact_states()
-            return True if states[ArtifactName.TRANSCRIPT] is ArtifactStatus.CURRENT else None
+            return True
         if action == "regenerate":
             states = self._artifact_states()
             return True if states[ArtifactName.REVIEWED_TRANSCRIPT] is ArtifactStatus.CURRENT else None
@@ -273,40 +267,10 @@ class SessionDetailScreen(TableSageScreen):
     def action_process(self) -> None:
         self._start_processing()
 
-    def action_continue_processing(self) -> None:
-        self._start_processing()
-
     def _start_processing(self) -> None:
-        from .audio_processing import AudioProcessingScreen
-        from .bootstrap_review import BootstrapCandidateReviewScreen, NewSpeakerReviewScreen
-        from .outputs_processing import OutputsProcessingScreen
-        from .process_overview import ProcessSessionOverviewScreen
-        from .speaker_review import ManualReviewScreen
+        from .process_session import ProcessSessionScreen
 
-        phase = self.application.resolve_session_processing_phase(self._session_id)
-        if phase is SessionProcessingPhase.BOOTSTRAP_REVIEW:
-            self.app.push_screen(BootstrapCandidateReviewScreen(self._session_id))
-        elif phase is SessionProcessingPhase.NEW_SPEAKER_REVIEW:
-            self.app.push_screen(NewSpeakerReviewScreen(self._session_id))
-        elif phase is SessionProcessingPhase.SPELLING:
-            self.app.push_screen(ProcessSessionOverviewScreen(self._session_id))
-        elif phase is SessionProcessingPhase.AUDIO:
-            self.app.push_screen(AudioProcessingScreen(self._session_id))
-        elif phase is SessionProcessingPhase.TRANSCRIPT:
-            self.app.push_screen(ManualReviewScreen(self._session_id))
-        else:
-            self.app.push_screen(OutputsProcessingScreen(self._session_id))
-
-    # Benchmark transcript -- gated on the machine transcript being current (see check_action).
-    # Fast, in-memory, synchronous: no progress dialog, unlike the pipeline actions above.
-
-    def action_generate_benchmark_transcript(self) -> None:
-        try:
-            result = self.application.generate_benchmark_transcript(self._session_id)
-        except ValueError as exc:
-            self.notify(str(exc), severity="error")
-            return
-        self.notify(f"Benchmark transcript written: {result.kept_count} kept, {result.excluded_count} excluded (too short).")
+        self.app.push_screen(ProcessSessionScreen(self._session_id))
 
     def _after_forced_generation(self, result: tuple[GenerationTask, ...]) -> None:
         self._refresh_indicators()
@@ -429,32 +393,32 @@ class SessionDetailScreen(TableSageScreen):
         )
 
     def action_new_attendee(self) -> None:
-        attending_ids = {attendee.player_id for attendee in self.application.list_attendance(self._session_id)}
-        available = [player for player in self.application.list_players() if player.id not in attending_ids]
+        def show(player_id: uuid.UUID | None = None, roles: tuple[str, ...] = ()) -> None:
+            attending_ids = {attendee.player_id for attendee in self.application.list_attendance(self._session_id)}
+            available = [player for player in self.application.list_players() if player.id not in attending_ids]
 
-        def on_saved(result: AttendeeResult | None) -> None:
-            if result is None:
-                return
-            if result.create_player:
-                self._create_player_and_add_attendee(list(result.roles))
-                return
-            player_id = result.player_id
-            assert player_id is not None  # allow_new_player=False below guarantees this
-            roles = list(result.roles)
-
-            def do_add() -> None:
+            def on_saved(result: AttendeeResult | None) -> None:
+                if result is None:
+                    return
+                if result.create_player:
+                    self._create_player(lambda player: show(player.id, result.roles))
+                    return
+                new_player_id = result.player_id
+                assert new_player_id is not None  # allow_new_player=False below guarantees this
                 try:
-                    self.application.add_attendance_with_roles(self._session_id, player_id, roles)
+                    self.application.add_attendance_with_roles(self._session_id, new_player_id, list(result.roles))
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
                 self._reload_attendance()
 
-            do_add()
+            self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee", player_id=player_id, roles=list(roles)), on_saved)
 
-        self.app.push_screen(AttendeeDialog(players=available, title="Add Attendee"), on_saved)
+        show()
 
-    def _create_player_and_add_attendee(self, roles: list[str]) -> None:
+    def _create_player(self, on_created: Callable[[Player], None]) -> None:
+        """Prompt for a name, create the player, then call `on_created` with it."""
+
         def on_named(name: str | None) -> None:
             if not name:
                 return
@@ -467,11 +431,10 @@ class SessionDetailScreen(TableSageScreen):
             def proceed() -> None:
                 try:
                     player = self.application.create_player(Player(name=name))
-                    self.application.add_attendance_with_roles(self._session_id, player.id, roles)
                 except (ValueError, OSError) as exc:
                     self.notify(str(exc), severity="error")
                     return
-                self._reload_attendance()
+                on_created(player)
 
             self.run_with_folder_collision_check(
                 title="Player Folder Exists",
@@ -494,34 +457,34 @@ class SessionDetailScreen(TableSageScreen):
         if attendee is None:
             return
 
-        attending_ids = {a.player_id for a in self.application.list_attendance(self._session_id)}
-        available = [
-            player for player in self.application.list_players() if player.id not in attending_ids or player.id == attendee.player_id
-        ]
+        current_player_id = attendee.player_id
 
-        def on_saved(result: AttendeeResult | None) -> None:
-            if result is None:
-                return
-            player_id = result.player_id
-            assert player_id is not None  # allow_new_player=False below guarantees this
-            roles = list(result.roles)
+        def show(player_id: uuid.UUID, roles: tuple[str, ...]) -> None:
+            attending_ids = {a.player_id for a in self.application.list_attendance(self._session_id)}
+            available = [
+                player for player in self.application.list_players() if player.id not in attending_ids or player.id == current_player_id
+            ]
 
-            def do_save() -> None:
+            def on_saved(result: AttendeeResult | None) -> None:
+                if result is None:
+                    return
+                if result.create_player:
+                    self._create_player(lambda player: show(player.id, result.roles))
+                    return
+                new_player_id = result.player_id
+                assert new_player_id is not None  # allow_new_player=False below guarantees this
                 try:
-                    if player_id != attendee.player_id:
-                        self.application.set_attendance_player(self._session_id, attendee.attendance_id, player_id)
-                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, roles)
+                    if new_player_id != attendee.player_id:
+                        self.application.set_attendance_player(self._session_id, attendee.attendance_id, new_player_id)
+                    self.application.set_attendance_roles(self._session_id, attendee.attendance_id, list(result.roles))
                 except ValueError as exc:
                     self.notify(str(exc), severity="error")
                     return
                 self._reload_attendance()
 
-            do_save()
+            self.app.push_screen(AttendeeDialog(players=available, title="Edit Attendee", player_id=player_id, roles=list(roles)), on_saved)
 
-        self.app.push_screen(
-            AttendeeDialog(players=available, title="Edit Attendee", player_id=attendee.player_id, roles=list(attendee.roles)),
-            on_saved,
-        )
+        show(current_player_id, attendee.roles)
 
     def action_delete_attendee(self) -> None:
         attendee = self._selected_attendee()

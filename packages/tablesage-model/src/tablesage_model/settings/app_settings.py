@@ -83,7 +83,7 @@ class SpeakerBootstrapSettings(BaseModel, frozen=True):
 
     evidence_chunk_utterances: PositiveInt = 120
     evidence_context_utterances: int = Field(default=12, ge=0)
-    evidence_timeout: PositiveInt = 120
+    evidence_timeout: PositiveInt = 300
     evidence_max_attempts: PositiveInt = 2
     embedding_concurrency: PositiveInt = 2
     min_speech_seconds: float = Field(default=3.0, gt=0)
@@ -133,6 +133,28 @@ class RemoveBackchannelsSettings(BaseModel, frozen=True):
     question_check_timeout: PositiveInt = 120
 
 
+class NameCorrectionsSettings(BaseModel, frozen=True):
+    # Timeout (seconds) for Review Name Corrections' single whole-transcript LLM call (llm_model).
+    timeout: PositiveInt = 300
+
+
+class IsolateNewSpeakersSettings(BaseModel, frozen=True):
+    # Shortest utterance kept as a candidate voice sample, whether picked by the LLM or added by the fallback.
+    min_speech_seconds: float = Field(default=1.0, gt=0)
+    # The fallback drops its shortest additions until they fit the cap or all reach this length.
+    fallback_short_clip_seconds: float = Field(default=2.0, gt=0)
+    # Most speech the voice fallback may add for one player; the LLM's own picks never count against it.
+    fallback_max_speech_seconds: float = Field(default=60.0, gt=0)
+    # The LLM's picks become the reference voice for ranking fallback additions once they total this much.
+    min_seed_speech_seconds: float = Field(default=5.0, gt=0)
+
+    @model_validator(mode="after")
+    def validate_duration_limits(self) -> IsolateNewSpeakersSettings:
+        if self.fallback_short_clip_seconds < self.min_speech_seconds:
+            raise ValueError("fallback_short_clip_seconds must be at least min_speech_seconds.")
+        return self
+
+
 class PreviouslyOnSettings(BaseModel, frozen=True):
     ingredient_timeout: PositiveInt = 600
     scout_timeout: PositiveInt = 600
@@ -151,7 +173,9 @@ class AppSettings(BaseModel, frozen=True):
     remove_outliers: RemoveOutliersSettings = Field(default_factory=RemoveOutliersSettings)
     enhance_voices: EnhanceVoicesSettings = Field(default_factory=EnhanceVoicesSettings)
     speaker_bootstrap: SpeakerBootstrapSettings = Field(default_factory=SpeakerBootstrapSettings)
+    isolate_new_speakers: IsolateNewSpeakersSettings = Field(default_factory=IsolateNewSpeakersSettings)
     remove_backchannels: RemoveBackchannelsSettings = Field(default_factory=RemoveBackchannelsSettings)
+    name_corrections: NameCorrectionsSettings = Field(default_factory=NameCorrectionsSettings)
     llm_model: str = "anthropic/claude-sonnet-4-5"
     llm_model_lite: str = "anthropic/claude-haiku-4-5"
     llm_model_high: str = "openai/gpt-6-astra"

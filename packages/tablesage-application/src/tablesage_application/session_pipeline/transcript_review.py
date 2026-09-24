@@ -10,7 +10,6 @@ from pathlib import Path
 import widelog
 from tablesage_tools.audio.ffmpeg import extract_clip
 from tablesage_tools.model import Transcript
-from tablesage_tools.speakers import MIN_UTTERANCE_DURATION_SECONDS
 
 from ..paths import ARTIFACTS, ArtifactName
 
@@ -152,23 +151,38 @@ class ReplaceTextResult:
     occurrence_count: int
 
 
-def count_occurrences(transcript: Transcript, find: str, case_sensitive: bool) -> int:
+def _find_pattern(find: str, case_sensitive: bool, whole_words: bool) -> re.Pattern[str]:
+    """The literal (escaped) pattern for `find`.
+
+    With `whole_words`, a match must not sit inside a longer word: not preceded by a word character, and
+    followed by a non-word character, the end of the text, or a plural/possessive `s` / `'s` that ends the word.
+    A name correction "Rach" -> "Rich" then leaves "Rachel" alone but still fixes "Rach's".
+    """
+    escaped = re.escape(find)
+    if whole_words:
+        escaped = rf"(?<!\w){escaped}(?=(?:['\u2019]s|s)?(?!\w))"
+    return re.compile(escaped, 0 if case_sensitive else re.IGNORECASE)
+
+
+def count_occurrences(transcript: Transcript, find: str, case_sensitive: bool, whole_words: bool = False) -> int:
     """How many times `find` occurs across every utterance's displayed text.
 
     Same literal (escaped), `punctuated_text`-preferring matching as `replace_text` -- shared so a
     suggestion's displayed occurrence count and what `replace_text` will actually replace never
-    disagree. An empty `find` matches nothing.
+    disagree. An empty `find` matches nothing. `whole_words` is `_find_pattern`'s word-boundary matching.
     """
     if not find:
         return 0
-    pattern = re.compile(re.escape(find), 0 if case_sensitive else re.IGNORECASE)
+    pattern = _find_pattern(find, case_sensitive, whole_words)
     return sum(
         len(pattern.findall(utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text))
         for utterance in transcript.utterances
     )
 
 
-def replace_text(transcript: Transcript, find: str, replacement: str, case_sensitive: bool) -> tuple[Transcript, ReplaceTextResult]:
+def replace_text(
+    transcript: Transcript, find: str, replacement: str, case_sensitive: bool, whole_words: bool = False
+) -> tuple[Transcript, ReplaceTextResult]:
     """Return a copy of `transcript` with every occurrence of `find` in each utterance's displayed
     text replaced by `replacement`, across the whole transcript.
 
@@ -177,11 +191,12 @@ def replace_text(transcript: Transcript, find: str, replacement: str, case_sensi
     what case the matched text had. An utterance with no match is left completely untouched
     (including its `adjusted` flag); one with at least one match gets its displayed text updated
     and `adjusted` set, sticky like every other edit here. An empty `find` matches nothing.
+    `whole_words` is `_find_pattern`'s word-boundary matching.
     """
     if not find:
         return transcript, ReplaceTextResult(utterance_count=0, occurrence_count=0)
 
-    pattern = re.compile(re.escape(find), 0 if case_sensitive else re.IGNORECASE)
+    pattern = _find_pattern(find, case_sensitive, whole_words)
     new_utterances = list(transcript.utterances)
     utterance_count = 0
     occurrence_count = 0
@@ -207,47 +222,6 @@ def save_reviewed_transcript(session_folder: Path, transcript: Transcript) -> No
     except Exception:
         temporary.unlink(missing_ok=True)
         raise
-
-
-@dataclass(frozen=True)
-class BenchmarkTranscriptResult:
-    """The outcome of `generate_benchmark_transcript`, for the caller to report to the user."""
-
-    kept_count: int
-    excluded_count: int
-
-
-def generate_benchmark_transcript(session_folder: Path, *, source: ArtifactName | None = None) -> BenchmarkTranscriptResult:
-    """Write `transcript_benchmark.json` from the completed review (or machine transcript) with every utterance under
-    `MIN_UTTERANCE_DURATION_SECONDS` dropped.
-
-    Scoring `identify_speakers`' output against hand-corrected ground truth that still includes
-    those utterances is misleading: `identify_speakers` never attempts a judgment on one (see
-    `MIN_UTTERANCE_DURATION_SECONDS`'s docstring) and always leaves it `UNASSIGNED_SPEAKER`
-    regardless of what a human later assigned it from context alone -- scoring that as a miss
-    measures the too-short guard, not speaker-identification accuracy.
-
-    This is a derived, disposable, on-demand artifact, not a second source of truth: it is never
-    read by any other pipeline step, never hand-edited, and always regenerated wholesale from
-    the current completed review, otherwise from the current `transcript.json`. Application
-    validates recursive freshness before passing the source. The canonical
-    transcript (including the short utterances) stays exactly what `T` writes. A benchmark
-    script should always regenerate this immediately before scoring rather than trusting an old
-    copy, since nothing keeps it in sync with `transcript.json` automatically.
-    """
-    transcript = load_review_transcript(session_folder, source=source)
-    kept = [utterance for utterance in transcript.utterances if utterance.end - utterance.start >= MIN_UTTERANCE_DURATION_SECONDS]
-    excluded_count = len(transcript.utterances) - len(kept)
-
-    with widelog.wide_event(
-        op="generate_benchmark_transcript",
-        session_folder=str(session_folder),
-        kept_count=len(kept),
-        excluded_count=excluded_count,
-    ):
-        Transcript(utterances=kept).save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT_BENCHMARK].filename)
-
-    return BenchmarkTranscriptResult(kept_count=len(kept), excluded_count=excluded_count)
 
 
 def count_adjusted_utterances(session_folder: Path) -> int:

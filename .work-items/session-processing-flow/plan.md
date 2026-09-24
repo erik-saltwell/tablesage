@@ -1,5 +1,7 @@
 # Implementation plan: resumable session processing flow
 
+> Scope note (2026-09-24): this plan covers the original three-phase Audio → Transcript → Outputs flow, and all of it was completed. The later Process Session redesign removed the Outputs screen and the dynamic `P` label that Phases 3 and 5 describe. Later work is recorded in [item.md](item.md) and [intent.md](intent.md) and isn't planned here.
+
 ## Outcome
 
 Replace Session Detail's separate `A` Import Audio, `V` Review Transcript, and `G` Generate Outputs entry points with one `P` processing flow. The flow consists of Audio, Transcript, and Outputs screens; advances after successful phase completion; can move backward without undoing completed work; and resumes at a safe stage after exit.

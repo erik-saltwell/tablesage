@@ -26,6 +26,9 @@ class ProgressDialog(ModalScreen[None]):
             yield Static(self._message, id="progress-message")
             yield ProgressBar(id="progress-bar", show_eta=False)
 
+    def update_title(self, title: str) -> None:
+        self.query_one("#progress-dialog").border_title = title
+
     def update_message(self, message: str) -> None:
         self.query_one("#progress-message", Static).update(message)
 

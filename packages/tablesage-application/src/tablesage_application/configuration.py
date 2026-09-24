@@ -24,9 +24,11 @@ MODEL_FIELDS = ("llm_model_high", "llm_model", "llm_model_lite")
 # Bundled catalog v1. Custom IDs remain possible within these providers.
 MODEL_PRESETS = (
     ("anthropic/claude-fable-5-1", "anthropic/claude-fable-5-1"),
+    ("anthropic/claude-opus-5-5", "anthropic/claude-opus-5-5"),
     ("openai/gpt-6-astra", "openai/gpt-6-astra"),
     ("openai/gpt-5.6-sol", "openai/gpt-5.6-sol"),
     ("openai/gpt-5.6-terra", "openai/gpt-5.6-terra"),
+    ("openai/gpt-5.6-luna", "openai/gpt-5.6-luna"),
     ("anthropic/claude-sonnet-4-5", "anthropic/claude-sonnet-4-5"),
     ("anthropic/claude-opus-4-5", "anthropic/claude-opus-4-5"),
     ("anthropic/claude-haiku-4-5", "anthropic/claude-haiku-4-5"),

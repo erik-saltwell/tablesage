@@ -99,6 +99,9 @@ These are the longest and most expensive calls TableSage makes.
 - **Process → Transcript**: The model proposes corrections based on the
   [Campaign glossary](../concepts/campaigns.md#glossary).
 - **Extract Glossary**, the model proposes new glossary entries based on the transcript.
+- **Process → Review Name Corrections**: when a Session has players without
+  voice samples, the model proposes corrections for misheard player and
+  character names, which you review before they are applied.
 
 **Low model.** Handles operations where a fast, inexpensive model is enough.
 

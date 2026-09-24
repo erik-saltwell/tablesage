@@ -415,26 +415,144 @@ AudioProcessingScreen {
     }
 }
 
-OutputsProcessingScreen {
+ProcessSessionScreen {
     .screen-body { padding: 1 2; }
-    #outputs-processing-panel {
+    #process-session-panel {
         width: 1fr;
         height: 1fr;
     }
-    #outputs-processing-summary,
-    #outputs-processing-error {
-        height: auto;
-        margin-bottom: 1;
-    }
-    #outputs-status-list {
-        height: 1fr;
-    }
-    .output-status {
+    #process-session-actions-header {
         height: 1;
         margin-bottom: 1;
+        padding-left: 1;
+        text-style: bold;
     }
-    Button {
-        width: 100%;
+    #process-session-steps {
+        height: auto;
+        padding-left: 1;
+    }
+    .process-session-step-divider {
+        width: 1fr;
+        height: 1;
+        padding-left: 6;
+        color: $fg-muted;
+    }
+    #process-session-columns {
+        height: auto;
+    }
+    /* Half the screen, but never narrower than the widest step, so the static step list is never clipped. */
+    #process-session-steps-column {
+        width: 1fr;
+        min-width: 40;
+        height: auto;
+    }
+    #process-session-side-column {
+        width: 1fr;
+        height: auto;
+        padding-left: 2;
+    }
+    #process-session-new-players-header {
+        height: 1;
+        margin-bottom: 1;
+        text-style: bold;
+    }
+    #process-session-new-player-list {
+        height: auto;
+    }
+    #process-session-errors {
+        height: auto;
+        margin-top: 1;
+    }
+    #process-session-errors-header {
+        color: $fg-danger;
+    }
+    #process-session-error-list {
+        height: auto;
+        color: $fg-danger;
+    }
+}
+
+NameCorrectionsScreen {
+    .screen-body { padding: 1 2; }
+    #name-corrections-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+    .section-title {
+        height: 1;
+        margin: 0 0 1 1;
+        color: $fg-accent;
+        text-style: bold;
+    }
+    #name-corrections-table {
+        height: 1fr;
+        border: solid $surface-border;
+    }
+    #name-corrections-table:focus {
+        border: solid $fg-accent;
+    }
+    #name-corrections-actions {
+        height: auto;
+        align: right middle;
+
+        Button {
+            margin: 1 0 0 1;
+        }
+    }
+}
+
+NewSpeakerAssignmentsScreen {
+    .screen-body { padding: 1 2; }
+    #new-speaker-review-panel {
+        width: 1fr;
+        height: 1fr;
+    }
+    .section-title {
+        height: 1;
+        margin: 0 0 1 1;
+        color: $fg-accent;
+        text-style: bold;
+    }
+    #new-speaker-review-columns {
+        height: 1fr;
+    }
+    #new-speaker-review-players-column {
+        width: 50%;
+        /* Fits Player, Samples, Speech and "Too little speech" without truncating. */
+        min-width: 57;
+        max-width: 64;
+        height: 1fr;
+        margin: 0 2 0 0;
+    }
+    #new-speaker-review-utterances-column {
+        width: 1fr;
+        height: 1fr;
+    }
+    #new-speaker-review-players,
+    #new-speaker-review-utterances {
+        height: 1fr;
+        border: solid $surface-border;
+    }
+    #new-speaker-review-players:focus,
+    #new-speaker-review-utterances:focus {
+        border: solid $fg-accent;
+    }
+    #new-speaker-review-players,
+    #new-speaker-review-utterances {
+        border-title-color: $fg-accent;
+        border-title-style: bold;
+    }
+    #new-speaker-review-empty {
+        height: 1fr;
+        padding-left: 1;
+    }
+    #new-speaker-review-actions {
+        height: auto;
+        align: right middle;
+
+        Button {
+            margin: 1 0 0 1;
+        }
     }
 }
 
@@ -537,6 +655,9 @@ ProcessingStepControl {
 
     &.-unavailable .command-entry-text {
         color: $control-disabled-fg;
+    }
+    &.-skipped .command-entry-text {
+        text-style: strike;
     }
 }
 
@@ -809,6 +930,7 @@ ManualReviewUtteranceDialog,
 SpeakerResolutionDialog,
 TranscriptViewDialog,
 FindReplaceDialog,
+SpellingSuggestionDialog,
 OtherActionsDialog {
     align: center middle;
     background: $overlay-bg;
@@ -823,7 +945,8 @@ OtherActionsDialog {
     #manual-review-utterance-dialog,
     #speaker-resolution-dialog,
     #transcript-view-dialog,
-    #find-replace-dialog {
+    #find-replace-dialog,
+    #spelling-suggestion-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -881,7 +1004,8 @@ OtherActionsDialog {
         }
     }
 
-    #find-replace-dialog .field-row {
+    #find-replace-dialog .field-row,
+    #spelling-suggestion-dialog .field-row {
         height: 3;
         align: left middle;
 
@@ -894,7 +1018,8 @@ OtherActionsDialog {
         }
     }
 
-    #find-replace-dialog Checkbox {
+    #find-replace-dialog Checkbox,
+    #spelling-suggestion-dialog Checkbox {
         margin: 0 0 1 0;
     }
 
@@ -907,7 +1032,6 @@ OtherActionsDialog {
     #session-enhancement-scope-prompt,
     #role-picker-prompt,
     #player-picker-empty,
-    #attendee-empty,
     #session-picker-empty,
     #progress-message {
         height: auto;

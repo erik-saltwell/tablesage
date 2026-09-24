@@ -2,10 +2,8 @@ from __future__ import annotations
 
 import os
 import time
-import uuid
 from datetime import date
 from pathlib import Path
-from unittest.mock import patch
 
 from sqlmodel import Session
 from tablesage_application import Application
@@ -139,9 +137,14 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         if step.outputs[0].path.parent == application.session_folder(game_session.id)
     }
     assert prompt_paths_by_step == {
-        ArtifactName.TRANSCRIPT: (system_prompt_path(PromptName.CLASSIFY_BACKCHANNELS),),
+        ArtifactName.TRANSCRIPT: (),
+        ArtifactName.NAME_CORRECTED_TRANSCRIPT: (system_prompt_path(PromptName.SUGGEST_NAME_CORRECTIONS),),
+        ArtifactName.NEW_SPEAKER_ASSIGNMENTS: (system_prompt_path(PromptName.ISOLATE_NEW_SPEAKERS),),
+        ArtifactName.CLEANED_TRANSCRIPT: (system_prompt_path(PromptName.CLASSIFY_BACKCHANNELS),),
+        ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: (),
+        ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT: (),
+        ArtifactName.SPELLCHECKED_TRANSCRIPT: (),
         ArtifactName.REVIEWED_TRANSCRIPT: (),
-        ArtifactName.TRANSCRIPT_BENCHMARK: (),
         ArtifactName.ROLE_TRANSCRIPT: (),
         ArtifactName.TRANSCRIPT_SECTIONS: (system_prompt_path(PromptName.SECTION_TRANSCRIPT),),
         ArtifactName.LEDGER: (system_prompt_path(PromptName.GENERATE_LEDGER),),
@@ -169,41 +172,6 @@ def test_application_plan_propagates_staleness_through_dependencies(tmp_path: Pa
         GenerationTask(game_session.id, ArtifactName.RECAP_SUMMARY),
         GenerationTask(game_session.id, ArtifactName.SUMMARY),
     )
-
-
-def test_application_runs_the_stale_generation_plan_in_order(tmp_path: Path) -> None:
-    application = Application(tmp_path)
-    session_id = uuid.uuid4()
-    plan = (
-        GenerationTask(session_id, ArtifactName.ROLE_TRANSCRIPT),
-        GenerationTask(session_id, ArtifactName.TRANSCRIPT_SECTIONS),
-        GenerationTask(session_id, ArtifactName.LEDGER),
-        GenerationTask(session_id, ArtifactName.PLAYER_INTRODUCTIONS),
-        GenerationTask(session_id, ArtifactName.RECAP_SUMMARY),
-        GenerationTask(session_id, ArtifactName.SUMMARY),
-    )
-    call_order: list[str] = []
-    stages: list[tuple[ArtifactName, int, int]] = []
-
-    with (
-        patch.object(application, "generation_plan", return_value=plan),
-        patch.object(application, "clean_transcript", side_effect=lambda *_args, **_kwargs: call_order.append("role")),
-        patch.object(application, "generate_transcript_sections", side_effect=lambda *_args: call_order.append("sections")),
-        patch.object(application, "generate_ledger", side_effect=lambda *_args: call_order.append("ledger")),
-        patch.object(application, "generate_player_introductions", side_effect=lambda *_args: call_order.append("introductions")),
-        patch.object(application, "generate_recap_summary", side_effect=lambda *_args: call_order.append("recap")),
-        patch.object(application, "generate_summary", side_effect=lambda *_args, **_kwargs: call_order.append("summary")),
-    ):
-        assert (
-            application.generate_outputs(
-                session_id,
-                on_stage=lambda task, completed, total: stages.append((task.artifact_name, completed, total)),
-            )
-            == plan
-        )
-
-    assert call_order == ["role", "sections", "ledger", "introductions", "recap", "summary"]
-    assert stages == [(task.artifact_name, index, len(plan)) for index, task in enumerate(plan)]
 
 
 def test_hand_edited_ledger_rebuilds_only_its_true_consumer(tmp_path: Path) -> None:

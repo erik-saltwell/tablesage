@@ -253,18 +253,13 @@ async def test_escape_dismisses_with_none() -> None:
 
 
 @pytest.mark.anyio
-async def test_no_players_available_shows_message_and_close_button() -> None:
-    results: list[AttendeeResult | None] = []
-
+async def test_no_players_still_offers_creating_a_new_player() -> None:
     async with TableSageApp().run_test() as pilot:
-        pilot.app.push_screen(AttendeeDialog(players=[], title="Add Attendee"), results.append)
+        pilot.app.push_screen(AttendeeDialog(players=[], title="Add Attendee"))
         await pilot.pause()
 
-        assert pilot.app.screen.query_one("#attendee-empty")
-        pilot.app.screen.query_one("#attendee-close", Button).press()
-        await pilot.pause()
-
-        assert results == [None]
+        select = pilot.app.screen.query_one("#attendee-player-select", Select)
+        assert [value for _label, value in select._options if value is not Select.NULL] == ["new-player"]
 
 
 # --- allow_new_player=True ---
