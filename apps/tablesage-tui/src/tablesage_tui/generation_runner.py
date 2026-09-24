@@ -31,12 +31,17 @@ class GenerationRunner:
         on_start: Callable[[], None],
         on_success: Callable[[tuple[GenerationTask, ...]], None],
         on_error: Callable[[BaseException], None],
+        on_cancel: Callable[[], None] | None = None,
+        allow_current_only: bool = True,
     ) -> None:
         self._screen = screen
         self._session_id = session_id
         self._on_start = on_start
         self._on_success = on_success
         self._on_error = on_error
+        self._on_cancel = on_cancel
+        # Process Session's Generate Artifacts step offers only Regenerate Prior or Cancel.
+        self._allow_current_only = allow_current_only
 
     def prepare(self, *, force: ArtifactName | None = None) -> None:
         """Plan work, ask about stale prior Sessions when needed, then run it."""
@@ -58,26 +63,36 @@ class GenerationRunner:
         def on_choice(choice: bool | None) -> None:
             if choice is True:
                 self._run(force=force)
-            elif choice is False:
+            elif choice is False and self._allow_current_only:
                 self._run(force=force, rebuild_prior_sessions=False)
+            elif self._on_cancel is not None:
+                self._on_cancel()
 
-        self._screen.app.push_screen(
-            ConfirmationDialog(
+        requirement = (
+            f"This action requires rebuilding {len(prior_tasks)} output {phase_label} in {prior_session_count} prior {session_label}.\n\n"
+        )
+        if self._allow_current_only:
+            dialog = ConfirmationDialog(
                 title="Prior Sessions Are Out of Date",
-                prompt=(
-                    f"This action requires rebuilding {len(prior_tasks)} output {phase_label} in "
-                    f"{prior_session_count} prior {session_label}.\n\n"
-                    "Regenerate Prior rebuilds them first. Current Only processes this Session and places a note "
-                    "in the Summary instead of including a stale prior recap. Cancel does nothing."
-                ),
+                prompt=requirement + "Regenerate Prior rebuilds them first. Current Only processes this Session and places a note "
+                "in the Summary instead of including a stale prior recap. Cancel does nothing.",
                 yes_label="Regenerate Prior",
                 no_label="Current Only",
-            ),
-            on_choice,
-        )
+            )
+        else:
+            dialog = ConfirmationDialog(
+                title="Prior Sessions Are Out of Date",
+                prompt=requirement + "Regenerate Prior rebuilds them first, then this Session. Cancel does nothing.",
+                show_cancel=False,
+                yes_label="Regenerate Prior",
+                no_label="Cancel",
+            )
+        self._screen.app.push_screen(dialog, on_choice)
 
     def _run(self, *, force: ArtifactName | None = None, rebuild_prior_sessions: bool = True) -> None:
         if not self._screen.check_credentials("llm_model_high"):
+            if self._on_cancel is not None:
+                self._on_cancel()
             return
         self._on_start()
 

@@ -33,8 +33,8 @@ from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
-from .bootstrap_speakers import speech_duration
-from .bootstrap_workflow import atomic_write
+from .atomic_files import atomic_write
+from .speech import speech_duration
 
 OnProgress = Callable[[str, int, int], None]
 

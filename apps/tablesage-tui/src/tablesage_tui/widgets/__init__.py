@@ -5,7 +5,6 @@ from .committing_input import CommittingInput
 from .empty_widget import EmptyWidget
 from .equal_width_button_row import EqualWidthButtonRow
 from .processing_step_control import ProcessingStepControl
-from .workflow_rail import WorkflowRail, WorkflowStepStatus
 
 __all__ = [
     "AsciiArt",
@@ -16,6 +15,4 @@ __all__ = [
     "sample_count_cell",
     "EmptyWidget",
     "EqualWidthButtonRow",
-    "WorkflowRail",
-    "WorkflowStepStatus",
 ]

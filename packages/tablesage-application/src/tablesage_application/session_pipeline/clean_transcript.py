@@ -12,7 +12,6 @@ from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..paths import ARTIFACTS, ArtifactName
 from .role_transcript import RoleTranscript, RoleTranscriptUtterance
-from .transcript_review import load_review_transcript
 
 
 class Stage(Enum):
@@ -40,8 +39,8 @@ class CleanTranscriptResult:
 
 
 def can_clean_transcript(session_folder: Path) -> tuple[bool, str | None]:
-    if not (session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename).is_file():
-        return False, "Transcribe the session first."
+    if not (session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename).is_file():
+        return False, "Review the transcript first."
     return True, None
 
 
@@ -104,10 +103,10 @@ def clean_transcript(
     role_names: dict[str, str],
     on_progress: OnProgress | None = None,
 ) -> CleanTranscriptResult:
-    """Remove leftover backchannels from and assign roles to a session's preferred transcript, writing `role_transcript.json`.
+    """Remove leftover backchannels from and assign roles to the completed review, writing `role_transcript.json`.
 
-    Reads the completed Manual Review when present, otherwise the machine transcript (see
-    `load_review_transcript`) -- neither source is modified. The result is a new, independent
+    Reads only `transcript_reviewed.json` (Process Session's Review Transcript step), which is not
+    modified. The result is a new, independent
     artifact: `transcript.json` and `transcript_reviewed.json` are untouched by this step.
     Regenerating `role_transcript.json` makes any older dependent Ledger and Summary stale without
     deleting them.
@@ -115,7 +114,7 @@ def clean_transcript(
     Unlike the pre-review pass (`remove_backchannels.py`, run automatically during Transcribe),
     this step makes no LLM call -- see `_remove_unassigned_backchannels`.
     """
-    transcript = load_review_transcript(session_folder)
+    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
     original_count = len(transcript.utterances)
 
     with widelog.wide_event(op="clean_transcript", session_folder=str(session_folder)) as log:

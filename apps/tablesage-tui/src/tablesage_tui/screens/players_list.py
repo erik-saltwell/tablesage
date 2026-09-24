@@ -17,11 +17,9 @@ from textual_fspicker import Filters
 from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
 from ..dialogs.file_picker import FileOpen, FileSave
 from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
-from ..player_import_run import PlayerImportRun
 from ..widgets import SampleCountDataTable, sample_count_cell
 from .base import TableSageScreen
 from .player_detail import PlayerDetailScreen
-from .player_import_prestep import PlayerImportPreStepScreen
 
 _STAGE_LABELS = {
     Stage.EXTRACTING: "Extracting voice clips…",
@@ -38,7 +36,6 @@ class PlayersListScreen(TableSageScreen):
     ]
     COMMON_BINDINGS = [
         Binding("n,N", "new_player", "New Player", key_display="N"),
-        Binding("a,A", "create_players_from_audio", "From Audio", key_display="A"),
         Binding("s,S", "enhance_from_session", "From Session", key_display="S"),
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
@@ -189,29 +186,6 @@ class PlayersListScreen(TableSageScreen):
 
         self.app.push_screen(
             FileSave(title="Export Players", location=Path.home(), default_file="players.zip"),
-            on_picked,
-        )
-
-    def action_create_players_from_audio(self) -> None:
-        def on_picked(source_path: Path | None) -> None:
-            if source_path is None:
-                return
-            try:
-                self.application.validate_import_audio_source(source_path)
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
-            self.app.push_screen(PlayerImportPreStepScreen(PlayerImportRun(source_audio_path=source_path)))
-
-        extensions = self.application.audio_import_extensions()
-        audio_filter = Filters(
-            (
-                "Audio files",
-                lambda path: path.suffix.lower() in extensions,
-            ),
-        )
-        self.app.push_screen(
-            FileOpen(title="Import Players From Audio", location=Path.home(), filters=audio_filter),
             on_picked,
         )
 

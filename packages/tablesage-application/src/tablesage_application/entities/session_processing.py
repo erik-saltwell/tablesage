@@ -4,7 +4,7 @@ import uuid
 from datetime import UTC, datetime
 
 from sqlmodel import Session
-from tablesage_model.model import SessionProcessingPhase, SessionProcessingState
+from tablesage_model.model import SessionProcessingState
 
 
 def get_state(session: Session, session_id: uuid.UUID) -> SessionProcessingState | None:
@@ -13,40 +13,12 @@ def get_state(session: Session, session_id: uuid.UUID) -> SessionProcessingState
 
 
 def get_or_create_state(session: Session, session_id: uuid.UUID) -> SessionProcessingState:
-    """Return the workflow record, creating the default Audio position lazily."""
+    """Return the workflow record, creating it lazily."""
     state = get_state(session, session_id)
     if state is None:
         state = SessionProcessingState(session_id=session_id)
         session.add(state)
         session.flush()
-    return state
-
-
-def set_phase(session: Session, session_id: uuid.UUID, phase: SessionProcessingPhase) -> SessionProcessingState:
-    state = get_or_create_state(session, session_id)
-    state.phase = phase.value
-    _touch(state)
-    session.add(state)
-    return state
-
-
-def record_failure(session: Session, session_id: uuid.UUID, phase: SessionProcessingPhase, message: str) -> SessionProcessingState:
-    state = get_or_create_state(session, session_id)
-    state.failed_phase = phase.value
-    state.failure_message = message
-    _touch(state)
-    session.add(state)
-    return state
-
-
-def clear_failure(session: Session, session_id: uuid.UUID) -> SessionProcessingState | None:
-    state = get_state(session, session_id)
-    if state is None:
-        return None
-    state.failed_phase = None
-    state.failure_message = None
-    _touch(state)
-    session.add(state)
     return state
 
 

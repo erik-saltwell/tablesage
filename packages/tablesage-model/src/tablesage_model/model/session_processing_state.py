@@ -2,39 +2,23 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from enum import StrEnum
 
 from sqlalchemy import CheckConstraint
 from sqlmodel import Field, SQLModel
 
 
-class SessionProcessingPhase(StrEnum):
-    """The resumable primary-flow stage a Session should reopen."""
-
-    AUDIO = "audio"
-    BOOTSTRAP_REVIEW = "bootstrap_review"
-    NEW_SPEAKER_REVIEW = "new_speaker_review"
-    SPELLING = "spelling"
-    TRANSCRIPT = "transcript"
-    OUTPUTS = "outputs"
-
-
 class SessionProcessingState(SQLModel, table=True):
-    """Workflow metadata for one Session, separate from its canonical artifacts.
+    """Where a Session's saved Review Transcript draft came from, separate from its canonical artifacts.
 
-    Draft transcript content stays in the Session folder. This record only identifies the
-    source artifact it was based on and records navigation/error state, so it can never be
-    mistaken for the completed reviewed transcript consumed by generation.
+    Draft transcript content stays in the Session folder. This record only identifies the source
+    artifact it was based on (and that file's modification time), so a draft can never be mistaken
+    for the completed reviewed transcript and is dropped once its source changes.
     """
 
     __tablename__ = "session_processing_state"
     __table_args__ = (
         CheckConstraint(
-            "phase in ('audio', 'bootstrap_review', 'new_speaker_review', 'spelling', 'transcript', 'outputs')",
-            name="ck_session_processing_state_phase_valid",
-        ),
-        CheckConstraint(
-            "draft_source_artifact is null or draft_source_artifact in ('transcript', 'reviewed_transcript')",
+            "draft_source_artifact is null or draft_source_artifact in ('spellchecked_transcript', 'reviewed_transcript')",
             name="ck_session_processing_state_draft_source_valid",
         ),
         CheckConstraint(
@@ -42,17 +26,9 @@ class SessionProcessingState(SQLModel, table=True):
             "or (draft_source_artifact is not null and draft_source_modified_ns is not null and draft_source_modified_ns >= 0)",
             name="ck_session_processing_state_draft_source_complete",
         ),
-        CheckConstraint(
-            "failed_phase is null or failed_phase in "
-            "('audio', 'bootstrap_review', 'new_speaker_review', 'spelling', 'transcript', 'outputs')",
-            name="ck_session_processing_state_failed_phase_valid",
-        ),
     )
 
     session_id: uuid.UUID = Field(primary_key=True, foreign_key="session.id", ondelete="CASCADE")
-    phase: str = Field(default=SessionProcessingPhase.AUDIO.value)
     draft_source_artifact: str | None = Field(default=None)
     draft_source_modified_ns: int | None = Field(default=None)
-    failed_phase: str | None = Field(default=None)
-    failure_message: str | None = Field(default=None)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

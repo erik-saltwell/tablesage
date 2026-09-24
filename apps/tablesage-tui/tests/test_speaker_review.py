@@ -58,9 +58,8 @@ def _application(
     application = MagicMock(
         session_folder=MagicMock(return_value=session_folder),
         list_attendance=MagicMock(return_value=attendees if attendees is not None else [_attendee("Alice"), _attendee("Bob")]),
-        extract_glossary=MagicMock(return_value=[]),
+        load_review_draft=MagicMock(return_value=None),
         extract_review_clips=MagicMock(return_value=(transcript, clip_dir)),
-        suggest_spelling_corrections=MagicMock(return_value=[]),
         save_reviewed_transcript=MagicMock(),
         discard_review_clips=MagicMock(),
     )
@@ -386,7 +385,7 @@ async def test_complete_saves_separate_reviewed_transcript_and_closes(tmp_path: 
 
 
 @pytest.mark.anyio
-async def test_cancel_button_discards_working_changes_without_saving(tmp_path: Path) -> None:
+async def test_exit_button_with_edits_dont_save_discards_working_changes_without_saving(tmp_path: Path) -> None:
     application = _application(session_folder=tmp_path)
     session_id = uuid.uuid4()
 
@@ -395,9 +394,13 @@ async def test_cancel_button_discards_working_changes_without_saving(tmp_path: P
         await pilot.press("2")
         await pilot.pause()
 
+        # Changed work offers Save / Don't Save / Cancel before leaving.
         await pilot.click("#manual-review-cancel")
         await pilot.pause()
+        await pilot.click("#confirmation-no")
+        await pilot.pause()
 
+        application.save_review_draft.assert_not_called()
         application.save_reviewed_transcript.assert_not_called()
         application.discard_review_clips.assert_called_once_with(session_id)
         assert not isinstance(pilot.app.screen, ManualReviewScreen)

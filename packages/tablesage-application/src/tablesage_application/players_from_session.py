@@ -87,7 +87,7 @@ def select_assigned_utterances(utterances: list[Utterance], player_name: str, mi
     ]
 
 
-def _generated_session_filename(player_name: str, campaign_name: str, session_name: str, session_hash: str) -> str:
+def generated_session_filename(player_name: str, campaign_name: str, session_name: str, session_hash: str) -> str:
     slug = clips.slugify
     return f"session-{slug(player_name)}-{slug(campaign_name)}-{slug(session_name)}-{session_hash}-{uuid.uuid4().hex}.wav"
 
@@ -163,7 +163,7 @@ def enhance_players_from_session(
 
             written = 0
             for utterance in utterances_by_player[attendee.player_id]:
-                filename = _generated_session_filename(attendee.player_name, campaign_name, session_name, session_hash)
+                filename = generated_session_filename(attendee.player_name, campaign_name, session_name, session_hash)
                 await extract_clip(input_audio_path, folder / filename, utterance.start, utterance.end)
                 written += 1
                 completed += 1

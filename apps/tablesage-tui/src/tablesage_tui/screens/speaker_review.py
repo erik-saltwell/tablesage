@@ -2,15 +2,10 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Callable
-from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
-from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
-from tablesage_application.session_pipeline.suggest_spelling_corrections import apply_corrections
-from tablesage_model.model import SessionProcessingPhase
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 from textual.app import ComposeResult
@@ -20,7 +15,6 @@ from textual.widgets import Button, DataTable, Static
 from textual.widgets.data_table import CursorType
 
 from ..audio_playback import PlaybackMode, ReviewPlayback
-from ..corrections_review import CorrectionsReview, DraftCorrection, applied_message
 from ..dialogs import (
     ConfirmationDialog,
     FindReplaceDialog,
@@ -29,29 +23,10 @@ from ..dialogs import (
     ManualReviewUtteranceResult,
 )
 from ..widgets import EqualWidthButtonRow
-from .glossary_review import GlossaryReviewScreen
-from .session_processing import SessionProcessingScreen, register_processing_screen
-
-if TYPE_CHECKING:
-    from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
+from .base import TableSageScreen
 
 _MAX_ASSIGNABLE_ATTENDEES = 9
 _DIM_STYLE = "dim"
-
-
-class Phase(Enum):
-    """Which of `ManualReviewScreen`'s two phases is currently shown.
-
-    SUGGESTIONS (spelling-correction suggestions, reviewed in a table) always runs first when
-    there's anything to suggest; REVIEW (today's speaker/text review) is entered either after
-    SUGGESTIONS completes or immediately, skipping SUGGESTIONS, when there was nothing to
-    suggest. Both phases share this one screen and one in-memory `Transcript` -- nothing is
-    persisted until REVIEW's own Complete, and Cancel at either phase discards everything and
-    exits, uniformly.
-    """
-
-    SUGGESTIONS = "suggestions"
-    REVIEW = "review"
 
 
 class _ReviewTable(DataTable[object]):
@@ -96,29 +71,19 @@ class _ReviewTable(DataTable[object]):
             self.move_cursor(row=candidate)
 
 
-class ManualReviewScreen(SessionProcessingScreen):
-    """Two-phase review of a working copy of the transcript: spelling-correction suggestions first, then speaker labels and text.
+class ManualReviewScreen(TableSageScreen):
+    """Process Session's Review Transcript step (5): review speaker labels and text in a working copy of the transcript.
 
-    Both phases share one in-memory `Transcript` (see `Phase`). Edits stay in memory until
-    REVIEW's Complete writes the separate reviewed-transcript artifact. Cancel (including Escape),
-    at either phase, discards this visit's working copy entirely and leaves both the machine
-    transcript and any previously completed review unchanged.
+    It starts from a still-valid saved draft, else a still-current completed review, else the spellchecked
+    transcript. Edits stay in memory until Complete writes the reviewed-transcript artifact and hands control
+    back to Process Session, which continues processing. Leaving (Exit, Escape, or quitting the app) with
+    unsaved edits offers Save (a resumable draft), Don't Save, or Cancel.
     """
 
-    section = "process · transcript"
-    phase = SessionProcessingPhase.TRANSCRIPT
-
-    _SUGGESTIONS_ACTIONS = frozenset({"new_suggestion", "edit_suggestion", "delete_suggestion", "complete_suggestions"})
-    _REVIEW_ACTIONS = frozenset({"toggle_mode", "replay", "delete_utterance", "find_replace", "assign_speaker", "toggle_focus"})
+    section = "process session · review transcript"
 
     COMMON_BINDINGS = [
-        *SessionProcessingScreen.COMMON_BINDINGS,
-        # Suggestions phase.
-        Binding("n,N", "new_suggestion", "New", key_display="N"),
-        Binding("enter,e,E", "edit_suggestion", "Edit", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_suggestion", "Delete", key_display="D"),
-        Binding("c,C", "complete_suggestions", "Apply & Continue", key_display="C"),
-        # Review phase.
+        Binding("escape", "exit_review", "Exit", key_display="Esc"),
         Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
         Binding("r,R", "replay", "Replay", key_display="R"),
         Binding("d,D,delete,backspace", "delete_utterance", "Delete", key_display="D"),
@@ -134,8 +99,10 @@ class ManualReviewScreen(SessionProcessingScreen):
         ),
     ]
 
-    def __init__(self, session_id: uuid.UUID) -> None:
-        super().__init__(session_id)
+    def __init__(self, session_id: uuid.UUID, on_completed: Callable[[], None] | None = None) -> None:
+        super().__init__()
+        self._session_id = session_id
+        self._on_completed = on_completed
         self._session_folder: Path | None = None
         self._transcript: Transcript | None = None
         # `_clip_indices[i]` is the on-disk clip filename index (from `extract_review_clips`'s
@@ -150,27 +117,16 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._playhead = 0
         self._programmatic_move = False
         self._table_ready = False
-        self._phase = Phase.SUGGESTIONS
-        self._corrections = CorrectionsReview(self, "#spelling-suggestions-table", noun="Suggestion")
         self._visit_baseline: Transcript | None = None
-        self._spelling_checkpoint = False
+
+    @property
+    def session_id(self) -> uuid.UUID:
+        return self._session_id
 
     def compose_content(self) -> ComposeResult:
-        with Vertical(id="spelling-suggestions-panel", classes="panel surface-2") as panel:
-            panel.display = False
-            panel.border_title = " spelling suggestions "
-            suggestions_table: DataTable[str] = DataTable(
-                id="spelling-suggestions-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table"
-            )
-            CorrectionsReview.add_columns(suggestions_table)
-            yield suggestions_table
-            with EqualWidthButtonRow(id="spelling-suggestions-actions"):
-                yield Button("Exit", id="spelling-suggestions-cancel")
-                yield Button("Apply & Continue", id="spelling-suggestions-complete", variant="primary")
-
         with Vertical(id="manual-review-panel", classes="panel surface-2") as panel:
             panel.display = False
-            panel.border_title = " manual review "
+            panel.border_title = " review transcript "
 
             with Horizontal(id="manual-review-status"):
                 yield Static("Mode: Manual", id="manual-review-mode")
@@ -193,22 +149,13 @@ class ManualReviewScreen(SessionProcessingScreen):
                 yield Button("Complete", id="manual-review-complete", variant="primary")
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action in self._SUGGESTIONS_ACTIONS:
-            if self._phase is not Phase.SUGGESTIONS:
-                return None
-            if action in {"edit_suggestion", "delete_suggestion"}:
-                return True if self._selected_suggestion() is not None else None
-            return True
-        if action in self._REVIEW_ACTIONS:
-            if self._phase is not Phase.REVIEW:
-                return None
-            if action == "delete_utterance":
-                return True if self._transcript is not None and self._transcript.utterances else None
-            return True
+        if action == "delete_utterance":
+            return True if self._transcript is not None and self._transcript.utterances else None
+        if action in {"toggle_mode", "replay", "find_replace", "assign_speaker", "toggle_focus"}:
+            return True if self._transcript is not None else None
         return True
 
     def on_mount(self) -> None:
-        super().on_mount()
         self._session_folder = self.application.session_folder(self._session_id)
         attendees = sorted(self.application.list_attendance(self._session_id), key=lambda attendee: attendee.player_name.casefold())
         self._all_attendee_names = [attendee.player_name for attendee in attendees]
@@ -216,65 +163,30 @@ class ManualReviewScreen(SessionProcessingScreen):
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
         draft = self.application.load_review_draft(self._session_id)
-        if isinstance(draft, Transcript):
-            self._restore_draft(draft)
-            return
-
-        spelling = self.application.load_spelling_review(self._session_id)
-        if isinstance(spelling, Transcript):
-            self._restore_spelling_checkpoint(spelling)
-            return
-
         self.run_with_progress(
-            title="Manual Review",
-            message="Finding glossary entries…",
-            work=lambda: self.application.extract_glossary(self._session_id),
-            on_success=self._after_extract_glossary,
+            title="Review Transcript",
+            message="Restoring saved transcript edits…" if draft is not None else "Extracting clips…",
+            work=lambda: self.application.extract_review_clips(self._session_id, on_progress=self.report_progress),
+            on_success=lambda result: self._after_extract(result, draft),
+            on_error=self._extract_failed,
         )
 
-    def _restore_draft(self, draft: Transcript) -> None:
-        """Extract playback clips from the current source, then resume directly in Review."""
+    def _extract_failed(self, exc: BaseException) -> None:
+        self.notify(f"Could not open the transcript review: {exc}", severity="error")
+        self._stop_review_resources()
+        self.app.pop_screen()
 
-        def work() -> tuple[Transcript, Path]:
-            return self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
-
-        self.run_with_progress(
-            title="Manual Review",
-            message="Restoring saved transcript edits…",
-            work=work,
-            on_success=lambda result: self._after_restore_draft(draft, result),
-        )
-
-    def _after_restore_draft(self, draft: Transcript, result: tuple[Transcript, Path]) -> None:
+    def _after_extract(self, result: tuple[Transcript, Path], draft: Transcript | None) -> None:
         source, _clip_dir = result
-        self._transcript = draft
-        self._clip_indices = self._draft_clip_indices(source, draft)
-        self._phase = Phase.REVIEW
-        self._visit_baseline = draft.model_copy(deep=True)
+        if draft is None:
+            self._transcript = source
+            self._clip_indices = list(range(len(source.utterances)))
+        else:
+            self._transcript = draft
+            self._clip_indices = self._draft_clip_indices(source, draft)
+        self._visit_baseline = self._transcript.model_copy(deep=True)
         self.query_one("#manual-review-panel").display = True
         self._enter_review_phase()
-
-    def _restore_spelling_checkpoint(self, spelling: Transcript) -> None:
-        """Resume the focused-review spelling checkpoint before canonical transcript review."""
-
-        def work() -> tuple[Transcript, Path, list[SpellingSuggestion]]:
-            source, clip_dir = self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
-            self.report_stage_progress("Finding spelling suggestions…", 0, 0)
-            return source, clip_dir, self.application.suggest_spelling_corrections(self._session_id, spelling)
-
-        self.run_with_progress(
-            title="Spellcheck Against Glossary",
-            message="Restoring spelling review…",
-            work=work,
-            on_success=lambda result: self._after_restore_spelling_checkpoint(spelling, result),
-        )
-
-    def _after_restore_spelling_checkpoint(self, spelling: Transcript, result: tuple[Transcript, Path, list[SpellingSuggestion]]) -> None:
-        source, _clip_dir, suggestions = result
-        self._transcript = spelling
-        self._clip_indices = self._draft_clip_indices(source, spelling)
-        self._spelling_checkpoint = True
-        self._show_suggestions_or_review(suggestions)
 
     @staticmethod
     def _draft_clip_indices(source: Transcript, draft: Transcript) -> list[int]:
@@ -292,69 +204,10 @@ class ManualReviewScreen(SessionProcessingScreen):
             indices.append(matches.pop(0) if matches else -1)
         return indices
 
-    def _after_extract_glossary(self, proposals: list[GlossaryProposal]) -> None:
-        if proposals:
-            self.app.push_screen(
-                GlossaryReviewScreen(
-                    self._session_id,
-                    proposals,
-                    on_complete=self._prepare_transcript_review,
-                    on_cancel=self.action_cancel,
-                )
-            )
-            return
-        self._prepare_transcript_review()
-
-    def _prepare_transcript_review(self) -> None:
-        def work() -> tuple[Transcript, Path, list[SpellingSuggestion]]:
-            assert self._session_folder is not None
-            transcript, clip_dir = self.application.extract_review_clips(self._session_id, on_progress=self.report_progress)
-            self.report_stage_progress("Finding spelling suggestions…", 0, 0)
-            suggestions = self.application.suggest_spelling_corrections(self._session_id, transcript)
-            return transcript, clip_dir, suggestions
-
-        self.run_with_progress(
-            title="Manual Review",
-            message="Extracting clips…",
-            work=work,
-            on_success=self._after_extract,
-        )
-
     def _legend_text(self) -> str:
         parts = [f"{index}: {name}" for index, name in enumerate(self._attendee_names, start=1)]
         parts.append("0: Unassigned")
         return "   ".join(parts)
-
-    def _after_extract(self, result: tuple[Transcript, Path, list[SpellingSuggestion]]) -> None:
-        transcript, _clip_dir, suggestions = result
-        self._transcript = transcript
-        self._clip_indices = list(range(len(transcript.utterances)))
-        self._show_suggestions_or_review(suggestions)
-
-    def _show_suggestions_or_review(self, suggestions: list[SpellingSuggestion]) -> None:
-        """Show spelling suggestions when available, otherwise enter transcript review."""
-        if suggestions:
-            self._phase = Phase.SUGGESTIONS
-            assert self._transcript is not None
-            self.query_one("#spelling-suggestions-panel").display = True
-            self._corrections.load(self._transcript, suggestions)
-            self.query_one("#spelling-suggestions-table", DataTable).focus()
-            self.refresh_bindings()
-            return
-
-        self._complete_spelling_checkpoint()
-        self._phase = Phase.REVIEW
-        self.query_one("#manual-review-panel").display = True
-        assert self._transcript is not None
-        self._visit_baseline = self._transcript.model_copy(deep=True)
-        self._enter_review_phase()
-
-    def _complete_spelling_checkpoint(self) -> None:
-        """Make accepted spelling work the ordinary transcript-review draft exactly once."""
-        if self._spelling_checkpoint:
-            assert self._transcript is not None
-            self.application.complete_spelling_review(self._session_id, self._transcript)
-            self._spelling_checkpoint = False
 
     def _enter_review_phase(self) -> None:
         assert self._transcript is not None
@@ -373,39 +226,6 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._update_focus_indicator()
         self._table_ready = True
         self._play(0)
-
-    # Spelling suggestions -- phase one, reviewed through the shared `CorrectionsReview`.
-
-    @property
-    def _suggestions(self) -> list[DraftCorrection]:
-        return self._corrections.corrections
-
-    def _selected_suggestion(self) -> DraftCorrection | None:
-        return self._corrections.selected()
-
-    def action_new_suggestion(self) -> None:
-        self._corrections.new()
-
-    def action_edit_suggestion(self) -> None:
-        self._corrections.edit_selected()
-
-    def action_delete_suggestion(self) -> None:
-        self._corrections.delete_selected()
-
-    def action_complete_suggestions(self) -> None:
-        """Apply every surviving suggestion's find/replace, sequentially in table order, then enter the review phase."""
-        assert self._transcript is not None
-        self._transcript, occurrence_total = apply_corrections(self._transcript, self._suggestions)
-        message = applied_message(len(self._suggestions), occurrence_total)
-        if message is not None:
-            self.notify(message)
-
-        self._complete_spelling_checkpoint()
-        self._phase = Phase.REVIEW
-        self.query_one("#spelling-suggestions-panel").display = False
-        self.query_one("#manual-review-panel").display = True
-        self._visit_baseline = self._transcript.model_copy(deep=True)
-        self._enter_review_phase()
 
     # Row rendering
 
@@ -469,11 +289,8 @@ class ManualReviewScreen(SessionProcessingScreen):
         self._play(index)
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
-        """A second click on the selected row (or Enter) opens that row's editor -- suggestion or utterance, by phase."""
+        """A second click on the selected row (or Enter) opens that row's editor."""
         event.stop()
-        if self._phase is Phase.SUGGESTIONS:
-            self.action_edit_suggestion()
-            return
         if not self._table_ready or self._transcript is None:
             return
         index = event.cursor_row
@@ -673,46 +490,33 @@ class ManualReviewScreen(SessionProcessingScreen):
         event.stop()
         if event.button.id == "manual-review-complete":
             self.action_complete()
-        elif event.button.id == "spelling-suggestions-complete":
-            self.action_complete_suggestions()
-        elif event.button.id in ("manual-review-cancel", "spelling-suggestions-cancel"):
-            self.action_cancel()
+        elif event.button.id == "manual-review-cancel":
+            self.action_exit_review()
 
     def action_complete(self) -> None:
         if self._transcript is None:
             return
-        from .process_session import ProcessSessionScreen
-
-        self.application.save_reviewed_transcript(self._session_id, self._transcript)
+        try:
+            self.application.save_reviewed_transcript(self._session_id, self._transcript)
+        except (OSError, ValueError) as exc:
+            self.notify(f"Could not save the reviewed transcript: {exc}", severity="error")
+            return
         self.application.discard_review_draft(self._session_id)
-        self.application.clear_session_processing_failure(self._session_id)
-        self.application.set_session_processing_phase(self._session_id, SessionProcessingPhase.OUTPUTS)
         self.notify("Reviewed transcript saved.")
-        self._leave(
-            lambda: self.app.switch_screen(ProcessSessionScreen(self._session_id)),
-            phase=SessionProcessingPhase.OUTPUTS,
-        )
+        self._stop_review_resources()
+        self.app.pop_screen()
+        if self._on_completed is not None:
+            self._on_completed()
 
-    def action_cancel(self) -> None:
-        # The explicit Cancel buttons promise to discard this visit's working copy. Exit and
-        # Back retain the separate save-draft decision for an interrupted review.
-        self._leave(self.app.pop_screen)
-
-    def action_exit_processing(self) -> None:
-        """Leave review, optionally saving changed transcript work as a draft."""
-        self._request_leave(self.app.pop_screen)
-
-    def action_back_processing(self) -> None:
-        """Use the same draft decision as Exit before returning to Audio."""
-        self._request_leave(lambda: self.switch_to_processing_phase(SessionProcessingPhase.AUDIO))
+    def action_exit_review(self) -> None:
+        """Return to Process Session, first offering to save changed transcript work as a draft."""
+        self.confirm_leave(self.app.pop_screen)
 
     def confirm_leave(self, on_confirm: Callable[[], object]) -> None:
-        """Give the application quit path the same save/discard decision as Exit."""
-        self._request_leave(on_confirm)
-
-    def _request_leave(self, after_leave: Callable[[], object]) -> None:
+        """Offer the save-draft decision before leaving; the application quit path uses it too."""
         if not self._has_unsaved_transcript_changes():
-            self._leave(after_leave)
+            self._stop_review_resources()
+            on_confirm()
             return
 
         def on_choice(choice: bool | None) -> None:
@@ -725,7 +529,8 @@ class ManualReviewScreen(SessionProcessingScreen):
                 except Exception as exc:
                     self.notify(f"Could not save transcript edits: {exc}", severity="error")
                     return
-            self._leave(after_leave)
+            self._stop_review_resources()
+            on_confirm()
 
         self.app.push_screen(
             ConfirmationDialog(
@@ -740,15 +545,6 @@ class ManualReviewScreen(SessionProcessingScreen):
     def _has_unsaved_transcript_changes(self) -> bool:
         return self._transcript is not None and self._visit_baseline is not None and self._transcript != self._visit_baseline
 
-    def _leave(self, after_leave: Callable[[], object], *, phase: SessionProcessingPhase = SessionProcessingPhase.TRANSCRIPT) -> None:
-        self.application.set_session_processing_phase(self._session_id, phase)
-        self._stop_review_resources()
-        after_leave()
-
     def _stop_review_resources(self) -> None:
         self._playback.stop()
         self.application.discard_review_clips(self._session_id)
-
-
-register_processing_screen(SessionProcessingPhase.TRANSCRIPT, ManualReviewScreen)
-register_processing_screen(SessionProcessingPhase.SPELLING, ManualReviewScreen)

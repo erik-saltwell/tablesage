@@ -2,27 +2,23 @@ import os
 import uuid
 from datetime import date, datetime
 from pathlib import Path
-from unittest.mock import ANY, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from tablesage_application.entities.sessions import Attendee
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline.artifact_graph import GENERATION_ORDER, ArtifactStatus, GenerationTask
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
-from tablesage_application.session_pipeline.transcribe_audio import TranscriptionResult
-from tablesage_model.model import Player, SessionProcessingPhase
+from tablesage_model.model import Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tui.dialogs import ArtifactRegenerationDialog, AttendeeDialog, ConfirmationDialog, TextInputDialog
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
-from tablesage_tui.screens.audio_processing import AudioProcessingScreen
 from tablesage_tui.screens.glossary_review import GlossaryReviewScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
-from tablesage_tui.screens.speaker_review import ManualReviewScreen
 from textual.pilot import Pilot
 from textual.widgets import Button, DataTable, Input, Select, Static
-from textual_fspicker import FileOpen
 
 
 def _artifacts(
@@ -42,7 +38,8 @@ def _artifacts(
         ArtifactName.CLEANED_TRANSCRIPT: False,
         ArtifactName.NAME_CORRECTED_TRANSCRIPT: False,
         ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: False,
-        ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT: False,
+        ArtifactName.SEEDED_VOICE_SAMPLES: False,
+        ArtifactName.IDENTIFIED_TRANSCRIPT: False,
         ArtifactName.SPELLCHECKED_TRANSCRIPT: False,
         ArtifactName.INPUT_AUDIO: input_audio,
         ArtifactName.TRANSCRIPT: transcript,
@@ -90,14 +87,12 @@ def _application(
         ),
         generation_plan=MagicMock(return_value=tuple(GenerationTask(session.id, name) for name in GENERATION_ORDER)),
         generate_outputs=MagicMock(return_value=tuple(GenerationTask(session.id, name) for name in GENERATION_ORDER)),
-        session_processing_state=MagicMock(return_value=None),
         require_credentials=MagicMock(),
         can_transcribe_audio=MagicMock(return_value=can_transcribe),
         can_clean_session=MagicMock(return_value=can_clean_session),
         can_export_artifacts=MagicMock(return_value=can_export),
         can_extract_glossary=MagicMock(return_value=can_extract_glossary),
         extract_glossary=MagicMock(return_value=[]),
-        suggest_spelling_corrections=MagicMock(return_value=[]),
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
         session_player_centroids=MagicMock(return_value={}),
@@ -484,194 +479,6 @@ async def test_extract_glossary_empty_result_stays_on_session_detail() -> None:
 
         assert isinstance(pilot.app.screen, SessionDetailScreen)
         notify.assert_called_once_with("No new glossary terms found.")
-
-
-@pytest.mark.anyio
-async def test_import_audio_no_downstream_confirmation_imports_and_transcribes(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(
-        session=session, artifacts=_artifacts(input_audio=True, ledger=True), can_transcribe=(True, None), session_folder=session_folder
-    )
-    application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.m4a"
-
-    application.import_and_transcribe_audio = MagicMock(
-        return_value=TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
-    )
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        await pilot.press("a")
-        await pilot.pause()
-        picker = pilot.app.screen
-        assert isinstance(picker, FileOpen)
-
-        with patch.object(AudioProcessingScreen, "_after_transcription"):
-            picker.dismiss(source)
-            await pilot.pause()
-
-            # Pre-existing derived artifacts do not add a confirmation before import.
-            assert not isinstance(pilot.app.screen, ConfirmationDialog)
-            await _wait_for_progress_worker(pilot)
-
-    application.import_and_transcribe_audio.assert_called_once_with(session.id, source, should_clean_audio=True, on_progress=ANY)
-
-
-@pytest.mark.anyio
-async def test_import_audio_validation_error_records_error_and_stops(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session)
-    application.validate_import_audio_source = MagicMock(side_effect=ValueError("'recording.txt' isn't a recognized audio file."))
-    source = tmp_path / "recording.txt"
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        await pilot.press("a")
-        await pilot.pause()
-        picker = pilot.app.screen
-        assert isinstance(picker, FileOpen)
-
-        with patch.object(AudioProcessingScreen, "notify") as notify:
-            picker.dismiss(source)
-            await pilot.pause()
-
-        notify.assert_called_once_with("'recording.txt' isn't a recognized audio file.", severity="error")
-
-    application.import_and_transcribe_audio.assert_not_called()
-    application.record_session_processing_failure.assert_called_once_with(
-        session.id, SessionProcessingPhase.AUDIO, "'recording.txt' isn't a recognized audio file."
-    )
-
-
-@pytest.mark.anyio
-async def test_import_audio_wav_prompts_clean_choice_then_transcribes(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
-    application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.wav"
-
-    application.import_and_transcribe_audio = MagicMock(
-        return_value=TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
-    )
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        await pilot.press("a")
-        await pilot.pause()
-        picker = pilot.app.screen
-        assert isinstance(picker, FileOpen)
-
-        picker.dismiss(source)
-        await pilot.pause()
-
-        dialog = pilot.app.screen
-        assert isinstance(dialog, ConfirmationDialog)
-        assert "noise-cleaning" in str(dialog.query_one("#confirmation-prompt", Static).render())
-        with patch.object(AudioProcessingScreen, "_after_transcription"):
-            await pilot.click("#confirmation-yes")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-    application.import_and_transcribe_audio.assert_called_once_with(session.id, source, should_clean_audio=True, on_progress=ANY)
-
-
-@pytest.mark.anyio
-async def test_import_audio_wav_skip_cleaning_declined(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
-    application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.wav"
-
-    application.import_and_transcribe_audio = MagicMock(
-        return_value=TranscriptionResult(utterance_count=1, unassigned_speaker_count=0, removed_backchannel_count=0)
-    )
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        await pilot.press("a")
-        await pilot.pause()
-        picker = pilot.app.screen
-        assert isinstance(picker, FileOpen)
-
-        picker.dismiss(source)
-        await pilot.pause()
-
-        assert isinstance(pilot.app.screen, ConfirmationDialog)
-        with patch.object(AudioProcessingScreen, "_after_transcription"):
-            await pilot.click("#confirmation-no")
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-    application.import_and_transcribe_audio.assert_called_once_with(session.id, source, should_clean_audio=False, on_progress=ANY)
-
-
-@pytest.mark.anyio
-async def test_import_audio_transcribe_precondition_not_met_records_error_but_import_already_ran(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(session=session, can_transcribe=(False, "Missing voice profile for: Alice."), session_folder=session_folder)
-    application.validate_import_audio_source = MagicMock()
-    application.import_and_transcribe_audio = MagicMock(side_effect=RuntimeError("Missing voice profile for: Alice."))
-    source = tmp_path / "recording.m4a"
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        with patch.object(AudioProcessingScreen, "notify") as notify:
-            await pilot.press("a")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
-            picker.dismiss(source)
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-        notify.assert_called_once_with("Missing voice profile for: Alice.", severity="error")
-
-    application.import_and_transcribe_audio.assert_called_once_with(session.id, source, should_clean_audio=True, on_progress=ANY)
-    application.record_session_processing_failure.assert_called_once_with(
-        session.id, SessionProcessingPhase.AUDIO, "Missing voice profile for: Alice."
-    )
-
-
-@pytest.mark.anyio
-async def test_import_audio_reports_merged_success_message(tmp_path: Path) -> None:
-    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    session_folder = tmp_path / "session"
-    application = _application(session=session, can_transcribe=(True, None), session_folder=session_folder)
-    application.validate_import_audio_source = MagicMock()
-    source = tmp_path / "recording.m4a"
-
-    application.import_and_transcribe_audio = MagicMock(
-        return_value=TranscriptionResult(utterance_count=10, unassigned_speaker_count=3, removed_backchannel_count=2)
-    )
-
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(AudioProcessingScreen(session.id))
-        await pilot.pause()
-
-        with patch.object(AudioProcessingScreen, "notify") as notify, patch.object(ManualReviewScreen, "on_mount"):
-            await pilot.press("a")
-            await pilot.pause()
-            picker = pilot.app.screen
-            assert isinstance(picker, FileOpen)
-            picker.dismiss(source)
-            await pilot.pause()
-            await _wait_for_progress_worker(pilot)
-
-        notify.assert_called_once_with("Audio imported and transcribed. 3 of 10 utterances need manual review. 2 backchannels removed.")
 
 
 @pytest.mark.anyio

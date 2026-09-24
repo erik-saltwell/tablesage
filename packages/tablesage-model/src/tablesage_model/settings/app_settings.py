@@ -37,9 +37,6 @@ class SpeakerIdentificationSettings(BaseModel, frozen=True):
     duration_override: SpeakerIdentificationDurationOverrideSettings = Field(default_factory=SpeakerIdentificationDurationOverrideSettings)
     short_utterance_widening: ShortUtteranceWideningSettings = Field(default_factory=ShortUtteranceWideningSettings)
     cluster_propagation: ClusterPropagationSettings = Field(default_factory=ClusterPropagationSettings)
-    # "From Audio" compares a whole diarized-speaker centroid, not one duration-varying utterance.
-    # Keep its pre-experiment threshold independent from the duration-conditioned production rule.
-    existing_player_match_similarity_margin_threshold: float = Field(default=0.08, ge=0, le=2)
     log_diagnostics: bool = False
     # When False, an utterance is never left UNASSIGNED_SPEAKER just because its best-vs-runner-up
     # similarity margin fell below similarity_margin_threshold -- the best match is taken
@@ -79,31 +76,18 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
 
 
 class SpeakerBootstrapSettings(BaseModel, frozen=True):
-    """Limits for transcript-backed identity evidence before provisional centroid selection."""
+    """How Isolate New Speakers asks the LLM for each new player's utterances, and how much speech it aims for.
 
-    evidence_chunk_utterances: PositiveInt = 120
-    evidence_context_utterances: int = Field(default=12, ge=0)
+    The section keeps its historical name so tuned values in deployed settings files still apply.
+    """
+
     evidence_timeout: PositiveInt = 300
     evidence_max_attempts: PositiveInt = 2
-    embedding_concurrency: PositiveInt = 2
-    min_speech_seconds: float = Field(default=3.0, gt=0)
-    preferred_min_segment_seconds: float = Field(default=5.0, gt=0)
-    preferred_max_segment_seconds: float = Field(default=12.0, gt=0)
-    min_clips: PositiveInt = 3
-    min_independent_exchanges: PositiveInt = 2
     min_total_speech_seconds: float = Field(default=15.0, gt=0)
     target_total_speech_seconds: float = Field(default=30.0, gt=0)
-    max_clips_per_exchange: PositiveInt = 2
-    pairwise_similarity_threshold: float = Field(default=0.75, ge=-1, le=1)
-    leave_one_out_similarity_threshold: float = Field(default=0.75, ge=-1, le=1)
-    competitor_margin: float = Field(default=0.08, ge=0, le=2)
-    collision_similarity_threshold: float = Field(default=0.9, ge=-1, le=1)
-    incomplete_reference_absolute_similarity_threshold: float = Field(default=0.65, ge=-1, le=1)
 
     @model_validator(mode="after")
     def validate_duration_limits(self) -> SpeakerBootstrapSettings:
-        if self.preferred_max_segment_seconds < self.preferred_min_segment_seconds:
-            raise ValueError("preferred_max_segment_seconds must be at least preferred_min_segment_seconds.")
         if self.target_total_speech_seconds < self.min_total_speech_seconds:
             raise ValueError("target_total_speech_seconds must be at least min_total_speech_seconds.")
         return self
@@ -179,5 +163,4 @@ class AppSettings(BaseModel, frozen=True):
     llm_model: str = "anthropic/claude-sonnet-4-5"
     llm_model_lite: str = "anthropic/claude-haiku-4-5"
     llm_model_high: str = "openai/gpt-6-astra"
-    clean_clips_on_import: bool = False
     session_audio_import: SessionAudioImportSettings = Field(default_factory=SessionAudioImportSettings)

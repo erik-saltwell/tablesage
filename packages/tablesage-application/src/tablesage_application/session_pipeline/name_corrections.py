@@ -22,12 +22,11 @@ from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
-from .bootstrap_workflow import atomic_write
 from .suggest_spelling_corrections import (
     Correction,
     SpellingSuggestion,
-    apply_corrections,
     render_transcript,
+    save_corrected_transcript,
 )
 from .transcript_review import count_occurrences
 
@@ -188,21 +187,7 @@ async def suggest_name_corrections(
 
 
 def save_corrected(session_folder: Path, corrections: Sequence[Correction], *, saved_is_current: bool) -> tuple[bool, int]:
-    """Apply *corrections* to the cleaned transcript and write the result.
-
-    Returns whether the file was written and how many occurrences were replaced. A current saved
-    file with identical content is left alone: staleness is modification-time based, so rewriting it
-    would needlessly invalidate every later step. A stale one is always rewritten, even when
-    identical, so the step completes.
-    """
-    corrected, occurrence_total = apply_corrections(load_source(session_folder), corrections, whole_words=True)
-    data = corrected.model_dump_json(indent=2).encode("utf-8")
-    path = output_path(session_folder)
-    if saved_is_current:
-        try:
-            if path.read_bytes() == data:
-                return False, occurrence_total
-        except OSError:
-            pass
-    atomic_write(path, data)
-    return True, occurrence_total
+    """Apply *corrections* to the cleaned transcript and write the name-corrected transcript (see `save_corrected_transcript`)."""
+    return save_corrected_transcript(
+        load_source(session_folder), output_path(session_folder), corrections, whole_words=True, saved_is_current=saved_is_current
+    )

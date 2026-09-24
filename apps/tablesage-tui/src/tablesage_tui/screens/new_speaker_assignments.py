@@ -79,7 +79,6 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
                     players.add_column("Player", key="player")
                     players.add_column("Samples", key="samples")
                     players.add_column("Speech", key="speech")
-                    players.add_column("", key="status")
                     yield players
                 with Vertical(id="new-speaker-review-utterances-column"):
                     utterances = _PaneTable(id="new-speaker-review-utterances", on_left=self.action_leave_utterances, on_right=lambda: None)
@@ -133,17 +132,15 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
 
     # Players pane
 
-    def _player_cells(self, player: ReviewPlayer) -> tuple[str, str, str, Text]:
-        assert self._data is not None
+    def _player_cells(self, player: ReviewPlayer) -> tuple[str, str, str]:
         kept = [utterance for utterance in player.utterances if utterance.index not in self._removed]
         seconds = sum(utterance.speech_seconds for utterance in kept)
-        status = Text("Too little speech", style="bold red") if seconds < self._data.min_total_speech_seconds else Text("")
-        return player.player_name, str(len(kept)), _format_seconds(seconds), status
+        return player.player_name, str(len(kept)), _format_seconds(seconds)
 
     def _refresh_player_row(self, row: int) -> None:
         assert self._data is not None
         table = self.query_one("#new-speaker-review-players", DataTable)
-        for column, value in zip(("player", "samples", "speech", "status"), self._player_cells(self._data.players[row]), strict=True):
+        for column, value in zip(("player", "samples", "speech"), self._player_cells(self._data.players[row]), strict=True):
             table.update_cell(str(row), column, value)
 
     def _current_player(self) -> ReviewPlayer:

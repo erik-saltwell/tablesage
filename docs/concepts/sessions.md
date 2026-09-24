@@ -29,36 +29,43 @@ that speaker in role-attributed transcripts and other artifacts. See
 ## Processing a Session
 
 Processing turns a recording into material the group can read, review, and
-reuse. From Session Detail, press **P** to open **Process**. Once audio exists,
-the same binding is labeled **Continue Processing**. The workflow rail shows
-the state of Audio, Transcript, and Outputs while you move through these steps:
+reuse. From Session Detail, press **P** to open **Process Session**. It lists
+every processing step in order, marks each one done once its output is
+current, and shows the Session's **New Players** (attendees with no voice
+profile yet) and any errors. Numbered steps need you; the others run
+automatically, and finishing a step continues processing to the next one:
 
-1. Add the Session's input audio. TableSage imports and, when needed, cleans
-   the audio; transcribes it using ElevenLabs' Scribe v2 engine; and uses the
-   attendees' centroids to identify speakers.
-2. Review suggested spelling corrections and the generated transcript. The
-   Campaign glossary can inform spelling suggestions, but you decide which
-   corrections to apply.
-3. Generate the Session's artifacts.
-4. Optionally extract glossary terms from the role-attributed transcript,
-   review the proposed entries, and add the terms you accept to the Campaign
-   glossary.
+1. **Import Audio** (`1`). TableSage imports and, when needed, cleans the
+   audio, transcribes it using ElevenLabs' Scribe v2 engine, and removes
+   backchannels and other bad utterances.
+2. **Review Name Corrections** (`2`). Correct misheard player and character
+   names. New players' utterances are then isolated automatically.
+3. **Review New Speaker Assignments** (`3`). Keep only the utterances each new
+   player really said. They become that player's voice samples, and every
+   speaker is then identified from the attendees' voice profiles.
+4. **Spellcheck Against Glossary** (`4`). Review suggested corrections to
+   glossary terms and names; you decide which to apply.
+5. **Review Transcript** (`5`). Check speaker labels and text. If you leave
+   with unsaved edits, TableSage asks whether to save them as a draft to resume
+   later; only **Complete** creates the reviewed transcript. Player names are
+   then replaced with character names for generation.
+6. **Generate Artifacts** (`6`). Runs on its own once you complete the review.
+   It builds every missing or out-of-date output. If an earlier Session's
+   outputs are out of date, TableSage asks before rebuilding them first. If the
+   previous Session can't be rebuilt (it was never processed or reviewed), its
+   existing recap is used as-is, or the Summary notes that the recap is not
+   available.
 
-The review step is important. TableSage can make useful initial inferences
+Steps 2 and 3 only matter for new players; with none, they are shown struck
+through and complete on their own. You can also extract glossary terms from the
+role-attributed transcript on Session Detail, review the proposed entries, and
+add the terms you accept to the Campaign glossary.
+
+The review steps are important. TableSage can make useful initial inferences
 from the audio and the Players' voice profiles, but the group decides what the
 record should say. Artifacts are built from the reviewed material, so a source
-correction can be reflected by regenerating the affected outputs. In addition,
-a well-reviewed session can be used as a source of new voice samples, improving
-later quality.
-
-You can use **Back** to revisit an earlier step without deleting completed
-work, or **Exit** to return to Session Detail. If you exit after editing the
-transcript, TableSage asks whether to save those edits as an unfinished draft.
-Either choice resumes at Transcript next time; only **Complete** creates the
-reviewed transcript used to generate outputs. Failed Audio or Outputs work
-remains at that step with an error you can retry, and completed work is not
-repeated. A fully processed Session opens at Outputs and reports that all
-outputs are current.
+correction can be reflected by regenerating the affected outputs, and changing
+an earlier step makes every later step's output out of date.
 
 ## Session Artifacts
 

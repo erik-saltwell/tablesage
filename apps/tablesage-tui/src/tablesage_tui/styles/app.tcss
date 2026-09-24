@@ -361,60 +361,6 @@ Footer.-has-other-actions FooterKey:last-child {
     dock: right;
 }
 
-/* ******************************** */
-/*        process workflow rail     */
-/* ******************************** */
-
-WorkflowRail {
-    width: 1fr;
-    height: 1;
-    min-height: 1;
-    layout: horizontal;
-    padding: 0 1;
-    background: $surface-3-bg;
-    color: $fg-muted;
-}
-
-.workflow-step {
-    width: 1fr;
-    height: 1;
-    min-width: 0;
-    content-align: center middle;
-    text-align: center;
-    color: $fg-muted;
-}
-
-.workflow-step.-status-current { color: $fg-accent; }
-.workflow-step.-status-in-progress { color: $fg-warning; }
-.workflow-step.-status-error { color: $fg-danger; text-style: bold; }
-
-.workflow-step.-active {
-    background: $selected-bg;
-    color: $selected-fg;
-    text-style: bold;
-}
-
-AudioProcessingScreen {
-    .screen-body { padding: 1 2; }
-    #audio-processing-panel {
-        width: 1fr;
-        height: 1fr;
-    }
-    #audio-processing-status {
-        height: auto;
-        margin-bottom: 1;
-    }
-    .processing-error {
-        height: auto;
-        margin-bottom: 1;
-        color: $fg-danger;
-    }
-    Button {
-        width: 100%;
-        margin-bottom: 1;
-    }
-}
-
 ProcessSessionScreen {
     .screen-body { padding: 1 2; }
     #process-session-panel {
@@ -472,9 +418,9 @@ ProcessSessionScreen {
     }
 }
 
-NameCorrectionsScreen {
+CorrectionsStepScreen {
     .screen-body { padding: 1 2; }
-    #name-corrections-panel {
+    #corrections-step-panel {
         width: 1fr;
         height: 1fr;
     }
@@ -484,14 +430,14 @@ NameCorrectionsScreen {
         color: $fg-accent;
         text-style: bold;
     }
-    #name-corrections-table {
+    #corrections-step-table {
         height: 1fr;
         border: solid $surface-border;
     }
-    #name-corrections-table:focus {
+    #corrections-step-table:focus {
         border: solid $fg-accent;
     }
-    #name-corrections-actions {
+    #corrections-step-actions {
         height: auto;
         align: right middle;
 
@@ -517,10 +463,8 @@ NewSpeakerAssignmentsScreen {
         height: 1fr;
     }
     #new-speaker-review-players-column {
-        width: 50%;
-        /* Fits Player, Samples, Speech and "Too little speech" without truncating. */
-        min-width: 57;
-        max-width: 64;
+        width: 45%;
+        max-width: 52;
         height: 1fr;
         margin: 0 2 0 0;
     }
@@ -927,8 +871,6 @@ ProgressDialog,
 AttendeeDialog,
 SessionFromCampaignPickerDialog,
 ManualReviewUtteranceDialog,
-SpeakerResolutionDialog,
-TranscriptViewDialog,
 FindReplaceDialog,
 SpellingSuggestionDialog,
 OtherActionsDialog {
@@ -943,8 +885,6 @@ OtherActionsDialog {
     #attendee-dialog,
     #session-picker-dialog,
     #manual-review-utterance-dialog,
-    #speaker-resolution-dialog,
-    #transcript-view-dialog,
     #find-replace-dialog,
     #spelling-suggestion-dialog {
         width: 60;
@@ -977,8 +917,7 @@ OtherActionsDialog {
     }
 
     #session-picker-dialog,
-    #manual-review-utterance-dialog,
-    #speaker-resolution-dialog {
+    #manual-review-utterance-dialog {
         width: 90;
     }
 
@@ -1021,10 +960,6 @@ OtherActionsDialog {
     #find-replace-dialog Checkbox,
     #spelling-suggestion-dialog Checkbox {
         margin: 0 0 1 0;
-    }
-
-    #transcript-view-dialog {
-        width: 120;
     }
 
     #confirmation-prompt,
@@ -1105,28 +1040,6 @@ OtherActionsDialog {
     #attendee-footer {
         width: 1fr;
         margin: 0;
-    }
-
-    #speaker-resolution-player-row,
-    #speaker-resolution-name-row,
-    #speaker-resolution-status-row {
-        height: 3;
-        align: left middle;
-        margin: 0 0 1 0;
-
-        .field-label {
-            width: 16;
-        }
-
-        Select,
-        Input {
-            width: 1fr;
-        }
-    }
-
-    #transcript-view-table {
-        height: 20;
-        margin: 0 0 1 0;
     }
 
     .field-label {
@@ -1745,26 +1658,6 @@ ManualReviewScreen {
         padding: 1 2;
     }
 
-    #spelling-suggestions-panel {
-        width: 1fr;
-        height: 1fr;
-        layout: vertical;
-    }
-
-    #spelling-suggestions-table {
-        height: 1fr;
-    }
-
-    #spelling-suggestions-actions {
-        height: auto;
-        margin: 1 0 0 0;
-
-        Button {
-            margin: 0 0 0 1;
-            min-width: 20;
-        }
-    }
-
     #manual-review-panel {
         width: 1fr;
         height: 1fr;
@@ -1800,44 +1693,6 @@ ManualReviewScreen {
         Button {
             margin: 0 0 0 1;
             min-width: 20;
-        }
-    }
-}
-
-/* ******************************** */
-/*  player import from audio wizard */
-/* ******************************** */
-
-PlayerImportPreStepScreen {
-    /* The source filename is a static context line, not an actionable heading --
-       muted color plus an extra blank line below it distinguishes it from the list's
-       own bold/accent title, which names what the box below it actually does. */
-    #player-import-source {
-        height: 1;
-        margin: 0 0 2 1;
-        color: $fg-muted;
-    }
-
-    .section-title {
-        height: 1;
-        margin: 0 0 1 1;
-        color: $fg-accent;
-        text-style: bold;
-    }
-
-    #player-import-candidates-table {
-        height: 14;
-        margin: 0 0 1 0;
-        border: solid $surface-border;
-    }
-
-    .dialog-actions {
-        height: auto;
-
-        #player-import-continue {
-            /* Docked (not "align: right middle" on the row) so the clean-audio
-               checkbox can sit at the row's left instead of bunching up beside it. */
-            dock: right;
         }
     }
 }

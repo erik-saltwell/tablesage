@@ -7,9 +7,7 @@ from .manual_review import ManualReviewUtteranceDialog, ManualReviewUtteranceRes
 from .other_actions import OtherActionsDialog
 from .progress import ProgressDialog
 from .session_picker import SessionFromCampaignPickerDialog
-from .speaker_resolution import SpeakerResolutionDialog, SpeakerResolutionResult
 from .spelling_suggestion import SpellingSuggestionDialog, SpellingSuggestionResult
-from .transcript_view import TranscriptViewDialog
 
 __all__ = [
     "AttendeeDialog",
@@ -25,9 +23,6 @@ __all__ = [
     "OtherActionsDialog",
     "ProgressDialog",
     "SessionFromCampaignPickerDialog",
-    "SpeakerResolutionDialog",
-    "SpeakerResolutionResult",
     "SpellingSuggestionDialog",
     "SpellingSuggestionResult",
-    "TranscriptViewDialog",
 ]

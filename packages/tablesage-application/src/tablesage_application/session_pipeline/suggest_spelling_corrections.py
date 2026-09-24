@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Annotated, Protocol
 
 from pydantic import BaseModel, ConfigDict, StringConstraints
 from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
+from .atomic_files import atomic_write
 from .transcript_review import count_occurrences, replace_text
 
 NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -76,6 +78,28 @@ def apply_corrections(transcript: Transcript, corrections: Iterable[Correction],
         )
         occurrence_total += outcome.occurrence_count
     return transcript, occurrence_total
+
+
+def save_corrected_transcript(
+    source: Transcript, output_path: Path, corrections: Iterable[Correction], *, whole_words: bool, saved_is_current: bool
+) -> tuple[bool, int]:
+    """Apply *corrections* to *source* and write the result to *output_path*.
+
+    Returns whether the file was written and how many occurrences were replaced. A current saved
+    file with identical content is left alone: staleness is modification-time based, so rewriting it
+    would needlessly invalidate every later step. A stale one is always rewritten, even when
+    identical, so the step completes.
+    """
+    corrected, occurrence_total = apply_corrections(source, corrections, whole_words=whole_words)
+    data = corrected.model_dump_json(indent=2).encode("utf-8")
+    if saved_is_current:
+        try:
+            if output_path.read_bytes() == data:
+                return False, occurrence_total
+        except OSError:
+            pass
+    atomic_write(output_path, data)
+    return True, occurrence_total
 
 
 def render_transcript(transcript: Transcript) -> str:

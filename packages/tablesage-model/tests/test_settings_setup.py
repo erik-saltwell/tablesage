@@ -57,7 +57,6 @@ def test_speaker_identification_duration_override_defaults_for_existing_settings
     assert settings.speaker_identification.cluster_propagation.max_utterance_duration_seconds == 0.5
     assert settings.speaker_identification.cluster_propagation.cluster_margin_threshold == 0.0
     assert settings.speaker_identification.cluster_propagation.contradiction_veto_margin_threshold == 0.02
-    assert settings.speaker_identification.existing_player_match_similarity_margin_threshold == 0.08
 
 
 def test_ensure_settings_is_a_noop_on_second_call(tmp_path: Path) -> None:

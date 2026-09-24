@@ -15,7 +15,7 @@ from tablesage_application.paths import (
     get_processing_stages,
 )
 from tablesage_application.session_pipeline import transcribe_audio
-from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus
+from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus, GenerationTask
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
@@ -36,6 +36,7 @@ _SKIPPED_TOOLTIP = "No new players, so this step isn't needed."
 _TRANSCRIBE_LABELS = {
     transcribe_audio.Stage.TRANSCRIBING: "Transcribing (this may take a while)…",
     transcribe_audio.Stage.PUNCTUATING: "Punctuating…",
+    transcribe_audio.Stage.IDENTIFYING_SPEAKERS: "Identifying speakers…",
 }
 
 # The automatic steps that have a runner (see `_run_automatic_step`).
@@ -44,6 +45,9 @@ _AUTOMATIC_STEPS = frozenset(
         SessionProcessingStageID.CREATING_TRANSCRIPTION,
         SessionProcessingStageID.REMOVE_BACKCHANNELS,
         SessionProcessingStageID.ISOLATING_NEW_SPEAKERS,
+        SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES,
+        SessionProcessingStageID.IDENTIFYING_SPEAKERS,
+        SessionProcessingStageID.ASSIGN_ROLES_TO_SPEAKERS,
     }
 )
 
@@ -66,6 +70,8 @@ class ProcessSessionScreen(TableSageScreen):
         super().__init__()
         self._session_id = session_id
         self._failure: str | None = None
+        # Set once this visit has started an automatic step nothing else could start (see `_complete_skipped_steps`).
+        self._auto_continued = False
 
     @property
     def session_id(self) -> uuid.UUID:
@@ -80,23 +86,39 @@ class ProcessSessionScreen(TableSageScreen):
         A skipped step can't be started by its key, so without this a Session whose new players went
         away partway through a run could never get past it. None of these makes an LLM call when there
         are no new players.
+
+        For the same reason, when the next step is automatic and directly follows a skipped step (e.g.
+        Identify Speakers after a skipped Seed Player Voice Samples), no key could start it, so those
+        automatic steps run -- once per visit, so a failing step isn't retried in a loop -- and processing
+        then stops here rather than opening the next manual step, which can be started by its key.
         """
         self._refresh_steps()
         # A resume queued behind a run that has already pushed its next dialog must not race that run.
         if not self.is_current:
             return
+        previous_skipped = False
         for stage in get_processing_stages():
             control = self._step_control(stage.id)
             if control.is_complete:
+                previous_skipped = control.is_skipped
                 continue
             if not (control.is_enabled and control.is_skipped):
+                automatic = self._automatic_run_from(stage.id)
+                if control.is_enabled and previous_skipped and not self._auto_continued and automatic:
+                    self._auto_continued = True
+                    self._log("run_after_skipped_steps", step=stage.id.name)
+                    if self._check_run_credentials(automatic):
+                        self._run_steps(automatic, continue_after=False)
                 return
             try:
                 if stage.has_manual_processing:
                     self.application.complete_processing_step_automatically(self._session_id, stage.id)
-                else:
-                    assert stage.id is SessionProcessingStageID.ISOLATING_NEW_SPEAKERS
+                elif stage.id is SessionProcessingStageID.ISOLATING_NEW_SPEAKERS:
                     self.application.isolate_new_speakers(self._session_id)
+                else:
+                    # With no new players the reviewed assignments are empty, so this only writes an empty receipt.
+                    assert stage.id is SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES
+                    self.application.seed_player_voice_samples(self._session_id)
             except (OSError, ValueError) as exc:
                 self._set_failure(f"{stage.action} failed: {exc}")
                 return
@@ -105,6 +127,7 @@ class ProcessSessionScreen(TableSageScreen):
             if not control.is_complete:
                 self._set_failure(f"{stage.action} finished without producing its output.")
                 return
+            previous_skipped = True
 
     def _log(self, op: str, **fields: object) -> None:
         """Write one log line now. Used for starts and user decisions, so a run that hangs or is
@@ -120,9 +143,12 @@ class ProcessSessionScreen(TableSageScreen):
         complete and no error blocks it or an earlier step.
 
         With no new players, the steps that only serve new players are shown skipped. That is display
-        only: they stay incomplete until continuing processing completes them with empty outputs.
+        only: they stay incomplete until continuing processing completes them with empty outputs. Once
+        Isolate New Speakers has run, its output decides instead, so steps that seeded players who are
+        no longer new still show as done (see `Application.new_player_steps_skipped`).
         """
         new_players = self.application.new_players(self._session_id)
+        new_player_steps_skipped = self.application.new_player_steps_skipped(self._session_id)
         self._show_new_players([player.player_name for player in new_players])
         blockers = self.application.session_processing_blockers(self._session_id)
         messages = [blocker.message for blocker in blockers]
@@ -139,7 +165,7 @@ class ProcessSessionScreen(TableSageScreen):
             control = self._step_control(stage.id)
             control.is_complete = is_complete
             control.is_enabled = predecessors_complete and not is_blocked
-            control.is_skipped = not new_players and stage.id in NEW_PLAYER_STAGES
+            control.is_skipped = new_player_steps_skipped and stage.id in NEW_PLAYER_STAGES
             control.tooltip = _SKIPPED_TOOLTIP if control.is_skipped else None
             predecessors_complete = predecessors_complete and is_complete
         self.refresh_bindings()
@@ -176,6 +202,14 @@ class ProcessSessionScreen(TableSageScreen):
             self._start_import_audio()
         elif stage_id is SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS:
             self._start_name_corrections()
+        elif stage_id is SessionProcessingStageID.SPELLCHECKING_GLOSSARY:
+            self._start_glossary_spellcheck()
+        elif stage_id is SessionProcessingStageID.GENERATING_ARTIFACTS:
+            self._start_generation()
+        elif stage_id is SessionProcessingStageID.REVIEWING_TRANSCRIPT:
+            from .speaker_review import ManualReviewScreen
+
+            self.app.push_screen(ManualReviewScreen(self._session_id, on_completed=self._continue_processing_later))
         elif stage_id is SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS:
             from .new_speaker_assignments import NewSpeakerAssignmentsScreen
 
@@ -303,10 +337,18 @@ class ProcessSessionScreen(TableSageScreen):
         transcript, suggestions = result
         self._log("name_corrections_found", suggestion_count=len(suggestions))
         if suggestions:
-            from .name_corrections import NameCorrectionsScreen
+            from .corrections_step import CorrectionsStepScreen
 
             self.app.push_screen(
-                NameCorrectionsScreen(self._session_id, transcript, suggestions, on_confirmed=self._continue_processing_later)
+                CorrectionsStepScreen(
+                    title="Name Corrections",
+                    hint="Keep only corrections to names that were misheard; they apply to every later step.",
+                    transcript=transcript,
+                    suggestions=suggestions,
+                    whole_words=True,
+                    save=lambda corrections: self.application.save_name_corrections(self._session_id, corrections),
+                    on_confirmed=self._continue_processing_later,
+                )
             )
             return
         # Nothing to review: the name-corrected transcript is the cleaned one, unchanged.
@@ -317,6 +359,77 @@ class ProcessSessionScreen(TableSageScreen):
             return
         self.notify("No misheard names found.")
         self._continue_processing()
+
+    # Spellcheck Against Glossary (step 4) -- like Review Name Corrections: the LLM call runs here, and the
+    # screen opens only when there is something to review.
+
+    def _start_glossary_spellcheck(self) -> None:
+        stage = next(stage for stage in get_processing_stages() if stage.id is SessionProcessingStageID.SPELLCHECKING_GLOSSARY)
+        if not self._check_run_credentials([stage]):
+            return
+
+        def work() -> tuple[Transcript, list[SpellingSuggestion]]:
+            self.report_stage_progress("Finding misspelled glossary terms…", 0, 0)
+            return self.application.suggest_glossary_spelling_corrections(self._session_id)
+
+        self.run_with_progress(
+            title=stage.action,
+            message="Starting…",
+            work=work,
+            on_success=self._after_glossary_spellcheck_found,
+            on_error=lambda exc: self._run_failed(stage.action, exc),
+        )
+
+    def _after_glossary_spellcheck_found(self, result: tuple[Transcript, list[SpellingSuggestion]]) -> None:
+        transcript, suggestions = result
+        self._log("glossary_spellcheck_found", suggestion_count=len(suggestions))
+        if suggestions:
+            from .corrections_step import CorrectionsStepScreen
+
+            self.app.push_screen(
+                CorrectionsStepScreen(
+                    title="Spellcheck Against Glossary",
+                    hint="Keep only corrections to glossary terms and names that were misspelled.",
+                    transcript=transcript,
+                    suggestions=suggestions,
+                    whole_words=False,
+                    save=lambda corrections: self.application.save_glossary_spelling_corrections(self._session_id, corrections),
+                    on_confirmed=self._continue_processing_later,
+                )
+            )
+            return
+        # Nothing to review: the spellchecked transcript is the identified one, unchanged.
+        try:
+            self.application.save_glossary_spelling_corrections(self._session_id, ())
+        except (OSError, ValueError) as exc:
+            self._set_failure(f"Spellcheck Against Glossary failed: {exc}")
+            return
+        self.notify("No misspelled glossary terms found.")
+        self._continue_processing()
+
+    # Generate Artifacts (step 6) -- no screen: the shared generation runner plans the outputs, asks before
+    # rebuilding earlier Sessions (Regenerate Prior or Cancel only), and runs them behind one progress dialog.
+
+    def _start_generation(self) -> None:
+        from ..generation_runner import GenerationRunner
+
+        GenerationRunner(
+            self,
+            self._session_id,
+            on_start=lambda: self._log("generation_started"),
+            on_success=self._after_generation,
+            on_error=lambda exc: self._run_failed("Generate Artifacts", exc),
+            on_cancel=lambda: self._log("generation_cancelled"),
+            allow_current_only=False,
+        ).prepare()
+
+    def _after_generation(self, tasks: tuple[GenerationTask, ...]) -> None:
+        self._log("generation_finished", output_count=len(tasks))
+        self._refresh_steps()
+        if tasks:
+            self.notify(f"Generated {len(tasks)} output{'' if len(tasks) == 1 else 's'}.")
+        else:
+            self.notify("All outputs are current.")
 
     # Automatic steps
 
@@ -339,8 +452,11 @@ class ProcessSessionScreen(TableSageScreen):
             self._log("credentials_missing", steps=[stage.id.name for stage in stages], llm_roles=list(roles), transcription=transcription)
         return ok
 
-    def _run_steps(self, stages: list[SessionProcessingStage], *, import_source: tuple[Path, bool] | None = None) -> None:
-        """Run an optional audio import and then `stages`, in order, behind one progress dialog."""
+    def _run_steps(
+        self, stages: list[SessionProcessingStage], *, import_source: tuple[Path, bool] | None = None, continue_after: bool = True
+    ) -> None:
+        """Run an optional audio import and then `stages`, in order, behind one progress dialog; then continue
+        processing unless `continue_after` is False."""
         self._set_failure(None)
         running: list[str] = []
         step_names = (["IMPORTING_AUDIO"] if import_source is not None else []) + [stage.id.name for stage in stages]
@@ -381,7 +497,7 @@ class ProcessSessionScreen(TableSageScreen):
             title=first_title,
             message="Starting…",
             work=work,
-            on_success=lambda _result: self._after_run(stages),
+            on_success=lambda _result: self._after_run(stages, continue_after=continue_after),
             on_error=lambda exc: self._run_failed(running[-1] if running else first_title, exc),
         )
 
@@ -400,8 +516,20 @@ class ProcessSessionScreen(TableSageScreen):
             )
         elif stage_id is SessionProcessingStageID.ISOLATING_NEW_SPEAKERS:
             self.application.isolate_new_speakers(self._session_id, on_progress=self.report_stage_progress)
+        elif stage_id is SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES:
+            self.report_stage_progress("Cutting voice clips…", 0, 0)
+            self.application.seed_player_voice_samples(self._session_id, on_progress=self.report_stage_progress)
+        elif stage_id is SessionProcessingStageID.ASSIGN_ROLES_TO_SPEAKERS:
+            self.report_stage_progress("Assigning roles…", 0, 0)
+            self.application.clean_transcript(self._session_id)
+        elif stage_id is SessionProcessingStageID.IDENTIFYING_SPEAKERS:
+            self.report_stage_progress("Identifying speakers…", 0, 0)
+            self.application.identify_session_speakers(
+                self._session_id,
+                on_progress=lambda stage, completed, total: self.report_stage_progress(_TRANSCRIBE_LABELS[stage], completed, total),
+            )
 
-    def _after_run(self, stages: list[SessionProcessingStage]) -> None:
+    def _after_run(self, stages: list[SessionProcessingStage], *, continue_after: bool = True) -> None:
         self._refresh_steps()
         incomplete = [stage for stage in stages if not self._step_control(stage.id).is_complete]
         if incomplete:
@@ -409,7 +537,8 @@ class ProcessSessionScreen(TableSageScreen):
             self._log("step_output_missing", step=incomplete[0].id.name)
             self._set_failure(f"{incomplete[0].action} finished without producing its output.")
             return
-        self._continue_processing()
+        if continue_after:
+            self._continue_processing()
 
     def _run_failed(self, step_name: str, exc: BaseException) -> None:
         # The run's own summary line carries the exception and traceback; this records what the user saw.

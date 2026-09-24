@@ -14,7 +14,8 @@ class ArtifactName(Enum):
     CLEANED_TRANSCRIPT = "cleaned_transcript"
     NAME_CORRECTED_TRANSCRIPT = "name_corrected_transcript"
     REVIEWED_NEW_SPEAKER_ASSIGNMENTS = "reviewed_new_speaker_assignments"
-    SPEAKER_ENHANCED_TRANSCRIPT = "speaker_enhanced_transcript"
+    SEEDED_VOICE_SAMPLES = "seeded_voice_samples"
+    IDENTIFIED_TRANSCRIPT = "identified_transcript"
     SPELLCHECKED_TRANSCRIPT = "spellchecked_transcript"
     LEDGER = "ledger"
     SCENE_BREAKDOWN = "scene_breakdown"
@@ -118,13 +119,23 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         display_name="Reviewed New Speaker Assignments",
         stage=SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS,
     ),
-    # The transcript with improved player assignments from enhanced new-speaker voice samples.
-    ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT: ArtifactSpec(
-        "speaker_enhanced_transcript.json",
+    # Receipt of the voice clips seeded into each new player's folder from the reviewed assignments.
+    # Seeding itself changes player folders and centroids; this file is the step's completion marker.
+    ArtifactName.SEEDED_VOICE_SAMPLES: ArtifactSpec(
+        "seeded_voice_samples.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
-        display_name="Speaker-Enhanced Transcript",
-        stage=SessionProcessingStageID.ENHANCING_NEW_SPEAKER_CLIPS,
+        display_name="Seeded Voice Samples",
+        stage=SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES,
+    ),
+    # The name-corrected transcript with each utterance's speaker identified by voice centroid (or
+    # left unassigned). Same utterances as the name-corrected transcript.
+    ArtifactName.IDENTIFIED_TRANSCRIPT: ArtifactSpec(
+        "identified_transcript.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Identified Transcript",
+        stage=SessionProcessingStageID.IDENTIFYING_SPEAKERS,
     ),
     # The transcript after glossary spellchecking replacements.
     ArtifactName.SPELLCHECKED_TRANSCRIPT: ArtifactSpec(

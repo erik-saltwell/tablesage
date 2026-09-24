@@ -11,7 +11,8 @@ class SessionProcessingStageID(IntEnum):
     REVIEWING_NAME_CORRECTIONS = 45
     ISOLATING_NEW_SPEAKERS = 50
     REVIEWING_NEW_SPEAKER_ASSIGNMENTS = 60
-    ENHANCING_NEW_SPEAKER_CLIPS = 70
+    SEEDING_PLAYER_VOICE_SAMPLES = 70
+    IDENTIFYING_SPEAKERS = 75
     SPELLCHECKING_GLOSSARY = 80
     REVIEWING_TRANSCRIPT = 90
     ASSIGN_ROLES_TO_SPEAKERS = 100
@@ -43,11 +44,16 @@ _stages: list[SessionProcessingStage] = [
     SessionProcessingStage(
         id=SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS, action="Review New Speaker Assignments", binding="3"
     ),
-    SessionProcessingStage(id=SessionProcessingStageID.ENHANCING_NEW_SPEAKER_CLIPS, action="Enhance New Speaker Voice Samples"),
-    SessionProcessingStage(id=SessionProcessingStageID.SPELLCHECKING_GLOSSARY, action="Spellcheck Against Glossary", binding="4"),
+    SessionProcessingStage(id=SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES, action="Seed Player Voice Samples"),
+    SessionProcessingStage(id=SessionProcessingStageID.IDENTIFYING_SPEAKERS, action="Identify Speakers"),
+    SessionProcessingStage(
+        id=SessionProcessingStageID.SPELLCHECKING_GLOSSARY, action="Spellcheck Against Glossary", binding="4", llm_roles=("llm_model",)
+    ),
     SessionProcessingStage(id=SessionProcessingStageID.REVIEWING_TRANSCRIPT, action="Review Transcript", binding="5"),
     SessionProcessingStage(id=SessionProcessingStageID.ASSIGN_ROLES_TO_SPEAKERS, action="Assign Roles To Players"),
-    SessionProcessingStage(id=SessionProcessingStageID.GENERATING_ARTIFACTS, action="Generate Artifacts", binding="6"),
+    SessionProcessingStage(
+        id=SessionProcessingStageID.GENERATING_ARTIFACTS, action="Generate Artifacts", binding="6", llm_roles=("llm_model_high",)
+    ),
 ]
 
 
@@ -63,6 +69,7 @@ NEW_PLAYER_STAGES: frozenset[SessionProcessingStageID] = frozenset(
         SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS,
         SessionProcessingStageID.ISOLATING_NEW_SPEAKERS,
         SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS,
+        SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES,
     }
 )
 

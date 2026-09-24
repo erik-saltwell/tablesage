@@ -21,9 +21,9 @@ from tablesage_tools.audio import extract_clip
 from tablesage_tools.model import Transcript
 
 from ..paths import ARTIFACTS, ArtifactName
-from .bootstrap_speakers import speech_duration
-from .bootstrap_workflow import atomic_write
+from .atomic_files import atomic_write
 from .isolate_new_speakers import NewSpeakerAssignments
+from .speech import speech_duration
 
 REVIEW_CLIPS_DIRNAME = "new_speaker_review_clips"
 
@@ -71,7 +71,6 @@ class ReviewData:
     players: tuple[ReviewPlayer, ...]
     # Indices of proposed utterances to show as removed on entry (from a current reviewed file).
     removed: frozenset[int]
-    min_total_speech_seconds: float
 
 
 def reviewed_path(session_folder: Path) -> Path:
@@ -90,9 +89,7 @@ def load_proposals(session_folder: Path) -> NewSpeakerAssignments:
     return NewSpeakerAssignments.load(session_folder / ARTIFACTS[ArtifactName.NEW_SPEAKER_ASSIGNMENTS].filename)
 
 
-def review_data(
-    session_folder: Path, proposals: NewSpeakerAssignments, saved: ReviewedNewSpeakerAssignments | None, min_total_speech_seconds: float
-) -> ReviewData:
+def review_data(session_folder: Path, proposals: NewSpeakerAssignments, saved: ReviewedNewSpeakerAssignments | None) -> ReviewData:
     """Everything the review screen shows. `saved` is the reviewed file only when it is current."""
     transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
     players: list[ReviewPlayer] = []
@@ -123,7 +120,7 @@ def review_data(
         kept = saved.kept()
         for proposal in proposals.players:
             removed.update(set(proposal.utterance_indices) - kept.get(proposal.player_id, frozenset()))
-    return ReviewData(players=tuple(players), removed=frozenset(removed), min_total_speech_seconds=min_total_speech_seconds)
+    return ReviewData(players=tuple(players), removed=frozenset(removed))
 
 
 def save_review(

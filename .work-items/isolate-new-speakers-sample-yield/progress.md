@@ -121,6 +121,12 @@ All phases are implemented and verified, with follow-up decisions recorded below
   - The Name Corrections LLM suggested phrase-level replacements, which would corrupt text if accepted.
 - **TUI tests after the CSS change:** 285 passed.
 
+## Removed the "Too little speech" warning (2026-09-24, at the user's request)
+
+- **Why:** the samples a player has are used whatever the total, so the warning had no action behind it.
+- **Change:** the Players table has only Player, Samples and Speech. `ReviewData.min_total_speech_seconds` and the matching parameter of `review_data` were removed, since the warning was their only use. The Players pane is back to `width: 45%; max-width: 52`, as its extra width only existed to fit the warning.
+- **Checks:** a headless `run_test()` with real review data showed the three columns and aligned panes at 160×45 and 120×30. Tests: 688 passed.
+
 ## Observations for tuning
 
 - **The similarity stage keeps only the most similar clips.** It drops clips until the total fits under the cap, so what remains is a few long clips (3 for the GM). A smaller review set is intended, but if more variety is wanted, it could stop at the cap by adding clips instead of removing them.

@@ -9,7 +9,7 @@ Replace Session Detail's separate audio, transcript-review, and output-generatio
 
 - [Idea](idea.md): the original three-phase direction, since superseded
 - [Quality rubric](rubric.md)
-- [Intent: new-player list and name-correction review](intent.md)
+- [Intent: new-player list, name-correction review, and Seed Player Voice Samples](intent.md)
 - [Implementation plan](plan.md): the original three-phase flow only
 - [Evaluation](evaluations.md): the original three-phase flow only
 - [Implementation progress](progress.md)
@@ -30,25 +30,24 @@ As of 2026-09-24:
 | `1` | Import Audio | manual (no screen) | yes | |
 | | Create Transcript | automatic | yes | |
 | | Remove Bad Utterances | automatic | yes | |
-| `2` | Review Name Corrections | manual | yes (2026-09-24) | yes |
+| `2` | Review Name Corrections | manual | yes | yes |
 | | Isolate New Speakers | automatic | yes | yes |
 | `3` | Review New Speaker Assignments | manual | yes | yes |
-| | Enhance New Speaker Voice Samples | automatic | **no runner** | no (pending confirmation) |
-| `4` | Spellcheck Against Glossary | manual | **not routed** | no |
-| `5` | Review Transcript | manual | **not routed** | no |
-| | Assign Roles To Players | automatic | **no runner** | no |
-| `6` | Generate Artifacts | manual | **not routed** | no |
+| | Seed Player Voice Samples (was Enhance New Speaker Voice Samples) | automatic | yes (2026-09-24) | yes |
+| | Identify Speakers (new) | automatic | yes (2026-09-24) | no |
+| `4` | Spellcheck Against Glossary | manual | yes (2026-09-24) | no |
+| `5` | Review Transcript | manual | yes (2026-09-24) | no |
+| | Assign Roles To Players | automatic | yes (2026-09-24) | no |
+| `6` | Generate Artifacts | manual | yes (2026-09-24) | no |
 
 What the live app can do today:
 
-- **Where processing stops:** continuing processing stops at Enhance New Speaker Voice Samples.
-- **Keys `4`–`6`:** Process Session doesn't route them to anything yet.
-- **Manual Review and Audio screens:** `ManualReviewScreen` (the glossary spell check plus transcript review) and `AudioProcessingScreen` remain from the original scope. Only tests and the app's quit handling refer to them.
-- **Generation:** ordinary generation is unreachable. Only Session Detail's forced **Regenerate Artifact** runs the generation runner.
+- **Every step is routed.** Continuing runs from Import Audio through Generate Artifacts, stopping only at the manual steps that need you.
+- **Old three-phase shell and legacy bootstrap workflow:** both retired on 2026-09-24 (see below).
 
 ## Base transcript chain
 
-`transcript.json` → `cleaned_transcript.json` → `name_corrected_transcript.json` → `new_speaker_assignments.json` → `reviewed_new_speaker_assignments.json` → `speaker_enhanced_transcript.json` → `spellchecked_transcript.json` → `transcript_reviewed.json` → `role_transcript.json` → generated outputs.
+`transcript.json` → `cleaned_transcript.json` → `name_corrected_transcript.json` → `new_speaker_assignments.json` → `reviewed_new_speaker_assignments.json` → `seeded_voice_samples.json` (receipt) → `identified_transcript.json` (also reads `name_corrected_transcript.json`) → `spellchecked_transcript.json` → `transcript_reviewed.json` → `role_transcript.json` → generated outputs. The build graph and the code both follow this chain as of 2026-09-24.
 
 - **Indices:** utterance indices in both new-speaker assignment files point into `name_corrected_transcript.json`, which has the same utterances as the cleaned transcript.
 - **Not in staleness:** new-player state is computed live and isn't part of staleness.
@@ -162,6 +161,153 @@ First real run (Bransonsford 001, 2026-09-23):
   It also records the utterance count for every label, including labels no player was proposed for. This is for diagnosing the next run.
 - **Raw output traced:** the Isolate LLM call now passes `trace_output=True`, so each run saves its unfiltered reply to `.tablesage/logs/prompts/<timestamp>_output.md`. This is temporary; remove it once the step is tuned.
 
+## Seed Player Voice Samples, Identify Speakers, and Spellcheck Against Glossary — implemented 2026-09-24
+
+Designed in [intent.md](intent.md#change-4-seed-player-voice-samples-replaces-enhance-new-speaker-voice-samples). Before implementation, the agent found that Assign Roles doesn't do speaker identification, contrary to what had been saved. The user then chose a separate Identify Speakers step, kept Assign Roles after Review Transcript, and asked for step 4 to be routed now.
+
+### What was built
+
+- **Stages:** `ENHANCING_NEW_SPEAKER_CLIPS` became `SEEDING_PLAYER_VOICE_SAMPLES` (70), and `IDENTIFYING_SPEAKERS` (75) is new. Seed joins `NEW_PLAYER_STAGES`. Spellcheck Against Glossary now declares `llm_roles=("llm_model",)`.
+- **Artifacts:** `SPEAKER_ENHANCED_TRANSCRIPT` is replaced by `SEEDED_VOICE_SAMPLES` (`seeded_voice_samples.json`) and `IDENTIFIED_TRANSCRIPT` (`identified_transcript.json`).
+  - Graph: the receipt depends on the reviewed assignments. The identified transcript depends on the name-corrected transcript and the receipt. The spellchecked transcript depends on the identified transcript and the `suggest_spelling_corrections` prompt.
+- **Seed (`session_pipeline/seed_voice_samples.py`, `Application.seed_player_voice_samples`):**
+  - For each player in the reviewed assignments, it cuts the kept utterances from the name-corrected transcript into `session-<player>-<campaign>-<session>-<hash>-<uuid>.wav`. Only utterances under `enhance_voices.min_embeddable_clip_seconds` are skipped.
+  - It deletes that player's earlier clips from this session after the new ones are written, then recomputes the centroid with `remove_outliers` settings.
+  - It commits the database, then writes the receipt atomically: `players` with `player_id`, `player_name`, `clip_filenames`, `sample_count`.
+  - Players the reviewed file doesn't list are never touched. With no listed players it does no audio work (and no `asyncio.run`, since the skipped case runs on the UI thread).
+  - `players_from_session._generated_session_filename` became public (`generated_session_filename`) for reuse.
+- **Identify Speakers (`Application.identify_session_speakers`):** runs `transcribe_audio.identify_raw_transcript` over the name-corrected transcript with `session_player_centroids` and the `speaker_identification` settings. It raises if the utterance count changes, logs the unassigned count, and writes the identified transcript atomically.
+- **Spellcheck Against Glossary:**
+  - `Application.suggest_glossary_spelling_corrections` reads the identified transcript and calls the existing `suggest_spelling_corrections` prompt with the campaign glossary and attendee names. Unlike Manual Review's version, it raises on an LLM failure, so the failure shows in Process Session's error list.
+  - `Application.save_glossary_spelling_corrections` applies the reviewed corrections (not whole-word, matching Manual Review) and writes `spellchecked_transcript.json`, skipping the rewrite when a current file is identical.
+  - The shared writer is `suggest_spelling_corrections.save_corrected_transcript`, which `name_corrections.save_corrected` now uses too.
+  - Process Session runs the LLM behind a progress dialog, opens the review screen when there are suggestions, and otherwise writes an unchanged copy and continues.
+- **Review screen:** `NameCorrectionsScreen` became the shared `CorrectionsStepScreen` (`screens/corrections_step.py`). It takes a title, hint, whole-word flag, and save callback, and steps 2 and 4 both use it. The CSS IDs are now `corrections-step-*`.
+- **Skipped display (rule c):** `Application.new_player_steps_skipped` decides for every new-player step. While `new_speaker_assignments.json` is current, the steps are skipped only if it lists no players. Otherwise the live new-player list decides. A seeded Session shows steps 2, 3 and Seed as done.
+- **Process Session runner:** Seed and Identify are in `_AUTOMATIC_STEPS`, so they run in one progress dialog after step 3 and hand off to step 4. `_complete_skipped_steps` completes a skipped Seed with an empty receipt.
+
+### Decisions made during implementation
+
+- **Running automatic steps after skipped steps on open.** An agent deviation, confirmed by the user on 2026-09-24.
+  - **What it does:** when Process Session opens (or resumes) and the next step is automatic and directly follows a skipped step, those automatic steps run. Processing then stops on Process Session and doesn't open step 4, which the user starts with its key. It happens at most once per visit, so a failing step isn't retried in a loop.
+  - **Why:** otherwise nothing could start Identify Speakers in a Session with no new players, because the manual step before it (3) is skipped and can't be started by key. That covers every existing Session that had stopped at the old Enhance step.
+  - **Cost:** opening such a Session runs Identify unprompted, which can take minutes with the real embedding model. There's no LLM call.
+- **Spellcheck fails loudly:** it raises on an LLM failure instead of failing open, following step 2's precedent.
+- **Glossary extraction stays out of step 4.** It reads `role_transcript.json`, which is built after Review Transcript, so it can't run at step 4 in this chain. Manual Review still has it.
+
+### Verification
+
+- **Static checks:** `uv run ruff check apps packages`, `ruff format`, `uv run ty check`, and `git diff --check` pass.
+- **Existing suites:** the TUI and application tests pass (626). The only fixture changes were in files listing every artifact, plus the artifact-graph prompt-dependency map.
+- **Scripted headless run** (`/tmp/verify_seed_flow.py`, not kept in the repo): real temporary workspace and database, synthetic audio, real ffmpeg clip extraction, at 80×24. The embedding model, the speaker identifier, the LLM call, and the credential check were stubbed. Everything below passed.
+  - **Two new players plus a returning one:**
+    - Continuing from step 3 ran Seed and Identify, then opened the Spellcheck screen, where Apply wrote the corrected text with identified speakers kept.
+    - The receipt listed Bob (2 clips, `sample_count` 2) and Carol (0 clips, `sample_count` 0, her only utterance under the floor). Bob's folder held exactly those session-named clips, and the returning player's folder was untouched.
+    - Identify received the returning player's and Bob's centroids.
+    - New Players then showed only Carol. Steps 2, 3 and Seed showed done, not skipped. Continuing stopped at Review Transcript.
+  - **Re-run after seeding:** a newer, empty review made the receipt and everything after it stale. Re-running Seed wrote an empty receipt and left Bob's clips and profile alone.
+  - **No new players:** opening Process Session completed steps 2, Isolate, 3 and Seed as skipped (with the tooltip). It then ran Identify with the one returning centroid and stopped on Process Session, with no LLM call and key `4` enabled. Resuming didn't re-run Identify. Pressing `4` opened the Spellcheck screen, and Cancel wrote nothing.
+- **Found and fixed during verification:** a skipped Seed called `asyncio.run` on the UI thread.
+- **Known limitation, one voice profile:** with exactly one usable centroid (for example a Session with one returning player and no new ones), the identifier needs an absolute similarity threshold to assign anything. Identify Speakers doesn't pass one, so every utterance stays unassigned and Review Transcript does all the assignment. It doesn't raise. This was confirmed from the code, not a real run. (The `identify_speakers` docstring's "raises with fewer than 2" is out of date.)
+- **Not exercised:**
+  - the real embedding model, the real identifier over real audio, and a real LLM call;
+  - an ffmpeg failure;
+  - widths other than 80 columns. The step list is now twelve rows, taller than the panel at 80×24, as before.
+
+## Generate Artifacts (step 6) and removing the legacy bootstrap workflow — implemented 2026-09-24
+
+Designed in [Change 6 in intent.md](intent.md#change-6-route-generate-artifacts-step-6-and-remove-the-legacy-bootstrap-workflow).
+
+### What was built
+
+- **Step 6:**
+  - Declares `llm_roles=("llm_model_high",)`. Pressing `6`, or continuing after Assign Roles, runs `GenerationRunner` with `allow_current_only=False`.
+  - When earlier Sessions are out of date, it offers only **Regenerate Prior** / **Cancel**.
+  - Success refreshes the steps and shows "Generated N outputs." (or "All outputs are current."). A failure goes to the error list as "Generate Artifacts failed: …".
+  - `GenerationRunner` gained `on_cancel` and `allow_current_only`. Session Detail's Regenerate Artifact keeps "Current Only".
+- **Summary and the previous Session:**
+  - `_artifact_graph` is built in two passes. A Summary depends on the previous Session's recap only while that Session's reviewed transcript is current (`_previous_session_regenerable`), checked against a first-pass graph without Summaries.
+  - Before a Summary's first generation, the previous Session is found by date (`find_prior_session`), so the plan can rebuild it first. After that, the Session recorded in `.summary-inputs.json` is used, as before.
+- **`generate_summary`:**
+  - A previous Session that can't be regenerated contributes its existing recap file as-is. When it has none, the Summary uses the placeholder, without asking.
+  - "Current Only" still uses the placeholder.
+  - The placeholder is now `RECAP_UNAVAILABLE_PLACEHOLDER`: "[The prior Session recap is not available.]".
+- **Legacy bootstrap workflow removed:**
+  - From `Application`: 24 methods and the finalization lock. `generate_outputs` no longer finalizes bootstrap profiles.
+  - Deleted modules: `session_pipeline/bootstrap_speakers.py`, `bootstrap_workflow.py`, `entities/session_bootstrap.py`, `tablesage_tools/embeddings/bootstrap_selection.py`, the `propose_bootstrap_evidence` prompt, and the `SessionBootstrapRun` / `BootstrapProfileContribution` models.
+  - Migration `b0c1d2e3f4a5` drops their tables. Clean Session still removes the old `processing/` folder.
+- **Shared helpers moved:** `atomic_write` is now in `session_pipeline/atomic_files.py`, and `speech_duration` in `session_pipeline/speech.py`.
+- **Settings:** `SpeakerBootstrapSettings` keeps only `evidence_timeout`, `evidence_max_attempts`, `min_total_speech_seconds` and `target_total_speech_seconds`. The packaged `settings.yaml` was trimmed to match. A deployed file with the removed knobs still loads, and its tuned values for the kept ones still apply (checked).
+- **Docs:** step 6 in `docs/concepts/sessions.md`.
+
+### Decision made during implementation (user's choice)
+
+- **Existing recaps of Sessions that can't be regenerated are used as-is.** The agreed rule would have given them the placeholder.
+  - Every Session processed before the new step chain has a reviewed transcript that no longer counts as current, because the new upstream files don't exist for it. Under that rule, no older Session's recap would ever be included.
+  - Asked during implementation, the user chose to use an existing recap as-is, with the placeholder only when there is none.
+  - This let the existing `test_generate_summary` test pass unchanged.
+
+### Verification
+
+- **Static checks:** `uv run ruff check apps packages`, `ruff format`, `uv run ty check`, and `git diff --check` pass.
+- **Test suites:** the TUI, application, model and tools suites pass (676). No tests were changed or deleted in this step.
+- **Migration** (temporary SQLite database): the bootstrap tables are dropped on upgrade, recreated on downgrade, and dropped again on re-upgrade.
+- **Scripted headless run** (`/tmp/verify_step6.py`): real workspace, database, graph, runner, Process Session and Summary composition, at 80×24. The LLM-backed generators were stubbed to write their outputs. Everything below passed.
+  - **Previous Session never processed:** completing the review ran Assign Roles and generation with no prompt. The Summary carries the placeholder, every step is ticked, and no error is reported.
+  - **Previous Session then reviewed:** the Summary went out of date. `6` offered only Regenerate Prior / Cancel, and Cancel generated nothing.
+  - **Regenerate Prior:** it rebuilt Session One (including its role transcript), then Session Two's Summary with the real recap.
+  - **Previous Session's review out of date, recap on disk:** that recap was used as-is, with no prompt and no rebuild.
+  - **Everything current:** `6` did nothing.
+- **Regression:** the earlier Seed and step 5 scripts pass. The step 5 script now stubs generation, which starts after Assign Roles.
+- **Not exercised:** real LLM generation.
+
+## Review Transcript (step 5), Assign Roles To Players, and retiring the three-phase shell — implemented 2026-09-24
+
+Designed in [Change 5 in intent.md](intent.md#change-5-route-review-transcript-step-5-and-give-assign-roles-to-players-a-runner).
+
+### What was built
+
+- **Step 5:** `5` (or continuing after step 4) pushes `ManualReviewScreen`, which is now a plain `TableSageScreen`.
+  - **Removed phases:** the glossary-extraction and spelling-suggestion phases, the spelling checkpoint file, and the phase enum are gone. The screen opens straight into the review.
+  - **Source:** `Application._review_source` picks a still-current `transcript_reviewed.json`, else the current `spellchecked_transcript.json`, and raises otherwise. A valid saved draft takes precedence.
+  - **Leaving:** Exit and `Esc` return to Process Session. With unsaved edits they first offer Save / Don't Save / Cancel, and the `Ctrl+Q` quit path uses the same prompt. Clips are removed on every departure.
+  - **Complete:** writes the reviewed transcript, discards the draft, and hands back to Process Session, which continues processing.
+- **Assign Roles To Players:** it is in `_AUTOMATIC_STEPS`, and its runner is the existing `Application.clean_transcript`. `clean_transcript` now reads only `transcript_reviewed.json` (`can_clean_transcript` reports "Review the transcript first."). Generation still uses the same function to rebuild `role_transcript.json`.
+- **Retired:** `SessionProcessingScreen`, `WorkflowRail`, `AudioProcessingScreen`, the `compose_above_footer` hook, and their CSS.
+  - `Application` methods removed: the phase and failure methods, `resolve_session_processing_phase`, the spelling-review methods, and Manual Review's fail-open `suggest_spelling_corrections`.
+  - The legacy bootstrap workflow's two phase writes were removed. That workflow is otherwise dead code now that `AudioProcessingScreen` is gone; it was left in place for a separate cleanup.
+- **Database:** migration `a9b0c1d2e3f4` drops `phase`, `failed_phase` and `failure_message` from `session_processing_state`.
+  - Draft sources are now `spellchecked_transcript` or `reviewed_transcript`.
+  - Draft pointers based on the old machine transcript are cleared on upgrade.
+  - `SessionProcessingPhase` is gone from the model.
+- **Players List "From Session":** it now prefers the identified transcript over the machine transcript when the review isn't current, and still falls back to `transcript.json`.
+- **Docs:** `docs/guides/settings.md` now uses the Process Session step names. The "Processing a Session" section of `docs/concepts/sessions.md` now describes the Process Session steps, noting that step 6 isn't routed yet. `docs/concepts/campaigns.md` got a one-line wording fix.
+
+### Test changes
+
+- **Deleted, with the user's approval:** the six `AudioProcessingScreen` tests in `test_session_detail.py`.
+- **Deleted without explicit approval:** `test_speaker_review_suggestions.py` (six tests). Every one covered Manual Review's spelling phase, which the agreed design removes; they couldn't be kept meaningfully. Flagged for the user.
+- **Updated to the agreed behavior:**
+  - The Manual Review Exit-button test now goes through the Save / Don't Save prompt.
+  - The fixtures in `test_clean_transcript.py` write the reviewed transcript.
+  - The Manual Review fixture's mock `load_review_draft` returns `None`.
+
+### Verification
+
+- **Static checks:** `uv run ruff check apps packages`, `ruff format`, `uv run ty check`, and `git diff --check` pass.
+- **Test suites:** the TUI, application and model suites pass (630).
+- **Migration** (against a temporary SQLite database with pre-existing rows): the upgrade dropped the three columns, cleared the old `transcript` draft pointer, and kept the `reviewed_transcript` one. The new constraint rejects the old source and accepts `spellchecked_transcript`. Downgrade and re-upgrade both applied cleanly.
+- **Scripted headless run** (`/tmp/verify_step5.py`): real temporary workspace and database, synthetic audio, real ffmpeg clip extraction, at 80×24, with playback stubbed. Everything below passed.
+  - `5` opens the review of the spellchecked transcript with no spelling phase, and clips are extracted.
+  - An edit, then `Esc` and Save, returns to Process Session with the clips removed and a draft saved. Reopening restores the edit.
+  - Complete writes the reviewed transcript and runs Assign Roles. `role_transcript.json` is current with character names. The draft is discarded, and processing stops at step 6.
+  - Reopening loads the completed review. `Esc` with no edits leaves without a prompt.
+  - Rewriting the spellchecked transcript makes the review stale and drops the draft. Reopening starts again from the new spellchecked text.
+- **Regression:** the earlier Seed / Identify / Spellcheck script also passes, now continuing into step 5.
+- **`Ctrl+Q`:** with unsaved edits in the review it shows the Save / Don't Save prompt, and Cancel stays on the review.
+- **Earlier Sessions:** generating a processed Session plans only its own tasks. An earlier Session that was never reviewed isn't rebuilt, so reading only the reviewed transcript in Assign Roles breaks nothing there. Generating an unreviewed Session already required a current reviewed transcript before this change.
+- **Not exercised:** real audio playback and a real recording.
+
 ## Step 2 — Review Name Corrections, New Players list, and skipped steps — implemented 2026-09-24
 
 Designed in [intent.md](intent.md).
@@ -219,7 +365,7 @@ These cover questions the intent left open:
 
 ### Deviations from the intent
 
-- **Enhance New Speaker Voice Samples is not skipped. This is an agent recommendation awaiting the user's confirmation.**
+- **Enhance New Speaker Voice Samples is not skipped.** (Superseded: Enhance became Seed Player Voice Samples, which is skipped; see Change 4 in intent.md.) At the time this was an agent recommendation awaiting the user's confirmation.
   - The agreed design skipped it.
   - Create Transcript does no speaker identification, and Enhance (still unbuilt) is the likely place where every player, returning players included, gets identified. Skipping it and auto-completing it with a copy could leave returning players unidentified.
   - Enhance has no runner, so this has no runtime effect yet. Flipping it is one entry in `NEW_PLAYER_STAGES`.
@@ -269,17 +415,12 @@ These are necessary adjustments to existing tests, not new tests.
   - A real recording.
   - A width wider than 80 columns.
 
-Resume note (2026-09-24):
+Resume note (2026-09-24, after step 6):
 
-- **Pending user decision:** confirm whether Enhance should be skipped when there are no new players. The agent recommends not skipping it; see the deviations above.
-- **Next:** build Enhance New Speaker Voice Samples. Continuing processing stops there.
-  - It must identify every attendee, not only new players, and read the name-corrected transcript through the reviewed assignments.
-  - Whether it's skipped depends on the pending decision above.
-- **Then:** route steps `4`–`6` (Spellcheck Against Glossary, Review Transcript, Generate Artifacts) and give Assign Roles a runner.
-  - Manual Review's source selection must then follow the base transcript chain.
-  - `AudioProcessingScreen`, and possibly the three-phase `SessionProcessingScreen` shell and workflow rail, can then be retired.
-  - The known Back registration bug in `ManualReviewScreen` also needs resolving then.
-- **Real-run check:** re-run Bransonsford 001 with real LLM calls to see whether name corrections improve Isolate's picks.
-  - Isolate's `trace_output=True` is still on for tuning.
-  - The Isolate and name-correction prompts have not been called for real yet.
-- **Layout:** at 80×24, the eleven-step list is taller than the panel. It was already like this with twelve steps and hasn't been addressed.
+- **All six steps are built and routed.** Whether to mark this item complete is the user's call. It hasn't been evaluated against the rubric for the Process Session flow, and nothing has run on a real recording.
+- **Players List "From Audio" removed (2026-09-24, user's decision):** the `A` binding, the three wizard screens, `PlayerImportRun`, the speaker-resolution and transcript-view dialogs, the `Application.import_players_from_audio_*` methods, `player_import_from_audio.py`, the `propose_speakers` prompt, and the tests that only covered them (`test_player_import_wizard.py`, `test_player_import_from_audio.py`, and four From Audio tests in `test_players_list.py`). The session flow covers voice profiles, but not creating players from a standalone recording with no Session. The now-unused `speaker_identification.existing_player_match_similarity_margin_threshold` setting and the already-dead `clean_clips_on_import` setting were removed afterwards, along with the one assertion each test file made about the first.
+- **Cleanup candidates:** the old Audio screen's path is now unreachable: `Application.import_and_transcribe_audio`, `transcribe_session_audio`, `transcribe_audio.transcribe_audio` and `identify_and_publish_transcript`. `transcribe_audio.identify_raw_transcript` still has parameters (`absolute_similarity_threshold`, `force_abstention`) that only the retired bootstrap workflow used.
+- **Real-run check:** re-run Bransonsford 001 with real LLM calls and the real embedding model. The Isolate and name-correction prompts and the new Identify step haven't run on a real recording yet. Isolate's `trace_output=True` is still on for tuning.
+- **Layout:** the twelve-step list is taller than the panel at 80×24.
+
+Update (2026-09-24, later; superseded by the section below): the pending Enhance decision is settled. Enhance is renamed Seed Player Voice Samples, narrowed to seeding voice clips and recomputing centroids, skipped with no new players, and produces a small `seeded_voice_samples.json` receipt. See [Change 4 in intent.md](intent.md#change-4-seed-player-voice-samples-replaces-enhance-new-speaker-voice-samples). The remaining details were fleshed out the same day and are recorded in intent.md. Assign Roles To Players moves before Review Transcript and identifies speakers by centroid. Next: build Seed Player Voice Samples, then reorder the graph and route steps `4`–`6`.

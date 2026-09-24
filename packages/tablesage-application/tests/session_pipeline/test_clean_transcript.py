@@ -28,12 +28,12 @@ def _transcript() -> Transcript:
     )
 
 
-def test_can_clean_transcript_requires_machine_transcript(tmp_path: Path) -> None:
+def test_can_clean_transcript_requires_reviewed_transcript(tmp_path: Path) -> None:
     enabled, reason = can_clean_transcript(tmp_path)
     assert enabled is False
-    assert reason == "Transcribe the session first."
+    assert reason == "Review the transcript first."
 
-    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
 
     enabled, reason = can_clean_transcript(tmp_path)
     assert enabled is True
@@ -41,7 +41,7 @@ def test_can_clean_transcript_requires_machine_transcript(tmp_path: Path) -> Non
 
 
 def test_clean_transcript_writes_role_transcript_and_preserves_derivatives_for_freshness_checks(tmp_path: Path) -> None:
-    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
     ledger_path = tmp_path / ARTIFACTS[ArtifactName.LEDGER].filename
     summary_path = tmp_path / ARTIFACTS[ArtifactName.SUMMARY].filename
     sections_path = tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT_SECTIONS].filename
@@ -74,7 +74,7 @@ def test_clean_transcript_never_renames_unassigned_speaker(tmp_path: Path) -> No
             _word("hello", UNASSIGNED_SPEAKER, 0.0, 1.0),
         ]
     )
-    transcript.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    transcript.save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
 
     clean_transcript(tmp_path, max_words=3, role_names={})
 
@@ -96,7 +96,7 @@ def test_clean_transcript_removes_only_unassigned_backchannel_candidates_no_llm(
             _word("go", "Alice", 1.8, 2.1),
         ]
     )
-    transcript.save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    transcript.save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
 
     result = clean_transcript(tmp_path, max_words=3, role_names={"Alice": "Zaria", "Bob": "Marcus"})
 
@@ -106,7 +106,7 @@ def test_clean_transcript_removes_only_unassigned_backchannel_candidates_no_llm(
 
 
 def test_clean_transcript_reports_staged_progress(tmp_path: Path) -> None:
-    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
+    _transcript().save(tmp_path / ARTIFACTS[ArtifactName.REVIEWED_TRANSCRIPT].filename)
 
     calls: list[tuple[Stage, int, int]] = []
     clean_transcript(

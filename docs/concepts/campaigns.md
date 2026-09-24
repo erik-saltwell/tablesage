@@ -49,7 +49,7 @@ shared reference.
 
 ## Why the Glossary Matters
 
-A shared Glossary can inform spelling suggestions during transcript review and
+A shared Glossary informs the spelling suggestions made while processing a Session and
 helps generated artifacts use the Campaign's established terminology
 consistently.
 

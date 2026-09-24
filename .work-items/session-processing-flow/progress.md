@@ -131,3 +131,21 @@ Verification: `uv run pytest apps/tablesage-tui/tests/test_session_detail.py -q`
   - `uv run ruff check apps packages`, `ruff format --check`, `uv run ty check`, and `git diff --check` all pass.
   - The TUI and application test suites: 626 passed.
 - **Next:** Enhance New Speaker Voice Samples, then routing steps `4`–`6`. See the resume note in item.md.
+
+## Current handoff (2026-09-24, later)
+
+- **Implemented:** Seed Player Voice Samples, the new Identify Speakers step, and Spellcheck Against Glossary routed from Process Session. Details, decisions, and verification are in [item.md](item.md#seed-player-voice-samples-identify-speakers-and-spellcheck-against-glossary--implemented-2026-09-24). This supersedes the "Next" bullet in the handoff above.
+- **Checks:** ruff, `ty check`, and `git diff --check` pass. The TUI and application suites pass. A scripted headless run covered the new-player, re-run, and no-new-player paths.
+- **Next:** route Review Transcript (step 5). See the resume note in item.md.
+
+## Current handoff (2026-09-24, after step 5)
+
+- **Implemented:** Review Transcript routed as step 5, Assign Roles To Players' runner, and retirement of the three-phase shell with a migration dropping the unused phase columns. Details are in [item.md](item.md#review-transcript-step-5-assign-roles-to-players-and-retiring-the-three-phase-shell--implemented-2026-09-24).
+- **Checks:** static checks pass, the suites pass (630), and the migration was checked both ways. Scripted headless runs covered step 5 and regressions in steps 3–4.
+- **Next:** route Generate Artifacts (step 6).
+
+## Current handoff (2026-09-24, after step 6)
+
+- **Implemented:** Generate Artifacts routed as step 6, the conditional Summary dependency with the recap fallback, and removal of the legacy bootstrap workflow, including a migration dropping its tables. Details are in [item.md](item.md#generate-artifacts-step-6-and-removing-the-legacy-bootstrap-workflow--implemented-2026-09-24).
+- **Checks:** static checks pass, the suites pass (676), and the migration was checked both ways. Scripted headless runs covered step 6 and regressions in steps 3–5.
+- **Next:** the user decides whether to complete the item. A real-recording run and a rubric evaluation are still outstanding.
