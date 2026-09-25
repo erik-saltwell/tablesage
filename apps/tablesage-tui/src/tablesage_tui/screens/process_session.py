@@ -28,6 +28,7 @@ from ..widgets import ProcessingStepControl
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
+    from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
     from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
     from tablesage_tools.model import Transcript
 
@@ -202,6 +203,8 @@ class ProcessSessionScreen(TableSageScreen):
             self._start_import_audio()
         elif stage_id is SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS:
             self._start_name_corrections()
+        elif stage_id is SessionProcessingStageID.EXTRACTING_GLOSSARY_TERMS:
+            self._start_glossary_extraction()
         elif stage_id is SessionProcessingStageID.SPELLCHECKING_GLOSSARY:
             self._start_glossary_spellcheck()
         elif stage_id is SessionProcessingStageID.GENERATING_ARTIFACTS:
@@ -357,10 +360,53 @@ class ProcessSessionScreen(TableSageScreen):
         except (OSError, ValueError) as exc:
             self._set_failure(f"Review Name Corrections failed: {exc}")
             return
-        self.notify("No misheard names found.")
         self._continue_processing()
 
-    # Spellcheck Against Glossary (step 4) -- like Review Name Corrections: the LLM call runs here, and the
+    # Extract Glossary Terms (step 4) -- Session Detail's Extract Glossary, run on the identified transcript so
+    # the terms it adds are spellchecked against next. Like Review Name Corrections: the LLM call runs here, and
+    # the review screen opens only when there is something to review.
+
+    def _start_glossary_extraction(self) -> None:
+        stage = next(stage for stage in get_processing_stages() if stage.id is SessionProcessingStageID.EXTRACTING_GLOSSARY_TERMS)
+        if not self._check_run_credentials([stage]):
+            return
+
+        def work() -> list[GlossaryProposal]:
+            self.report_stage_progress("Extracting glossary terms…", 0, 0)
+            return self.application.suggest_glossary_terms(self._session_id)
+
+        self.run_with_progress(
+            title=stage.action,
+            message="Starting…",
+            work=work,
+            on_success=self._after_glossary_terms_found,
+            on_error=lambda exc: self._run_failed(stage.action, exc),
+        )
+
+    def _after_glossary_terms_found(self, proposals: list[GlossaryProposal]) -> None:
+        self._log("glossary_terms_found", proposal_count=len(proposals))
+        if proposals:
+            from .glossary_review import GlossaryReviewScreen
+
+            self.app.push_screen(
+                GlossaryReviewScreen(
+                    self._session_id,
+                    proposals,
+                    save=lambda reviewed: self.application.save_extracted_glossary_terms(self._session_id, reviewed),
+                    section="process session · extract glossary terms",
+                    on_complete=self._continue_processing_later,
+                )
+            )
+            return
+        # Nothing to review: complete the step with an empty receipt (a current one is left alone).
+        try:
+            self.application.save_extracted_glossary_terms(self._session_id, ())
+        except (OSError, ValueError) as exc:
+            self._set_failure(f"Extract Glossary Terms failed: {exc}")
+            return
+        self._continue_processing()
+
+    # Spellcheck Against Glossary (step 5) -- like Review Name Corrections: the LLM call runs here, and the
     # screen opens only when there is something to review.
 
     def _start_glossary_spellcheck(self) -> None:
@@ -404,10 +450,9 @@ class ProcessSessionScreen(TableSageScreen):
         except (OSError, ValueError) as exc:
             self._set_failure(f"Spellcheck Against Glossary failed: {exc}")
             return
-        self.notify("No misspelled glossary terms found.")
         self._continue_processing()
 
-    # Generate Artifacts (step 6) -- no screen: the shared generation runner plans the outputs, asks before
+    # Generate Artifacts (step 7) -- no screen: the shared generation runner plans the outputs, asks before
     # rebuilding earlier Sessions (Regenerate Prior or Cancel only), and runs them behind one progress dialog.
 
     def _start_generation(self) -> None:

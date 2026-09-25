@@ -40,6 +40,7 @@ def _artifacts(
         ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: False,
         ArtifactName.SEEDED_VOICE_SAMPLES: False,
         ArtifactName.IDENTIFIED_TRANSCRIPT: False,
+        ArtifactName.EXTRACTED_GLOSSARY_TERMS: False,
         ArtifactName.SPELLCHECKED_TRANSCRIPT: False,
         ArtifactName.INPUT_AUDIO: input_audio,
         ArtifactName.TRANSCRIPT: transcript,

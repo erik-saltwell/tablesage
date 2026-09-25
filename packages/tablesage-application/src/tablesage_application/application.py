@@ -493,14 +493,31 @@ class Application:
             return extract_glossary_pipeline.can_extract_glossary(self._session_folder(session, game_session))
 
     def extract_glossary(self, session_id: uuid.UUID) -> list[extract_glossary_pipeline.GlossaryProposal]:
-        """Propose new glossary entries from a Session's Role Transcript."""
+        """Session Detail's Extract Glossary: propose new glossary entries from a Session's Role Transcript."""
+        with Session(self._engine) as session:
+            session_folder = self._session_folder(session, sessions.get_session(session, session_id))
+        enabled, reason = extract_glossary_pipeline.can_extract_glossary(session_folder)
+        if not enabled:
+            raise ValueError(reason or "Cannot extract glossary terms.")
+        return self._propose_glossary_entries(
+            session_id, clean_transcript_pipeline.render_role_transcript_text(session_folder), op="extract_glossary"
+        )
+
+    def suggest_glossary_terms(self, session_id: uuid.UUID) -> list[extract_glossary_pipeline.GlossaryProposal]:
+        """Process Session's Extract Glossary Terms step: propose new glossary entries from the identified
+        transcript, before it is spellchecked against the glossary. Raises when the LLM call fails, so the
+        failure lands in Process Session's error list."""
+        transcript = Transcript.load(self.session_folder(session_id) / paths.ARTIFACTS[paths.ArtifactName.IDENTIFIED_TRANSCRIPT].filename)
+        return self._propose_glossary_entries(
+            session_id, extract_glossary_pipeline.render_transcript_text(transcript), op="suggest_glossary_terms"
+        )
+
+    def _propose_glossary_entries(
+        self, session_id: uuid.UUID, transcript: str, *, op: str
+    ) -> list[extract_glossary_pipeline.GlossaryProposal]:
+        """Ask the LLM for glossary entries in `transcript`, dropping terms the campaign glossary already has."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            session_folder = self._session_folder(session, game_session)
-            enabled, reason = extract_glossary_pipeline.can_extract_glossary(session_folder)
-            if not enabled:
-                raise ValueError(reason or "Cannot extract glossary terms.")
-
             attendees = tuple(
                 extract_glossary_pipeline.AttendeePromptEntry(player_name=attendee.player_name, roles=attendee.roles)
                 for attendee in sessions.list_attendance(session, session_id)
@@ -509,10 +526,9 @@ class Application:
             prompt_glossary = tuple(
                 extract_glossary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
             )
-            transcript = clean_transcript_pipeline.render_role_transcript_text(session_folder)
 
         with widelog.wide_event(
-            op="extract_glossary",
+            op=op,
             session_id=str(session_id),
             attendee_count=len(attendees),
             existing_glossary_count=len(prompt_glossary),
@@ -541,6 +557,7 @@ class Application:
             existing = glossary.list_glossary_entries(session, game_session.campaign_id)
             seen = {extract_glossary_pipeline.normalize_term(entry.term) for entry in existing}
             accepted: list[GlossaryEntry] = []
+            added: list[extract_glossary_pipeline.GlossaryProposal] = []
             skipped_count = 0
             for proposal in normalized_proposals:
                 normalized_term = extract_glossary_pipeline.normalize_term(proposal.term)
@@ -548,6 +565,7 @@ class Application:
                     skipped_count += 1
                     continue
                 seen.add(normalized_term)
+                added.append(proposal)
                 accepted.append(
                     GlossaryEntry(
                         campaign_id=game_session.campaign_id,
@@ -562,7 +580,23 @@ class Application:
                 campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
 
-        return extract_glossary_pipeline.GlossaryCommitResult(added_count=len(accepted), skipped_duplicate_count=skipped_count)
+        return extract_glossary_pipeline.GlossaryCommitResult(
+            added_count=len(accepted), skipped_duplicate_count=skipped_count, added=tuple(added)
+        )
+
+    def save_extracted_glossary_terms(
+        self, session_id: uuid.UUID, proposals: Sequence[extract_glossary_pipeline.GlossaryProposal]
+    ) -> extract_glossary_pipeline.GlossaryCommitResult:
+        """Complete Process Session's Extract Glossary Terms step: add the reviewed proposals to the campaign
+        glossary, then write the step's receipt (see `extract_glossary.save_receipt` for when it is rewritten)."""
+        result = self.complete_glossary_extraction(session_id, proposals)
+        states = self.session_artifact_states(session_id)
+        extract_glossary_pipeline.save_receipt(
+            self.session_folder(session_id),
+            result.added,
+            saved_is_current=states[paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS] is artifact_graph_pipeline.ArtifactStatus.CURRENT,
+        )
+        return result
 
     # Sessions
 
@@ -724,11 +758,22 @@ class Application:
                             ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),
                         ),
                     ),
+                    # The glossary itself (shared across the campaign's Sessions) is deliberately not a dependency:
+                    # later Sessions adding terms must not invalidate this one. Only this Session's receipt is.
+                    artifact_graph_pipeline.BuildStep(
+                        paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS,
+                        (ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),),
+                        (
+                            ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
+                            prompt_input(PromptName.EXTRACT_GLOSSARY),
+                        ),
+                    ),
                     artifact_graph_pipeline.BuildStep(
                         paths.ArtifactName.SPELLCHECKED_TRANSCRIPT,
                         (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
                         (
                             ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
+                            ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),
                             prompt_input(PromptName.SUGGEST_SPELLING_CORRECTIONS),
                         ),
                     ),

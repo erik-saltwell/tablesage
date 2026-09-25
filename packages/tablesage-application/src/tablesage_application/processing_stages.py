@@ -13,6 +13,7 @@ class SessionProcessingStageID(IntEnum):
     REVIEWING_NEW_SPEAKER_ASSIGNMENTS = 60
     SEEDING_PLAYER_VOICE_SAMPLES = 70
     IDENTIFYING_SPEAKERS = 75
+    EXTRACTING_GLOSSARY_TERMS = 78
     SPELLCHECKING_GLOSSARY = 80
     REVIEWING_TRANSCRIPT = 90
     ASSIGN_ROLES_TO_SPEAKERS = 100
@@ -47,12 +48,15 @@ _stages: list[SessionProcessingStage] = [
     SessionProcessingStage(id=SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES, action="Seed Player Voice Samples"),
     SessionProcessingStage(id=SessionProcessingStageID.IDENTIFYING_SPEAKERS, action="Identify Speakers"),
     SessionProcessingStage(
-        id=SessionProcessingStageID.SPELLCHECKING_GLOSSARY, action="Spellcheck Against Glossary", binding="4", llm_roles=("llm_model",)
+        id=SessionProcessingStageID.EXTRACTING_GLOSSARY_TERMS, action="Extract Glossary Terms", binding="4", llm_roles=("llm_model",)
     ),
-    SessionProcessingStage(id=SessionProcessingStageID.REVIEWING_TRANSCRIPT, action="Review Transcript", binding="5"),
+    SessionProcessingStage(
+        id=SessionProcessingStageID.SPELLCHECKING_GLOSSARY, action="Spellcheck Against Glossary", binding="5", llm_roles=("llm_model",)
+    ),
+    SessionProcessingStage(id=SessionProcessingStageID.REVIEWING_TRANSCRIPT, action="Review Transcript", binding="6"),
     SessionProcessingStage(id=SessionProcessingStageID.ASSIGN_ROLES_TO_SPEAKERS, action="Assign Roles To Players"),
     SessionProcessingStage(
-        id=SessionProcessingStageID.GENERATING_ARTIFACTS, action="Generate Artifacts", binding="6", llm_roles=("llm_model_high",)
+        id=SessionProcessingStageID.GENERATING_ARTIFACTS, action="Generate Artifacts", binding="7", llm_roles=("llm_model_high",)
     ),
 ]
 

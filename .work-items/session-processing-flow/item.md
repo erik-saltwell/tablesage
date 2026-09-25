@@ -35,10 +35,11 @@ As of 2026-09-24:
 | `3` | Review New Speaker Assignments | manual | yes | yes |
 | | Seed Player Voice Samples (was Enhance New Speaker Voice Samples) | automatic | yes (2026-09-24) | yes |
 | | Identify Speakers (new) | automatic | yes (2026-09-24) | no |
-| `4` | Spellcheck Against Glossary | manual | yes (2026-09-24) | no |
-| `5` | Review Transcript | manual | yes (2026-09-24) | no |
+| `4` | Extract Glossary Terms (new) | manual | yes (2026-09-25) | no |
+| `5` | Spellcheck Against Glossary | manual | yes (2026-09-24) | no |
+| `6` | Review Transcript | manual | yes (2026-09-24) | no |
 | | Assign Roles To Players | automatic | yes (2026-09-24) | no |
-| `6` | Generate Artifacts | manual | yes (2026-09-24) | no |
+| `7` | Generate Artifacts | manual | yes (2026-09-24) | no |
 
 What the live app can do today:
 
@@ -426,3 +427,14 @@ Resume note (2026-09-24, after step 6):
 - **Layout:** the twelve-step list is taller than the panel at 80×24.
 
 Update (2026-09-24, later; superseded by the section below): the pending Enhance decision is settled. Enhance is renamed Seed Player Voice Samples, narrowed to seeding voice clips and recomputing centroids, skipped with no new players, and produces a small `seeded_voice_samples.json` receipt. See [Change 4 in intent.md](intent.md#change-4-seed-player-voice-samples-replaces-enhance-new-speaker-voice-samples). The remaining details were fleshed out the same day and are recorded in intent.md. Assign Roles To Players moves before Review Transcript and identifies speakers by centroid. Next: build Seed Player Voice Samples, then reorder the graph and route steps `4`–`6`.
+
+## Extract Glossary Terms (step 4) — implemented 2026-09-25
+
+Session Detail's Extract Glossary also runs as a manual Process Session step, right before Spellcheck Against Glossary. Keys after it shift: Spellcheck is `5`, Review Transcript `6`, Generate Artifacts `7`. Earlier sections in this file and in [intent.md](intent.md) use the old numbering.
+
+- **Input:** the identified transcript, rendered as `**Speaker** - text` (the Role Transcript doesn't exist yet). The shared `extract_glossary` prompt now labels its input "Transcript". Session Detail's `L` command still reads the Role Transcript and writes no artifact.
+- **Review:** the same `GlossaryReviewScreen` (add, edit, delete, find/replace), given a `save` callable. Nothing to review completes the step silently; cancel returns to Process Session with the step incomplete.
+- **Receipt:** `extracted_glossary_terms.json` (not shown in the UI) lists the entries the step added. Built from the identified transcript and the `extract_glossary` prompt; Spellcheck depends on it. The campaign glossary itself is deliberately not a dependency, so later Sessions adding terms never invalidate this one. The receipt is written when missing or stale, or when the review added at least one term. A rerun that adds nothing leaves it untouched, so the manual transcript review stays current.
+- **Skipped steps are silent:** Review Name Corrections' and Spellcheck's "nothing found" toasts were removed. Generate Artifacts keeps "All outputs are current." as the run's end signal.
+- **Verification:** ruff and format are clean. Mypy shows no new errors. The full test suite matches the pre-change baseline (the same 45 pre-existing TUI failures); the only fixture edits add the new artifact to lists that enumerate every artifact. A direct `Application` script checked every receipt-write and staleness rule. A headless run of Process Session covered two paths. On the review path, the review opened, entries were deleted and added, the glossary and receipt were written, and spellcheck skipped silently on the way to Review Transcript. On the empty path, the step completed with no screen and no toast. Not yet checked: a real LLM call on a real recording.
+

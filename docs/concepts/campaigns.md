@@ -40,8 +40,9 @@ that should remain consistent as the Campaign grows.
 ## Building the Glossary
 
 You can add and edit Glossary entries directly whenever the group already knows
-a term matters. TableSage can also extract candidate terms from a Session's
-role-attributed transcript.
+a term matters. TableSage also proposes candidate terms while processing a
+Session (the **Extract Glossary Terms** step), and can extract them from a
+Session's role-attributed transcript on Session Detail.
 
 Extraction creates proposals rather than changing the Glossary automatically.
 Review the proposed entries and accept the terms that belong in the Campaign's

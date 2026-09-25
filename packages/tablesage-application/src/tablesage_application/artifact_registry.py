@@ -16,6 +16,7 @@ class ArtifactName(Enum):
     REVIEWED_NEW_SPEAKER_ASSIGNMENTS = "reviewed_new_speaker_assignments"
     SEEDED_VOICE_SAMPLES = "seeded_voice_samples"
     IDENTIFIED_TRANSCRIPT = "identified_transcript"
+    EXTRACTED_GLOSSARY_TERMS = "extracted_glossary_terms"
     SPELLCHECKED_TRANSCRIPT = "spellchecked_transcript"
     LEDGER = "ledger"
     SCENE_BREAKDOWN = "scene_breakdown"
@@ -136,6 +137,16 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         should_show_in_ui=False,
         display_name="Identified Transcript",
         stage=SessionProcessingStageID.IDENTIFYING_SPEAKERS,
+    ),
+    # Receipt of the glossary entries the reviewed Extract Glossary Terms step added to the campaign.
+    # The entries themselves live in the database, which the artifact graph can't see; this file is the
+    # step's completion marker, so spellchecking reruns only when this Session's extraction adds terms.
+    ArtifactName.EXTRACTED_GLOSSARY_TERMS: ArtifactSpec(
+        "extracted_glossary_terms.json",
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name="Extracted Glossary Terms",
+        stage=SessionProcessingStageID.EXTRACTING_GLOSSARY_TERMS,
     ),
     # The transcript after glossary spellchecking replacements.
     ArtifactName.SPELLCHECKED_TRANSCRIPT: ArtifactSpec(

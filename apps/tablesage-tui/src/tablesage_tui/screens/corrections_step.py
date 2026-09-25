@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class CorrectionsStepScreen(TableSageScreen):
     """A Process Session step that reviews the LLM's find/replace corrections to a transcript.
 
-    Used by Review Name Corrections (step 2) and Spellcheck Against Glossary (step 4). Process Session
+    Used by Review Name Corrections (step 2) and Spellcheck Against Glossary (step 5). Process Session
     makes the LLM call before opening this screen, so it only reviews: New, Edit, and Delete rows, then
     Apply & Continue saves through `save` and hands control back to the caller, which continues
     processing. Cancel returns without writing anything.

@@ -43,13 +43,17 @@ automatically, and finishing a step continues processing to the next one:
 3. **Review New Speaker Assignments** (`3`). Keep only the utterances each new
    player really said. They become that player's voice samples, and every
    speaker is then identified from the attendees' voice profiles.
-4. **Spellcheck Against Glossary** (`4`). Review suggested corrections to
-   glossary terms and names; you decide which to apply.
-5. **Review Transcript** (`5`). Check speaker labels and text. If you leave
+4. **Extract Glossary Terms** (`4`). Review proposed new glossary entries —
+   add, edit, or delete them — before they join the Campaign glossary. When
+   nothing new is found, processing simply moves on.
+5. **Spellcheck Against Glossary** (`5`). Review suggested corrections to
+   glossary terms and names, including the terms just added; you decide which
+   to apply.
+6. **Review Transcript** (`6`). Check speaker labels and text. If you leave
    with unsaved edits, TableSage asks whether to save them as a draft to resume
    later; only **Complete** creates the reviewed transcript. Player names are
    then replaced with character names for generation.
-6. **Generate Artifacts** (`6`). Runs on its own once you complete the review.
+7. **Generate Artifacts** (`7`). Runs on its own once you complete the review.
    It builds every missing or out-of-date output. If an earlier Session's
    outputs are out of date, TableSage asks before rebuilding them first. If the
    previous Session can't be rebuilt (it was never processed or reviewed), its
@@ -58,8 +62,9 @@ automatically, and finishing a step continues processing to the next one:
 
 Steps 2 and 3 only matter for new players; with none, they are shown struck
 through and complete on their own. You can also extract glossary terms from the
-role-attributed transcript on Session Detail, review the proposed entries, and
-add the terms you accept to the Campaign glossary.
+role-attributed transcript on Session Detail at any time, review the proposed
+entries, and add the terms you accept to the Campaign glossary; that never marks
+any of the Session's outputs out of date.
 
 The review steps are important. TableSage can make useful initial inferences
 from the audio and the Players' voice profiles, but the group decides what the

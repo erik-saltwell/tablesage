@@ -5,7 +5,7 @@ import uuid
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, replace
 
-from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
+from tablesage_application.session_pipeline.extract_glossary import GlossaryCommitResult, GlossaryProposal
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
@@ -23,7 +23,11 @@ class _DraftEntry:
 
 
 class GlossaryReviewScreen(TableSageScreen):
-    """Review an in-memory glossary proposal before committing it to the campaign."""
+    """Review an in-memory glossary proposal before committing it to the campaign.
+
+    Complete commits through `save`: Session Detail's Extract Glossary uses the plain glossary commit (the
+    default); Process Session's Extract Glossary Terms step passes one that also writes the step's receipt.
+    """
 
     section = "session detail"
 
@@ -43,11 +47,16 @@ class GlossaryReviewScreen(TableSageScreen):
         session_id: uuid.UUID,
         proposals: Sequence[GlossaryProposal],
         *,
+        save: Callable[[Sequence[GlossaryProposal]], GlossaryCommitResult] | None = None,
+        section: str | None = None,
         on_complete: Callable[[], None] | None = None,
         on_cancel: Callable[[], None] | None = None,
     ) -> None:
         super().__init__()
         self._session_id = session_id
+        self._save = save
+        if section is not None:
+            self.section = section
         self._on_complete = on_complete
         self._on_cancel = on_cancel
         self._entries = [_DraftEntry(id=uuid.uuid4(), term=proposal.term, description=proposal.description) for proposal in proposals]
@@ -181,7 +190,14 @@ class GlossaryReviewScreen(TableSageScreen):
             self.notify("Glossary terms cannot be blank.", severity="error")
             return
         proposals = [GlossaryProposal(term=entry.term.strip(), description=entry.description) for entry in self._entries]
-        result = self.application.complete_glossary_extraction(self._session_id, proposals)
+        try:
+            if self._save is not None:
+                result = self._save(proposals)
+            else:
+                result = self.application.complete_glossary_extraction(self._session_id, proposals)
+        except (OSError, ValueError) as exc:
+            self.notify(f"Could not save the glossary entries: {exc}", severity="error")
+            return
         self.app.pop_screen()
         if self._on_complete is not None:
             self.app.call_after_refresh(self._on_complete)

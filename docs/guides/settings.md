@@ -97,7 +97,8 @@ These are the longest and most expensive calls TableSage makes.
 
 - **Process Session → Spellcheck Against Glossary**: The model proposes corrections based on the
   [Campaign glossary](../concepts/campaigns.md#glossary).
-- **Extract Glossary**, the model proposes new glossary entries based on the transcript.
+- **Process Session → Extract Glossary Terms** and Session Detail's **Extract Glossary**: the model
+  proposes new glossary entries based on the transcript.
 - **Process Session → Review Name Corrections**: when a Session has players without
   voice samples, the model proposes corrections for misheard player and
   character names, which you review before they are applied.

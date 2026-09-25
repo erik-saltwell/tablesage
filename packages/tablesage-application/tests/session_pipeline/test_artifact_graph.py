@@ -144,6 +144,7 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: (),
         ArtifactName.SEEDED_VOICE_SAMPLES: (),
         ArtifactName.IDENTIFIED_TRANSCRIPT: (),
+        ArtifactName.EXTRACTED_GLOSSARY_TERMS: (system_prompt_path(PromptName.EXTRACT_GLOSSARY),),
         ArtifactName.SPELLCHECKED_TRANSCRIPT: (system_prompt_path(PromptName.SUGGEST_SPELLING_CORRECTIONS),),
         ArtifactName.REVIEWED_TRANSCRIPT: (),
         ArtifactName.ROLE_TRANSCRIPT: (),
