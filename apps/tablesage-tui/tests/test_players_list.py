@@ -200,7 +200,8 @@ async def test_returning_from_player_detail_reloads_players() -> None:
         assert application.list_players.call_count >= 1
         call_count_before_pop = application.list_players.call_count
 
-        await pilot.press("escape")
+        # The first Esc leaves the focused name field; the second goes back.
+        await pilot.press("escape", "escape")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, PlayersListScreen)

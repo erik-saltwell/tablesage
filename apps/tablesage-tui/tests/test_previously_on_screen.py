@@ -91,7 +91,7 @@ async def test_launch_from_campaign_and_initial_entry_state() -> None:
         campaign_screen = CampaignDetailScreen(uuid.uuid4())
         pilot.app.push_screen(campaign_screen)
         await pilot.pause()
-        await pilot.press("slash", "v")
+        await pilot.press("escape", "slash", "v")
         await _workers(pilot)
         screen = pilot.app.screen
         assert isinstance(screen, PreviouslyOnScreen)

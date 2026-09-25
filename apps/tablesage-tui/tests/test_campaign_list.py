@@ -113,7 +113,8 @@ async def test_resuming_the_screen_after_editing_a_campaign_reloads_it() -> None
         # simulate the campaign's game_system having changed on the detail screen
         application.list_campaigns = MagicMock(return_value=[Campaign(id=campaign.id, name="Iron Pact", game_system="Dungeon World")])
 
-        await pilot.press("escape")
+        # The first Esc leaves the focused name field; the second goes back.
+        await pilot.press("escape", "escape")
         await pilot.pause()
         assert pilot.app.screen is list_screen
 

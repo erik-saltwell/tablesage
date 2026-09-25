@@ -33,6 +33,9 @@ def _application(*, player: Player | None = None, clips: list[VoiceClip] | None 
 async def _open_player_detail(pilot: Pilot, player_id: uuid.UUID) -> None:
     pilot.app.push_screen(PlayerDetailScreen(player_id))
     await pilot.pause()
+    # The name field has focus on open; Esc leaves it so the letter shortcuts work.
+    await pilot.press("escape")
+    await pilot.pause()
 
 
 async def _wait_for_progress_worker(pilot: Pilot) -> None:

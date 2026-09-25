@@ -24,6 +24,8 @@ async def test_export_campaign_picker_and_worker(tmp_path: Path) -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
         await pilot.press("x")
         await pilot.pause()
         assert isinstance(pilot.app.screen, FileSave)
@@ -41,6 +43,8 @@ async def test_export_campaign_rejects_processing_session() -> None:
     application = _application(campaign=campaign, sessions=[game_session])
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
         await pilot.press("x")
         await pilot.pause()
@@ -88,6 +92,8 @@ async def test_sessions_is_the_default_tab() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
@@ -114,6 +120,8 @@ async def test_regenerate_all_outputs_processes_only_reviewed_audio_sessions() -
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         await pilot.press("slash", "o")
         await _wait_for_progress_worker(pilot)
@@ -139,6 +147,8 @@ async def test_generate_opportunities_secondary_binding_opens_screen() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         await pilot.press("slash", "y")
         await _wait_for_progress_worker(pilot)
@@ -155,6 +165,8 @@ async def test_metadata_inputs_are_prefilled() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         screen = pilot.app.screen
         assert screen.query_one("#campaign-name-input", Input).value == "Iron Pact"
@@ -169,6 +181,8 @@ async def test_typing_a_tab_letter_into_a_field_does_not_switch_tabs() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         screen = pilot.app.screen
@@ -192,6 +206,8 @@ async def test_s_and_g_switch_tabs_when_a_table_has_focus() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
@@ -211,6 +227,8 @@ async def test_tabs_are_mouse_clickable() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         screen = pilot.app.screen
@@ -234,6 +252,8 @@ async def test_renaming_commits_on_blur() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
         name_input.focus()
@@ -254,6 +274,8 @@ async def test_duplicate_rename_shows_error_and_resets_value() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
@@ -277,6 +299,8 @@ async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> Non
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
@@ -308,6 +332,8 @@ async def test_description_and_game_system_commit_together() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         description = pilot.app.screen.query_one("#campaign-description-input", CommittingInput)
         description.focus()
@@ -328,6 +354,8 @@ async def test_escape_commits_focused_field_before_popping() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
@@ -350,6 +378,8 @@ async def test_glossary_table_shows_entries() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
 
@@ -366,6 +396,8 @@ async def test_new_glossary_entry_flow() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
@@ -393,6 +425,8 @@ async def test_glossary_duplicate_term_shows_error() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
         await pilot.press("n")
@@ -415,6 +449,8 @@ async def test_delete_glossary_entry_confirms_then_deletes() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
 
@@ -436,6 +472,8 @@ async def test_sessions_table_shows_sessions_sorted_by_sequence() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         table = pilot.app.screen.query_one("#sessions-table", DataTable)
         assert [str(column.label) for column in table.columns.values()] == ["#", "Name", "Date"]
@@ -455,6 +493,8 @@ async def test_new_session_creates_and_opens_session_detail() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("n")
@@ -480,6 +520,8 @@ async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("n")
@@ -509,6 +551,8 @@ async def test_new_session_folder_collision_cancelled_does_not_create() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         await pilot.press("n")
         await pilot.pause()
@@ -534,6 +578,8 @@ async def test_edit_session_opens_session_detail() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+        await pilot.press("escape")
+        await pilot.pause()
 
         await pilot.press("enter")
         await pilot.pause()
@@ -550,6 +596,8 @@ async def test_delete_session_confirms_then_deletes_and_reloads() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("d")
@@ -572,6 +620,8 @@ async def test_cleanup_sessions_confirms_then_cleans() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("c")
@@ -600,6 +650,12 @@ async def test_escape_pops_back_to_campaign_list() -> None:
         await pilot.pause()
         assert isinstance(pilot.app.screen, CampaignDetailScreen)
 
+        # The first Esc leaves the focused name field for the Sessions table; the second goes back.
+        await pilot.press("escape")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert pilot.app.focused is pilot.app.screen.query_one("#sessions-table")
+
         await pilot.press("escape")
         await pilot.pause()
 
@@ -613,6 +669,8 @@ async def test_f5_reloads_metadata_and_all_tabs_without_changing_active_tab() ->
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("g")

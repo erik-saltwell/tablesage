@@ -131,9 +131,11 @@ class PlayerDetailScreen(TableSageScreen):
         )
 
     def action_pop_screen(self) -> None:
-        focused = self.focused
-        if isinstance(focused, CommittingInput):
-            self._commit_name(focused)
+        # The name field has focus on open, so Esc first leaves a field for the table (losing focus commits
+        # it) and the letter shortcuts start working; Esc from anywhere else goes back.
+        if isinstance(self.focused, CommittingInput):
+            self.query_one("#voice-clips-table", DataTable).focus()
+            return
         super().action_pop_screen()
 
     def _refresh_centroid_display(self, player: Player) -> None:
