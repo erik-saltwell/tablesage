@@ -463,8 +463,10 @@ NewSpeakerAssignmentsScreen {
         height: 1fr;
     }
     #new-speaker-review-players-column {
-        width: 45%;
-        max-width: 52;
+        width: 50%;
+        /* Fits Player, Samples, Speech and "Too little speech" without truncating. */
+        min-width: 57;
+        max-width: 64;
         height: 1fr;
         margin: 0 2 0 0;
     }

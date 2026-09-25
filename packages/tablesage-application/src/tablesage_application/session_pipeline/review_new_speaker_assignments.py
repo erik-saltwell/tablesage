@@ -1,8 +1,9 @@
 """Process Session's Review New Speaker Assignments step: a human keeps or removes each proposed utterance.
 
-What survives becomes each new player's voice samples, so the review is remove-only: it can
-shrink a player's list but never add to it or move utterances between players. The reviewed
-artifact has the input's shape and stores only what was kept; rejections are the proposed
+What survives becomes each new player's voice samples. The reviewer removes utterances and can grow a
+player's list only through Find More (see `find_voice_matches`), whose additions they then review like
+any other; utterances are never moved between players. The reviewed artifact has the input's shape and
+stores what was kept, plus each player's removed Find More additions; other rejections are the proposed
 indices minus the kept ones.
 """
 
@@ -32,6 +33,8 @@ class ReviewedNewSpeakerAssignment(BaseModel, frozen=True):
     player_id: uuid.UUID
     player_name: str
     utterance_indices: tuple[int, ...]
+    # Find More additions the reviewer removed: they keep counting as "not this player" on later searches.
+    rejected_voice_matches: tuple[int, ...] = ()
 
 
 class ReviewedNewSpeakerAssignments(BaseModel, frozen=True):
@@ -54,6 +57,9 @@ class ReviewUtterance:
     # The player's own evidence explanations citing this utterance; empty for a voice-fallback addition.
     explanations: tuple[str, ...]
 
+    # Added on the review screen by Find More, rather than proposed by Isolate New Speakers.
+    found_by_find_more: bool = False
+
     @property
     def added_by_voice_match(self) -> bool:
         return not self.explanations
@@ -69,8 +75,10 @@ class ReviewPlayer:
 @dataclass(frozen=True)
 class ReviewData:
     players: tuple[ReviewPlayer, ...]
-    # Indices of proposed utterances to show as removed on entry (from a current reviewed file).
+    # Indices of utterances to show as removed on entry (from a current reviewed file).
     removed: frozenset[int]
+    # Kept speech below which a player is flagged, and how much one Find More aims to add.
+    target_speech_seconds: float = 0.0
 
 
 def reviewed_path(session_folder: Path) -> Path:
@@ -89,38 +97,49 @@ def load_proposals(session_folder: Path) -> NewSpeakerAssignments:
     return NewSpeakerAssignments.load(session_folder / ARTIFACTS[ArtifactName.NEW_SPEAKER_ASSIGNMENTS].filename)
 
 
-def review_data(session_folder: Path, proposals: NewSpeakerAssignments, saved: ReviewedNewSpeakerAssignments | None) -> ReviewData:
-    """Everything the review screen shows. `saved` is the reviewed file only when it is current."""
+def review_utterance(
+    transcript: Transcript, index: int, explanations: Sequence[str] = (), *, found_by_find_more: bool = False
+) -> ReviewUtterance:
+    utterance = transcript.utterances[index]
+    return ReviewUtterance(
+        index=index,
+        text=utterance.punctuated_text or utterance.text,
+        speech_seconds=speech_duration(utterance),
+        clip_seconds=max(0.0, utterance.end - utterance.start),
+        explanations=tuple(dict.fromkeys(explanations)),
+        found_by_find_more=found_by_find_more,
+    )
+
+
+def review_data(
+    session_folder: Path,
+    proposals: NewSpeakerAssignments,
+    saved: ReviewedNewSpeakerAssignments | None,
+    target_speech_seconds: float = 0.0,
+) -> ReviewData:
+    """Everything the review screen shows. `saved` is the reviewed file only when it is current; its Find More
+    additions, kept or rejected, follow the proposed utterances."""
     transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
+    saved_players = {player.player_id: player for player in saved.players} if saved is not None else {}
     players: list[ReviewPlayer] = []
+    removed: set[int] = set()
     for proposal in proposals.players:
         explanations: dict[int, list[str]] = {}
         for entry in proposals.evidence:
             if entry.player_id == proposal.player_id:
                 for index in entry.utterance_indices:
                     explanations.setdefault(index, []).append(entry.explanation)
-        players.append(
-            ReviewPlayer(
-                player_id=proposal.player_id,
-                player_name=proposal.player_name,
-                utterances=tuple(
-                    ReviewUtterance(
-                        index=index,
-                        text=transcript.utterances[index].punctuated_text or transcript.utterances[index].text,
-                        speech_seconds=speech_duration(transcript.utterances[index]),
-                        clip_seconds=max(0.0, transcript.utterances[index].end - transcript.utterances[index].start),
-                        explanations=tuple(dict.fromkeys(explanations.get(index, ()))),
-                    )
-                    for index in proposal.utterance_indices
-                ),
-            )
-        )
-    removed: set[int] = set()
-    if saved is not None:
-        kept = saved.kept()
-        for proposal in proposals.players:
-            removed.update(set(proposal.utterance_indices) - kept.get(proposal.player_id, frozenset()))
-    return ReviewData(players=tuple(players), removed=frozenset(removed))
+        proposed = set(proposal.utterance_indices)
+        utterances = [review_utterance(transcript, index, explanations.get(index, ())) for index in proposal.utterance_indices]
+        reviewed = saved_players.get(proposal.player_id)
+        if reviewed is not None:
+            kept = set(reviewed.utterance_indices)
+            rejected = set(reviewed.rejected_voice_matches) - kept - proposed
+            additions = sorted((kept - proposed) | rejected)
+            utterances.extend(review_utterance(transcript, index, found_by_find_more=True) for index in additions)
+            removed.update((proposed - kept) | rejected)
+        players.append(ReviewPlayer(player_id=proposal.player_id, player_name=proposal.player_name, utterances=tuple(utterances)))
+    return ReviewData(players=tuple(players), removed=frozenset(removed), target_speech_seconds=target_speech_seconds)
 
 
 def save_review(
@@ -128,20 +147,25 @@ def save_review(
     proposals: NewSpeakerAssignments,
     kept: Mapping[uuid.UUID, Sequence[int]],
     current: ReviewedNewSpeakerAssignments | None,
+    rejected: Mapping[uuid.UUID, Sequence[int]] | None = None,
 ) -> bool:
-    """Write the reviewed file unless `current` (the saved file, only when it is current) already matches.
+    """Write the reviewed file unless `current` (the saved file, only when it is current) keeps the same utterances.
 
     Staleness is modification-time based, so rewriting an unchanged review would needlessly
-    invalidate every downstream artifact. Only proposed indices can be kept. Returns whether it wrote.
+    invalidate every downstream artifact. For the same reason a change to `rejected` (each player's
+    removed Find More additions) alone isn't saved. Proposed indices keep their order; Find More
+    additions follow in transcript order. Returns whether it wrote.
     """
     players: list[ReviewedNewSpeakerAssignment] = []
     for proposal in proposals.players:
         player_kept = set(kept.get(proposal.player_id, ()))
+        proposed = [i for i in proposal.utterance_indices if i in player_kept]
         players.append(
             ReviewedNewSpeakerAssignment(
                 player_id=proposal.player_id,
                 player_name=proposal.player_name,
-                utterance_indices=tuple(i for i in proposal.utterance_indices if i in player_kept),
+                utterance_indices=(*proposed, *sorted(player_kept - set(proposed))),
+                rejected_voice_matches=tuple(sorted(set((rejected or {}).get(proposal.player_id, ())) - player_kept)),
             )
         )
     reviewed = ReviewedNewSpeakerAssignments(players=tuple(players))
@@ -163,15 +187,21 @@ def clip_path(session_folder: Path, utterance_index: int) -> Path:
 
 
 def extract_clips(session_folder: Path, indices: Sequence[int], on_progress: Callable[[int, int], None] | None = None) -> None:
-    """Extract a playback clip for each proposed utterance, replacing any left from an earlier visit.
+    """Extract a playback clip for each listed utterance, replacing any left from an earlier visit.
 
     An utterance whose `end` isn't after its `start` gets no clip (ffmpeg rejects it); the
     screen treats a missing clip as silent.
     """
-    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
-    audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
     discard_clips(session_folder)
     clips_folder(session_folder).mkdir(parents=True)
+    extract_more_clips(session_folder, indices, on_progress)
+
+
+def extract_more_clips(session_folder: Path, indices: Sequence[int], on_progress: Callable[[int, int], None] | None = None) -> None:
+    """Extract playback clips for `indices` (such as Find More's additions), leaving existing clips alone."""
+    transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
+    audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
+    clips_folder(session_folder).mkdir(parents=True, exist_ok=True)
 
     async def extract_all() -> int:
         skipped = 0

@@ -3,7 +3,7 @@
 | Name | Status | Folder |
 |---|---|---|
 | Benchmarking v2 | defining-success | [.work-items/benchmarking-v2/](.work-items/benchmarking-v2/) |
-| Isolate New Speakers sample yield | implementing | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
+| Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |

@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import dataclasses
 import uuid
 from collections.abc import Callable
 
 from rich.text import Text
 from tablesage_application.session_pipeline.review_new_speaker_assignments import ReviewData, ReviewPlayer, ReviewUtterance
+from textual import events
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
+from textual.coordinate import Coordinate
 from textual.widgets import Button, DataTable, Static
 
 from ..audio_playback import ReviewPlayback
@@ -24,6 +27,19 @@ class _PaneTable(DataTable[object]):
         super().__init__(id=id, cursor_type="row", zebra_stripes=True, classes="tablesage-table")
         self._on_left = on_left
         self._on_right = on_right
+
+    def on_click(self, event: events.Click) -> None:
+        """Make a click on the highlighted row select it, whichever column was hit.
+
+        `DataTable` only reports a selection when the clicked (row, column) equals the cursor's, and the
+        cursor starts in the narrow first column, so a click elsewhere on the highlighted row would only
+        move the cursor's column and do nothing. Moving the column first makes Textual's own click
+        handling (which runs next) see a match and post the selection.
+        """
+        meta = event.style.meta
+        row = meta.get("row", -1)
+        if row >= 0 and row == self.cursor_row and "column" in meta:
+            self.cursor_coordinate = Coordinate(row, meta["column"])
 
     def action_cursor_left(self) -> None:
         self._on_left()
@@ -42,15 +58,18 @@ def _format_seconds(seconds: float) -> str:
 class NewSpeakerAssignmentsScreen(TableSageScreen):
     """Step 3 of Process Session: keep or remove each utterance proposed as a new player's voice sample.
 
-    Remove-only: a player's list can shrink but never grow. Removal is a toggle, and totals count
-    kept utterances only. Confirm saves the kept utterances and hands control back to the caller,
-    which continues processing; Cancel returns without writing anything.
+    Removal is a toggle, and totals count kept utterances only. A player's list grows only through
+    Find More, which adds the utterances that sound most like the player's kept ones; the reviewer
+    then keeps or removes those like any other, and removed additions steer later searches away from
+    that voice. Players below the target are flagged. Confirm saves the kept utterances and hands
+    control back to the caller, which continues processing; Cancel returns without writing anything.
     """
 
     section = "process session · new speaker assignments"
     COMMON_BINDINGS = [
         Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
         Binding("r,R", "replay", "Replay", key_display="R"),
+        Binding("f,F", "find_more", "Find More", key_display="F"),
         Binding("d,D,delete,backspace", "toggle_removed", "Keep/Remove", key_display="D"),
         Binding("c,C", "confirm", "Confirm", key_display="C"),
         Binding("escape", "leave_utterances", "Players", key_display="Esc"),
@@ -79,6 +98,7 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
                     players.add_column("Player", key="player")
                     players.add_column("Samples", key="samples")
                     players.add_column("Speech", key="speech")
+                    players.add_column("", key="status")
                     yield players
                 with Vertical(id="new-speaker-review-utterances-column"):
                     utterances = _PaneTable(id="new-speaker-review-utterances", on_left=self.action_leave_utterances, on_right=lambda: None)
@@ -132,15 +152,17 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
 
     # Players pane
 
-    def _player_cells(self, player: ReviewPlayer) -> tuple[str, str, str]:
+    def _player_cells(self, player: ReviewPlayer) -> tuple[str, str, str, Text]:
+        assert self._data is not None
         kept = [utterance for utterance in player.utterances if utterance.index not in self._removed]
         seconds = sum(utterance.speech_seconds for utterance in kept)
-        return player.player_name, str(len(kept)), _format_seconds(seconds)
+        status = Text("Too little speech", style="bold red") if seconds < self._data.target_speech_seconds else Text("")
+        return player.player_name, str(len(kept)), _format_seconds(seconds), status
 
     def _refresh_player_row(self, row: int) -> None:
         assert self._data is not None
         table = self.query_one("#new-speaker-review-players", DataTable)
-        for column, value in zip(("player", "samples", "speech"), self._player_cells(self._data.players[row]), strict=True):
+        for column, value in zip(("player", "samples", "speech", "status"), self._player_cells(self._data.players[row]), strict=True):
             table.update_cell(str(row), column, value)
 
     def _current_player(self) -> ReviewPlayer:
@@ -158,10 +180,12 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
 
     # Utterances pane
 
-    def _utterance_cells(self, utterance: ReviewUtterance) -> tuple[str, Text, Text]:
+    def _utterance_cells(self, utterance: ReviewUtterance) -> tuple[Text, Text, Text]:
         removed = utterance.index in self._removed
         style = "dim strike" if removed else ""
-        return "✗" if removed else "", Text(_format_seconds(utterance.speech_seconds), style=style), Text(utterance.text, style=style)
+        # Find More additions are marked so the reviewer knows to listen to them.
+        marker = Text("✗") if removed else Text("+", style="dim") if utterance.found_by_find_more else Text("")
+        return marker, Text(_format_seconds(utterance.speech_seconds), style=style), Text(utterance.text, style=style)
 
     def _refresh_utterance_row(self, row: int) -> None:
         utterance = self._current_player().utterances[row]
@@ -240,6 +264,8 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
         in_utterances = self._data is not None and self._utterances_focused()
         if action in _ROW_ACTIONS:
             return in_utterances and bool(self._current_player().utterances)
+        if action == "find_more":
+            return self._data is not None and bool(self._data.players)
         if action == "leave_utterances":
             return in_utterances
         if action == "cancel":
@@ -256,6 +282,75 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
 
     def action_replay(self) -> None:
         self._play()
+
+    def action_find_more(self) -> None:
+        assert self._data is not None
+        player_row = self._player_row
+        player = self._current_player()
+        kept = self._kept()
+        if not kept[player.player_id]:
+            self.notify(f"Keep at least one of {player.player_name}'s utterances first; Find More looks for voices like them.")
+            return
+        # Every player's rows, kept or removed: removal is tracked by index, so no utterance may be in two lists.
+        listed = [utterance.index for other in self._data.players for utterance in other.utterances]
+        rejected = self._rejected()[player.player_id]
+        self._playback.stop()
+        self._playback.set_manual()
+
+        def on_success(additions: tuple[ReviewUtterance, ...]) -> None:
+            self._add_utterances(player_row, additions)
+            if not additions:
+                self.notify(f"There are no more utterances to add to {player.player_name}.")
+                return
+            seconds = sum(utterance.speech_seconds for utterance in additions)
+            review = "Listen to it and remove it if it isn't" if len(additions) == 1 else "Listen to them and remove any that aren't"
+            self.notify(
+                f"Added {len(additions)} clip{'' if len(additions) == 1 else 's'} ({_format_seconds(seconds)}) to "
+                f"{player.player_name}. {review} {player.player_name} before confirming.",
+                timeout=10,
+            )
+
+        self.run_with_progress(
+            title="Find More",
+            message="Comparing voices…",
+            work=lambda: self.application.find_more_voice_matches(
+                self._session_id,
+                player.player_id,
+                kept,
+                listed,
+                rejected,
+                on_progress=self.report_stage_progress,
+            ),
+            on_success=on_success,
+        )
+
+    def _add_utterances(self, player_row: int, additions: tuple[ReviewUtterance, ...]) -> None:
+        assert self._data is not None
+        players = list(self._data.players)
+        player = players[player_row]
+        players[player_row] = dataclasses.replace(player, utterances=(*player.utterances, *additions))
+        self._data = dataclasses.replace(self._data, players=tuple(players))
+        self._refresh_player_row(player_row)
+        if player_row != self._player_row:
+            return
+        table = self.query_one("#new-speaker-review-utterances", DataTable)
+        for utterance in additions:
+            table.add_row(*self._utterance_cells(utterance), key=str(utterance.index))
+
+    def _kept(self) -> dict[uuid.UUID, list[int]]:
+        assert self._data is not None
+        return {
+            player.player_id: [utterance.index for utterance in player.utterances if utterance.index not in self._removed]
+            for player in self._data.players
+        }
+
+    def _rejected(self) -> dict[uuid.UUID, list[int]]:
+        """Each player's removed Find More additions."""
+        assert self._data is not None
+        return {
+            player.player_id: [u.index for u in player.utterances if u.found_by_find_more and u.index in self._removed]
+            for player in self._data.players
+        }
 
     def action_toggle_mode(self) -> None:
         self._playback.toggle_mode()
@@ -277,12 +372,8 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
     def action_confirm(self) -> None:
         if self._data is None:
             return
-        kept = {
-            player.player_id: [utterance.index for utterance in player.utterances if utterance.index not in self._removed]
-            for player in self._data.players
-        }
         try:
-            self.application.confirm_new_speaker_assignment_review(self._session_id, kept)
+            self.application.confirm_new_speaker_assignment_review(self._session_id, self._kept(), self._rejected())
         except (OSError, ValueError) as exc:
             self.notify(f"Could not save the reviewed assignments: {exc}", severity="error")
             return

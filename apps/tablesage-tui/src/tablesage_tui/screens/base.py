@@ -4,6 +4,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, cast
 
 from tablesage_application import Application
+from tablesage_application.players_from_session import EnhanceResult, Stage
 from tablesage_tools.credentials import MissingCredential
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -18,9 +19,16 @@ from ..dialogs.progress import ProgressDialog
 from ..widgets.tablesage_header import TableSageHeader
 
 if TYPE_CHECKING:
+    import uuid
+
     from .main_app import TableSageApp
 
 _PROGRESS_WORKER_GROUP = "tablesage-progress"
+
+_ENHANCE_STAGE_LABELS = {
+    Stage.EXTRACTING: "Extracting voice clips…",
+    Stage.RECOMPUTING_CENTROIDS: "Recomputing centroids…",
+}
 
 ResultT = TypeVar("ResultT")
 
@@ -192,6 +200,27 @@ class TableSageScreen(Screen[None]):
             exit_on_error=False,
             group=_PROGRESS_WORKER_GROUP,
             name=_PROGRESS_WORKER_GROUP,
+        )
+
+    def enhance_players_from_session(self, session_id: uuid.UUID, *, on_success: Callable[[EnhanceResult], None] | None = None) -> None:
+        """Add `session_id`'s voice clips to its players' profiles behind a progress dialog, then toast the result.
+
+        Shared by the Players screen's From Session action and the post-generation prompt in Process Session.
+        """
+
+        def on_progress(stage: Stage, completed: int, total: int) -> None:
+            self.report_stage_progress(_ENHANCE_STAGE_LABELS[stage], completed, total)
+
+        def on_done(result: EnhanceResult) -> None:
+            if on_success is not None:
+                on_success(result)
+            self.notify(f"Enhanced {result.enhanced_player_count} player(s) with {result.clip_count} clip(s) total.")
+
+        self.run_with_progress(
+            title="From Session",
+            message=_ENHANCE_STAGE_LABELS[Stage.EXTRACTING],
+            work=lambda: self.application.enhance_players_from_session(session_id, on_progress=on_progress),
+            on_success=on_done,
         )
 
     def report_progress(self, completed: int, total: int) -> None:

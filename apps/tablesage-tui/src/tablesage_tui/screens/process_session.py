@@ -428,8 +428,36 @@ class ProcessSessionScreen(TableSageScreen):
         self._refresh_steps()
         if tasks:
             self.notify(f"Generated {len(tasks)} output{'' if len(tasks) == 1 else 's'}.")
+            self._offer_voice_sample_enhancement()
         else:
             self.notify("All outputs are current.")
+
+    def _offer_voice_sample_enhancement(self) -> None:
+        """Offer to add this Session's voice clips to its players' profiles -- the Players screen's From Session
+        action, scoped to this Session."""
+
+        def on_dismiss(confirmed: bool | None) -> None:
+            self._log("voice_sample_enhancement_answered", accepted=bool(confirmed))
+            if confirmed:
+                self.enhance_players_from_session(self._session_id)
+            else:
+                self.notify("You can add this Session's voice samples later with From Session on the Players screen.")
+
+        self.app.push_screen(
+            ConfirmationDialog(
+                title="Improve Player Voice Profiles",
+                prompt=(
+                    "Add voice samples from this Session to your players' voice profiles? This helps TableSage "
+                    "recognize them in future Sessions.\n\n"
+                    "Only do this if you've carefully reviewed the transcript's speaker assignments -- "
+                    "mislabeled lines will teach TableSage the wrong voice for a player."
+                ),
+                show_cancel=False,
+                no_label="Not Now",
+                yes_label="Add Samples",
+            ),
+            on_dismiss,
+        )
 
     # Automatic steps
 

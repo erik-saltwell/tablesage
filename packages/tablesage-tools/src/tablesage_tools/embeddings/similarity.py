@@ -30,6 +30,14 @@ def cosine_similarity(a: Embedding, b: Embedding) -> float:
     )
 
 
+def mean_centroid(embeddings: Sequence[Embedding]) -> Embedding:
+    """The L2-normalized mean of already-computed embeddings, with no outlier pruning."""
+    if not embeddings:
+        msg = "Cannot compute centroid of no embeddings."
+        raise ValueError(msg)
+    return Embedding(root=tuple(float(x) for x in _mean_normalized(embeddings)))
+
+
 def _dedupe_by_content(paths: Sequence[Path]) -> tuple[list[Path], list[Path]]:
     """Split paths into (first-seen-per-hash, duplicates), preserving input order."""
     seen_hashes: set[bytes] = set()

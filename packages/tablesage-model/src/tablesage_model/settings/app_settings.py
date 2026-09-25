@@ -131,6 +131,8 @@ class IsolateNewSpeakersSettings(BaseModel, frozen=True):
     fallback_max_speech_seconds: float = Field(default=60.0, gt=0)
     # The LLM's picks become the reference voice for ranking fallback additions once they total this much.
     min_seed_speech_seconds: float = Field(default=5.0, gt=0)
+    # Shortest utterance Find More (on the review screen) considers; shorter clips give unreliable voice embeddings.
+    find_more_min_speech_seconds: float = Field(default=2.0, gt=0)
 
     @model_validator(mode="after")
     def validate_duration_limits(self) -> IsolateNewSpeakersSettings:

@@ -106,6 +106,7 @@ Settled in design discussion:
 Settled in design discussion (2026-09-23):
 
 - **Purpose:** protect precision. What survives this review becomes each new player's voice samples. Edits are remove-only: no reassigning and no adding. Players who come up short fall back to manual assignment in Review Transcript (step 5).
+  - **Superseded 2026-09-25:** the screen now has **Find More** (`F`), which adds voice-matched utterances to the highlighted player for review. Nothing is reassigned between players. See [Isolate New Speakers sample yield](../isolate-new-speakers-sample-yield/progress.md#find-more-on-the-review-screen-2026-09-25).
 - **Layout:** two panes.
   - **Left:** the new players, each with sample count, total duration of kept speech, and a "Too little speech" flag when under `speaker_bootstrap.min_total_speech_seconds`.
   - **Right:** the highlighted player's proposed utterances, with text and duration columns. A one-line detail area under the table shows the LLM's evidence explanation for the highlighted row, joining all of that player's citations. It shows "Added by voice match" for a row that player's evidence doesn't cite.
@@ -118,6 +119,7 @@ Settled in design discussion (2026-09-23):
   - `Esc` from the player list is Cancel: it returns to Process Session and discards this visit's toggles.
 - **Clips:** extracted for the proposed utterances when the screen opens, behind a progress dialog, into a temporary folder that's removed when the screen closes.
 - **Artifact:** `reviewed_new_speaker_assignments.json` has the same shape as the input: `players` with `player_id`, `player_name`, and kept `utterance_indices` into `cleaned_transcript.json` (now `name_corrected_transcript.json`). Rejections aren't stored; they're the proposed indices minus the kept ones.
+  - **Superseded 2026-09-25:** each player also stores `rejected_voice_matches`, their removed Find More additions (default empty). Kept `utterance_indices` may include Find More additions that weren't proposed.
   - **Re-entry:** when the reviewed file is current, the screen opens with those rejections toggled off. Otherwise every row starts kept.
 - **Confirm:**
   - It's always allowed, even when a player is short or has nothing kept.

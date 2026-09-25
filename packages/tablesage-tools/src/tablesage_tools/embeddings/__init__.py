@@ -6,6 +6,7 @@ from .similarity import (
     SimilarityResult,
     compute_centroid,
     cosine_similarity,
+    mean_centroid,
 )
 from .types import Embedding
 from .wespeaker import EmbeddingFactory
@@ -20,4 +21,5 @@ __all__ = [
     "SimilarityResult",
     "compute_centroid",
     "cosine_similarity",
+    "mean_centroid",
 ]

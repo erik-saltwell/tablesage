@@ -121,6 +121,11 @@ isolate_new_speakers:
   # "The player's voice" is the LLM's picks once they total this much speech; below it,
   # the additions' own consensus voice is used instead.
   min_seed_speech_seconds: 5.0
+  # Find More, on the Review New Speaker Assignments screen, adds the utterances whose voice
+  # is closest to the highlighted player's kept ones (and furthest from everyone else's),
+  # up to speaker_bootstrap.target_total_speech_seconds per press. It only considers
+  # utterances with at least this much speech.
+  find_more_min_speech_seconds: 2.0
 
 remove_backchannels:
   # Two passes drop pure backchannels ("yeah", "mhm", "right", ...):

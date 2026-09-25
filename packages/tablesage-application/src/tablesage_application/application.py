@@ -5,7 +5,7 @@ import json
 import math
 import shutil
 import uuid
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Collection, Mapping, Sequence
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import cast
@@ -36,6 +36,7 @@ from .session_pipeline import artifact_graph as artifact_graph_pipeline
 from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
+from .session_pipeline import find_voice_matches as find_voice_matches_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_player_introductions as player_introductions_pipeline
 from .session_pipeline import generate_recap_summary as recap_summary_pipeline
@@ -59,6 +60,8 @@ class Application:
         self._db_path: Path = setup.ensure_database(self._cwd)
         self._engine = setup.create_engine(self._db_path)
         self._embedding_factory: EmbeddingFactory | None = None
+        # Find More's per-Session utterance embeddings, kept so only a Session's first search embeds the transcript.
+        self._voice_match_embeddings: dict[uuid.UUID, find_voice_matches_pipeline.VoiceMatchEmbeddings] = {}
         self._settings: AppSettings = settings if settings is not None else AppSettings()
 
     @property
@@ -1211,6 +1214,7 @@ class Application:
             session_folder,
             review_new_speaker_assignments_pipeline.load_proposals(session_folder),
             self._current_new_speaker_review(session_id),
+            self._settings.speaker_bootstrap.target_total_speech_seconds,
         )
 
     def extract_new_speaker_review_clips(
@@ -1218,20 +1222,75 @@ class Application:
     ) -> None:
         review_new_speaker_assignments_pipeline.extract_clips(self.session_folder(session_id), indices, on_progress)
 
+    def find_more_voice_matches(
+        self,
+        session_id: uuid.UUID,
+        player_id: uuid.UUID,
+        kept: Mapping[uuid.UUID, Collection[int]],
+        listed: Collection[int],
+        rejected: Collection[int],
+        *,
+        on_progress: find_voice_matches_pipeline.OnProgress | None = None,
+    ) -> tuple[review_new_speaker_assignments_pipeline.ReviewUtterance, ...]:
+        """Review New Speaker Assignments' Find More: the utterances that sound most like `player_id`'s kept ones,
+        with their playback clips extracted. `kept` is every new player's current kept utterances, `listed`
+        everything already in any new player's list, and `rejected` this player's removed Find More additions."""
+        session_folder = self.session_folder(session_id)
+        cache = self._voice_match_embeddings.get(session_id)
+        if cache is None or not cache.is_current():
+            cache = find_voice_matches_pipeline.VoiceMatchEmbeddings.load(session_folder)
+            self._voice_match_embeddings[session_id] = cache
+        with Session(self._engine) as session:
+            known_voices: list[Embedding] = []
+            for attendee in sessions.list_attendance(session, session_id):
+                player = session.get(Player, attendee.player_id)
+                # A new player seeded by an earlier run has a centroid now, but it must not compete with themselves.
+                if player is not None and player.id not in kept:
+                    embedding = self._usable_player_embedding(player)
+                    if embedding is not None:
+                        known_voices.append(embedding)
+        added = find_voice_matches_pipeline.find_voice_matches(
+            cache,
+            find_voice_matches_pipeline.VoiceMatchRequest(
+                player_id=player_id,
+                kept=kept,
+                listed=listed,
+                rejected=rejected,
+                known_voices=tuple(known_voices),
+                min_speech_seconds=self._settings.isolate_new_speakers.find_more_min_speech_seconds,
+                target_speech_seconds=self._settings.speaker_bootstrap.target_total_speech_seconds,
+            ),
+            self._embed_clip,
+            on_progress,
+        )
+        review_new_speaker_assignments_pipeline.extract_more_clips(
+            session_folder, added, None if on_progress is None else lambda done, total: on_progress("Preparing clips…", done, total)
+        )
+        return tuple(
+            review_new_speaker_assignments_pipeline.review_utterance(cache.transcript, index, found_by_find_more=True) for index in added
+        )
+
     def new_speaker_review_clip(self, session_id: uuid.UUID, utterance_index: int) -> Path:
         return review_new_speaker_assignments_pipeline.clip_path(self.session_folder(session_id), utterance_index)
 
     def discard_new_speaker_review_clips(self, session_id: uuid.UUID) -> None:
         review_new_speaker_assignments_pipeline.discard_clips(self.session_folder(session_id))
 
-    def confirm_new_speaker_assignment_review(self, session_id: uuid.UUID, kept: Mapping[uuid.UUID, Sequence[int]]) -> bool:
-        """Save the kept utterances; return whether the file was written (it is not when a current review matches)."""
+    def confirm_new_speaker_assignment_review(
+        self,
+        session_id: uuid.UUID,
+        kept: Mapping[uuid.UUID, Sequence[int]],
+        rejected: Mapping[uuid.UUID, Sequence[int]] | None = None,
+    ) -> bool:
+        """Save the kept utterances and removed Find More additions; return whether the file was written (it is not
+        when a current review keeps the same utterances)."""
         session_folder = self.session_folder(session_id)
         return review_new_speaker_assignments_pipeline.save_review(
             session_folder,
             review_new_speaker_assignments_pipeline.load_proposals(session_folder),
             kept,
             self._current_new_speaker_review(session_id),
+            rejected,
         )
 
     def new_player_steps_skipped(self, session_id: uuid.UUID) -> bool:
