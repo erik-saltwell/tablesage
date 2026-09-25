@@ -30,7 +30,9 @@ repos:
 
       - id: pytest
         name: pytest
-        entry: uv run pytest
+        # Parallel (pytest-xdist): the Textual tests mostly wait on the pilot's idle polling, so one worker per
+        # core cuts the suite from ~2.5 minutes to ~20 seconds.
+        entry: uv run pytest -n auto
         language: system
         pass_filenames: false
         stages: [pre-push]

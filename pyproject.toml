@@ -69,6 +69,7 @@ dev = [
   "ty>=0.0.35",
   "pre-commit>=4.6.0",
   "textual-dev>=1.8.0",
+  "pytest-xdist>=3.6",
 ]
 
 [tool.ruff]
