@@ -33,7 +33,7 @@ class SessionDetailScreen(TableSageScreen):
     """A single session's metadata, attendance, artifact indicators, and processing errors."""
 
     section = "session detail"
-    AUTO_FOCUS = "#attendance-table"
+    AUTO_FOCUS = "#session-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]

@@ -23,6 +23,7 @@ def field_id(path: str) -> str:
 
 class SettingsScreen(TableSageScreen):
     section = "settings"
+    AUTO_FOCUS = "Input, Select"
     COMMON_BINDINGS = [
         Binding("ctrl+s", "save", "Save", key_display="Ctrl+S"),
         Binding("ctrl+d", "remove_key", "Remove key", key_display="^D", priority=True),

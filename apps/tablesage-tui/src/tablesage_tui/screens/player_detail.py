@@ -26,7 +26,7 @@ class PlayerDetailScreen(TableSageScreen):
     """A single player's metadata, voice-profile state, and voice clips."""
 
     section = "player detail"
-    AUTO_FOCUS = ""
+    AUTO_FOCUS = "#player-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]

@@ -35,7 +35,7 @@ class CampaignDetailScreen(TableSageScreen):
     """A single campaign's metadata, sessions, and glossary."""
 
     section = "campaign detail"
-    AUTO_FOCUS = ""
+    AUTO_FOCUS = "#campaign-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
@@ -103,7 +103,7 @@ class CampaignDetailScreen(TableSageScreen):
 
     def on_mount(self) -> None:
         self._reload_metadata_and_tables()
-        self._set_active_tab("sessions")
+        self._set_active_tab("sessions", focus_table=False)
 
     def on_screen_resume(self) -> None:
         self._reload_metadata_and_tables()
@@ -201,13 +201,14 @@ class CampaignDetailScreen(TableSageScreen):
             return
         self._set_active_tab(widget.id.removeprefix("tab-label-"))
 
-    def _set_active_tab(self, tab: str) -> None:
+    def _set_active_tab(self, tab: str, *, focus_table: bool = True) -> None:
         self._active_tab = tab
         self.query_one("#campaign-detail-switcher", ContentSwitcher).current = f"{tab}-tab"
         for name in _TABS:
             self.query_one(f"#tab-label-{name}", Static).set_class(name == tab, "-active")
         self.refresh_bindings()
-        self.query_one(f"#{tab}-table", DataTable).focus()
+        if focus_table:
+            self.query_one(f"#{tab}-table", DataTable).focus()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action == "show_sessions":
