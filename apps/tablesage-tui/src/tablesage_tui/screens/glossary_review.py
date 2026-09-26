@@ -8,8 +8,8 @@ from dataclasses import dataclass, replace
 from tablesage_application.session_pipeline.extract_glossary import GlossaryCommitResult, GlossaryProposal
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Vertical
-from textual.widgets import DataTable
+from textual.containers import Horizontal, Vertical
+from textual.widgets import Button, DataTable
 
 from ..dialogs import FindReplaceDialog, FindReplaceResult, GlossaryEntryDialog
 from .base import TableSageScreen
@@ -39,7 +39,7 @@ class GlossaryReviewScreen(TableSageScreen):
         Binding("enter,e,E", "edit_entry", "Edit", key_display="E"),
         Binding("d,D,delete,backspace", "delete_entry", "Delete", key_display="D"),
         Binding("f,F", "find_replace", "Find/Replace", key_display="F"),
-        Binding("c,C", "complete", "Complete", key_display="C"),
+        Binding("c,C", "complete", "Continue", key_display="C"),
     ]
 
     def __init__(
@@ -69,6 +69,9 @@ class GlossaryReviewScreen(TableSageScreen):
             table.add_column("Term", key="term")
             table.add_column("Description", key="description")
             yield table
+            with Horizontal(id="glossary-review-actions"):
+                yield Button("Cancel", id="glossary-review-cancel")
+                yield Button("Continue", id="glossary-review-continue", variant="primary")
 
     def on_mount(self) -> None:
         self._reload_table()
@@ -108,6 +111,13 @@ class GlossaryReviewScreen(TableSageScreen):
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
         event.stop()
         self.action_edit_entry()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        event.stop()
+        if event.button.id == "glossary-review-continue":
+            self.action_complete()
+        elif event.button.id == "glossary-review-cancel":
+            self.action_cancel()
 
     def action_new_entry(self) -> None:
         def on_dismiss(result: tuple[str, str | None] | None) -> None:

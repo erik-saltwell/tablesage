@@ -146,6 +146,17 @@ GlossaryReviewScreen {
         width: 1fr;
         height: 1fr;
     }
+    #glossary-review-table {
+        height: 1fr;
+    }
+    #glossary-review-actions {
+        height: auto;
+        align: right middle;
+
+        Button {
+            margin: 1 0 0 1;
+        }
+    }
 }
 
 /* Widget's own DEFAULT_CSS gives every widget an explicit scrollbar-* value
