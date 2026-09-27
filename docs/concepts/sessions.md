@@ -29,7 +29,8 @@ that speaker in role-attributed transcripts and other artifacts. See
 ## Processing a Session
 
 Processing turns a recording into material the group can read, review, and
-reuse. From Session Detail, press **P** to open **Process Session**. It lists
+reuse. [Session processing](session-processing.md) explains every step in
+detail. From Session Detail, press **P** to open **Process Session**. It lists
 every processing step in order, marks each one done once its output is
 current, and shows the Session's **New Players** (attendees with no voice
 profile yet) and any errors. Numbered steps need you; the others run

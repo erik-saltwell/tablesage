@@ -11,6 +11,10 @@ recording.
 - [Sessions, processing, and session artifacts](sessions.md) explains how a
   recorded session moves through TableSage's processing pipeline and becomes
   transcripts, structured records, and summaries.
+- [Session processing](session-processing.md) walks through each processing
+  step and why it exists, with separate workflows for
+  [returning players](session-processing-returning-players.md) and for
+  Sessions with [new players](session-processing-new-players.md).
 - [Campaigns and glossaries](campaigns.md) explains how campaigns organize
   related sessions and preserve the names and terminology particular to their
   shared world.

@@ -60,6 +60,21 @@ for directory-backed objects. The next documentation work is review and
 refinement of these concept pages or continuation from the broader
 public-documentation outline.
 
+A session-processing concept cluster now exists (2026-09-27):
+`docs/concepts/session-processing.md` is its front page, explaining processing
+and its two workflows, and it leads to
+`session-processing-returning-players.md` and
+`session-processing-new-players.md`, which walk through each step, why it
+exists, and how it relates to the others. They are linked from the concepts
+index and `sessions.md`. Their screenshots in `docs/images/session-processing/`
+were captured through the Textual MCP from a scratch copy of the `.for-docs`
+fixture. Provider calls were stubbed with authored data, and
+the SVG captures were rendered with headless Chrome because the MCP's PNG
+converter drops the strikethrough on skipped steps. The tooling to
+recapture them—staging script, stubbed launcher, authored dialogue, render
+scripts, and the step-by-step capture sequence—lives in the git-ignored
+`.for-docs/session-processing/` (see its README).
+
 The quality rubric is still missing; the user explicitly requested the outline
 and directory setup first. The separate repository documentation cleanup was
 archived locally and does not start or complete this site project.
