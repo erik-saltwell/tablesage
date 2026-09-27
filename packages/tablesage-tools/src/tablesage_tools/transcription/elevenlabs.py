@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 from elevenlabs import AsyncElevenLabs, SpeechToTextChunkResponseModel
@@ -44,3 +45,18 @@ async def transcribe_and_diarize(
         for word in transcription.words
     )
     return Transcript.from_words(words)
+
+
+@dataclass(frozen=True)
+class ElevenLabsTranscriptionStrategy:
+    """`TranscriptionStrategy` backed by ElevenLabs Scribe, via `transcribe_and_diarize`."""
+
+    language_code: str
+    model_id: str
+    request_timeout: int
+    tag_audio_events: bool
+
+    async def transcribe_and_diarize(self, input_file: Path, speaker_count: int | None) -> Transcript:
+        return await transcribe_and_diarize(
+            input_file, self.language_code, self.model_id, self.request_timeout, self.tag_audio_events, speaker_count
+        )

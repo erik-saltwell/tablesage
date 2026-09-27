@@ -19,7 +19,7 @@ from tablesage_tools.speakers import (
     ShortUtteranceWideningConfig,
     identify_speakers,
 )
-from tablesage_tools.transcription import transcribe_and_diarize
+from tablesage_tools.transcription import ElevenLabsTranscriptionStrategy, TranscriptionStrategy
 
 from ..entities.sessions import list_attendance
 from ..paths import ARTIFACTS, ArtifactName
@@ -98,7 +98,9 @@ def transcribe_audio(
     (`session_pipeline.clean_transcript`) is a separate, simpler, LLM-free mechanical filter.
     Role-name rendering is not part of transcription either -- see `clean_transcript`.
     """
-    raw_transcript = transcribe_and_diarize_audio(session_folder, len(centroids), transcription_settings, on_progress)
+    raw_transcript = transcribe_and_diarize_audio(
+        session_folder, len(centroids), _transcription_strategy(transcription_settings), on_progress
+    )
     return identify_and_publish_transcript(
         session_folder,
         raw_transcript,
@@ -111,10 +113,20 @@ def transcribe_audio(
     )
 
 
+def _transcription_strategy(settings: TranscriptionAndDiarizationSettings) -> TranscriptionStrategy:
+    """The speech-to-text provider for `settings`; ElevenLabs is currently the only one."""
+    return ElevenLabsTranscriptionStrategy(
+        language_code=settings.language_code,
+        model_id=settings.model_id,
+        request_timeout=settings.timeout,
+        tag_audio_events=settings.tag_audio_events,
+    )
+
+
 def transcribe_and_diarize_audio(
     session_folder: Path,
     attendee_count: int,
-    transcription_settings: TranscriptionAndDiarizationSettings,
+    strategy: TranscriptionStrategy,
     on_progress: OnProgress | None = None,
 ) -> Transcript:
     """Return anonymous raw diarization without publishing a canonical transcript."""
@@ -122,14 +134,7 @@ def transcribe_and_diarize_audio(
 
     async def _run() -> Transcript:
         _report(on_progress, Stage.TRANSCRIBING, 0, 0)
-        transcript = await transcribe_and_diarize(
-            audio_path,
-            transcription_settings.language_code,
-            transcription_settings.model_id,
-            transcription_settings.timeout,
-            transcription_settings.tag_audio_events,
-            attendee_count,
-        )
+        transcript = await strategy.transcribe_and_diarize(audio_path, attendee_count)
         _report(on_progress, Stage.TRANSCRIBING, 1, 1)
         return transcript
 
@@ -148,7 +153,9 @@ def create_transcript(
     removal are later steps -- so re-tuning those never forces a re-transcription. Writes
     `transcript.json` and `transcript.md`; returns the utterance count.
     """
-    raw_transcript = transcribe_and_diarize_audio(session_folder, attendee_count, transcription_settings, on_progress)
+    raw_transcript = transcribe_and_diarize_audio(
+        session_folder, attendee_count, _transcription_strategy(transcription_settings), on_progress
+    )
 
     async def _punctuate() -> Transcript:
         _report(on_progress, Stage.PUNCTUATING, 0, 0)

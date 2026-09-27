@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from pathlib import Path
+from types import SimpleNamespace
 from typing import cast
 
 import pytest
@@ -79,7 +80,11 @@ def _stub_pipeline(monkeypatch: pytest.MonkeyPatch) -> None:
         new_utterances = [utterance.model_copy(update={"punctuated_text": f"{utterance.text}."}) for utterance in transcript.utterances]
         return Transcript(utterances=new_utterances)
 
-    monkeypatch.setattr(transcribe_audio_module, "transcribe_and_diarize", _stub_transcribe_and_diarize)
+    monkeypatch.setattr(
+        transcribe_audio_module,
+        "_transcription_strategy",
+        lambda settings: SimpleNamespace(transcribe_and_diarize=_stub_transcribe_and_diarize),
+    )
     monkeypatch.setattr(transcribe_audio_module, "identify_speakers", _stub_identify_speakers)
     monkeypatch.setattr(transcribe_audio_module, "punctuate_transcript", _stub_punctuate_transcript)
 
@@ -148,7 +153,11 @@ def test_transcribe_audio_reports_backchannel_batch_progress_when_there_are_cand
             ]
         )
 
-    monkeypatch.setattr(transcribe_audio_module, "transcribe_and_diarize", _stub_transcribe_and_diarize_with_backchannel)
+    monkeypatch.setattr(
+        transcribe_audio_module,
+        "_transcription_strategy",
+        lambda settings: SimpleNamespace(transcribe_and_diarize=_stub_transcribe_and_diarize_with_backchannel),
+    )
 
     async def _stub_call_llm_with_prompt(*args: object, **kwargs: object) -> str:
         from tablesage_application.session_pipeline.remove_backchannels import BackchannelJudgment, BackchannelJudgments
