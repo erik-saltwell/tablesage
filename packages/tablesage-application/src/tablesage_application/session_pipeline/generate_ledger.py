@@ -30,35 +30,42 @@ class _StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
-class _LedgerUtterance(_StrictModel):
-    source: NonEmptyText = Field(description="The role or character associated with this move.")
+# Every entry type declares `type` first: structured outputs make the model emit keys in schema
+# order, and the prompt writes `type` first, so a union branch that led with `source` could never
+# be chosen -- the model would be forced into whichever branch did lead with `type`.
+Source = Annotated[NonEmptyText, Field(description="The role or character associated with this move.")]
 
 
-class Narration(_LedgerUtterance):
+class Narration(_StrictModel):
     type: Literal["narration"]
+    source: Source
     fact: NonEmptyText = Field(description="Something established as true about the game state.")
 
 
-class Action(_LedgerUtterance):
+class Action(_StrictModel):
     type: Literal["action"]
+    source: Source
     entity: NonEmptyText = Field(description="The entity acting in the game world.")
     action: NonEmptyText = Field(description="What the entity does.")
 
 
-class Speech(_LedgerUtterance):
+class Speech(_StrictModel):
     type: Literal["speech"]
+    source: Source
     entity: NonEmptyText = Field(description="The entity speaking in the game world.")
     statement: NonEmptyText = Field(description="What the entity says, verbatim or paraphrased.")
 
 
-class Expression(_LedgerUtterance):
+class Expression(_StrictModel):
     type: Literal["expression"]
+    source: Source
     entity: NonEmptyText = Field(description="The entity whose inner life is expressed.")
     sentiment: NonEmptyText = Field(description="What the entity feels or realizes.")
 
 
-class Correction(_LedgerUtterance):
+class Correction(_StrictModel):
     type: Literal["correction"]
+    source: Source
     revision: NonEmptyText = Field(description="The revised canonical state, including what prior understanding it changes.")
 
 
