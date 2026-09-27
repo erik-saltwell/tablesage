@@ -15,6 +15,8 @@ from textual.binding import Binding
 from textual.notifications import SeverityLevel
 from textual.screen import Screen
 
+from ..processing.coordinator import ProcessingCoordinator
+from ..processing.steps import STEP_FUNCTIONS
 from ..resources import load_resource
 from ..startup import ensure_media_tools
 from .landing import LandingScreen
@@ -32,6 +34,8 @@ class TableSageApp(App):
         self.configuration = configuration
         self.settings_review_required = settings_review_required
         super().__init__()
+        # The one thing that starts Session processing work (see `processing.coordinator`).
+        self.coordinator = ProcessingCoordinator(self, STEP_FUNCTIONS)
 
     def on_mount(self) -> None:
         with widelog.wide_event(op="tablesage.app_started", cwd=str(Path.cwd()), python=sys.version.split()[0], pid=os.getpid()):

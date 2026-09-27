@@ -27,7 +27,6 @@ from tablesage_tools.model import Transcript
 from ..paths import ARTIFACTS, ArtifactName
 from ..players_from_session import generated_session_filename
 from ..voice_clips import clips
-from .atomic_files import atomic_write
 
 OnProgress = Callable[[str, int, int], None]
 
@@ -41,7 +40,7 @@ class SeededPlayer(BaseModel, frozen=True):
 
 
 class SeededVoiceSamples(BaseModel, frozen=True):
-    """`seeded_voice_samples.json`: what the step wrote for each player in the reviewed assignments."""
+    """The Seed Player Voice Samples receipt: what the step wrote for each player in the reviewed assignments."""
 
     players: tuple[SeededPlayer, ...]
 
@@ -60,7 +59,8 @@ class SeedTarget:
     utterance_indices: tuple[int, ...]
 
 
-def receipt_path(session_folder: Path) -> Path:
+def legacy_receipt_path(session_folder: Path) -> Path:
+    """Where the receipt lived before it became a processing-state section (legacy import only)."""
     return session_folder / ARTIFACTS[ArtifactName.SEEDED_VOICE_SAMPLES].filename
 
 
@@ -135,7 +135,3 @@ def seed_voice_samples(
             )
         log.set(sample_counts={player.player_name: player.sample_count for player in seeded})
         return SeededVoiceSamples(players=tuple(seeded))
-
-
-def save_receipt(session_folder: Path, receipt: SeededVoiceSamples) -> None:
-    atomic_write(receipt_path(session_folder), receipt.model_dump_json(indent=2).encode("utf-8"))

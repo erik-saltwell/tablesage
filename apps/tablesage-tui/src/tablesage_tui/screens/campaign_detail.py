@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
 
 from tablesage_application.paths import ArtifactName
 from tablesage_application.previously_on import CampaignHistory, Ingredients
@@ -29,6 +30,9 @@ from .base import TableSageScreen
 from .session_detail import SessionDetailScreen
 
 _TABS = ("sessions", "glossary")
+
+if TYPE_CHECKING:
+    from .main_app import TableSageApp
 
 
 class CampaignDetailScreen(TableSageScreen):
@@ -436,6 +440,9 @@ class CampaignDetailScreen(TableSageScreen):
 
     def action_regenerate_all_outputs(self) -> None:
         """Run the same stale-aware output generation as ``G`` for reviewed audio sessions."""
+        if cast("TableSageApp", self.app).coordinator.is_running:
+            self.notify("Wait for Session processing to finish before regenerating outputs.", severity="warning")
+            return
         sessions = sorted(self.application.list_sessions(self._campaign_id), key=lambda item: item.sequence_number)
         audio_sessions = [
             game_session for game_session in sessions if self.application.session_artifacts(game_session.id)[ArtifactName.INPUT_AUDIO]

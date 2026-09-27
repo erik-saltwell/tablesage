@@ -6,7 +6,7 @@ Player Introductions is a per-session sidecar containing concise descriptions of
 
 Transcript Sections identifies an optional Introduction Range in the Role Transcript. Player Introductions consumes only that range, plus attendee-role mappings and glossary spellings. It runs after the Role Transcript and Transcript Sections artifacts exist.
 
-The persisted artifact is `player_introductions.json` in the session folder. It is later rendered to Markdown and inserted into the generated Summary at the Summary's Player Introductions composition marker. Replacing it makes `summary.md` stale by modification time, but does not affect the Ledger or Recap Summary.
+The persisted artifact is `player_introductions.json` in the session folder. It is later rendered to Markdown and inserted into the generated Summary at the Summary's Player Introductions composition marker. Replacing it with different content makes `summary.md` stale through its recorded input fingerprint, but does not affect the Ledger or Recap Summary.
 
 When the Introduction Range is `null`, no LLM call is made and an empty introductions artifact is persisted. An empty artifact is therefore a valid and meaningful result.
 

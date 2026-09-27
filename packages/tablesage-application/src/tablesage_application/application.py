@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import functools
 import json
 import math
 import shutil
@@ -8,7 +9,7 @@ import uuid
 from collections.abc import Callable, Collection, Mapping, Sequence
 from datetime import UTC, date, datetime
 from pathlib import Path
-from typing import cast
+from typing import Any, Concatenate, ParamSpec, TypeVar, cast
 
 import widelog
 import yaml
@@ -26,14 +27,14 @@ from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
-from . import campaign_recap, opportunities, paths, players_from_session, previously_on
+from . import campaign_recap, opportunities, paths, players_from_session, previously_on, processing_steps
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, sessions
 from .entities import session_processing as session_processing_entities
 from .llm import PromptName, system_prompt_path
 from .player_archive import PlayerArchiveResult
 from .session_pipeline import artifact_graph as artifact_graph_pipeline
-from .session_pipeline import artifacts, import_audio, processing, transcribe_audio, transcript_review
+from .session_pipeline import artifacts, import_audio, processing, processing_state, transcribe_audio, transcript_review
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
 from .session_pipeline import find_voice_matches as find_voice_matches_pipeline
@@ -42,16 +43,88 @@ from .session_pipeline import generate_player_introductions as player_introducti
 from .session_pipeline import generate_recap_summary as recap_summary_pipeline
 from .session_pipeline import generate_summary as generate_summary_pipeline
 from .session_pipeline import isolate_new_speakers as isolate_new_speakers_pipeline
+from .session_pipeline import legacy_import as legacy_import_pipeline
 from .session_pipeline import name_corrections as name_corrections_pipeline
 from .session_pipeline import review_new_speaker_assignments as review_new_speaker_assignments_pipeline
 from .session_pipeline import seed_voice_samples as seed_voice_samples_pipeline
 from .session_pipeline import session_processing as session_processing_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
+from .session_pipeline import transcript_edits as transcript_edits_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
 from .session_pipeline.atomic_files import atomic_write
 from .session_pipeline.remove_backchannels import remove_backchannels
 from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
 from .voice_clips import clips
+
+_REVIEW_TRANSCRIPT_STEP = "review_transcript"
+
+
+def _normalized_glossary_proposals(
+    proposals: Sequence[extract_glossary_pipeline.GlossaryProposal],
+) -> list[extract_glossary_pipeline.GlossaryProposal]:
+    """Reviewed glossary proposals with whitespace trimmed; a blank term is an error."""
+    normalized: list[extract_glossary_pipeline.GlossaryProposal] = []
+    for proposal in proposals:
+        term = proposal.term.strip()
+        if not term:
+            raise ValueError("Glossary terms cannot be blank.")
+        description = proposal.description.strip() if proposal.description else None
+        normalized.append(extract_glossary_pipeline.GlossaryProposal(term=term, description=description or None))
+    return normalized
+
+
+def _corrections_value(corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]) -> list[dict[str, object]]:
+    return [
+        {"from_text": correction.from_text, "to_text": correction.to_text, "case_sensitive": correction.case_sensitive}
+        for correction in corrections
+    ]
+
+
+def _suggestions_value(suggestions: Sequence[suggest_spelling_corrections_pipeline.SpellingSuggestion]) -> list[dict[str, object]]:
+    return [
+        {
+            "from_text": suggestion.from_text,
+            "to_text": suggestion.to_text,
+            "case_sensitive": suggestion.case_sensitive,
+            "occurrence_count": suggestion.occurrence_count,
+        }
+        for suggestion in suggestions
+    ]
+
+
+def _suggestions_from(value: object, key: str) -> list[suggest_spelling_corrections_pipeline.SpellingSuggestion]:
+    items: list[dict[str, Any]] = cast("dict[str, Any]", value).get(key, []) if isinstance(value, dict) else []
+    return [
+        suggest_spelling_corrections_pipeline.SpellingSuggestion(
+            from_text=item["from_text"],
+            to_text=item["to_text"],
+            case_sensitive=bool(item.get("case_sensitive", False)),
+            occurrence_count=int(item.get("occurrence_count", 0)),
+        )
+        for item in items
+    ]
+
+
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+
+
+def _completes(
+    *names: paths.ArtifactName,
+) -> Callable[[Callable[Concatenate[Application, uuid.UUID, _P], _R]], Callable[Concatenate[Application, uuid.UUID, _P], _R]]:
+    """Mark a producer method: once it returns, record its build steps complete (see `Application._record_completion`).
+    A producer that raises records nothing, so its step stays incomplete."""
+
+    def decorate(method: Callable[Concatenate[Application, uuid.UUID, _P], _R]) -> Callable[Concatenate[Application, uuid.UUID, _P], _R]:
+        @functools.wraps(method)
+        def wrapper(self: Application, session_id: uuid.UUID, /, *args: _P.args, **kwargs: _P.kwargs) -> _R:
+            result = method(self, session_id, *args, **kwargs)
+            self._record_completion(session_id, *names)
+            return result
+
+        return wrapper
+
+    return decorate
 
 
 class Application:
@@ -488,9 +561,11 @@ class Application:
             return imported_count
 
     def can_extract_glossary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            return extract_glossary_pipeline.can_extract_glossary(self._session_folder(session, game_session))
+        """Session Detail's Extract Glossary restarts Suggest Glossary Terms, which needs the identified transcript."""
+        states = self.session_artifact_states(session_id)
+        if states[paths.ArtifactName.IDENTIFIED_TRANSCRIPT] is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+            return False, "Process the Session through Identify Speakers first."
+        return True, None
 
     def extract_glossary(self, session_id: uuid.UUID) -> list[extract_glossary_pipeline.GlossaryProposal]:
         """Session Detail's Extract Glossary: propose new glossary entries from a Session's Role Transcript."""
@@ -544,13 +619,7 @@ class Application:
         self, session_id: uuid.UUID, proposals: Sequence[extract_glossary_pipeline.GlossaryProposal]
     ) -> extract_glossary_pipeline.GlossaryCommitResult:
         """Atomically add unique reviewed proposals to the Session's campaign glossary."""
-        normalized_proposals: list[extract_glossary_pipeline.GlossaryProposal] = []
-        for proposal in proposals:
-            term = proposal.term.strip()
-            if not term:
-                raise ValueError("Glossary terms cannot be blank.")
-            description = proposal.description.strip() if proposal.description else None
-            normalized_proposals.append(extract_glossary_pipeline.GlossaryProposal(term=term, description=description or None))
+        normalized_proposals = _normalized_glossary_proposals(proposals)
 
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
@@ -584,19 +653,52 @@ class Application:
             added_count=len(accepted), skipped_duplicate_count=skipped_count, added=tuple(added)
         )
 
+    def propose_glossary_terms(self, session_id: uuid.UUID) -> list[extract_glossary_pipeline.GlossaryProposal]:
+        """Suggest Glossary Terms: the LLM's new-term proposals from the identified transcript, saved for review."""
+        proposals = self.suggest_glossary_terms(session_id)
+        self._complete_section(
+            session_id, paths.ArtifactName.GLOSSARY_SUGGESTIONS, {"proposals": [proposal.model_dump(mode="json") for proposal in proposals]}
+        )
+        return proposals
+
+    def glossary_term_review(
+        self, session_id: uuid.UUID
+    ) -> tuple[list[extract_glossary_pipeline.GlossaryProposal], list[extract_glossary_pipeline.GlossaryProposal] | None]:
+        """Extract Glossary Terms' review: the saved proposals, and the last saved decision (to reopen as left)."""
+        suggestions = self._section(session_id, paths.ArtifactName.GLOSSARY_SUGGESTIONS) or {}
+        decisions = self._section(session_id, paths.ArtifactName.GLOSSARY_DECISIONS)
+        proposals = [extract_glossary_pipeline.GlossaryProposal.model_validate(item) for item in suggestions.get("proposals", [])]
+        decided = (
+            [extract_glossary_pipeline.GlossaryProposal.model_validate(item) for item in decisions.get("entries", [])]
+            if isinstance(decisions, dict)
+            else None
+        )
+        return proposals, decided
+
+    def save_glossary_decisions(self, session_id: uuid.UUID, proposals: Sequence[extract_glossary_pipeline.GlossaryProposal]) -> None:
+        """Extract Glossary Terms' decision: the reviewed entries to add to the campaign glossary."""
+        entries = [proposal.model_dump(mode="json") for proposal in _normalized_glossary_proposals(proposals)]
+        self._complete_section(session_id, paths.ArtifactName.GLOSSARY_DECISIONS, {"entries": entries})
+
+    def add_glossary_entries(self, session_id: uuid.UUID) -> extract_glossary_pipeline.GlossaryCommitResult:
+        """Add Glossary Entries: commit the decided entries to the campaign glossary (existing terms are skipped, so
+        re-running is harmless), then record the receipt."""
+        decisions = self._section(session_id, paths.ArtifactName.GLOSSARY_DECISIONS)
+        if not isinstance(decisions, dict):
+            raise ValueError("The glossary review hasn't been completed.")
+        entries = [extract_glossary_pipeline.GlossaryProposal.model_validate(item) for item in decisions.get("entries", [])]
+        result = self.complete_glossary_extraction(session_id, entries)
+        self._complete_section(
+            session_id, paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS, {"entries": [entry.model_dump(mode="json") for entry in entries]}
+        )
+        return result
+
     def save_extracted_glossary_terms(
         self, session_id: uuid.UUID, proposals: Sequence[extract_glossary_pipeline.GlossaryProposal]
     ) -> extract_glossary_pipeline.GlossaryCommitResult:
-        """Complete Process Session's Extract Glossary Terms step: add the reviewed proposals to the campaign
-        glossary, then write the step's receipt (see `extract_glossary.save_receipt` for when it is rewritten)."""
-        result = self.complete_glossary_extraction(session_id, proposals)
-        states = self.session_artifact_states(session_id)
-        extract_glossary_pipeline.save_receipt(
-            self.session_folder(session_id),
-            result.added,
-            saved_is_current=states[paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS] is artifact_graph_pipeline.ArtifactStatus.CURRENT,
-        )
-        return result
+        """Complete Extract Glossary Terms and commit it (decision, then Add Glossary Entries)."""
+        self.save_glossary_decisions(session_id, proposals)
+        return self.add_glossary_entries(session_id)
 
     # Sessions
 
@@ -690,11 +792,15 @@ class Application:
         except (OSError, json.JSONDecodeError, ValueError):
             return None
 
-    def _artifact_graph(self, session: Session, campaign_id: uuid.UUID) -> artifact_graph_pipeline.ArtifactGraph:
-        def prompt_input(name: PromptName) -> artifact_graph_pipeline.SystemPromptInput:
-            return artifact_graph_pipeline.SystemPromptInput(system_prompt_path(name))
+    def _artifact_graph(self, session: Session, campaign_id: uuid.UUID, *, legacy: bool = False) -> artifact_graph_pipeline.ArtifactGraph:
+        """The campaign's build graph. Sessions not yet imported into `processing_state.json` are imported first
+        (see `_import_legacy_sessions`); `legacy` builds the retired modification-time graph that import uses."""
+        graph_type = artifact_graph_pipeline.LegacyArtifactGraph if legacy else artifact_graph_pipeline.ArtifactGraph
 
+        prompt_input = self._prompt_input
         game_sessions = sessions.list_sessions(session, campaign_id)
+        if not legacy:
+            self._import_legacy_sessions(session, campaign_id, [self._session_folder(session, item) for item in game_sessions])
         sessions_by_id = {game_session.id: game_session for game_session in game_sessions}
         steps: list[artifact_graph_pipeline.BuildStep] = []
         interrupted: set[artifact_graph_pipeline.ArtifactRef] = set()
@@ -707,126 +813,7 @@ class Application:
             def ref(name: paths.ArtifactName, folder: Path = folder) -> artifact_graph_pipeline.ArtifactRef:
                 return artifact_graph_pipeline.ArtifactRef(folder, name)
 
-            steps.extend(
-                (
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.TRANSCRIPT,
-                        (ref(paths.ArtifactName.TRANSCRIPT), ref(paths.ArtifactName.TRANSCRIPT_TEXT)),
-                        (ref(paths.ArtifactName.INPUT_AUDIO),),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.CLEANED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.CLEANED_TRANSCRIPT),),
-                        (
-                            ref(paths.ArtifactName.TRANSCRIPT),
-                            prompt_input(PromptName.CLASSIFY_BACKCHANNELS),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),),
-                        (
-                            ref(paths.ArtifactName.CLEANED_TRANSCRIPT),
-                            prompt_input(PromptName.SUGGEST_NAME_CORRECTIONS),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
-                        (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
-                        (
-                            ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),
-                            prompt_input(PromptName.ISOLATE_NEW_SPEAKERS),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
-                        (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
-                        (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.SEEDED_VOICE_SAMPLES,
-                        (ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),),
-                        (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
-                    ),
-                    # Identification also reads returning players' centroids from the database; changing
-                    # those is not tracked here (see the session-processing-flow work item).
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.IDENTIFIED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),),
-                        (
-                            ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),
-                            ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),
-                        ),
-                    ),
-                    # The glossary itself (shared across the campaign's Sessions) is deliberately not a dependency:
-                    # later Sessions adding terms must not invalidate this one. Only this Session's receipt is.
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS,
-                        (ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),),
-                        (
-                            ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
-                            prompt_input(PromptName.EXTRACT_GLOSSARY),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.SPELLCHECKED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
-                        (
-                            ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
-                            ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),
-                            prompt_input(PromptName.SUGGEST_SPELLING_CORRECTIONS),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.REVIEWED_TRANSCRIPT,
-                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
-                        (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.ROLE_TRANSCRIPT,
-                        (ref(paths.ArtifactName.ROLE_TRANSCRIPT),),
-                        (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.TRANSCRIPT_SECTIONS,
-                        (ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),),
-                        (
-                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
-                            prompt_input(PromptName.SECTION_TRANSCRIPT),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.LEDGER,
-                        (
-                            ref(paths.ArtifactName.LEDGER),
-                            artifact_graph_pipeline.FileRef(folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME),
-                            ref(paths.ArtifactName.SCENE_BREAKDOWN),
-                        ),
-                        (
-                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
-                            ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
-                            prompt_input(PromptName.GENERATE_LEDGER),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.PLAYER_INTRODUCTIONS,
-                        (ref(paths.ArtifactName.PLAYER_INTRODUCTIONS),),
-                        (
-                            ref(paths.ArtifactName.ROLE_TRANSCRIPT),
-                            ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
-                            prompt_input(PromptName.GENERATE_PLAYER_INTRODUCTIONS),
-                        ),
-                    ),
-                    artifact_graph_pipeline.BuildStep(
-                        paths.ArtifactName.RECAP_SUMMARY,
-                        (ref(paths.ArtifactName.RECAP_SUMMARY),),
-                        (
-                            ref(paths.ArtifactName.SCENE_BREAKDOWN),
-                            prompt_input(PromptName.GENERATE_RECAP_SUMMARY),
-                        ),
-                    ),
-                )
-            )
+            steps.extend(self._legacy_session_steps(folder) if legacy else self._session_steps(folder))
             summary_dependencies: list[artifact_graph_pipeline.Dependency] = [
                 ref(paths.ArtifactName.LEDGER),
                 ref(paths.ArtifactName.PLAYER_INTRODUCTIONS),
@@ -847,13 +834,508 @@ class Application:
         # reviewed transcript is current). Otherwise the Summary carries a placeholder and can still be current;
         # once the previous Session is reviewed, the dependency returns and the Summary goes out of date.
         # Reviewed transcripts never depend on Summaries, so a graph without them answers that safely.
-        without_summaries = artifact_graph_pipeline.ArtifactGraph(tuple(steps), interrupted=frozenset(interrupted))
+        without_summaries = graph_type(tuple(steps), interrupted=frozenset(interrupted))
         for summary, summary_dependencies, previous_folder in summaries:
             if previous_folder is not None and self._previous_session_regenerable(without_summaries, previous_folder):
                 summary_dependencies.append(artifact_graph_pipeline.ArtifactRef(previous_folder, paths.ArtifactName.RECAP_SUMMARY))
             steps.append(artifact_graph_pipeline.BuildStep(paths.ArtifactName.SUMMARY, (summary,), tuple(summary_dependencies)))
 
-        return artifact_graph_pipeline.ArtifactGraph(tuple(steps), interrupted=frozenset(interrupted))
+        return graph_type(tuple(steps), interrupted=frozenset(interrupted))
+
+    @staticmethod
+    def _prompt_input(name: PromptName) -> artifact_graph_pipeline.SystemPromptInput:
+        return artifact_graph_pipeline.SystemPromptInput(system_prompt_path(name))
+
+    @classmethod
+    def _session_steps(cls, folder: Path) -> tuple[artifact_graph_pipeline.BuildStep, ...]:
+        """A Session's build steps, apart from its Summary (see `_artifact_graph`). Each processing step's outputs
+        are built by one of these; a manual step's decision section depends on the suggestions it reviews."""
+        ref = functools.partial(artifact_graph_pipeline.ArtifactRef, folder)
+        prompt_input = cls._prompt_input
+        name = paths.ArtifactName
+        step = artifact_graph_pipeline.BuildStep
+        return (
+            # Import Audio's decision has no inputs: it is whatever file was chosen last.
+            step(name.IMPORT_REQUEST, (ref(name.IMPORT_REQUEST),), ()),
+            step(name.INPUT_AUDIO, (ref(name.INPUT_AUDIO),), (ref(name.IMPORT_REQUEST),)),
+            step(name.TRANSCRIPT, (ref(name.TRANSCRIPT), ref(name.TRANSCRIPT_TEXT)), (ref(name.INPUT_AUDIO),)),
+            step(
+                name.CLEANED_TRANSCRIPT,
+                (ref(name.CLEANED_TRANSCRIPT),),
+                (ref(name.TRANSCRIPT), prompt_input(PromptName.CLASSIFY_BACKCHANNELS)),
+            ),
+            step(
+                name.NAME_CORRECTION_SUGGESTIONS,
+                (ref(name.NAME_CORRECTION_SUGGESTIONS),),
+                (ref(name.CLEANED_TRANSCRIPT), prompt_input(PromptName.SUGGEST_NAME_CORRECTIONS)),
+            ),
+            step(name.NAME_CORRECTION_DECISIONS, (ref(name.NAME_CORRECTION_DECISIONS),), (ref(name.NAME_CORRECTION_SUGGESTIONS),)),
+            step(
+                name.NAME_CORRECTED_TRANSCRIPT,
+                (ref(name.NAME_CORRECTED_TRANSCRIPT),),
+                (ref(name.CLEANED_TRANSCRIPT), ref(name.NAME_CORRECTION_DECISIONS)),
+            ),
+            step(
+                name.NEW_SPEAKER_ASSIGNMENTS,
+                (ref(name.NEW_SPEAKER_ASSIGNMENTS),),
+                (ref(name.NAME_CORRECTED_TRANSCRIPT), prompt_input(PromptName.ISOLATE_NEW_SPEAKERS)),
+            ),
+            step(
+                name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS, (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),), (ref(name.NEW_SPEAKER_ASSIGNMENTS),)
+            ),
+            step(name.SEEDED_VOICE_SAMPLES, (ref(name.SEEDED_VOICE_SAMPLES),), (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),)),
+            # Identification also reads returning players' voice centroids from the database. Deliberately not a
+            # dependency: enhancing a player's profile from a later Session must not re-identify every earlier one.
+            step(
+                name.IDENTIFIED_TRANSCRIPT,
+                (ref(name.IDENTIFIED_TRANSCRIPT),),
+                (ref(name.NAME_CORRECTED_TRANSCRIPT), ref(name.SEEDED_VOICE_SAMPLES)),
+            ),
+            step(
+                name.GLOSSARY_SUGGESTIONS,
+                (ref(name.GLOSSARY_SUGGESTIONS),),
+                (ref(name.IDENTIFIED_TRANSCRIPT), prompt_input(PromptName.EXTRACT_GLOSSARY)),
+            ),
+            step(name.GLOSSARY_DECISIONS, (ref(name.GLOSSARY_DECISIONS),), (ref(name.GLOSSARY_SUGGESTIONS),)),
+            # The glossary itself (shared across the campaign's Sessions) is deliberately not a dependency: later
+            # Sessions adding terms must not invalidate this one. Only this Session's receipt is.
+            step(name.EXTRACTED_GLOSSARY_TERMS, (ref(name.EXTRACTED_GLOSSARY_TERMS),), (ref(name.GLOSSARY_DECISIONS),)),
+            step(
+                name.SPELLING_SUGGESTIONS,
+                (ref(name.SPELLING_SUGGESTIONS),),
+                (
+                    ref(name.IDENTIFIED_TRANSCRIPT),
+                    ref(name.EXTRACTED_GLOSSARY_TERMS),
+                    prompt_input(PromptName.SUGGEST_SPELLING_CORRECTIONS),
+                ),
+            ),
+            step(name.SPELLING_DECISIONS, (ref(name.SPELLING_DECISIONS),), (ref(name.SPELLING_SUGGESTIONS),)),
+            step(
+                name.SPELLCHECKED_TRANSCRIPT,
+                (ref(name.SPELLCHECKED_TRANSCRIPT),),
+                (ref(name.IDENTIFIED_TRANSCRIPT), ref(name.SPELLING_DECISIONS)),
+            ),
+            step(name.TRANSCRIPT_REVIEW_EDITS, (ref(name.TRANSCRIPT_REVIEW_EDITS),), (ref(name.SPELLCHECKED_TRANSCRIPT),)),
+            step(
+                name.REVIEWED_TRANSCRIPT,
+                (ref(name.REVIEWED_TRANSCRIPT),),
+                (ref(name.SPELLCHECKED_TRANSCRIPT), ref(name.TRANSCRIPT_REVIEW_EDITS)),
+            ),
+            step(name.ROLE_TRANSCRIPT, (ref(name.ROLE_TRANSCRIPT),), (ref(name.REVIEWED_TRANSCRIPT),)),
+            step(
+                name.TRANSCRIPT_SECTIONS,
+                (ref(name.TRANSCRIPT_SECTIONS),),
+                (ref(name.ROLE_TRANSCRIPT), prompt_input(PromptName.SECTION_TRANSCRIPT)),
+            ),
+            step(
+                name.LEDGER,
+                (
+                    ref(name.LEDGER),
+                    artifact_graph_pipeline.FileRef(folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME),
+                    ref(name.SCENE_BREAKDOWN),
+                ),
+                (ref(name.ROLE_TRANSCRIPT), ref(name.TRANSCRIPT_SECTIONS), prompt_input(PromptName.GENERATE_LEDGER)),
+            ),
+            step(
+                name.PLAYER_INTRODUCTIONS,
+                (ref(name.PLAYER_INTRODUCTIONS),),
+                (ref(name.ROLE_TRANSCRIPT), ref(name.TRANSCRIPT_SECTIONS), prompt_input(PromptName.GENERATE_PLAYER_INTRODUCTIONS)),
+            ),
+            step(
+                name.RECAP_SUMMARY, (ref(name.RECAP_SUMMARY),), (ref(name.SCENE_BREAKDOWN), prompt_input(PromptName.GENERATE_RECAP_SUMMARY))
+            ),
+            # The voice-profile offer asks again only when the reviewed transcript -- where its clips come from -- changes.
+            step(name.VOICE_PROFILE_DECISION, (ref(name.VOICE_PROFILE_DECISION),), (ref(name.REVIEWED_TRANSCRIPT),)),
+            step(name.VOICE_PROFILE_ENHANCEMENT, (ref(name.VOICE_PROFILE_ENHANCEMENT),), (ref(name.VOICE_PROFILE_DECISION),)),
+        )
+
+    @classmethod
+    def _legacy_session_steps(cls, folder: Path) -> tuple[artifact_graph_pipeline.BuildStep, ...]:
+        """The retired pre-`processing_state.json` build steps, kept only for the one-time legacy import."""
+        prompt_input = cls._prompt_input
+
+        def ref(name: paths.ArtifactName) -> artifact_graph_pipeline.ArtifactRef:
+            return artifact_graph_pipeline.ArtifactRef(folder, name)
+
+        return (
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.TRANSCRIPT,
+                (ref(paths.ArtifactName.TRANSCRIPT), ref(paths.ArtifactName.TRANSCRIPT_TEXT)),
+                (ref(paths.ArtifactName.INPUT_AUDIO),),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.CLEANED_TRANSCRIPT,
+                (ref(paths.ArtifactName.CLEANED_TRANSCRIPT),),
+                (
+                    ref(paths.ArtifactName.TRANSCRIPT),
+                    prompt_input(PromptName.CLASSIFY_BACKCHANNELS),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT,
+                (ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),),
+                (
+                    ref(paths.ArtifactName.CLEANED_TRANSCRIPT),
+                    prompt_input(PromptName.SUGGEST_NAME_CORRECTIONS),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
+                (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
+                (
+                    ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),
+                    prompt_input(PromptName.ISOLATE_NEW_SPEAKERS),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
+                (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
+                (ref(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS),),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.SEEDED_VOICE_SAMPLES,
+                (ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),),
+                (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
+            ),
+            # Identification also reads returning players' centroids from the database; changing
+            # those is not tracked here (see the session-processing-flow work item).
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.IDENTIFIED_TRANSCRIPT,
+                (ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),),
+                (
+                    ref(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT),
+                    ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),
+                ),
+            ),
+            # The glossary itself (shared across the campaign's Sessions) is deliberately not a dependency:
+            # later Sessions adding terms must not invalidate this one. Only this Session's receipt is.
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS,
+                (ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),),
+                (
+                    ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
+                    prompt_input(PromptName.EXTRACT_GLOSSARY),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.SPELLCHECKED_TRANSCRIPT,
+                (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
+                (
+                    ref(paths.ArtifactName.IDENTIFIED_TRANSCRIPT),
+                    ref(paths.ArtifactName.EXTRACTED_GLOSSARY_TERMS),
+                    prompt_input(PromptName.SUGGEST_SPELLING_CORRECTIONS),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.REVIEWED_TRANSCRIPT,
+                (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
+                (ref(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT),),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.ROLE_TRANSCRIPT,
+                (ref(paths.ArtifactName.ROLE_TRANSCRIPT),),
+                (ref(paths.ArtifactName.REVIEWED_TRANSCRIPT),),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.TRANSCRIPT_SECTIONS,
+                (ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),),
+                (
+                    ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                    prompt_input(PromptName.SECTION_TRANSCRIPT),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.LEDGER,
+                (
+                    ref(paths.ArtifactName.LEDGER),
+                    artifact_graph_pipeline.FileRef(folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME),
+                    ref(paths.ArtifactName.SCENE_BREAKDOWN),
+                ),
+                (
+                    ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                    ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
+                    prompt_input(PromptName.GENERATE_LEDGER),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.PLAYER_INTRODUCTIONS,
+                (ref(paths.ArtifactName.PLAYER_INTRODUCTIONS),),
+                (
+                    ref(paths.ArtifactName.ROLE_TRANSCRIPT),
+                    ref(paths.ArtifactName.TRANSCRIPT_SECTIONS),
+                    prompt_input(PromptName.GENERATE_PLAYER_INTRODUCTIONS),
+                ),
+            ),
+            artifact_graph_pipeline.BuildStep(
+                paths.ArtifactName.RECAP_SUMMARY,
+                (ref(paths.ArtifactName.RECAP_SUMMARY),),
+                (
+                    ref(paths.ArtifactName.SCENE_BREAKDOWN),
+                    prompt_input(PromptName.GENERATE_RECAP_SUMMARY),
+                ),
+            ),
+        )
+
+    def _import_legacy_sessions(self, session: Session, campaign_id: uuid.UUID, folders: Sequence[Path]) -> None:
+        """Import Sessions processed before `processing_state.json` existed, once each.
+
+        The retired modification-time graph decides what was current. Old receipt files become sections, steps
+        that didn't exist then get placeholder sections wherever the work they precede was current (see
+        `legacy_import`), and each build step standing for current work gets a completion record fingerprinting
+        its inputs as they are now -- so exactly the work that was current stays current. This is the only place
+        file modification times still decide anything. The replaced files move to the Session's `legacy/` folder.
+        """
+        pending = [folder for folder in folders if processing_state.needs_legacy_import(folder)]
+        if not pending:
+            return
+        legacy_graph = self._artifact_graph(session, campaign_id, legacy=True)
+        carried_by_folder: dict[Path, tuple[set[paths.ArtifactName], set[paths.ArtifactName]]] = {}
+        for folder in pending:
+            current = {
+                name
+                for name, spec in paths.ARTIFACTS.items()
+                if spec.filename
+                and legacy_graph.status(artifact_graph_pipeline.ArtifactRef(folder, name)) is artifact_graph_pipeline.ArtifactStatus.CURRENT
+            }
+            sections, carried = legacy_import_pipeline.build_sections(folder, current)
+
+            def add_sections(state: processing_state.ProcessingState, sections: dict[str, object] = sections) -> None:
+                state.sections.update(sections)
+                state.legacy_imported_at = processing_state.now()
+
+            processing_state.update(folder, add_sections, reason="legacy_import")
+            carried_by_folder[folder] = (current, carried)
+
+        # Every pending folder now has a state document, so this builds the current graph without importing again.
+        graph = self._artifact_graph(session, campaign_id)
+        for folder, (current, carried) in carried_by_folder.items():
+            with widelog.wide_event(op="processing_state.legacy_import", session_folder=str(folder)) as log:
+                records: dict[str, processing_state.CompletionRecord] = {}
+                for step in graph.steps:
+                    if step.folder != folder:
+                        continue
+                    outputs = [output for output in step.outputs if isinstance(output, artifact_graph_pipeline.ArtifactRef)]
+                    if all(output.name in (carried if output.is_section else current) for output in outputs):
+                        records[step.name.value] = processing_state.CompletionRecord(
+                            completed_at=processing_state.now(), inputs=artifact_graph_pipeline.current_fingerprints(step, graph.state)
+                        )
+
+                def add_records(
+                    state: processing_state.ProcessingState, records: dict[str, processing_state.CompletionRecord] = records
+                ) -> None:
+                    state.records.update(records)
+
+                processing_state.update(folder, add_records, reason="legacy_import")
+                moved = legacy_import_pipeline.move_retired_files(folder)
+                log.set(
+                    legacy_current=sorted(name.value for name in current),
+                    imported=sorted(records),
+                    placeholder_sections=sorted(name.value for name in carried),
+                    moved_to_legacy=moved,
+                )
+
+    def _record_completion(self, session_id: uuid.UUID, *names: paths.ArtifactName) -> None:
+        """Mark build steps complete: record each declared input's fingerprint as it is now. Producers call this
+        after writing their outputs -- also when they left identical output unwritten."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            folder = self._session_folder(session, game_session)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+        records: dict[str, processing_state.CompletionRecord] = {}
+        for name in names:
+            step = graph.step_for(artifact_graph_pipeline.ArtifactRef(folder, name))
+            if step is None:
+                raise ValueError(f"No build step produces {paths.ARTIFACTS[name].display_name}.")
+            records[name.value] = processing_state.CompletionRecord(
+                completed_at=processing_state.now(), inputs=artifact_graph_pipeline.current_fingerprints(step, graph.state)
+            )
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.records.update(records)
+
+        processing_state.update(folder, apply, reason="step_completed")
+
+    def _complete_section(self, session_id: uuid.UUID, name: paths.ArtifactName, value: object) -> None:
+        """Save a section and record its build step complete, in one state write: a crash leaves neither or both."""
+        if paths.ARTIFACTS[name].is_file:
+            raise ValueError(f"{name.value} is a file artifact, not a section.")
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            folder = self._session_folder(session, game_session)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+        step = graph.step_for(artifact_graph_pipeline.ArtifactRef(folder, name))
+        if step is None:
+            raise ValueError(f"No build step produces {paths.ARTIFACTS[name].display_name}.")
+        record = processing_state.CompletionRecord(
+            completed_at=processing_state.now(), inputs=artifact_graph_pipeline.current_fingerprints(step, graph.state)
+        )
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.sections[name.value] = value
+            state.records[name.value] = record
+
+        processing_state.update(folder, apply, reason="step_completed")
+
+    def _section(self, session_id: uuid.UUID, name: paths.ArtifactName) -> Any:
+        """A section's saved value, or None when it has none."""
+        return processing_state.load(self.session_folder(session_id)).sections.get(name.value)
+
+    def is_imported_placeholder(self, session_id: uuid.UUID, name: paths.ArtifactName) -> bool:
+        """Whether a section is a placeholder from importing a pre-`processing_state.json` Session (see `legacy_import`):
+        its suggestions weren't kept, so reopening the step that reviews them re-runs the suggestion step first."""
+        value = self._section(session_id, name)
+        return isinstance(value, dict) and bool(value.get("legacy"))
+
+    # Session processing steps (see `processing_steps`): the overview Process Session and the coordinator read,
+    # restarts, failures, and the decisions that aren't reviews.
+
+    def processing_overview(self, session_id: uuid.UUID) -> processing_steps.ProcessingOverview:
+        """Every step's completion and display state, the new players, and anything blocking processing."""
+        states = self.session_artifact_states(session_id)
+        state = processing_state.load(self.session_folder(session_id))
+        new_players = tuple(player.player_name for player in self.new_players(session_id))
+        blockers = tuple(blocker.message for blocker in self.session_processing_blockers(session_id))
+
+        def current(name: paths.ArtifactName) -> bool:
+            return states[name] is artifact_graph_pipeline.ArtifactStatus.CURRENT
+
+        # New-player rows: once Isolate New Speakers has run, its proposals decide (players seeded by this Session
+        # are no longer new, but their rows stay); before that, the live attendee list does.
+        proposals = state.sections.get(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS.value)
+        if current(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS) and isinstance(proposals, dict):
+            shows_new_players = bool(proposals.get("players"))
+        else:
+            shows_new_players = bool(new_players)
+
+        step_states: list[processing_steps.StepState] = []
+        predecessors_complete = True
+        for step in processing_steps.PROCESSING_STEPS:
+            if step.id is processing_steps.StepID.APPROVE_PRIOR_REBUILD:
+                prior = self.prior_rebuild_tasks(session_id) if predecessors_complete else ()
+                complete = predecessors_complete and self._prior_rebuild_approved(state, prior)
+                visible = bool(prior)
+            else:
+                complete = all(current(name) for name in step.outputs)
+                visible = step.is_manual and (
+                    step.visibility is processing_steps.StepVisibility.ALWAYS
+                    or (step.visibility is processing_steps.StepVisibility.NEW_PLAYERS and shows_new_players)
+                )
+            failure = state.failures.get(step.id.value)
+            step_states.append(
+                processing_steps.StepState(
+                    step=step,
+                    complete=complete,
+                    visible=visible,
+                    nothing_to_review=complete and self._reviewed_nothing(state, step.id),
+                    failure=failure.message if failure is not None else None,
+                )
+            )
+            predecessors_complete = predecessors_complete and complete
+        return processing_steps.ProcessingOverview(steps=tuple(step_states), new_players=new_players, blockers=blockers)
+
+    @staticmethod
+    def _reviewed_nothing(state: processing_state.ProcessingState, step_id: processing_steps.StepID) -> bool:
+        """Whether a manual step completed on its own because there was nothing to review (not an imported Session's
+        placeholder, whose suggestions simply weren't kept)."""
+        reviewed = {
+            processing_steps.StepID.REVIEW_NAME_CORRECTIONS: (paths.ArtifactName.NAME_CORRECTION_SUGGESTIONS, "suggestions"),
+            processing_steps.StepID.REVIEW_NEW_SPEAKER_ASSIGNMENTS: (paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS, "players"),
+            processing_steps.StepID.REVIEW_GLOSSARY_TERMS: (paths.ArtifactName.GLOSSARY_SUGGESTIONS, "proposals"),
+            processing_steps.StepID.REVIEW_SPELLING_CORRECTIONS: (paths.ArtifactName.SPELLING_SUGGESTIONS, "suggestions"),
+        }.get(step_id)
+        if reviewed is None:
+            return False
+        value = state.sections.get(reviewed[0].value)
+        return isinstance(value, dict) and not value.get("legacy") and not value.get(reviewed[1])
+
+    def prior_rebuild_tasks(self, session_id: uuid.UUID) -> tuple[artifact_graph_pipeline.GenerationTask, ...]:
+        """The earlier Sessions' outputs that generating this Session's would rebuild; empty when none are stale."""
+        try:
+            plan = self.generation_plan(session_id)
+        except ValueError:
+            return ()
+        return tuple(task for task in plan if task.session_id != session_id)
+
+    @staticmethod
+    def _task_value(tasks: Sequence[artifact_graph_pipeline.GenerationTask]) -> list[dict[str, str]]:
+        return [{"session_id": str(task.session_id), "artifact": task.artifact_name.value} for task in tasks]
+
+    def _prior_rebuild_approved(
+        self, state: processing_state.ProcessingState, tasks: Sequence[artifact_graph_pipeline.GenerationTask]
+    ) -> bool:
+        """Approved when nothing needs rebuilding, or the saved approval covers exactly the current rebuild plan."""
+        return not tasks or state.sections.get(processing_steps.PRIOR_REBUILD_APPROVAL_SECTION) == self._task_value(tasks)
+
+    def approve_prior_rebuild(self, session_id: uuid.UUID, tasks: Sequence[artifact_graph_pipeline.GenerationTask]) -> None:
+        """Rebuild Prior Sessions' decision: consent to rebuild exactly `tasks` before this Session's outputs."""
+        value = self._task_value(tasks)
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.sections[processing_steps.PRIOR_REBUILD_APPROVAL_SECTION] = value
+
+        processing_state.update(self.session_folder(session_id), apply, reason="step_completed")
+
+    def reopen_step(self, session_id: uuid.UUID, step_id: processing_steps.StepID) -> None:
+        """Restart a step: mark its outputs incomplete, keeping their content (a manual step reopens as it was left).
+        Completing it again with the same result leaves everything after it current."""
+        step = processing_steps.STEPS_BY_ID[step_id]
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            for name in step.outputs:
+                record = state.records.get(name.value)
+                if record is not None:
+                    state.records[name.value] = record.model_copy(update={"complete": False})
+            if step_id is processing_steps.StepID.APPROVE_PRIOR_REBUILD:
+                state.sections.pop(processing_steps.PRIOR_REBUILD_APPROVAL_SECTION, None)
+
+        processing_state.update(self.session_folder(session_id), apply, reason=f"step_reopened:{step_id.value}")
+
+    def reopen_artifact(self, session_id: uuid.UUID, name: paths.ArtifactName) -> None:
+        """Mark one output incomplete, keeping its content, so the step producing it runs again (Regenerate Artifact)."""
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            record = state.records.get(name.value)
+            if record is not None:
+                state.records[name.value] = record.model_copy(update={"complete": False})
+
+        processing_state.update(self.session_folder(session_id), apply, reason=f"artifact_reopened:{name.value}")
+
+    def record_step_failure(self, session_id: uuid.UUID, step_id: processing_steps.StepID, message: str, run_id: str | None) -> None:
+        """Keep a step's last failure for its row; informational only, never read for completion."""
+        failure = processing_state.StepFailure(message=message, at=processing_state.now(), run_id=run_id)
+
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.failures[step_id.value] = failure
+
+        processing_state.update(self.session_folder(session_id), apply, reason="step_failed")
+
+    def clear_step_failure(self, session_id: uuid.UUID, step_id: processing_steps.StepID) -> None:
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.failures.pop(step_id.value, None)
+
+        processing_state.update(self.session_folder(session_id), apply, reason="step_failure_cleared")
+
+    def save_voice_profile_decision(self, session_id: uuid.UUID, *, accepted: bool) -> None:
+        """Improve Player Voice Profiles' decision: whether to add this Session's voice clips to its players' profiles."""
+        self._complete_section(session_id, paths.ArtifactName.VOICE_PROFILE_DECISION, {"accepted": accepted})
+
+    def enhance_voice_profiles(
+        self, session_id: uuid.UUID, on_progress: players_from_session.OnProgress | None = None
+    ) -> players_from_session.EnhanceResult | None:
+        """Enhance Voice Profiles: when the offer was accepted, add this Session's clips to its players' profiles
+        (replacing any this Session added before, so re-running is harmless); record the receipt either way."""
+        decision = self._section(session_id, paths.ArtifactName.VOICE_PROFILE_DECISION)
+        accepted = isinstance(decision, dict) and bool(decision.get("accepted"))
+        result = self.enhance_players_from_session(session_id, on_progress) if accepted else None
+        self._complete_section(
+            session_id,
+            paths.ArtifactName.VOICE_PROFILE_ENHANCEMENT,
+            {
+                "enhanced_player_count": result.enhanced_player_count if result is not None else 0,
+                "clip_count": result.clip_count if result is not None else 0,
+            },
+        )
+        return result
 
     @staticmethod
     def _previous_session_regenerable(graph: artifact_graph_pipeline.ArtifactGraph, previous_folder: Path) -> bool:
@@ -886,15 +1368,6 @@ class Application:
         )
         if source is None:
             raise ValueError("No current transcript is available. Transcribe the session again before continuing.")
-        return source
-
-    def _review_source(self, session: Session, game_session: GameSession) -> paths.ArtifactName:
-        """Review Transcript's starting point: a still-current completed review, else the spellchecked transcript."""
-        source = self._first_current(
-            session, game_session, paths.ArtifactName.REVIEWED_TRANSCRIPT, paths.ArtifactName.SPELLCHECKED_TRANSCRIPT
-        )
-        if source is None:
-            raise ValueError("The spellchecked transcript isn't current. Run Spellcheck Against Glossary first.")
         return source
 
     def generation_plan(
@@ -1056,13 +1529,13 @@ class Application:
                     new_players.append(isolate_new_speakers_pipeline.NewPlayer(attendee.player_id, attendee.player_name, attendee.roles))
             return new_players
 
-    def session_processing_blockers(self, session_id: uuid.UUID) -> list[paths.ProcessingBlocker]:
+    def session_processing_blockers(self, session_id: uuid.UUID) -> list[processing_steps.ProcessingBlocker]:
         """Errors that stop a Process Session step, and every step after it, from running."""
-        blockers: list[paths.ProcessingBlocker] = []
+        blockers: list[processing_steps.ProcessingBlocker] = []
         if not self.list_attendance(session_id):
             blockers.append(
-                paths.ProcessingBlocker(
-                    paths.SessionProcessingStageID.IMPORTING_AUDIO,
+                processing_steps.ProcessingBlocker(
+                    processing_steps.StepID.IMPORT_AUDIO,
                     "This Session has no attendees. Add them on Session Detail.",
                 )
             )
@@ -1124,27 +1597,37 @@ class Application:
         match. A subsequent transcription failure leaves the newly imported audio available for
         an explicit retry.
         """
-        self.validate_import_audio_source(source_path)
-        session_folder = self.session_folder(session_id)
-        import_audio.import_audio(
-            source_path,
-            session_folder,
-            self._settings.session_audio_import.normalize_volume,
-            should_clean_audio=should_clean_audio,
-        )
+        self.import_session_audio(session_id, source_path, should_clean_audio=should_clean_audio)
         self.discard_review_draft(session_id)
         return self.transcribe_session_audio(session_id, on_progress=on_progress)
 
-    def import_session_audio(self, session_id: uuid.UUID, source_path: Path, *, should_clean_audio: bool) -> None:
-        """Replace input audio; the artifact graph marks everything derived from the old audio stale."""
+    def save_import_request(self, session_id: uuid.UUID, source_path: Path, *, clean_audio: bool) -> None:
+        """Import Audio's decision: which file to import and whether to clean it."""
+        self.validate_import_audio_source(source_path)
+        self._complete_section(session_id, paths.ArtifactName.IMPORT_REQUEST, {"source_path": str(source_path), "clean_audio": clean_audio})
+
+    @_completes(paths.ArtifactName.INPUT_AUDIO)
+    def import_requested_audio(self, session_id: uuid.UUID) -> None:
+        """Import Audio File: replace the input audio from the saved request; everything derived from the old audio
+        goes stale."""
+        request = self._section(session_id, paths.ArtifactName.IMPORT_REQUEST)
+        if not isinstance(request, dict) or not request.get("source_path"):
+            raise ValueError("No audio file has been chosen. Run Import Audio to choose one.")
+        source_path = Path(request["source_path"])
         self.validate_import_audio_source(source_path)
         import_audio.import_audio(
             source_path,
             self.session_folder(session_id),
             self._settings.session_audio_import.normalize_volume,
-            should_clean_audio=should_clean_audio,
+            should_clean_audio=bool(request.get("clean_audio")),
         )
 
+    def import_session_audio(self, session_id: uuid.UUID, source_path: Path, *, should_clean_audio: bool) -> None:
+        """Replace input audio (Import Audio's decision, then its import); everything derived from the old audio goes stale."""
+        self.save_import_request(session_id, source_path, clean_audio=should_clean_audio)
+        self.import_requested_audio(session_id)
+
+    @_completes(paths.ArtifactName.TRANSCRIPT)
     def create_transcript(self, session_id: uuid.UUID, *, on_progress: transcribe_audio.OnProgress | None = None) -> int:
         """Process Session's Create Transcript step; returns the utterance count."""
         with Session(self._engine) as session:
@@ -1158,6 +1641,7 @@ class Application:
             session_folder, attendee_count, self._settings.transcription_and_diarization, on_progress=on_progress
         )
 
+    @_completes(paths.ArtifactName.CLEANED_TRANSCRIPT)
     def remove_bad_utterances(self, session_id: uuid.UUID, *, on_progress: Callable[[int, int], None] | None = None) -> int:
         """Process Session's Remove Bad Utterances step: `transcript.json` minus backchannels, written as
         `cleaned_transcript.json`. Returns the number of utterances removed."""
@@ -1202,27 +1686,62 @@ class Application:
             log.set(suggestion_count=len(suggestions))
         return transcript, suggestions
 
+    def propose_name_corrections(self, session_id: uuid.UUID) -> list[suggest_spelling_corrections_pipeline.SpellingSuggestion]:
+        """Suggest Name Corrections: the LLM's corrections to misheard player and character names, saved for review.
+        Names are only reviewed for Sessions with new players, so without any this saves none and calls no LLM."""
+        suggestions = self.suggest_name_corrections(session_id)[1] if self.new_players(session_id) else []
+        self._complete_section(session_id, paths.ArtifactName.NAME_CORRECTION_SUGGESTIONS, {"suggestions": _suggestions_value(suggestions)})
+        return suggestions
+
+    def name_correction_review(
+        self, session_id: uuid.UUID
+    ) -> tuple[
+        Transcript,
+        list[suggest_spelling_corrections_pipeline.SpellingSuggestion],
+        list[suggest_spelling_corrections_pipeline.SpellingSuggestion] | None,
+    ]:
+        """Review Name Corrections: the cleaned transcript, the saved suggestions, and the last saved decision."""
+        transcript = name_corrections_pipeline.load_source(self.session_folder(session_id))
+        decisions = self._section(session_id, paths.ArtifactName.NAME_CORRECTION_DECISIONS)
+        return (
+            transcript,
+            _suggestions_from(self._section(session_id, paths.ArtifactName.NAME_CORRECTION_SUGGESTIONS), "suggestions"),
+            _suggestions_from(decisions, "corrections") if decisions is not None else None,
+        )
+
+    def save_name_correction_decisions(
+        self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
+    ) -> None:
+        self._complete_section(session_id, paths.ArtifactName.NAME_CORRECTION_DECISIONS, {"corrections": _corrections_value(corrections)})
+
+    @_completes(paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT)
+    def apply_name_corrections(self, session_id: uuid.UUID) -> int:
+        """Write the name-corrected transcript from the saved decision; return how many occurrences were replaced."""
+        decisions = self._section(session_id, paths.ArtifactName.NAME_CORRECTION_DECISIONS)
+        if decisions is None:
+            raise ValueError("The name corrections haven't been reviewed.")
+        _written, occurrences = name_corrections_pipeline.save_corrected(
+            self.session_folder(session_id), _suggestions_from(decisions, "corrections"), saved_is_current=False
+        )
+        return occurrences
+
     def save_name_corrections(
         self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
     ) -> tuple[bool, int]:
-        """Write the name-corrected transcript from the reviewed corrections; return whether it was written
-        and how many occurrences were replaced."""
-        states = self.session_artifact_states(session_id)
-        return name_corrections_pipeline.save_corrected(
-            self.session_folder(session_id),
-            corrections,
-            saved_is_current=states[paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT] is artifact_graph_pipeline.ArtifactStatus.CURRENT,
-        )
+        """Complete Review Name Corrections and write the name-corrected transcript (decision, then apply)."""
+        self.save_name_correction_decisions(session_id, corrections)
+        return True, self.apply_name_corrections(session_id)
 
     def isolate_new_speakers(
         self, session_id: uuid.UUID, *, on_progress: isolate_new_speakers_pipeline.OnProgress | None = None
     ) -> isolate_new_speakers_pipeline.NewSpeakerAssignments:
-        """Process Session's Isolate New Speakers step: high-confidence utterances for each new player."""
+        """Process Session's Isolate New Speakers step: high-confidence utterances for each new player, saved as the
+        proposals Review New Speaker Assignments reviews."""
         session_folder = self.session_folder(session_id)
         bootstrap = self._settings.speaker_bootstrap
         isolation = self._settings.isolate_new_speakers
         outliers = self._settings.remove_outliers
-        return isolate_new_speakers_pipeline.isolate_new_speakers(
+        proposals = isolate_new_speakers_pipeline.isolate_new_speakers(
             session_folder,
             self.new_players(session_id),
             isolate_new_speakers_pipeline.IsolationSettings(
@@ -1241,24 +1760,42 @@ class Application:
             self._embed_clip,
             on_progress=on_progress,
         )
+        self._complete_section(session_id, paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS, proposals.model_dump(mode="json"))
+        return proposals
+
+    def new_speaker_proposals(self, session_id: uuid.UUID) -> isolate_new_speakers_pipeline.NewSpeakerAssignments:
+        value = self._section(session_id, paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS)
+        if value is None:
+            raise ValueError("New speakers haven't been isolated yet.")
+        return isolate_new_speakers_pipeline.NewSpeakerAssignments.model_validate(value)
 
     def _current_new_speaker_review(
         self, session_id: uuid.UUID
     ) -> review_new_speaker_assignments_pipeline.ReviewedNewSpeakerAssignments | None:
-        """The saved reviewed assignments, but only while the artifact graph says they are current."""
-        states = self.session_artifact_states(session_id)
-        if states[paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS] is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
-            return None
-        return review_new_speaker_assignments_pipeline.load_reviewed(self.session_folder(session_id))
+        """The last saved review, to reopen the step as it was left."""
+        value = self._section(session_id, paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS)
+        return review_new_speaker_assignments_pipeline.ReviewedNewSpeakerAssignments.model_validate(value) if value is not None else None
 
-    def new_speaker_assignment_review(self, session_id: uuid.UUID) -> review_new_speaker_assignments_pipeline.ReviewData:
+    def draft_new_speaker_review(
+        self, session_id: uuid.UUID, kept: Mapping[uuid.UUID, Sequence[int]], rejected: Mapping[uuid.UUID, Sequence[int]]
+    ) -> dict[str, Any]:
+        """Unfinished Review New Speaker Assignments work, in the saved review's shape, for a draft."""
+        return review_new_speaker_assignments_pipeline.build_review(self.new_speaker_proposals(session_id), kept, rejected).model_dump(
+            mode="json"
+        )
+
+    def new_speaker_assignment_review(
+        self, session_id: uuid.UUID, draft: Mapping[str, Any] | None = None
+    ) -> review_new_speaker_assignments_pipeline.ReviewData:
         """Process Session's Review New Speaker Assignments step: each new player's proposed utterances,
         with earlier removals when a current review exists."""
         session_folder = self.session_folder(session_id)
         return review_new_speaker_assignments_pipeline.review_data(
             session_folder,
-            review_new_speaker_assignments_pipeline.load_proposals(session_folder),
-            self._current_new_speaker_review(session_id),
+            self.new_speaker_proposals(session_id),
+            review_new_speaker_assignments_pipeline.ReviewedNewSpeakerAssignments.model_validate(draft)
+            if draft is not None
+            else self._current_new_speaker_review(session_id),
             self._settings.speaker_bootstrap.target_total_speech_seconds,
         )
 
@@ -1327,33 +1864,10 @@ class Application:
         kept: Mapping[uuid.UUID, Sequence[int]],
         rejected: Mapping[uuid.UUID, Sequence[int]] | None = None,
     ) -> bool:
-        """Save the kept utterances and removed Find More additions; return whether the file was written (it is not
-        when a current review keeps the same utterances)."""
-        session_folder = self.session_folder(session_id)
-        return review_new_speaker_assignments_pipeline.save_review(
-            session_folder,
-            review_new_speaker_assignments_pipeline.load_proposals(session_folder),
-            kept,
-            self._current_new_speaker_review(session_id),
-            rejected,
-        )
-
-    def new_player_steps_skipped(self, session_id: uuid.UUID) -> bool:
-        """Whether Process Session shows the new-player steps as not needed.
-
-        Once Isolate New Speakers has run (and is current), its output decides: the steps were needed
-        when it found new players to isolate. Before that, the live new-player list decides. This keeps
-        a Session whose new players were just seeded -- and so are no longer new -- showing those steps
-        as done rather than skipped.
-        """
-        states = self.session_artifact_states(session_id)
-        if states[paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS] is artifact_graph_pipeline.ArtifactStatus.CURRENT:
-            try:
-                proposals = review_new_speaker_assignments_pipeline.load_proposals(self.session_folder(session_id))
-            except (OSError, ValueError):
-                return not self.new_players(session_id)
-            return not proposals.players
-        return not self.new_players(session_id)
+        """Review New Speaker Assignments' decision: the kept utterances and removed Find More additions."""
+        reviewed = review_new_speaker_assignments_pipeline.build_review(self.new_speaker_proposals(session_id), kept, rejected)
+        self._complete_section(session_id, paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS, reviewed.model_dump(mode="json"))
+        return True
 
     def seed_player_voice_samples(
         self, session_id: uuid.UUID, *, on_progress: seed_voice_samples_pipeline.OnProgress | None = None
@@ -1366,7 +1880,7 @@ class Application:
             if campaign is None:
                 raise ValueError("Campaign not found.")
             session_folder = self._session_folder(session, game_session)
-            reviewed = review_new_speaker_assignments_pipeline.load_reviewed(session_folder)
+            reviewed = self._current_new_speaker_review(session_id)
             if reviewed is None:
                 raise ValueError("The reviewed new speaker assignments are missing or unreadable.")
             targets: list[seed_voice_samples_pipeline.SeedTarget] = []
@@ -1392,10 +1906,12 @@ class Application:
                 on_progress,
             )
             session.commit()
-        # Written last: the receipt marks the step complete only once clips and centroids are saved.
-        seed_voice_samples_pipeline.save_receipt(session_folder, receipt)
+        # Recorded last: the receipt marks the step complete only once clips and centroids are saved. Seeding replaces
+        # this Session's earlier clips, so a crash before the receipt is repaired by running the step again.
+        self._complete_section(session_id, paths.ArtifactName.SEEDED_VOICE_SAMPLES, receipt.model_dump(mode="json"))
         return receipt
 
+    @_completes(paths.ArtifactName.IDENTIFIED_TRANSCRIPT)
     def identify_session_speakers(self, session_id: uuid.UUID, *, on_progress: transcribe_audio.OnProgress | None = None) -> Transcript:
         """Process Session's Identify Speakers step: label each utterance of the name-corrected transcript with the
         attendee whose voice centroid it matches, or leave it unassigned, and write the identified transcript."""
@@ -1451,39 +1967,55 @@ class Application:
             log.set(proposal_count=len(proposals), suggestion_count=len(suggestions))
         return transcript, suggestions
 
+    def propose_spelling_corrections(self, session_id: uuid.UUID) -> list[suggest_spelling_corrections_pipeline.SpellingSuggestion]:
+        """Suggest Spelling Corrections: the LLM's corrections against the campaign glossary, saved for review."""
+        _transcript, suggestions = self.suggest_glossary_spelling_corrections(session_id)
+        self._complete_section(session_id, paths.ArtifactName.SPELLING_SUGGESTIONS, {"suggestions": _suggestions_value(suggestions)})
+        return suggestions
+
+    def spelling_review(
+        self, session_id: uuid.UUID
+    ) -> tuple[
+        Transcript,
+        list[suggest_spelling_corrections_pipeline.SpellingSuggestion],
+        list[suggest_spelling_corrections_pipeline.SpellingSuggestion] | None,
+    ]:
+        """Spellcheck Against Glossary's review: the identified transcript, saved suggestions, and last decision."""
+        transcript = Transcript.load(self.session_folder(session_id) / paths.ARTIFACTS[paths.ArtifactName.IDENTIFIED_TRANSCRIPT].filename)
+        decisions = self._section(session_id, paths.ArtifactName.SPELLING_DECISIONS)
+        return (
+            transcript,
+            _suggestions_from(self._section(session_id, paths.ArtifactName.SPELLING_SUGGESTIONS), "suggestions"),
+            _suggestions_from(decisions, "corrections") if decisions is not None else None,
+        )
+
+    def save_spelling_decisions(
+        self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
+    ) -> None:
+        self._complete_section(session_id, paths.ArtifactName.SPELLING_DECISIONS, {"corrections": _corrections_value(corrections)})
+
+    @_completes(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT)
+    def apply_spelling_corrections(self, session_id: uuid.UUID) -> int:
+        """Write the spellchecked transcript from the saved decision; return how many occurrences were replaced."""
+        decisions = self._section(session_id, paths.ArtifactName.SPELLING_DECISIONS)
+        if decisions is None:
+            raise ValueError("The spelling corrections haven't been reviewed.")
+        session_folder = self.session_folder(session_id)
+        _written, occurrences = suggest_spelling_corrections_pipeline.save_corrected_transcript(
+            Transcript.load(session_folder / paths.ARTIFACTS[paths.ArtifactName.IDENTIFIED_TRANSCRIPT].filename),
+            session_folder / paths.ARTIFACTS[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT].filename,
+            _suggestions_from(decisions, "corrections"),
+            whole_words=False,
+            saved_is_current=False,
+        )
+        return occurrences
+
     def save_glossary_spelling_corrections(
         self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
     ) -> tuple[bool, int]:
-        """Write the spellchecked transcript from the reviewed corrections; return whether it was written and how
-        many occurrences were replaced."""
-        session_folder = self.session_folder(session_id)
-        states = self.session_artifact_states(session_id)
-        return suggest_spelling_corrections_pipeline.save_corrected_transcript(
-            Transcript.load(session_folder / paths.ARTIFACTS[paths.ArtifactName.IDENTIFIED_TRANSCRIPT].filename),
-            session_folder / paths.ARTIFACTS[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT].filename,
-            corrections,
-            whole_words=False,
-            saved_is_current=states[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT] is artifact_graph_pipeline.ArtifactStatus.CURRENT,
-        )
-
-    def complete_processing_step_automatically(self, session_id: uuid.UUID, stage: paths.SessionProcessingStageID) -> bool:
-        """Complete a manual step without its screen when it has nothing to review; return whether it did.
-
-        With no new players, Review Name Corrections writes the cleaned transcript unchanged, and
-        Review New Speaker Assignments (whose input is then empty) writes an empty review.
-        """
-        if stage is paths.SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS:
-            if self.new_players(session_id):
-                return False
-            self.save_name_corrections(session_id, ())
-            return True
-        if stage is not paths.SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS:
-            return False
-        proposals = review_new_speaker_assignments_pipeline.load_proposals(self.session_folder(session_id))
-        if proposals.players:
-            return False
-        self.confirm_new_speaker_assignment_review(session_id, {})
-        return True
+        """Complete Spellcheck Against Glossary and write the spellchecked transcript (decision, then apply)."""
+        self.save_spelling_decisions(session_id, corrections)
+        return True, self.apply_spelling_corrections(session_id)
 
     def transcribe_session_audio(
         self,
@@ -1529,9 +2061,11 @@ class Application:
             session.commit()
         session_processing_pipeline.discard_review_draft(session_folder)
         artifacts.delete_all_artifacts(session_folder)
+        processing_state.delete(session_folder)
         # The retired bootstrap workflow kept its working documents here; they are disposable.
         shutil.rmtree(session_folder / "processing", ignore_errors=True)
 
+    @_completes(paths.ArtifactName.ROLE_TRANSCRIPT)
     def clean_transcript(
         self,
         session_id: uuid.UUID,
@@ -1565,6 +2099,7 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return transcript_sections_pipeline.can_generate_transcript_sections(self._session_folder(session, game_session))
 
+    @_completes(paths.ArtifactName.TRANSCRIPT_SECTIONS)
     def generate_transcript_sections(self, session_id: uuid.UUID) -> transcript_sections_pipeline.TranscriptSections:
         """Classify and persist the opening sections of a Session's Role Transcript."""
         with Session(self._engine) as session:
@@ -1610,6 +2145,7 @@ class Application:
             )
             return result
 
+    @_completes(paths.ArtifactName.LEDGER)
     def generate_ledger(self, session_id: uuid.UUID) -> None:
         """Generate and replace a Session's matched Ledger and Scene Breakdown artifacts."""
         with Session(self._engine) as session:
@@ -1682,6 +2218,7 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return player_introductions_pipeline.can_generate_player_introductions(self._session_folder(session, game_session))
 
+    @_completes(paths.ArtifactName.PLAYER_INTRODUCTIONS)
     def generate_player_introductions(self, session_id: uuid.UUID) -> player_introductions_pipeline.PlayerIntroductions:
         """Generate and atomically persist explicitly introduced attendee characters."""
         with Session(self._engine) as session:
@@ -1745,6 +2282,7 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return recap_summary_pipeline.can_generate_recap_summary(self._session_folder(session, game_session))
 
+    @_completes(paths.ArtifactName.RECAP_SUMMARY)
     def generate_recap_summary(self, session_id: uuid.UUID) -> str:
         """Generate and atomically persist a compact recap from the current Scene Breakdown."""
         with Session(self._engine) as session:
@@ -1808,6 +2346,7 @@ class Application:
             previous_folder = self._session_folder(session, previous_session) if previous_session is not None else None
             return processing.can_generate_summary(self._session_folder(session, game_session), previous_folder)
 
+    @_completes(paths.ArtifactName.SUMMARY)
     def generate_summary(self, session_id: uuid.UUID, *, omit_stale_prior_recap: bool = False) -> None:
         """Generate and atomically replace a session's Markdown summary from its Ledger."""
         with Session(self._engine) as session:
@@ -1926,82 +2465,72 @@ class Application:
 
     # Session processing state and transcript-review drafts.
 
-    def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript) -> None:
-        """Atomically save noncanonical review work and then record its current source fingerprint.
+    # Manual-step drafts: uncompleted work a manual step saved on Cancel.
 
-        The file is written first. If recording metadata fails, the resulting orphan file is
-        ignored because no database record points to it; it can never be consumed by generation.
-        """
+    def _draft_basis(self, session_id: uuid.UUID, basis: paths.ArtifactName) -> str | None:
+        """The fingerprint of what a draft was made against; a draft is valid only while it still matches."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            session_folder = self._session_folder(session, game_session)
-            source = self._review_source(session, game_session)
-            source_path = session_folder / paths.ARTIFACTS[source].filename
-            source_modified_ns = source_path.stat().st_mtime_ns
+            folder = self._session_folder(session, game_session)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+        ref = artifact_graph_pipeline.ArtifactRef(folder, basis)
+        if graph.status(ref) is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+            return None
+        step = artifact_graph_pipeline.BuildStep(basis, (ref,), (ref,))
+        fingerprints = artifact_graph_pipeline.current_fingerprints(step, graph.state)
+        fingerprint = fingerprints.get(artifact_graph_pipeline.dependency_key(folder, ref))
+        return fingerprint.sha256 if fingerprint is not None else None
 
-        session_processing_pipeline.save_review_draft(session_folder, transcript)
+    def save_step_draft(self, session_id: uuid.UUID, step_id: str, basis: paths.ArtifactName, value: object) -> None:
+        """Save a manual step's uncompleted work, tied to `basis` (what the step reviews) as it is now."""
+        fingerprint = self._draft_basis(session_id, basis)
+        if fingerprint is None:
+            raise ValueError(f"{paths.ARTIFACTS[basis].display_name} isn't current, so this work can't be saved as a draft.")
 
-        with Session(self._engine) as session:
-            sessions.get_session(session, session_id)
-            session_processing_entities.set_draft_source(session, session_id, source.value, source_modified_ns)
-            session.commit()
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.drafts[step_id] = {"basis": basis.value, "basis_sha256": fingerprint, "value": value}
+
+        processing_state.update(self.session_folder(session_id), apply, reason="draft_saved")
+
+    def load_step_draft(self, session_id: uuid.UUID, step_id: str) -> Any:
+        """A manual step's saved draft, or None when there is none or what it was made against has changed."""
+        draft = processing_state.load(self.session_folder(session_id)).drafts.get(step_id)
+        if not isinstance(draft, dict):
+            return None
+        try:
+            basis = paths.ArtifactName(draft.get("basis"))
+        except ValueError:
+            return None
+        if self._draft_basis(session_id, basis) != draft.get("basis_sha256"):
+            return None
+        return draft.get("value")
+
+    def discard_step_draft(self, session_id: uuid.UUID, step_id: str) -> None:
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.drafts.pop(step_id, None)
+
+        processing_state.update(self.session_folder(session_id), apply, reason="draft_discarded")
+
+    def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+        """Review Transcript's draft: the reviewer's unfinished edits, as an edit list."""
+        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), transcript)
+        self.save_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP, paths.ArtifactName.SPELLCHECKED_TRANSCRIPT, edits.model_dump(mode="json"))
 
     def load_review_draft(self, session_id: uuid.UUID) -> Transcript | None:
-        """Return a draft only when its database fingerprint still matches a current source.
-
-        Filesystem artifacts decide whether a draft is valid. Missing or mismatched state is
-        repaired by clearing the database pointer; any unreferenced draft file is deliberately
-        ignored rather than promoted to a reviewed transcript.
-        """
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            state = session_processing_entities.get_state(session, session_id)
-            if state is None or state.draft_source_artifact is None or state.draft_source_modified_ns is None:
-                return None
-
-            try:
-                source = paths.ArtifactName(state.draft_source_artifact)
-            except ValueError:
-                session_processing_entities.clear_draft_source(session, session_id)
-                session.commit()
-                return None
-
-            session_folder = self._session_folder(session, game_session)
-            graph = self._artifact_graph(session, game_session.campaign_id)
-            source_ref = artifact_graph_pipeline.ArtifactRef(session_folder, source)
-            is_current = graph.status(source_ref) is artifact_graph_pipeline.ArtifactStatus.CURRENT
-            source_path = source_ref.path
-            fingerprint_matches = source_path.is_file() and source_path.stat().st_mtime_ns == state.draft_source_modified_ns
-            if not is_current or not fingerprint_matches:
-                session_processing_entities.clear_draft_source(session, session_id)
-                session.commit()
-                return None
-
-        try:
-            draft = session_processing_pipeline.load_review_draft(session_folder)
-        except Exception:
-            self.discard_review_draft(session_id)
+        value = self.load_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP)
+        if value is None:
             return None
-        if draft is not None:
-            return draft
-
-        with Session(self._engine) as session:
-            sessions.get_session(session, session_id)
-            session_processing_entities.clear_draft_source(session, session_id)
-            session.commit()
-        return None
+        try:
+            edits = transcript_edits_pipeline.TranscriptEdits.model_validate(value)
+        except ValueError:
+            return None
+        return transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits)
 
     def discard_review_draft(self, session_id: uuid.UUID) -> None:
-        """Clear the draft pointer before best-effort removal of its working-copy file."""
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            session_folder = self._session_folder(session, game_session)
-            session_processing_entities.clear_draft_source(session, session_id)
-            session.commit()
-        session_processing_pipeline.discard_review_draft(session_folder)
+        self.discard_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP)
 
     def clear_session_processing_state(self, session_id: uuid.UUID) -> None:
-        """Remove a Session's Process-flow metadata and noncanonical transcript draft."""
+        """Remove a Session's retired Process-flow metadata and every manual-step draft."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
@@ -2009,25 +2538,54 @@ class Application:
             session.commit()
         session_processing_pipeline.discard_review_draft(session_folder)
 
+        def apply(state: processing_state.ProcessingState) -> None:
+            state.drafts.clear()
+
+        processing_state.update(session_folder, apply, reason="drafts_cleared")
+
     # Manual review.
 
     def extract_review_clips(self, session_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> tuple[Transcript, Path]:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            return transcript_review.extract_review_clips(
-                self._session_folder(session, game_session), on_progress, source=self._review_source(session, game_session)
-            )
+        """Review Transcript's source (the spellchecked transcript) with a playback clip per utterance."""
+        return transcript_review.extract_review_clips(
+            self.session_folder(session_id), on_progress, source=paths.ArtifactName.SPELLCHECKED_TRANSCRIPT
+        )
 
     def discard_review_clips(self, session_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             transcript_review.discard_review_clips(self._session_folder(session, game_session))
 
+    def transcript_review_source(self, session_id: uuid.UUID) -> Transcript:
+        """What Review Transcript edits: the spellchecked transcript."""
+        return Transcript.load(self.session_folder(session_id) / paths.ARTIFACTS[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT].filename)
+
+    def saved_transcript_review(self, session_id: uuid.UUID) -> Transcript | None:
+        """The last completed review applied to the current source, to reopen the step as it was left."""
+        value = self._section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
+        if value is None:
+            return None
+        edits = transcript_edits_pipeline.TranscriptEdits.model_validate({"edits": value.get("edits", [])})
+        return transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits)
+
+    def save_transcript_review(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+        """Review Transcript's decision: the reviewer's edits to the spellchecked transcript."""
+        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), transcript)
+        self._complete_section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS, edits.model_dump(mode="json"))
+        self.discard_review_draft(session_id)
+
+    @_completes(paths.ArtifactName.REVIEWED_TRANSCRIPT)
+    def apply_transcript_review(self, session_id: uuid.UUID) -> None:
+        """Write `transcript_reviewed.json`: the spellchecked transcript with the saved review edits applied."""
+        reviewed = self.saved_transcript_review(session_id)
+        if reviewed is None:
+            raise ValueError("The transcript review hasn't been completed.")
+        transcript_review.save_reviewed_transcript(self.session_folder(session_id), reviewed)
+
     def save_reviewed_transcript(self, session_id: uuid.UUID, transcript: Transcript) -> None:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            session_folder = self._session_folder(session, game_session)
-            transcript_review.save_reviewed_transcript(session_folder, transcript)
+        """Complete Review Transcript and write the reviewed transcript (decision, then apply)."""
+        self.save_transcript_review(session_id, transcript)
+        self.apply_transcript_review(session_id)
 
     def count_adjusted_utterances(self, session_id: uuid.UUID) -> int:
         with Session(self._engine) as session:

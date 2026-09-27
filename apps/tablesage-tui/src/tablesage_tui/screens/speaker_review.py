@@ -72,12 +72,12 @@ class _ReviewTable(DataTable[object]):
 
 
 class ManualReviewScreen(TableSageScreen):
-    """Process Session's Review Transcript step (5): review speaker labels and text in a working copy of the transcript.
+    """The Review Transcript step: review speaker labels and text in a working copy of the spellchecked transcript.
 
-    It starts from a still-valid saved draft, else a still-current completed review, else the spellchecked
-    transcript. Edits stay in memory until Complete writes the reviewed-transcript artifact and hands control
-    back to Process Session, which continues processing. Leaving (Exit, Escape, or quitting the app) with
-    unsaved edits offers Save (a resumable draft), Don't Save, or Cancel.
+    It starts from a still-valid saved draft, else the last completed review (as it was left), else the
+    spellchecked transcript. Complete dismisses with the edited transcript, which the step saves as its decision;
+    leaving (Exit, Escape, or quitting the app) with unsaved edits offers Save (a resumable draft), Don't Save, or
+    Cancel, then dismisses with None.
     """
 
     section = "process session · review transcript"
@@ -99,10 +99,9 @@ class ManualReviewScreen(TableSageScreen):
         ),
     ]
 
-    def __init__(self, session_id: uuid.UUID, on_completed: Callable[[], None] | None = None) -> None:
+    def __init__(self, session_id: uuid.UUID) -> None:
         super().__init__()
         self._session_id = session_id
-        self._on_completed = on_completed
         self._session_folder: Path | None = None
         self._transcript: Transcript | None = None
         # `_clip_indices[i]` is the on-disk clip filename index (from `extract_review_clips`'s
@@ -163,6 +162,8 @@ class ManualReviewScreen(TableSageScreen):
         self.query_one("#manual-review-legend", Static).update(self._legend_text())
 
         draft = self.application.load_review_draft(self._session_id)
+        if draft is None:
+            draft = self.application.saved_transcript_review(self._session_id)
         self.run_with_progress(
             title="Review Transcript",
             message="Restoring saved transcript edits…" if draft is not None else "Extracting clips…",
@@ -174,7 +175,7 @@ class ManualReviewScreen(TableSageScreen):
     def _extract_failed(self, exc: BaseException) -> None:
         self.notify(f"Could not open the transcript review: {exc}", severity="error")
         self._stop_review_resources()
-        self.app.pop_screen()
+        self.dismiss(None)
 
     def _after_extract(self, result: tuple[Transcript, Path], draft: Transcript | None) -> None:
         source, _clip_dir = result
@@ -496,21 +497,12 @@ class ManualReviewScreen(TableSageScreen):
     def action_complete(self) -> None:
         if self._transcript is None:
             return
-        try:
-            self.application.save_reviewed_transcript(self._session_id, self._transcript)
-        except (OSError, ValueError) as exc:
-            self.notify(f"Could not save the reviewed transcript: {exc}", severity="error")
-            return
-        self.application.discard_review_draft(self._session_id)
-        self.notify("Reviewed transcript saved.")
         self._stop_review_resources()
-        self.app.pop_screen()
-        if self._on_completed is not None:
-            self._on_completed()
+        self.dismiss(self._transcript)
 
     def action_exit_review(self) -> None:
-        """Return to Process Session, first offering to save changed transcript work as a draft."""
-        self.confirm_leave(self.app.pop_screen)
+        """Cancel the step, first offering to save changed transcript work as a draft."""
+        self.confirm_leave(lambda: self.dismiss(None))
 
     def confirm_leave(self, on_confirm: Callable[[], object]) -> None:
         """Offer the save-draft decision before leaving; the application quit path uses it too."""

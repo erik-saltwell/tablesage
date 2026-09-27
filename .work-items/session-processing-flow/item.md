@@ -7,6 +7,8 @@ status: implementing
 
 Replace Session Detail's separate audio, transcript-review, and output-generation entry points with a single, resumable processing flow.
 
+> **Superseded in part (2026-09-27):** [Processing step architecture](../processing-step-architecture/item.md) replaced this item's Process Session driver, step list, skipped-step handling, receipt files, and mtime-based staleness. Its step-by-step designs below describe the earlier flow.
+
 - [Idea](idea.md): the original three-phase direction, since superseded
 - [Quality rubric](rubric.md)
 - [Intent: new-player list, name-correction review, and Seed Player Voice Samples](intent.md)

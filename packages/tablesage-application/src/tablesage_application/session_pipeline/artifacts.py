@@ -6,11 +6,15 @@ from pathlib import Path
 import widelog
 
 from ..paths import ARTIFACTS, LEDGER_PAIR_MARKER, ArtifactName
+from . import processing_state
 
 
 def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
-    """Delete an artifact's canonical file and every deterministic companion view."""
+    """Delete an artifact's canonical file and every deterministic companion view. A section has no file here;
+    Clean Session removes sections with the whole processing state."""
     spec = ARTIFACTS[artifact_name]
+    if not spec.is_file:
+        return
     (session_folder / spec.filename).unlink(missing_ok=True)
     for companion_filename in spec.companion_filenames:
         (session_folder / companion_filename).unlink(missing_ok=True)
@@ -20,8 +24,11 @@ def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
 
 
 def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
-    """What exists on disk for a session -- drives the indicator panel and the P/G/T gates."""
-    existing = {name: (session_folder / spec.filename).is_file() for name, spec in ARTIFACTS.items()}
+    """What exists for a session -- files on disk, sections in its processing state -- for the indicator panel and gates."""
+    sections = processing_state.load(session_folder).sections
+    existing = {
+        name: (session_folder / spec.filename).is_file() if spec.is_file else name.value in sections for name, spec in ARTIFACTS.items()
+    }
     if (session_folder / LEDGER_PAIR_MARKER).exists():
         for name in (ArtifactName.LEDGER, ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY, ArtifactName.SUMMARY):
             existing[name] = False

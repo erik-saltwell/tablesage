@@ -17,12 +17,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import widelog
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 from tablesage_tools.audio import extract_clip
 from tablesage_tools.model import Transcript
 
 from ..paths import ARTIFACTS, ArtifactName
-from .atomic_files import atomic_write
 from .isolate_new_speakers import NewSpeakerAssignments
 from .speech import speech_duration
 
@@ -38,7 +37,7 @@ class ReviewedNewSpeakerAssignment(BaseModel, frozen=True):
 
 
 class ReviewedNewSpeakerAssignments(BaseModel, frozen=True):
-    """`reviewed_new_speaker_assignments.json`: the kept indices into `name_corrected_transcript.json`."""
+    """The Review New Speaker Assignments decision: the kept indices into `name_corrected_transcript.json`."""
 
     players: tuple[ReviewedNewSpeakerAssignment, ...]
 
@@ -81,20 +80,9 @@ class ReviewData:
     target_speech_seconds: float = 0.0
 
 
-def reviewed_path(session_folder: Path) -> Path:
+def legacy_reviewed_path(session_folder: Path) -> Path:
+    """Where the review lived before it became a processing-state section (legacy import only)."""
     return session_folder / ARTIFACTS[ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS].filename
-
-
-def load_reviewed(session_folder: Path) -> ReviewedNewSpeakerAssignments | None:
-    """The saved review, or None when it is missing or unreadable."""
-    try:
-        return ReviewedNewSpeakerAssignments.model_validate_json(reviewed_path(session_folder).read_bytes())
-    except (OSError, ValidationError):
-        return None
-
-
-def load_proposals(session_folder: Path) -> NewSpeakerAssignments:
-    return NewSpeakerAssignments.load(session_folder / ARTIFACTS[ArtifactName.NEW_SPEAKER_ASSIGNMENTS].filename)
 
 
 def review_utterance(
@@ -117,8 +105,8 @@ def review_data(
     saved: ReviewedNewSpeakerAssignments | None,
     target_speech_seconds: float = 0.0,
 ) -> ReviewData:
-    """Everything the review screen shows. `saved` is the reviewed file only when it is current; its Find More
-    additions, kept or rejected, follow the proposed utterances."""
+    """Everything the review screen shows. `saved` is the last saved review, if any; its Find More additions, kept
+    or rejected, follow the proposed utterances."""
     transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
     saved_players = {player.player_id: player for player in saved.players} if saved is not None else {}
     players: list[ReviewPlayer] = []
@@ -142,20 +130,13 @@ def review_data(
     return ReviewData(players=tuple(players), removed=frozenset(removed), target_speech_seconds=target_speech_seconds)
 
 
-def save_review(
-    session_folder: Path,
+def build_review(
     proposals: NewSpeakerAssignments,
     kept: Mapping[uuid.UUID, Sequence[int]],
-    current: ReviewedNewSpeakerAssignments | None,
     rejected: Mapping[uuid.UUID, Sequence[int]] | None = None,
-) -> bool:
-    """Write the reviewed file unless `current` (the saved file, only when it is current) keeps the same utterances.
-
-    Staleness is modification-time based, so rewriting an unchanged review would needlessly
-    invalidate every downstream artifact. For the same reason a change to `rejected` (each player's
-    removed Find More additions) alone isn't saved. Proposed indices keep their order; Find More
-    additions follow in transcript order. Returns whether it wrote.
-    """
+) -> ReviewedNewSpeakerAssignments:
+    """The reviewed assignments: each proposed player's kept utterances and removed Find More additions.
+    Proposed indices keep their order; Find More additions follow in transcript order."""
     players: list[ReviewedNewSpeakerAssignment] = []
     for proposal in proposals.players:
         player_kept = set(kept.get(proposal.player_id, ()))
@@ -168,11 +149,7 @@ def save_review(
                 rejected_voice_matches=tuple(sorted(set((rejected or {}).get(proposal.player_id, ())) - player_kept)),
             )
         )
-    reviewed = ReviewedNewSpeakerAssignments(players=tuple(players))
-    if current is not None and current.kept() == reviewed.kept():
-        return False
-    atomic_write(reviewed_path(session_folder), reviewed.model_dump_json(indent=2).encode("utf-8") + b"\n")
-    return True
+    return ReviewedNewSpeakerAssignments(players=tuple(players))
 
 
 # Playback clips -- extracted when the screen opens and removed when it closes.

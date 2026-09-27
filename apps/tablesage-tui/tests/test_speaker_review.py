@@ -59,6 +59,7 @@ def _application(
         session_folder=MagicMock(return_value=session_folder),
         list_attendance=MagicMock(return_value=attendees if attendees is not None else [_attendee("Alice"), _attendee("Bob")]),
         load_review_draft=MagicMock(return_value=None),
+        saved_transcript_review=MagicMock(return_value=None),
         extract_review_clips=MagicMock(return_value=(transcript, clip_dir)),
         save_reviewed_transcript=MagicMock(),
         discard_review_clips=MagicMock(),
@@ -364,21 +365,29 @@ async def test_find_replace_cancel_leaves_transcript_unchanged(tmp_path: Path) -
 
 
 @pytest.mark.anyio
-async def test_complete_saves_separate_reviewed_transcript_and_closes(tmp_path: Path) -> None:
+async def test_complete_returns_the_reviewed_transcript_and_closes(tmp_path: Path) -> None:
     application = _application(session_folder=tmp_path)
     session_id = uuid.uuid4()
+    dismissed: list[object] = []
+    dismiss = ManualReviewScreen.dismiss
+
+    def spy(screen: ManualReviewScreen, result: object = None) -> object:
+        dismissed.append(result)
+        return dismiss(screen, result)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, session_id)
         await pilot.press("2")
         await pilot.pause()
 
-        await pilot.click("#manual-review-complete")
-        await pilot.pause()
+        with patch.object(ManualReviewScreen, "dismiss", spy):
+            await pilot.click("#manual-review-complete")
+            await pilot.pause()
 
-        application.save_reviewed_transcript.assert_called_once()
-        called_session_id, saved = application.save_reviewed_transcript.call_args.args
-        assert called_session_id == session_id
+        # The Review Transcript step saves what the screen returns; the screen itself writes nothing.
+        application.save_reviewed_transcript.assert_not_called()
+        (saved,) = dismissed
+        assert isinstance(saved, Transcript)
         assert saved.utterances[0].speaker == "Bob"
         application.discard_review_clips.assert_called_once_with(session_id)
         assert not isinstance(pilot.app.screen, ManualReviewScreen)

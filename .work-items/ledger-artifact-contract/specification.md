@@ -8,10 +8,10 @@ Transcript Sections routes the role-attributed transcript into a starting-contex
 
 One structured LLM call generates the shared `starting_situation`, `ledger: {utterances}`, and `scene_breakdown: {ending_situation, scenes}` directly from the routed transcript. The response has exactly those three top-level fields; no scratchpad is returned. See [Scene Breakdown](../scene-breakdown-artifact-contract/specification.md) for the paired schema and reference rules.
 
-The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale through modification-time comparison; it does not delete them or make its Scene Breakdown sibling stale.
+The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale because their recorded input fingerprints (content hashes, see the [processing step architecture](../processing-step-architecture/intent.md)) no longer match; it does not delete them or make its Scene Breakdown sibling stale.
 
-The packaged Generate Ledger `system.md` is an input to the shared build step. A newer prompt makes
-both Ledger and Scene Breakdown stale.
+The packaged Generate Ledger `system.md` is an input to the shared build step. A changed prompt (by content, not
+modification time) makes both Ledger and Scene Breakdown stale.
 
 ## Source boundaries
 
@@ -71,7 +71,7 @@ The generator makes at most three structured-output attempts. Structurally inval
 
 Generation requires a current `role_transcript.json` and `transcript_sections.json`. The sections artifact is bound to the exact Role Transcript bytes with SHA-256; a stale sections artifact prevents generation instead of silently routing changed text.
 
-The application builds both persisted artifacts with the same starting situation. Handled replacement failures roll back the pair and Ledger Markdown. Interrupted replacements leave a marker that blocks use until regeneration. Existing downstream files remain on disk and become stale when their inputs are newer. Existing Ledgers retain version 4; generating a recap requires generating the shared step when Scene Breakdown is absent.
+The application builds both persisted artifacts with the same starting situation. Handled replacement failures roll back the pair and Ledger Markdown. Interrupted replacements leave a marker that blocks use until regeneration. Existing downstream files remain on disk and become stale when their inputs' content changes. Existing Ledgers retain version 4; generating a recap requires generating the shared step when Scene Breakdown is absent.
 
 ## Authoritative implementation references
 

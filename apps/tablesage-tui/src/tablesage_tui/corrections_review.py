@@ -147,12 +147,3 @@ class CorrectionsReview:
         table = self._table()
         if table.row_count:
             table.move_cursor(row=min(index, table.row_count - 1))
-
-
-def applied_message(correction_count: int, occurrence_total: int) -> str | None:
-    """The notification after applying corrections, or None when nothing was replaced."""
-    if not occurrence_total:
-        return None
-    occurrence_plural = "" if occurrence_total == 1 else "s"
-    correction_plural = "" if correction_count == 1 else "s"
-    return f"Applied {correction_count} correction{correction_plural}, {occurrence_total} occurrence{occurrence_plural}."

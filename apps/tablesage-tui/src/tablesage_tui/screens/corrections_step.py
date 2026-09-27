@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from textual.app import ComposeResult
@@ -8,21 +8,21 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable, Static
 
-from ..corrections_review import CorrectionsReview, applied_message
+from ..corrections_review import CorrectionsReview
+from ..processing.drafts import DraftSlot, leave_with_draft
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
-    from tablesage_application.session_pipeline.suggest_spelling_corrections import Correction, SpellingSuggestion
+    from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
     from tablesage_tools.model import Transcript
 
 
 class CorrectionsStepScreen(TableSageScreen):
-    """A Process Session step that reviews the LLM's find/replace corrections to a transcript.
+    """A processing step's review of find/replace corrections to a transcript.
 
-    Used by Review Name Corrections (step 2) and Spellcheck Against Glossary (step 5). Process Session
-    makes the LLM call before opening this screen, so it only reviews: New, Edit, and Delete rows, then
-    Apply & Continue saves through `save` and hands control back to the caller, which continues
-    processing. Cancel returns without writing anything.
+    Used by Review Name Corrections and Spellcheck Against Glossary. The suggestion step made the LLM call before
+    this opens, so it only reviews: New, Edit, and Delete rows. Apply & Continue dismisses with the reviewed rows,
+    which the step saves; Cancel dismisses with None, first offering to keep changed rows as a draft.
     """
 
     COMMON_BINDINGS = [
@@ -39,19 +39,17 @@ class CorrectionsStepScreen(TableSageScreen):
         title: str,
         hint: str,
         transcript: Transcript,
-        suggestions: list[SpellingSuggestion],
+        suggestions: Sequence[SpellingSuggestion],
         whole_words: bool,
-        save: Callable[[Sequence[Correction]], tuple[bool, int]],
-        on_confirmed: Callable[[], None],
+        draft: DraftSlot | None = None,
     ) -> None:
         super().__init__()
         self.section = f"process session · {title.lower()}"
         self._title = title
         self._hint = hint
         self._transcript = transcript
-        self._suggestions = suggestions
-        self._save = save
-        self._on_confirmed = on_confirmed
+        self._suggestions = list(suggestions)
+        self._draft = draft
         self._corrections = CorrectionsReview(self, "#corrections-step-table", noun="Correction", whole_words=whole_words)
 
     def compose_content(self) -> ComposeResult:
@@ -95,18 +93,18 @@ class CorrectionsStepScreen(TableSageScreen):
         elif event.button.id == "corrections-step-cancel":
             self.action_cancel()
 
+    def _rows(self) -> list[tuple[str, str, bool]]:
+        return [(row.from_text, row.to_text, row.case_sensitive) for row in self._corrections.corrections]
+
     def action_confirm(self) -> None:
-        corrections = self._corrections.corrections
-        try:
-            _written, occurrence_total = self._save(corrections)
-        except (OSError, ValueError) as exc:
-            self.notify(f"Could not save the corrections: {exc}", severity="error")
-            return
-        message = applied_message(len(corrections), occurrence_total)
-        if message is not None:
-            self.notify(message)
-        self.app.pop_screen()
-        self._on_confirmed()
+        self.dismiss(list(self._corrections.corrections))
 
     def action_cancel(self) -> None:
-        self.app.pop_screen()
+        initial = sorted((s.from_text, s.to_text, s.case_sensitive) for s in self._suggestions)
+        leave_with_draft(
+            self,
+            changed=sorted(self._rows()) != initial,
+            slot=self._draft,
+            value=lambda: [{"from_text": f, "to_text": t, "case_sensitive": c} for f, t, c in self._rows()],
+            leave=lambda: self.dismiss(None),
+        )

@@ -117,19 +117,27 @@ async def test_complete_blocks_blank_term_created_by_find_replace() -> None:
 
 
 @pytest.mark.anyio
-async def test_complete_commits_working_copy_and_returns() -> None:
+async def test_complete_returns_working_copy_and_closes() -> None:
     application = _application()
     session_id = uuid.uuid4()
+    dismissed: list[object] = []
+    dismiss = GlossaryReviewScreen.dismiss
+
+    def spy(screen: GlossaryReviewScreen, result: object = None) -> object:
+        dismissed.append(result)
+        return dismiss(screen, result)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review(pilot, session_id)
-        await pilot.press("c")
-        await pilot.pause()
+        with patch.object(GlossaryReviewScreen, "dismiss", spy):
+            await pilot.press("c")
+            await pilot.pause()
 
-        application.complete_glossary_extraction.assert_called_once()
-        assert application.complete_glossary_extraction.call_args.args[0] == session_id
-        proposals = application.complete_glossary_extraction.call_args.args[1]
-        assert [proposal.term for proposal in proposals] == ["Ashfall", "Veyra"]
+        # The Extract Glossary Terms step saves what the screen returns; the screen commits nothing itself.
+        application.complete_glossary_extraction.assert_not_called()
+        (proposals,) = dismissed
+        assert isinstance(proposals, list)
+        assert [proposal.term for proposal in proposals if isinstance(proposal, GlossaryProposal)] == ["Ashfall", "Veyra"]
         assert not isinstance(pilot.app.screen, GlossaryReviewScreen)
 
 

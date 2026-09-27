@@ -14,6 +14,7 @@ from textual.coordinate import Coordinate
 from textual.widgets import Button, DataTable, Static
 
 from ..audio_playback import ReviewPlayback
+from ..processing.drafts import DraftSlot, leave_with_draft
 from .base import TableSageScreen
 
 # Actions on the highlighted utterance, which need a non-empty list.
@@ -61,8 +62,9 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
     Removal is a toggle, and totals count kept utterances only. A player's list grows only through
     Find More, which adds the utterances that sound most like the player's kept ones; the reviewer
     then keeps or removes those like any other, and removed additions steer later searches away from
-    that voice. Players below the target are flagged. Confirm saves the kept utterances and hands
-    control back to the caller, which continues processing; Cancel returns without writing anything.
+    that voice. Players below the target are flagged. Confirm dismisses with the kept utterances and each
+    player's removed Find More additions, which the step saves; Cancel dismisses with None, first offering to
+    keep changed work as a draft.
     """
 
     section = "process session · new speaker assignments"
@@ -76,10 +78,11 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
         Binding("escape", "cancel", "Cancel", key_display="Esc"),
     ]
 
-    def __init__(self, session_id: uuid.UUID, on_confirmed: Callable[[], None]) -> None:
+    def __init__(self, session_id: uuid.UUID, draft: DraftSlot | None = None) -> None:
         super().__init__()
         self._session_id = session_id
-        self._on_confirmed = on_confirmed
+        self._draft = draft
+        self._baseline: tuple[dict[uuid.UUID, list[int]], dict[uuid.UUID, list[int]]] | None = None
         self._data: ReviewData | None = None
         self._removed: set[int] = set()
         self._player_row = 0
@@ -116,7 +119,8 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
         self.query_one("#new-speaker-review-columns").display = False
         self.query_one("#new-speaker-review-empty").display = False
         try:
-            data = self.application.new_speaker_assignment_review(self._session_id)
+            saved_draft = self._draft.load() if self._draft is not None else None
+            data = self.application.new_speaker_assignment_review(self._session_id, draft=saved_draft)
         except (OSError, ValueError) as exc:
             self._fail(f"Could not load the new speaker assignments: {exc}")
             return
@@ -139,6 +143,7 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
     def _show(self, data: ReviewData) -> None:
         self._data = data
         self._removed = set(data.removed)
+        self._baseline = (self._kept(), self._rejected())
         self.query_one("#new-speaker-review-columns").display = bool(data.players)
         self.query_one("#new-speaker-review-empty").display = not data.players
         if not data.players:
@@ -372,21 +377,25 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
     def action_confirm(self) -> None:
         if self._data is None:
             return
-        try:
-            self.application.confirm_new_speaker_assignment_review(self._session_id, self._kept(), self._rejected())
-        except (OSError, ValueError) as exc:
-            self.notify(f"Could not save the reviewed assignments: {exc}", severity="error")
-            return
-        self._leave()
-        self._on_confirmed()
+        self._leave((self._kept(), self._rejected()))
 
     def action_cancel(self) -> None:
-        self._leave()
+        if self._data is None:
+            self._leave()
+            return
+        kept, rejected = self._kept(), self._rejected()
+        leave_with_draft(
+            self,
+            changed=(kept, rejected) != self._baseline,
+            slot=self._draft,
+            value=lambda: self.application.draft_new_speaker_review(self._session_id, kept, rejected),
+            leave=self._leave,
+        )
 
-    def _leave(self) -> None:
+    def _leave(self, result: tuple[dict[uuid.UUID, list[int]], dict[uuid.UUID, list[int]]] | None = None) -> None:
         self._playback.stop()
         self.application.discard_new_speaker_review_clips(self._session_id)
-        self.app.pop_screen()
+        self.dismiss(result)
 
     def on_unmount(self) -> None:
         self._playback.stop()

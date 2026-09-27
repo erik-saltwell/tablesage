@@ -10,7 +10,6 @@ from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
-from .atomic_files import atomic_write
 
 NonEmptyText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
@@ -29,11 +28,11 @@ class GlossaryExtractionResponse(_StrictModel):
 
 
 class ExtractedGlossaryTerms(_StrictModel):
-    """`extracted_glossary_terms.json`: Process Session's Extract Glossary Terms receipt.
+    """The Add Glossary Entries step's receipt: the reviewed entries it committed to the campaign glossary.
 
-    Lists the entries the step's last write added to the campaign glossary. The entries themselves live in
-    the database; this file is the step's completion marker, which Spellcheck Against Glossary depends on.
-    Session Detail's Extract Glossary command never writes it.
+    The entries themselves live in the database (duplicates of existing terms are skipped there). The receipt
+    lists what was decided rather than what was newly added, so re-committing an unchanged decision leaves it
+    identical and Spellcheck Against Glossary current.
     """
 
     entries: list[GlossaryProposal]
@@ -80,21 +79,9 @@ def render_transcript_text(transcript: Transcript) -> str:
     return "\n\n".join(lines) + "\n"
 
 
-def receipt_path(session_folder: Path) -> Path:
+def legacy_receipt_path(session_folder: Path) -> Path:
+    """Where the receipt lived before it became a processing-state section (legacy import only)."""
     return session_folder / ARTIFACTS[ArtifactName.EXTRACTED_GLOSSARY_TERMS].filename
-
-
-def save_receipt(session_folder: Path, added: Sequence[GlossaryProposal], *, saved_is_current: bool) -> bool:
-    """Write the step's receipt; return whether it was written.
-
-    A current receipt is left alone when nothing was added: staleness is modification-time based, so
-    rewriting it would needlessly invalidate Spellcheck Against Glossary, the manual transcript review, and
-    everything after them. A missing or stale receipt is always written, even when empty, so the step completes.
-    """
-    if saved_is_current and not added:
-        return False
-    atomic_write(receipt_path(session_folder), ExtractedGlossaryTerms(entries=list(added)).model_dump_json(indent=2).encode("utf-8"))
-    return True
 
 
 def normalize_term(term: str) -> str:

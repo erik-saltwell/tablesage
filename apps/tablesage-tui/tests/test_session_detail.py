@@ -7,14 +7,14 @@ from unittest.mock import MagicMock, patch
 import pytest
 from tablesage_application.entities.sessions import Attendee
 from tablesage_application.paths import ARTIFACTS, ArtifactName
+from tablesage_application.processing_steps import StepID
 from tablesage_application.session_pipeline.artifact_graph import GENERATION_ORDER, ArtifactStatus, GenerationTask
-from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_model.model import Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
 from tablesage_tui.dialogs import ArtifactRegenerationDialog, AttendeeDialog, ConfirmationDialog, TextInputDialog
+from tablesage_tui.processing.coordinator import ProcessingCoordinator
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
-from tablesage_tui.screens.glossary_review import GlossaryReviewScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
 from textual.pilot import Pilot
@@ -451,38 +451,33 @@ async def test_regenerate_opens_artifact_selector() -> None:
 
 
 @pytest.mark.anyio
-async def test_extract_glossary_opens_review_with_proposals() -> None:
+async def test_extract_glossary_restarts_suggest_glossary_terms_as_a_processing_run() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    proposals = [GlossaryProposal(term="Veyra", description="An envoy.")]
     application = _application(session=session, can_extract_glossary=(True, None))
-    application.extract_glossary = MagicMock(return_value=proposals)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
-        await pilot.press("l")
-        await pilot.pause()
-        await _wait_for_progress_worker(pilot)
+        with patch.object(ProcessingCoordinator, "advance", return_value=True) as advance:
+            await pilot.press("l")
+            await pilot.pause()
 
-        application.extract_glossary.assert_called_once_with(session.id)
-        assert isinstance(pilot.app.screen, GlossaryReviewScreen)
+        advance.assert_called_once_with(session.id, trigger="session_detail:extract_glossary", restart=StepID.SUGGEST_GLOSSARY_TERMS)
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_extract_glossary_empty_result_stays_on_session_detail() -> None:
+async def test_extract_glossary_disabled_until_speakers_are_identified() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
-    application = _application(session=session, can_extract_glossary=(True, None))
-    application.extract_glossary = MagicMock(return_value=[])
+    application = _application(session=session, can_extract_glossary=(False, "Process the Session through Identify Speakers first."))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
-
-        with patch.object(SessionDetailScreen, "notify") as notify:
+        with patch.object(ProcessingCoordinator, "advance") as advance:
             await pilot.press("l")
             await pilot.pause()
-            await _wait_for_progress_worker(pilot)
 
+        advance.assert_not_called()
         assert isinstance(pilot.app.screen, SessionDetailScreen)
-        notify.assert_called_once_with("No new glossary terms found.")
 
 
 @pytest.mark.anyio

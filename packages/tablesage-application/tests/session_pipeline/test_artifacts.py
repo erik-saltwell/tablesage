@@ -30,8 +30,9 @@ def test_delete_all_artifacts_removes_everything_including_input_audio(tmp_path:
 
     delete_all_artifacts(tmp_path)
 
-    for name in ARTIFACTS:
-        assert not (tmp_path / ARTIFACTS[name].filename).exists()
+    for spec in ARTIFACTS.values():
+        if spec.is_file:
+            assert not (tmp_path / spec.filename).exists()
     assert not (tmp_path / "ledger.md").exists()
 
 

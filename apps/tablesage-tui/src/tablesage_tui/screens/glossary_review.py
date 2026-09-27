@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import re
 import uuid
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass, replace
 
-from tablesage_application.session_pipeline.extract_glossary import GlossaryCommitResult, GlossaryProposal
+from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable
 
 from ..dialogs import FindReplaceDialog, FindReplaceResult, GlossaryEntryDialog
+from ..processing.drafts import DraftSlot, leave_with_draft
 from .base import TableSageScreen
 
 
@@ -23,10 +24,10 @@ class _DraftEntry:
 
 
 class GlossaryReviewScreen(TableSageScreen):
-    """Review an in-memory glossary proposal before committing it to the campaign.
+    """Extract Glossary Terms' review of proposed glossary entries.
 
-    Complete commits through `save`: Session Detail's Extract Glossary uses the plain glossary commit (the
-    default); Process Session's Extract Glossary Terms step passes one that also writes the step's receipt.
+    Continue dismisses with the reviewed entries, which the step saves as its decision (the Add Glossary Entries
+    step then commits them); Cancel dismisses with None, first offering to keep changed entries as a draft.
     """
 
     section = "session detail"
@@ -47,18 +48,15 @@ class GlossaryReviewScreen(TableSageScreen):
         session_id: uuid.UUID,
         proposals: Sequence[GlossaryProposal],
         *,
-        save: Callable[[Sequence[GlossaryProposal]], GlossaryCommitResult] | None = None,
         section: str | None = None,
-        on_complete: Callable[[], None] | None = None,
-        on_cancel: Callable[[], None] | None = None,
+        draft: DraftSlot | None = None,
     ) -> None:
         super().__init__()
         self._session_id = session_id
-        self._save = save
         if section is not None:
             self.section = section
-        self._on_complete = on_complete
-        self._on_cancel = on_cancel
+        self._draft = draft
+        self._initial = sorted((proposal.term, proposal.description) for proposal in proposals)
         self._entries = [_DraftEntry(id=uuid.uuid4(), term=proposal.term, description=proposal.description) for proposal in proposals]
         self._sort_entries()
 
@@ -199,26 +197,13 @@ class GlossaryReviewScreen(TableSageScreen):
         if any(not entry.term.strip() for entry in self._entries):
             self.notify("Glossary terms cannot be blank.", severity="error")
             return
-        proposals = [GlossaryProposal(term=entry.term.strip(), description=entry.description) for entry in self._entries]
-        try:
-            if self._save is not None:
-                result = self._save(proposals)
-            else:
-                result = self.application.complete_glossary_extraction(self._session_id, proposals)
-        except (OSError, ValueError) as exc:
-            self.notify(f"Could not save the glossary entries: {exc}", severity="error")
-            return
-        self.app.pop_screen()
-        if self._on_complete is not None:
-            self.app.call_after_refresh(self._on_complete)
-        added_word = "entry" if result.added_count == 1 else "entries"
-        message = f"Added {result.added_count} glossary {added_word}."
-        if result.skipped_duplicate_count:
-            duplicate_word = "duplicate" if result.skipped_duplicate_count == 1 else "duplicates"
-            message += f" Skipped {result.skipped_duplicate_count} {duplicate_word}."
-        self.app.notify(message)
+        self.dismiss([GlossaryProposal(term=entry.term.strip(), description=entry.description) for entry in self._entries])
 
     def action_cancel(self) -> None:
-        self.app.pop_screen()
-        if self._on_cancel is not None:
-            self.app.call_after_refresh(self._on_cancel)
+        leave_with_draft(
+            self,
+            changed=sorted((entry.term, entry.description) for entry in self._entries) != self._initial,
+            slot=self._draft,
+            value=lambda: [{"term": entry.term, "description": entry.description} for entry in self._entries],
+            leave=lambda: self.dismiss(None),
+        )

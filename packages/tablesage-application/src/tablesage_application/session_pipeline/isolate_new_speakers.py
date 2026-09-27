@@ -33,7 +33,6 @@ from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
 from ..paths import ARTIFACTS, ArtifactName
-from .atomic_files import atomic_write
 from .speech import speech_duration
 
 OnProgress = Callable[[str, int, int], None]
@@ -153,7 +152,8 @@ class _PromptData:
     min_speech_seconds: float
 
 
-def assignments_path(session_folder: Path) -> Path:
+def legacy_assignments_path(session_folder: Path) -> Path:
+    """Where the proposals lived before they became a processing-state section (legacy import only)."""
     return session_folder / ARTIFACTS[ArtifactName.NEW_SPEAKER_ASSIGNMENTS].filename
 
 
@@ -164,7 +164,7 @@ def isolate_new_speakers(
     embed: Callable[[Path], Embedding],
     on_progress: OnProgress | None = None,
 ) -> NewSpeakerAssignments:
-    """Build and write `new_speaker_assignments.json` from `name_corrected_transcript.json`."""
+    """Build the new-speaker proposals from `name_corrected_transcript.json`; the caller saves them."""
     names = Counter(player.player_name for player in new_players)
     if duplicates := sorted(name for name, count in names.items() if count > 1 or name in (MIXED_LABEL, OTHER_LABEL)):
         raise ValueError(f"New players must have distinct names: {', '.join(duplicates)}")
@@ -189,7 +189,6 @@ def isolate_new_speakers(
                     label: count for label, count in sorted(speaker_counts.items()) if label not in proposed_labels
                 },
             )
-        atomic_write(assignments_path(session_folder), result.model_dump_json(indent=2).encode("utf-8") + b"\n")
         log.set(
             utterance_counts={player.player_name: len(player.utterance_indices) for player in result.players},
             voice_fallback_count=sum(player.used_voice_fallback for player in result.players),

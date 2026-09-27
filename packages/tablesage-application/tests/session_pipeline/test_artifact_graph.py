@@ -9,6 +9,7 @@ from sqlmodel import Session
 from tablesage_application import Application
 from tablesage_application.llm import PromptName, system_prompt_path
 from tablesage_application.paths import ARTIFACTS, ArtifactName
+from tablesage_application.session_pipeline import processing_state
 from tablesage_application.session_pipeline.artifact_graph import (
     ArtifactGraph,
     ArtifactRef,
@@ -17,7 +18,7 @@ from tablesage_application.session_pipeline.artifact_graph import (
     FileRef,
     GenerationTask,
     SystemPromptInput,
-    TimestampInput,
+    current_fingerprints,
 )
 from tablesage_model.model import Campaign
 
@@ -26,25 +27,37 @@ def _ref(folder: Path, name: ArtifactName) -> ArtifactRef:
     return ArtifactRef(folder, name)
 
 
-def _write_at(folder: Path, name: ArtifactName, modified_ns: int) -> None:
+def _write_at(folder: Path, name: ArtifactName, modified_ns: int, content: str = "artifact") -> None:
     path = folder / ARTIFACTS[name].filename
-    path.write_text("artifact", encoding="utf-8")
+    path.write_text(content, encoding="utf-8")
     os.utime(path, ns=(modified_ns, modified_ns))
 
 
-def test_staleness_propagates_through_a_newer_transitive_dependency(tmp_path: Path) -> None:
+def _complete(*steps: BuildStep) -> None:
+    """Record each step complete against its inputs as they are now, as a producer would."""
+    for step in steps:
+        record = processing_state.CompletionRecord(completed_at=processing_state.now(), inputs=current_fingerprints(step))
+
+        def apply(
+            state: processing_state.ProcessingState, name: str = step.name.value, record: processing_state.CompletionRecord = record
+        ) -> None:
+            state.records[name] = record
+
+        processing_state.update(step.folder, apply, reason="test")
+
+
+def test_staleness_propagates_through_a_changed_transitive_dependency(tmp_path: Path) -> None:
     role = _ref(tmp_path, ArtifactName.ROLE_TRANSCRIPT)
     scene = _ref(tmp_path, ArtifactName.SCENE_BREAKDOWN)
     recap = _ref(tmp_path, ArtifactName.RECAP_SUMMARY)
-    _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 300)
+    _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 100)
     _write_at(tmp_path, ArtifactName.SCENE_BREAKDOWN, 100)
     _write_at(tmp_path, ArtifactName.RECAP_SUMMARY, 200)
-    graph = ArtifactGraph(
-        (
-            BuildStep(ArtifactName.SCENE_BREAKDOWN, (scene,), (role,)),
-            BuildStep(ArtifactName.RECAP_SUMMARY, (recap,), (scene,)),
-        )
-    )
+    scene_step = BuildStep(ArtifactName.SCENE_BREAKDOWN, (scene,), (role,))
+    recap_step = BuildStep(ArtifactName.RECAP_SUMMARY, (recap,), (scene,))
+    _complete(scene_step, recap_step)
+    _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 300, content="changed")
+    graph = ArtifactGraph((scene_step, recap_step))
 
     assert graph.status(scene) is ArtifactStatus.STALE
     assert graph.status(recap) is ArtifactStatus.STALE
@@ -57,7 +70,9 @@ def test_shared_outputs_are_siblings_not_dependencies(tmp_path: Path) -> None:
     _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 100)
     _write_at(tmp_path, ArtifactName.LEDGER, 300)
     _write_at(tmp_path, ArtifactName.SCENE_BREAKDOWN, 200)
-    graph = ArtifactGraph((BuildStep(ArtifactName.LEDGER, (ledger, scene), (role,)),))
+    step = BuildStep(ArtifactName.LEDGER, (ledger, scene), (role,))
+    _complete(step)
+    graph = ArtifactGraph((step,))
 
     assert graph.status(ledger) is ArtifactStatus.CURRENT
     assert graph.status(scene) is ArtifactStatus.CURRENT
@@ -69,7 +84,9 @@ def test_missing_shared_output_stales_existing_sibling(tmp_path: Path) -> None:
     scene = _ref(tmp_path, ArtifactName.SCENE_BREAKDOWN)
     _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 100)
     _write_at(tmp_path, ArtifactName.LEDGER, 200)
-    graph = ArtifactGraph((BuildStep(ArtifactName.LEDGER, (ledger, scene), (role,)),))
+    step = BuildStep(ArtifactName.LEDGER, (ledger, scene), (role,))
+    _complete(step)
+    graph = ArtifactGraph((step,))
 
     assert graph.status(ledger) is ArtifactStatus.STALE
     assert graph.status(scene) is ArtifactStatus.MISSING
@@ -80,42 +97,55 @@ def test_missing_physical_companion_stales_logical_output(tmp_path: Path) -> Non
     ledger = _ref(tmp_path, ArtifactName.LEDGER)
     _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 100)
     _write_at(tmp_path, ArtifactName.LEDGER, 200)
-    graph = ArtifactGraph((BuildStep(ArtifactName.LEDGER, (ledger, FileRef(tmp_path / "ledger.md")), (role,)),))
+    step = BuildStep(ArtifactName.LEDGER, (ledger, FileRef(tmp_path / "ledger.md")), (role,))
+    _complete(step)
+    graph = ArtifactGraph((step,))
 
     assert graph.status(ledger) is ArtifactStatus.STALE
 
 
-def test_database_timestamp_is_a_regular_build_input(tmp_path: Path) -> None:
+def test_declared_input_missing_from_the_record_makes_output_stale(tmp_path: Path) -> None:
     role = _ref(tmp_path, ArtifactName.ROLE_TRANSCRIPT)
+    sections = _ref(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS)
+    _write_at(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS, 100)
+    _complete(BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (sections,), ()))
     _write_at(tmp_path, ArtifactName.ROLE_TRANSCRIPT, 100)
 
-    graph = ArtifactGraph((BuildStep(ArtifactName.ROLE_TRANSCRIPT, (role,), (TimestampInput(200),)),))
+    graph = ArtifactGraph((BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (sections,), (role,)),))
 
-    assert graph.status(role) is ArtifactStatus.STALE
+    assert graph.status(sections) is ArtifactStatus.STALE
 
 
-def test_newer_system_prompt_makes_llm_output_stale(tmp_path: Path) -> None:
+def test_changed_system_prompt_makes_llm_output_stale(tmp_path: Path) -> None:
     output = _ref(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS)
     prompt_path = tmp_path / "system.md"
     _write_at(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS, 100)
     prompt_path.write_text("instructions", encoding="utf-8")
-    os.utime(prompt_path, ns=(200, 200))
-    graph = ArtifactGraph((BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (output,), (SystemPromptInput(prompt_path),)),))
+    step = BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (output,), (SystemPromptInput(prompt_path),))
+    _complete(step)
+    prompt_path.write_text("revised instructions", encoding="utf-8")
+    graph = ArtifactGraph((step,))
 
     assert graph.status(output) is ArtifactStatus.STALE
 
 
 def test_missing_system_prompt_makes_llm_output_stale(tmp_path: Path) -> None:
     output = _ref(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS)
+    prompt_path = tmp_path / "system.md"
     _write_at(tmp_path, ArtifactName.TRANSCRIPT_SECTIONS, 100)
-    graph = ArtifactGraph((BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (output,), (SystemPromptInput(tmp_path / "missing.md"),)),))
+    prompt_path.write_text("instructions", encoding="utf-8")
+    step = BuildStep(ArtifactName.TRANSCRIPT_SECTIONS, (output,), (SystemPromptInput(prompt_path),))
+    _complete(step)
+    prompt_path.unlink()
+    graph = ArtifactGraph((step,))
 
     assert graph.status(output) is ArtifactStatus.STALE
 
 
 def _write_complete_session(folder: Path, modified_ns: int) -> None:
-    for name in ArtifactName:
-        _write_at(folder, name, modified_ns)
+    for name, spec in ARTIFACTS.items():
+        if spec.filename:
+            _write_at(folder, name, modified_ns)
     for spec in ARTIFACTS.values():
         for filename in spec.companion_filenames:
             path = folder / filename
@@ -134,18 +164,27 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
     prompt_paths_by_step = {
         step.name: tuple(dependency.path for dependency in step.dependencies if isinstance(dependency, SystemPromptInput))
         for step in graph.steps
-        if step.outputs[0].path.parent == application.session_folder(game_session.id)
+        if step.folder == application.session_folder(game_session.id)
     }
     assert prompt_paths_by_step == {
+        ArtifactName.IMPORT_REQUEST: (),
+        ArtifactName.INPUT_AUDIO: (),
         ArtifactName.TRANSCRIPT: (),
-        ArtifactName.NAME_CORRECTED_TRANSCRIPT: (system_prompt_path(PromptName.SUGGEST_NAME_CORRECTIONS),),
-        ArtifactName.NEW_SPEAKER_ASSIGNMENTS: (system_prompt_path(PromptName.ISOLATE_NEW_SPEAKERS),),
         ArtifactName.CLEANED_TRANSCRIPT: (system_prompt_path(PromptName.CLASSIFY_BACKCHANNELS),),
+        ArtifactName.NAME_CORRECTION_SUGGESTIONS: (system_prompt_path(PromptName.SUGGEST_NAME_CORRECTIONS),),
+        ArtifactName.NAME_CORRECTION_DECISIONS: (),
+        ArtifactName.NAME_CORRECTED_TRANSCRIPT: (),
+        ArtifactName.NEW_SPEAKER_ASSIGNMENTS: (system_prompt_path(PromptName.ISOLATE_NEW_SPEAKERS),),
         ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: (),
         ArtifactName.SEEDED_VOICE_SAMPLES: (),
         ArtifactName.IDENTIFIED_TRANSCRIPT: (),
-        ArtifactName.EXTRACTED_GLOSSARY_TERMS: (system_prompt_path(PromptName.EXTRACT_GLOSSARY),),
-        ArtifactName.SPELLCHECKED_TRANSCRIPT: (system_prompt_path(PromptName.SUGGEST_SPELLING_CORRECTIONS),),
+        ArtifactName.GLOSSARY_SUGGESTIONS: (system_prompt_path(PromptName.EXTRACT_GLOSSARY),),
+        ArtifactName.GLOSSARY_DECISIONS: (),
+        ArtifactName.EXTRACTED_GLOSSARY_TERMS: (),
+        ArtifactName.SPELLING_SUGGESTIONS: (system_prompt_path(PromptName.SUGGEST_SPELLING_CORRECTIONS),),
+        ArtifactName.SPELLING_DECISIONS: (),
+        ArtifactName.SPELLCHECKED_TRANSCRIPT: (),
+        ArtifactName.TRANSCRIPT_REVIEW_EDITS: (),
         ArtifactName.REVIEWED_TRANSCRIPT: (),
         ArtifactName.ROLE_TRANSCRIPT: (),
         ArtifactName.TRANSCRIPT_SECTIONS: (system_prompt_path(PromptName.SECTION_TRANSCRIPT),),
@@ -153,6 +192,8 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         ArtifactName.PLAYER_INTRODUCTIONS: (system_prompt_path(PromptName.GENERATE_PLAYER_INTRODUCTIONS),),
         ArtifactName.RECAP_SUMMARY: (system_prompt_path(PromptName.GENERATE_RECAP_SUMMARY),),
         ArtifactName.SUMMARY: (system_prompt_path(PromptName.SUMMARIZE_SESSION),),
+        ArtifactName.VOICE_PROFILE_DECISION: (),
+        ArtifactName.VOICE_PROFILE_ENHANCEMENT: (),
     }
 
 

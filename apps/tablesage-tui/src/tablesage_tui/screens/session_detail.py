@@ -3,11 +3,11 @@ from __future__ import annotations
 import uuid
 from collections.abc import Callable
 from datetime import date, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus, GenerationTask
-from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
+from tablesage_application.processing_steps import StepID
+from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus
 from tablesage_model.model import Player
 from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
@@ -16,15 +16,16 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import DataTable, Input, Static
 
 from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog, TextInputDialog
-from ..generation_runner import GenerationRunner
 from ..widgets import CommittingInput, SampleCountDataTable, sample_count_cell
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
-from .glossary_review import GlossaryReviewScreen
 
 if TYPE_CHECKING:
     from tablesage_application.entities.sessions import Attendee
+
+    from ..processing.coordinator import Run
+    from .main_app import TableSageApp
 
 _ATTENDANCE_ACTIONS = frozenset({"new_attendee", "edit_attendee", "delete_attendee"})
 
@@ -108,10 +109,18 @@ class SessionDetailScreen(TableSageScreen):
                             yield indicator
 
     def on_mount(self) -> None:
+        cast("TableSageApp", self.app).coordinator.subscribe(self._on_run_event)
         self.refresh_data()
+
+    def on_unmount(self) -> None:
+        cast("TableSageApp", self.app).coordinator.unsubscribe(self._on_run_event)
 
     def on_screen_resume(self) -> None:
         self._refresh_indicators()
+
+    def _on_run_event(self, run: Run, event: str) -> None:
+        if event == "run_stopped" and run.session_id == self._session_id and self.is_current:
+            self._refresh_indicators()
 
     def refresh_data(self) -> None:
         game_session = self.application.get_session(self._session_id)
@@ -274,19 +283,15 @@ class SessionDetailScreen(TableSageScreen):
 
         self.app.push_screen(ProcessSessionScreen(self._session_id))
 
-    def _after_forced_generation(self, result: tuple[GenerationTask, ...]) -> None:
-        self._refresh_indicators()
-        self.notify("Outputs generated." if result else "All outputs are current.")
-
     def _run_forced_generation(self, artifact: ArtifactName) -> None:
-        runner = GenerationRunner(
-            self,
-            self._session_id,
-            on_start=self._clear_errors,
-            on_success=self._after_forced_generation,
-            on_error=lambda exc: self._record_error("Regenerate Artifact", str(exc)),
-        )
-        runner.prepare(force=artifact)
+        """Regenerate `artifact` and everything downstream of it, as a processing run (so it can't overlap another)."""
+        self._clear_errors()
+        coordinator = cast("TableSageApp", self.app).coordinator
+        if coordinator.is_running:
+            self.notify("Processing is already running.", severity="warning")
+            return
+        self.application.reopen_artifact(self._session_id, artifact)
+        coordinator.advance(self._session_id, trigger="session_detail:regenerate", facts={"force": artifact})
 
     def action_regenerate(self) -> None:
         def on_selected(selected: ArtifactName | None) -> None:
@@ -314,6 +319,9 @@ class SessionDetailScreen(TableSageScreen):
 
     def action_clean_session(self) -> None:
         self._clear_errors()
+        if cast("TableSageApp", self.app).coordinator.is_running:
+            self.notify("Wait for processing to finish before cleaning this Session.", severity="warning")
+            return
 
         def on_confirm(confirmed: bool | None) -> None:
             if not confirmed:
@@ -334,21 +342,13 @@ class SessionDetailScreen(TableSageScreen):
             on_confirm,
         )
 
-    # Extract Glossary -- independent of Generate and gated on a Role Transcript.
+    # Extract Glossary -- a processing run that restarts Suggest Glossary Terms, so its review, the glossary commit,
+    # and everything the new terms affect follow as usual.
 
     def action_extract_glossary(self) -> None:
-        self.run_with_progress(
-            title="Extract Glossary",
-            message="Extracting glossary terms…",
-            work=lambda: self.application.extract_glossary(self._session_id),
-            on_success=self._after_extract_glossary,
+        cast("TableSageApp", self.app).coordinator.advance(
+            self._session_id, trigger="session_detail:extract_glossary", restart=StepID.SUGGEST_GLOSSARY_TERMS
         )
-
-    def _after_extract_glossary(self, proposals: list[GlossaryProposal]) -> None:
-        if not proposals:
-            self.notify("No new glossary terms found.")
-            return
-        self.app.push_screen(GlossaryReviewScreen(self._session_id, proposals))
 
     # Export -- gated (see check_action).
 

@@ -33,8 +33,8 @@ _ENHANCE_STAGE_LABELS = {
 ResultT = TypeVar("ResultT")
 
 
-class TableSageScreen(Screen[None]):
-    """Shared chrome for full-page TableSage screens."""
+class TableSageScreen(Screen[Any]):
+    """Shared chrome for full-page TableSage screens. A processing step's screen dismisses with its result."""
 
     section = ""
     campaign = "no campaign loaded"

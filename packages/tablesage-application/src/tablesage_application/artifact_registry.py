@@ -3,8 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from .processing_stages import SessionProcessingStageID
-
 
 class ArtifactName(Enum):
     """Every artifact a session folder can hold and the identity used by the build graph."""
@@ -28,6 +26,17 @@ class ArtifactName(Enum):
     TRANSCRIPT_SECTIONS = "transcript_sections"
     PLAYER_INTRODUCTIONS = "player_introductions"
     RECAP_SUMMARY = "recap_summary"
+    # Sections of `processing_state.json` (see `ArtifactStorage.SECTION`).
+    IMPORT_REQUEST = "import_request"
+    NAME_CORRECTION_SUGGESTIONS = "name_correction_suggestions"
+    NAME_CORRECTION_DECISIONS = "name_correction_decisions"
+    GLOSSARY_SUGGESTIONS = "glossary_suggestions"
+    GLOSSARY_DECISIONS = "glossary_decisions"
+    SPELLING_SUGGESTIONS = "spelling_suggestions"
+    SPELLING_DECISIONS = "spelling_decisions"
+    TRANSCRIPT_REVIEW_EDITS = "transcript_review_edits"
+    VOICE_PROFILE_DECISION = "voice_profile_decision"
+    VOICE_PROFILE_ENHANCEMENT = "voice_profile_enhancement"
 
 
 class ArtifactCategory(Enum):
@@ -45,14 +54,37 @@ class ArtifactCategory(Enum):
     FROM_LOG = "from_log"
 
 
+class ArtifactStorage(Enum):
+    """Where an artifact lives. A FILE is a document a person reads or exports, or a tool outside the pipeline
+    consumes. Everything else -- decisions, suggestions, receipts -- is a SECTION of the Session's
+    `processing_state.json`; a SECTION's `filename`, when set, is only the legacy file it was imported from."""
+
+    FILE = "file"
+    SECTION = "section"
+
+
 @dataclass(frozen=True)
 class ArtifactSpec:
     filename: str
     category: ArtifactCategory
     should_show_in_ui: bool
     display_name: str
-    stage: SessionProcessingStageID
     companion_filenames: tuple[str, ...] = ()
+    storage: ArtifactStorage = ArtifactStorage.FILE
+
+    @property
+    def is_file(self) -> bool:
+        return self.storage is ArtifactStorage.FILE
+
+
+def _section(display_name: str, legacy_filename: str = "") -> ArtifactSpec:
+    return ArtifactSpec(
+        legacy_filename,
+        ArtifactCategory.FROM_TRANSCRIPT,
+        should_show_in_ui=False,
+        display_name=display_name,
+        storage=ArtifactStorage.SECTION,
+    )
 
 
 # Fixed filenames within a session folder -- the filesystem is the only
@@ -66,26 +98,25 @@ LEDGER_PAIR_MARKER = ".ledger-generation-incomplete"
 SUMMARY_INPUTS_FILENAME = ".summary-inputs.json"
 
 ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
+    # The Import Audio step's decision: the chosen file and whether to clean it.
+    ArtifactName.IMPORT_REQUEST: _section("Import Request"),
     ArtifactName.INPUT_AUDIO: ArtifactSpec(
         "input_audio.wav",
         ArtifactCategory.IMPORTED,
         should_show_in_ui=True,
         display_name="Input Audio",
-        stage=SessionProcessingStageID.IMPORTING_AUDIO,
     ),
     ArtifactName.TRANSCRIPT: ArtifactSpec(
         "transcript.json",
         ArtifactCategory.FROM_AUDIO,
         should_show_in_ui=False,
         display_name="Transcript (JSON)",
-        stage=SessionProcessingStageID.CREATING_TRANSCRIPTION,
     ),
     ArtifactName.TRANSCRIPT_TEXT: ArtifactSpec(
         "transcript.md",
         ArtifactCategory.FROM_AUDIO,
         should_show_in_ui=True,
         display_name="Transcript",
-        stage=SessionProcessingStageID.CREATING_TRANSCRIPTION,
     ),
     # A cleaned copy of the transcript with backchannels and other bad utterances removed.
     ArtifactName.CLEANED_TRANSCRIPT: ArtifactSpec(
@@ -93,42 +124,27 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Cleaned Transcript",
-        stage=SessionProcessingStageID.REMOVE_BACKCHANNELS,
     ),
     # The cleaned transcript with reviewed player- and character-name corrections applied; the base
     # transcript for every later step. Same utterances as the cleaned transcript, so indices match.
+    ArtifactName.NAME_CORRECTION_SUGGESTIONS: _section("Name Correction Suggestions"),
+    ArtifactName.NAME_CORRECTION_DECISIONS: _section("Name Correction Decisions"),
     ArtifactName.NAME_CORRECTED_TRANSCRIPT: ArtifactSpec(
         "name_corrected_transcript.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Name-Corrected Transcript",
-        stage=SessionProcessingStageID.REVIEWING_NAME_CORRECTIONS,
     ),
     # For each new speaker, the high-confidence utterances (indices into the name-corrected transcript), as first proposed.
-    ArtifactName.NEW_SPEAKER_ASSIGNMENTS: ArtifactSpec(
-        "new_speaker_assignments.json",
-        ArtifactCategory.FROM_AUDIO,
-        should_show_in_ui=False,
-        display_name="New Speaker Assignments",
-        stage=SessionProcessingStageID.ISOLATING_NEW_SPEAKERS,
-    ),
+    ArtifactName.NEW_SPEAKER_ASSIGNMENTS: _section("New Speaker Assignments", legacy_filename="new_speaker_assignments.json"),
     # The new-speaker assignments after human review.
-    ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: ArtifactSpec(
-        "reviewed_new_speaker_assignments.json",
-        ArtifactCategory.FROM_TRANSCRIPT,
-        should_show_in_ui=False,
-        display_name="Reviewed New Speaker Assignments",
-        stage=SessionProcessingStageID.REVIEWING_NEW_SPEAKER_ASSIGNMENTS,
+    ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS: _section(
+        "Reviewed New Speaker Assignments",
+        legacy_filename="reviewed_new_speaker_assignments.json",
     ),
     # Receipt of the voice clips seeded into each new player's folder from the reviewed assignments.
     # Seeding itself changes player folders and centroids; this file is the step's completion marker.
-    ArtifactName.SEEDED_VOICE_SAMPLES: ArtifactSpec(
-        "seeded_voice_samples.json",
-        ArtifactCategory.FROM_TRANSCRIPT,
-        should_show_in_ui=False,
-        display_name="Seeded Voice Samples",
-        stage=SessionProcessingStageID.SEEDING_PLAYER_VOICE_SAMPLES,
-    ),
+    ArtifactName.SEEDED_VOICE_SAMPLES: _section("Seeded Voice Samples", legacy_filename="seeded_voice_samples.json"),
     # The name-corrected transcript with each utterance's speaker identified by voice centroid (or
     # left unassigned). Same utterances as the name-corrected transcript.
     ArtifactName.IDENTIFIED_TRANSCRIPT: ArtifactSpec(
@@ -136,35 +152,31 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Identified Transcript",
-        stage=SessionProcessingStageID.IDENTIFYING_SPEAKERS,
     ),
     # Receipt of the glossary entries the reviewed Extract Glossary Terms step added to the campaign.
     # The entries themselves live in the database, which the artifact graph can't see; this file is the
     # step's completion marker, so spellchecking reruns only when this Session's extraction adds terms.
-    ArtifactName.EXTRACTED_GLOSSARY_TERMS: ArtifactSpec(
-        "extracted_glossary_terms.json",
-        ArtifactCategory.FROM_TRANSCRIPT,
-        should_show_in_ui=False,
-        display_name="Extracted Glossary Terms",
-        stage=SessionProcessingStageID.EXTRACTING_GLOSSARY_TERMS,
-    ),
+    ArtifactName.GLOSSARY_SUGGESTIONS: _section("Glossary Suggestions"),
+    ArtifactName.GLOSSARY_DECISIONS: _section("Glossary Decisions"),
+    ArtifactName.EXTRACTED_GLOSSARY_TERMS: _section("Extracted Glossary Terms", legacy_filename="extracted_glossary_terms.json"),
     # The transcript after glossary spellchecking replacements.
+    ArtifactName.SPELLING_SUGGESTIONS: _section("Spelling Suggestions"),
+    ArtifactName.SPELLING_DECISIONS: _section("Spelling Decisions"),
     ArtifactName.SPELLCHECKED_TRANSCRIPT: ArtifactSpec(
         "spellchecked_transcript.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Spellchecked Transcript",
-        stage=SessionProcessingStageID.SPELLCHECKING_GLOSSARY,
     ),
     # A completed Manual Review. It is deliberately separate from the machine-produced
     # transcript and becomes stale whenever that source transcript is rebuilt or the audio
     # (or attendance that influences speaker identification) changes.
+    ArtifactName.TRANSCRIPT_REVIEW_EDITS: _section("Transcript Review Edits"),
     ArtifactName.REVIEWED_TRANSCRIPT: ArtifactSpec(
         "transcript_reviewed.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=True,
         display_name="Reviewed Transcript",
-        stage=SessionProcessingStageID.REVIEWING_TRANSCRIPT,
     ),
     # Role-attributed transcript written by the Assign Roles step (see
     # `session_pipeline.clean_transcript`). Ledger generation reads this directly instead of
@@ -174,21 +186,18 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=True,
         display_name="Role Transcript",
-        stage=SessionProcessingStageID.ASSIGN_ROLES_TO_SPEAKERS,
     ),
     ArtifactName.TRANSCRIPT_SECTIONS: ArtifactSpec(
         "transcript_sections.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Transcript Sections",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
     ),
     ArtifactName.LEDGER: ArtifactSpec(
         "ledger.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=True,
         display_name="Ledger",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
         companion_filenames=("ledger.md",),
     ),
     ArtifactName.SCENE_BREAKDOWN: ArtifactSpec(
@@ -196,33 +205,30 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Scene Breakdown",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
     ),
     ArtifactName.PLAYER_INTRODUCTIONS: ArtifactSpec(
         "player_introductions.json",
         ArtifactCategory.FROM_TRANSCRIPT,
         should_show_in_ui=False,
         display_name="Player Introductions",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
     ),
     ArtifactName.RECAP_SUMMARY: ArtifactSpec(
         "recap_summary.md",
         ArtifactCategory.FROM_LOG,
         should_show_in_ui=True,
         display_name="Recap Summary",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
     ),
     ArtifactName.SUMMARY: ArtifactSpec(
         "summary.md",
         ArtifactCategory.FROM_LOG,
         should_show_in_ui=True,
         display_name="Summary",
-        stage=SessionProcessingStageID.GENERATING_ARTIFACTS,
         companion_filenames=(SUMMARY_INPUTS_FILENAME,),
     ),
+    # The post-generation offer to add this Session's voice clips to its players' profiles, and its receipt.
+    ArtifactName.VOICE_PROFILE_DECISION: _section("Voice Profile Decision"),
+    ArtifactName.VOICE_PROFILE_ENHANCEMENT: _section("Voice Profile Enhancement"),
 }
 
 
-def artifacts_for_stage(stage: SessionProcessingStageID) -> list[ArtifactName]:
-    """Every artifact produced by `stage`, in registry (pipeline) order."""
-    return [name for name, spec in ARTIFACTS.items() if spec.stage == stage]
+FILE_ARTIFACTS: tuple[ArtifactName, ...] = tuple(name for name, spec in ARTIFACTS.items() if spec.is_file)

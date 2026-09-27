@@ -221,12 +221,14 @@ def _ready_campaign(tmp_path: Path) -> tuple[Application, uuid.UUID, tuple[Path,
 
 def test_history_uses_real_freshness_graph_without_mutating_campaign(tmp_path: Path) -> None:
     app, campaign_id, folders = _ready_campaign(tmp_path)
-    original = {file: file.read_bytes() for folder in folders for file in folder.iterdir()}
+    # Opening any Session imports the campaign's pre-existing processing state once; history itself writes nothing.
+    app.session_artifact_states(app.list_sessions(campaign_id)[0].id)
+    original = {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()}
     history = app.previously_on_history(campaign_id)
     assert [session.sequence_number for session in history.sessions] == [1, 2]
     assert history.starting_situation == "Ending of Last session."
     assert history.glossary[0].term == "George"
-    assert {file: file.read_bytes() for folder in folders for file in folder.iterdir()} == original
+    assert {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()} == original
     assert len(app.list_sessions(campaign_id)) == 2
 
 

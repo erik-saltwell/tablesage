@@ -18,7 +18,7 @@ Role Transcript
 
 The routes can overlap. Most importantly, a mixed recap-to-play utterance can be in a range and also be the first current-session utterance, so current-session content is never dropped at the boundary.
 
-Replacing Transcript Sections leaves existing downstream files in place. Its newer modification time makes Ledger, Player Introductions, Recap Summary, and Summary stale through the recursive artifact dependency graph.
+Replacing Transcript Sections leaves existing downstream files in place. Its changed content no longer matches the input fingerprints recorded for Ledger, Player Introductions, Recap Summary, and Summary, which makes them stale through the recursive artifact dependency graph.
 
 ## Persisted schema
 
@@ -37,7 +37,7 @@ Replacing Transcript Sections leaves existing downstream files in place. Its new
 
 Each non-null range is inclusive and zero-based. `start_index` and `end_index` are non-negative, with `start_index <= end_index`, and both must identify an existing Role Transcript utterance. `session_start_index` is non-negative and must identify an existing utterance, except it may equal the utterance count for a setup-only recording with no active play.
 
-`role_transcript_sha256` binds the routing result to the exact bytes of `role_transcript.json`. The dependency graph treats a newer Role Transcript as making Transcript Sections stale and regenerates it before downstream consumers run. Direct consumers still validate the digest rather than using stale routing.
+`role_transcript_sha256` binds the routing result to the exact bytes of `role_transcript.json`. The dependency graph treats a Role Transcript whose content changed as making Transcript Sections stale and regenerates it before downstream consumers run. Direct consumers still validate the digest rather than using stale routing.
 
 The packaged Section Transcript `system.md` is also a modification-time dependency. Changing it
 makes Transcript Sections and all transitive consumers stale.

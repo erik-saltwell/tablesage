@@ -8,6 +8,7 @@
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
+| Processing step architecture | implementing | [.work-items/processing-step-architecture/](.work-items/processing-step-architecture/) |
 | Public documentation | implementing | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Scene Breakdown artifact contract | complete | [.work-items/scene-breakdown-artifact-contract/](.work-items/scene-breakdown-artifact-contract/) |
 | Session processing flow | implementing | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
