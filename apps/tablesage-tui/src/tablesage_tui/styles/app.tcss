@@ -1038,6 +1038,8 @@ OtherActionsDialog {
     #attendee-role-table {
         height: 8;
         margin: 0 0 1 0;
+        background: $surface-1-bg;
+        border: solid $surface-border;
     }
 
     #attendee-submit-actions {
