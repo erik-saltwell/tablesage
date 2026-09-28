@@ -156,7 +156,7 @@ def test_processed_session_is_complete_through_review_and_assign_roles_is_next(p
 
 def test_returning_players_session_hides_new_player_rows(processed: tuple[Application, uuid.UUID]) -> None:
     application, sid = processed
-    visible = [state.step.id for state in application.processing_overview(sid).steps if state.visible]
+    visible = [state.step.id for state in application.processing_overview(sid).steps if state.visible and state.step.is_manual]
 
     assert visible == [
         StepID.IMPORT_AUDIO,
@@ -275,11 +275,13 @@ def test_review_transcript_draft_and_saved_review_round_trip_as_edit_lists(proce
     edited = Transcript(utterances=[source.utterances[0].model_copy(update={"speaker": "Bo", "adjusted": True}), source.utterances[2]])
 
     application.save_review_draft(sid, edited)
-    assert application.load_review_draft(sid) == edited
+    draft = application.load_review_draft(sid)
+    assert draft is not None and draft.transcript == edited
 
     application.save_transcript_review(sid, edited)
     assert application.load_review_draft(sid) is None
-    assert application.saved_transcript_review(sid) == edited
+    saved = application.saved_transcript_review(sid)
+    assert saved is not None and saved.transcript == edited
     assert _incomplete(application, sid)[0] is StepID.APPLY_TRANSCRIPT_REVIEW
 
 

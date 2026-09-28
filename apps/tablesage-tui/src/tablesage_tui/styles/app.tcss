@@ -838,6 +838,9 @@ SessionFromCampaignPickerDialog,
 ManualReviewUtteranceDialog,
 FindReplaceDialog,
 SpellingSuggestionDialog,
+PlayerDialog,
+CampaignDialog,
+SessionDialog,
 OtherActionsDialog {
     align: center middle;
     background: $overlay-bg;
@@ -851,7 +854,10 @@ OtherActionsDialog {
     #session-picker-dialog,
     #manual-review-utterance-dialog,
     #find-replace-dialog,
-    #spelling-suggestion-dialog {
+    #spelling-suggestion-dialog,
+    #player-dialog,
+    #campaign-dialog,
+    #session-dialog {
         width: 60;
         height: auto;
         background: $pine-750;
@@ -909,7 +915,10 @@ OtherActionsDialog {
     }
 
     #find-replace-dialog .field-row,
-    #spelling-suggestion-dialog .field-row {
+    #spelling-suggestion-dialog .field-row,
+    #player-dialog .field-row,
+    #campaign-dialog .field-row,
+    #session-dialog .field-row {
         height: 3;
         align: left middle;
 
@@ -920,6 +929,12 @@ OtherActionsDialog {
         Input {
             width: 1fr;
         }
+    }
+
+    .dialog-error {
+        color: $error;
+        height: auto;
+        margin: 0 0 1 0;
     }
 
     #find-replace-dialog Checkbox,
@@ -1013,6 +1028,16 @@ OtherActionsDialog {
         height: 1;
         color: $fg-muted;
         margin: 0 0 0 0;
+    }
+
+    /* `.field-row`'s `align: left middle` doesn't vertically center a 1-line label against a
+       bordered 3-line Input/Select the way it looks like it should (confirmed empirically, not
+       just here -- AttendeeDialog's pre-existing #attendee-player-row/#attendee-name-row have
+       the same top-aligned label). Force it explicitly instead of relying on `align`. Scoped to
+       `.field-row` specifically -- GlossaryEntryDialog's labels sit above their Input, not
+       beside it, and must not get this extra margin. */
+    .field-row .field-label {
+        margin-top: 1;
     }
 
     .section-title {
@@ -1396,9 +1421,11 @@ CampaignDetailScreen {
         margin: 0 0 1 0;
 
         .field-row {
-            height: 3;
+            /* height:1, no margin: unlike the old editable CommittingInput (which needed 3 rows
+               for its border, plus a blank-line margin for breathing room), a read-only
+               single-line Static needs neither. */
+            height: 1;
             align: left middle;
-            margin: 0 0 1 0;
 
             .field-label {
                 width: 14;
@@ -1406,8 +1433,21 @@ CampaignDetailScreen {
                 color: $fg-muted;
             }
 
-            Input {
+            .field-value {
                 width: 1fr;
+                color: $surface-2-fg;
+            }
+        }
+
+        #campaign-description-row {
+            /* Unlike the other single-line field-rows, this one lets its value wrap up to 3
+               lines (see `_truncated_description` in campaign_detail.py) instead of clipping to
+               one -- `height: auto` grows the row, `max-height` bounds it. */
+            height: auto;
+            max-height: 4;
+
+            .field-value {
+                height: auto;
             }
         }
     }
@@ -1470,8 +1510,9 @@ PlayerDetailScreen {
                 color: $fg-muted;
             }
 
-            Input {
+            .field-value {
                 width: 1fr;
+                color: $surface-2-fg;
             }
         }
 
@@ -1532,18 +1573,16 @@ SessionDetailScreen {
         margin: 0 0 2 0;
 
         .field-row {
-            height: 3;
+            /* height:1, no margin: unlike the old editable CommittingInput (which needed 3 rows
+               for its border, plus a blank-line margin for breathing room), a read-only
+               single-line Static needs neither. */
+            height: 1;
             align: left middle;
-            margin: 0 0 1 0;
 
             .field-label {
                 width: 14;
                 height: 1;
                 color: $fg-muted;
-            }
-
-            Input {
-                width: 1fr;
             }
 
             .field-value {

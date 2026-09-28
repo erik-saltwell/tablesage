@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -11,25 +12,41 @@ from tablesage_application.session_pipeline.artifact_graph import (
     ArtifactStatus,
     GenerationTask,
 )
+from tablesage_application.session_pipeline.extract_glossary import GlossaryCommitResult
 from tablesage_model.model import GlossaryEntry
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.events import Click
-from textual.widgets import ContentSwitcher, DataTable, Input, Static
+from textual.widgets import ContentSwitcher, DataTable, Static
+from textual_fspicker import Filters
 
 from ..dialogs import (
+    CampaignDialog,
     ConfirmationDialog,
     GlossaryEntryDialog,
-    TextInputDialog,
+    SessionDialog,
 )
-from ..dialogs.file_picker import FileSave
-from ..widgets import CommittingInput
+from ..dialogs.file_picker import FileOpen, FileSave
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
 from .session_detail import SessionDetailScreen
 
 _TABS = ("sessions", "glossary")
+
+# Conservative character budget for the read-only description's 3-line cap (see
+# `#campaign-metadata .field-value` in app.tcss, `max-height: 3`) -- exact line-wrapping depends
+# on the panel's runtime width, so this errs low rather than measuring layout.
+_DESCRIPTION_MAX_CHARS = 220
+
+
+def _truncated_description(description: str | None) -> str:
+    if not description:
+        return ""
+    if len(description) <= _DESCRIPTION_MAX_CHARS:
+        return description
+    return description[:_DESCRIPTION_MAX_CHARS].rstrip() + "…"
+
 
 if TYPE_CHECKING:
     from .main_app import TableSageApp
@@ -39,11 +56,11 @@ class CampaignDetailScreen(TableSageScreen):
     """A single campaign's metadata, sessions, and glossary."""
 
     section = "campaign detail"
-    AUTO_FOCUS = "#campaign-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
+        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
         Binding("n,N", "new_session_item", "New Session", key_display="N"),
@@ -54,7 +71,8 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_glossary_item", "Delete Entry", key_display="D"),
     ]
     OTHER_BINDINGS = [
-        Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
+        Binding("x,X", "export_glossary", "Export Glossary", key_display="X"),
+        Binding("i,I", "import_glossary", "Import Glossary", key_display="I"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
         Binding("o,O", "regenerate_all_outputs", "Regenerate All Outputs", key_display="O"),
         Binding("y,Y", "generate_opportunities", "Generate Opportunities", key_display="Y"),
@@ -76,13 +94,13 @@ class CampaignDetailScreen(TableSageScreen):
             with Vertical(id="campaign-metadata"):
                 with Horizontal(classes="field-row"):
                     yield Static("Name", classes="field-label")
-                    yield CommittingInput(id="campaign-name-input")
-                with Horizontal(classes="field-row"):
+                    yield Static("", id="campaign-name-value", classes="field-value")
+                with Horizontal(classes="field-row", id="campaign-description-row"):
                     yield Static("Description", classes="field-label")
-                    yield CommittingInput(id="campaign-description-input", placeholder="Optional description")
+                    yield Static("", id="campaign-description-value", classes="field-value")
                 with Horizontal(classes="field-row"):
                     yield Static("Game System", classes="field-label")
-                    yield CommittingInput(id="campaign-game-system-input", placeholder="Optional game system")
+                    yield Static("", id="campaign-game-system-value", classes="field-value")
 
             with Horizontal(id="campaign-detail-tabs"):
                 yield Static("[S] Sessions", id="tab-label-sessions", classes="tab-label")
@@ -122,76 +140,58 @@ class CampaignDetailScreen(TableSageScreen):
         self._game_system = campaign.game_system
 
         self.query_one(TableSageHeader).campaign = self._campaign_name
-        self.query_one("#campaign-name-input", CommittingInput).value = self._campaign_name
-        self.query_one("#campaign-description-input", CommittingInput).value = self._description or ""
-        self.query_one("#campaign-game-system-input", CommittingInput).value = self._game_system or ""
+        self._update_metadata_display()
 
         self._reload_sessions()
         self._reload_glossary()
 
     # Metadata
 
-    def on_committing_input_committed(self, event: CommittingInput.Committed) -> None:
-        self._commit_metadata(event.input)
+    def _update_metadata_display(self) -> None:
+        self.query_one("#campaign-name-value", Static).update(self._campaign_name)
+        self.query_one("#campaign-description-value", Static).update(_truncated_description(self._description))
+        self.query_one("#campaign-game-system-value", Static).update(self._game_system or "")
 
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        if isinstance(event.input, CommittingInput):
-            event.stop()
-            self._commit_metadata(event.input)
+    def action_edit_metadata(self) -> None:
+        self.app.push_screen(
+            CampaignDialog(
+                title="Edit Metadata",
+                name=self._campaign_name,
+                description=self._description or "",
+                game_system=self._game_system or "",
+                submit_label="Save",
+                on_submit=self._submit_metadata,
+            )
+        )
 
-    def _commit_metadata(self, input_widget: CommittingInput) -> None:
-        if input_widget.id == "campaign-name-input":
-            self._commit_name(input_widget)
-        elif input_widget.id in ("campaign-description-input", "campaign-game-system-input"):
-            self._commit_description_and_game_system()
-
-    def _commit_name(self, input_widget: CommittingInput) -> None:
-        new_name = input_widget.value.strip()
-        if not new_name or new_name == self._campaign_name:
-            input_widget.value = self._campaign_name
-            return
-
-        def proceed() -> None:
+    async def _submit_metadata(self, name: str, description: str | None, game_system: str | None) -> str | None:
+        if name != self._campaign_name:
+            proceed = await self.resolve_folder_collision(
+                title="Campaign Folder Exists",
+                prompt=(
+                    f"A campaign folder named '{name}' already exists on disk. "
+                    "This may be left over from a previously deleted campaign. Delete it and continue?"
+                ),
+                exists=lambda: self.application.campaign_folder_exists(name),
+                delete_existing=lambda: self.application.delete_orphan_campaign_folder(name),
+            )
+            if not proceed:
+                return f"Rename cancelled: a campaign folder named '{name}' already exists."
             try:
-                renamed = self.application.rename_campaign(self._campaign_id, new_name)
+                renamed = self.application.rename_campaign(self._campaign_id, name)
             except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                input_widget.value = self._campaign_name
-                return
+                return str(exc)
             self._campaign_name = renamed.name
             self.query_one(TableSageHeader).campaign = self._campaign_name
 
-        def on_cancel() -> None:
-            input_widget.value = self._campaign_name
-
-        self.run_with_folder_collision_check(
-            title="Campaign Folder Exists",
-            prompt=(
-                f"A campaign folder named '{new_name}' already exists on disk. "
-                "This may be left over from a previously deleted campaign. Delete it and continue?"
-            ),
-            exists=lambda: self.application.campaign_folder_exists(new_name),
-            delete_existing=lambda: self.application.delete_orphan_campaign_folder(new_name),
-            proceed=proceed,
-            on_cancel=on_cancel,
-        )
-
-    def _commit_description_and_game_system(self) -> None:
-        description = self.query_one("#campaign-description-input", CommittingInput).value.strip() or None
-        game_system = self.query_one("#campaign-game-system-input", CommittingInput).value.strip() or None
-        if description == self._description and game_system == self._game_system:
-            return
-        updated = self.application.update_campaign(self._campaign_id, description, game_system)
+        try:
+            updated = self.application.update_campaign(self._campaign_id, description, game_system)
+        except ValueError as exc:
+            return str(exc)
         self._description = updated.description
         self._game_system = updated.game_system
-
-    def action_pop_screen(self) -> None:
-        # The name field has focus on open, so Esc first leaves a field for the table (losing focus commits
-        # it) and the letter shortcuts start working; Esc from anywhere else goes back.
-        if isinstance(self.focused, CommittingInput):
-            self.query_one(f"#{self._active_tab}-table", DataTable).focus()
-            return
-        super().action_pop_screen()
+        self._update_metadata_display()
+        return None
 
     # Tabs
 
@@ -266,19 +266,8 @@ class CampaignDetailScreen(TableSageScreen):
         self.refresh_bindings()
 
     def _new_session(self) -> None:
-        def on_dismiss(name: str | None) -> None:
-            if name is None:
-                return
-
-            def proceed() -> None:
-                try:
-                    created = self.application.create_session(self._campaign_id, name)
-                except ValueError as exc:
-                    self.notify(str(exc), severity="error")
-                    return
-                self.app.push_screen(SessionDetailScreen(created.id))
-
-            self.run_with_folder_collision_check(
+        async def on_submit(name: str, session_date: date | None) -> str | None:
+            proceed = await self.resolve_folder_collision(
                 title="Session Folder Exists",
                 prompt=(
                     "A session folder already exists in this campaign's next slot on disk. "
@@ -286,13 +275,23 @@ class CampaignDetailScreen(TableSageScreen):
                 ),
                 exists=lambda: self.application.session_folder_would_collide(self._campaign_id),
                 delete_existing=lambda: self.application.delete_colliding_session_folder(self._campaign_id),
-                proceed=proceed,
             )
+            if not proceed:
+                return "Creation cancelled: a session folder already exists in this campaign's next slot."
+            try:
+                created = self.application.create_session(self._campaign_id, name, session_date)
+            except ValueError as exc:
+                return str(exc)
+            # Deferred: `on_submit` returning `None` here makes the dialog's own `_submit()` call
+            # `self.dismiss(None)` right after this returns, which pops whatever is then topmost
+            # (`Screen.dismiss` always calls `self.app.pop_screen()`, not "pop `self` specifically").
+            # Pushing `SessionDetailScreen` immediately would make it -- not the dialog -- the
+            # thing that dismiss pops. `call_after_refresh` runs this once the dialog's own pop
+            # has gone out, so the new screen ends up on top afterward instead.
+            self.call_after_refresh(self.app.push_screen, SessionDetailScreen(created.id))
+            return None
 
-        self.app.push_screen(
-            TextInputDialog(title="New Session", prompt="Enter a name", placeholder="Session name", submit_label="Create Session"),
-            on_dismiss,
-        )
+        self.app.push_screen(SessionDialog(title="New Session", submit_label="Create Session", on_submit=on_submit))
 
     def _open_session(self) -> None:
         session_id = self._selected_row_id("sessions-table")
@@ -335,6 +334,47 @@ class CampaignDetailScreen(TableSageScreen):
         )
 
     # Glossary
+
+    def action_export_glossary(self) -> None:
+        def on_picked(destination: Path | None) -> None:
+            if destination is None:
+                return
+            self.run_with_progress(
+                title="Export Glossary",
+                message="Writing glossary entries…",
+                work=lambda: self.application.export_glossary(self._campaign_id, destination),
+                on_success=lambda count: self.notify(f"Exported {count} glossary entries to {destination}."),
+            )
+
+        self.app.push_screen(
+            FileSave(title="Export Glossary", location=Path.home(), default_file="glossary.json"),
+            on_picked,
+        )
+
+    def action_import_glossary(self) -> None:
+        def on_picked(source: Path | None) -> None:
+            if source is None:
+                return
+
+            def on_success(result: GlossaryCommitResult) -> None:
+                self._reload_glossary()
+                self.notify(f"Imported {result.added_count} glossary entries; skipped {result.skipped_duplicate_count} duplicates.")
+
+            self.run_with_progress(
+                title="Import Glossary",
+                message="Importing glossary entries…",
+                work=lambda: self.application.import_glossary(self._campaign_id, source),
+                on_success=on_success,
+            )
+
+        self.app.push_screen(
+            FileOpen(
+                title="Import Glossary",
+                location=Path.home(),
+                filters=Filters(("JSON files", lambda path: path.suffix.lower() == ".json")),
+            ),
+            on_picked,
+        )
 
     def _reload_glossary(self) -> None:
         table = self.query_one("#glossary-table", DataTable)
@@ -402,41 +442,6 @@ class CampaignDetailScreen(TableSageScreen):
             self._reload_glossary()
 
         self.app.push_screen(ConfirmationDialog(title="Delete Glossary Entry", prompt="Delete this glossary entry?"), on_dismiss)
-
-    def action_export_campaign(self) -> None:
-        def is_busy() -> bool:
-            sessions = self.application.list_sessions(self._campaign_id)
-            session_ids = {session.id for session in sessions}
-            return any(session.status == "processing" for session in sessions) or any(
-                worker.is_running
-                and (
-                    getattr(worker.node, "_campaign_id", None) == self._campaign_id
-                    or getattr(worker.node, "_session_id", None) in session_ids
-                )
-                for worker in self.app.workers
-            )
-
-        if is_busy():
-            self.notify("Wait for campaign processing to finish before exporting.", severity="error")
-            return
-
-        def on_picked(destination: Path | None) -> None:
-            if destination is None:
-                return
-            if is_busy():
-                self.notify("Wait for campaign processing to finish before exporting.", severity="error")
-                return
-            self.run_with_progress(
-                title="Export Campaign",
-                message="Copying the database and campaign files…",
-                work=lambda: self.application.export_campaign(self._campaign_id, destination),
-                on_success=lambda _: self.notify(f"Exported campaign to {destination}."),
-            )
-
-        self.app.push_screen(
-            FileSave(title="Export Campaign", location=Path.home(), default_file="campaign.zip"),
-            on_picked,
-        )
 
     def action_regenerate_all_outputs(self) -> None:
         """Run the same stale-aware output generation as ``G`` for reviewed audio sessions."""

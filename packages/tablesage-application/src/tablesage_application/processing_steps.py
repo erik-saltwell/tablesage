@@ -94,6 +94,7 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
         _A,
         "Suggest Name Corrections",
         (ArtifactName.NAME_CORRECTION_SUGGESTIONS,),
+        visibility=StepVisibility.NEW_PLAYERS,
         llm_roles=("llm_model",),
     ),
     ProcessingStep(
@@ -103,9 +104,20 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
         (ArtifactName.NAME_CORRECTION_DECISIONS,),
         visibility=StepVisibility.NEW_PLAYERS,
     ),
-    ProcessingStep(StepID.APPLY_NAME_CORRECTIONS, _A, "Apply Name Corrections", (ArtifactName.NAME_CORRECTED_TRANSCRIPT,)),
     ProcessingStep(
-        StepID.ISOLATE_NEW_SPEAKERS, _A, "Isolate New Speakers", (ArtifactName.NEW_SPEAKER_ASSIGNMENTS,), llm_roles=("llm_model",)
+        StepID.APPLY_NAME_CORRECTIONS,
+        _A,
+        "Apply Name Corrections",
+        (ArtifactName.NAME_CORRECTED_TRANSCRIPT,),
+        visibility=StepVisibility.NEW_PLAYERS,
+    ),
+    ProcessingStep(
+        StepID.ISOLATE_NEW_SPEAKERS,
+        _A,
+        "Isolate New Speakers",
+        (ArtifactName.NEW_SPEAKER_ASSIGNMENTS,),
+        visibility=StepVisibility.NEW_PLAYERS,
+        llm_roles=("llm_model",),
     ),
     ProcessingStep(
         StepID.REVIEW_NEW_SPEAKER_ASSIGNMENTS,
@@ -114,7 +126,13 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
         (ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,),
         visibility=StepVisibility.NEW_PLAYERS,
     ),
-    ProcessingStep(StepID.SEED_VOICE_SAMPLES, _A, "Seed Player Voice Samples", (ArtifactName.SEEDED_VOICE_SAMPLES,)),
+    ProcessingStep(
+        StepID.SEED_VOICE_SAMPLES,
+        _A,
+        "Seed Player Voice Samples",
+        (ArtifactName.SEEDED_VOICE_SAMPLES,),
+        visibility=StepVisibility.NEW_PLAYERS,
+    ),
     ProcessingStep(StepID.IDENTIFY_SPEAKERS, _A, "Identify Speakers", (ArtifactName.IDENTIFIED_TRANSCRIPT,)),
     ProcessingStep(
         StepID.SUGGEST_GLOSSARY_TERMS, _A, "Suggest Glossary Terms", (ArtifactName.GLOSSARY_SUGGESTIONS,), llm_roles=("llm_model",)

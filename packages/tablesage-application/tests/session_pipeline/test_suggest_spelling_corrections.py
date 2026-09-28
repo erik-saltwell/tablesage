@@ -81,7 +81,7 @@ def test_filter_drops_no_op_suggestions() -> None:
     assert filter_and_dedupe_suggestions(proposals, transcript) == []
 
 
-def test_filter_keeps_first_of_duplicate_from_text() -> None:
+def test_filter_keeps_distinct_targets_for_same_from_text() -> None:
     transcript = _transcript("We reached Zarathiss lonely tower")
     proposals = [
         SpellingSuggestionProposal(from_text="Zarathiss", to_text="Zarathis"),
@@ -90,8 +90,7 @@ def test_filter_keeps_first_of_duplicate_from_text() -> None:
 
     result = filter_and_dedupe_suggestions(proposals, transcript)
 
-    assert len(result) == 1
-    assert result[0].to_text == "Zarathis"
+    assert [row.to_text for row in result] == ["Zarathis", "Zarathas"]
 
 
 def test_filter_attaches_case_insensitive_occurrence_count() -> None:

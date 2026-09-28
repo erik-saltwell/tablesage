@@ -13,10 +13,10 @@ from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.widgets import DataTable, Input, Static
+from textual.widgets import DataTable, Static
 
-from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog, TextInputDialog
-from ..widgets import CommittingInput, SampleCountDataTable, sample_count_cell
+from ..dialogs import ArtifactRegenerationDialog, AttendeeDialog, AttendeeResult, ConfirmationDialog, SessionDialog, TextInputDialog
+from ..widgets import SampleCountDataTable, sample_count_cell
 from ..widgets.tablesage_header import TableSageHeader
 from .artifact_export import ArtifactExportScreen
 from .base import TableSageScreen
@@ -34,11 +34,11 @@ class SessionDetailScreen(TableSageScreen):
     """A single session's metadata, attendance, artifact indicators, and processing errors."""
 
     section = "session detail"
-    AUTO_FOCUS = "#session-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
+        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
         Binding("n,N", "new_attendee", "New Player", key_display="N"),
         Binding("enter,e,E", "edit_attendee", "Edit Player", key_display="E"),
         Binding("d,D,delete,backspace", "delete_attendee", "Delete Player", key_display="D"),
@@ -65,10 +65,10 @@ class SessionDetailScreen(TableSageScreen):
             with Vertical(id="session-metadata"):
                 with Horizontal(classes="field-row"):
                     yield Static("Name", classes="field-label")
-                    yield CommittingInput(id="session-name-input")
+                    yield Static("", id="session-name-value", classes="field-value")
                 with Horizontal(classes="field-row"):
                     yield Static("Date", classes="field-label")
-                    yield CommittingInput(id="session-date-input", placeholder="YYYY-MM-DD")
+                    yield Static("", id="session-date-value", classes="field-value")
                 with Horizontal(classes="field-row"):
                     yield Static("Last Transcribed", classes="field-label")
                     yield Static("", id="session-last-transcribed-value", classes="field-value")
@@ -128,74 +128,40 @@ class SessionDetailScreen(TableSageScreen):
         self._session_date = game_session.session_date
 
         self.query_one(TableSageHeader).campaign = game_session.name
-        self.query_one("#session-name-input", CommittingInput).value = self._session_name
-        self.query_one("#session-date-input", CommittingInput).value = str(self._session_date) if self._session_date else ""
+        self._update_metadata_display()
 
         self._reload_attendance()
         self._refresh_indicators()
 
     # Metadata
 
-    def on_committing_input_committed(self, event: CommittingInput.Committed) -> None:
-        self._commit_metadata(event.input)
+    def _update_metadata_display(self) -> None:
+        self.query_one("#session-name-value", Static).update(self._session_name)
+        self.query_one("#session-date-value", Static).update(str(self._session_date) if self._session_date else "")
 
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        if isinstance(event.input, CommittingInput):
-            event.stop()
-            self._commit_metadata(event.input)
-            # `Input` doesn't blur itself on Enter (unlike losing focus, which is what actually
-            # triggers `CommittingInput.Committed` -- see its docstring), so without this the
-            # field would keep focus indefinitely, silently swallowing every single-letter
-            # binding below (A/R/B/G/C/X, N/E/D) as plain text instead of firing them.
-            self.query_one("#attendance-table", DataTable).focus()
+    def action_edit_metadata(self) -> None:
+        self.app.push_screen(
+            SessionDialog(
+                title="Edit Metadata",
+                name=self._session_name,
+                session_date=self._session_date,
+                submit_label="Save",
+                on_submit=self._submit_metadata,
+            )
+        )
 
-    def _commit_metadata(self, input_widget: CommittingInput) -> None:
-        if input_widget.id == "session-name-input":
-            self._commit_name(input_widget)
-        elif input_widget.id == "session-date-input":
-            self._commit_date(input_widget)
-
-    def _commit_name(self, input_widget: CommittingInput) -> None:
-        new_name = input_widget.value.strip()
-        if not new_name or new_name == self._session_name:
-            input_widget.value = self._session_name
-            return
-
+    async def _submit_metadata(self, name: str, session_date: date | None) -> str | None:
+        # Session folders are numbered slots, not name-derived, so unlike Player and Campaign
+        # there's no folder-collision check on a rename here.
         try:
-            updated = self.application.update_session(self._session_id, new_name, self._session_date)
+            updated = self.application.update_session(self._session_id, name, session_date)
         except ValueError as exc:
-            self.notify(str(exc), severity="error")
-            input_widget.value = self._session_name
-            return
-
+            return str(exc)
         self._session_name = updated.name
-        self.query_one(TableSageHeader).campaign = self._session_name
-
-    def _commit_date(self, input_widget: CommittingInput) -> None:
-        raw = input_widget.value.strip()
-        if not raw:
-            new_date = None
-        else:
-            try:
-                new_date = date.fromisoformat(raw)
-            except ValueError:
-                self.notify(f"'{raw}' isn't a valid date (expected YYYY-MM-DD).", severity="error")
-                input_widget.value = str(self._session_date) if self._session_date else ""
-                return
-
-        if new_date == self._session_date:
-            return
-
-        updated = self.application.update_session(self._session_id, self._session_name, new_date)
         self._session_date = updated.session_date
-
-    def action_pop_screen(self) -> None:
-        # The name field has focus on open, so Esc first leaves a field for the table (losing focus commits
-        # it) and the letter shortcuts start working; Esc from anywhere else goes back.
-        if isinstance(self.focused, CommittingInput):
-            self.query_one("#attendance-table", DataTable).focus()
-            return
-        super().action_pop_screen()
+        self.query_one(TableSageHeader).campaign = self._session_name
+        self._update_metadata_display()
+        return None
 
     # Indicators / gating
 

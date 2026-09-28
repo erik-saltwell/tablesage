@@ -71,6 +71,7 @@ async def test_generate_recap_summary_uses_dedicated_prompt_and_adds_heading(mon
         template_data: object,
         model: str,
         response_model: object | None = None,
+        timeout: float | None = None,
     ) -> str:
         captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model)
         return "- The gate — The party entered the city.  \n\n"
@@ -169,6 +170,7 @@ def test_application_generates_recap_without_automatically_invalidating_any_summ
         session_date: str | None,
         game_system: str | None,
         model: str,
+        timeout: float | None = None,
     ) -> str:
         captured.update(
             scene_breakdown=scene_breakdown,

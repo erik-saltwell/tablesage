@@ -61,6 +61,7 @@ async def generate_recap_summary(
     session_date: str | None,
     game_system: str | None,
     model: str,
+    timeout: float | None = None,
 ) -> str:
     """Generate a reusable Markdown Recap section from the Scene Breakdown alone."""
     SceneBreakdown.model_validate_json(scene_breakdown)
@@ -74,7 +75,7 @@ async def generate_recap_summary(
     )
     last_error: ValueError | None = None
     for _ in range(MAX_GENERATION_ATTEMPTS):
-        raw = await call_llm_with_prompt(PromptName.GENERATE_RECAP_SUMMARY, prompt_data, model)
+        raw = await call_llm_with_prompt(PromptName.GENERATE_RECAP_SUMMARY, prompt_data, model, timeout=timeout)
         try:
             bullet_content = validate_recap_bullets(raw)
         except ValueError as exc:

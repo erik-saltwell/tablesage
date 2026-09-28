@@ -1,5 +1,4 @@
 from datetime import date
-from pathlib import Path
 from unittest.mock import ANY, MagicMock
 
 import pytest
@@ -7,49 +6,12 @@ from tablesage_application.paths import ArtifactName
 from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus, GenerationTask
 from tablesage_model.model import Campaign, GlossaryEntry
 from tablesage_model.model import Session as GameSession
-from tablesage_tui.dialogs import ConfirmationDialog, GlossaryEntryDialog, TextInputDialog
+from tablesage_tui.dialogs import CampaignDialog, ConfirmationDialog, GlossaryEntryDialog, SessionDialog
 from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.session_detail import SessionDetailScreen
-from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
-from textual.widgets import Button, DataTable, Input
-from textual_fspicker import FileSave
-
-
-@pytest.mark.anyio
-async def test_export_campaign_picker_and_worker(tmp_path: Path) -> None:
-    campaign = Campaign(name="Iron Pact")
-    application = _application(campaign=campaign)
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
-        await pilot.press("x")
-        await pilot.pause()
-        assert isinstance(pilot.app.screen, FileSave)
-        destination = tmp_path / "campaign.zip"
-        pilot.app.screen.dismiss(destination)
-        await pilot.pause()
-        await _wait_for_progress_worker(pilot)
-        application.export_campaign.assert_called_once_with(campaign.id, destination)
-
-
-@pytest.mark.anyio
-async def test_export_campaign_rejects_processing_session() -> None:
-    campaign = Campaign(name="Iron Pact")
-    game_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Busy", status="processing")
-    application = _application(campaign=campaign, sessions=[game_session])
-    async with TableSageApp(application).run_test() as pilot:
-        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
-        await pilot.press("x")
-        await pilot.pause()
-        assert isinstance(pilot.app.screen, CampaignDetailScreen)
-        application.export_campaign.assert_not_called()
+from textual.widgets import Button, DataTable, Input, Static
 
 
 def _application(
@@ -92,8 +54,6 @@ async def test_sessions_is_the_default_tab() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
@@ -120,8 +80,6 @@ async def test_regenerate_all_outputs_processes_only_reviewed_audio_sessions() -
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         await pilot.press("slash", "o")
         await _wait_for_progress_worker(pilot)
@@ -147,8 +105,6 @@ async def test_generate_opportunities_secondary_binding_opens_screen() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         await pilot.press("slash", "y")
         await _wait_for_progress_worker(pilot)
@@ -158,36 +114,61 @@ async def test_generate_opportunities_secondary_binding_opens_screen() -> None:
 
 
 @pytest.mark.anyio
-async def test_metadata_inputs_are_prefilled() -> None:
+async def test_metadata_is_shown_read_only_on_load() -> None:
     campaign = Campaign(name="Iron Pact", description="A grim war", game_system="Dungeon World")
     application = _application(campaign=campaign)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         screen = pilot.app.screen
-        assert screen.query_one("#campaign-name-input", Input).value == "Iron Pact"
-        assert screen.query_one("#campaign-description-input", Input).value == "A grim war"
-        assert screen.query_one("#campaign-game-system-input", Input).value == "Dungeon World"
+        assert screen.query_one("#campaign-name-value", Static).render() == "Iron Pact"
+        assert screen.query_one("#campaign-description-value", Static).render() == "A grim war"
+        assert screen.query_one("#campaign-game-system-value", Static).render() == "Dungeon World"
 
 
 @pytest.mark.anyio
-async def test_typing_a_tab_letter_into_a_field_does_not_switch_tabs() -> None:
+async def test_edit_metadata_dialog_is_prefilled_with_current_values() -> None:
+    campaign = Campaign(name="Iron Pact", description="A grim war", game_system="Dungeon World")
+    application = _application(campaign=campaign)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("m")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+        assert dialog.query_one("#campaign-dialog-name", Input).value == "Iron Pact"
+        assert dialog.query_one("#campaign-dialog-description", Input).value == "A grim war"
+        assert dialog.query_one("#campaign-dialog-game-system", Input).value == "Dungeon World"
+
+
+@pytest.mark.anyio
+async def test_typing_a_tab_letter_into_a_metadata_dialog_field_does_not_switch_tabs() -> None:
+    """A pushed, modal `CampaignDialog` is the current screen while open, so screen-level
+    bindings on the underlying `CampaignDetailScreen` (like the S/G tab-switch shortcuts)
+    don't fire for keys typed into its fields -- this is normal Textual modal-screen dispatch,
+    exercised here because the previous implementation had its own bespoke keystroke handling
+    that this replaces."""
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
-        description = screen.query_one("#campaign-description-input", CommittingInput)
+
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+        description = dialog.query_one("#campaign-dialog-description", Input)
         description.focus()
         await pilot.pause()
 
@@ -205,8 +186,6 @@ async def test_s_and_g_switch_tabs_when_a_table_has_focus() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
 
         screen = pilot.app.screen
@@ -228,8 +207,6 @@ async def test_tabs_are_mouse_clickable() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         screen = pilot.app.screen
         assert isinstance(screen, CampaignDetailScreen)
@@ -244,30 +221,41 @@ async def test_tabs_are_mouse_clickable() -> None:
 
 
 @pytest.mark.anyio
-async def test_renaming_commits_on_blur() -> None:
+async def test_renaming_via_metadata_dialog_commits_on_submit() -> None:
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
-    application.rename_campaign = MagicMock(return_value=Campaign(id=campaign.id, name="Iron Pact Reforged"))
+    renamed = Campaign(id=campaign.id, name="Iron Pact Reforged")
+
+    def rename(_campaign_id: object, _name: str) -> Campaign:
+        # Dismissing the dialog resumes CampaignDetailScreen, whose `on_screen_resume` reloads
+        # from `get_campaign` -- mirror a real backend by making the mock reflect the rename.
+        application.get_campaign.return_value = renamed
+        return renamed
+
+    application.rename_campaign = MagicMock(side_effect=rename)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
-        name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
         name_input.focus()
-        await pilot.pause()
         name_input.value = "Iron Pact Reforged"
-
-        await pilot.press("tab")
-        await pilot.pause()
+        await pilot.press("enter")
+        await _wait_for_progress_worker(pilot)
 
         application.rename_campaign.assert_called_once_with(campaign.id, "Iron Pact Reforged")
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert pilot.app.screen.query_one("#campaign-name-value", Static).render() == "Iron Pact Reforged"
 
 
 @pytest.mark.anyio
-async def test_duplicate_rename_shows_error_and_resets_value() -> None:
+async def test_duplicate_rename_shows_inline_error_and_keeps_dialog_open() -> None:
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
     application.rename_campaign = MagicMock(side_effect=ValueError("A campaign named 'Ashen Crown' already exists."))
@@ -275,18 +263,22 @@ async def test_duplicate_rename_shows_error_and_resets_value() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
-        name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
         name_input.focus()
-        await pilot.pause()
         name_input.value = "Ashen Crown"
+        await pilot.press("enter")
+        await _wait_for_progress_worker(pilot)
 
-        await pilot.press("tab")
-        await pilot.pause()
-
-        assert name_input.value == "Iron Pact"
+        application.rename_campaign.assert_called_once_with(campaign.id, "Ashen Crown")
+        assert isinstance(pilot.app.screen, CampaignDialog)
+        assert "Ashen Crown" in str(dialog.query_one("#campaign-dialog-error", Static).render())
+        assert name_input.value == "Ashen Crown"
 
 
 @pytest.mark.anyio
@@ -295,59 +287,116 @@ async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> Non
     application = _application(campaign=campaign)
     application.campaign_folder_exists = MagicMock(return_value=True)
     application.delete_orphan_campaign_folder = MagicMock()
-    application.rename_campaign = MagicMock(return_value=Campaign(id=campaign.id, name="Ashen Crown"))
+    renamed = Campaign(id=campaign.id, name="Ashen Crown")
+
+    def rename(_campaign_id: object, _name: str) -> Campaign:
+        application.get_campaign.return_value = renamed
+        return renamed
+
+    application.rename_campaign = MagicMock(side_effect=rename)
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
-        name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
         name_input.focus()
-        await pilot.pause()
         name_input.value = "Ashen Crown"
-
-        await pilot.press("tab")
+        await pilot.press("enter")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
         application.rename_campaign.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_orphan_campaign_folder.assert_called_once_with("Ashen Crown")
         application.rename_campaign.assert_called_once_with(campaign.id, "Ashen Crown")
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert pilot.app.screen.query_one("#campaign-name-value", Static).render() == "Ashen Crown"
 
 
 @pytest.mark.anyio
-async def test_description_and_game_system_commit_together() -> None:
+async def test_rename_folder_collision_cancelled_keeps_dialog_open_with_error() -> None:
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
-    application.update_campaign = MagicMock(
-        return_value=Campaign(id=campaign.id, name="Iron Pact", description="New desc", game_system="D&D")
-    )
+    application.campaign_folder_exists = MagicMock(return_value=True)
+    application.rename_campaign = MagicMock()
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
+
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
+        name_input.focus()
+        name_input.value = "Ashen Crown"
+        await pilot.press("enter")
+        await pilot.pause()
+
+        assert isinstance(pilot.app.screen, ConfirmationDialog)
         await pilot.press("escape")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        description = pilot.app.screen.query_one("#campaign-description-input", CommittingInput)
-        description.focus()
-        await pilot.pause()
-        description.value = "New desc"
-
-        await pilot.press("tab")
-        await pilot.pause()
-
-        application.update_campaign.assert_called_once_with(campaign.id, "New desc", None)
+        application.rename_campaign.assert_not_called()
+        # `resolve_folder_collision` returning `False` on a cancelled collision leaves the
+        # caller's dialog open (not the underlying screen) with the typed name intact and an
+        # inline error, per `TableSageScreen.resolve_folder_collision`'s docstring.
+        assert isinstance(pilot.app.screen, CampaignDialog)
+        assert name_input.value == "Ashen Crown"
+        assert "Ashen Crown" in str(dialog.query_one("#campaign-dialog-error", Static).render())
 
 
 @pytest.mark.anyio
-async def test_escape_commits_focused_field_before_popping() -> None:
+async def test_description_and_game_system_commit_together_via_metadata_dialog() -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaign=campaign)
+    updated = Campaign(id=campaign.id, name="Iron Pact", description="New desc", game_system="D&D")
+
+    def update(_campaign_id: object, _description: str | None, _game_system: str | None) -> Campaign:
+        # Dismissing the dialog resumes CampaignDetailScreen, whose `on_screen_resume` reloads
+        # from `get_campaign` -- mirror a real backend by making the mock reflect the update.
+        application.get_campaign.return_value = updated
+        return updated
+
+    application.update_campaign = MagicMock(side_effect=update)
+
+    async with TableSageApp(application).run_test() as pilot:
+        pilot.app.push_screen(CampaignDetailScreen(campaign.id))
+        await pilot.pause()
+
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+
+        description = dialog.query_one("#campaign-dialog-description", Input)
+        description.focus()
+        description.value = "New desc"
+        await pilot.press("enter")
+        await _wait_for_progress_worker(pilot)
+
+        application.update_campaign.assert_called_once_with(campaign.id, "New desc", None)
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert pilot.app.screen.query_one("#campaign-description-value", Static).render() == "New desc"
+
+
+@pytest.mark.anyio
+async def test_escape_within_metadata_dialog_cancels_without_saving() -> None:
+    """Unlike the old committing-input behavior (Escape committed the focused field before
+    popping the screen), the dialog's own Escape binding cancels outright -- see
+    `CampaignDialog.action_cancel` -- discarding the typed value and never calling
+    `on_submit`/`application.rename_campaign`."""
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
     application.rename_campaign = MagicMock(return_value=Campaign(id=campaign.id, name="Iron Pact Reforged"))
@@ -355,18 +404,21 @@ async def test_escape_commits_focused_field_before_popping() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
-        name_input = pilot.app.screen.query_one("#campaign-name-input", CommittingInput)
-        name_input.focus()
+        await pilot.press("m")
         await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
+        name_input.focus()
         name_input.value = "Iron Pact Reforged"
 
         await pilot.press("escape")
         await pilot.pause()
 
-        application.rename_campaign.assert_called_once_with(campaign.id, "Iron Pact Reforged")
+        application.rename_campaign.assert_not_called()
+        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        assert pilot.app.screen.query_one("#campaign-name-value", Static).render() == "Iron Pact"
 
 
 @pytest.mark.anyio
@@ -377,8 +429,6 @@ async def test_glossary_table_shows_entries() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
@@ -396,8 +446,6 @@ async def test_new_glossary_entry_flow() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
@@ -425,8 +473,6 @@ async def test_glossary_duplicate_term_shows_error() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
         await pilot.press("n")
@@ -449,8 +495,6 @@ async def test_delete_glossary_entry_confirms_then_deletes() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
         await pilot.press("g")
         await pilot.pause()
 
@@ -472,8 +516,6 @@ async def test_sessions_table_shows_sessions_sorted_by_sequence() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         table = pilot.app.screen.query_one("#sessions-table", DataTable)
         assert [str(column.label) for column in table.columns.values()] == ["#", "Name", "Date"]
@@ -494,18 +536,16 @@ async def test_new_session_creates_and_opens_session_detail() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         await pilot.press("n")
         await pilot.pause()
-        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert isinstance(pilot.app.screen, SessionDialog)
 
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        pilot.app.screen.query_one("#session-dialog-name", Input).value = "Session One"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        application.create_session.assert_called_once_with(campaign.id, "Session One")
+        application.create_session.assert_called_once_with(campaign.id, "Session One", None)
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
@@ -521,12 +561,10 @@ async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        pilot.app.screen.query_one("#session-dialog-name", Input).value = "Session One"
         await pilot.press("enter")
         await pilot.pause()
 
@@ -534,15 +572,15 @@ async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -
         application.create_session.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_colliding_session_folder.assert_called_once_with(campaign.id)
-        application.create_session.assert_called_once_with(campaign.id, "Session One")
+        application.create_session.assert_called_once_with(campaign.id, "Session One", None)
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
-async def test_new_session_folder_collision_cancelled_does_not_create() -> None:
+async def test_new_session_folder_collision_cancelled_keeps_dialog_open_with_error() -> None:
     campaign = Campaign(name="Iron Pact")
     application = _application(campaign=campaign)
     application.session_folder_would_collide = MagicMock(return_value=True)
@@ -551,21 +589,25 @@ async def test_new_session_folder_collision_cancelled_does_not_create() -> None:
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
         await pilot.pause()
-        await pilot.press("escape")
-        await pilot.pause()
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Session One"
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+        dialog.query_one("#session-dialog-name", Input).value = "Session One"
         await pilot.press("enter")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
         await pilot.press("escape")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.create_session.assert_not_called()
-        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        # A cancelled collision leaves the SessionDialog itself open with an inline error
+        # (see `TableSageScreen.resolve_folder_collision`), not the underlying CampaignDetailScreen.
+        assert isinstance(pilot.app.screen, SessionDialog)
+        assert "already exists" in str(dialog.query_one("#session-dialog-error", Static).render())
+        assert dialog.query_one("#session-dialog-name", Input).value == "Session One"
 
 
 @pytest.mark.anyio
@@ -577,8 +619,6 @@ async def test_edit_session_opens_session_detail() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("enter")
@@ -596,8 +636,6 @@ async def test_delete_session_confirms_then_deletes_and_reloads() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("d")
@@ -620,8 +658,6 @@ async def test_cleanup_sessions_confirms_then_cleans() -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("c")
@@ -649,13 +685,10 @@ async def test_escape_pops_back_to_campaign_list() -> None:
         await pilot.press("enter")
         await pilot.pause()
         assert isinstance(pilot.app.screen, CampaignDetailScreen)
-
-        # The first Esc leaves the focused name field for the Sessions table; the second goes back.
-        await pilot.press("escape")
-        await pilot.pause()
-        assert isinstance(pilot.app.screen, CampaignDetailScreen)
+        # Focus lands on the Sessions table automatically -- no more AUTO_FOCUS on a name input.
         assert pilot.app.focused is pilot.app.screen.query_one("#sessions-table")
 
+        # A single Esc now pops straight back (no more "first Esc leaves the field" step).
         await pilot.press("escape")
         await pilot.pause()
 
@@ -669,8 +702,6 @@ async def test_f5_reloads_metadata_and_all_tabs_without_changing_active_tab() ->
 
     async with TableSageApp(application).run_test() as pilot:
         pilot.app.push_screen(CampaignDetailScreen(campaign.id))
-        await pilot.pause()
-        await pilot.press("escape")
         await pilot.pause()
 
         await pilot.press("g")

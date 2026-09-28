@@ -10,11 +10,10 @@ from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.widgets import DataTable, Input, Static
+from textual.widgets import DataTable, Static
 
-from ..dialogs import ConfirmationDialog
+from ..dialogs import ConfirmationDialog, PlayerDialog
 from ..dialogs.file_picker import SelectDirectory
-from ..widgets import CommittingInput
 from ..widgets.tablesage_header import TableSageHeader
 from .base import TableSageScreen
 
@@ -26,11 +25,11 @@ class PlayerDetailScreen(TableSageScreen):
     """A single player's metadata, voice-profile state, and voice clips."""
 
     section = "player detail"
-    AUTO_FOCUS = "#player-name-input"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
+        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
         Binding("d,D,delete,backspace", "delete_clip", "Delete", key_display="D"),
         Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
     ]
@@ -51,7 +50,7 @@ class PlayerDetailScreen(TableSageScreen):
             with Vertical(id="player-metadata"):
                 with Horizontal(classes="field-row"):
                     yield Static("Name", classes="field-label")
-                    yield CommittingInput(id="player-name-input")
+                    yield Static("", id="player-name-value", classes="field-value")
                 with Horizontal(classes="field-row", id="player-stats-row"):
                     yield Static("Centroid Samples:", classes="field-label")
                     yield Static("", id="player-sample-count-value", classes="field-value")
@@ -79,64 +78,45 @@ class PlayerDetailScreen(TableSageScreen):
         self._player_name = player.name
 
         self.query_one(TableSageHeader).campaign = self._player_name
-        self.query_one("#player-name-input", CommittingInput).value = self._player_name
+        self.query_one("#player-name-value", Static).update(self._player_name)
         self._refresh_centroid_display(player)
         self._reload_voice_clips()
 
     # Metadata
 
-    def on_committing_input_committed(self, event: CommittingInput.Committed) -> None:
-        self._commit_name(event.input)
-
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        if isinstance(event.input, CommittingInput):
-            event.stop()
-            self._commit_name(event.input)
-
-    def _commit_name(self, input_widget: CommittingInput) -> None:
-        new_name = input_widget.value.strip()
-        if not new_name or new_name == self._player_name:
-            input_widget.value = self._player_name
-            return
-        try:
-            validate_player_name(new_name)
-        except ValueError as exc:
-            self.notify(str(exc), severity="error")
-            input_widget.value = self._player_name
-            return
-
-        def proceed() -> None:
-            try:
-                renamed = self.application.rename_player(self._player_id, new_name)
-            except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                input_widget.value = self._player_name
-                return
-            self._player_name = renamed.name
-            self.query_one(TableSageHeader).campaign = self._player_name
-
-        def on_cancel() -> None:
-            input_widget.value = self._player_name
-
-        self.run_with_folder_collision_check(
-            title="Player Folder Exists",
-            prompt=(
-                f"A player folder named '{new_name}' already exists on disk. "
-                "This may be left over from a previously deleted player. Delete it and continue?"
-            ),
-            exists=lambda: self.application.player_folder_exists(new_name),
-            delete_existing=lambda: self.application.delete_orphan_player_folder(new_name),
-            proceed=proceed,
-            on_cancel=on_cancel,
+    def action_edit_metadata(self) -> None:
+        self.app.push_screen(
+            PlayerDialog(title="Edit Metadata", name=self._player_name, submit_label="Save", on_submit=self._submit_metadata)
         )
 
-    def action_pop_screen(self) -> None:
-        # The name field has focus on open, so Esc first leaves a field for the table (losing focus commits
-        # it) and the letter shortcuts start working; Esc from anywhere else goes back.
-        if isinstance(self.focused, CommittingInput):
-            self.query_one("#voice-clips-table", DataTable).focus()
-            return
-        super().action_pop_screen()
+    async def _submit_metadata(self, name: str) -> str | None:
+        if name == self._player_name:
+            return None
+        try:
+            validate_player_name(name)
+        except ValueError as exc:
+            return str(exc)
+
+        proceed = await self.resolve_folder_collision(
+            title="Player Folder Exists",
+            prompt=(
+                f"A player folder named '{name}' already exists on disk. "
+                "This may be left over from a previously deleted player. Delete it and continue?"
+            ),
+            exists=lambda: self.application.player_folder_exists(name),
+            delete_existing=lambda: self.application.delete_orphan_player_folder(name),
+        )
+        if not proceed:
+            return f"Rename cancelled: a player folder named '{name}' already exists."
+
+        try:
+            renamed = self.application.rename_player(self._player_id, name)
+        except ValueError as exc:
+            return str(exc)
+        self._player_name = renamed.name
+        self.query_one(TableSageHeader).campaign = self._player_name
+        self.query_one("#player-name-value", Static).update(self._player_name)
+        return None
 
     def _refresh_centroid_display(self, player: Player) -> None:
         self.query_one("#player-sample-count-value", Static).update(str(player.sample_count))

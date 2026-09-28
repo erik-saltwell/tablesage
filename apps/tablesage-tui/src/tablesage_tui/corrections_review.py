@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any
 
+from rich.text import Text
 from tablesage_application.session_pipeline import transcript_review
 from tablesage_tools.model import Transcript
 from textual.widgets import DataTable
@@ -22,6 +23,7 @@ class DraftCorrection:
     from_text: str
     to_text: str
     case_sensitive: bool
+    removed: bool = False
 
 
 class CorrectionsReview:
@@ -34,35 +36,58 @@ class CorrectionsReview:
     shows what applying would actually do. The host screen owns the bindings and applying.
     """
 
-    def __init__(self, screen: Screen[Any], table_selector: str, noun: str, *, whole_words: bool = False) -> None:
+    def __init__(
+        self, screen: Screen[Any], table_selector: str, noun: str, *, whole_words: bool = False, soft_remove: bool = False
+    ) -> None:
         self._screen = screen
         self._table_selector = table_selector
         self._noun = noun
         # Must match how the host screen applies the corrections, or the Occurrences column misreports.
         self._whole_words = whole_words
+        self._soft_remove = soft_remove
         self.corrections: list[DraftCorrection] = []
         self.transcript: Transcript | None = None
 
     @staticmethod
-    def add_columns(table: DataTable[str]) -> None:
+    def add_columns(table: DataTable[object], *, soft_remove: bool = False) -> None:
+        if soft_remove:
+            table.add_column("", key="removed", width=3)
         table.add_column("From", key="from")
         table.add_column("To", key="to")
         table.add_column("Occurrences", key="occurrences")
         table.add_column("Case Sensitive", key="case_sensitive")
 
-    def _table(self) -> DataTable[str]:
+    def _table(self) -> DataTable[object]:
         return self._screen.query_one(self._table_selector, DataTable)
 
     def load(self, transcript: Transcript, suggestions: Sequence[SpellingSuggestion]) -> None:
         self.transcript = transcript
         self.corrections = [
-            DraftCorrection(id=uuid.uuid4(), from_text=s.from_text, to_text=s.to_text, case_sensitive=s.case_sensitive) for s in suggestions
+            DraftCorrection(
+                id=uuid.uuid4(),
+                from_text=s.from_text,
+                to_text=s.to_text,
+                case_sensitive=s.case_sensitive,
+                removed=s.removed if self._soft_remove else False,
+            )
+            for s in suggestions
         ]
         self._sort()
+        if self._soft_remove:
+            seen_active: set[str] = set()
+            normalized: list[DraftCorrection] = []
+            for correction in self.corrections:
+                key = correction.from_text.casefold()
+                normalized.append(replace(correction, removed=True) if not correction.removed and key in seen_active else correction)
+                if not correction.removed:
+                    seen_active.add(key)
+            self.corrections = normalized
         self.reload()
 
     def _sort(self) -> None:
-        self.corrections.sort(key=lambda correction: correction.from_text.casefold())
+        self.corrections.sort(
+            key=lambda correction: (correction.from_text.casefold(), correction.from_text, correction.to_text, correction.case_sensitive)
+        )
 
     def _selected_id(self) -> uuid.UUID | None:
         table = self._table()
@@ -85,13 +110,24 @@ class CorrectionsReview:
             occurrence_count = transcript_review.count_occurrences(
                 self.transcript, correction.from_text, correction.case_sensitive, whole_words=self._whole_words
             )
-            table.add_row(
-                correction.from_text,
-                correction.to_text,
-                str(occurrence_count),
-                "✓" if correction.case_sensitive else "",
-                key=str(correction.id),
-            )
+            if self._soft_remove:
+                style = "dim strike" if correction.removed else ""
+                table.add_row(
+                    "✗" if correction.removed else "",
+                    Text(correction.from_text, style=style),
+                    Text(correction.to_text, style=style),
+                    Text(str(occurrence_count), style=style),
+                    "✓" if correction.case_sensitive else "",
+                    key=str(correction.id),
+                )
+            else:
+                table.add_row(
+                    correction.from_text,
+                    correction.to_text,
+                    str(occurrence_count),
+                    "✓" if correction.case_sensitive else "",
+                    key=str(correction.id),
+                )
             if correction.id == selected_id:
                 restored_row = index
         if restored_row is not None:
@@ -106,6 +142,8 @@ class CorrectionsReview:
                 id=uuid.uuid4(), from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
             )
             self.corrections.append(correction)
+            if self._soft_remove:
+                self._activate(correction)
             self._sort()
             self.reload(correction.id)
 
@@ -123,6 +161,8 @@ class CorrectionsReview:
             self.corrections[index] = replace(
                 correction, from_text=result.from_text, to_text=result.to_text, case_sensitive=result.case_sensitive
             )
+            if self._soft_remove and not correction.removed:
+                self._activate(self.corrections[index])
             self._sort()
             self.reload(correction.id)
 
@@ -141,9 +181,22 @@ class CorrectionsReview:
         correction = self.selected()
         if correction is None:
             return
+        if self._soft_remove:
+            updated = replace(correction, removed=not correction.removed)
+            self.corrections[self.corrections.index(correction)] = updated
+            if not updated.removed:
+                self._activate(updated)
+            self.reload(updated.id)
+            return
         index = self.corrections.index(correction)
         self.corrections.remove(correction)
         self.reload()
         table = self._table()
         if table.row_count:
             table.move_cursor(row=min(index, table.row_count - 1))
+
+    def _activate(self, active: DraftCorrection) -> None:
+        key = active.from_text.casefold()
+        self.corrections = [
+            replace(row, removed=True) if row.id != active.id and row.from_text.casefold() == key else row for row in self.corrections
+        ]

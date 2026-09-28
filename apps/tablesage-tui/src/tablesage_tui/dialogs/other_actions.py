@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Collection, Sequence
 from typing import cast
 
 from textual import events
@@ -36,9 +36,10 @@ class OtherActionsDialog(ModalScreen[str | None]):
 
     BINDINGS = [Binding("escape", "cancel", "Cancel", show=False)]
 
-    def __init__(self, bindings: Sequence[Binding]) -> None:
+    def __init__(self, bindings: Sequence[Binding], *, disabled_actions: Collection[str] = ()) -> None:
         super().__init__()
         self._other_bindings = tuple(bindings)
+        self._disabled_actions = frozenset(disabled_actions)
         self._actions_by_key = {
             key.casefold(): binding.action
             for binding in self._other_bindings
@@ -52,16 +53,23 @@ class OtherActionsDialog(ModalScreen[str | None]):
             yield Static("Choose an action", classes="other-actions-prompt")
             with Vertical(id="other-actions-list"):
                 for binding in self._other_bindings:
-                    yield OtherActionButton(binding)
+                    button = OtherActionButton(binding)
+                    button.disabled = binding.action in self._disabled_actions
+                    yield button
 
     def on_mount(self) -> None:
-        self.query_one(OtherActionButton).focus()
+        for button in self.query(OtherActionButton):
+            if not button.disabled:
+                button.focus()
+                break
 
     def on_key(self, event: events.Key) -> None:
         action = self._actions_by_key.get(event.key.casefold())
         if action is None:
             return
         event.stop()
+        if action in self._disabled_actions:
+            return
         self.dismiss(action)
 
     def action_cancel(self) -> None:

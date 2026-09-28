@@ -9,10 +9,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 from tablesage_application.voice_clips.clips import ImportResult, VoiceClip
 from tablesage_model.model import Player
-from tablesage_tui.dialogs import ConfirmationDialog, ProgressDialog
+from tablesage_tui.dialogs import ConfirmationDialog, PlayerDialog, ProgressDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
-from tablesage_tui.widgets import CommittingInput
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input, ProgressBar, Static
 from textual_fspicker import SelectDirectory
@@ -33,9 +32,7 @@ def _application(*, player: Player | None = None, clips: list[VoiceClip] | None 
 async def _open_player_detail(pilot: Pilot, player_id: uuid.UUID) -> None:
     pilot.app.push_screen(PlayerDetailScreen(player_id))
     await pilot.pause()
-    # The name field has focus on open; Esc leaves it so the letter shortcuts work.
-    await pilot.press("escape")
-    await pilot.pause()
+    # Focus lands on the voice-clips table automatically (no more AUTO_FOCUS on a name input).
 
 
 async def _wait_for_progress_worker(pilot: Pilot) -> None:
@@ -45,7 +42,7 @@ async def _wait_for_progress_worker(pilot: Pilot) -> None:
 
 
 @pytest.mark.anyio
-async def test_metadata_is_prefilled() -> None:
+async def test_metadata_is_shown_read_only_on_load() -> None:
     player = Player(name="Alice", sample_count=3)
     application = _application(player=player)
 
@@ -53,10 +50,26 @@ async def test_metadata_is_prefilled() -> None:
         await _open_player_detail(pilot, player.id)
 
         screen = pilot.app.screen
-        assert screen.query_one("#player-name-input", Input).value == "Alice"
+        assert screen.query_one("#player-name-value", Static).render() == "Alice"
         assert screen.query_one("#player-sample-count-value", Static).render() == "3"
         assert screen.query_one("#player-computed-at-value", Static).render() == "Never"
         assert screen.query_one("#player-centroid-hash-value", Static).render() == "None"
+
+
+@pytest.mark.anyio
+async def test_edit_metadata_dialog_is_prefilled_with_current_name() -> None:
+    player = Player(name="Alice", sample_count=3)
+    application = _application(player=player)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_player_detail(pilot, player.id)
+
+        await pilot.press("m")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+        assert dialog.query_one("#player-dialog-name", Input).value == "Alice"
 
 
 @pytest.mark.anyio
@@ -149,7 +162,7 @@ async def test_total_duration_is_zero_with_no_clips() -> None:
 
 
 @pytest.mark.anyio
-async def test_rename_commits_on_enter() -> None:
+async def test_rename_commits_via_metadata_dialog() -> None:
     player = Player(name="Alice")
     application = _application(player=player)
     application.rename_player = MagicMock(return_value=Player(id=player.id, name="Alicia"))
@@ -157,17 +170,24 @@ async def test_rename_commits_on_enter() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
 
-        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+
+        name_input = dialog.query_one("#player-dialog-name", Input)
         name_input.focus()
         name_input.value = "Alicia"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.rename_player.assert_called_once_with(player.id, "Alicia")
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        assert pilot.app.screen.query_one("#player-name-value", Static).render() == "Alicia"
 
 
 @pytest.mark.anyio
-async def test_rename_duplicate_shows_error_and_reverts() -> None:
+async def test_rename_duplicate_shows_inline_error_and_keeps_dialog_open() -> None:
     player = Player(name="Alice")
     application = _application(player=player)
     application.rename_player = MagicMock(side_effect=ValueError("A player named 'Bob' already exists."))
@@ -175,13 +195,21 @@ async def test_rename_duplicate_shows_error_and_reverts() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
 
-        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+
+        name_input = dialog.query_one("#player-dialog-name", Input)
         name_input.focus()
         name_input.value = "Bob"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        assert name_input.value == "Alice"
+        application.rename_player.assert_called_once_with(player.id, "Bob")
+        assert isinstance(pilot.app.screen, PlayerDialog)
+        assert "Bob" in str(dialog.query_one("#player-dialog-error", Static).render())
+        assert name_input.value == "Bob"
 
 
 @pytest.mark.anyio
@@ -195,7 +223,12 @@ async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> Non
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
 
-        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+
+        name_input = dialog.query_one("#player-dialog-name", Input)
         name_input.focus()
         name_input.value = "Bob"
         await pilot.press("enter")
@@ -205,14 +238,16 @@ async def test_rename_folder_collision_prompts_then_deletes_and_renames() -> Non
         application.rename_player.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_orphan_player_folder.assert_called_once_with("Bob")
         application.rename_player.assert_called_once_with(player.id, "Bob")
+        assert isinstance(pilot.app.screen, PlayerDetailScreen)
+        assert pilot.app.screen.query_one("#player-name-value", Static).render() == "Bob"
 
 
 @pytest.mark.anyio
-async def test_rename_folder_collision_cancelled_reverts_input() -> None:
+async def test_rename_folder_collision_cancelled_keeps_dialog_open_with_error() -> None:
     player = Player(name="Alice")
     application = _application(player=player)
     application.player_folder_exists = MagicMock(return_value=True)
@@ -221,7 +256,12 @@ async def test_rename_folder_collision_cancelled_reverts_input() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
 
-        name_input = pilot.app.screen.query_one("#player-name-input", CommittingInput)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+
+        name_input = dialog.query_one("#player-dialog-name", Input)
         name_input.focus()
         name_input.value = "Bob"
         await pilot.press("enter")
@@ -229,10 +269,15 @@ async def test_rename_folder_collision_cancelled_reverts_input() -> None:
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
         await pilot.press("escape")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.rename_player.assert_not_called()
-        assert name_input.value == "Alice"
+        # A cancelled collision leaves the PlayerDialog itself open with an inline error and
+        # the typed value intact (see `TableSageScreen.resolve_folder_collision`), rather than
+        # reverting a field on the underlying screen.
+        assert isinstance(pilot.app.screen, PlayerDialog)
+        assert name_input.value == "Bob"
+        assert "Bob" in str(dialog.query_one("#player-dialog-error", Static).render())
 
 
 @pytest.mark.anyio

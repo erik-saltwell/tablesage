@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 from pathlib import Path
 
+from rich.markup import escape
 from tablesage_application.paths import ArtifactName
 from tablesage_application.player_archive import PlayerArchiveResult
 from tablesage_model.model import Player
@@ -13,7 +14,7 @@ from textual.containers import Vertical
 from textual.widgets import DataTable
 from textual_fspicker import Filters
 
-from ..dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
+from ..dialogs import ConfirmationDialog, PlayerDialog, SessionFromCampaignPickerDialog
 from ..dialogs.file_picker import FileOpen, FileSave
 from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
 from ..widgets import SampleCountDataTable, sample_count_cell
@@ -35,6 +36,7 @@ class PlayersListScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
     ]
     OTHER_BINDINGS = [
+        Binding("r,R", "recompute_all_centroids", "Recompute All Centroids", key_display="R"),
         Binding("i,I", "import_players", "Import Players", key_display="I"),
         Binding("x,X", "export_players", "Export Players", key_display="X"),
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
@@ -96,24 +98,13 @@ class PlayersListScreen(TableSageScreen):
         self.action_open_player()
 
     def action_new_player(self) -> None:
-        def on_dismiss(name: str | None) -> None:
-            if not name:
-                return
+        async def on_submit(name: str) -> str | None:
             try:
                 validate_player_name(name)
             except ValueError as exc:
-                self.notify(str(exc), severity="error")
-                return
+                return str(exc)
 
-            def proceed() -> None:
-                try:
-                    self.application.create_player(Player(name=name))
-                except (ValueError, OSError) as exc:
-                    self.notify(str(exc), severity="error")
-                    return
-                self._reload_players()
-
-            self.run_with_folder_collision_check(
+            proceed = await self.resolve_folder_collision(
                 title="Player Folder Exists",
                 prompt=(
                     f"A player folder named '{name}' already exists on disk. "
@@ -121,17 +112,45 @@ class PlayersListScreen(TableSageScreen):
                 ),
                 exists=lambda: self.application.player_folder_exists(name),
                 delete_existing=lambda: self.application.delete_orphan_player_folder(name),
-                proceed=proceed,
             )
+            if not proceed:
+                return f"Creation cancelled: a player folder named '{name}' already exists."
 
-        self.app.push_screen(
-            TextInputDialog(
-                title="New Player",
-                prompt="Enter a player name",
-                placeholder="Player name",
-                submit_label="Create Player",
-            ),
-            on_dismiss,
+            try:
+                self.application.create_player(Player(name=name))
+            except (ValueError, OSError) as exc:
+                return str(exc)
+            self._reload_players()
+            return None
+
+        self.app.push_screen(PlayerDialog(title="New Player", submit_label="Create Player", on_submit=on_submit))
+
+    def action_recompute_all_centroids(self) -> None:
+        def work() -> int:
+            players = self.application.list_players()
+            total = len(players)
+            for index, player in enumerate(players, start=1):
+                self.report_stage_progress(
+                    f"Recomputing {escape(player.name)} — player {index} of {total}…",
+                    index - 1,
+                    total,
+                )
+                try:
+                    self.application.recompute_centroid(player.id)
+                except Exception as exc:
+                    raise RuntimeError(f"Stopped at {player.name} after recomputing {index - 1} of {total} players: {exc}") from exc
+                self.report_progress(index, total)
+            return total
+
+        def on_success(total: int) -> None:
+            self._reload_players()
+            self.notify(f"Recomputed centroids for {total} player(s)." if total else "No players to recompute.")
+
+        self.run_with_progress(
+            title="Recompute All Centroids",
+            message="Loading players…",
+            work=work,
+            on_success=on_success,
         )
 
     def action_import_players(self) -> None:

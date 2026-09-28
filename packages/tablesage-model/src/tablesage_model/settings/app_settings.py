@@ -58,6 +58,7 @@ class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
     timeout: PositiveInt = 7200
     language_code: ScribeLanguageCode = "eng"
     tag_audio_events: bool = False
+    no_verbatim: bool = False
     model_id: ScribeModelId = "scribe_v2"
 
 
@@ -147,12 +148,20 @@ class PreviouslyOnSettings(BaseModel, frozen=True):
     editor_timeout: PositiveInt = 600
 
 
+class GenerateArtifactsSettings(BaseModel, frozen=True):
+    """Generate Artifacts' five llm_model_high calls (Transcript Sections, Ledger, Player
+    Introductions, Recap Summary, Summary) share this timeout."""
+
+    timeout: PositiveInt = 2400
+
+
 class AppSettings(BaseModel, frozen=True):
     # Zero means that this workspace has not acknowledged the current schema.
     settings_version: int = Field(default=0, ge=0)
     connection_test_timeout: PositiveInt = 30
     opportunities_timeout: PositiveInt = 600
     previously_on: PreviouslyOnSettings = Field(default_factory=PreviouslyOnSettings)
+    generate_artifacts: GenerateArtifactsSettings = Field(default_factory=GenerateArtifactsSettings)
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)

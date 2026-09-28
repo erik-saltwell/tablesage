@@ -120,6 +120,7 @@ def _transcription_strategy(settings: TranscriptionAndDiarizationSettings) -> Tr
         model_id=settings.model_id,
         request_timeout=settings.timeout,
         tag_audio_events=settings.tag_audio_events,
+        no_verbatim=settings.no_verbatim,
     )
 
 

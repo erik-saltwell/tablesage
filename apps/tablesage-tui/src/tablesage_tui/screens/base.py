@@ -122,7 +122,8 @@ class TableSageScreen(Screen[Any]):
             if action is not None:
                 self.call_later(self.app.run_action, action, default_namespace=self)
 
-        self.app.push_screen(OtherActionsDialog(self.OTHER_BINDINGS), run_selected)
+        disabled_actions = {binding.action for binding in self.OTHER_BINDINGS if self.check_action(binding.action, ()) is not True}
+        self.app.push_screen(OtherActionsDialog(self.OTHER_BINDINGS, disabled_actions=disabled_actions), run_selected)
 
     def refresh_data(self) -> None:
         """Reload the data this screen displays. No-op by default; override in screens that show live data."""
@@ -164,6 +165,32 @@ class TableSageScreen(Screen[Any]):
                 on_cancel()
 
         self.app.push_screen(ConfirmationDialog(title=title, prompt=prompt), on_confirm)
+
+    async def resolve_folder_collision(
+        self,
+        *,
+        title: str,
+        prompt: str,
+        exists: Callable[[], bool],
+        delete_existing: Callable[[], None],
+    ) -> bool:
+        """Async counterpart to `run_with_folder_collision_check`, for callers that must await the outcome.
+
+        Used by the metadata dialogs' `on_submit` callbacks (see `dialogs.player_editor`,
+        `dialogs.campaign_editor`): the dialog stays open and un-dismissed while this awaits a
+        stacked `ConfirmationDialog`, so a cancelled collision leaves the caller's dialog open
+        with its typed values intact rather than losing them (unlike the synchronous version's
+        `on_cancel`, which only resets an already-dismissed screen's field). Returns `True` if
+        the caller should proceed (no collision, or the user confirmed deleting the orphan),
+        `False` if the user cancelled.
+        """
+        if not exists():
+            return True
+        confirmed = await self.app.push_screen_wait(ConfirmationDialog(title=title, prompt=prompt))
+        if not confirmed:
+            return False
+        delete_existing()
+        return True
 
     def run_with_progress(
         self,

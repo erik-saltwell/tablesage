@@ -32,6 +32,7 @@ async def test_generate_summary_uses_application_prompt_helper_without_structure
         template_data: object,
         model: str,
         response_model: object | None = None,
+        timeout: float | None = None,
     ) -> str:
         captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model)
         return f"  # The Adventure\n\n{RECAP_MARKER}\n\n{PLAYER_INTRODUCTIONS_MARKER}\n\nA summary.  \n"
@@ -122,6 +123,7 @@ def test_application_generate_summary_reads_ledger_sorts_glossary_and_replaces_a
         session_date: str | None,
         game_system: str | None,
         model: str,
+        timeout: float | None = None,
     ) -> str:
         captured.update(
             ledger=ledger_text,

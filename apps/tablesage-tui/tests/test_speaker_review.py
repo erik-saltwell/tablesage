@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from rich.text import Text
 from tablesage_application.entities.sessions import Attendee
+from tablesage_application.session_pipeline import transcript_review
 from tablesage_tools.model import SpeechType, Transcript, TranscriptionWord
 from tablesage_tui.audio_playback import ClipPlayer
 from tablesage_tui.dialogs import FindReplaceDialog, ManualReviewUtteranceDialog
@@ -201,9 +202,7 @@ async def test_zero_key_assigns_unassigned_speaker(tmp_path: Path) -> None:
 
 @pytest.mark.anyio
 async def test_delete_key_removes_row_and_plays_next_utterances_original_clip(tmp_path: Path, _stub_playback: list[Path]) -> None:
-    """Deleting row 0 must not just relabel it (unlike assignment) -- it drops it from the working
-    copy entirely, and playback for the new row 0 (originally row 1's "Bob" utterance) must still
-    find its original clip file, not a nonexistent "0000.wav" re-derived from the new position."""
+    """Removing a row leaves it visible and keeps each row's original playback clip."""
     application = _application(session_folder=tmp_path)
 
     async with TableSageApp(application).run_test() as pilot:
@@ -215,11 +214,13 @@ async def test_delete_key_removes_row_and_plays_next_utterances_original_clip(tm
         screen = pilot.app.screen
         assert isinstance(screen, ManualReviewScreen)
         assert screen._transcript is not None
-        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Bob", "Alice"]
+        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Alice", "Bob", "Alice"]
+        assert screen._removed == {0}
 
         table = pilot.app.screen.query_one("#manual-review-table", DataTable)
-        assert table.row_count == 2
-        assert list(table.get_row_at(0)) == ["", "Bob", "yo"]
+        assert table.row_count == 3
+        table.move_cursor(row=1)
+        await pilot.pause()
 
         assert _stub_playback[-1] == tmp_path / "speaker_review_clips" / "0001.wav"
 
@@ -241,9 +242,10 @@ async def test_delete_key_on_last_row_moves_playhead_back(tmp_path: Path, _stub_
         screen = pilot.app.screen
         assert isinstance(screen, ManualReviewScreen)
         assert screen._transcript is not None
-        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Alice", "Bob"]
-        assert screen._playhead == 1
-        assert _stub_playback[-1] == tmp_path / "speaker_review_clips" / "0001.wav"
+        assert [utterance.speaker for utterance in screen._transcript.utterances] == ["Alice", "Bob", "Alice"]
+        assert screen._removed == {2}
+        assert screen._playhead == 2
+        assert _stub_playback[-1] == tmp_path / "speaker_review_clips" / "0002.wav"
 
 
 @pytest.mark.anyio
@@ -387,8 +389,8 @@ async def test_complete_returns_the_reviewed_transcript_and_closes(tmp_path: Pat
         # The Review Transcript step saves what the screen returns; the screen itself writes nothing.
         application.save_reviewed_transcript.assert_not_called()
         (saved,) = dismissed
-        assert isinstance(saved, Transcript)
-        assert saved.utterances[0].speaker == "Bob"
+        assert isinstance(saved, transcript_review.ReviewDecision)
+        assert saved.transcript.utterances[0].speaker == "Bob"
         application.discard_review_clips.assert_called_once_with(session_id)
         assert not isinstance(pilot.app.screen, ManualReviewScreen)
 

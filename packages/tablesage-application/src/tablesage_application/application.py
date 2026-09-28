@@ -13,6 +13,7 @@ from typing import Any, Concatenate, ParamSpec, TypeVar, cast
 
 import widelog
 import yaml
+from pydantic import TypeAdapter
 from sqlmodel import Session
 from tablesage_model import setup
 from tablesage_model.model import (
@@ -27,7 +28,7 @@ from tablesage_tools.embeddings import Embedding, EmbeddingFactory
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
-from . import campaign_recap, opportunities, paths, players_from_session, previously_on, processing_steps
+from . import campaign_corrections, campaign_recap, opportunities, paths, players_from_session, previously_on, processing_steps
 from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, sessions
 from .entities import session_processing as session_processing_entities
@@ -87,6 +88,7 @@ def _suggestions_value(suggestions: Sequence[suggest_spelling_corrections_pipeli
             "to_text": suggestion.to_text,
             "case_sensitive": suggestion.case_sensitive,
             "occurrence_count": suggestion.occurrence_count,
+            "removed": suggestion.removed,
         }
         for suggestion in suggestions
     ]
@@ -100,6 +102,7 @@ def _suggestions_from(value: object, key: str) -> list[suggest_spelling_correcti
             to_text=item["to_text"],
             case_sensitive=bool(item.get("case_sensitive", False)),
             occurrence_count=int(item.get("occurrence_count", 0)),
+            removed=bool(item.get("removed", False)),
         )
         for item in items
     ]
@@ -505,6 +508,36 @@ class Application:
             campaign = campaigns.get_campaign(session, campaign_id)
             campaign.glossary_updated_at = datetime.now(UTC)
             session.commit()
+
+    def export_glossary(self, campaign_id: uuid.UUID, destination: Path) -> int:
+        """Export portable terms and descriptions as a JSON array, without campaign or entry IDs."""
+        with Session(self._engine) as session:
+            campaigns.get_campaign(session, campaign_id)
+            entries = sorted(glossary.list_glossary_entries(session, campaign_id), key=lambda entry: entry.term.casefold())
+            payload = [{"term": entry.term, "description": entry.description} for entry in entries]
+        atomic_write(destination, (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+        return len(payload)
+
+    def import_glossary(self, campaign_id: uuid.UUID, source_path: Path) -> extract_glossary_pipeline.GlossaryCommitResult:
+        """Atomically import JSON entries; existing definitions and the first occurrence of each new term win."""
+        proposals = TypeAdapter(list[extract_glossary_pipeline.GlossaryProposal]).validate_json(source_path.read_bytes())
+        with Session(self._engine) as session:
+            campaign = campaigns.get_campaign(session, campaign_id)
+            seen = {extract_glossary_pipeline.normalize_term(entry.term) for entry in glossary.list_glossary_entries(session, campaign_id)}
+            added: list[extract_glossary_pipeline.GlossaryProposal] = []
+            for proposal in proposals:
+                normalized_term = extract_glossary_pipeline.normalize_term(proposal.term)
+                if normalized_term in seen:
+                    continue
+                seen.add(normalized_term)
+                session.add(GlossaryEntry(campaign_id=campaign_id, term=proposal.term, description=proposal.description))
+                added.append(proposal)
+            if added:
+                campaign.glossary_updated_at = datetime.now(UTC)
+            session.commit()
+        return extract_glossary_pipeline.GlossaryCommitResult(
+            added_count=len(added), skipped_duplicate_count=len(proposals) - len(added), added=tuple(added)
+        )
 
     def import_legacy_glossary(self, campaign_id: uuid.UUID, source_path: Path) -> int:
         """Import new terms from a pre-campaign ``settings.yaml`` glossary.
@@ -1216,9 +1249,9 @@ class Application:
                 visible = bool(prior)
             else:
                 complete = all(current(name) for name in step.outputs)
-                visible = step.is_manual and (
-                    step.visibility is processing_steps.StepVisibility.ALWAYS
-                    or (step.visibility is processing_steps.StepVisibility.NEW_PLAYERS and shows_new_players)
+                # Whether the step applies to this Session; Process Session decides whether to draw automatic ones.
+                visible = step.visibility is processing_steps.StepVisibility.ALWAYS or (
+                    step.visibility is processing_steps.StepVisibility.NEW_PLAYERS and shows_new_players
                 )
             failure = state.failures.get(step.id.value)
             step_states.append(
@@ -1953,19 +1986,53 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             attendee_names = [attendee.player_name for attendee in sessions.list_attendance(session, session_id)]
             glossary_terms = [entry.term for entry in glossary.list_glossary_entries(session, game_session.campaign_id)]
-        if not attendee_names and not glossary_terms:
-            return transcript, []
-        with widelog.wide_event(
-            op="suggest_glossary_spelling_corrections", session_id=str(session_id), glossary_count=len(glossary_terms)
-        ) as log:
-            proposals = asyncio.run(
-                suggest_spelling_corrections_pipeline.suggest_spelling_corrections(
-                    transcript, glossary_terms, attendee_names, self._settings.llm_model
+        folder, prior_folders = self._campaign_correction_location(session_id)
+        remembered = campaign_corrections.load(folder, prior_folders)
+        suggestions: list[suggest_spelling_corrections_pipeline.SpellingSuggestion] = []
+        if attendee_names or glossary_terms:
+            with widelog.wide_event(
+                op="suggest_glossary_spelling_corrections", session_id=str(session_id), glossary_count=len(glossary_terms)
+            ) as log:
+                proposals = asyncio.run(
+                    suggest_spelling_corrections_pipeline.suggest_spelling_corrections(
+                        transcript, glossary_terms, attendee_names, self._settings.llm_model
+                    )
+                )
+                suggestions = suggest_spelling_corrections_pipeline.filter_and_dedupe_suggestions(proposals, transcript)
+                log.set(proposal_count=len(proposals), suggestion_count=len(suggestions))
+
+        for mapping in remembered:
+            occurrences = transcript_review.count_occurrences(transcript, mapping.from_text, mapping.case_sensitive)
+            if occurrences:
+                suggestions.append(
+                    suggest_spelling_corrections_pipeline.SpellingSuggestion(
+                        mapping.from_text, mapping.to_text, mapping.case_sensitive, occurrences
+                    )
+                )
+        distinct = {
+            (row.from_text if row.case_sensitive else row.from_text.casefold(), row.to_text, row.case_sensitive): row for row in suggestions
+        }
+        ordered = sorted(distinct.values(), key=lambda row: (row.from_text.casefold(), row.from_text, row.to_text, row.case_sensitive))
+        seen_from: set[str] = set()
+        combined: list[suggest_spelling_corrections_pipeline.SpellingSuggestion] = []
+        for row in ordered:
+            key = row.from_text.casefold()
+            combined.append(
+                suggest_spelling_corrections_pipeline.SpellingSuggestion(
+                    row.from_text, row.to_text, row.case_sensitive, row.occurrence_count, key in seen_from
                 )
             )
-            suggestions = suggest_spelling_corrections_pipeline.filter_and_dedupe_suggestions(proposals, transcript)
-            log.set(proposal_count=len(proposals), suggestion_count=len(suggestions))
-        return transcript, suggestions
+            seen_from.add(key)
+        return transcript, combined
+
+    def _campaign_correction_location(self, session_id: uuid.UUID) -> tuple[Path, list[Path]]:
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            campaign = campaigns.get_campaign(session, game_session.campaign_id)
+            prior = sorted(sessions.list_sessions(session, campaign.id), key=lambda item: item.sequence_number)
+            return paths.campaign_folder(self._cwd, campaign.name), [
+                paths.session_folder(self._cwd, campaign.name, item.sequence_number) for item in prior
+            ]
 
     def propose_spelling_corrections(self, session_id: uuid.UUID) -> list[suggest_spelling_corrections_pipeline.SpellingSuggestion]:
         """Suggest Spelling Corrections: the LLM's corrections against the campaign glossary, saved for review."""
@@ -1986,13 +2053,39 @@ class Application:
         return (
             transcript,
             _suggestions_from(self._section(session_id, paths.ArtifactName.SPELLING_SUGGESTIONS), "suggestions"),
-            _suggestions_from(decisions, "corrections") if decisions is not None else None,
+            _suggestions_from(decisions, "rows" if isinstance(decisions, dict) and "rows" in decisions else "corrections")
+            if decisions is not None
+            else None,
         )
 
     def save_spelling_decisions(
         self, session_id: uuid.UUID, corrections: Sequence[suggest_spelling_corrections_pipeline.Correction]
     ) -> None:
-        self._complete_section(session_id, paths.ArtifactName.SPELLING_DECISIONS, {"corrections": _corrections_value(corrections)})
+        folder, prior_folders = self._campaign_correction_location(session_id)
+        remembered = campaign_corrections.load(folder, prior_folders)
+        previous = self._section(session_id, paths.ArtifactName.SPELLING_DECISIONS)
+        previous_rows = previous.get("rows", previous.get("corrections", [])) if isinstance(previous, dict) else []
+        previous_active = {campaign_corrections.Mapping.from_dict(row) for row in previous_rows if not row.get("removed", False)}
+        rows = [
+            {**row, "removed": bool(getattr(correction, "removed", False))}
+            for correction in corrections
+            for row in [_corrections_value((correction,))[0]]
+        ]
+        current_active = {campaign_corrections.Mapping.from_dict(row) for row in rows if not row["removed"]}
+        removed = previous_active - current_active
+        if previous is None:
+            proposed = {
+                campaign_corrections.Mapping(row.from_text, row.to_text, row.case_sensitive)
+                for row in _suggestions_from(self._section(session_id, paths.ArtifactName.SPELLING_SUGGESTIONS), "suggestions")
+            }
+            removed.update((proposed & remembered) - current_active)
+            removed.update(campaign_corrections.Mapping.from_dict(row) for row in rows if row["removed"])
+        self._complete_section(
+            session_id,
+            paths.ArtifactName.SPELLING_DECISIONS,
+            {"rows": rows, "corrections": [row for row in rows if not row["removed"]]},
+        )
+        campaign_corrections.change(folder, prior_folders, add=current_active - previous_active, remove=removed)
 
     @_completes(paths.ArtifactName.SPELLCHECKED_TRANSCRIPT)
     def apply_spelling_corrections(self, session_id: uuid.UUID) -> int:
@@ -2127,6 +2220,7 @@ class Application:
                     role_transcript,
                     attendees,
                     self._settings.llm_model_high,
+                    timeout=self._settings.generate_artifacts.timeout,
                 )
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
@@ -2191,6 +2285,7 @@ class Application:
                     ledger_attendees,
                     ledger_glossary,
                     self._settings.llm_model_high,
+                    timeout=self._settings.generate_artifacts.timeout,
                 )
             )
             ledger = generate_ledger_pipeline.Ledger(
@@ -2266,6 +2361,7 @@ class Application:
                     session_date,
                     game_system,
                     self._settings.llm_model_high,
+                    timeout=self._settings.generate_artifacts.timeout,
                 )
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
@@ -2332,6 +2428,7 @@ class Application:
                     session_date,
                     game_system,
                     self._settings.llm_model_high,
+                    timeout=self._settings.generate_artifacts.timeout,
                 )
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename
@@ -2414,6 +2511,7 @@ class Application:
                     session_date,
                     game_system,
                     self._settings.llm_model_high,
+                    timeout=self._settings.generate_artifacts.timeout,
                 )
             )
             introductions_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
@@ -2511,12 +2609,18 @@ class Application:
 
         processing_state.update(self.session_folder(session_id), apply, reason="draft_discarded")
 
-    def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+    def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript | transcript_review.ReviewDecision) -> None:
         """Review Transcript's draft: the reviewer's unfinished edits, as an edit list."""
-        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), transcript)
-        self.save_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP, paths.ArtifactName.SPELLCHECKED_TRANSCRIPT, edits.model_dump(mode="json"))
+        decision = transcript if isinstance(transcript, transcript_review.ReviewDecision) else transcript_review.ReviewDecision(transcript)
+        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), decision.transcript)
+        value = {
+            **edits.model_dump(mode="json"),
+            "removed_indices": list(decision.removed_indices),
+            "find_replacements": [mapping.as_dict() for mapping in decision.find_replacements],
+        }
+        self.save_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP, paths.ArtifactName.SPELLCHECKED_TRANSCRIPT, value)
 
-    def load_review_draft(self, session_id: uuid.UUID) -> Transcript | None:
+    def load_review_draft(self, session_id: uuid.UUID) -> transcript_review.ReviewDecision | None:
         value = self.load_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP)
         if value is None:
             return None
@@ -2524,7 +2628,11 @@ class Application:
             edits = transcript_edits_pipeline.TranscriptEdits.model_validate(value)
         except ValueError:
             return None
-        return transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits)
+        return transcript_review.ReviewDecision(
+            transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits),
+            tuple(value.get("removed_indices", ())),
+            tuple(campaign_corrections.Mapping.from_dict(row) for row in value.get("find_replacements", ())),
+        )
 
     def discard_review_draft(self, session_id: uuid.UUID) -> None:
         self.discard_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP)
@@ -2560,18 +2668,38 @@ class Application:
         """What Review Transcript edits: the spellchecked transcript."""
         return Transcript.load(self.session_folder(session_id) / paths.ARTIFACTS[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT].filename)
 
-    def saved_transcript_review(self, session_id: uuid.UUID) -> Transcript | None:
+    def saved_transcript_review(self, session_id: uuid.UUID) -> transcript_review.ReviewDecision | None:
         """The last completed review applied to the current source, to reopen the step as it was left."""
         value = self._section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
         if value is None:
             return None
         edits = transcript_edits_pipeline.TranscriptEdits.model_validate({"edits": value.get("edits", [])})
-        return transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits)
+        return transcript_review.ReviewDecision(
+            transcript_edits_pipeline.apply(self.transcript_review_source(session_id), edits),
+            tuple(value.get("removed_indices", ())),
+            tuple(campaign_corrections.Mapping.from_dict(row) for row in value.get("find_replacements", ())),
+        )
 
-    def save_transcript_review(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+    def save_transcript_review(self, session_id: uuid.UUID, transcript: Transcript | transcript_review.ReviewDecision) -> None:
         """Review Transcript's decision: the reviewer's edits to the spellchecked transcript."""
-        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), transcript)
-        self._complete_section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS, edits.model_dump(mode="json"))
+        decision = transcript if isinstance(transcript, transcript_review.ReviewDecision) else transcript_review.ReviewDecision(transcript)
+        previous = self._section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
+        old_replacements = (
+            {campaign_corrections.Mapping.from_dict(row) for row in previous.get("find_replacements", ())}
+            if isinstance(previous, dict)
+            else set()
+        )
+        edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), decision.transcript)
+        value = {
+            **edits.model_dump(mode="json"),
+            "removed_indices": list(decision.removed_indices),
+            "find_replacements": [mapping.as_dict() for mapping in decision.find_replacements],
+        }
+        self._complete_section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS, value)
+        new_replacements = set(decision.find_replacements) - old_replacements
+        if new_replacements:
+            folder, prior_folders = self._campaign_correction_location(session_id)
+            campaign_corrections.change(folder, prior_folders, add=new_replacements)
         self.discard_review_draft(session_id)
 
     @_completes(paths.ArtifactName.REVIEWED_TRANSCRIPT)
@@ -2580,9 +2708,9 @@ class Application:
         reviewed = self.saved_transcript_review(session_id)
         if reviewed is None:
             raise ValueError("The transcript review hasn't been completed.")
-        transcript_review.save_reviewed_transcript(self.session_folder(session_id), reviewed)
+        transcript_review.save_reviewed_transcript(self.session_folder(session_id), reviewed.kept_transcript())
 
-    def save_reviewed_transcript(self, session_id: uuid.UUID, transcript: Transcript) -> None:
+    def save_reviewed_transcript(self, session_id: uuid.UUID, transcript: Transcript | transcript_review.ReviewDecision) -> None:
         """Complete Review Transcript and write the reviewed transcript (decision, then apply)."""
         self.save_transcript_review(session_id, transcript)
         self.apply_transcript_review(session_id)

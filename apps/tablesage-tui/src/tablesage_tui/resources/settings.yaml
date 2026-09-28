@@ -14,6 +14,11 @@ previously_on:
   scout_timeout: 600
   editor_timeout: 600
 
+generate_artifacts:
+  # Generate Artifacts' five LLM calls (Transcript Sections, Ledger, Player Introductions, Recap
+  # Summary, Summary) all use llm_model_high and share this timeout.
+  timeout: 2400
+
 remove_outliers:
   # Player Detail's "Clean Up" (C) prunes voice clips whose embedding falls
   # below this cosine-similarity bar against the centroid, one worst clip at
@@ -39,6 +44,10 @@ transcription_and_diarization:
   timeout: 7200
   language_code: eng
   tag_audio_events: false
+  # Scribe removes filler words, false starts, and stuttering itself before the
+  # transcript is returned, so downstream word timestamps and diarization still
+  # describe the cleaned words.
+  no_verbatim: true
   model_id: scribe_v2
 
 speaker_identification:

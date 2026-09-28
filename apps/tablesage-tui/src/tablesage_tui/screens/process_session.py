@@ -24,6 +24,9 @@ if TYPE_CHECKING:
     from .main_app import TableSageApp
 
 _OVERVIEW_WORKER_GROUP = "process-session-overview"
+# Draw automatic steps too, each with its own completion indicator. False shows only the manual steps, with an
+# automatic step's progress and failures on the row of the manual step it leads to.
+SHOW_AUTOMATIC_STEPS = True
 _DIM = "dim"
 
 
@@ -124,26 +127,34 @@ class ProcessSessionScreen(TableSageScreen):
         run = self._coordinator.current_run
         return run if run is not None and run.session_id == self._session_id else None
 
+    @staticmethod
+    def _drawn(state: StepState) -> bool:
+        return state.visible and (SHOW_AUTOMATIC_STEPS or state.step.is_manual)
+
+    @staticmethod
+    def _row_for(step: ProcessingStep) -> ProcessingStep | None:
+        """The row that shows `step`: itself when drawn, else the manual step it leads to."""
+        return step if SHOW_AUTOMATIC_STEPS or step.is_manual else next_manual_step(step.id)
+
     def _current_row_step(self, overview: ProcessingOverview) -> ProcessingStep | None:
-        """The row the next step belongs to: itself when manual, else the manual step it leads to."""
         step = overview.next_step
-        return None if step is None else step if step.is_manual else next_manual_step(step.id)
+        return None if step is None else self._row_for(step)
 
     def _show(self, overview: ProcessingOverview) -> None:
         self._overview = overview
         run = self._active_run()
         current_row = self._current_row_step(overview)
-        running_row = (None if run.step is None else run.step if run.step.is_manual else next_manual_step(run.step.id)) if run else None
+        running_row = (None if run.step is None else self._row_for(run.step)) if run else None
 
-        # Failures of automatic steps show on the row they lead to.
+        # Failures show on the step's own row, or, for a hidden automatic step, the row it leads to.
         failures: dict[StepID, str] = {}
         for state in overview.steps:
             if state.failure is not None:
-                row = state.step if state.step.is_manual else next_manual_step(state.step.id)
+                row = self._row_for(state.step)
                 if row is not None:
                     failures.setdefault(row.id, state.failure)
 
-        self._rows = [state for state in overview.steps if state.visible]
+        self._rows = [state for state in overview.steps if self._drawn(state)]
         table = self.query_one("#process-session-steps", DataTable)
         selected = table.cursor_row
         table.clear()
@@ -162,7 +173,9 @@ class ProcessSessionScreen(TableSageScreen):
             else:
                 status, note = Text(""), Text("")
             # Rows after the current one can't start yet.
-            table.add_row(status, Text(step.label, style=_DIM if future else ""), note, key=step.id.value)
+            # Automatic steps are indented under the manual steps they serve.
+            label = step.label if step.is_manual else f"  {step.label}"
+            table.add_row(status, Text(label, style=_DIM if future else ""), note, key=step.id.value)
             future = future or is_current
         if self._rows:
             table.move_cursor(row=min(max(selected, 0), len(self._rows) - 1))

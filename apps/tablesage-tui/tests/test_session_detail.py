@@ -12,7 +12,7 @@ from tablesage_application.session_pipeline.artifact_graph import GENERATION_ORD
 from tablesage_model.model import Player
 from tablesage_model.model import Session as GameSession
 from tablesage_model.settings import AppSettings
-from tablesage_tui.dialogs import ArtifactRegenerationDialog, AttendeeDialog, ConfirmationDialog, TextInputDialog
+from tablesage_tui.dialogs import ArtifactRegenerationDialog, AttendeeDialog, ConfirmationDialog, SessionDialog, TextInputDialog
 from tablesage_tui.processing.coordinator import ProcessingCoordinator
 from tablesage_tui.screens.artifact_export import ArtifactExportScreen
 from tablesage_tui.screens.main_app import TableSageApp
@@ -106,9 +106,7 @@ def _application(
 async def _open_session_detail(pilot: Pilot, session_id: uuid.UUID) -> None:
     pilot.app.push_screen(SessionDetailScreen(session_id))
     await pilot.pause()
-    # The name field has focus on open; Esc leaves it so the letter shortcuts work.
-    await pilot.press("escape")
-    await pilot.pause()
+    # Focus lands on the attendance table automatically (no more AUTO_FOCUS on a name input).
 
 
 async def _wait_for_progress_worker(pilot: Pilot) -> None:
@@ -153,7 +151,7 @@ def test_binding_keys_and_footer_labels() -> None:
 
 
 @pytest.mark.anyio
-async def test_metadata_is_prefilled_and_last_transcribed_is_blank_without_transcript(tmp_path: Path) -> None:
+async def test_metadata_is_shown_read_only_and_last_transcribed_is_blank_without_transcript(tmp_path: Path) -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One", session_date=date(2026, 3, 1))
     application = _application(session=session, session_folder=tmp_path)
 
@@ -161,9 +159,26 @@ async def test_metadata_is_prefilled_and_last_transcribed_is_blank_without_trans
         await _open_session_detail(pilot, session.id)
 
         screen = pilot.app.screen
-        assert screen.query_one("#session-name-input", Input).value == "Session One"
-        assert screen.query_one("#session-date-input", Input).value == "2026-03-01"
+        assert screen.query_one("#session-name-value", Static).render() == "Session One"
+        assert screen.query_one("#session-date-value", Static).render() == "2026-03-01"
         assert screen.query_one("#session-last-transcribed-value", Static).render() == ""
+
+
+@pytest.mark.anyio
+async def test_edit_metadata_dialog_is_prefilled_with_current_values() -> None:
+    session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One", session_date=date(2026, 3, 1))
+    application = _application(session=session)
+
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_session_detail(pilot, session.id)
+
+        await pilot.press("m")
+        await pilot.pause()
+
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+        assert dialog.query_one("#session-dialog-name", Input).value == "Session One"
+        assert dialog.query_one("#session-dialog-date", Input).value == "2026-03-01"
 
 
 @pytest.mark.anyio
@@ -184,7 +199,7 @@ async def test_last_transcribed_uses_transcript_file_modified_time(tmp_path: Pat
 
 
 @pytest.mark.anyio
-async def test_rename_commits_on_enter() -> None:
+async def test_rename_commits_via_metadata_dialog() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
     application.update_session = MagicMock(
@@ -194,42 +209,57 @@ async def test_rename_commits_on_enter() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        name_input = pilot.app.screen.query_one("#session-name-input", Input)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+
+        name_input = dialog.query_one("#session-dialog-name", Input)
         name_input.focus()
         name_input.value = "Renamed"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.update_session.assert_called_once_with(session.id, "Renamed", None)
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+        assert pilot.app.screen.query_one("#session-name-value", Static).render() == "Renamed"
 
 
 @pytest.mark.anyio
-async def test_shortcut_keys_work_again_after_committing_name_with_enter() -> None:
-    """Regression test: `Input` doesn't blur itself on Enter, so without an explicit focus
-    move after committing, the name field would keep focus indefinitely and every single-letter
-    binding (A, R, B, G, C, X, N, E, D) would silently type into it instead of firing."""
+async def test_shortcut_keys_work_again_after_committing_name_via_metadata_dialog() -> None:
+    """Regression test: dismissing the metadata dialog must return focus to the underlying
+    screen's default (the attendance table), not leave a text field focused -- otherwise every
+    single-letter binding (A, R, B, G, C, X, N, E, D) would silently type into a field instead
+    of firing."""
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
+    application.update_session = MagicMock(
+        return_value=GameSession(campaign_id=uuid.uuid4(), id=session.id, sequence_number=1, name="Renamed")
+    )
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        name_input = pilot.app.screen.query_one("#session-name-input", Input)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+        name_input = dialog.query_one("#session-dialog-name", Input)
         name_input.focus()
         name_input.value = "Renamed"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
         with patch.object(SessionDetailScreen, "action_process") as action:
             await pilot.press("p")
             await pilot.pause()
 
         action.assert_called_once()
-        assert name_input.value == "Renamed"  # the "p" fired the binding, it wasn't typed into the field
 
 
 @pytest.mark.anyio
-async def test_date_commits_valid_iso_date() -> None:
+async def test_date_commits_valid_iso_date_via_metadata_dialog() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
     application.update_session = MagicMock(
@@ -241,17 +271,24 @@ async def test_date_commits_valid_iso_date() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        date_input = pilot.app.screen.query_one("#session-date-input", Input)
-        date_input.value = "2026-05-01"
-        date_input.focus()
-        await pilot.press("tab")
+        await pilot.press("m")
         await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+
+        date_input = dialog.query_one("#session-dialog-date", Input)
+        date_input.focus()
+        date_input.value = "2026-05-01"
+        await pilot.press("enter")
+        await _wait_for_progress_worker(pilot)
 
         application.update_session.assert_called_once_with(session.id, "Session One", date(2026, 5, 1))
+        assert isinstance(pilot.app.screen, SessionDetailScreen)
+        assert pilot.app.screen.query_one("#session-date-value", Static).render() == "2026-05-01"
 
 
 @pytest.mark.anyio
-async def test_invalid_date_shows_error_and_reverts() -> None:
+async def test_invalid_date_shows_inline_error_and_keeps_dialog_open() -> None:
     session = GameSession(campaign_id=uuid.uuid4(), sequence_number=1, name="Session One")
     application = _application(session=session)
     application.update_session = MagicMock()
@@ -259,18 +296,24 @@ async def test_invalid_date_shows_error_and_reverts() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        date_input = pilot.app.screen.query_one("#session-date-input", Input)
+        await pilot.press("m")
+        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, SessionDialog)
+
+        date_input = dialog.query_one("#session-dialog-date", Input)
+        date_input.focus()
         date_input.value = "not-a-date"
+        await pilot.press("enter")
+        await pilot.pause()
 
-        with patch.object(SessionDetailScreen, "notify") as notify:
-            date_input.focus()
-            await pilot.press("tab")
-            await pilot.pause()
-
-        notify.assert_called_once()
-        assert notify.call_args.kwargs.get("severity") == "error"
+        # Field-level date validation is synchronous and local to the dialog, so it never
+        # reaches `application.update_session`, and the dialog stays open with the typed
+        # (invalid) value intact rather than reverting it.
         application.update_session.assert_not_called()
-        assert date_input.value == ""
+        assert isinstance(pilot.app.screen, SessionDialog)
+        assert "not-a-date" in str(dialog.query_one("#session-dialog-error", Static).render())
+        assert date_input.value == "not-a-date"
 
 
 @pytest.mark.anyio
@@ -543,7 +586,7 @@ async def test_new_attendee_disabled_when_attendance_table_not_focused() -> None
     async with TableSageApp(application).run_test() as pilot:
         await _open_session_detail(pilot, session.id)
 
-        pilot.app.screen.query_one("#session-name-input", Input).focus()
+        pilot.app.screen.query_one("#error-table", DataTable).focus()
         await pilot.pause()
 
         await pilot.press("n")

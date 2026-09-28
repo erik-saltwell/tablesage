@@ -244,8 +244,9 @@ async def test_generate_ledger_uses_structured_output_and_stops_on_warning_free_
         template_data: object,
         model: str,
         response_model: object | None = None,
+        timeout: float | None = None,
     ) -> str:
-        captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model)
+        captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model, timeout=timeout)
         return _response().model_dump_json()
 
     monkeypatch.setattr(generate_ledger_module, "call_llm_with_prompt", _stub_call_llm_with_prompt)
@@ -473,6 +474,7 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
         attendees: tuple[Attendee, ...],
         glossary: tuple[GlossaryPromptEntry, ...],
         model: str,
+        timeout: float | None = None,
     ) -> LedgerGenerationResponse:
         captured.update(
             starting_context=starting_context,

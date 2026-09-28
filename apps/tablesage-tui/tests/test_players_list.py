@@ -8,12 +8,12 @@ from tablesage_application.player_archive import PlayerArchiveResult
 from tablesage_application.players_from_session import EnhanceResult
 from tablesage_model.model import Campaign, Player
 from tablesage_model.model import Session as GameSession
-from tablesage_tui.dialogs import ConfirmationDialog, SessionFromCampaignPickerDialog, TextInputDialog
+from tablesage_tui.dialogs import ConfirmationDialog, PlayerDialog, SessionFromCampaignPickerDialog
 from tablesage_tui.screens.main_app import TableSageApp
 from tablesage_tui.screens.player_detail import PlayerDetailScreen
 from tablesage_tui.screens.players_list import PlayersListScreen
 from textual.pilot import Pilot
-from textual.widgets import DataTable, Input
+from textual.widgets import DataTable, Input, Static
 from textual_fspicker import FileOpen, FileSave
 
 
@@ -65,11 +65,16 @@ async def test_manual_invalid_name_never_checks_or_deletes_folder() -> None:
         await _open_players_list(pilot)
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.dismiss("../outside")
-        await pilot.pause()
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+        dialog.query_one("#player-dialog-name", Input).value = "../outside"
+        await pilot.press("enter")
+        await _wait_for_progress_worker(pilot)
+
         application.player_folder_exists.assert_not_called()
         application.delete_orphan_player_folder.assert_not_called()
         application.create_player.assert_not_called()
+        assert isinstance(pilot.app.screen, PlayerDialog)
 
 
 @pytest.mark.anyio
@@ -200,8 +205,8 @@ async def test_returning_from_player_detail_reloads_players() -> None:
         assert application.list_players.call_count >= 1
         call_count_before_pop = application.list_players.call_count
 
-        # The first Esc leaves the focused name field; the second goes back.
-        await pilot.press("escape", "escape")
+        # A single Esc now pops straight back (no more focused-name-input step to leave first).
+        await pilot.press("escape")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, PlayersListScreen)
@@ -219,11 +224,11 @@ async def test_new_player_creates_and_reloads() -> None:
 
         await pilot.press("n")
         await pilot.pause()
-        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert isinstance(pilot.app.screen, PlayerDialog)
 
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        pilot.app.screen.query_one("#player-dialog-name", Input).value = "Alice"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.create_player.assert_called_once()
         assert application.create_player.call_args.args[0].name == "Alice"
@@ -260,7 +265,7 @@ async def test_new_player_folder_collision_prompts_then_deletes_and_creates() ->
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        pilot.app.screen.query_one("#player-dialog-name", Input).value = "Alice"
         await pilot.press("enter")
         await pilot.pause()
 
@@ -268,7 +273,7 @@ async def test_new_player_folder_collision_prompts_then_deletes_and_creates() ->
         application.create_player.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_orphan_player_folder.assert_called_once_with("Alice")
         application.create_player.assert_called_once()
@@ -287,21 +292,27 @@ async def test_new_player_folder_collision_cancelled_does_not_create() -> None:
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+        name_input = dialog.query_one("#player-dialog-name", Input)
+        name_input.value = "Alice"
         await pilot.press("enter")
         await pilot.pause()
 
         assert isinstance(pilot.app.screen, ConfirmationDialog)
         await pilot.press("escape")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_orphan_player_folder.assert_not_called()
         application.create_player.assert_not_called()
-        assert isinstance(pilot.app.screen, PlayersListScreen)
+        # A cancelled collision leaves the PlayerDialog open with an inline error, not the
+        # underlying PlayersListScreen (see `TableSageScreen.resolve_folder_collision`).
+        assert isinstance(pilot.app.screen, PlayerDialog)
+        assert name_input.value == "Alice"
 
 
 @pytest.mark.anyio
-async def test_new_player_duplicate_name_shows_error() -> None:
+async def test_new_player_duplicate_name_shows_inline_error_and_keeps_dialog_open() -> None:
     application = _application()
     application.create_player = MagicMock(side_effect=ValueError("A player named 'Alice' already exists."))
 
@@ -310,11 +321,17 @@ async def test_new_player_duplicate_name_shows_error() -> None:
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Alice"
+        dialog = pilot.app.screen
+        assert isinstance(dialog, PlayerDialog)
+        name_input = dialog.query_one("#player-dialog-name", Input)
+        name_input.value = "Alice"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        assert isinstance(pilot.app.screen, PlayersListScreen)
+        application.create_player.assert_called_once()
+        assert isinstance(pilot.app.screen, PlayerDialog)
+        assert "Alice" in str(dialog.query_one("#player-dialog-error", Static).render())
+        assert name_input.value == "Alice"
 
 
 @pytest.mark.anyio

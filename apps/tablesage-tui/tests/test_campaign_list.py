@@ -4,13 +4,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from tablesage_model.model import Campaign
-from tablesage_tui.dialogs import ConfirmationDialog, TextInputDialog
+from tablesage_model.model import Session as GameSession
+from tablesage_tui.dialogs import CampaignDialog, ConfirmationDialog
 from tablesage_tui.screens.campaign_detail import CampaignDetailScreen
 from tablesage_tui.screens.campaign_list import CampaignListScreen
 from tablesage_tui.screens.main_app import TableSageApp
 from textual.pilot import Pilot
-from textual.widgets import DataTable, Input
-from textual_fspicker import FileOpen
+from textual.widgets import DataTable, Input, Static
+from textual_fspicker import FileOpen, FileSave
 
 
 @pytest.mark.anyio
@@ -30,6 +31,38 @@ async def test_import_campaign_picker_and_worker(tmp_path: Path) -> None:
         assert isinstance(pilot.app.screen, CampaignListScreen)
 
 
+@pytest.mark.anyio
+async def test_export_campaign_picker_and_worker(tmp_path: Path) -> None:
+    campaign = Campaign(name="Iron Pact")
+    application = _application(campaigns=[campaign])
+    application.list_sessions.return_value = []
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+        await pilot.press("x")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, FileSave)
+        destination = tmp_path / "campaign.zip"
+        pilot.app.screen.dismiss(destination)
+        await pilot.pause()
+        await pilot.app.workers.wait_for_complete()
+        await pilot.pause()
+        application.export_campaign.assert_called_once_with(campaign.id, destination)
+
+
+@pytest.mark.anyio
+async def test_export_campaign_rejects_processing_session() -> None:
+    campaign = Campaign(name="Iron Pact")
+    game_session = GameSession(campaign_id=campaign.id, sequence_number=1, name="Busy", status="processing")
+    application = _application(campaigns=[campaign])
+    application.list_sessions.return_value = [game_session]
+    async with TableSageApp(application).run_test() as pilot:
+        await _open_campaign_list(pilot)
+        await pilot.press("x")
+        await pilot.pause()
+        assert isinstance(pilot.app.screen, CampaignListScreen)
+        application.export_campaign.assert_not_called()
+
+
 def _application(*, campaigns: list | None = None, last_session_dates: dict | None = None) -> MagicMock:
     return MagicMock(
         list_campaigns=MagicMock(return_value=campaigns or []),
@@ -40,6 +73,11 @@ def _application(*, campaigns: list | None = None, last_session_dates: dict | No
 
 async def _open_campaign_list(pilot: Pilot) -> None:
     await pilot.press("c")
+    await pilot.pause()
+
+
+async def _wait_for_progress_worker(pilot: Pilot) -> None:
+    await pilot.app.workers.wait_for_complete()
     await pilot.pause()
 
 
@@ -113,8 +151,8 @@ async def test_resuming_the_screen_after_editing_a_campaign_reloads_it() -> None
         # simulate the campaign's game_system having changed on the detail screen
         application.list_campaigns = MagicMock(return_value=[Campaign(id=campaign.id, name="Iron Pact", game_system="Dungeon World")])
 
-        # The first Esc leaves the focused name field; the second goes back.
-        await pilot.press("escape", "escape")
+        # A single Esc now pops straight back (no more focused-name-input step to leave first).
+        await pilot.press("escape")
         await pilot.pause()
         assert pilot.app.screen is list_screen
 
@@ -178,11 +216,11 @@ async def test_new_campaign_creates_and_reloads() -> None:
 
         await pilot.press("n")
         await pilot.pause()
-        assert isinstance(pilot.app.screen, TextInputDialog)
+        assert isinstance(pilot.app.screen, CampaignDialog)
 
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Iron Pact"
+        pilot.app.screen.query_one("#campaign-dialog-name", Input).value = "Iron Pact"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.create_campaign.assert_called_once()
         assert application.create_campaign.call_args.args[0].name == "Iron Pact"
@@ -207,7 +245,7 @@ async def test_new_campaign_cancelled_does_not_create() -> None:
 
 
 @pytest.mark.anyio
-async def test_new_campaign_duplicate_name_shows_error() -> None:
+async def test_new_campaign_duplicate_name_shows_inline_error_and_keeps_dialog_open() -> None:
     application = _application()
     application.create_campaign = MagicMock(side_effect=ValueError("A campaign named 'Iron Pact' already exists."))
 
@@ -216,11 +254,17 @@ async def test_new_campaign_duplicate_name_shows_error() -> None:
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Iron Pact"
+        dialog = pilot.app.screen
+        assert isinstance(dialog, CampaignDialog)
+        name_input = dialog.query_one("#campaign-dialog-name", Input)
+        name_input.value = "Iron Pact"
         await pilot.press("enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
-        assert isinstance(pilot.app.screen, CampaignListScreen)
+        application.create_campaign.assert_called_once()
+        assert isinstance(pilot.app.screen, CampaignDialog)
+        assert "Iron Pact" in str(dialog.query_one("#campaign-dialog-error", Static).render())
+        assert name_input.value == "Iron Pact"
 
 
 @pytest.mark.anyio
@@ -236,7 +280,7 @@ async def test_new_campaign_folder_collision_prompts_then_deletes_and_creates() 
 
         await pilot.press("n")
         await pilot.pause()
-        pilot.app.screen.query_one("#text-input-value", Input).value = "Iron Pact"
+        pilot.app.screen.query_one("#campaign-dialog-name", Input).value = "Iron Pact"
         await pilot.press("enter")
         await pilot.pause()
 
@@ -244,7 +288,7 @@ async def test_new_campaign_folder_collision_prompts_then_deletes_and_creates() 
         application.create_campaign.assert_not_called()
 
         await pilot.press("tab", "tab", "enter")
-        await pilot.pause()
+        await _wait_for_progress_worker(pilot)
 
         application.delete_orphan_campaign_folder.assert_called_once_with("Iron Pact")
         application.create_campaign.assert_called_once()

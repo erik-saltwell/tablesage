@@ -11,7 +11,13 @@ from ..model import SpeechType, Transcript, TranscriptionWord
 
 
 async def transcribe_and_diarize(
-    input_file: Path, language_code: str, model_id: str, request_timeout: int, tag_audio_events: bool, speaker_count: int | None
+    input_file: Path,
+    language_code: str,
+    model_id: str,
+    request_timeout: int,
+    tag_audio_events: bool,
+    no_verbatim: bool,
+    speaker_count: int | None,
 ) -> Transcript:
     require_credential("elevenlabs", model_id)
     elevenlabs: AsyncElevenLabs = AsyncElevenLabs(
@@ -24,6 +30,7 @@ async def transcribe_and_diarize(
                 file=audio_data,
                 model_id=model_id,
                 tag_audio_events=tag_audio_events,
+                no_verbatim=no_verbatim,
                 language_code=language_code,
                 diarize=True,
                 timestamps_granularity="word",
@@ -35,6 +42,7 @@ async def transcribe_and_diarize(
                 file=audio_data,
                 model_id=model_id,
                 tag_audio_events=tag_audio_events,
+                no_verbatim=no_verbatim,
                 language_code=language_code,
                 diarize=True,
                 timestamps_granularity="word",
@@ -55,8 +63,15 @@ class ElevenLabsTranscriptionStrategy:
     model_id: str
     request_timeout: int
     tag_audio_events: bool
+    no_verbatim: bool
 
     async def transcribe_and_diarize(self, input_file: Path, speaker_count: int | None) -> Transcript:
         return await transcribe_and_diarize(
-            input_file, self.language_code, self.model_id, self.request_timeout, self.tag_audio_events, speaker_count
+            input_file,
+            self.language_code,
+            self.model_id,
+            self.request_timeout,
+            self.tag_audio_events,
+            self.no_verbatim,
+            speaker_count,
         )

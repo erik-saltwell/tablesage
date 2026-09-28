@@ -86,6 +86,7 @@ async def test_generation_uses_high_level_inputs_and_retries_invalid_output(monk
         template_data: object,
         model: str,
         response_model: object | None = None,
+        timeout: float | None = None,
     ) -> str:
         captured.append({"prompt": prompt, "template_data": template_data, "model": model, "response_model": response_model})
         return outputs.pop(0)
@@ -196,7 +197,7 @@ def test_application_generates_sections_with_attendees_high_model_and_atomic_per
     captured: dict[str, object] = {}
 
     async def _stub_generate(
-        role_transcript: RoleTranscript, attendees: tuple[Attendee, ...], model: str
+        role_transcript: RoleTranscript, attendees: tuple[Attendee, ...], model: str, timeout: float | None = None
     ) -> TranscriptSectionsGenerationResponse:
         captured.update(role_transcript=role_transcript, attendees=attendees, model=model)
         return _response()

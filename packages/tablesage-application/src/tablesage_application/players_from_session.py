@@ -14,7 +14,7 @@ from tablesage_tools.embeddings import Embedding
 from tablesage_tools.model import Transcript, Utterance
 
 from .entities.sessions import list_attendance
-from .paths import ARTIFACTS, ArtifactName
+from .paths import ARTIFACTS, VOICE_CLIP_GLOB, ArtifactName
 from .session_pipeline.transcript_review import preferred_transcript_artifact
 from .voice_clips import clips
 
@@ -23,8 +23,9 @@ class Stage(Enum):
     """An `enhance_players_from_session` pipeline stage, reported to `on_progress`.
 
     EXTRACTING reports one running count across every attendee's qualifying utterances
-    (not reset per attendee). RECOMPUTING_CENTROIDS reports one count per attendee (not
-    per-clip -- a single attendee's own centroid recompute isn't itemized to this stage).
+    (not reset per attendee). RECOMPUTING_CENTROIDS reports one running count of clips
+    embedded across every attendee's clip folder. Removing similarity outliers after an
+    attendee's last clip is embedded isn't itemized, so the count pauses there.
     """
 
     EXTRACTING = "extracting"
@@ -177,12 +178,30 @@ def enhance_players_from_session(
 
     written_counts = asyncio.run(_extract_all())
 
-    for index, attendee in enumerate(attendees, start=1):
+    # Progress counts clips embedded across every attendee. Each attendee's clip files are counted up front
+    # (duplicates are skipped by the recompute, so its own total can be lower); once an attendee finishes,
+    # the count jumps to that attendee's full file count so the bar always ends at 100%.
+    clip_counts = {attendee.player_id: sum(1 for _ in player_folders[attendee.player_id].glob(VOICE_CLIP_GLOB)) for attendee in attendees}
+    total_to_embed = sum(clip_counts.values())
+    embedded_before = 0
+    _report(on_progress, Stage.RECOMPUTING_CENTROIDS, 0, total_to_embed)
+    for attendee in attendees:
         folder = player_folders[attendee.player_id]
+
+        def on_clip_embedded(done: int, _total: int, offset: int = embedded_before) -> None:
+            _report(on_progress, Stage.RECOMPUTING_CENTROIDS, offset + done, total_to_embed)
+
         clips.recompute_centroid(
-            session, attendee.player_id, folder, embed, None, outlier_settings.min_sample_similarity, outlier_settings.min_samples
+            session,
+            attendee.player_id,
+            folder,
+            embed,
+            on_clip_embedded,
+            outlier_settings.min_sample_similarity,
+            outlier_settings.min_samples,
         )
-        _report(on_progress, Stage.RECOMPUTING_CENTROIDS, index, len(attendees))
+        embedded_before += clip_counts[attendee.player_id]
+        _report(on_progress, Stage.RECOMPUTING_CENTROIDS, embedded_before, total_to_embed)
 
     enhanced_player_count = sum(1 for count in written_counts.values() if count > 0)
     return EnhanceResult(enhanced_player_count=enhanced_player_count, clip_count=total_clips)

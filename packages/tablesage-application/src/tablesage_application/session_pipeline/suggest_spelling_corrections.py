@@ -52,6 +52,7 @@ class SpellingSuggestion:
     to_text: str
     case_sensitive: bool
     occurrence_count: int
+    removed: bool = False
 
 
 class Correction(Protocol):
@@ -116,23 +117,23 @@ def filter_and_dedupe_suggestions(proposals: Sequence[SpellingSuggestionProposal
     Three filters, in order: `from_text` must actually occur (case-insensitively) in the
     transcript -- a model-imprecision snippet that matches nothing is inert noise, not worth
     reviewing; `to_text` must differ from `from_text` (case-insensitively) -- a no-op; and
-    duplicate `from_text` values keep only the first (an implementation-defined winner, not a
-    merge -- rare enough that the surviving row's own Edit/Delete covers it).
+    duplicate From/To pairs keep only the first. Distinct replacements for the same From
+    remain available so the review can display them together and mark alternatives removed.
     """
-    seen_from: set[str] = set()
+    seen_mappings: set[tuple[str, str]] = set()
     suggestions: list[SpellingSuggestion] = []
     for proposal in proposals:
         from_text = proposal.from_text.strip()
         to_text = proposal.to_text.strip()
         if not from_text or from_text.casefold() == to_text.casefold():
             continue
-        key = from_text.casefold()
-        if key in seen_from:
+        key = (from_text.casefold(), to_text)
+        if key in seen_mappings:
             continue
         occurrence_count = count_occurrences(transcript, from_text, case_sensitive=False)
         if occurrence_count == 0:
             continue
-        seen_from.add(key)
+        seen_mappings.add(key)
         suggestions.append(
             SpellingSuggestion(from_text=from_text, to_text=to_text, case_sensitive=False, occurrence_count=occurrence_count)
         )

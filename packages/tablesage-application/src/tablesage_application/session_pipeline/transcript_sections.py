@@ -126,6 +126,7 @@ async def generate_transcript_sections(
     role_transcript: RoleTranscript,
     attendees: Sequence[Attendee],
     model: str,
+    timeout: float | None = None,
 ) -> TranscriptSectionsGenerationResponse:
     """Classify opening transcript sections, retrying invalid structured output up to three times."""
     normalized_attendees = tuple(
@@ -159,6 +160,7 @@ async def generate_transcript_sections(
                 prompt_data,
                 model,
                 response_model=TranscriptSectionsGenerationResponse,
+                timeout=timeout,
             )
             try:
                 response = TranscriptSectionsGenerationResponse.model_validate_json(raw)

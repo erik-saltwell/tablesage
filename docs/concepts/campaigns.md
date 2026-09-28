@@ -14,6 +14,10 @@ Sessions that belong to that game and the Glossary they share.
 A Campaign does not own a roster of Players or Roles. Players attend individual
 Sessions, and their Roles belong to that Session.
 
+On the Campaign list, **Other actions** (`?`) includes **Export Campaign** (`X`)
+for the highlighted Campaign and **Import Campaign** (`I`) for loading a Campaign
+archive. Export is disabled when no Campaign is selected.
+
 ## Sessions in a Campaign
 
 The Campaign gives its Sessions a sequence and a shared history. Each Session
@@ -47,6 +51,22 @@ Session's role-attributed transcript on Session Detail.
 Extraction creates proposals rather than changing the Glossary automatically.
 Review the proposed entries and accept the terms that belong in the Campaign's
 shared reference.
+
+Use **Other actions** (`?`) on Campaign Detail to **Export Glossary** (`X`) or
+**Import Glossary** (`I`), from either the Sessions or Glossary tab. Export asks
+where to save a JSON file; import asks which JSON file to read. The file contains
+an array of entries with `term` and optional `description` fields:
+
+```json
+[
+  {"term": "The Black Academy", "description": "A school of forbidden magic."}
+]
+```
+
+Import adds new terms and keeps existing definitions unchanged. Matching ignores
+capitalization and surrounding whitespace, so importing “the black academy”
+will not replace an existing “The Black Academy.” Repeated new terms in the file
+use the first definition. Invalid files are rejected without adding any entries.
 
 ## Why the Glossary Matters
 

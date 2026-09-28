@@ -217,6 +217,7 @@ async def generate_ledger(
     attendees: Sequence[Attendee],
     glossary: Sequence[GlossaryPromptEntry],
     model: str,
+    timeout: float | None = None,
 ) -> LedgerGenerationResponse:
     """Generate the best structurally valid current-session Ledger content in at most three attempts.
 
@@ -265,6 +266,7 @@ async def generate_ledger(
                 prompt_data,
                 model,
                 response_model=LedgerGenerationResponse,
+                timeout=timeout,
             )
             try:
                 response = LedgerGenerationResponse.model_validate_json(raw)

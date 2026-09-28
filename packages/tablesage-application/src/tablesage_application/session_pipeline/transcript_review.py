@@ -11,9 +11,21 @@ import widelog
 from tablesage_tools.audio.ffmpeg import extract_clip
 from tablesage_tools.model import Transcript
 
+from ..campaign_corrections import Mapping
 from ..paths import ARTIFACTS, ArtifactName
 
 REVIEW_CLIPS_DIRNAME = "speaker_review_clips"
+
+
+@dataclass(frozen=True)
+class ReviewDecision:
+    transcript: Transcript
+    removed_indices: tuple[int, ...] = ()
+    find_replacements: tuple[Mapping, ...] = ()
+
+    def kept_transcript(self) -> Transcript:
+        removed = set(self.removed_indices)
+        return Transcript(utterances=[utterance for index, utterance in enumerate(self.transcript.utterances) if index not in removed])
 
 
 def review_clips_folder(session_folder: Path) -> Path:

@@ -5,6 +5,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from rich.text import Text
+from tablesage_application.campaign_corrections import Mapping
 from tablesage_application.session_pipeline import transcript_review
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
@@ -75,7 +76,7 @@ class ManualReviewScreen(TableSageScreen):
     """The Review Transcript step: review speaker labels and text in a working copy of the spellchecked transcript.
 
     It starts from a still-valid saved draft, else the last completed review (as it was left), else the
-    spellchecked transcript. Complete dismisses with the edited transcript, which the step saves as its decision;
+    spellchecked transcript. Complete dismisses with the edited transcript and row decisions, which the step saves;
     leaving (Exit, Escape, or quitting the app) with unsaved edits offers Save (a resumable draft), Don't Save, or
     Cancel, then dismisses with None.
     """
@@ -86,7 +87,7 @@ class ManualReviewScreen(TableSageScreen):
         Binding("escape", "exit_review", "Exit", key_display="Esc"),
         Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
         Binding("r,R", "replay", "Replay", key_display="R"),
-        Binding("d,D,delete,backspace", "delete_utterance", "Delete", key_display="D"),
+        Binding("d,D,delete,backspace", "delete_utterance", "Keep/Remove", key_display="D"),
         Binding("f,F", "find_replace", "Find/Replace", key_display="F"),
         Binding("0", "assign_speaker(0)", "Unassigned", key_display="0"),
         *(
@@ -105,10 +106,11 @@ class ManualReviewScreen(TableSageScreen):
         self._session_folder: Path | None = None
         self._transcript: Transcript | None = None
         # `_clip_indices[i]` is the on-disk clip filename index (from `extract_review_clips`'s
-        # original enumeration) for the utterance now at working-copy position `i`. Deleting an
-        # utterance never re-extracts clips, so this parallel list is what keeps `_play` pointing
-        # at the right clip file once positions have shifted.
+        # original enumeration) for the utterance now at working-copy position `i`. Older saved
+        # reviews may have physically deleted rows, so clip positions can differ from row positions.
         self._clip_indices: list[int] = []
+        self._removed: set[int] = set()
+        self._find_replacements: list[Mapping] = []
         self._all_attendee_names: list[str] = []
         self._attendee_names: list[str] = []
         self._playback = ReviewPlayback(self, on_advance=self._auto_advance, on_mode_changed=self._update_mode_indicator)
@@ -116,7 +118,13 @@ class ManualReviewScreen(TableSageScreen):
         self._playhead = 0
         self._programmatic_move = False
         self._table_ready = False
-        self._visit_baseline: Transcript | None = None
+        self._visit_baseline: transcript_review.ReviewDecision | None = None
+        # `DataTable`'s cursor defaults to row 0 before any real navigation, so a mouse click that
+        # happens to land there first is reported as a reselect (`RowSelected`) rather than a
+        # highlight -- see `on_data_table_row_selected`.
+        self._user_has_navigated = False
+        # Set around the initial `_play(0)` call in `_enter_review_phase`; see its use below.
+        self._pending_mount_echo = False
 
     @property
     def session_id(self) -> uuid.UUID:
@@ -177,15 +185,18 @@ class ManualReviewScreen(TableSageScreen):
         self._stop_review_resources()
         self.dismiss(None)
 
-    def _after_extract(self, result: tuple[Transcript, Path], draft: Transcript | None) -> None:
+    def _after_extract(self, result: tuple[Transcript, Path], draft: transcript_review.ReviewDecision | Transcript | None) -> None:
         source, _clip_dir = result
         if draft is None:
             self._transcript = source
             self._clip_indices = list(range(len(source.utterances)))
         else:
-            self._transcript = draft
-            self._clip_indices = self._draft_clip_indices(source, draft)
-        self._visit_baseline = self._transcript.model_copy(deep=True)
+            decision = draft if isinstance(draft, transcript_review.ReviewDecision) else transcript_review.ReviewDecision(draft)
+            self._transcript = decision.transcript
+            self._clip_indices = self._draft_clip_indices(source, decision.transcript)
+            self._removed = set(decision.removed_indices)
+            self._find_replacements = list(decision.find_replacements)
+        self._visit_baseline = self._decision()
         self.query_one("#manual-review-panel").display = True
         self._enter_review_phase()
 
@@ -226,6 +237,11 @@ class ManualReviewScreen(TableSageScreen):
         self._update_mode_indicator()
         self._update_focus_indicator()
         self._table_ready = True
+        # `DataTable.add_row` above highlights row 0 itself the moment the table gets its first
+        # row (a cursor becomes available where there was none) and queues a `RowHighlighted` for
+        # it -- delivered only once this method returns, by which point row 0 has already played
+        # here directly. `on_data_table_row_highlighted` discards that one expected echo.
+        self._pending_mount_echo = True
         self._play(0)
 
     # Row rendering
@@ -239,11 +255,13 @@ class ManualReviewScreen(TableSageScreen):
     def _row_cell_values(self, index: int) -> tuple[object, object, object]:
         assert self._transcript is not None
         utterance = self._transcript.utterances[index]
-        marker = "✓" if utterance.adjusted else ""
+        removed = index in self._removed
+        marker = "✗" if removed else "✓" if utterance.adjusted else ""
         text = utterance.punctuated_text if utterance.punctuated_text is not None else utterance.text
-        if self._is_row_enabled(index):
+        if self._is_row_enabled(index) and not removed:
             return marker, utterance.speaker, text
-        return Text(marker, style=_DIM_STYLE), Text(utterance.speaker, style=_DIM_STYLE), Text(text, style=_DIM_STYLE)
+        style = "dim strike" if removed else _DIM_STYLE
+        return Text(marker), Text(utterance.speaker, style=style), Text(text, style=style)
 
     def _utterance_text(self, index: int) -> str:
         assert self._transcript is not None
@@ -281,21 +299,49 @@ class ManualReviewScreen(TableSageScreen):
 
         programmatic = self._programmatic_move
         self._programmatic_move = False
-        if index == self._playhead and not programmatic:
+
+        if self._pending_mount_echo:
+            self._pending_mount_echo = False
+            if index == 0 and not programmatic:
+                return
+
+        # Guards against a redundant echo (e.g. the disabled-row bounce-back above, which moves the
+        # cursor back to the playhead without setting `_programmatic_move`) once that row has
+        # actually been played. Before that, `_playhead`'s initial 0 coincides with `DataTable`'s own
+        # default cursor row, so a mouse click that only changes column (not row) -- landing outside
+        # the first, narrow column -- would otherwise look identical to that echo and be dropped
+        # silently, even though nothing has played for this visit yet.
+        if index == self._playhead and not programmatic and self._user_has_navigated:
             return
 
+        self._user_has_navigated = True
         self._playhead = index
         if not programmatic:
             self._playback.set_manual()
         self._play(index)
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
-        """A second click on the selected row (or Enter) opens that row's editor."""
+        """A second click on the selected row (or Enter) opens that row's editor.
+
+        `DataTable` only posts this (rather than `RowHighlighted`) when the click lands on
+        whatever row is already its cursor -- which, before any real navigation happens, is row 0
+        by the widget's own default. That makes the very first click on a freshly opened screen
+        land here instead of `on_data_table_row_highlighted`, even though nothing has actually
+        played yet from that click. Treat that one case as a highlight (play, don't edit); any
+        later reselect is a genuine second click and opens the editor as usual.
+        """
         event.stop()
         if not self._table_ready or self._transcript is None:
             return
         index = event.cursor_row
         if not self._is_row_enabled(index):
+            return
+
+        if not self._user_has_navigated:
+            self._user_has_navigated = True
+            self._playhead = index
+            self._playback.set_manual()
+            self._play(index)
             return
 
         def on_saved(result: ManualReviewUtteranceResult | None) -> None:
@@ -389,49 +435,15 @@ class ManualReviewScreen(TableSageScreen):
         if next_index is not None:
             self._move_to(next_index)
 
-    # Deletion -- removes the playhead utterance from the working copy entirely (unlike
-    # assignment, which only relabels it). Rebuilds the table wholesale rather than re-keying
-    # rows in place, since every later row's key is its position in `self._transcript.utterances`.
+    # Keep/Remove leaves the row and its source clip available for restoration.
 
     def action_delete_utterance(self) -> None:
         if self._transcript is None or not self._transcript.utterances:
             return
 
-        self._playback.stop()
-
         index = self._playhead
-        self._transcript = transcript_review.delete_utterance(self._transcript, index)
-        del self._clip_indices[index]
-
-        self._table_ready = False
-        table = self.query_one(_ReviewTable)
-        table.clear()
-        for i in range(len(self._transcript.utterances)):
-            marker, speaker, text = self._row_cell_values(i)
-            table.add_row(marker, speaker, text, key=str(i))
-
-        if not self._transcript.utterances:
-            self.notify("All utterances deleted.")
-            return
-
-        next_index = min(index, len(self._transcript.utterances) - 1)
-        if not self._is_row_enabled(next_index):
-            candidate = self._next_enabled_row(next_index, 1)
-            if candidate is None:
-                candidate = self._next_enabled_row(next_index, -1)
-            if candidate is None:
-                # Deletion emptied the focused speaker's rows entirely -- drop the filter rather
-                # than leave the cursor stuck on a disabled row.
-                self._focus_speaker = None
-                self._rebuild_table_styles()
-                self._update_focus_indicator()
-                candidate = next_index
-            next_index = candidate
-
-        self._playhead = next_index
-        self._table_ready = True
-        table.move_cursor(row=next_index, scroll=True)
-        self._play(next_index)
+        self._removed.symmetric_difference_update({index})
+        self._refresh_row(index)
 
     # Find & Replace -- a bulk edit across every utterance's displayed text, not just the
     # playhead row. Like every other row edit here, it only changes the working copy.
@@ -443,7 +455,18 @@ class ManualReviewScreen(TableSageScreen):
         def on_result(result: FindReplaceResult | None) -> None:
             if result is None or self._transcript is None:
                 return
-            self._transcript, outcome = transcript_review.replace_text(self._transcript, result.find, result.replace, result.case_sensitive)
+            kept_indices = [index for index in range(len(self._transcript.utterances)) if index not in self._removed]
+            kept = Transcript(utterances=[self._transcript.utterances[index] for index in kept_indices])
+            changed, outcome = transcript_review.replace_text(kept, result.find, result.replace, result.case_sensitive)
+            if outcome.utterance_count:
+                utterances = list(self._transcript.utterances)
+                for index, utterance in zip(kept_indices, changed.utterances, strict=True):
+                    utterances[index] = utterance
+                self._transcript = Transcript(utterances=utterances)
+                if result.find.strip() and result.replace.strip():
+                    mapping = Mapping(result.find, result.replace, result.case_sensitive)
+                    if mapping not in self._find_replacements:
+                        self._find_replacements.append(mapping)
             self._rebuild_table_styles()
             if not outcome.utterance_count:
                 self.notify("No matches found.", severity="warning")
@@ -498,7 +521,7 @@ class ManualReviewScreen(TableSageScreen):
         if self._transcript is None:
             return
         self._stop_review_resources()
-        self.dismiss(self._transcript)
+        self.dismiss(self._decision())
 
     def action_exit_review(self) -> None:
         """Cancel the step, first offering to save changed transcript work as a draft."""
@@ -517,7 +540,7 @@ class ManualReviewScreen(TableSageScreen):
             if choice:
                 assert self._transcript is not None
                 try:
-                    self.application.save_review_draft(self._session_id, self._transcript)
+                    self.application.save_review_draft(self._session_id, self._decision())
                 except Exception as exc:
                     self.notify(f"Could not save transcript edits: {exc}", severity="error")
                     return
@@ -535,7 +558,13 @@ class ManualReviewScreen(TableSageScreen):
         )
 
     def _has_unsaved_transcript_changes(self) -> bool:
-        return self._transcript is not None and self._visit_baseline is not None and self._transcript != self._visit_baseline
+        return self._transcript is not None and self._visit_baseline is not None and self._decision() != self._visit_baseline
+
+    def _decision(self) -> transcript_review.ReviewDecision:
+        assert self._transcript is not None
+        return transcript_review.ReviewDecision(
+            self._transcript.model_copy(deep=True), tuple(sorted(self._removed)), tuple(self._find_replacements)
+        )
 
     def _stop_review_resources(self) -> None:
         self._playback.stop()

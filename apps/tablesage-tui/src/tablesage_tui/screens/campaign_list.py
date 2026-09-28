@@ -13,8 +13,8 @@ from textual.events import Resize
 from textual.widgets import DataTable
 from textual_fspicker import Filters
 
-from ..dialogs import ConfirmationDialog, TextInputDialog
-from ..dialogs.file_picker import FileOpen
+from ..dialogs import CampaignDialog, ConfirmationDialog
+from ..dialogs.file_picker import FileOpen, FileSave
 from ..dialogs.player_archive_errors import PlayerArchiveErrorsDialog
 from .base import TableSageScreen
 from .campaign_detail import CampaignDetailScreen
@@ -39,7 +39,8 @@ class CampaignListScreen(TableSageScreen):
     ]
     OTHER_BINDINGS = [
         Binding("c,C", "cleanup_campaigns", "Clean Up", key_display="C"),
-        Binding("i,I", "import_campaign", "Import", key_display="I"),
+        Binding("x,X", "export_campaign", "Export Campaign", key_display="X"),
+        Binding("i,I", "import_campaign", "Import Campaign", key_display="I"),
     ]
 
     def compose_content(self) -> ComposeResult:
@@ -85,7 +86,7 @@ class CampaignListScreen(TableSageScreen):
         self.refresh_bindings()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action in {"open_campaign", "delete_campaign"}:
+        if action in {"open_campaign", "delete_campaign", "export_campaign"}:
             return True if self._selected_campaign_id() is not None else None
         return True
 
@@ -107,19 +108,8 @@ class CampaignListScreen(TableSageScreen):
         self.action_open_campaign()
 
     def action_new_campaign(self) -> None:
-        def on_dismiss(name: str | None) -> None:
-            if not name:
-                return
-
-            def proceed() -> None:
-                try:
-                    self.application.create_campaign(Campaign(name=name))
-                except ValueError as exc:
-                    self.notify(str(exc), severity="error")
-                    return
-                self._reload_campaigns()
-
-            self.run_with_folder_collision_check(
+        async def on_submit(name: str, description: str | None, game_system: str | None) -> str | None:
+            proceed = await self.resolve_folder_collision(
                 title="Campaign Folder Exists",
                 prompt=(
                     f"A campaign folder named '{name}' already exists on disk. "
@@ -127,18 +117,17 @@ class CampaignListScreen(TableSageScreen):
                 ),
                 exists=lambda: self.application.campaign_folder_exists(name),
                 delete_existing=lambda: self.application.delete_orphan_campaign_folder(name),
-                proceed=proceed,
             )
+            if not proceed:
+                return f"Creation cancelled: a campaign folder named '{name}' already exists."
+            try:
+                self.application.create_campaign(Campaign(name=name, description=description, game_system=game_system))
+            except ValueError as exc:
+                return str(exc)
+            self._reload_campaigns()
+            return None
 
-        self.app.push_screen(
-            TextInputDialog(
-                title="New Campaign",
-                prompt="Enter a campaign name",
-                placeholder="Campaign name",
-                submit_label="Create Campaign",
-            ),
-            on_dismiss,
-        )
+        self.app.push_screen(CampaignDialog(title="New Campaign", submit_label="Create Campaign", on_submit=on_submit))
 
     def action_open_campaign(self) -> None:
         campaign_id = self._selected_campaign_id()
@@ -181,6 +170,42 @@ class CampaignListScreen(TableSageScreen):
                 prompt="Remove campaign folders on disk that have no matching campaign in the database?",
             ),
             on_dismiss,
+        )
+
+    def action_export_campaign(self) -> None:
+        campaign_id = self._selected_campaign_id()
+        if campaign_id is None:
+            return
+
+        def is_busy() -> bool:
+            sessions = self.application.list_sessions(campaign_id)
+            session_ids = {session.id for session in sessions}
+            return any(session.status == "processing" for session in sessions) or any(
+                worker.is_running
+                and (getattr(worker.node, "_campaign_id", None) == campaign_id or getattr(worker.node, "_session_id", None) in session_ids)
+                for worker in self.app.workers
+            )
+
+        if is_busy():
+            self.notify("Wait for campaign processing to finish before exporting.", severity="error")
+            return
+
+        def on_picked(destination: Path | None) -> None:
+            if destination is None:
+                return
+            if is_busy():
+                self.notify("Wait for campaign processing to finish before exporting.", severity="error")
+                return
+            self.run_with_progress(
+                title="Export Campaign",
+                message="Copying the database and campaign files…",
+                work=lambda: self.application.export_campaign(campaign_id, destination),
+                on_success=lambda _: self.notify(f"Exported campaign to {destination}."),
+            )
+
+        self.app.push_screen(
+            FileSave(title="Export Campaign", location=Path.home(), default_file="campaign.zip"),
+            on_picked,
         )
 
     def action_import_campaign(self) -> None:

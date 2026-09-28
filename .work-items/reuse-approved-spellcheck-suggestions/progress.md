@@ -1,0 +1,34 @@
+# Implementation outcome
+
+The campaign folder now stores approved From → To mappings and their case-sensitivity
+in `approved_corrections.json`. On first use, existing saved spellcheck decisions
+seed that file once. Session suggestions combine matching campaign mappings with
+fresh LLM suggestions, deduplicate identical mappings, and group competing From
+values with only one initially active. Campaign archives already include the
+entire campaign folder, so they carry this memory file.
+
+The spellcheck review keeps removed rows visible and restorable. Drafts and
+completed decisions retain all row states. Committing learns kept mappings and
+forgets removed ones; completing an unchanged older review does not replay old
+decisions into memory. Review Transcript likewise keeps removed utterances visible
+and restorable, while the reviewed transcript omits them. Completed Find/Replace
+operations with actual matches and nonblank From/To values teach campaign memory
+when Review Transcript is committed. Draft and canceled reviews do not.
+
+Verification: Ruff lint and formatting checks and `ty` type checking passed for
+changed implementation files. The complete existing test suite passed (734 tests).
+Direct behavior checks covered one-time seeding and no reseeding after forgetting,
+cross-session case-sensitive matching, and switching between visible spellcheck
+alternatives. Focused tests were rerun after the last review normalization change.
+
+Historical Find/Replace operations before this implementation were not recorded
+and cannot be seeded. Numerical rubric anchors remain undefined by prior choice.
+
+Completion audit (2026-09-28): Editing a remembered suggestion on its first
+review commit added the revised mapping but left the original in memory. The
+first commit now compares the saved proposal set with current campaign memory
+and forgets remembered proposals that were edited or removed. A direct behavior
+check verified replacement, later removal, and unchanged-review behavior;
+another confirmed that campaign export includes the memory file. The affected
+existing tests passed (94), and Ruff lint/format plus `ty` passed after the
+repair. The earlier 734-test full-suite pass predates this last repair.

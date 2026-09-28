@@ -51,6 +51,7 @@ def _suggestions(value: Any) -> list[SpellingSuggestion]:
             to_text=item["to_text"],
             case_sensitive=bool(item.get("case_sensitive", False)),
             occurrence_count=int(item.get("occurrence_count", 0)),
+            removed=bool(item.get("removed", False)),
         )
         for item in value or []
     ]
@@ -149,7 +150,15 @@ async def _review_corrections(
     saved_draft = await ctx.call(draft.load)
     rows = _suggestions(saved_draft) if saved_draft is not None else (decided if decided is not None else suggestions)
     corrections = await ctx.show(
-        CorrectionsStepScreen(title=title, hint=hint, transcript=transcript, suggestions=rows, whole_words=whole_words, draft=draft)
+        CorrectionsStepScreen(
+            title=title,
+            hint=hint,
+            transcript=transcript,
+            suggestions=rows,
+            whole_words=whole_words,
+            draft=draft,
+            soft_remove=step_id is StepID.REVIEW_SPELLING_CORRECTIONS,
+        )
     )
     if corrections is None:
         return StepResult.cancel()

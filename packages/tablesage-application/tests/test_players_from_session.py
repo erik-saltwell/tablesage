@@ -190,7 +190,13 @@ def test_enhance_players_from_session_reports_staged_progress(tmp_path: Path, mo
     recompute_calls = [c for c in calls if c[0] == Stage.RECOMPUTING_CENTROIDS]
     assert extracting_calls[0] == (Stage.EXTRACTING, 0, 3)
     assert extracting_calls[-1] == (Stage.EXTRACTING, 3, 3)
-    assert recompute_calls == [(Stage.RECOMPUTING_CENTROIDS, 1, 2), (Stage.RECOMPUTING_CENTROIDS, 2, 2)]
+    # One running count of clips embedded across both attendees, ending at 100%.
+    total = recompute_calls[0][2]
+    assert total == 3
+    assert recompute_calls[0] == (Stage.RECOMPUTING_CENTROIDS, 0, total)
+    assert recompute_calls[-1] == (Stage.RECOMPUTING_CENTROIDS, total, total)
+    completed = [c[1] for c in recompute_calls]
+    assert completed == sorted(completed)
 
 
 def test_enhance_players_from_session_rerun_replaces_prior_clips_as_a_unit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

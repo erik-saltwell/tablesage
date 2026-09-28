@@ -88,6 +88,7 @@ async def generate_summary(
     session_date: str | None,
     game_system: str | None,
     model: str,
+    timeout: float | None = None,
 ) -> str:
     """Generate normalized Markdown from source-agnostic summary prompt data.
 
@@ -108,7 +109,7 @@ async def generate_summary(
     with widelog.wide_event(op="generate_summary_template", model=model) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             log.set(attempt_count=attempt)
-            raw = await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, prompt_data, model)
+            raw = await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, prompt_data, model, timeout=timeout)
             try:
                 summary = validate_summary_markers(raw)
             except SummaryValidationError as exc:

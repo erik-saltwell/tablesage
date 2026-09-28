@@ -82,6 +82,7 @@ async def test_generation_supplies_only_selected_transcript_and_full_session_con
         template_data: object,
         model: str,
         response_model: object | None = None,
+        timeout: float | None = None,
     ) -> str:
         captured.update(prompt=prompt, template_data=template_data, model=model, response_model=response_model)
         return _response().model_dump_json()

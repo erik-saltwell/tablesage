@@ -130,6 +130,7 @@ async def generate_player_introductions(
     session_date: str | None,
     game_system: str | None,
     model: str,
+    timeout: float | None = None,
 ) -> PlayerIntroductionsGenerationResponse:
     """Generate validated player-character introductions, or skip the LLM for a null range."""
     if introduction_transcript is None:
@@ -173,6 +174,7 @@ async def generate_player_introductions(
                 prompt_data,
                 model,
                 response_model=PlayerIntroductionsGenerationResponse,
+                timeout=timeout,
             )
             try:
                 response = PlayerIntroductionsGenerationResponse.model_validate_json(raw)
