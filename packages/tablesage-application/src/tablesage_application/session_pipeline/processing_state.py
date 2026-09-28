@@ -1,6 +1,6 @@
 """A Session's processing state document, `processing_state.json`.
 
-One current-state document per Session folder (see the processing-step-architecture work item). It holds:
+One current-state document per Session folder. It holds:
 
 - `records`: one completion record per build step, keyed by the step's artifact name. A record lists the
   content fingerprint of every input the step declared when it completed; the artifact graph compares

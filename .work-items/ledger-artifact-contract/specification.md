@@ -8,7 +8,7 @@ Transcript Sections routes the role-attributed transcript into a starting-contex
 
 One structured LLM call generates the shared `starting_situation`, `ledger: {utterances}`, and `scene_breakdown: {ending_situation, scenes}` directly from the routed transcript. The response has exactly those three top-level fields; no scratchpad is returned. See [Scene Breakdown](../scene-breakdown-artifact-contract/specification.md) for the paired schema and reference rules.
 
-The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale because their recorded input fingerprints (content hashes, see the [processing step architecture](../processing-step-architecture/intent.md)) no longer match; it does not delete them or make its Scene Breakdown sibling stale.
+The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale because their recorded input fingerprints (content hashes) no longer match; it does not delete them or make its Scene Breakdown sibling stale.
 
 The packaged Generate Ledger `system.md` is an input to the shared build step. A changed prompt (by content, not
 modification time) makes both Ledger and Scene Breakdown stale.

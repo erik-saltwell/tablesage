@@ -2,8 +2,8 @@
 
 Automatic steps run their work behind the run's progress dialog. Manual steps show one screen (or prompt) and save
 only its decision; Cancel returns the cancel outcome, which ends the run. A manual step whose suggestions are empty
-completes on its own with an empty decision, without opening its screen. See the processing-step-architecture work
-item for the rules these follow.
+completes on its own with an empty decision, without opening its screen. The coordinator applies these rules in
+order and records the result in the Session's processing state.
 """
 
 from __future__ import annotations

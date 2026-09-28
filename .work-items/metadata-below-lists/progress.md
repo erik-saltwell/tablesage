@@ -81,3 +81,11 @@ Two other things were already deferred:
 
 Test suite and source are both verified green. Remaining optional follow-up: capture a screenshot
 with a long Campaign description to visually confirm the 3-line/`…` truncation.
+
+## Player metadata alignment follow-up (2026-09-28)
+
+Player Detail's four read-only statistics now form one right-aligned group. Each
+label/value field remains together, and adjacent fields have exactly four columns
+between them. The direct Textual layout check confirmed the final value reaches
+the stats row's right edge and every inter-field gap is two columns. The existing
+Player Detail test file passed (35 tests).

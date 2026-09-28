@@ -10,12 +10,11 @@
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
-| Processing step architecture | implementing | [.work-items/processing-step-architecture/](.work-items/processing-step-architecture/) |
 | Public documentation | implementing | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
 | Scene Breakdown artifact contract | complete | [.work-items/scene-breakdown-artifact-contract/](.work-items/scene-breakdown-artifact-contract/) |
-| Make automatic steps more visually distinct in Session Processing | registered | [.work-items/session-processing-automatic-step-styling/](.work-items/session-processing-automatic-step-styling/) |
-| Session processing flow | implementing | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
+| Make automatic steps more visually distinct in Session Processing | complete | [.work-items/session-processing-automatic-step-styling/](.work-items/session-processing-automatic-step-styling/) |
+| Session processing flow | complete | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
 

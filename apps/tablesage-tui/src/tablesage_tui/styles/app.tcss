@@ -1518,7 +1518,7 @@ PlayerDetailScreen {
 
         #player-stats-row {
             height: 1;
-            align: left middle;
+            align: right middle;
             /* Inset 1 column in from the Name input's edges on both sides
                (left offset = its label column width + 1, right offset = 1),
                so the row reads as gently nested inside the input's bounds
@@ -1535,12 +1535,10 @@ PlayerDetailScreen {
                 color: $surface-2-fg;
             }
 
-            /* Flexible gaps between label-value pairs: whatever width is left
-               after the (fixed-width) labels/values distributes evenly here,
-               so the row's content spans exactly as wide as the Name input
-               (same start, same end) regardless of terminal width. */
+            /* Keep each read-only metadata field together and separate fields
+               with exactly four columns. The row itself right-aligns the group. */
             .field-spacer {
-                width: 1fr;
+                width: 4;
             }
         }
     }

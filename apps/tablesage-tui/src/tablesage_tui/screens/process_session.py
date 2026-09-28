@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from typing import TYPE_CHECKING, cast
 
 from rich.text import Text
@@ -28,6 +29,34 @@ _OVERVIEW_WORKER_GROUP = "process-session-overview"
 # automatic step's progress and failures on the row of the manual step it leads to.
 SHOW_AUTOMATIC_STEPS = True
 _DIM = "dim"
+
+
+class _ProcessingStepsTable(DataTable[object]):
+    """A processing table whose arrow keys visit review points, not every automatic operation."""
+
+    def __init__(self, *, is_manual: Callable[[int], bool]) -> None:
+        super().__init__(id="process-session-steps", cursor_type="row", zebra_stripes=False, classes="tablesage-table")
+        self._is_manual = is_manual
+
+    def action_cursor_up(self) -> None:
+        self._move_to_manual(-1)
+
+    def action_cursor_down(self) -> None:
+        self._move_to_manual(1)
+
+    def _move_to_manual(self, direction: int) -> None:
+        if not (self.show_cursor and self.cursor_type == "row"):
+            if direction < 0:
+                super().action_scroll_up()
+            else:
+                super().action_scroll_down()
+            return
+
+        candidate = self.cursor_coordinate.row + direction
+        while 0 <= candidate < self.row_count and not self._is_manual(candidate):
+            candidate += direction
+        if 0 <= candidate < self.row_count:
+            self.move_cursor(row=candidate)
 
 
 class ProcessSessionScreen(TableSageScreen):
@@ -66,9 +95,7 @@ class ProcessSessionScreen(TableSageScreen):
             with Horizontal(id="process-session-columns"):
                 with Vertical(id="process-session-steps-column"):
                     yield Static("Session Processing Steps", id="process-session-steps-header", classes="section-title")
-                    table: DataTable[object] = DataTable(
-                        id="process-session-steps", cursor_type="row", zebra_stripes=False, classes="tablesage-table"
-                    )
+                    table = _ProcessingStepsTable(is_manual=lambda row: row < len(self._rows) and self._rows[row].step.is_manual)
                     table.add_column("", key="status", width=2)
                     table.add_column("Step", key="step")
                     table.add_column("", key="note")
@@ -162,20 +189,25 @@ class ProcessSessionScreen(TableSageScreen):
         for state in self._rows:
             step = state.step
             is_current = current_row is not None and step.id is current_row.id
-            if running_row is not None and step.id is running_row.id and run is not None and run.step is not None:
+            is_running = running_row is not None and step.id is running_row.id and run is not None and run.step is not None
+            has_failure = step.id in failures
+            if is_running:
                 status, note = Text("▶", style="bold"), Text(self._running_note(run), style="italic")
-            elif step.id in failures:
+            elif has_failure:
                 status, note = Text("!", style="bold red"), Text(failures[step.id], style="red")
             elif state.complete:
-                status, note = Text("✓", style="bold green"), Text("Nothing to review" if state.nothing_to_review else "", style=_DIM)
+                status_style = "bold green" if step.is_manual else "dim green"
+                status, note = Text("✓", style=status_style), Text("Nothing to review" if state.nothing_to_review else "", style=_DIM)
             elif is_current:
                 status, note = Text("›", style="bold"), Text("")
             else:
                 status, note = Text(""), Text("")
-            # Rows after the current one can't start yet.
-            # Automatic steps are indented under the manual steps they serve.
+            # Rows after the current one can't start yet. Automatic steps are indented and muted under the manual steps they serve.
             label = step.label if step.is_manual else f"  {step.label}"
-            table.add_row(status, Text(label, style=_DIM if future else ""), note, key=step.id.value)
+            label_style = "bold" if step.is_manual else ("" if is_running or has_failure else _DIM)
+            if future:
+                label_style = _DIM
+            table.add_row(status, Text(label, style=label_style), note, key=step.id.value)
             future = future or is_current
         if self._rows:
             table.move_cursor(row=min(max(selected, 0), len(self._rows) - 1))

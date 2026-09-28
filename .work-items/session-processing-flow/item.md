@@ -1,13 +1,15 @@
 ---
 name: "Session processing flow"
-status: implementing
+status: complete
 ---
 
 # Session processing flow
 
 Replace Session Detail's separate audio, transcript-review, and output-generation entry points with a single, resumable processing flow.
 
-> **Superseded in part (2026-09-27):** [Processing step architecture](../processing-step-architecture/item.md) replaced this item's Process Session driver, step list, skipped-step handling, receipt files, and mtime-based staleness. Its step-by-step designs below describe the earlier flow.
+> **Architecture record retired (2026-09-28):** the separate Processing step architecture
+> work item was rolled back. This work item is the durable record of the current Session
+> processing flow and its implementation.
 
 - [Idea](idea.md): the original three-phase direction, since superseded
 - [Quality rubric](rubric.md)
@@ -22,6 +24,12 @@ Replace Session Detail's separate audio, transcript-review, and output-generatio
 2. **Redesign (in progress):** `P` on Session Detail now opens **Process Session**. It's a numbered step list whose completion comes from the artifact graph: a step is complete when all its artifacts are current. It also has a New Players list and an error list.
    - The Outputs screen and the dynamic `Process` / `Continue Processing` label are gone.
    - The sections below record each step's settled design.
+
+## Completion (2026-09-28)
+
+The user confirmed this work item supersedes the rolled-back Processing step
+architecture record. The completed implementation, design decisions, and
+verification history above are retained here as the canonical handoff.
 
 ## Current step list
 
@@ -439,4 +447,3 @@ Session Detail's Extract Glossary also runs as a manual Process Session step, ri
 - **Receipt:** `extracted_glossary_terms.json` (not shown in the UI) lists the entries the step added. Built from the identified transcript and the `extract_glossary` prompt; Spellcheck depends on it. The campaign glossary itself is deliberately not a dependency, so later Sessions adding terms never invalidate this one. The receipt is written when missing or stale, or when the review added at least one term. A rerun that adds nothing leaves it untouched, so the manual transcript review stays current.
 - **Skipped steps are silent:** Review Name Corrections' and Spellcheck's "nothing found" toasts were removed. Generate Artifacts keeps "All outputs are current." as the run's end signal.
 - **Verification:** ruff and format are clean. Mypy shows no new errors. The full test suite matches the pre-change baseline (the same 45 pre-existing TUI failures); the only fixture edits add the new artifact to lists that enumerate every artifact. A direct `Application` script checked every receipt-write and staleness rule. A headless run of Process Session covered two paths. On the review path, the review opened, entries were deleted and added, the glossary and receipt were written, and spellcheck skipped silently on the way to Review Transcript. On the empty path, the step completed with no screen and no toast. Not yet checked: a real LLM call on a real recording.
-
