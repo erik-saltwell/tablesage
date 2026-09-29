@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import io
 import json
+import math
 import re
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -201,6 +202,62 @@ async def normalize_and_export_16k_mono(
         str(input_wav),
         "-af",
         loudnorm_filter,
+        "-ac",
+        "1",
+        "-ar",
+        "16000",
+        "-c:a",
+        "pcm_s16le",
+        str(output_wav),
+    ]
+    await run_command_async(cmd)
+
+
+async def dynamically_normalize_and_export_16k_mono(
+    input_wav: Path,
+    output_wav: Path,
+    *,
+    frame_length_ms: int = 500,
+    smoothing_frames: int = 5,
+    max_gain: float = 4.0,
+    silence_threshold: float = 0.003,
+    target_peak: float = 0.9,
+) -> None:
+    """Level changing audio sections and export a 16 kHz mono PCM WAV.
+
+    Use after any denoising step: dynamic gain can also raise residual noise.
+    The gain cap and low-level threshold limit amplification of near-silence.
+    This helper is intentionally separate from ``clean_clip`` until its use is
+    chosen by the caller.
+    """
+    if not 10 <= frame_length_ms <= 8000:
+        raise ValueError("frame_length_ms must be between 10 and 8000")
+    if not 3 <= smoothing_frames <= 301 or smoothing_frames % 2 == 0:
+        raise ValueError("smoothing_frames must be an odd number between 3 and 301")
+    if not math.isfinite(max_gain) or not 1 <= max_gain <= 100:
+        raise ValueError("max_gain must be between 1 and 100")
+    if not math.isfinite(silence_threshold) or not 0 <= silence_threshold <= 1:
+        raise ValueError("silence_threshold must be between 0 and 1")
+    if not math.isfinite(target_peak) or not 0 < target_peak <= 0.95:
+        raise ValueError("target_peak must be greater than 0 and at most 0.95")
+
+    output_wav.parent.mkdir(parents=True, exist_ok=True)
+    filters = (
+        f"dynaudnorm=framelen={frame_length_ms}:gausssize={smoothing_frames}:"
+        f"peak={target_peak}:maxgain={max_gain}:threshold={silence_threshold},"
+        "alimiter=limit=0.95:level=false:latency=true"
+    )
+    cmd = [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-i",
+        str(input_wav),
+        "-vn",
+        "-af",
+        filters,
         "-ac",
         "1",
         "-ar",
