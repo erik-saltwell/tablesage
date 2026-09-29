@@ -8,8 +8,8 @@ Every step on that page runs here as well, and this page focuses on what is
 different.
 
 On Session Detail, a new player's **Samples** count is a red **0**. Process
-Session lists them under **New Players**, and none of its steps are struck
-through.
+Session lists them under **New Players**, and the new-player steps appear in
+its list of steps.
 
 ![Session Detail showing Jordan, a new player with no voice samples](../images/session-processing/session-detail-new-player.png)
 
@@ -27,8 +27,9 @@ confirm them, and saves them as that player's first voice samples, all
 before Identify Speakers runs. By the time speakers are identified, the new
 player is just another attendee with a voice profile.
 
-The four new-player steps sit between **Remove Bad Utterances** and
-**Identify Speakers**:
+The new-player steps sit between **Remove Bad Utterances** and
+**Identify Speakers**. Name corrections also have automatic *Suggest* and
+*Apply* rows around your review. The four steps that matter most are:
 
 1. **Review Name Corrections** makes names in the transcript reliable.
 2. **Isolate New Speakers** uses those names and other clues to find each new
@@ -42,13 +43,13 @@ send processing back through them.
 
 ## Get the words
 
-**Import Audio (1)**, **Create Transcript**, and **Remove Bad Utterances**
+**Import Audio**, **Create Transcript**, and **Remove Bad Utterances**
 work exactly as they do for
 [returning players](session-processing-returning-players.md#get-the-words).
 
 ## Build the new players' voice profiles
 
-### Review Name Corrections (2)
+### Review Name Corrections
 
 Your Medium model compares the transcript with every attendee's player name
 and character names and proposes corrections for ones that were misheard,
@@ -80,7 +81,7 @@ lines and those that sound least like the player's own picks. A new player who s
 speech—someone who barely spoke—is left for you to assign by hand in
 Review Transcript.
 
-### Review New Speaker Assignments (3)
+### Review New Speaker Assignments
 
 Here you confirm the proposed lines. Every line you keep becomes a voice
 sample, so this is the most important check for a new player.
@@ -115,8 +116,8 @@ no further filtering except a technical minimum clip length, because your
 review was the quality check.
 
 From this point, the player is no longer new. The **New Players** panel
-reads *All attendees have voice profiles*. The new-player steps keep their checks rather than becoming
-struck through, because they did real work for this Session.
+is hidden. The new-player steps keep their rows and checks, because they did
+real work for this Session.
 
 ## Find the speakers
 
@@ -131,8 +132,8 @@ never showed you.
 
 The remaining steps are the same as for
 [returning players](session-processing-returning-players.md#fix-the-vocabulary):
-**Extract Glossary Terms (4)**, **Spellcheck Against Glossary (5)**, **Review
-Transcript (6)**, **Assign Roles To Players**, and **Generate Artifacts (7)**.
+**Extract Glossary Terms**, **Spellcheck Against Glossary**, **Review
+Transcript**, **Assign Roles To Players**, and **Generate Artifacts**.
 Only a few points differ.
 
 - **Name corrections are already applied.** Spellcheck focuses on glossary

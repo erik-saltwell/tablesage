@@ -34,7 +34,7 @@ class PlayerDetailScreen(TableSageScreen):
         Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
     ]
     OTHER_BINDINGS = [
-        Binding("r,R", "recompute_centroid", "Recompute", key_display="R"),
+        Binding("r,R", "recompute_voice_print", "Recompute", key_display="R"),
         Binding("c,C", "cleanup", "Clean Up", key_display="C"),
     ]
 
@@ -52,14 +52,14 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("Name", classes="field-label")
                     yield Static("", id="player-name-value", classes="field-value")
                 with Horizontal(classes="field-row", id="player-stats-row"):
-                    yield Static("Centroid Samples:", classes="field-label")
+                    yield Static("Voice Print Samples:", classes="field-label")
                     yield Static("", id="player-sample-count-value", classes="field-value")
                     yield Static("", classes="field-spacer")
                     yield Static("Computed At:", classes="field-label")
                     yield Static("", id="player-computed-at-value", classes="field-value")
                     yield Static("", classes="field-spacer")
-                    yield Static("Centroid", classes="field-label")
-                    yield Static("", id="player-centroid-hash-value", classes="field-value")
+                    yield Static("Voice Print", classes="field-label")
+                    yield Static("", id="player-voice-print-hash-value", classes="field-value")
                     yield Static("", classes="field-spacer")
                     yield Static("Duration", classes="field-label")
                     yield Static("", id="player-total-duration-value", classes="field-value")
@@ -79,7 +79,7 @@ class PlayerDetailScreen(TableSageScreen):
 
         self.query_one(TableSageHeader).campaign = self._player_name
         self.query_one("#player-name-value", Static).update(self._player_name)
-        self._refresh_centroid_display(player)
+        self._refresh_voice_print_display(player)
         self._reload_voice_clips()
 
     # Metadata
@@ -118,18 +118,18 @@ class PlayerDetailScreen(TableSageScreen):
         self.query_one("#player-name-value", Static).update(self._player_name)
         return None
 
-    def _refresh_centroid_display(self, player: Player) -> None:
+    def _refresh_voice_print_display(self, player: Player) -> None:
         self.query_one("#player-sample-count-value", Static).update(str(player.sample_count))
         computed_at = player.computed_at.strftime("%Y-%m-%d %H:%M") if player.computed_at else "Never"
         self.query_one("#player-computed-at-value", Static).update(computed_at)
-        self.query_one("#player-centroid-hash-value", Static).update(self._centroid_hash(player))
+        self.query_one("#player-voice-print-hash-value", Static).update(self._voice_print_hash(player))
 
     @staticmethod
-    def _centroid_hash(player: Player) -> str:
-        """A short hash of the centroid, computed here (not stored) purely so a recompute's effect is visible at a glance."""
-        if player.centroid_embedding is None:
+    def _voice_print_hash(player: Player) -> str:
+        """A short hash of the voice print, computed here (not stored) purely so a recompute's effect is visible at a glance."""
+        if player.voice_print_embedding is None:
             return "None"
-        return hashlib.sha256(player.centroid_embedding.encode()).hexdigest()[:8]
+        return hashlib.sha256(player.voice_print_embedding.encode()).hexdigest()[:8]
 
     # Voice clips
 
@@ -159,7 +159,7 @@ class PlayerDetailScreen(TableSageScreen):
 
     @staticmethod
     def _format_duration(total_seconds: float) -> str:
-        """`M:SS` across every clip on disk -- not just the ones the current centroid used."""
+        """`M:SS` across every clip on disk -- not just the ones the current voice print used."""
         minutes, seconds = divmod(round(total_seconds), 60)
         return f"{minutes}:{seconds:02d}"
 
@@ -180,7 +180,7 @@ class PlayerDetailScreen(TableSageScreen):
                 return
             self.run_with_progress(
                 title="Deleting Clip",
-                message=f"Deleting '{filename}' and recomputing the centroid…",
+                message=f"Deleting '{filename}' and recomputing the voice print…",
                 work=lambda: self.application.delete_voice_clip(self._player_id, filename, self.report_progress),
                 on_success=self._after_delete_clip,
             )
@@ -188,29 +188,29 @@ class PlayerDetailScreen(TableSageScreen):
         self.app.push_screen(
             ConfirmationDialog(
                 title="Delete Voice Clip",
-                prompt=f"Delete '{filename}'? The centroid will be recomputed from the remaining clips.",
+                prompt=f"Delete '{filename}'? The voice print will be recomputed from the remaining clips.",
             ),
             on_dismiss,
         )
 
     def _after_delete_clip(self, player: Player) -> None:
-        self._refresh_centroid_display(player)
+        self._refresh_voice_print_display(player)
         self._reload_voice_clips()
 
-    def action_recompute_centroid(self) -> None:
+    def action_recompute_voice_print(self) -> None:
         self.run_with_progress(
-            title="Recomputing Centroid",
-            message="Embedding voice clips and recomputing the centroid…",
-            work=lambda: self.application.recompute_centroid(self._player_id, self.report_progress),
-            on_success=self._after_recompute_centroid,
+            title="Recomputing Voice Print",
+            message="Embedding voice clips and recomputing the voice print…",
+            work=lambda: self.application.recompute_voice_print(self._player_id, self.report_progress),
+            on_success=self._after_recompute_voice_print,
         )
 
-    def _after_recompute_centroid(self, player: Player) -> None:
-        self._refresh_centroid_display(player)
+    def _after_recompute_voice_print(self, player: Player) -> None:
+        self._refresh_voice_print_display(player)
         if player.sample_count:
-            self.notify(f"Centroid recomputed from {player.sample_count} clip(s).")
+            self.notify(f"Voice print recomputed from {player.sample_count} clip(s).")
         else:
-            self.notify("No voice clips on disk; centroid cleared.")
+            self.notify("No voice clips on disk; voice print cleared.")
 
     def action_cleanup(self) -> None:
         def on_dismiss(confirmed: bool | None) -> None:
@@ -218,7 +218,7 @@ class PlayerDetailScreen(TableSageScreen):
                 return
             self.run_with_progress(
                 title="Cleaning Up",
-                message="Recomputing the centroid and removing unused voice clips…",
+                message="Recomputing the voice print and removing unused voice clips…",
                 work=lambda: self.application.cleanup_voice_clips(self._player_id, self.report_progress),
                 on_success=self._after_cleanup,
             )
@@ -226,14 +226,14 @@ class PlayerDetailScreen(TableSageScreen):
         self.app.push_screen(
             ConfirmationDialog(
                 title="Clean Up Voice Clips",
-                prompt="Recompute the centroid and permanently delete any duplicate or outlier clip files it finds?",
+                prompt="Recompute the voice print and permanently delete any duplicate or outlier clip files it finds?",
             ),
             on_dismiss,
         )
 
     def _after_cleanup(self, result: tuple[Player, list[str]]) -> None:
         player, deleted_filenames = result
-        self._refresh_centroid_display(player)
+        self._refresh_voice_print_display(player)
         self._reload_voice_clips()
         if deleted_filenames:
             self.notify(f"Removed {len(deleted_filenames)} unused voice clip(s).")
@@ -302,7 +302,7 @@ class PlayerDetailScreen(TableSageScreen):
 
     def _after_import_from_directory(self, result: tuple[Player, ImportResult]) -> None:
         player, import_result = result
-        self._refresh_centroid_display(player)
+        self._refresh_voice_print_display(player)
         self._reload_voice_clips()
 
         if import_result.imported_count == 0:

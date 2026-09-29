@@ -7,9 +7,10 @@ sequence of steps. TableSage runs some of them automatically; at others it
 stops and asks you to check its work before anything is built on top of it.
 
 Open processing from Session Detail by pressing **P**. The **Process
-Session** screen lists every step in order, marks each one with a check once
-its output is current, and shows the Session's **New Players** and any
-errors.
+Session** screen lists the steps in order, marks each one with a check once
+its output is current, and shows the Session's **New Players** when it has
+any. Opening the screen never starts processing; press **C** (Continue) to
+start or resume it.
 
 ![Process Session for a Session whose attendees all have voice profiles](../images/session-processing/process-session-returning-players.png)
 
@@ -31,8 +32,8 @@ models. See [Update your settings](../guides/settings.md).
 ## Two workflows
 
 TableSage recognizes speakers by comparing their voices with each attendee's
-**voice profile**: the centroid built from that Player's voice samples (see
-[Players, Voice Samples, Centroids, and Roles](players.md)). Everything else
+**voice profile**: the voice print built from that Player's voice samples (see
+[Players, Voice Samples, Voice Prints, and Roles](players.md)). Everything else
 in processing depends on knowing who said what, so the workflow depends on
 whether every attendee already has a voice profile.
 
@@ -47,18 +48,17 @@ You never choose a workflow. Process Session looks at the attendees and
 follows the right one:
 
 - **[Processing with returning players](session-processing-returning-players.md)**
-  applies when every attendee already has a voice profile. The **New
-  Players** panel reads *All attendees have voice profiles*, and the four
-  steps that serve new players are struck through. They complete on their
-  own without doing anything, so you move straight from the transcript to
-  speaker identification.
+  applies when every attendee already has a voice profile. The **New Players**
+  panel is hidden, and the steps that serve new players do not appear in the
+  list. They still run behind the scenes without asking anything of you, so
+  you move straight from the transcript to speaker identification.
 - **[Processing with new players](session-processing-new-players.md)**
   applies when at least one attendee is a new player. Those players are
-  listed in the **New Players** panel, and the four steps that are skipped for returning players run
-  for real. Together they find lines each new player spoke in this
-  recording, let you confirm them, and turn them into that player's first
-  voice samples—so that speaker identification can recognize them along
-  with everyone else.
+  listed in the **New Players** panel, and the steps that returning players
+  never see appear and run for real. Together they find lines each new
+  player spoke in this recording, let you confirm them, and turn them into
+  that player's first voice samples—so that speaker identification can
+  recognize them along with everyone else.
 
 ![Process Session for a Session with a new player](../images/session-processing/process-session-new-player.png)
 
@@ -68,51 +68,68 @@ there are new players.
 
 ## The steps at a glance
 
-Numbered steps are the ones you can start with that number key. Most of them
-are review steps where you check TableSage's proposals. The others run
-automatically.
+Process Session draws every step as a row. Steps that ask something of you
+are shown in bold; steps TableSage performs on its own are indented and
+dimmed. Each review is bracketed by automatic rows that prepare its
+suggestions (*Suggest …*) and apply your decisions (*Apply …*), so the screen
+shows more rows than the table below, which lists the steps that matter.
 
-| Step | Key | Returning players | New players |
+| Step | You or TableSage | Returning players | New players |
 |---|---|---|---|
-| Import Audio | `1` | You choose the recording | You choose the recording |
-| Create Transcript | | Automatic | Automatic |
-| Remove Bad Utterances | | Automatic | Automatic |
-| Review Name Corrections | `2` | Skipped | You review |
-| Isolate New Speakers | | Skipped | Automatic |
-| Review New Speaker Assignments | `3` | Skipped | You review |
-| Seed Player Voice Samples | | Skipped | Automatic |
-| Identify Speakers | | Automatic | Automatic |
-| Extract Glossary Terms | `4` | You review | You review |
-| Spellcheck Against Glossary | `5` | You review | You review |
-| Review Transcript | `6` | You review | You review |
-| Assign Roles To Players | | Automatic | Automatic |
-| Generate Artifacts | `7` | Automatic | Automatic |
+| Import Audio | You choose the recording | Yes | Yes |
+| Create Transcript | Automatic | Yes | Yes |
+| Remove Bad Utterances | Automatic | Yes | Yes |
+| Review Name Corrections | You review | Hidden | Yes |
+| Isolate New Speakers | Automatic | Hidden | Yes |
+| Review New Speaker Assignments | You review | Hidden | Yes |
+| Seed Player Voice Samples | Automatic | Hidden | Yes |
+| Identify Speakers | Automatic | Yes | Yes |
+| Extract Glossary Terms | You review | Yes | Yes |
+| Spellcheck Against Glossary | You review | Yes | Yes |
+| Review Transcript | You review | Yes | Yes |
+| Assign Roles To Players | Automatic | Yes | Yes |
+| Rebuild Prior Sessions | You approve, only when needed | Sometimes | Sometimes |
+| Generate Artifacts | Automatic | Yes | Yes |
+| Improve Player Voice Profiles | You choose | Yes | Yes |
 
 ## How a run behaves
 
 The same rules apply in both workflows:
 
-- **One guided run.** Press **1** and choose the recording. From then on,
+- **One guided run.** Press **C** to continue from the first unfinished step.
+  The button names it, for example *Continue: Import Audio*. From then on,
   finishing a step continues to the next one. Automatic steps run behind a
   progress dialog, and each review screen opens when processing reaches it.
 - **Reviews only when there is something to review.** If a review step has
   nothing to propose—no misspellings or new glossary terms, for
-  example—it completes on its own and processing moves on.
+  example—it completes on its own, its row notes *Nothing to review*, and
+  processing moves on.
 - **You can stop and resume.** Cancel a review screen, or leave Process
-  Session with **Esc**, and your finished steps stay finished. Later,
-  press the number of the next step to continue from there. Step keys are
-  active only once every earlier step is done.
+  Session with **Esc**, and your finished steps stay finished. Later, open
+  Process Session again and press **C** to continue from where you stopped.
 - **Order matters.** Each step works from the output of the step before it.
-  If you redo an earlier step—for example, importing different audio or
-  changing the corrections you accepted—every later step's output becomes
+  If you redo an earlier step—select its row and press **Enter** or **R**—or
+  something it depends on changes, such as importing different audio or
+  changing the corrections you accepted, every later step's output becomes
   out of date and loses its check, and you work forward from there again.
+- **Some changes are not detected.** TableSage tracks the output of each step,
+  not the attendance or voice profiles it read. If you add an attendee, change
+  a Role, or improve a voice profile after a step has run, nothing is marked
+  out of date. To apply the change, select the affected row—**Identify
+  Speakers** for attendance and voice profiles, **Assign Roles To Players** for
+  Roles—and restart it with **Enter** or **R**. Later steps then become out of
+  date, so expect to review again. Setting up attendees and Roles before you
+  start avoids this.
 - **Errors stop the run.** If a key a step needs is missing, TableSage
-  asks for it before the step starts. If a step fails while running, the
-  message appears in the **Errors** panel and processing stops at that
-  step. Fix the cause and press the step's number to try again.
+  offers to open Settings before the step starts. If a step fails while
+  running, its row shows a red **!** with the message and processing stops at
+  that step. Fix the cause and press **C** to try again. A Session with no
+  attendees can't be processed at all; the Continue button says so instead of
+  starting.
 
 ![Process Session after a completed run](../images/session-processing/process-session-complete.png)
 
-When every step is checked, the Session's artifacts are ready on Session
-Detail. See [Sessions, Processing, and Session Artifacts](sessions.md) for
-what each artifact is.
+When every step is checked, the button reads *All steps complete* and the
+Session's artifacts are ready on Session Detail. See
+[Sessions, Processing, and Session Artifacts](sessions.md) for what each
+artifact is.

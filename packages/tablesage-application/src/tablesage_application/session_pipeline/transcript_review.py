@@ -82,7 +82,7 @@ def extract_review_clips(
     clip_dir.mkdir(parents=True, exist_ok=True)
 
     total = len(transcript.utterances)
-    audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
+    audio_path = session_folder / ARTIFACTS[ArtifactName.NORMALIZED_REVIEW_AUDIO].filename
 
     async def _extract_all() -> int:
         skipped = 0

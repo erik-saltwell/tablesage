@@ -7,9 +7,12 @@ status: implementing
 
 Create and publish a GM-facing documentation experience for TableSage RPG. The
 current direction is recorded in [intent.md](intent.md).
-The working table of contents is saved in [toc-plan.md](toc-plan.md).
-The README outline is saved in [readme-toc-plan.md](readme-toc-plan.md).
-Screenshot deployment details and verification are recorded in [progress.md](progress.md).
+The planning notes once referenced here (`toc-plan.md`, `readme-toc-plan.md`,
+`progress.md`, `ui-behavior-findings.md`) were never committed and are not
+retained; the intent's information architecture and the current `docs/` tree are
+the record. Screenshot capture tooling and its instructions live in the
+git-ignored `.for-docs/session-processing/README.md`, and `scripts/README.md`
+describes the fixture seeder.
 
 ## Resume note
 
@@ -19,27 +22,21 @@ folders under `docs/images/` for `getting-started`, `campaigns`,
 `session-processing`, `review-and-export`, and `session-preparation`.
 Empty directories contain `.gitkeep` files so Git can retain them.
 
-The outline is saved in toc-plan.md; page boundaries and first-release scope
-remain open. The `.for-docs/` deployment now contains fictional sample campaigns
+Page boundaries and first-release scope remain open. The `.for-docs/` deployment now contains fictional sample campaigns
 and three completed Iron Pact sessions, verified through the Textual MCP using
-the local `.for-docs/preview.py` launcher. See progress.md for launch instructions.
+the local `.for-docs/preview.py` launcher.
 Public pages, selected screenshots, MkDocs configuration, and publication remain
 to be implemented. First drafts of `docs/getting-started/installation.md` and
 `docs/getting-started/first-session.md` were written and then deleted at the
 user's request on 2026-09-15 to restart the drafting from a clean page.
 `docs/getting-started/installation.md` has since been rewritten from scratch
-against verified application behavior; it is the only public page that exists.
-The verified behavior and the review that prompted the restart are recorded in
-progress.md. Continue from the outline when drafting the rest, starting with the
-first-session walkthrough.
-[ui-behavior-findings.md](ui-behavior-findings.md) lists application behavior a
-game master cannot discover from the UI, gathered by reading every screen; it is
-the source list for what the guides must explain.
+against verified application behavior. Continue from the intent's outline when
+drafting the rest, starting with the first-session walkthrough.
 
 The initial `docs/concepts/` drafts were discarded as unworkable. Start the
 concept documentation again from a clean page, organized around three subjects:
 
-- **Players, voice samples, centroids, and roles.** A role is the identity or
+- **Players, voice samples, voice prints, and roles.** A role is the identity or
   function a player takes in a session. It is often a player character, but
   also encompasses the game master and other non-character functions.
 - **Sessions, processing, and session artifacts.** Explain the Session concept
@@ -78,3 +75,25 @@ scripts, and the step-by-step capture sequence—lives in the git-ignored
 The quality rubric is still missing; the user explicitly requested the outline
 and directory setup first. The separate repository documentation cleanup was
 archived locally and does not start or complete this site project.
+
+## Current state (2026-09-29)
+
+Public pages that exist: `docs/getting-started/installation.md`,
+`docs/guides/` (`index`, `settings`, `review-and-export`, `prepare-the-next-session`,
+`manage-players-and-voice-samples`), `docs/reference/privacy.md`, and the concepts
+pages (`index`, `players`, `sessions`, `campaigns`, `delete-and-clean`, and the
+three session-processing pages). The repository `README.md` is a short front door
+that links into them. On 2026-09-29 the pages were reconciled with the code after
+the Process Session coordinator rewrite (Continue/Restart keys, hidden new-player
+steps, per-row failures, model locations, Settings entry points), the guides for
+previously undocumented features were written from the code, and the
+session-processing and Session Detail screenshots were recaptured from the
+current UI with the `.for-docs/session-processing/` tooling.
+
+Known gaps: there is no `docs/index.md` or MkDocs configuration yet; the
+first-session walkthrough and the "start a campaign" task guide from the intent are
+not written; the review-screen screenshots (glossary, spellcheck, name corrections,
+new-speaker review) were compared against the current UI and left unchanged, but
+`review-transcript*.png` were not re-verified; and Session Detail's "Last
+Transcribed" label renders truncated ("Last") in screenshots, an application UI
+defect rather than a documentation one.

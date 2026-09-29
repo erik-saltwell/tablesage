@@ -50,8 +50,23 @@ class AudioCleaningSettings(BaseModel, frozen=True):
     normalize_volume: bool = False
 
 
+class ReviewAudioNormalizationSettings(BaseModel, frozen=True):
+    frame_length_ms: int = Field(default=500, ge=10, le=8000)
+    smoothing_frames: int = Field(default=5, ge=3, le=301)
+    max_gain: float = Field(default=4.0, ge=1, le=100, allow_inf_nan=False)
+    silence_threshold: float = Field(default=0.003, ge=0, le=1, allow_inf_nan=False)
+    target_peak: float = Field(default=0.9, gt=0, le=0.95, allow_inf_nan=False)
+
+    @model_validator(mode="after")
+    def validate_smoothing_frames(self) -> ReviewAudioNormalizationSettings:
+        if self.smoothing_frames % 2 == 0:
+            raise ValueError("smoothing_frames must be odd.")
+        return self
+
+
 class SessionAudioImportSettings(BaseModel, frozen=True):
     normalize_volume: bool = False
+    review_normalization: ReviewAudioNormalizationSettings = Field(default_factory=ReviewAudioNormalizationSettings)
 
 
 class TranscriptionAndDiarizationSettings(BaseModel, frozen=True):
@@ -70,7 +85,7 @@ class EnhanceVoicesSettings(BaseModel, frozen=True):
     # least ~125ms of audio to compute a window at all and remains weak just above that, so clips
     # shorter than this crash or embed poorly regardless of confidence. Unlike min_clip_seconds/
     # max_clip_seconds (which only ever apply to the unreviewed machine-transcript path), this
-    # applies to a completed Manual Review's assigned utterances too -- the one path that
+    # applies to a completed Review Transcript's assigned utterances too -- the one path that
     # otherwise applies no duration filtering at all. See `MIN_UTTERANCE_DURATION_SECONDS` in
     # `tablesage_tools.speakers` for the same floor's rationale in the speaker-ID path.
     min_embeddable_clip_seconds: float = Field(default=0.15, gt=0)
@@ -97,10 +112,9 @@ class SpeakerBootstrapSettings(BaseModel, frozen=True):
 class RemoveBackchannelsSettings(BaseModel, frozen=True):
     # Shared candidate-detection threshold: an utterance longer than this many words is never
     # considered a backchannel candidate, regardless of wordlist match. Used both by the
-    # pre-review pass (Transcribe) and the post-review pass (Clean Transcript's role-transcript
-    # step).
+    # pre-review pass (Remove Bad Utterances) and the post-review pass (Assign Roles To Players).
     max_words: PositiveInt = 3
-    # The following three apply only to the pre-review pass (Transcribe), which is the only one
+    # The following three apply only to the pre-review pass (Remove Bad Utterances), which is the only one
     # that makes an LLM call -- the post-review pass is a purely mechanical unassigned-speaker
     # filter with no LLM involved.
     #

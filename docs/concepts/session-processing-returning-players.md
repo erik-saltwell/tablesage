@@ -3,8 +3,7 @@
 This page follows [Session processing](session-processing.md) step by step
 for the simpler workflow: every attendee already has a voice profile. That is
 the normal case once your group has played a Session or two. Process Session
-shows *All attendees have voice profiles* and strikes through the four steps
-that exist only for new players.
+hides its New Players panel and the steps that exist only for new players.
 
 ![Process Session when every attendee has a voice profile](../images/session-processing/process-session-returning-players.png)
 
@@ -20,9 +19,9 @@ Each stage exists so the next one has something trustworthy to work from.
 
 ## Get the words
 
-### Import Audio (1)
+### Import Audio
 
-Press **1** and choose the Session's recording. TableSage copies it into the
+Press **C** (*Continue: Import Audio*) and choose the Session's recording. TableSage copies it into the
 Session as its **input audio**, the source for everything that follows.
 
 If you choose a `.wav` file, TableSage asks whether to run it through noise
@@ -60,10 +59,9 @@ cluttering every later step.
 **Review Name Corrections**, **Isolate New Speakers**, **Review New Speaker
 Assignments**, and **Seed Player Voice Samples** exist to build a voice
 profile for someone TableSage has never heard. With no new players there is
-nothing for them to do. Each one completes on its own, passing the
-transcript through unchanged, and processing continues without stopping.
-They stay struck through, with a check, so you can see they were
-deliberately skipped.
+nothing for them to do. They do not appear in the list; each one completes
+on its own, passing the transcript through unchanged, and processing
+continues without stopping.
 
 ### Identify Speakers
 
@@ -83,7 +81,7 @@ Speech recognition does not know your campaign's invented names. These two
 steps use the Campaign glossary to fix that, and they run in this order for a
 reason.
 
-### Extract Glossary Terms (4)
+### Extract Glossary Terms
 
 Your Medium model reads the transcript and proposes names and terms from
 this Session that are not yet in the Campaign glossary—a newly discovered
@@ -93,7 +91,7 @@ the step completes without opening.
 
 ![Review Glossary Entries proposing two new terms](../images/session-processing/extract-glossary-terms.png)
 
-### Spellcheck Against Glossary (5)
+### Spellcheck Against Glossary
 
 With the glossary now up to date, your Medium model looks for places where
 the transcript misspells a glossary term or an attendee's name, and proposes
@@ -113,7 +111,7 @@ glossary once saves you from doing that every Session.
 
 ## Review and build
 
-### Review Transcript (6)
+### Review Transcript
 
 This is where you decide what the record says. The screen lists every line
 with its speaker, and you can listen to each one.
@@ -126,8 +124,8 @@ with its speaker, and you can listen to each one.
   playback and Auto, which moves on to the next line after each one plays.
 - **Ctrl** plus a number focuses on one attendee's lines, which helps when
   checking a single speaker.
-- **D** deletes a line, and **F** opens Find/Replace for the whole
-  transcript.
+- **D** marks the line as removed (press it again to keep the line), and
+  **F** opens Find/Replace for the whole transcript.
 
 Pay particular attention to **Unassigned Speaker** lines and to anything
 that sounds wrong. When you are satisfied, choose **Complete** to save the
@@ -149,7 +147,7 @@ attendee's Role—*Thorgrim* rather than *Bob*, *Game Master* rather than
 about the fiction, so the generator needs to see who spoke in the story, not
 who sat at the table.
 
-### Generate Artifacts (7)
+### Generate Artifacts
 
 Your High model builds the Session's outputs from the role transcript, each
 from the ones before it:
@@ -167,10 +165,11 @@ from the ones before it:
    ledger and player introductions. It also draws on the previous Session's
    recap summary, which is why an earlier Session matters here.
 
-![Generate Outputs building the ledger](../images/session-processing/generate-artifacts.png)
+![Generate Artifacts building the ledger](../images/session-processing/generate-artifacts.png)
 
-If the previous Session's outputs are out of date, TableSage asks before
-doing extra work. **Regenerate Prior** rebuilds that Session first and then
+If the previous Session's outputs are out of date, a **Rebuild Prior
+Sessions** row appears before this step and TableSage asks before doing extra
+work. **Regenerate Prior** rebuilds that Session first and then
 this one, and **Cancel** stops. If the previous Session can't be rebuilt
 because it was never reviewed, its existing recap is used as it stands, or
 the summary notes that no recap is available.
@@ -195,7 +194,8 @@ Session Detail.
 
 ![Process Session after the run is complete](../images/session-processing/process-session-complete.png)
 
-You can reopen any finished step with its number key. Changing its result
+You can reopen any finished step by selecting its row and pressing **Enter**
+or **R**. Changing its result
 puts every later step out of date. For example, accepting a different
 spellcheck correction means reviewing the transcript again and regenerating
 the artifacts.

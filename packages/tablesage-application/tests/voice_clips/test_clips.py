@@ -43,7 +43,7 @@ def test_list_voice_clips_lists_wav_files_with_duration(tmp_path: Path) -> None:
     ]
 
 
-def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_recompute_voice_print_uses_injected_embedder(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
     folder = tmp_path / "players" / "Alice"
@@ -52,15 +52,15 @@ def test_recompute_centroid_uses_injected_embedder(tmp_path: Path, monkeypatch: 
 
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
 
-    updated = application.recompute_centroid(player.id)
+    updated = application.recompute_voice_print(player.id)
 
     assert updated.sample_count == 2
     assert updated.embedding_dimension == 2
-    assert updated.centroid_embedding is not None
+    assert updated.voice_print_embedding is not None
     assert updated.computed_at is not None
 
 
-def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_recompute_voice_print_reports_progress_per_clip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
     folder = tmp_path / "players" / "Alice"
@@ -69,24 +69,24 @@ def test_recompute_centroid_reports_progress_per_clip(tmp_path: Path, monkeypatc
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
 
     progress_calls: list[tuple[int, int]] = []
-    application.recompute_centroid(player.id, lambda completed, total: progress_calls.append((completed, total)))
+    application.recompute_voice_print(player.id, lambda completed, total: progress_calls.append((completed, total)))
 
     assert progress_calls == [(1, 2), (2, 2)]
 
 
-def test_recompute_centroid_clears_when_no_clips(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_recompute_voice_print_clears_when_no_clips(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     application = Application(tmp_path)
     player = application.create_player(Player(name="Alice"))
     folder = tmp_path / "players" / "Alice"
     _write_wav(folder / "clip_001.wav")
     monkeypatch.setattr(application, "_embed_clip", lambda path: Embedding(root=(1.0, 0.0)))
-    application.recompute_centroid(player.id)
+    application.recompute_voice_print(player.id)
 
     (folder / "clip_001.wav").unlink()
-    updated = application.recompute_centroid(player.id)
+    updated = application.recompute_voice_print(player.id)
 
     assert updated.sample_count == 0
-    assert updated.centroid_embedding is None
+    assert updated.voice_print_embedding is None
     assert updated.embedding_dimension is None
     assert updated.computed_at is None
 

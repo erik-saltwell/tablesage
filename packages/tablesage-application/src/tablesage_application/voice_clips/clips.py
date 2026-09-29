@@ -17,7 +17,7 @@ import widelog
 from sqlmodel import Session
 from tablesage_model.model import Player
 from tablesage_tools.audio import clean_clip
-from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_centroid
+from tablesage_tools.embeddings import DEFAULT_MIN_SAMPLE_SIMILARITY, DEFAULT_MIN_SAMPLES, Embedding, compute_voice_print
 
 from ..entities.players import get_player
 from ..paths import VOICE_CLIP_GLOB
@@ -52,7 +52,7 @@ def _wav_duration_seconds(path: Path) -> float:
         return wav_file.getnframes() / float(rate) if rate else 0.0
 
 
-def _serialize_centroid(embedding: Embedding) -> tuple[str, int]:
+def _serialize_voice_print(embedding: Embedding) -> tuple[str, int]:
     return json.dumps(list(embedding.root)), len(embedding.root)
 
 
@@ -63,9 +63,9 @@ def _compute_recompute_result(
     min_sample_similarity: float,
     min_samples: int,
 ) -> tuple[Embedding | None, int, tuple[Path, ...]]:
-    """Embed every clip on disk and compute the centroid, without touching the DB or filesystem.
+    """Embed every clip on disk and compute the voice print, without touching the DB or filesystem.
 
-    Returns the centroid (`None` if there are no clips), the count of clips
+    Returns the voice print (`None` if there are no clips), the count of clips
     that actually contributed to it, and every clip path that didn't
     (duplicates, pruned outliers) -- still present on disk either way.
     """
@@ -73,26 +73,26 @@ def _compute_recompute_result(
     if not clip_paths:
         return None, 0, ()
 
-    result = compute_centroid(clip_paths, embed, on_progress, min_sample_similarity, min_samples)
+    result = compute_voice_print(clip_paths, embed, on_progress, min_sample_similarity, min_samples)
     used_count = len(clip_paths) - len(result.unused_paths)
-    return result.centroid, used_count, result.unused_paths
+    return result.voice_print, used_count, result.unused_paths
 
 
-def _apply_centroid(player: Player, centroid: Embedding | None, used_count: int) -> None:
-    if centroid is None:
-        player.centroid_embedding = None
+def _apply_voice_print(player: Player, voice_print: Embedding | None, used_count: int) -> None:
+    if voice_print is None:
+        player.voice_print_embedding = None
         player.embedding_dimension = None
         player.sample_count = 0
         player.computed_at = None
     else:
-        serialized, dimension = _serialize_centroid(centroid)
-        player.centroid_embedding = serialized
+        serialized, dimension = _serialize_voice_print(voice_print)
+        player.voice_print_embedding = serialized
         player.embedding_dimension = dimension
         player.sample_count = used_count
         player.computed_at = datetime.now(UTC)
 
 
-def recompute_centroid(
+def recompute_voice_print(
     session: Session,
     player_id: uuid.UUID,
     player_folder: Path,
@@ -101,24 +101,24 @@ def recompute_centroid(
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> Player:
-    """Recompute a player's centroid from every clip currently on disk.
+    """Recompute a player's voice print from every clip currently on disk.
 
     Always a full recompute (re-embeds everything), never incremental. Clears
-    the centroid entirely rather than leaving a stale one if no clips remain.
+    the voice print entirely rather than leaving a stale one if no clips remain.
     Duplicate clips (identical file contents) and similarity outliers are
-    excluded from the computed centroid; `sample_count` reflects only the
+    excluded from the computed voice print; `sample_count` reflects only the
     clips actually used. `min_sample_similarity`/`min_samples` normally come
     from the caller's loaded `AppSettings.remove_outliers`. `on_progress`, if
     given, is called as `(clips_embedded, total_unique_clips)` after each
     unique clip's embedding completes -- real step counts for a determinate
     progress display, not just a busy indicator.
     """
-    with widelog.wide_event(op="recompute_centroid", player_id=str(player_id), player_folder=str(player_folder)) as log:
+    with widelog.wide_event(op="recompute_voice_print", player_id=str(player_id), player_folder=str(player_folder)) as log:
         player = get_player(session, player_id)
-        centroid, used_count, _unused_paths = _compute_recompute_result(
+        voice_print, used_count, _unused_paths = _compute_recompute_result(
             player_folder, embed, on_progress, min_sample_similarity, min_samples
         )
-        _apply_centroid(player, centroid, used_count)
+        _apply_voice_print(player, voice_print, used_count)
         session.add(player)
         session.flush()
         log.set(used_count=used_count)
@@ -134,27 +134,27 @@ def cleanup_voice_clips(
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> tuple[Player, list[str]]:
-    """Recompute the centroid, then delete every clip file that didn't contribute to it.
+    """Recompute the voice print, then delete every clip file that didn't contribute to it.
 
     Unlike a plain recompute, this permanently removes duplicate and outlier
-    clip files from disk rather than just excluding them from the centroid --
+    clip files from disk rather than just excluding them from the voice print --
     it owns its own recompute-while-pruning pass instead of leaving the
     unused files to be re-discovered (and re-embedded) next time. Files are
-    deleted before the player's centroid fields are written, mirroring
+    deleted before the player's voice print fields are written, mirroring
     `delete_voice_clip`'s disk-then-DB order, so a mid-loop deletion failure
-    can't leave a persisted centroid that disagrees with what's on disk.
+    can't leave a persisted voice print that disagrees with what's on disk.
     `min_sample_similarity`/`min_samples` normally come from the caller's
     loaded `AppSettings.remove_outliers`. Returns the updated player and the
     filenames that were deleted.
     """
     with widelog.wide_event(op="cleanup_voice_clips", player_id=str(player_id), player_folder=str(player_folder)) as log:
         player = get_player(session, player_id)
-        centroid, used_count, unused_paths = _compute_recompute_result(
+        voice_print, used_count, unused_paths = _compute_recompute_result(
             player_folder, embed, on_progress, min_sample_similarity, min_samples
         )
         for path in unused_paths:
             path.unlink(missing_ok=True)
-        _apply_centroid(player, centroid, used_count)
+        _apply_voice_print(player, voice_print, used_count)
         session.add(player)
         session.flush()
         log.set(used_count=used_count, deleted_count=len(unused_paths))
@@ -171,13 +171,13 @@ def delete_voice_clip(
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
 ) -> Player:
-    """Delete a voice clip file, then auto-recompute the centroid over what remains."""
+    """Delete a voice clip file, then auto-recompute the voice print over what remains."""
     with widelog.wide_event(op="delete_voice_clip", player_id=str(player_id), filename=filename, player_folder=str(player_folder)):
         clip_path = player_folder / filename
         if not clip_path.is_file():
             raise ValueError(f"Voice clip '{filename}' not found.")
         clip_path.unlink()
-        return recompute_centroid(session, player_id, player_folder, embed, on_progress, min_sample_similarity, min_samples)
+        return recompute_voice_print(session, player_id, player_folder, embed, on_progress, min_sample_similarity, min_samples)
 
 
 @dataclass(frozen=True)
@@ -254,17 +254,17 @@ def import_voice_clips(
     should_clean_audio: bool = False,
     normalize_volume: bool = False,
 ) -> tuple[Player, ImportResult]:
-    """Import every `.wav` file in `source_dir` as a new voice clip, then auto-recompute the centroid.
+    """Import every `.wav` file in `source_dir` as a new voice clip, then auto-recompute the voice print.
 
     Copy-then-delete, not delete-then-copy: a re-import of the same source
     directory replaces its prior clips as a unit (see
     `find_prior_import_clips`), but the old clips are only deleted after the
     new ones are safely copied and at least one embeds successfully. An all-rejected
-    import preserves the previous clips and stored centroid without recomputation.
+    import preserves the previous clips and stored voice print without recomputation.
     This is not a general rollback guarantee for failures after replacement. Each source file is
     copied and embedded independently -- a file that fails to embed is
     skipped and reported rather than aborting the whole import, matching how
-    `compute_centroid` already treats duplicates/outliers as "exclude, don't
+    `compute_voice_print` already treats duplicates/outliers as "exclude, don't
     fail." `min_sample_similarity`/`min_samples` normally come from the
     caller's loaded `AppSettings.remove_outliers`.
 
@@ -274,7 +274,7 @@ def import_voice_clips(
     is what gets copied into `player_folder` -- so a rejected/outlier clip is
     always judged on its cleaned audio, matching what actually lands on disk.
     Cleaning also opts the import into deleting embedding outliers from disk
-    (not just excluding them from the centroid), mirroring `cleanup_voice_clips`,
+    (not just excluding them from the voice print), mirroring `cleanup_voice_clips`,
     since a clean pass is the moment the user has already signaled they want
     higher-quality samples.
     """
@@ -321,7 +321,7 @@ def import_voice_clips(
 
         if imported_count == 0:
             # A failed replacement must not retract the last successful source contribution
-            # or advance its centroid clock (which would also stale session artifacts).
+            # or advance its voice print clock (which would also stale session artifacts).
             player = get_player(session, player_id)
             log.set(imported_count=0, replaced_count=0, rejected_count=len(rejected), removed_outlier_count=0)
             return player, ImportResult(imported_count=0, replaced_count=0, rejected_filenames=tuple(rejected))
@@ -330,13 +330,13 @@ def import_voice_clips(
             old_clip.unlink(missing_ok=True)
 
         player = get_player(session, player_id)
-        centroid, used_count, unused_paths = _compute_recompute_result(player_folder, embed, None, min_sample_similarity, min_samples)
+        voice_print, used_count, unused_paths = _compute_recompute_result(player_folder, embed, None, min_sample_similarity, min_samples)
         removed_outliers: tuple[str, ...] = ()
         if should_clean_audio and unused_paths:
             for path in unused_paths:
                 path.unlink(missing_ok=True)
             removed_outliers = tuple(path.name for path in unused_paths)
-        _apply_centroid(player, centroid, used_count)
+        _apply_voice_print(player, voice_print, used_count)
         session.add(player)
         session.flush()
 

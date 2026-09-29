@@ -34,12 +34,12 @@ class MarginThresholdMatcher:
     def match(
         self,
         embeddings: Mapping[int, Embedding],
-        centroids: Mapping[str, Embedding],
+        voice_prints: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
         clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]:
-        names = list(centroids)
-        similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
+        names = list(voice_prints)
+        similarity_computer = SimilarityComputer(tuple(voice_prints[name] for name in names))
 
         labels: dict[int, str] = {}
         for index, embedding in embeddings.items():
@@ -57,7 +57,7 @@ class MarginThresholdMatcher:
 class MarginAndSimilarityMatcher:
     """Experiment #7: a richer decision rule
     than `MarginThresholdMatcher`'s margin-only threshold. `SimilarityResult` already computes
-    `best_match_similarity` (the absolute cosine similarity to the winning centroid, not just its
+    `best_match_similarity` (the absolute cosine similarity to the winning voice print, not just its
     margin over the runner-up) and the harness already knows each utterance's duration -- both are
     discarded by the plain margin rule. This matcher uses them as two independent, composable
     relaxations of the base margin threshold:
@@ -103,12 +103,12 @@ class MarginAndSimilarityMatcher:
     def match(
         self,
         embeddings: Mapping[int, Embedding],
-        centroids: Mapping[str, Embedding],
+        voice_prints: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
         clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]:
-        names = list(centroids)
-        similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names))
+        names = list(voice_prints)
+        similarity_computer = SimilarityComputer(tuple(voice_prints[name] for name in names))
 
         labels: dict[int, str] = {}
         for index, embedding in embeddings.items():
@@ -142,21 +142,21 @@ class ClusterPropagationMatcher:
     def match(
         self,
         embeddings: Mapping[int, Embedding],
-        centroids: Mapping[str, Embedding],
+        voice_prints: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
         clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]:
         if durations is None or clusters is None:
             raise ValueError("Cluster propagation requires durations and diarization cluster IDs.")
-        baseline = self.base_matcher.match(embeddings, centroids, durations, clusters)
-        names = list(centroids)
-        computer = SimilarityComputer(tuple(centroids[name] for name in names))
+        baseline = self.base_matcher.match(embeddings, voice_prints, durations, clusters)
+        names = list(voice_prints)
+        computer = SimilarityComputer(tuple(voice_prints[name] for name in names))
         evidence = {index: computer.compute_similarity(embedding) for index, embedding in embeddings.items()}
         return propagate_cluster_labels(
             baseline,
             embeddings,
             evidence,
-            centroids,
+            voice_prints,
             durations,
             clusters,
             self.config,

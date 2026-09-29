@@ -50,7 +50,7 @@ validate a campaign name, a session date, and so on.
 - A new `M` ("Edit Metadata") binding, shown in the footer on all three screens, reopens that
   item's dialog pre-filled with current values. Submitting re-validates and re-renders the
   read-only block; Esc discards changes.
-- Non-editable stats (Player's sample count/computed-at/centroid hash/duration; Session's "last
+- Non-editable stats (Player's sample count/computed-at/voice print hash/duration; Session's "last
   transcribed") stay where they are today, separate from the editable metadata block — they were
   never part of creation and this item doesn't change how they're shown.
 

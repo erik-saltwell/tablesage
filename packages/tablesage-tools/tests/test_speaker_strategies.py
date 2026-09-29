@@ -66,21 +66,21 @@ def test_write_audio_spans_concatenates_only_selected_frames(tmp_path: Path) -> 
 
 
 def test_cluster_propagation_rescues_abstention_but_honors_contradiction_veto() -> None:
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embeddings = {
         0: Embedding(root=(1.0, 0.0)),
         1: Embedding(root=(1.0, 0.98)),
         2: Embedding(root=(0.0, 1.0)),
         3: Embedding(root=(0.95, 1.0)),
     }
-    computer = SimilarityComputer(tuple(centroids.values()))
+    computer = SimilarityComputer(tuple(voice_prints.values()))
     similarity_results = {index: computer.compute_similarity(embedding) for index, embedding in embeddings.items()}
 
     result = propagate_cluster_labels(
         current_labels={0: "Alice", 1: UNASSIGNED, 2: "Bob", 3: UNASSIGNED},
         embeddings=embeddings,
         similarity_results=similarity_results,
-        centroids=centroids,
+        voice_prints=voice_prints,
         durations={0: 1.0, 1: 0.3, 2: 1.0, 3: 0.3},
         cluster_ids={0: "cluster-a", 1: "cluster-a", 2: "cluster-b", 3: "cluster-a"},
         config=ClusterPropagationConfig(),

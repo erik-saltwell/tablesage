@@ -7,8 +7,8 @@ save. See [installation](../getting-started/installation.md) for getting
 here the first time, and [privacy and data handling](../reference/privacy.md)
 for what TableSage sends to which service.
 
-Open Settings from the welcome screen by pressing **S**, or from inside a
-workspace through Other Actions (`?`).
+Open Settings from the welcome screen by pressing **S**. If a step needs a key
+you haven't set, TableSage also offers an **Open Settings** button.
 
 ![The Settings screen, showing the Keys and LLM sections](../images/settings/settings-screen.png)
 
@@ -52,8 +52,8 @@ Before TableSage reads its stored keys, it checks your environment variables for
 `GEMINI_API_KEY`. These environment variables take precedence, and will
 override keys set at the locations above. In that case:
 
-- The key field shows *Provided by shell environment
-  (read-only)*.
+- The key field shows dots but is disabled, and its tooltip says the key is
+  provided by your shell environment and overrides the stored one.
 - The field is not editable.
 - Ctrl+D cannot remove it, since there is nothing stored to remove; the
   environment variable stays active until you change your shell.
@@ -67,8 +67,8 @@ Settings asks for three model IDs, each handling a different weight of work.
 
 | Model | Default | Used for |
 |---|---|---|
-| **High** | `openai/gpt-6-astra` | Generating summaries and processing raw transcripts  |
-| **Medium** | `anthropic/claude-sonnet-4-5` | Helping you review transcripts, build glossaries, and identify players |
+| **High** | `openai/gpt-6-astra` | Writing a session's outputs from its transcript and creating campaign-wide material |
+| **Medium** | `anthropic/claude-sonnet-4-5` | Helping you review transcripts, build glossaries, and find new players' lines |
 | **Low** | `anthropic/claude-haiku-4-5` | Short, high-volume checks while audio is imported |
 
 Each field is a dropdown of bundled presets across Anthropic, OpenAI, and
@@ -83,11 +83,14 @@ are not supported at this time.
 
 **High model.** Use your most capable model here. It does the long reading
 and writing that produces what you keep from each session — see
-[session artifacts](../concepts/session-artifacts.md) for what each generated
+[session artifacts](../concepts/sessions.md#session-artifacts) for what each generated
 document actually is:
 
-- **Regenerate Artifact** and **Regenerate All Outputs**:
-  the model processes reviewed transcripts and generates summaries.
+- **Process Session → Generate Artifacts**: the model reads the role
+  transcript and writes the transcript sections, ledger and scene breakdown,
+  player introductions, recap summary, and session summary.
+- **Regenerate Artifact** and **Regenerate All Outputs**: the same
+  generation, run on demand.
 - **Create Previously On**: the model generates the recap.
 - **Generate Opportunities**: the model generates opportunities.
 
@@ -96,12 +99,15 @@ These are the longest and most expensive calls TableSage makes.
 **Medium model.** Handles moderate tasks where you check the result:
 
 - **Process Session → Spellcheck Against Glossary**: The model proposes corrections based on the
-  [Campaign glossary](../concepts/campaigns.md#glossary).
+  [Campaign glossary](../concepts/campaigns.md#glossaries).
 - **Process Session → Extract Glossary Terms** and Session Detail's **Extract Glossary**: the model
   proposes new glossary entries based on the transcript.
 - **Process Session → Review Name Corrections**: when a Session has players without
   voice samples, the model proposes corrections for misheard player and
   character names, which you review before they are applied.
+- **Process Session → Isolate New Speakers**: for those same players, the
+  model reads the whole transcript and picks the lines each one most likely
+  spoke; you confirm them in Review New Speaker Assignments.
 
 **Low model.** Handles operations where a fast, inexpensive model is enough.
 

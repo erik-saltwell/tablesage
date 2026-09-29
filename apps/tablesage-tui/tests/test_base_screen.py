@@ -85,7 +85,7 @@ async def test_run_with_progress_success_is_deferred_via_call_after_refresh() ->
     until something else forces a repaint -- see `TableSageScreen.run_with_progress`'s docstring."""
     player = Player(name="Alice")
     application = MagicMock(get_player=MagicMock(return_value=player), list_voice_clips=MagicMock(return_value=[]))
-    application.recompute_centroid = MagicMock(return_value=Player(id=player.id, name="Alice", sample_count=1))
+    application.recompute_voice_print = MagicMock(return_value=Player(id=player.id, name="Alice", sample_count=1))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
@@ -100,4 +100,4 @@ async def test_run_with_progress_success_is_deferred_via_call_after_refresh() ->
         called_callback = deferred.call_args.args[0]
         screen = pilot.app.screen
         assert isinstance(screen, PlayerDetailScreen)
-        assert called_callback == screen._after_recompute_centroid
+        assert called_callback == screen._after_recompute_voice_print

@@ -75,7 +75,7 @@ def test_import_session_audio_copies_file_under_fixed_name(tmp_path: Path, monke
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     source = tmp_path / "recording.mp3"
-    source.write_bytes(b"fake audio bytes")
+    _write_wav(source)
 
     _import_audio(application, game_session.id, source)
 
@@ -106,7 +106,7 @@ def test_import_session_audio_forces_cleaning_for_non_wav_even_when_declined(tmp
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     source = tmp_path / "recording.mp3"
-    source.write_bytes(b"fake audio bytes")
+    _write_wav(source)
 
     _import_audio(application, game_session.id, source, should_clean_audio=False)
 
@@ -135,7 +135,7 @@ def test_import_session_audio_preserves_downstream_artifacts_for_freshness_check
     (folder / REVIEWED_TRANSCRIPT_FILENAME).write_text("{}")
 
     source = tmp_path / "recording.wav"
-    source.write_bytes(b"fake audio bytes")
+    _write_wav(source)
     _import_audio(application, game_session.id, source)
 
     artifacts = application.session_artifacts(game_session.id)

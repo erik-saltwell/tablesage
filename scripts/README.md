@@ -21,8 +21,8 @@ silence, and no provider calls or real voice profiles are involved.
 
 The script backs up the empty database before seeding, refuses existing user data,
 and verifies a marked fixture on subsequent runs without overwriting edits.
-Deployment details and Textual MCP launch instructions are recorded in
-[the public documentation work item](../.work-items/public-documentation/progress.md).
+Textual MCP launch instructions for the seeded deployment are kept in the
+git-ignored `.for-docs/session-processing/README.md`.
 
 ## Transcript-section review
 

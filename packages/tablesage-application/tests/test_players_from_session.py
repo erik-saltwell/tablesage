@@ -112,6 +112,7 @@ def _setup_session(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[App
 
     session_folder = application.session_folder(game_session.id)
     (session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename).write_bytes(b"fake audio")
+    (session_folder / ARTIFACTS[ArtifactName.NORMALIZED_REVIEW_AUDIO].filename).write_bytes(b"fake review audio")
 
     transcript = Transcript(
         utterances=[
@@ -137,7 +138,7 @@ def _setup_session(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> tuple[App
     return application, game_session.id, alice, bob
 
 
-def test_enhance_players_from_session_extracts_qualifying_clips_and_recomputes_centroids(
+def test_enhance_players_from_session_extracts_qualifying_clips_and_recomputes_voice_prints(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     application, session_id, alice, bob = _setup_session(tmp_path, monkeypatch)
@@ -154,8 +155,8 @@ def test_enhance_players_from_session_extracts_qualifying_clips_and_recomputes_c
 
     updated_alice = application.get_player(alice.id)
     updated_bob = application.get_player(bob.id)
-    assert updated_alice.centroid_embedding is not None
-    assert updated_bob.centroid_embedding is not None
+    assert updated_alice.voice_print_embedding is not None
+    assert updated_bob.voice_print_embedding is not None
 
 
 def test_enhance_players_from_session_uses_all_assigned_utterances_from_reviewed_transcript(
@@ -187,14 +188,14 @@ def test_enhance_players_from_session_reports_staged_progress(tmp_path: Path, mo
     )
 
     extracting_calls = [c for c in calls if c[0] == Stage.EXTRACTING]
-    recompute_calls = [c for c in calls if c[0] == Stage.RECOMPUTING_CENTROIDS]
+    recompute_calls = [c for c in calls if c[0] == Stage.RECOMPUTING_VOICE_PRINTS]
     assert extracting_calls[0] == (Stage.EXTRACTING, 0, 3)
     assert extracting_calls[-1] == (Stage.EXTRACTING, 3, 3)
     # One running count of clips embedded across both attendees, ending at 100%.
     total = recompute_calls[0][2]
     assert total == 3
-    assert recompute_calls[0] == (Stage.RECOMPUTING_CENTROIDS, 0, total)
-    assert recompute_calls[-1] == (Stage.RECOMPUTING_CENTROIDS, total, total)
+    assert recompute_calls[0] == (Stage.RECOMPUTING_VOICE_PRINTS, 0, total)
+    assert recompute_calls[-1] == (Stage.RECOMPUTING_VOICE_PRINTS, total, total)
     completed = [c[1] for c in recompute_calls]
     assert completed == sorted(completed)
 

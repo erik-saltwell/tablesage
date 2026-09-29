@@ -78,7 +78,7 @@ _A = StepKind.AUTOMATIC
 
 PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
     ProcessingStep(StepID.IMPORT_AUDIO, _M, "Import Audio", (ArtifactName.IMPORT_REQUEST,)),
-    ProcessingStep(StepID.IMPORT_AUDIO_FILE, _A, "Import Audio File", (ArtifactName.INPUT_AUDIO,)),
+    ProcessingStep(StepID.IMPORT_AUDIO_FILE, _A, "Import Audio File", (ArtifactName.INPUT_AUDIO, ArtifactName.NORMALIZED_REVIEW_AUDIO)),
     ProcessingStep(
         StepID.CREATE_TRANSCRIPT,
         _A,

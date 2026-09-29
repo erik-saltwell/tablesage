@@ -21,7 +21,7 @@ Replace Session Detail's separate audio, transcript-review, and output-generatio
 ## History in brief
 
 1. **Original scope (complete):** `P` opened three processing screens (Audio, Transcript, Outputs) with a workflow rail, recorded in `plan.md`, `progress.md`, and `evaluations.md`.
-2. **Redesign (in progress):** `P` on Session Detail now opens **Process Session**. It's a numbered step list whose completion comes from the artifact graph: a step is complete when all its artifacts are current. It also has a New Players list and an error list.
+2. **Redesign (complete; later rebuilt on the step coordinator, see below):** `P` on Session Detail now opens **Process Session**. It's a step list whose completion comes from the artifact graph: a step is complete when all its artifacts are current. It also has a New Players list and an error list.
    - The Outputs screen and the dynamic `Process` / `Continue Processing` label are gone.
    - The sections below record each step's settled design.
 
@@ -31,7 +31,35 @@ The user confirmed this work item supersedes the rolled-back Processing step
 architecture record. The completed implementation, design decisions, and
 verification history above are retained here as the canonical handoff.
 
-## Current step list
+## Current implementation (verified against the code 2026-09-29)
+
+The design sections below record the earlier numbered-key flow. The code has since
+moved to the step-coordinator architecture; where they differ, the code wins:
+
+- **Steps:** `PROCESSING_STEPS` in `tablesage_application/processing_steps.py` is one ordered
+  list of manual and automatic steps (24 as of this note). Each review is bracketed by
+  automatic Suggest and Apply steps. Manual steps only record a decision.
+- **Driver:** `tablesage_tui/processing/coordinator.py` is the only thing that starts
+  processing. One run executes steps from the first incomplete step until a step is
+  cancelled or fails, or everything is complete. Step bodies live in
+  `tablesage_tui/processing/steps.py`.
+- **Process Session screen:** there are no number keys. **C** (Continue button, labeled
+  `Continue: <step>`) runs from the first incomplete step; **Enter/R** restarts a completed
+  row. New-player steps are hidden (not struck through) when there are no new players, and
+  the New Players column is hidden when empty. Failures show on the step's row; blockers
+  such as "no attendees" replace the Continue label. Up/Down visit manual rows only.
+- **State:** each Session folder holds `processing_state.json` (`records`, `sections`,
+  `drafts`, `failures`), see `session_pipeline/processing_state.py`. Completion and
+  staleness come from content fingerprints of declared inputs (`artifact_graph.py`), not
+  file modification times. Decisions, suggestions and receipts are sections of that file,
+  not the separate `*.json` receipt files described below (kept only for one-time import of
+  older Sessions).
+- **Prior-Session rebuilds:** an approval step, **Rebuild Prior Sessions**, appears only
+  when generating this Session would rebuild earlier ones. **Improve Player Voice
+  Profiles** and its automatic Enhance step follow Generate Artifacts.
+- **Public description:** `docs/concepts/session-processing*.md`.
+
+## Step list as of 2026-09-24 (historical)
 
 As of 2026-09-24:
 
@@ -69,7 +97,7 @@ Superseded by [intent.md](intent.md) and removed on 2026-09-24. The step, its sc
 
 Settled in design discussion:
 
-- **Who is new:** only this Session's attendees whose voice centroid is not usable, as decided by `Application._usable_player_embedding`: missing, zero samples, zero magnitude, non-finite, or wrong dimension.
+- **Who is new:** only this Session's attendees whose voice voice print is not usable, as decided by `Application._usable_player_embedding`: missing, zero samples, zero magnitude, non-finite, or wrong dimension.
 - **Artifact:** `new_speaker_set.json` is `{"players": [{"player_id", "player_name"}]}`. It stores only the decision; other data is looked up by `player_id`. An empty list is valid and completes the step.
 - **Re-entry:** the list is always recomputed live. Confirm rewrites the file only when the set of `player_id`s changed, because staleness is mtime-based and a no-op rewrite would invalidate everything downstream. Order and renames don't count as changes.
 - **Read-only list:** the screen shows Player and Reason ("No voice samples" / "Voice profile unusable") and a hint to edit attendance on Session Detail. Forcing a player with a profile to re-bootstrap is out of scope.
@@ -107,7 +135,7 @@ Settled in design discussion:
   - Utterances under `speaker_bootstrap.min_speech_seconds` of speech are dropped.
 - **Voice fallback:** it applies when a player has under `speaker_bootstrap.min_total_speech_seconds` of speech.
   - The player's picks are merged, without duplicates, with their proposed labels' utterances that nobody else listed. Labels proposed for more than one player are skipped.
-  - Existing voice-outlier removal (`compute_centroid` with `remove_outliers`) keeps the consistent core.
+  - Existing voice-outlier removal (`compute_voice_print` with `remove_outliers`) keeps the consistent core.
 - **Ultimate fallback:** anyone still short is left for manual speaker assignment in Review Transcript (step 5). Later steps must tolerate players with too little speech.
 - **Artifact:** `new_speaker_assignments.json` holds `players` (`player_id`, `player_name`, `utterance_indices` into the cleaned transcript (now the name-corrected transcript, which has the same utterances), `used_voice_fallback`, `proposed_speaker_ids`) plus `evidence`. Derived facts, such as seconds and whether a player met the threshold, are not stored. With no new players, it's written empty with no LLM call.
 - **Settings:** `speaker_bootstrap.evidence_timeout` now defaults to 300s.
@@ -185,11 +213,11 @@ Designed in [intent.md](intent.md#change-4-seed-player-voice-samples-replaces-en
   - Graph: the receipt depends on the reviewed assignments. The identified transcript depends on the name-corrected transcript and the receipt. The spellchecked transcript depends on the identified transcript and the `suggest_spelling_corrections` prompt.
 - **Seed (`session_pipeline/seed_voice_samples.py`, `Application.seed_player_voice_samples`):**
   - For each player in the reviewed assignments, it cuts the kept utterances from the name-corrected transcript into `session-<player>-<campaign>-<session>-<hash>-<uuid>.wav`. Only utterances under `enhance_voices.min_embeddable_clip_seconds` are skipped.
-  - It deletes that player's earlier clips from this session after the new ones are written, then recomputes the centroid with `remove_outliers` settings.
+  - It deletes that player's earlier clips from this session after the new ones are written, then recomputes the voice print with `remove_outliers` settings.
   - It commits the database, then writes the receipt atomically: `players` with `player_id`, `player_name`, `clip_filenames`, `sample_count`.
   - Players the reviewed file doesn't list are never touched. With no listed players it does no audio work (and no `asyncio.run`, since the skipped case runs on the UI thread).
   - `players_from_session._generated_session_filename` became public (`generated_session_filename`) for reuse.
-- **Identify Speakers (`Application.identify_session_speakers`):** runs `transcribe_audio.identify_raw_transcript` over the name-corrected transcript with `session_player_centroids` and the `speaker_identification` settings. It raises if the utterance count changes, logs the unassigned count, and writes the identified transcript atomically.
+- **Identify Speakers (`Application.identify_session_speakers`):** runs `transcribe_audio.identify_raw_transcript` over the name-corrected transcript with `session_player_voice_prints` and the `speaker_identification` settings. It raises if the utterance count changes, logs the unassigned count, and writes the identified transcript atomically.
 - **Spellcheck Against Glossary:**
   - `Application.suggest_glossary_spelling_corrections` reads the identified transcript and calls the existing `suggest_spelling_corrections` prompt with the campaign glossary and attendee names. Unlike Manual Review's version, it raises on an LLM failure, so the failure shows in Process Session's error list.
   - `Application.save_glossary_spelling_corrections` applies the reviewed corrections (not whole-word, matching Manual Review) and writes `spellchecked_transcript.json`, skipping the rewrite when a current file is identical.
@@ -216,12 +244,12 @@ Designed in [intent.md](intent.md#change-4-seed-player-voice-samples-replaces-en
   - **Two new players plus a returning one:**
     - Continuing from step 3 ran Seed and Identify, then opened the Spellcheck screen, where Apply wrote the corrected text with identified speakers kept.
     - The receipt listed Bob (2 clips, `sample_count` 2) and Carol (0 clips, `sample_count` 0, her only utterance under the floor). Bob's folder held exactly those session-named clips, and the returning player's folder was untouched.
-    - Identify received the returning player's and Bob's centroids.
+    - Identify received the returning player's and Bob's voice prints.
     - New Players then showed only Carol. Steps 2, 3 and Seed showed done, not skipped. Continuing stopped at Review Transcript.
   - **Re-run after seeding:** a newer, empty review made the receipt and everything after it stale. Re-running Seed wrote an empty receipt and left Bob's clips and profile alone.
-  - **No new players:** opening Process Session completed steps 2, Isolate, 3 and Seed as skipped (with the tooltip). It then ran Identify with the one returning centroid and stopped on Process Session, with no LLM call and key `4` enabled. Resuming didn't re-run Identify. Pressing `4` opened the Spellcheck screen, and Cancel wrote nothing.
+  - **No new players:** opening Process Session completed steps 2, Isolate, 3 and Seed as skipped (with the tooltip). It then ran Identify with the one returning voice print and stopped on Process Session, with no LLM call and key `4` enabled. Resuming didn't re-run Identify. Pressing `4` opened the Spellcheck screen, and Cancel wrote nothing.
 - **Found and fixed during verification:** a skipped Seed called `asyncio.run` on the UI thread.
-- **Known limitation, one voice profile:** with exactly one usable centroid (for example a Session with one returning player and no new ones), the identifier needs an absolute similarity threshold to assign anything. Identify Speakers doesn't pass one, so every utterance stays unassigned and Review Transcript does all the assignment. It doesn't raise. This was confirmed from the code, not a real run. (The `identify_speakers` docstring's "raises with fewer than 2" is out of date.)
+- **Known limitation, one voice profile:** with exactly one usable voice print (for example a Session with one returning player and no new ones), the identifier needs an absolute similarity threshold to assign anything. Identify Speakers doesn't pass one, so every utterance stays unassigned and Review Transcript does all the assignment. It doesn't raise. This was confirmed from the code, not a real run. (The `identify_speakers` docstring's "raises with fewer than 2" is out of date.)
 - **Not exercised:**
   - the real embedding model, the real identifier over real audio, and a real LLM call;
   - an ffmpeg failure;
@@ -436,7 +464,7 @@ Resume note (2026-09-24, after step 6):
 - **Real-run check:** re-run Bransonsford 001 with real LLM calls and the real embedding model. The Isolate and name-correction prompts and the new Identify step haven't run on a real recording yet. Isolate's `trace_output=True` is still on for tuning.
 - **Layout:** the twelve-step list is taller than the panel at 80×24.
 
-Update (2026-09-24, later; superseded by the section below): the pending Enhance decision is settled. Enhance is renamed Seed Player Voice Samples, narrowed to seeding voice clips and recomputing centroids, skipped with no new players, and produces a small `seeded_voice_samples.json` receipt. See [Change 4 in intent.md](intent.md#change-4-seed-player-voice-samples-replaces-enhance-new-speaker-voice-samples). The remaining details were fleshed out the same day and are recorded in intent.md. Assign Roles To Players moves before Review Transcript and identifies speakers by centroid. Next: build Seed Player Voice Samples, then reorder the graph and route steps `4`–`6`.
+Update (2026-09-24, later; superseded by the section below): the pending Enhance decision is settled. Enhance is renamed Seed Player Voice Samples, narrowed to seeding voice clips and recomputing voice prints, skipped with no new players, and produces a small `seeded_voice_samples.json` receipt. See [Change 4 in intent.md](intent.md#change-4-seed-player-voice-samples-replaces-enhance-new-speaker-voice-samples). The remaining details were fleshed out the same day and are recorded in intent.md. Assign Roles To Players moves before Review Transcript and identifies speakers by voice print. Next: build Seed Player Voice Samples, then reorder the graph and route steps `4`–`6`.
 
 ## Extract Glossary Terms (step 4) — implemented 2026-09-25
 

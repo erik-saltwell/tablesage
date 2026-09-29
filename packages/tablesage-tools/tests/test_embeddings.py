@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 
 import pytest
-from tablesage_tools.embeddings import Embedding, SimilarityComputer, compute_centroid
+from tablesage_tools.embeddings import Embedding, SimilarityComputer, compute_voice_print
 
 
 def _write(path: Path, content: bytes) -> Path:
@@ -12,7 +12,7 @@ def _write(path: Path, content: bytes) -> Path:
     return path
 
 
-def test_compute_centroid_returns_normalized_mean_embedding(tmp_path: Path) -> None:
+def test_compute_voice_print_returns_normalized_mean_embedding(tmp_path: Path) -> None:
     paths = [
         _write(tmp_path / "a.wav", b"a"),
         _write(tmp_path / "b.wav", b"b"),
@@ -22,18 +22,18 @@ def test_compute_centroid_returns_normalized_mean_embedding(tmp_path: Path) -> N
         paths[1]: Embedding(root=(0.0, 1.0)),
     }
 
-    result = compute_centroid(paths, lambda p: embeddings[p])
+    result = compute_voice_print(paths, lambda p: embeddings[p])
 
-    assert result.centroid.root == pytest.approx((0.70710677, 0.70710677))
+    assert result.voice_print.root == pytest.approx((0.70710677, 0.70710677))
     assert result.unused_paths == ()
 
 
-def test_compute_centroid_rejects_empty_paths() -> None:
-    with pytest.raises(ValueError, match="Cannot compute centroid of empty path collection."):
-        compute_centroid((), lambda p: Embedding(root=(1.0, 0.0)))
+def test_compute_voice_print_rejects_empty_paths() -> None:
+    with pytest.raises(ValueError, match="Cannot compute voice print of empty path collection."):
+        compute_voice_print((), lambda p: Embedding(root=(1.0, 0.0)))
 
 
-def test_compute_centroid_ignores_duplicate_files_keeping_first_seen(tmp_path: Path) -> None:
+def test_compute_voice_print_ignores_duplicate_files_keeping_first_seen(tmp_path: Path) -> None:
     paths = [
         _write(tmp_path / "a.wav", b"same"),
         _write(tmp_path / "b.wav", b"same"),
@@ -45,13 +45,13 @@ def test_compute_centroid_ignores_duplicate_files_keeping_first_seen(tmp_path: P
         embedded.append(path)
         return Embedding(root=(1.0, 0.0)) if path.name != "c.wav" else Embedding(root=(0.0, 1.0))
 
-    result = compute_centroid(paths, embed)
+    result = compute_voice_print(paths, embed)
 
     assert embedded == [paths[0], paths[2]]
     assert result.unused_paths == (paths[1],)
 
 
-def test_compute_centroid_reports_progress_over_unique_files(tmp_path: Path) -> None:
+def test_compute_voice_print_reports_progress_over_unique_files(tmp_path: Path) -> None:
     paths = [
         _write(tmp_path / "a.wav", b"same"),
         _write(tmp_path / "b.wav", b"same"),
@@ -59,12 +59,12 @@ def test_compute_centroid_reports_progress_over_unique_files(tmp_path: Path) -> 
     ]
     progress: list[tuple[int, int]] = []
 
-    compute_centroid(paths, lambda p: Embedding(root=(1.0, 0.0)), on_progress=lambda done, total: progress.append((done, total)))
+    compute_voice_print(paths, lambda p: Embedding(root=(1.0, 0.0)), on_progress=lambda done, total: progress.append((done, total)))
 
     assert progress == [(1, 2), (2, 2)]
 
 
-def test_compute_centroid_prunes_worst_outlier_below_similarity_bar(tmp_path: Path) -> None:
+def test_compute_voice_print_prunes_worst_outlier_below_similarity_bar(tmp_path: Path) -> None:
     paths = [_write(tmp_path / f"{i}.wav", str(i).encode()) for i in range(6)]
     embeddings = {
         paths[0]: Embedding(root=(1.0, 0.0)),
@@ -75,13 +75,13 @@ def test_compute_centroid_prunes_worst_outlier_below_similarity_bar(tmp_path: Pa
         paths[5]: Embedding(root=(0.0, 1.0)),
     }
 
-    result = compute_centroid(paths, lambda p: embeddings[p], min_sample_similarity=0.6, min_samples=5)
+    result = compute_voice_print(paths, lambda p: embeddings[p], min_sample_similarity=0.6, min_samples=5)
 
     assert result.unused_paths == (paths[5],)
-    assert result.centroid.root == pytest.approx((1.0, 0.0))
+    assert result.voice_print.root == pytest.approx((1.0, 0.0))
 
 
-def test_compute_centroid_never_prunes_below_min_samples_floor(tmp_path: Path) -> None:
+def test_compute_voice_print_never_prunes_below_min_samples_floor(tmp_path: Path) -> None:
     paths = [_write(tmp_path / f"{i}.wav", str(i).encode()) for i in range(5)]
     embeddings = {
         paths[0]: Embedding(root=(1.0, 0.0)),
@@ -91,7 +91,7 @@ def test_compute_centroid_never_prunes_below_min_samples_floor(tmp_path: Path) -
         paths[4]: Embedding(root=(0.0, 1.0)),
     }
 
-    result = compute_centroid(paths, lambda p: embeddings[p], min_sample_similarity=0.6, min_samples=5)
+    result = compute_voice_print(paths, lambda p: embeddings[p], min_sample_similarity=0.6, min_samples=5)
 
     assert result.unused_paths == ()
 
@@ -115,7 +115,7 @@ def test_similarity_computer_returns_best_match_index() -> None:
 
 
 def test_similarity_computer_pushes_nan_reference_to_the_bottom() -> None:
-    """A single corrupt reference centroid shouldn't poison the margin for every candidate --
+    """A single corrupt reference voice print shouldn't poison the margin for every candidate --
     only a NaN candidate embedding (propagating to every comparison) should do that."""
     references = (
         Embedding(root=(1.0, 0.0)),

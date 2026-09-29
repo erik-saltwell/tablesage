@@ -25,12 +25,12 @@ sys.path.insert(0, str(WORKSPACE_ROOT))
 sys.path.insert(0, str(WORKSPACE_ROOT / "benchmarks"))
 
 from speaker_id.cache import EmbeddingCache  # noqa: E402
-from speaker_id.centroid import build_centroids  # noqa: E402
 from speaker_id.embedders import WeSpeakerResNet34Embedder  # noqa: E402
 from speaker_id.harness import REPO_ROOT, GroundTruthSession, _embed_utterances, load_sessions  # noqa: E402
 from speaker_id.matchers import MarginAndSimilarityMatcher, MarginThresholdMatcher  # noqa: E402
 from speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
 from speaker_id.types import Embedder, Matcher  # noqa: E402
+from speaker_id.voice_print import build_voice_prints  # noqa: E402
 from tablesage_application.paths import players_root  # noqa: E402
 from tablesage_tools.embeddings.types import Embedding  # noqa: E402
 
@@ -59,7 +59,7 @@ class GridPoint:
 class PreparedSession:
     session: GroundTruthSession
     embeddings: dict[int, Embedding]
-    centroids: dict[str, Embedding]
+    voice_prints: dict[str, Embedding]
     durations: dict[int, float]
     ground_truth: dict[int, tuple[str, float]]
 
@@ -83,7 +83,7 @@ def _prepare_sessions(sessions: list[GroundTruthSession], embedder: Embedder, ca
             PreparedSession(
                 session=session,
                 embeddings=asyncio.run(_embed_utterances(session, embedder, cache)),
-                centroids=build_centroids(session.attendees, players_root(REPO_ROOT), embedder, cache),
+                voice_prints=build_voice_prints(session.attendees, players_root(REPO_ROOT), embedder, cache),
                 durations=durations,
                 ground_truth={
                     index: (utterance.speaker, durations[index]) for index, utterance in enumerate(session.transcript.utterances)
@@ -99,7 +99,7 @@ def _score_matcher(name: str, matcher: Matcher, sessions: list[PreparedSession])
             session.session.name,
             name,
             session.ground_truth,
-            matcher.match(session.embeddings, session.centroids, session.durations),
+            matcher.match(session.embeddings, session.voice_prints, session.durations),
         )
         for session in sessions
     ]

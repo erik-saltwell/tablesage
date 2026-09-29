@@ -41,7 +41,7 @@ def test_player_has_no_campaign_dependency_and_unique_name(tmp_path: Path) -> No
         session.commit()
         session.refresh(player)
 
-        assert player.centroid_embedding is None
+        assert player.voice_print_embedding is None
         assert player.sample_count == 0
 
         session.add(Player(name="Alice"))

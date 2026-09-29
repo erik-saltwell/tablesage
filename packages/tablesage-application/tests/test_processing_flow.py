@@ -26,6 +26,7 @@ from tablesage_application.session_pipeline.artifact_graph import ArtifactStatus
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
 from tablesage_model.model import Campaign, Player
+from tablesage_model.settings import ReviewAudioNormalizationSettings
 from tablesage_tools.model import Transcript, Utterance
 
 _UTTERANCES = [("Anna", 0.0, 2.0, "We ride to Brandonsfrd."), ("Bo", 2.0, 4.0, "The dragon waits."), ("Anna", 4.0, 6.0, "Fine.")]
@@ -61,8 +62,16 @@ def stubs(monkeypatch: pytest.MonkeyPatch) -> _Stubs:
         spelling=[SpellingSuggestion("Brandonsfrd", "Brandonsford", False, 1)],
     )
 
-    def fake_import(source_path: Path, session_folder: Path, normalize_volume: bool, *, should_clean_audio: bool = True) -> None:
+    def fake_import(
+        source_path: Path,
+        session_folder: Path,
+        normalize_volume: bool,
+        *,
+        should_clean_audio: bool = True,
+        review_normalization: ReviewAudioNormalizationSettings | None = None,
+    ) -> None:
         shutil.copyfile(source_path, session_folder / "input_audio.wav")
+        shutil.copyfile(source_path, session_folder / "normalized_review_audio.wav")
 
     def fake_create_transcript(session_folder: Path, *_args: object, **_kwargs: object) -> int:
         _transcript().save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)
@@ -98,7 +107,7 @@ def _returning_player(application: Application, name: str) -> Player:
     with Session(application._engine) as session:
         stored = session.get(Player, player.id)
         assert stored is not None
-        stored.centroid_embedding = json.dumps([1.0, 0.0])
+        stored.voice_print_embedding = json.dumps([1.0, 0.0])
         stored.embedding_dimension = 2
         stored.sample_count = 3
         session.commit()

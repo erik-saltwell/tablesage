@@ -22,9 +22,9 @@ from tablesage_tools.speakers.strategies import (
 )
 
 from .cache import EmbeddingCache, utterance_cache_key, widened_utterance_cache_key
-from .centroid import build_centroids
 from .scoring import SessionScore, print_report, score_session
 from .types import Candidate, Embedder
+from .voice_print import build_voice_prints
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_ROOT = Path(__file__).resolve().parent.parent / "data"
@@ -95,7 +95,7 @@ async def _embed_utterances(
 def run_candidate(candidate: Candidate, sessions: list[GroundTruthSession], cache: EmbeddingCache) -> list[SessionScore]:
     scores = []
     for session in sessions:
-        centroids = build_centroids(session.attendees, players_root(REPO_ROOT), candidate.embedder, cache)
+        voice_prints = build_voice_prints(session.attendees, players_root(REPO_ROOT), candidate.embedder, cache)
         embeddings = asyncio.run(
             _embed_utterances(
                 session,
@@ -106,7 +106,7 @@ def run_candidate(candidate: Candidate, sessions: list[GroundTruthSession], cach
         )
         durations = {index: utterance.end - utterance.start for index, utterance in enumerate(session.transcript.utterances)}
         clusters = {index: diarization_cluster_id(utterance) for index, utterance in enumerate(session.transcript.utterances)}
-        predictions = candidate.matcher.match(embeddings, centroids, durations, clusters)
+        predictions = candidate.matcher.match(embeddings, voice_prints, durations, clusters)
         ground_truth = {
             index: (utterance.speaker, utterance.end - utterance.start) for index, utterance in enumerate(session.transcript.utterances)
         }

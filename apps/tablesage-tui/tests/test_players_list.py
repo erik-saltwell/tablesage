@@ -131,13 +131,13 @@ async def test_players_table_has_expected_columns() -> None:
         assert [str(column.label) for column in table.columns.values()] == [
             "Samples",
             "Player",
-            "Centroid",
+            "Voice Print",
         ]
 
 
 @pytest.mark.anyio
-async def test_players_table_shows_centroid_status() -> None:
-    application = _application(players=[Player(name="Alice"), Player(name="Bob", centroid_embedding="[0.1]")])
+async def test_players_table_shows_voice_print_status() -> None:
+    application = _application(players=[Player(name="Alice"), Player(name="Bob", voice_print_embedding="[0.1]")])
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_players_list(pilot)

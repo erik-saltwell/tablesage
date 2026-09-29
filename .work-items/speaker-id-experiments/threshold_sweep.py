@@ -3,12 +3,12 @@ frozen benchmark sessions, to see whether production's default (0.1) is actually
 
 Not a permanent harness feature -- the locally archived speaker-identification benchmark defers a
 "first-class threshold-sweep mode" (curve instead of point comparisons) out of v1 scope on
-purpose. This script reuses the harness's existing embedder/centroid/matcher/scoring stages as a
+purpose. This script reuses the harness's existing embedder/voice print/matcher/scoring stages as a
 library, the same way candidates.py's Workflow section says threshold variations should be
 compared ("just additional registered candidates"), just swept programmatically instead of by
 hand-typing dozens of entries into the permanent CANDIDATES list.
 
-Embeddings and centroids are computed once per session (they don't depend on the threshold) and
+Embeddings and voice prints are computed once per session (they don't depend on the threshold) and
 reused across every swept threshold -- only the cheap matching + scoring step reruns per value.
 
 Usage (from the repo root, inside the venv):
@@ -27,12 +27,12 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "benchmarks"))
 
 from speaker_id.cache import EmbeddingCache  # noqa: E402
-from speaker_id.centroid import build_centroids  # noqa: E402
 from speaker_id.embedders import Eres2NetV2Embedder  # noqa: E402
 from speaker_id.harness import REPO_ROOT as HARNESS_REPO_ROOT  # noqa: E402
 from speaker_id.harness import _embed_utterances, load_sessions  # noqa: E402
 from speaker_id.matchers import MarginThresholdMatcher  # noqa: E402
 from speaker_id.scoring import SessionScore, pool, score_session  # noqa: E402
+from speaker_id.voice_print import build_voice_prints  # noqa: E402
 from tablesage_application.paths import players_root  # noqa: E402
 
 THRESHOLDS = [round(0.02 * i, 2) for i in range(26)]  # 0.00 .. 0.50 step 0.02
@@ -54,10 +54,10 @@ def main() -> None:
 
     # Precompute once per session -- independent of threshold.
     per_session_embeddings = {}
-    per_session_centroids = {}
+    per_session_voice_prints = {}
     per_session_ground_truth = {}
     for session in sessions:
-        per_session_centroids[session.name] = build_centroids(session.attendees, players_root(HARNESS_REPO_ROOT), embedder, cache)
+        per_session_voice_prints[session.name] = build_voice_prints(session.attendees, players_root(HARNESS_REPO_ROOT), embedder, cache)
         per_session_embeddings[session.name] = asyncio.run(_embed_utterances(session, embedder, cache))
         per_session_ground_truth[session.name] = {
             index: (utterance.speaker, utterance.end - utterance.start) for index, utterance in enumerate(session.transcript.utterances)
@@ -69,7 +69,7 @@ def main() -> None:
         matcher = MarginThresholdMatcher(similarity_margin_threshold=threshold, allow_unassigned=True)
         session_scores: list[SessionScore] = []
         for session in sessions:
-            predictions = matcher.match(per_session_embeddings[session.name], per_session_centroids[session.name])
+            predictions = matcher.match(per_session_embeddings[session.name], per_session_voice_prints[session.name])
             session_scores.append(score_session(session.name, matcher.name, per_session_ground_truth[session.name], predictions))
         pooled = pool(session_scores, matcher.name)
         rows.append(

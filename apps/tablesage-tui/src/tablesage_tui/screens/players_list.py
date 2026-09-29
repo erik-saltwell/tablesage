@@ -36,7 +36,7 @@ class PlayersListScreen(TableSageScreen):
         Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
     ]
     OTHER_BINDINGS = [
-        Binding("r,R", "recompute_all_centroids", "Recompute All Centroids", key_display="R"),
+        Binding("r,R", "recompute_all_voice_prints", "Recompute All Voice Prints", key_display="R"),
         Binding("i,I", "import_players", "Import Players", key_display="I"),
         Binding("x,X", "export_players", "Export Players", key_display="X"),
         Binding("c,C", "cleanup_players", "Clean Up", key_display="C"),
@@ -50,7 +50,7 @@ class PlayersListScreen(TableSageScreen):
             )
             table.add_column("Samples", key="samples")
             table.add_column("Player", key="name")
-            table.add_column("Centroid", key="centroid_status")
+            table.add_column("Voice Print", key="voice_print_status")
             yield table
 
     def on_mount(self) -> None:
@@ -83,8 +83,8 @@ class PlayersListScreen(TableSageScreen):
         return True
 
     def _row_cells(self, player: Player) -> tuple[object, str, str]:
-        centroid_status = "ready" if player.centroid_embedding is not None else "no samples"
-        return sample_count_cell(player.sample_count), player.name, centroid_status
+        voice_print_status = "ready" if player.voice_print_embedding is not None else "no samples"
+        return sample_count_cell(player.sample_count), player.name, voice_print_status
 
     def _selected_player_id(self) -> uuid.UUID | None:
         table = self.query_one("#players-table", DataTable)
@@ -125,7 +125,7 @@ class PlayersListScreen(TableSageScreen):
 
         self.app.push_screen(PlayerDialog(title="New Player", submit_label="Create Player", on_submit=on_submit))
 
-    def action_recompute_all_centroids(self) -> None:
+    def action_recompute_all_voice_prints(self) -> None:
         def work() -> int:
             players = self.application.list_players()
             total = len(players)
@@ -136,7 +136,7 @@ class PlayersListScreen(TableSageScreen):
                     total,
                 )
                 try:
-                    self.application.recompute_centroid(player.id)
+                    self.application.recompute_voice_print(player.id)
                 except Exception as exc:
                     raise RuntimeError(f"Stopped at {player.name} after recomputing {index - 1} of {total} players: {exc}") from exc
                 self.report_progress(index, total)
@@ -144,10 +144,10 @@ class PlayersListScreen(TableSageScreen):
 
         def on_success(total: int) -> None:
             self._reload_players()
-            self.notify(f"Recomputed centroids for {total} player(s)." if total else "No players to recompute.")
+            self.notify(f"Recomputed voice prints for {total} player(s)." if total else "No players to recompute.")
 
         self.run_with_progress(
-            title="Recompute All Centroids",
+            title="Recompute All Voice Prints",
             message="Loading players…",
             work=work,
             on_success=on_success,
@@ -171,7 +171,7 @@ class PlayersListScreen(TableSageScreen):
 
             self.run_with_progress(
                 title="Import Players",
-                message="Importing player folders and computing centroids…",
+                message="Importing player folders and computing voice prints…",
                 work=lambda: self.application.import_players(source, self.report_progress),
                 on_success=on_success,
                 on_error=on_error,

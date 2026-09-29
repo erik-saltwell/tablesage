@@ -73,7 +73,7 @@ def can_transcribe_audio(session: Session, session_id: uuid.UUID, session_folder
 
 def transcribe_audio(
     session_folder: Path,
-    centroids: dict[str, Embedding],
+    voice_prints: dict[str, Embedding],
     embed: EmbeddingFactory,
     transcription_settings: TranscriptionAndDiarizationSettings,
     speaker_id_settings: SpeakerIdentificationSettings,
@@ -87,7 +87,7 @@ def transcribe_audio(
     (the tablesage_tools `Transcript`, machine-readable) and `transcript.md` (a
     timestamped, speaker-labeled script for humans) there, only once every stage has
     succeeded -- a failure partway through leaves no artifacts behind, matching
-    `import_audio`'s all-or-nothing contract. `centroids` should be scoped to
+    `import_audio`'s all-or-nothing contract. `voice_prints` should be scoped to
     the session's attendees; its size is passed through to diarization as the
     expected speaker count, since `identify_speakers` already assumes exactly
     that correspondence.
@@ -99,12 +99,12 @@ def transcribe_audio(
     Role-name rendering is not part of transcription either -- see `clean_transcript`.
     """
     raw_transcript = transcribe_and_diarize_audio(
-        session_folder, len(centroids), _transcription_strategy(transcription_settings), on_progress
+        session_folder, len(voice_prints), _transcription_strategy(transcription_settings), on_progress
     )
     return identify_and_publish_transcript(
         session_folder,
         raw_transcript,
-        centroids,
+        voice_prints,
         embed,
         speaker_id_settings,
         backchannel_settings,
@@ -177,7 +177,7 @@ def create_transcript(
 def identify_raw_transcript(
     session_folder: Path,
     transcript: Transcript,
-    centroids: dict[str, Embedding],
+    voice_prints: dict[str, Embedding],
     embed: EmbeddingFactory,
     speaker_id_settings: SpeakerIdentificationSettings,
     *,
@@ -188,7 +188,7 @@ def identify_raw_transcript(
     """Identify a raw transcript without punctuation, backchannel removal, or publication."""
 
     async def _run() -> Transcript:
-        if not centroids:
+        if not voice_prints:
             return transcript.model_copy(
                 update={
                     "utterances": [
@@ -204,7 +204,7 @@ def identify_raw_transcript(
         return await identify_speakers(
             transcript,
             session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename,
-            centroids,
+            voice_prints,
             embed,
             speaker_id_settings.similarity_margin_threshold,
             progress,
@@ -242,7 +242,7 @@ def identify_raw_transcript(
 def identify_and_publish_transcript(
     session_folder: Path,
     transcript: Transcript,
-    centroids: dict[str, Embedding],
+    voice_prints: dict[str, Embedding],
     embed: EmbeddingFactory,
     speaker_id_settings: SpeakerIdentificationSettings,
     backchannel_settings: RemoveBackchannelsSettings,
@@ -267,12 +267,12 @@ def identify_and_publish_transcript(
         # Preserve the existing one-reference path until Phase 3 supplies its
         # calibrated conservative fallback.  The no-reference bootstrap case
         # must still abstain rather than inventing an assignment.
-        if centroids:
+        if voice_prints:
             audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
             working_transcript = await identify_speakers(
                 working_transcript,
                 audio_path,
-                centroids,
+                voice_prints,
                 embed,
                 speaker_id_settings.similarity_margin_threshold,
                 _identify_progress,
@@ -334,7 +334,9 @@ def identify_and_publish_transcript(
 
         return working_transcript, removed_backchannel_count
 
-    with widelog.wide_event(op="identify_and_publish_transcript", session_folder=str(session_folder), speaker_count=len(centroids)) as log:
+    with widelog.wide_event(
+        op="identify_and_publish_transcript", session_folder=str(session_folder), speaker_count=len(voice_prints)
+    ) as log:
         transcript, removed_backchannel_count = asyncio.run(_run())
 
         transcript.save(session_folder / ARTIFACTS[ArtifactName.TRANSCRIPT].filename)

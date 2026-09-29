@@ -125,7 +125,7 @@ def propagate_cluster_labels(
     current_labels: Mapping[int, str],
     embeddings: Mapping[int, Embedding],
     similarity_results: Mapping[int, SimilarityResult],
-    centroids: Mapping[str, Embedding],
+    voice_prints: Mapping[str, Embedding],
     durations: Mapping[int, float],
     cluster_ids: Mapping[int, str],
     config: ClusterPropagationConfig,
@@ -137,8 +137,8 @@ def propagate_cluster_labels(
         if durations[index] >= config.evidence_min_duration_seconds and _embedding_is_finite(embeddings[index]):
             by_cluster[cluster_ids[index]].append(index)
 
-    names = list(centroids)
-    computer = SimilarityComputer(tuple(centroids[name] for name in names))
+    names = list(voice_prints)
+    computer = SimilarityComputer(tuple(voice_prints[name] for name in names))
     assignments: dict[str, ClusterAssignment] = {}
     for cluster_id, indices in by_cluster.items():
         pooled = _pooled_embedding([embeddings[index] for index in indices])

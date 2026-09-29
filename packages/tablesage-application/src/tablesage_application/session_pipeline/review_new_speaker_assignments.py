@@ -177,7 +177,7 @@ def extract_clips(session_folder: Path, indices: Sequence[int], on_progress: Cal
 def extract_more_clips(session_folder: Path, indices: Sequence[int], on_progress: Callable[[int, int], None] | None = None) -> None:
     """Extract playback clips for `indices` (such as Find More's additions), leaving existing clips alone."""
     transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
-    audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
+    audio_path = session_folder / ARTIFACTS[ArtifactName.NORMALIZED_REVIEW_AUDIO].filename
     clips_folder(session_folder).mkdir(parents=True, exist_ok=True)
 
     async def extract_all() -> int:

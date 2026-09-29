@@ -2,17 +2,17 @@
 
 ## Subject and intended effect
 
-This rubric will judge the experience and correctness of processing a session that includes attendees without usable voice centroids. The intended result is a useful first-session identification pass, followed by human-reviewed, automatic creation of durable voice evidence for the players who needed bootstrapping.
+This rubric will judge the experience and correctness of processing a session that includes attendees without usable voice voice prints. The intended result is a useful first-session identification pass, followed by human-reviewed, automatic creation of durable voice evidence for the players who needed bootstrapping.
 
 ## Agreed dimensions
 
 ### First-session continuity
 
-Rewards allowing an attendee without a usable centroid to proceed through Session Processing. When evidence is insufficient, the flow should reach transcript review with the speaker unresolved rather than blocking or inventing an identity.
+Rewards allowing an attendee without a usable voice print to proceed through Session Processing. When evidence is insufficient, the flow should reach transcript review with the speaker unresolved rather than blocking or inventing an identity.
 
 ### Evidence-grounded provisional identification
 
-Rewards centroids founded on cited conversational evidence, usable audio, acoustic consistency, and separation from established player centroids. Ambiguous or conflicting evidence should remain unresolved.
+Rewards voice prints founded on cited conversational evidence, usable audio, acoustic consistency, and separation from established player voice prints. Ambiguous or conflicting evidence should remain unresolved.
 
 ### Review-authoritative profile learning
 

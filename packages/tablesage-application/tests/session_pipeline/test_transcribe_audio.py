@@ -56,7 +56,7 @@ def _stub_pipeline(monkeypatch: pytest.MonkeyPatch) -> None:
     async def _stub_identify_speakers(
         transcript: Transcript,
         audio_path: Path,
-        centroids: dict[str, Embedding],
+        voice_prints: dict[str, Embedding],
         embed: EmbeddingFactory,
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,
@@ -191,7 +191,7 @@ def test_transcribe_audio_forwards_allow_unassigned_to_identify_speakers(tmp_pat
     async def _capturing_identify_speakers(
         transcript: Transcript,
         audio_path: Path,
-        centroids: dict[str, Embedding],
+        voice_prints: dict[str, Embedding],
         embed: EmbeddingFactory,
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,
@@ -230,7 +230,7 @@ def test_transcribe_audio_forwards_duration_override_to_identify_speakers(tmp_pa
     async def _capturing_identify_speakers(
         transcript: Transcript,
         audio_path: Path,
-        centroids: dict[str, Embedding],
+        voice_prints: dict[str, Embedding],
         embed: EmbeddingFactory,
         threshold: float,
         on_progress: Callable[[int, int], None] | None = None,

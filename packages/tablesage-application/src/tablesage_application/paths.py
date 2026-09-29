@@ -6,6 +6,7 @@ from pathlib import Path
 # because `paths` is the long-standing import point for them.
 from .artifact_registry import (
     ARTIFACTS,
+    AUDIO_PAIR_MARKER,
     LEDGER_PAIR_MARKER,
     SUMMARY_INPUTS_FILENAME,
     ArtifactCategory,
@@ -17,6 +18,7 @@ from .artifact_registry import (
 __all__ = [
     "ARTIFACTS",
     "AUDIO_EXTENSIONS",
+    "AUDIO_PAIR_MARKER",
     "LEDGER_PAIR_MARKER",
     "SUMMARY_INPUTS_FILENAME",
     "VOICE_CLIP_GLOB",

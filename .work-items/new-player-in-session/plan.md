@@ -4,7 +4,7 @@
 
 Implement the flow in [intent.md](intent.md) and the [mockup](process-session-new-speakers-mockup.png): import/clean/transcribe → isolate candidates → review candidate identities with playback → identify all speakers → review new-player assignments with unassignment → glossary/spelling preparation → full transcript review → generate artifacts → automatically build durable profiles for the players who needed bootstrapping.
 
-Only attendees without usable centroids at the start of processing are bootstrap targets. An unresolved identity is a valid review outcome. All final reviewed assignments are eligible for durable clips, including unchanged automatic assignments. Later reviews, retranscription, or replacement audio must not automatically regenerate an already-finalized session contribution; that remains a player-screen operation.
+Only attendees without usable voice prints at the start of processing are bootstrap targets. An unresolved identity is a valid review outcome. All final reviewed assignments are eligible for durable clips, including unchanged automatic assignments. Later reviews, retranscription, or replacement audio must not automatically regenerate an already-finalized session contribution; that remains a player-screen operation.
 
 This document proposes technical implementation decisions within the agreed intent. Numeric candidate-selection defaults are calibration starting points. The [rubric](rubric.md) has four agreed dimensions but no numerical anchors; planning proceeds under the explicit user request without inventing scores. Verification below addresses continuity, evidence quality, review authority, and profile stability qualitatively.
 
@@ -14,19 +14,19 @@ Paths below are relative to the repository root.
 
 | Inspected component | Current behavior and implementation consequence |
 | --- | --- |
-| `packages/tablesage-application/src/tablesage_application/session_pipeline/transcribe_audio.py` | Performs diarization, identification, punctuation, and backchannel removal in one operation; writes the machine transcript only at the end. Uses centroid count as diarization speaker count and rejects missing profiles. Split the operation into persisted stages and pass attendee count independently. |
+| `packages/tablesage-application/src/tablesage_application/session_pipeline/transcribe_audio.py` | Performs diarization, identification, punctuation, and backchannel removal in one operation; writes the machine transcript only at the end. Uses voice print count as diarization speaker count and rejects missing profiles. Split the operation into persisted stages and pass attendee count independently. |
 | `packages/tablesage-application/src/tablesage_application/session_pipeline/processing.py` | Also rejects missing profiles. Audit all callers so opening Process and retrying stages share the new eligibility checks. |
-| `packages/tablesage-application/src/tablesage_application/application.py` | Owns settings injection, centroid loading, artifact graph construction, generation, review drafts, and phase routing. Add focused bootstrap orchestration methods here, backed by separate pipeline modules. |
+| `packages/tablesage-application/src/tablesage_application/application.py` | Owns settings injection, voice print loading, artifact graph construction, generation, review drafts, and phase routing. Add focused bootstrap orchestration methods here, backed by separate pipeline modules. |
 | `packages/tablesage-model/src/tablesage_model/model/session_processing_state.py` | Persists only Audio/Transcript/Outputs, with database check constraints. A migration is needed for new review phases; changing the enum alone is insufficient. |
 | `apps/tablesage-tui/src/tablesage_tui/screens/audio_processing.py` | Import immediately transcribes/identifies and switches to full review. Replace automatic navigation with stage completion and return to the overview. |
 | `apps/tablesage-tui/src/tablesage_tui/screens/player_import_review.py`, `dialogs/transcript_view.py`, `audio_playback.py` | Already provide speaker resolution and explicit Play Clip. Reuse playback/table behavior; the import build action writes profiles and must not be called by provisional review. The existing transcript dialog cannot exclude individual utterances. |
 | `apps/tablesage-tui/src/tablesage_tui/screens/speaker_review.py` | Owns glossary preparation, spelling suggestions, full transcript editing, playback, and draft handling. Separate preparation from full review without duplicating those behaviors. |
 | `apps/tablesage-tui/src/tablesage_tui/widgets/command_button.py` | Existing keyboard/click-aware command widget matches the numbered controls in the mockup. Use it for overview actions. |
-| `packages/tablesage-tools/src/tablesage_tools/embeddings/similarity.py` | Outlier removal includes a sample in its own reference centroid and stops at a sample floor. Bootstrap needs a separate leave-one-out selection helper. `SimilarityComputer` requires two references. |
+| `packages/tablesage-tools/src/tablesage_tools/embeddings/similarity.py` | Outlier removal includes a sample in its own reference voice print and stops at a sample floor. Bootstrap needs a separate leave-one-out selection helper. `SimilarityComputer` requires two references. |
 | `packages/tablesage-application/src/tablesage_application/players_from_session.py` | Reviewed-source selection already includes unchanged assignments, but enhancement loops over every attendee and replaces previous session clips. Reuse selection/extraction helpers, not this operation unchanged. |
-| `packages/tablesage-application/src/tablesage_application/voice_clips/clips.py` | Filesystem is authoritative for clips; centroid metadata lives on Player. Automatic finalization needs recoverable file publication and explicit per-player completion records. |
+| `packages/tablesage-application/src/tablesage_application/voice_clips/clips.py` | Filesystem is authoritative for clips; voice print metadata lives on Player. Automatic finalization needs recoverable file publication and explicit per-player completion records. |
 
-Preserve canonical downstream artifact contracts, including [Transcript Sections](../transcript-sections-artifact-contract/specification.md). The existing graph in `Application._artifact_graph` makes the machine transcript depend on input audio and the backchannel prompt; it does not currently depend on live player centroid timestamps. Retain that boundary so learning at the end cannot make the session that taught the profile immediately stale.
+Preserve canonical downstream artifact contracts, including [Transcript Sections](../transcript-sections-artifact-contract/specification.md). The existing graph in `Application._artifact_graph` makes the machine transcript depend on input audio and the backchannel prompt; it does not currently depend on live player voice print timestamps. Retain that boundary so learning at the end cannot make the session that taught the profile immediately stale.
 
 ## Technical design
 
@@ -45,9 +45,9 @@ Store large typed working documents under `<session-folder>/processing/`, using 
 
 Use `(run_id, original_utterance_index)` as stable source IDs, with original time bounds retained. Use `(source_id, clip_start, clip_end)` for subclips. Do not identify rows solely by current array index or timestamps: rows can be removed and equal time spans can occur. Preserve mappings through punctuation, filtering, and review in sidecars; do not require a breaking change to the canonical `Transcript` schema.
 
-Define a usable centroid as parseable, finite, nonzero, dimensionally compatible with the configured embedding backend, with positive contributing sample count. Normalize valid vectors for comparison. Use backend metadata rather than embedding audio just to learn the dimension. Existing profiles have no model-ID field: accept legacy profiles using validated dimension/count checks, mark provenance as legacy, and add model identity on newly computed profiles. Model compatibility across same-dimension legacy models remains a limitation to surface during migration validation.
+Define a usable voice print as parseable, finite, nonzero, dimensionally compatible with the configured embedding backend, with positive contributing sample count. Normalize valid vectors for comparison. Use backend metadata rather than embedding audio just to learn the dimension. Existing profiles have no model-ID field: accept legacy profiles using validated dimension/count checks, mark provenance as legacy, and add model identity on newly computed profiles. Model compatibility across same-dimension legacy models remains a limitation to surface during migration validation.
 
-Snapshot eligibility and references at run start; reloading the screen must not recalculate eligibility after finalization creates centroids. Use UUIDs internally and the captured name mapping at the existing name-keyed identification boundary. Before finalization, resolve current names by UUID and detect changed mappings rather than attributing clips by an ambiguous label.
+Snapshot eligibility and references at run start; reloading the screen must not recalculate eligibility after finalization creates voice prints. Use UUIDs internally and the captured name mapping at the existing name-keyed identification boundary. Before finalization, resolve current names by UUID and detect changed mappings rather than attributing clips by an ambiguous label.
 
 Migrate existing sessions without forcing retranscription: a current machine transcript can go directly to existing spelling/full review; an existing current reviewed transcript can go to outputs. Do not retroactively enroll already-completed sessions for automatic learning. Do not synthesize diarized labels from a named legacy transcript. New bootstrap runs require preserved diarization or a deliberate new transcription.
 
@@ -76,7 +76,7 @@ An exchange ID is normalized by the application from its source range. Multiple 
 
 ### 4. Candidate-selection algorithm
 
-Add a settings-agnostic helper under `tablesage_tools/embeddings/` returning selected clip IDs, centroid or no centroid, similarity diagnostics, and rejection reasons. Keep the existing general `compute_centroid` behavior unchanged.
+Add a settings-agnostic helper under `tablesage_tools/embeddings/` returning selected clip IDs, voice print or no voice print, similarity diagnostics, and rejection reasons. Keep the existing general `compute_voice_print` behavior unchanged.
 
 Algorithm:
 
@@ -86,7 +86,7 @@ Algorithm:
 4. Compute leave-one-out similarity for each member. Remove the weakest failing member, recompute, and repeat. Pruning may fall below the required support count. A singleton cannot prove internal agreement and fails the automatic seed-support gate.
 5. Compare each member with established attendee references. Require sufficient leave-one-out similarity and the configured margin above the nearest established reference. With zero established references, omit this particular gate and record that it was unavailable; with one, calculate direct cosine similarity without `SimilarityComputer`.
 6. Reject conflicting provisional profiles for different players when their inter-profile similarity or member cross-margins fail the configured collision rule. Show conflicts in candidate review rather than silently assigning both.
-7. Require the independent-exchange, clip-count, and total-speech support gates; average accepted normalized embeddings with equal clip weights and cap contribution per exchange. Freeze the approved centroid for this identification pass.
+7. Require the independent-exchange, clip-count, and total-speech support gates; average accepted normalized embeddings with equal clip weights and cap contribution per exchange. Freeze the approved voice print for this identification pass.
 
 Persist selection reasons and measurements for review/debugging, not only a composite confidence number. Review may exclude seed clips or correct identity, then rerun deterministic selection against the modified candidate set without another transcription.
 
@@ -96,7 +96,7 @@ Add a `SpeakerBootstrapSettings` section to `tablesage_model.settings.AppSetting
 
 Zero references: mark all machine assignments unresolved and continue. One reference: the current best-versus-runner-up implementation cannot operate; use a conservative unresolved fallback until a separately calibrated absolute-match path exists. Do not assign every utterance to the sole available player.
 
-Two or more references: use established plus approved provisional centroids. When any attendee still lacks a reference, a winning relative margin alone cannot rule out that unknown voice. Add a calibrated absolute similarity gate as well as the existing margin gate. Keep weak matches unresolved, including in cluster propagation and duration overrides. Enforce abstention for the bootstrap workflow even if the general `allow_unassigned` setting disables it elsewhere; document this workflow invariant.
+Two or more references: use established plus approved provisional voice prints. When any attendee still lacks a reference, a winning relative margin alone cannot rule out that unknown voice. Add a calibrated absolute similarity gate as well as the existing margin gate. Keep weak matches unresolved, including in cluster propagation and duration overrides. Enforce abstention for the bootstrap workflow even if the general `allow_unassigned` setting disables it elsewhere; document this workflow invariant.
 
 Do not apply a confirmed anonymous-speaker identity blindly to every utterance under that label. Identification remains utterance-based. Keep original diarization and assignment provenance available for playback and diagnostics.
 
@@ -128,9 +128,9 @@ Use a per-session operation guard and a per-player write guard shared with manua
 Publish using a recovery journal, since SQLite and filesystem writes are not one transaction:
 
 1. Stage selected clips outside the player's active `*.wav` directory; derive deterministic destination identities from session, player, reviewed-source digest, and source span. Preserve the existing session-hash filename convention so manual From Session regeneration can still find these clips.
-2. Compute the prospective centroid using existing player clips plus staged clips. Existing invalid profile metadata must not force a mixture with inconsistent old audio; apply outlier checks and withhold publication if no coherent result is available. Persist the prepared manifest and intended centroid payload before moving files.
-3. Publish deterministic files, verifying hashes on recovery. Commit the centroid metadata and contribution receipt together in the database. A failure leaves a recoverable prepared operation, not a claimed successful completion; retry resumes missing file moves and commits without duplicating clips.
-4. Remove staging data after commit. Never delete earlier durable session contributions during this automatic path. A zero-usable-clips result is a visible nonfatal outcome with no fabricated centroid and a terminal receipt; later regeneration is manual.
+2. Compute the prospective voice print using existing player clips plus staged clips. Existing invalid profile metadata must not force a mixture with inconsistent old audio; apply outlier checks and withhold publication if no coherent result is available. Persist the prepared manifest and intended voice print payload before moving files.
+3. Publish deterministic files, verifying hashes on recovery. Commit the voice print metadata and contribution receipt together in the database. A failure leaves a recoverable prepared operation, not a claimed successful completion; retry resumes missing file moves and commits without duplicating clips.
+4. Remove staging data after commit. Never delete earlier durable session contributions during this automatic path. A zero-usable-clips result is a visible nonfatal outcome with no fabricated voice print and a terminal receipt; later regeneration is manual.
 
 The overview reports partial finalization per player and retries only pending/failed operations. Generation failures create no durable bootstrap clips. Finalization failure does not regenerate successful artifacts or discard the completed transcript.
 
@@ -138,7 +138,7 @@ The overview reports partial finalization per player and retries only pending/fa
 
 | Change | Workflow response | Durable profile response |
 | --- | --- | --- |
-| Replace audio or deliberately retranscribe | New source/run; clear incompatible candidates, centroids, working reviews, and clips; retain normal canonical staleness behavior | No automatic retraction/replacement of finalized contributions |
+| Replace audio or deliberately retranscribe | New source/run; clear incompatible candidates, voice prints, working reviews, and clips; retain normal canonical staleness behavior | No automatic retraction/replacement of finalized contributions |
 | Change attendance/identity mapping before completion | Invalidate snapshots and affected downstream work; retain usable raw audio/transcription when speaker-count assumptions allow reuse | Never mutate a removed attendee's durable clips |
 | Correct candidate mapping/selection | New candidate revision; rerun identification and invalidate focused/spelling/full review derivatives | None before finalization |
 | Unassign in focused review | Carry unassignment into spelling and full review; do not rerun identification over it | Only final full-review assignments can contribute |
@@ -155,7 +155,7 @@ Phases are implementation milestones, not additional approval gates. Record actu
 ### Phase 1 — persisted state and eligibility
 
 - [x] Add typed workflow payloads, run/contribution models and entity helpers; extend phase constraints with an Alembic migration based on the actual current head.
-- [x] Implement usable-centroid validation, snapshotting, atomic manifest writes, stable utterance IDs, operation guards, and stage-status derivation.
+- [x] Implement usable-voice-print validation, snapshotting, atomic manifest writes, stable utterance IDs, operation guards, and stage-status derivation.
 - [x] Support legacy navigation and preserve completion receipts on Clean/reset.
 - [x] Verify migration on a disposable database; round-trip bootstrap/legacy-compatible processing states through downgrade and upgrade, and directly exercise invalid profiles, snapshot persistence, operation locking, and source mismatch. No user database was changed.
 
@@ -163,7 +163,7 @@ Supports first-session continuity and profile lifecycle stability.
 
 ### Phase 2 — resumable audio and evidence preparation
 
-- [x] Split transcription from identification; remove missing-centroid guards while preserving valid audio/attendance preconditions; use attendee count for diarization.
+- [x] Split transcription from identification; remove missing-voice-print guards while preserving valid audio/attendance preconditions; use attendee count for diarization.
 - [x] Add structured name-evidence prompt, validators, chunk deduplication, persisted raw source, and settings wiring.
 - [x] Preserve backchannel evidence until identification; commit canonical transcript pairs only after preparation succeeds.
 - [x] Directly exercise all-known, mixed, and all-new attendees; inject provider/schema failure and confirm retry reuses raw transcription. Inspect cited evidence IDs against the actual transcript.
@@ -201,7 +201,7 @@ Supports review-authoritative learning and continuity.
 
 - [x] Implement scoped extraction, deterministic staged publication, per-player prepared/terminal receipts, target rechecks, retry, and no-clips outcome.
 - [x] Retain player-screen regeneration behavior and session filename matching; handle Clean/reset without dropping terminal receipts.
-- [x] Exercise staged finalization/retry with deterministic destinations and verify recovery after publication before centroid completion. Finalization now atomically publishes and digest-validates its manifest, verifies every staged/destination hash, and takes an OS-released per-session advisory lock so concurrent requests cannot strand a crashed operation.
+- [x] Exercise staged finalization/retry with deterministic destinations and verify recovery after publication before voice print completion. Finalization now atomically publishes and digest-validates its manifest, verifies every staged/destination hash, and takes an OS-released per-session advisory lock so concurrent requests cannot strand a crashed operation.
 - [x] Preserve terminal receipts across later review, audio replacement/retranscription, and Clean Session; automatic finalization never replaces a committed contribution. The existing explicit player-screen From Session operation remains the replacement path.
 
 Supports review authority and profile lifecycle stability.

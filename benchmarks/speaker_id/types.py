@@ -39,7 +39,7 @@ class Embedder(Protocol):
 
 
 class Matcher(Protocol):
-    """`(utterance embeddings, centroids, durations, clusters) -> speaker labels`.
+    """`(utterance embeddings, voice prints, durations, clusters) -> speaker labels`.
 
     Takes every scored utterance's embedding at once (not one at a time) so a matcher is free to
     use cross-utterance information if it wants to -- nothing in this harness requires it, and
@@ -57,7 +57,7 @@ class Matcher(Protocol):
     def match(
         self,
         embeddings: Mapping[int, Embedding],
-        centroids: Mapping[str, Embedding],
+        voice_prints: Mapping[str, Embedding],
         durations: Mapping[int, float] | None = None,
         clusters: Mapping[int, str] | None = None,
     ) -> Mapping[int, str]: ...

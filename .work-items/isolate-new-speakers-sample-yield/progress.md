@@ -12,7 +12,7 @@ All phases are implemented and verified, with follow-up decisions recorded below
   - `SETTINGS_VERSION` was not bumped, following the `name_corrections` precedent. Existing workspaces get the defaults.
 - **`tablesage-tools`:**
   - `call_llm(strict_schema=...)` sends `"strict": true` and closes every object schema (`additionalProperties: false`, all properties required).
-  - `CentroidResult.embeddings` holds the embeddings of the clips that were used.
+  - `VoicePrintResult.embeddings` holds the embeddings of the clips that were used.
   - `cosine_similarity` is exported.
 - **`llm_helper.call_llm_with_prompt(strict_schema=...)`** passes the flag through. It is only forwarded when set, so existing test fakes still work.
 - **`isolate_new_speakers.py`:**
@@ -139,8 +139,8 @@ Designed with the user in a workshop on 2026-09-25 and implemented at their requ
 
 - **Why:** the Isolate fallback only draws from a player's own diarization label, so John (on a mixed label) stayed around 10–16 s. The "Too little speech" warning was removed on 2026-09-24 because nothing could be done about it. Find More gives it an action, so it is back.
 - **Behavior:**
-  - `F` on Review New Speaker Assignments acts on the highlighted player. The player's voice is the centroid of their currently kept utterances; with none kept it declines with a message.
-  - Every unused utterance with at least `isolate_new_speakers.find_more_min_speech_seconds` (2.0) of speech is ranked by its lead: similarity to the player minus similarity to the nearest rival. Rivals are known attendees' stored centroids, the other new players' kept-utterance centroids, and one centroid of this player's rejected Find More additions.
+  - `F` on Review New Speaker Assignments acts on the highlighted player. The player's voice is the voice print of their currently kept utterances; with none kept it declines with a message.
+  - Every unused utterance with at least `isolate_new_speakers.find_more_min_speech_seconds` (2.0) of speech is ranked by its lead: similarity to the player minus similarity to the nearest rival. Rivals are known attendees' stored voice prints, the other new players' kept-utterance voice prints, and one voice print of this player's rejected Find More additions.
   - Excluded: anything already in any new player's list, kept or removed. The screen tracks removal by utterance index, so an utterance must never be in two lists.
   - It always adds when anything is left: enough to reach `speaker_bootstrap.target_total_speech_seconds` (30), or another target's worth when already there. The user rejected a "no more confident matches" state because every addition is reviewed.
   - Additions are marked `+`. A toast asks the reviewer to listen to them before confirming.
@@ -148,7 +148,7 @@ Designed with the user in a workshop on 2026-09-25 and implemented at their requ
   - "Too little speech" now uses the 30 s target, not the 15 s minimum. The Players pane is back to `width: 50%; min-width: 57; max-width: 64`.
 - **Code:**
   - `session_pipeline/find_voice_matches.py` (new): `VoiceMatchEmbeddings`, a per-Session embedding cache invalidated by transcript or audio mtime, and `find_voice_matches`, which logs a `find_voice_matches` wide event.
-  - `tablesage_tools.embeddings.mean_centroid` (new).
+  - `tablesage_tools.embeddings.mean_voice_print` (new).
   - `review_new_speaker_assignments.py`: `rejected_voice_matches` on the reviewed artifact; `review_data` re-shows kept and rejected additions; `save_review` accepts non-proposed indices and still compares kept sets only, so a rejection-only change isn't saved; `extract_more_clips` adds playback clips without discarding existing ones.
   - `Application.find_more_voice_matches`, and `confirm_new_speaker_assignment_review(..., rejected)`.
 - **Verification:**
@@ -162,7 +162,7 @@ Designed with the user in a workshop on 2026-09-25 and implemented at their requ
     - Removed two additions, pressed `F` again: instant, 1 clip, and the toast appeared. Erik, already at 38.6 s, gained 7 clips (32.2 s).
     - Confirm wrote the kept additions and John's `rejected_voice_matches: [806, 1539]`, and removed the clips folder.
     - Reopened at 120×30: John was back at 11 / 30.0 s, both rejected rows showed ✗, and the status column fit.
-  - **Seed Player Voice Samples on the copy:** John 11 clips and Erik 14, all counted in the centroid.
+  - **Seed Player Voice Samples on the copy:** John 11 clips and Erik 14, all counted in the voice print.
   - **Not checked:** listening to the added clips, and whether the resulting profiles identify speakers better in a later Session.
 - **Cost:** a Session's first search takes about 2.5 minutes, behind a progress dialog that can't be cancelled. The cache lasts for the app process, so reopening the app pays it again.
 

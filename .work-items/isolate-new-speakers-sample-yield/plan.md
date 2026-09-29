@@ -46,8 +46,8 @@ The session had 5 attendees, all new players: Jason (GM), Erik, John, Rich, and 
    1. Collect every eligible utterance of 1.0 s or more.
    2. Drop the shortest additions until the pool is at or under `fallback_max_speech_seconds` (60 s), or every addition is at least 2.0 s.
    3. Run the existing outlier removal.
-   4. If the pool is still over the cap, drop the additions least similar to the player's seed centroid until it's at or under the cap.
-   - **Seed centroid:** built from the player's kept LLM picks when those total at least 5 s of speech. Otherwise use the pool's own centroid.
+   4. If the pool is still over the cap, drop the additions least similar to the player's seed voice print until it's at or under the cap.
+   - **Seed voice print:** built from the player's kept LLM picks when those total at least 5 s of speech. Otherwise use the pool's own voice print.
    - **LLM picks:** never cut and never counted against the cap.
 4. **Player names instead of UUIDs in the prompt:**
    - The prompt and response use player names.
@@ -85,7 +85,7 @@ The session had 5 attendees, all new players: Jason (GM), Erik, John, Rich, and 
   - The review step reads `speaker_bootstrap.min_total_speech_seconds` (`application.py:1880`).
 - `packages/tablesage-model/src/tablesage_model/settings/app_settings.py`: `SpeakerBootstrapSettings`.
 - `apps/tablesage-tui/src/tablesage_tui/resources/settings.yaml`: `speaker_bootstrap` section.
-- `packages/tablesage-tools/src/tablesage_tools/embeddings/similarity.py`: `compute_centroid` returns only `centroid` and `unused_paths`. It exposes neither per-clip embeddings nor similarities.
+- `packages/tablesage-tools/src/tablesage_tools/embeddings/similarity.py`: `compute_voice_print` returns only `voice_print` and `unused_paths`. It exposes neither per-clip embeddings nor similarities.
 - `.../entities/players.py`:
   - `create_player` gets a unique-name `IntegrityError` from `Player.name` (`unique=True`).
   - `rename_player` gets the same error via `_fs.rename_named_entity`.
@@ -163,8 +163,8 @@ What this means:
 
 - [x] Use `settings.min_speech_seconds` (1.0) for both LLM picks and fallback eligibility. Leave `_REQUIRE_EVIDENCE` as it is.
 - [x] Rework the fallback in `_build_assignments` into the pipeline from change 3: length stage, then outlier removal, then similarity stage. LLM picks are held out of every stage and added back at the end.
-- [x] Extend `compute_centroid` in `tablesage-tools` to also return the kept paths' embeddings, or their similarity to a supplied reference centroid. It must stay generic: plain values, no settings objects.
-- [x] Build the seed centroid from the player's kept picks when they total at least `min_seed_speech_seconds`, and rank additions by cosine similarity to it.
+- [x] Extend `compute_voice_print` in `tablesage-tools` to also return the kept paths' embeddings, or their similarity to a supplied reference voice print. It must stay generic: plain values, no settings objects.
+- [x] Build the seed voice print from the player's kept picks when they total at least `min_seed_speech_seconds`, and rank additions by cosine similarity to it.
 - [x] Add diagnostics:
   - `fallback_dropped_short`;
   - `voice_outliers_removed`;

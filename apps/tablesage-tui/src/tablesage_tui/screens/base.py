@@ -27,7 +27,7 @@ _PROGRESS_WORKER_GROUP = "tablesage-progress"
 
 _ENHANCE_STAGE_LABELS = {
     Stage.EXTRACTING: "Extracting voice clips…",
-    Stage.RECOMPUTING_CENTROIDS: "Recomputing centroids…",
+    Stage.RECOMPUTING_VOICE_PRINTS: "Recomputing voice prints…",
 }
 
 ResultT = TypeVar("ResultT")

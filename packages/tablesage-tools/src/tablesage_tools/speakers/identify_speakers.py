@@ -77,7 +77,7 @@ def _clip_amplitude_stats(path: Path) -> dict[str, float | str]:
 async def identify_speakers(
     transcript: Transcript,
     audio_path: Path,
-    centroids: dict[str, Embedding],
+    voice_prints: dict[str, Embedding],
     embed: EmbeddingFactory,
     similarity_margin_threshold: float,
     on_progress: Callable[[int, int], None] | None = None,
@@ -93,7 +93,7 @@ async def identify_speakers(
     """Relabel each utterance's speaker with the best-matching player name, or UNASSIGNED_SPEAKER.
 
     For each utterance, extracts its audio clip from `audio_path`, embeds it, and compares it
-    against every player's centroid in `centroids`. When `short_utterance_widening` is supplied,
+    against every player's voice print in `voice_prints`. When `short_utterance_widening` is supplied,
     short clips are first concatenated with nearby speech from the same original diarization
     cluster. If the margin between the best and
     second-best match is below its effective threshold, the utterance is left as
@@ -102,7 +102,7 @@ async def identify_speakers(
     utterance is at least `duration_override_min_seconds` long, in which case
     `duration_override_similarity_margin_threshold` applies. Unless `allow_unassigned` is False,
     in which case the confidence check is skipped and the best match is always taken. Raises
-    ValueError if `centroids` has fewer than 2 entries (see SimilarityComputer). When
+    ValueError if `voice_prints` has fewer than 2 entries (see SimilarityComputer). When
     `cluster_propagation` is supplied, the function then pools sufficiently long utterance
     embeddings per diarization cluster and conservatively applies that cluster label to eligible
     per-utterance abstentions.
@@ -123,7 +123,7 @@ async def identify_speakers(
     the same settings section. A cluster-propagated utterance gets a second, explicit override
     event so the final label remains reconstructable from the diagnostics.
     """
-    names = list(centroids)
+    names = list(voice_prints)
     if not names:
         return Transcript(
             utterances=[
@@ -131,7 +131,7 @@ async def identify_speakers(
                 for utterance in transcript.utterances
             ]
         )
-    similarity_computer = SimilarityComputer(tuple(centroids[name] for name in names)) if len(names) >= 2 else None
+    similarity_computer = SimilarityComputer(tuple(voice_prints[name] for name in names)) if len(names) >= 2 else None
     if len(names) < 2:
         cluster_propagation = None
     durations = {index: utterance.end - utterance.start for index, utterance in enumerate(transcript.utterances)}
@@ -145,14 +145,14 @@ async def identify_speakers(
         msg = "Duration override minimum and threshold must either both be set or both be omitted."
         raise ValueError(msg)
 
-    # A corrupted reference centroid (NaN component) poisons every comparison against that
+    # A corrupted reference voice print (NaN component) poisons every comparison against that
     # one speaker for the whole run -- check once, up front, rather than only discovering it
     # utterance-by-utterance.
     if log_diagnostics:
-        nan_reference_names = [name for name in names if any(math.isnan(x) for x in centroids[name].root)]
+        nan_reference_names = [name for name in names if any(math.isnan(x) for x in voice_prints[name].root)]
         if nan_reference_names:
             _log_diagnostic(
-                event="corrupt_reference_centroid",
+                event="corrupt_reference_voice_print",
                 speaker_names=nan_reference_names,
                 similarity_margin_threshold=similarity_margin_threshold,
                 duration_override_min_seconds=duration_override_min_seconds,
@@ -218,7 +218,7 @@ async def identify_speakers(
 
                     embedding = await embed.extract_async(tmp_file)
                     if similarity_computer is None:
-                        similarity = sum(left * right for left, right in zip(embedding.root, centroids[names[0]].root, strict=True))
+                        similarity = sum(left * right for left, right in zip(embedding.root, voice_prints[names[0]].root, strict=True))
                         result = SimilarityResult(0, similarity, similarity, 0.0, 0, similarity, (similarity,))
                     else:
                         result = similarity_computer.compute_similarity(embedding)
@@ -301,7 +301,7 @@ async def identify_speakers(
                 current_labels,
                 embeddings,
                 similarity_results,
-                centroids,
+                voice_prints,
                 durations,
                 cluster_ids,
                 cluster_propagation,

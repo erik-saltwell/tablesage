@@ -9,6 +9,7 @@
 | Move metadata fields below lists so bindings show up | complete | [.work-items/metadata-below-lists/](.work-items/metadata-below-lists/) |
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |
+| Normalized audio for session review | complete | [.work-items/normalized-review-audio/](.work-items/normalized-review-audio/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
 | Public documentation | implementing | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
@@ -17,5 +18,6 @@
 | Session processing flow | complete | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
+| Use voice print terminology everywhere | complete | [.work-items/voice-print-terminology/](.work-items/voice-print-terminology/) |
 
 Historical designs, research and maintenance records are reference material, not additional active work items. Some may be retained locally in the Git-ignored `.archive/`; see the [engineering workflow](.work-items/workflow.md).

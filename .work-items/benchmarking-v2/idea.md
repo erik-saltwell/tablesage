@@ -21,11 +21,11 @@ After a session has been fully reviewed, a separate command turns it into a benc
 
 - **Audio:** the session audio as it is after import and cleaning, since those steps are excluded from the run.
 - **Answer key:** the reviewed `role_transcript.json`.
-- **Attendees:** a frozen copy of the attendees, each with their role/character name and their player's **centroid**.
+- **Attendees:** a frozen copy of the attendees, each with their role/character name and their player's **voice print**.
 - **Glossary:** a frozen copy of the glossary.
-- **No voice samples.** They are too large to copy into every benchmark, and they aren't needed. When there are no new players, speaker ID reads only a player→centroid map (`transcribe_audio.py`'s `centroids: dict[str, Embedding]`), and the centroid is stored on the player (`Player.centroid_embedding`).
+- **No voice samples.** They are too large to copy into every benchmark, and they aren't needed. When there are no new players, speaker ID reads only a player→voice print map (`transcribe_audio.py`'s `voice_prints: dict[str, Embedding]`), and the voice print is stored on the player (`Player.voice_print_embedding`).
 
-Why freeze the campaign data: a benchmark that read players, centroids, roles and the glossary from the live campaign would change score whenever campaign data changed. It could also end up containing its own answers. With a frozen copy, score changes come only from code or settings. The tradeoff is accepted: a benchmark won't benefit from better campaign data added later. If that's ever needed, it would be an explicit "re-capture" action.
+Why freeze the campaign data: a benchmark that read players, voice prints, roles and the glossary from the live campaign would change score whenever campaign data changed. It could also end up containing its own answers. With a frozen copy, score changes come only from code or settings. The tradeoff is accepted: a benchmark won't benefit from better campaign data added later. If that's ever needed, it would be an explicit "re-capture" action.
 
 ### Run a benchmark
 

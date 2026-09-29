@@ -5,7 +5,7 @@ from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
 from ..matchers import MarginAndSimilarityMatcher, MarginThresholdMatcher
 
-CENTROIDS = {
+VOICE_PRINTS = {
     "alice": Embedding(root=(1.0, 0.0)),
     "bob": Embedding(root=(0.0, 1.0)),
 }
@@ -16,14 +16,14 @@ def test_margin_threshold_matcher_ignores_optional_duration_metadata() -> None:
     embeddings = {0: Embedding(root=(1.0, 0.9))}
     matcher = MarginThresholdMatcher(similarity_margin_threshold=0.08)
 
-    assert matcher.match(embeddings, CENTROIDS, durations={0: 10.0}) == {0: UNASSIGNED_SPEAKER}
+    assert matcher.match(embeddings, VOICE_PRINTS, durations={0: 10.0}) == {0: UNASSIGNED_SPEAKER}
 
 
 def test_richer_matcher_can_assign_by_absolute_best_similarity() -> None:
     embeddings = {0: Embedding(root=(1.0, 0.9))}
     matcher = MarginAndSimilarityMatcher(margin_threshold=0.08, best_similarity_threshold=0.7)
 
-    assert matcher.match(embeddings, CENTROIDS) == {0: "alice"}
+    assert matcher.match(embeddings, VOICE_PRINTS) == {0: "alice"}
 
 
 def test_richer_matcher_can_relax_margin_for_long_utterances_only() -> None:
@@ -33,7 +33,7 @@ def test_richer_matcher_can_relax_margin_for_long_utterances_only() -> None:
     }
     matcher = MarginAndSimilarityMatcher(margin_threshold=0.08, duration_overrides=((2.0, 0.0),))
 
-    assert matcher.match(embeddings, CENTROIDS, durations={0: 1.9, 1: 2.0}) == {
+    assert matcher.match(embeddings, VOICE_PRINTS, durations={0: 1.9, 1: 2.0}) == {
         0: UNASSIGNED_SPEAKER,
         1: "alice",
     }
@@ -47,4 +47,4 @@ def test_richer_matcher_keeps_nan_similarity_unassigned() -> None:
         duration_overrides=((2.0, 0.0),),
     )
 
-    assert matcher.match(embeddings, CENTROIDS, durations={0: 3.0}) == {0: UNASSIGNED_SPEAKER}
+    assert matcher.match(embeddings, VOICE_PRINTS, durations={0: 3.0}) == {0: UNASSIGNED_SPEAKER}

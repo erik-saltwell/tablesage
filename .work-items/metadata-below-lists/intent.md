@@ -20,7 +20,7 @@ See [idea.md](idea.md) for the design rationale and rubric scorecard this builds
 
 **Excluded:** changing what metadata each item type has (fields stay: Player — name; Campaign —
 name, description, game system; Session — name, date), changing the read-only stats blocks
-(Player's sample count/computed-at/centroid hash/duration; Session's "last transcribed"), and any
+(Player's sample count/computed-at/voice print hash/duration; Session's "last transcribed"), and any
 change to `session_date`'s optionality or downstream handling (already `None`-safe everywhere).
 
 ## Expected behavior and flows

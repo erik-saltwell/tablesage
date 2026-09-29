@@ -53,7 +53,7 @@ async def test_metadata_is_shown_read_only_on_load() -> None:
         assert screen.query_one("#player-name-value", Static).render() == "Alice"
         assert screen.query_one("#player-sample-count-value", Static).render() == "3"
         assert screen.query_one("#player-computed-at-value", Static).render() == "Never"
-        assert screen.query_one("#player-centroid-hash-value", Static).render() == "None"
+        assert screen.query_one("#player-voice-print-hash-value", Static).render() == "None"
 
 
 @pytest.mark.anyio
@@ -73,23 +73,23 @@ async def test_edit_metadata_dialog_is_prefilled_with_current_name() -> None:
 
 
 @pytest.mark.anyio
-async def test_metadata_shows_centroid_hash_when_set() -> None:
-    player = Player(name="Alice", centroid_embedding="[0.1, 0.2]")
+async def test_metadata_shows_voice_print_hash_when_set() -> None:
+    player = Player(name="Alice", voice_print_embedding="[0.1, 0.2]")
     application = _application(player=player)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
 
         screen = pilot.app.screen
-        hash_value = str(screen.query_one("#player-centroid-hash-value", Static).render())
+        hash_value = str(screen.query_one("#player-voice-print-hash-value", Static).render())
         assert hash_value != "None"
         assert len(hash_value) == 8
 
 
 @pytest.mark.anyio
-async def test_centroid_hash_changes_when_centroid_changes() -> None:
-    player_a = Player(name="Alice", centroid_embedding="[0.1, 0.2]")
-    player_b = Player(id=player_a.id, name="Alice", centroid_embedding="[0.9, 0.8]")
+async def test_voice_print_hash_changes_when_voice_print_changes() -> None:
+    player_a = Player(name="Alice", voice_print_embedding="[0.1, 0.2]")
+    player_b = Player(id=player_a.id, name="Alice", voice_print_embedding="[0.9, 0.8]")
     application = _application(player=player_a)
 
     async with TableSageApp(application).run_test() as pilot:
@@ -97,9 +97,9 @@ async def test_centroid_hash_changes_when_centroid_changes() -> None:
 
         screen = pilot.app.screen
         assert isinstance(screen, PlayerDetailScreen)
-        hash_a = str(screen.query_one("#player-centroid-hash-value", Static).render())
-        screen._refresh_centroid_display(player_b)
-        hash_b = str(screen.query_one("#player-centroid-hash-value", Static).render())
+        hash_a = str(screen.query_one("#player-voice-print-hash-value", Static).render())
+        screen._refresh_voice_print_display(player_b)
+        hash_b = str(screen.query_one("#player-voice-print-hash-value", Static).render())
 
         assert hash_a != hash_b
 
@@ -336,10 +336,10 @@ async def test_delete_with_no_clips_does_nothing() -> None:
 
 
 @pytest.mark.anyio
-async def test_recompute_centroid_updates_display() -> None:
+async def test_recompute_voice_print_updates_display() -> None:
     player = Player(name="Alice", sample_count=0)
     application = _application(player=player)
-    application.recompute_centroid = MagicMock(
+    application.recompute_voice_print = MagicMock(
         return_value=Player(id=player.id, name="Alice", sample_count=4, computed_at=datetime(2026, 8, 19, 9, 0))
     )
 
@@ -350,8 +350,8 @@ async def test_recompute_centroid_updates_display() -> None:
         await pilot.pause()
         await _wait_for_progress_worker(pilot)
 
-        application.recompute_centroid.assert_called_once()
-        assert application.recompute_centroid.call_args.args[0] == player.id
+        application.recompute_voice_print.assert_called_once()
+        assert application.recompute_voice_print.call_args.args[0] == player.id
         screen = pilot.app.screen
         assert isinstance(screen, PlayerDetailScreen)
         assert screen.query_one("#player-sample-count-value", Static).render() == "4"
@@ -359,7 +359,7 @@ async def test_recompute_centroid_updates_display() -> None:
 
 
 @pytest.mark.anyio
-async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
+async def test_recompute_voice_print_shows_progress_dialog_while_running() -> None:
     release = threading.Event()
     player = Player(name="Alice")
     application = _application(player=player)
@@ -368,7 +368,7 @@ async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
         release.wait(timeout=5)
         return Player(id=player_id, name="Alice", sample_count=2)
 
-    application.recompute_centroid = MagicMock(side_effect=slow_recompute)
+    application.recompute_voice_print = MagicMock(side_effect=slow_recompute)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
@@ -386,7 +386,7 @@ async def test_recompute_centroid_shows_progress_dialog_while_running() -> None:
 
 
 @pytest.mark.anyio
-async def test_recompute_centroid_reports_determinate_progress() -> None:
+async def test_recompute_voice_print_reports_determinate_progress() -> None:
     release = threading.Event()
     progress_reported = threading.Event()
     player = Player(name="Alice")
@@ -399,7 +399,7 @@ async def test_recompute_centroid_reports_determinate_progress() -> None:
         release.wait(timeout=5)
         return Player(id=player_id, name="Alice", sample_count=6)
 
-    application.recompute_centroid = MagicMock(side_effect=slow_recompute)
+    application.recompute_voice_print = MagicMock(side_effect=slow_recompute)
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)
@@ -424,10 +424,10 @@ async def test_recompute_centroid_reports_determinate_progress() -> None:
 
 
 @pytest.mark.anyio
-async def test_recompute_centroid_shows_error_notification_on_failure() -> None:
+async def test_recompute_voice_print_shows_error_notification_on_failure() -> None:
     player = Player(name="Alice")
     application = _application(player=player)
-    application.recompute_centroid = MagicMock(side_effect=RuntimeError("embedding model unavailable"))
+    application.recompute_voice_print = MagicMock(side_effect=RuntimeError("embedding model unavailable"))
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_player_detail(pilot, player.id)

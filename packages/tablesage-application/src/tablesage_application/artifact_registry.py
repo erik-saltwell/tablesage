@@ -8,6 +8,7 @@ class ArtifactName(Enum):
     """Every artifact a session folder can hold and the identity used by the build graph."""
 
     INPUT_AUDIO = "input_audio"
+    NORMALIZED_REVIEW_AUDIO = "normalized_review_audio"
     NEW_SPEAKER_ASSIGNMENTS = "new_speaker_assignments"
     CLEANED_TRANSCRIPT = "cleaned_transcript"
     NAME_CORRECTED_TRANSCRIPT = "name_corrected_transcript"
@@ -95,6 +96,7 @@ def _section(display_name: str, legacy_filename: str = "") -> ArtifactSpec:
 # and `should_show_in_ui`'s filtering -- entries stay in this order whether
 # or not they're shown.
 LEDGER_PAIR_MARKER = ".ledger-generation-incomplete"
+AUDIO_PAIR_MARKER = ".audio-import-incomplete"
 SUMMARY_INPUTS_FILENAME = ".summary-inputs.json"
 
 ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
@@ -105,6 +107,12 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.IMPORTED,
         should_show_in_ui=True,
         display_name="Input Audio",
+    ),
+    ArtifactName.NORMALIZED_REVIEW_AUDIO: ArtifactSpec(
+        "normalized_review_audio.wav",
+        ArtifactCategory.FROM_AUDIO,
+        should_show_in_ui=False,
+        display_name="Normalized Review Audio",
     ),
     ArtifactName.TRANSCRIPT: ArtifactSpec(
         "transcript.json",
@@ -143,9 +151,9 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         legacy_filename="reviewed_new_speaker_assignments.json",
     ),
     # Receipt of the voice clips seeded into each new player's folder from the reviewed assignments.
-    # Seeding itself changes player folders and centroids; this file is the step's completion marker.
+    # Seeding itself changes player folders and voice prints; this file is the step's completion marker.
     ArtifactName.SEEDED_VOICE_SAMPLES: _section("Seeded Voice Samples", legacy_filename="seeded_voice_samples.json"),
-    # The name-corrected transcript with each utterance's speaker identified by voice centroid (or
+    # The name-corrected transcript with each utterance's speaker identified by voice voice print (or
     # left unassigned). Same utterances as the name-corrected transcript.
     ArtifactName.IDENTIFIED_TRANSCRIPT: ArtifactSpec(
         "identified_transcript.json",

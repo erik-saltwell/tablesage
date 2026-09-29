@@ -15,8 +15,8 @@ DEFAULT_MIN_SAMPLES = 5
 
 
 @dataclass(frozen=True)
-class CentroidResult:
-    centroid: Embedding
+class VoicePrintResult:
+    voice_print: Embedding
     unused_paths: tuple[Path, ...]
     # The embedding of every path that *was* used, so a caller can compare those samples against
     # another reference without embedding them again.
@@ -30,10 +30,10 @@ def cosine_similarity(a: Embedding, b: Embedding) -> float:
     )
 
 
-def mean_centroid(embeddings: Sequence[Embedding]) -> Embedding:
+def mean_voice_print(embeddings: Sequence[Embedding]) -> Embedding:
     """The L2-normalized mean of already-computed embeddings, with no outlier pruning."""
     if not embeddings:
-        msg = "Cannot compute centroid of no embeddings."
+        msg = "Cannot compute voice print of no embeddings."
         raise ValueError(msg)
     return Embedding(root=tuple(float(x) for x in _mean_normalized(embeddings)))
 
@@ -70,16 +70,16 @@ def _remove_outliers(
 
     Stops once the floor (`min_samples`) is hit or the worst remaining sample
     clears `min_sample_similarity`. Embeddings are assumed pre-L2-normalized,
-    so cosine similarity reduces to a plain dot product against the centroid.
+    so cosine similarity reduces to a plain dot product against the voice print.
     """
     kept_paths = list(paths)
     kept_embeddings = list(embeddings)
     removed: list[Path] = []
 
     while len(kept_embeddings) > min_samples:
-        centroid_vec = _mean_normalized(kept_embeddings)
+        voice_print_vec = _mean_normalized(kept_embeddings)
         stacked = torch.tensor([e.root for e in kept_embeddings], dtype=torch.float32)
-        similarities = stacked @ centroid_vec
+        similarities = stacked @ voice_print_vec
         worst_index = int(torch.argmin(similarities).item())
         if float(similarities[worst_index]) >= min_sample_similarity:
             break
@@ -90,28 +90,28 @@ def _remove_outliers(
     return kept_embeddings, removed
 
 
-def compute_centroid(
+def compute_voice_print(
     paths: Sequence[Path],
     embed: Callable[[Path], Embedding],
     on_progress: Callable[[int, int], None] | None = None,
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
-) -> CentroidResult:
-    """Embed each unique file and return the L2-normalized centroid of the result.
+) -> VoicePrintResult:
+    """Embed each unique file and return their L2-normalized mean voice print.
 
     Files with identical contents (by hash) are treated as duplicates; only
     the first-seen path in a duplicate set is embedded and used. After
     embedding, outliers are pruned one worst-sample-at-a-time (see
     `_remove_outliers`) as long as more than `min_samples` remain.
 
-    Returns the centroid, every path that was *not* used to compute it
+    Returns the voice print, every path that was *not* used to compute it
     (duplicates and pruned outliers, in that order), and the embedding of
     each path that was. `on_progress`, if given,
     is called as `(embedded, total_unique)` after each unique file's
     embedding completes.
     """
     if not paths:
-        msg = "Cannot compute centroid of empty path collection."
+        msg = "Cannot compute voice print of empty path collection."
         raise ValueError(msg)
 
     unique_paths, duplicate_paths = _dedupe_by_content(paths)
@@ -125,11 +125,11 @@ def compute_centroid(
 
     kept_embeddings, outlier_paths = _remove_outliers(unique_paths, embeddings, min_sample_similarity, min_samples)
 
-    centroid = Embedding(root=tuple(float(x) for x in _mean_normalized(kept_embeddings)))
+    voice_print = Embedding(root=tuple(float(x) for x in _mean_normalized(kept_embeddings)))
     unused_paths = (*duplicate_paths, *outlier_paths)
     outliers = set(outlier_paths)
     used = {path: embedding for path, embedding in zip(unique_paths, embeddings, strict=True) if path not in outliers}
-    return CentroidResult(centroid=centroid, unused_paths=unused_paths, embeddings=used)
+    return VoicePrintResult(voice_print=voice_print, unused_paths=unused_paths, embeddings=used)
 
 
 @dataclass

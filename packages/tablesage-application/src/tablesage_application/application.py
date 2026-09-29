@@ -408,12 +408,12 @@ class Application:
             session.refresh(result)
             return result
 
-    def recompute_centroid(self, player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> Player:
+    def recompute_voice_print(self, player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> Player:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             folder = paths.player_folder(self._cwd, player.name)
             outliers = self._settings.remove_outliers
-            result = clips.recompute_centroid(
+            result = clips.recompute_voice_print(
                 session, player_id, folder, self._embed_clip, on_progress, outliers.min_sample_similarity, outliers.min_samples
             )
             session.commit()
@@ -862,6 +862,8 @@ class Application:
             summaries.append((ref(paths.ArtifactName.SUMMARY), summary_dependencies, previous_folder))
             if (folder / paths.LEDGER_PAIR_MARKER).exists():
                 interrupted.update((ref(paths.ArtifactName.LEDGER), ref(paths.ArtifactName.SCENE_BREAKDOWN)))
+            if (folder / paths.AUDIO_PAIR_MARKER).exists():
+                interrupted.update((ref(paths.ArtifactName.INPUT_AUDIO), ref(paths.ArtifactName.NORMALIZED_REVIEW_AUDIO)))
 
         # A Summary depends on the previous Session's recap only while that Session can be regenerated (its
         # reviewed transcript is current). Otherwise the Summary carries a placeholder and can still be current;
@@ -890,7 +892,7 @@ class Application:
         return (
             # Import Audio's decision has no inputs: it is whatever file was chosen last.
             step(name.IMPORT_REQUEST, (ref(name.IMPORT_REQUEST),), ()),
-            step(name.INPUT_AUDIO, (ref(name.INPUT_AUDIO),), (ref(name.IMPORT_REQUEST),)),
+            step(name.INPUT_AUDIO, (ref(name.INPUT_AUDIO), ref(name.NORMALIZED_REVIEW_AUDIO)), (ref(name.IMPORT_REQUEST),)),
             step(name.TRANSCRIPT, (ref(name.TRANSCRIPT), ref(name.TRANSCRIPT_TEXT)), (ref(name.INPUT_AUDIO),)),
             step(
                 name.CLEANED_TRANSCRIPT,
@@ -914,10 +916,12 @@ class Application:
                 (ref(name.NAME_CORRECTED_TRANSCRIPT), prompt_input(PromptName.ISOLATE_NEW_SPEAKERS)),
             ),
             step(
-                name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS, (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),), (ref(name.NEW_SPEAKER_ASSIGNMENTS),)
+                name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
+                (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
+                (ref(name.NEW_SPEAKER_ASSIGNMENTS), ref(name.NORMALIZED_REVIEW_AUDIO)),
             ),
             step(name.SEEDED_VOICE_SAMPLES, (ref(name.SEEDED_VOICE_SAMPLES),), (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),)),
-            # Identification also reads returning players' voice centroids from the database. Deliberately not a
+            # Identification also reads returning players' voice voice prints from the database. Deliberately not a
             # dependency: enhancing a player's profile from a later Session must not re-identify every earlier one.
             step(
                 name.IDENTIFIED_TRANSCRIPT,
@@ -948,7 +952,11 @@ class Application:
                 (ref(name.SPELLCHECKED_TRANSCRIPT),),
                 (ref(name.IDENTIFIED_TRANSCRIPT), ref(name.SPELLING_DECISIONS)),
             ),
-            step(name.TRANSCRIPT_REVIEW_EDITS, (ref(name.TRANSCRIPT_REVIEW_EDITS),), (ref(name.SPELLCHECKED_TRANSCRIPT),)),
+            step(
+                name.TRANSCRIPT_REVIEW_EDITS,
+                (ref(name.TRANSCRIPT_REVIEW_EDITS),),
+                (ref(name.SPELLCHECKED_TRANSCRIPT), ref(name.NORMALIZED_REVIEW_AUDIO)),
+            ),
             step(
                 name.REVIEWED_TRANSCRIPT,
                 (ref(name.REVIEWED_TRANSCRIPT),),
@@ -1030,7 +1038,7 @@ class Application:
                 (ref(paths.ArtifactName.SEEDED_VOICE_SAMPLES),),
                 (ref(paths.ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),),
             ),
-            # Identification also reads returning players' centroids from the database; changing
+            # Identification also reads returning players' voice prints from the database; changing
             # those is not tracked here (see the session-processing-flow work item).
             artifact_graph_pipeline.BuildStep(
                 paths.ArtifactName.IDENTIFIED_TRANSCRIPT,
@@ -1535,20 +1543,20 @@ class Application:
         markdown_path.write_text(generate_ledger_pipeline.Ledger.load(ledger_path).to_markdown(), encoding="utf-8")
         shutil.copyfile(markdown_path, destination)
 
-    def session_player_centroids(self, session_id: uuid.UUID) -> dict[str, Embedding]:
-        """Attending players' voice centroids, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
+    def session_player_voice_prints(self, session_id: uuid.UUID) -> dict[str, Embedding]:
+        """Attending players' voice voice prints, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
         with Session(self._engine) as session:
-            centroids: dict[str, Embedding] = {}
+            voice_prints: dict[str, Embedding] = {}
             for attendee in sessions.list_attendance(session, session_id):
                 player = session.get(Player, attendee.player_id)
                 if player is not None:
                     embedding = self._usable_player_embedding(player)
                     if embedding is not None:
-                        centroids[player.name] = embedding
-            return centroids
+                        voice_prints[player.name] = embedding
+            return voice_prints
 
     def new_players(self, session_id: uuid.UUID) -> list[isolate_new_speakers_pipeline.NewPlayer]:
-        """This Session's new players -- attendees with no usable voice centroid -- computed live from the database.
+        """This Session's new players -- attendees with no usable voice voice print -- computed live from the database.
 
         Deliberately not persisted or part of artifact staleness: changing attendance or voice
         profiles after the new-player steps ran does not invalidate them.
@@ -1576,15 +1584,15 @@ class Application:
 
     @staticmethod
     def _usable_player_embedding(player: Player, expected_dimension: int | None = None) -> Embedding | None:
-        """Validate a stored centroid before using it as identification evidence.
+        """Validate a stored voice print before using it as identification evidence.
 
         Profiles do not identify their embedding backend, so the caller can provide an expected
         dimension when it is known.
         """
-        if player.centroid_embedding is None or player.sample_count <= 0:
+        if player.voice_print_embedding is None or player.sample_count <= 0:
             return None
         try:
-            embedding = Embedding.model_validate(json.loads(player.centroid_embedding))
+            embedding = Embedding.model_validate(json.loads(player.voice_print_embedding))
         except (json.JSONDecodeError, ValueError, TypeError):
             return None
         dimension = len(embedding)
@@ -1653,6 +1661,7 @@ class Application:
             self.session_folder(session_id),
             self._settings.session_audio_import.normalize_volume,
             should_clean_audio=bool(request.get("clean_audio")),
+            review_normalization=self._settings.session_audio_import.review_normalization,
         )
 
     def import_session_audio(self, session_id: uuid.UUID, source_path: Path, *, should_clean_audio: bool) -> None:
@@ -1859,7 +1868,7 @@ class Application:
             known_voices: list[Embedding] = []
             for attendee in sessions.list_attendance(session, session_id):
                 player = session.get(Player, attendee.player_id)
-                # A new player seeded by an earlier run has a centroid now, but it must not compete with themselves.
+                # A new player seeded by an earlier run has a voice print now, but it must not compete with themselves.
                 if player is not None and player.id not in kept:
                     embedding = self._usable_player_embedding(player)
                     if embedding is not None:
@@ -1906,7 +1915,7 @@ class Application:
         self, session_id: uuid.UUID, *, on_progress: seed_voice_samples_pipeline.OnProgress | None = None
     ) -> seed_voice_samples_pipeline.SeededVoiceSamples:
         """Process Session's Seed Player Voice Samples step: cut each reviewed new player's kept utterances into
-        clips in their folder, recompute their centroids, then write the receipt."""
+        clips in their folder, recompute their voice prints, then write the receipt."""
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             campaign = session.get(Campaign, game_session.campaign_id)
@@ -1939,7 +1948,7 @@ class Application:
                 on_progress,
             )
             session.commit()
-        # Recorded last: the receipt marks the step complete only once clips and centroids are saved. Seeding replaces
+        # Recorded last: the receipt marks the step complete only once clips and voice prints are saved. Seeding replaces
         # this Session's earlier clips, so a crash before the receipt is repaired by running the step again.
         self._complete_section(session_id, paths.ArtifactName.SEEDED_VOICE_SAMPLES, receipt.model_dump(mode="json"))
         return receipt
@@ -1947,20 +1956,20 @@ class Application:
     @_completes(paths.ArtifactName.IDENTIFIED_TRANSCRIPT)
     def identify_session_speakers(self, session_id: uuid.UUID, *, on_progress: transcribe_audio.OnProgress | None = None) -> Transcript:
         """Process Session's Identify Speakers step: label each utterance of the name-corrected transcript with the
-        attendee whose voice centroid it matches, or leave it unassigned, and write the identified transcript."""
+        attendee whose voice voice print it matches, or leave it unassigned, and write the identified transcript."""
         session_folder = self.session_folder(session_id)
         transcript = Transcript.load(session_folder / paths.ARTIFACTS[paths.ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
-        centroids = self.session_player_centroids(session_id)
+        voice_prints = self.session_player_voice_prints(session_id)
         with widelog.wide_event(
             op="identify_session_speakers",
             session_id=str(session_id),
-            reference_count=len(centroids),
+            reference_count=len(voice_prints),
             utterance_count=len(transcript.utterances),
         ) as log:
             identified = transcribe_audio.identify_raw_transcript(
                 session_folder,
                 transcript,
-                centroids,
+                voice_prints,
                 self.embedding_factory(),
                 self._settings.speaker_identification,
                 on_progress=on_progress,
@@ -2126,7 +2135,7 @@ class Application:
 
         return transcribe_audio.transcribe_audio(
             session_folder,
-            self.session_player_centroids(session_id),
+            self.session_player_voice_prints(session_id),
             self.embedding_factory(),
             self._settings.transcription_and_diarization,
             self._settings.speaker_identification,

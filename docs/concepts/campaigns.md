@@ -83,3 +83,10 @@ Sessions preserve individual occasions of play. Their artifacts make each
 Session useful after the recording is over, while the Glossary preserves shared
 context across them. Together, they make a Campaign easier to return to and
 continue.
+
+## Related guides
+
+- [Prepare the next Session](../guides/prepare-the-next-session.md) uses a
+  Campaign's history to build a "Previously On" recap and suggest opportunities.
+- [Review, regenerate, and export a Session](../guides/review-and-export.md#regenerate-every-session-in-a-campaign)
+  includes regenerating every Session's outputs from Campaign Detail.

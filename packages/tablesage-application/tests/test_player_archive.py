@@ -69,7 +69,7 @@ def test_rollback_preserves_existing_player_and_orphan(tmp_path: Path, monkeypat
     app = _app(tmp_path, monkeypatch)
     alice = app.create_player(Player(name="Alice"))
     (tmp_path / "players/Alice/local.wav").write_bytes(b"local")
-    app.recompute_centroid(alice.id)
+    app.recompute_voice_print(alice.id)
     before = app.get_player(alice.id).model_dump()
     orphan = tmp_path / "players/Bob"
     orphan.mkdir()
@@ -192,11 +192,11 @@ def test_rejects_non_zip_and_duplicate_entries(tmp_path: Path) -> None:
     assert app.list_players() == []
 
 
-def test_empty_match_keeps_centroid(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_empty_match_keeps_voice_print(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     app = _app(tmp_path, monkeypatch)
     player = app.create_player(Player(name="Alice"))
     (tmp_path / "players/Alice/a.wav").write_bytes(b"audio")
-    app.recompute_centroid(player.id)
+    app.recompute_voice_print(player.id)
     before = app.get_player(player.id).model_dump()
     app.import_players(_archive(tmp_path / "players.zip", {"players/Alice/": b""}))
     assert app.get_player(player.id).model_dump() == before

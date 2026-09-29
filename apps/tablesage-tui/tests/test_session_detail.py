@@ -96,7 +96,7 @@ def _application(
         extract_glossary=MagicMock(return_value=[]),
         exportable_artifacts=MagicMock(return_value=[]),
         session_folder=MagicMock(return_value=session_folder or Path("/tmp/session")),
-        session_player_centroids=MagicMock(return_value={}),
+        session_player_voice_prints=MagicMock(return_value={}),
         session_player_roles=MagicMock(return_value={}),
         embedding_factory=MagicMock(),
         settings=AppSettings(),

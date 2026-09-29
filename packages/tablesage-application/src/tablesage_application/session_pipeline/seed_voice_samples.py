@@ -1,7 +1,7 @@
 """Process Session's Seed Player Voice Samples step: turn each new player's reviewed utterances into voice clips.
 
 For every player listed in `reviewed_new_speaker_assignments.json`, the kept utterances are cut from the
-Session audio into that player's folder and their centroid is recomputed. The reviewer is the quality gate,
+Session audio into that player's folder and their voice print is recomputed. The reviewer is the quality gate,
 so the only filter is the embedding model's technical length floor. Players the reviewed file doesn't list
 are never touched, so re-running after seeding (when nobody is new any more) changes nothing.
 
@@ -35,7 +35,7 @@ class SeededPlayer(BaseModel, frozen=True):
     player_id: uuid.UUID
     player_name: str
     clip_filenames: tuple[str, ...]
-    # Clips that contributed to the recomputed centroid (duplicates and outliers excluded); 0 leaves the player new.
+    # Clips that contributed to the recomputed voice print (duplicates and outliers excluded); 0 leaves the player new.
     sample_count: int
 
 
@@ -77,10 +77,10 @@ def seed_voice_samples(
     min_samples: int,
     on_progress: OnProgress | None = None,
 ) -> SeededVoiceSamples:
-    """Replace each target's clips from this Session with their kept utterances, then recompute their centroids.
+    """Replace each target's clips from this Session with their kept utterances, then recompute their voice prints.
 
     Extract-then-delete-old per player, as in "From Session", so a failure partway never leaves a player
-    worse off. Centroid changes are flushed, not committed: the caller commits, then writes the receipt.
+    worse off. Voice Print changes are flushed, not committed: the caller commits, then writes the receipt.
     """
     transcript = Transcript.load(session_folder / ARTIFACTS[ArtifactName.NAME_CORRECTED_TRANSCRIPT].filename)
     audio_path = session_folder / ARTIFACTS[ArtifactName.INPUT_AUDIO].filename
@@ -124,7 +124,7 @@ def seed_voice_samples(
         for index, target in enumerate(targets, start=1):
             if on_progress is not None:
                 on_progress("Recomputing voice profiles…", index - 1, len(targets))
-            player = clips.recompute_centroid(session, target.player_id, target.folder, embed, None, min_sample_similarity, min_samples)
+            player = clips.recompute_voice_print(session, target.player_id, target.folder, embed, None, min_sample_similarity, min_samples)
             seeded.append(
                 SeededPlayer(
                     player_id=target.player_id,

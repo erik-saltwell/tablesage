@@ -10,11 +10,11 @@ where your keys and data live.
   a recording.
 - **Transcript text** is sent to whichever language-model provider your
   current High, Medium, or Low model uses — Anthropic, OpenAI, or Gemini —
-  when TableSage reviews a transcript, extracts glossary entries, identifies
-  speakers, or generates recaps, summaries, and other campaign documents. See
+  when TableSage reviews a transcript, extracts glossary entries, finds a new
+  player's lines, or generates recaps, summaries, and other campaign documents. See
   [update your settings](../guides/settings.md#models-high-medium-and-low)
   for exactly which action uses which tier, and
-  [session artifacts](../concepts/session-artifacts.md) for what each
+  [session artifacts](../concepts/sessions.md#session-artifacts) for what each
   generated document actually is.
 
 Each of these services is a paid, third-party product with its own terms,
@@ -24,10 +24,10 @@ anyone who hasn't agreed to have their voice or words handled this way.
 
 ## What stays local
 
-- **Audio cleaning** (noise removal and punctuation) runs entirely on your
+- **Audio cleaning** (noise removal) and **punctuation** run entirely on your
   computer using locally installed machine-learning models.
 - **Voice matching**, which recognizes which player is speaking by comparing
-  audio to each player's [centroid](../concepts/centroid.md), also runs
+  audio to each player's [voice print](../concepts/players.md#voice-prints), also runs
   locally. Player voice samples are never uploaded anywhere.
 - Your session recordings, transcripts, and generated documents are stored as
   files in your workspace directory. Nothing is synced to a TableSage-run
@@ -57,20 +57,25 @@ Inside your workspace:
 
 ```text
 .tablesage/
-  tablesage.db      your campaigns, sessions, and generated results
+  tablesage.db      your campaigns, sessions, players, and glossaries
   settings.yaml     this workspace's settings
   logs/             application logs
 campaigns/
   <campaign name>/<session number>/   session audio and generated documents
 players/            player voice samples
+checkpoints/        the noise-removal model, downloaded into the folder you launch from
 ```
 
 Outside the workspace, per user account:
 
 - Your `.env` credentials file (see above).
-- `~/.cache/tablesage/`, the standard Hugging Face cache directory, holding
-  downloaded local machine-learning models.
+- `~/.cache/tablesage/`, holding the downloaded voice-embedding model.
+- The standard Hugging Face cache (`~/.cache/huggingface/` unless you have
+  set `HF_HOME`), holding the downloaded punctuation model.
 
 None of this is uploaded or synced by TableSage. Deleting a workspace
-directory or the cache directory removes what it contains; it does not touch
+directory or a cache directory removes what it contains; it does not touch
 your stored keys, which live in the separate per-user credentials file.
+Deleting a workspace also removes its `checkpoints/` folder, so TableSage
+downloads the noise-removal model again the next time you save settings in a
+new workspace.

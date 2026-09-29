@@ -13,7 +13,7 @@ from ..player_names import validate_player_name
 class Player(SQLModel, table=True):
     """A top-level participant identity, independent of any campaign.
 
-    A player carries its own voice profile directly (centroid fields) rather
+    A player carries its own voice profile directly (voice print fields) rather
     than through a separate table, since a player has at most one current
     profile and no profile history is tracked.
     """
@@ -22,7 +22,7 @@ class Player(SQLModel, table=True):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(unique=True)
-    centroid_embedding: str | None = Field(default=None)
+    voice_print_embedding: str | None = Field(default=None)
     embedding_dimension: int | None = Field(default=None)
     sample_count: int = Field(default=0)
     computed_at: datetime | None = Field(default=None)

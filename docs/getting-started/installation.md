@@ -185,7 +185,7 @@ task is simple:
 | Model | Default | Used for |
 |---|---|---|
 | **High** | `openai/gpt-6-astra` | Writing a session's outputs from its transcript and creating campaign-wide material |
-| **Medium** | `anthropic/claude-sonnet-4-5` | Helping you review transcripts, build glossaries, and identify players |
+| **Medium** | `anthropic/claude-sonnet-4-5` | Helping you review transcripts, build glossaries, and find new players' lines |
 | **Low** | `anthropic/claude-haiku-4-5` | Short, high-volume checks while audio is imported |
 
 See [update your settings](../guides/settings.md) for what each model tier is
@@ -207,7 +207,7 @@ if they aren't already installed — this may take a while.
   change takes effect, or follow the instructions `uv tool install` printed.
 - **Settings will not save.** Check your model IDs. Each must use the
   `provider/model-name` form with `anthropic`, `openai`, or `gemini` as the
-  provider. Expand the collapsed sections to see which field is flagged.
+  provider. Settings moves focus to the first field with a problem.
 - **A connection test fails but the key looks right.** Check whether the key is
   coming from your shell environment rather than from TableSage — see
   [how shell environment variables override
@@ -219,4 +219,5 @@ if they aren't already installed — this may take a while.
 A guided walkthrough of your first recorded session is forthcoming. In the
 meantime, [Concepts](../concepts/index.md) explains how TableSage recognizes
 players' voices, what actually happens when it processes a session, and what
-each generated document is.
+each generated document is. The [Guides](../guides/index.md) cover everyday tasks
+such as reviewing and exporting a Session and preparing the next one.

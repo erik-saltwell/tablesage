@@ -1,9 +1,9 @@
 """Find More, on the Review New Speaker Assignments screen: add the utterances that sound most like a player.
 
-The player's voice is the centroid of the utterances the reviewer has kept for them. Every other unused
+The player's voice is the voice print of the utterances the reviewer has kept for them. Every other unused
 utterance is ranked by its lead: how much closer it is to that voice than to the nearest rival voice. The
-rivals are the other attendees (stored centroids for known players, kept utterances for the other new
-players) and, once the reviewer has removed any earlier Find More additions for this player, one centroid
+rivals are the other attendees (stored voice prints for known players, kept utterances for the other new
+players) and, once the reviewer has removed any earlier Find More additions for this player, one voice print
 of those rejected clips. The top of the ranking is added until the player reaches the target, or gains
 another target's worth when already there. Find More always adds when anything is left, since the reviewer
 listens to every addition before confirming.
@@ -24,7 +24,7 @@ from pathlib import Path
 
 import widelog
 from tablesage_tools.audio import extract_clip
-from tablesage_tools.embeddings import Embedding, cosine_similarity, mean_centroid
+from tablesage_tools.embeddings import Embedding, cosine_similarity, mean_voice_print
 from tablesage_tools.model import Transcript
 
 from ..paths import ARTIFACTS, ArtifactName
@@ -73,9 +73,9 @@ class VoiceMatchEmbeddings:
                 self.by_index[index] = embedding if _is_finite(embedding) else None
                 _report(on_progress, message, done, len(clips))
 
-    def centroid(self, indices: Collection[int]) -> Embedding | None:
+    def voice_print(self, indices: Collection[int]) -> Embedding | None:
         embeddings = [e for i in indices if (e := self.by_index.get(i)) is not None]
-        return mean_centroid(embeddings) if embeddings else None
+        return mean_voice_print(embeddings) if embeddings else None
 
 
 @dataclass(frozen=True)
@@ -88,7 +88,7 @@ class VoiceMatchRequest:
     listed: Collection[int]
     # This player's removed Find More additions: together they form one rival voice.
     rejected: Collection[int]
-    # Stored centroids of the attendees who already have a voice profile.
+    # Stored voice prints of the attendees who already have a voice profile.
     known_voices: Sequence[Embedding]
     min_speech_seconds: float
     target_speech_seconds: float
@@ -121,14 +121,14 @@ def find_voice_matches(
         needed = set(pool) | own | kept_by_others | set(request.rejected)
         log.set(newly_embedded_count=sum(1 for i in needed if i not in cache.by_index))
         cache.ensure(needed, embed, "Comparing voices (the first search scans the whole Session)…", on_progress)
-        voice = cache.centroid(own)
+        voice = cache.voice_print(own)
         if voice is None:
             raise ValueError("None of this player's kept utterances could be embedded.")
         rivals = list(request.known_voices)
         for player_id, indices in request.kept.items():
-            if player_id != request.player_id and (rival := cache.centroid(indices)) is not None:
+            if player_id != request.player_id and (rival := cache.voice_print(indices)) is not None:
                 rivals.append(rival)
-        if (rejected_voice := cache.centroid(request.rejected)) is not None:
+        if (rejected_voice := cache.voice_print(request.rejected)) is not None:
             rivals.append(rejected_voice)
 
         def lead(index: int) -> float:

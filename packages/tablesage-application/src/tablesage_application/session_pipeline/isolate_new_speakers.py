@@ -28,7 +28,7 @@ from typing import Literal
 import widelog
 from pydantic import BaseModel, create_model
 from tablesage_tools.audio import extract_clip
-from tablesage_tools.embeddings import Embedding, compute_centroid, cosine_similarity
+from tablesage_tools.embeddings import Embedding, compute_voice_print, cosine_similarity
 from tablesage_tools.model import Transcript
 
 from ..llm import PromptName, call_llm_with_prompt
@@ -399,7 +399,7 @@ def _capped_fallback(
 
     Shortest additions go first, until the rest fit or all reach `fallback_short_clip_seconds`. Voice
     outliers go next. If still over the cap, the additions least like the player's picks go last
-    (or least like the additions' own centroid, when the picks are too short to be a reference).
+    (or least like the additions' own voice print, when the picks are too short to be a reference).
     """
 
     def seconds(index: int) -> float:
@@ -429,7 +429,7 @@ def _capped_fallback(
 
         addition_clips = asyncio.run(extract_all(additions))
         _report(on_progress, message, 0, len(addition_clips))
-        result = compute_centroid(
+        result = compute_voice_print(
             list(addition_clips),
             embed,
             on_progress=lambda done, total: _report(on_progress, message, done, total),
@@ -441,14 +441,14 @@ def _capped_fallback(
         additions = [i for i in additions if i in embeddings]
         total = sum(seconds(i) for i in additions)
 
-        reference = result.centroid
+        reference = result.voice_print
         seed_source = "not_needed"
         if total > cap:
             seed_source = "pool"
             if picks and sum(seconds(i) for i in picks) >= settings.min_seed_speech_seconds:
                 seed_clips = asyncio.run(extract_all(picks))
                 # min_samples = all of them: the LLM's picks are the reference, so none is pruned.
-                reference = compute_centroid(list(seed_clips), embed, min_samples=len(seed_clips)).centroid
+                reference = compute_voice_print(list(seed_clips), embed, min_samples=len(seed_clips)).voice_print
                 seed_source = "picks"
     diagnostic["seed_source"] = seed_source
 

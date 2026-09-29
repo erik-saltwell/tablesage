@@ -56,7 +56,7 @@ def seed(app: Application) -> None:
     _get_or_create_player(app, "Priya")
     _get_or_create_player(app, "Sam")
 
-    # A player with no voice clips/centroid yet, to exercise that empty state.
+    # A player with no voice clips/voice print yet, to exercise that empty state.
     _get_or_create_player(app, "Jordan")
 
     iron_pact = _get_or_create_campaign(

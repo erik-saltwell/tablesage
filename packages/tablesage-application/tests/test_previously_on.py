@@ -194,6 +194,7 @@ def _ready_campaign(tmp_path: Path) -> tuple[Application, uuid.UUID, tuple[Path,
         folder = app.session_folder(session.id)
         for artifact in (
             ArtifactName.INPUT_AUDIO,
+            ArtifactName.NORMALIZED_REVIEW_AUDIO,
             ArtifactName.TRANSCRIPT,
             ArtifactName.TRANSCRIPT_TEXT,
             ArtifactName.CLEANED_TRANSCRIPT,

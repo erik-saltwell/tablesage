@@ -5,7 +5,7 @@ from pathlib import Path
 
 import widelog
 
-from ..paths import ARTIFACTS, LEDGER_PAIR_MARKER, ArtifactName
+from ..paths import ARTIFACTS, AUDIO_PAIR_MARKER, LEDGER_PAIR_MARKER, ArtifactName
 from . import processing_state
 
 
@@ -21,6 +21,10 @@ def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
     if artifact_name is ArtifactName.LEDGER:
         (session_folder / ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].filename).unlink(missing_ok=True)
         (session_folder / LEDGER_PAIR_MARKER).unlink(missing_ok=True)
+    if artifact_name is ArtifactName.INPUT_AUDIO:
+        for name in (ArtifactName.INPUT_AUDIO, ArtifactName.NORMALIZED_REVIEW_AUDIO):
+            (session_folder / f".audio-import-{ARTIFACTS[name].filename}.bak").unlink(missing_ok=True)
+        (session_folder / AUDIO_PAIR_MARKER).unlink(missing_ok=True)
 
 
 def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
@@ -31,6 +35,9 @@ def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
     }
     if (session_folder / LEDGER_PAIR_MARKER).exists():
         for name in (ArtifactName.LEDGER, ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY, ArtifactName.SUMMARY):
+            existing[name] = False
+    if (session_folder / AUDIO_PAIR_MARKER).exists():
+        for name in (ArtifactName.INPUT_AUDIO, ArtifactName.NORMALIZED_REVIEW_AUDIO):
             existing[name] = False
     return existing
 

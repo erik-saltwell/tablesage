@@ -5,18 +5,19 @@ record. These pages explain the core ideas it uses to organize the people at
 the table, the sessions they play, and the material produced from each
 recording.
 
-- [Players, voice samples, centroids, and roles](players.md) explains how
+- [Players, voice samples, voice prints, and roles](players.md) explains how
   TableSage represents a person, learns to recognize their voice, and records
   the character or function they take in a game—including the game master.
 - [Sessions, processing, and session artifacts](sessions.md) explains how a
   recorded session moves through TableSage's processing pipeline and becomes
   transcripts, structured records, and summaries.
 - [Session processing](session-processing.md) walks through each processing
-  step and why it exists, with separate workflows for
-  [returning players](session-processing-returning-players.md) and for
-  Sessions with [new players](session-processing-new-players.md).
+  step and why it exists, with separate workflows for sessions with only
+  [returning players](session-processing-returning-players.md) and those
+  with [new players](session-processing-new-players.md).
 - [Campaigns and glossaries](campaigns.md) explains how campaigns organize
-  related sessions and preserve the names and terminology particular to their
-  shared world.
+  related sessions and collect campaign-specific terms.
 - [Delete and clean up](delete-and-clean.md) explains why deleting a Player,
   Campaign, or Session leaves its files in place until an explicit cleanup.
+
+For task-focused walkthroughs, see the [Guides](../guides/index.md).

@@ -15,7 +15,7 @@ This enhancement changes the twelve-step Process Session flow recorded in [item.
 - **Step 1 removed:** delete the Review Speakers step, its screen (`screens/new_players.py`), the `new_speaker_set.json` artifact, and its pipeline module (`session_pipeline/new_speaker_set.py`).
 - **Out of staleness entirely:** new-player state is no longer part of staleness.
   - Remove the `INPUT_AUDIO` build step's dependency on `NEW_SPEAKER_SET`.
-  - New players are computed live wherever they're needed, using the existing usable-centroid rule (`Application._usable_player_embedding`: missing, zero samples, zero magnitude, non-finite, or wrong dimension).
+  - New players are computed live wherever they're needed, using the existing usable-voice-print rule (`Application._usable_player_embedding`: missing, zero samples, zero magnitude, non-finite, or wrong dimension).
 - **Accepted gap:** changing attendance or voice profiles after Isolate has run does not make anything stale.
   - `new_speaker_assignments.json` and the reviewed file can then name players who are no longer new, or miss players who now are.
   - The user re-runs from the earlier step themselves. The live list on Process Session makes the mismatch visible.
@@ -149,7 +149,7 @@ Settled in a workshop discussion on 2026-09-24; **not yet built**. Design detail
 
 ### Decisions
 
-- **Rename and narrow:** Enhance New Speaker Voice Samples becomes **Seed Player Voice Samples** (automatic). It only takes each new player's kept utterances from `reviewed_new_speaker_assignments.json`, saves them as clips in that player's folder, and recomputes the player's centroid. It does no speaker identification and no transcript work.
+- **Rename and narrow:** Enhance New Speaker Voice Samples becomes **Seed Player Voice Samples** (automatic). It only takes each new player's kept utterances from `reviewed_new_speaker_assignments.json`, saves them as clips in that player's folder, and recomputes the player's voice print. It does no speaker identification and no transcript work.
 - **Skipped with no new players:** it joins `NEW_PLAYER_STAGES`. This settles the earlier question in favor of skipping. Nothing is left to seed, so the runner writes an empty receipt with no other work. The skip decision uses the new-player list as it was **before** seeding, not the live list afterwards.
 - **Artifact:** a small receipt, `seeded_voice_samples.json`, replaces `speaker_enhanced_transcript.json` (`SPEAKER_ENHANCED_TRANSCRIPT`). That artifact has a build step but no runner, so no file exists on disk to migrate.
   - **Contents:** for each new player, `player_id`, `player_name`, the clip filenames written, and the resulting `sample_count`. Derived facts such as durations are not stored.
@@ -159,22 +159,22 @@ Settled in a workshop discussion on 2026-09-24; **not yet built**. Design detail
 
 ### Details settled by flesh-out (2026-09-24)
 
-- **Correction (2026-09-24, before implementation):** an earlier version of this section said Assign Roles To Players does centroid speaker identification and should move before Review Transcript. That was wrong. The agent offered centroid matching as a hypothesis without reading the step, and it was saved as fact. `clean_transcript` (which builds `role_transcript.json`) actually reads the reviewed transcript, drops leftover unassigned backchannels, and swaps player names for character role names. Ledger, Transcript Sections and Player Introductions read its output.
-- **Speaker identification gets its own step (user decision):** a new automatic **Identify Speakers** step runs right after Seed Player Voice Samples. It runs the existing centroid identifier (`transcribe_audio.identify_raw_transcript`, deterministic, no LLM) over `name_corrected_transcript.json` with every attendee's usable centroid, and writes `identified_transcript.json`. Utterances that don't match confidently stay unassigned for Review Transcript. It is never skipped.
+- **Correction (2026-09-24, before implementation):** an earlier version of this section said Assign Roles To Players does voice print speaker identification and should move before Review Transcript. That was wrong. The agent offered voice print matching as a hypothesis without reading the step, and it was saved as fact. `clean_transcript` (which builds `role_transcript.json`) actually reads the reviewed transcript, drops leftover unassigned backchannels, and swaps player names for character role names. Ledger, Transcript Sections and Player Introductions read its output.
+- **Speaker identification gets its own step (user decision):** a new automatic **Identify Speakers** step runs right after Seed Player Voice Samples. It runs the existing voice print identifier (`transcribe_audio.identify_raw_transcript`, deterministic, no LLM) over `name_corrected_transcript.json` with every attendee's usable voice print, and writes `identified_transcript.json`. Utterances that don't match confidently stay unassigned for Review Transcript. It is never skipped.
 - **Assign Roles To Players stays after Review Transcript, unchanged.** The step order is Spellcheck Against Glossary (`4`), Review Transcript (`5`), Assign Roles To Players (automatic), Generate Artifacts (`6`).
 - **Spellcheck Against Glossary reads the identified transcript,** and is routed from Process Session in this change (user decision).
 - **Players left short:** Seed writes whatever exists, including nothing. A player with no usable clips is recorded in the receipt with `sample_count` 0 and stays on the New Players list, meaning "still needs manual assignment". Nothing blocks the run.
 - **Skipped display, derived from output:** a completed new-player step is skipped only when its output is empty. An incomplete one uses the live list, as before. One function decides, and nothing new is stored.
   - A session seeded this run shows done ticks on steps 2, 3 and Seed.
   - A session that never had new players shows them struck through with the tooltip.
-- **Clip filtering:** Seed cuts a clip for every kept utterance, skipping only ones under the technical `min_embeddable_clip_seconds` floor. It applies no similarity-margin or clip-length filter. The reviewer is the quality gate, as in the existing "From Session" path with a reviewed transcript. `recompute_centroid` still excludes outliers from the centroid, and its existing behavior of leaving outlier files on disk is unchanged. There are no new settings knobs; outlier settings come from `AppSettings.remove_outliers`.
-- **Re-running earlier steps after seeding:** Seed replaces a session's clips only for players listed in the reviewed assignments. Players who are absent keep their clips and centroids. With the live list now empty, re-running steps 2 or 3 leaves an empty receipt and changes nothing. Redoing a bad seed means deleting clips on the Players screen. This is part of the accepted no-staleness gap.
+- **Clip filtering:** Seed cuts a clip for every kept utterance, skipping only ones under the technical `min_embeddable_clip_seconds` floor. It applies no similarity-margin or clip-length filter. The reviewer is the quality gate, as in the existing "From Session" path with a reviewed transcript. `recompute_voice_print` still excludes outliers from the voice print, and its existing behavior of leaving outlier files on disk is unchanged. There are no new settings knobs; outlier settings come from `AppSettings.remove_outliers`.
+- **Re-running earlier steps after seeding:** Seed replaces a session's clips only for players listed in the reviewed assignments. Players who are absent keep their clips and voice prints. With the live list now empty, re-running steps 2 or 3 leaves an empty receipt and changes nothing. Redoing a bad seed means deleting clips on the Players screen. This is part of the accepted no-staleness gap.
 
 ### Consequences and open items
 
 - **New players stop being new:** once this step runs, `new_players()` is empty for players who got samples. The display rule above stops this from mislabeling the finished steps as skipped.
 - **Manual Review's source chain:** Review Transcript (step 5) still needs to follow the base transcript chain when it is routed: `identified_transcript.json` → `spellchecked_transcript.json` → `transcript_reviewed.json` → `role_transcript.json`. See [item.md](item.md).
-- **Centroid changes aren't tracked:** Identify Speakers also reads returning players' centroids from the database. Changing a voice profile doesn't make the identified transcript stale. This is part of the accepted no-staleness gap.
+- **Voice Print changes aren't tracked:** Identify Speakers also reads returning players' voice prints from the database. Changing a voice profile doesn't make the identified transcript stale. This is part of the accepted no-staleness gap.
 
 ## Change 5: route Review Transcript (step 5) and give Assign Roles To Players a runner
 

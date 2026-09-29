@@ -61,10 +61,10 @@ def _stub_extract_clip(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.anyio
 async def test_identify_speakers_stores_margin_on_confident_match(tmp_path: Path) -> None:
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
 
-    result = await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    result = await identify_speakers(_transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     assert [u.speaker for u in result.utterances] == ["Alice", "Bob"]
     assert result.utterances[0].similarity_margin == pytest.approx(1.0)
@@ -73,11 +73,11 @@ async def test_identify_speakers_stores_margin_on_confident_match(tmp_path: Path
 
 @pytest.mark.anyio
 async def test_identify_speakers_leaves_unassigned_but_still_stores_margin(tmp_path: Path) -> None:
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     ambiguous = Embedding(root=(0.70710678, 0.70710678))
     embed = _fake_embed([ambiguous, ambiguous])
 
-    result = await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    result = await identify_speakers(_transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     assert all(u.speaker == UNASSIGNED_SPEAKER for u in result.utterances)
     assert result.utterances[0].similarity_margin == pytest.approx(0.0, abs=1e-6)
@@ -92,7 +92,7 @@ async def test_identify_speakers_uses_lower_margin_threshold_after_duration_over
             _word("long", "speaker_1", 1.0, 2.0),
         ]
     )
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     # alice≈0.743, bob≈0.669: margin≈0.074, between the 0.10 base and 0.04 override.
     between_thresholds = Embedding(root=(1.0, 0.9))
     embed = _fake_embed([between_thresholds, between_thresholds])
@@ -100,7 +100,7 @@ async def test_identify_speakers_uses_lower_margin_threshold_after_duration_over
     result = await identify_speakers(
         transcript,
         tmp_path / "input.wav",
-        centroids,
+        voice_prints,
         embed,
         similarity_margin_threshold=0.10,
         duration_override_min_seconds=1.0,
@@ -131,7 +131,7 @@ async def test_identify_speakers_widens_short_audio_but_uses_original_duration_t
         return sum(end - start for _index, start, end in selected)
 
     monkeypatch.setattr(identify_speakers_module, "write_audio_spans", _fake_write_audio_spans)
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     # The widened short clip's margin is between the 0.10 base and 0.04 long-clip threshold.
     embed = _fake_embed(
         [
@@ -144,7 +144,7 @@ async def test_identify_speakers_widens_short_audio_but_uses_original_duration_t
     result = await identify_speakers(
         transcript,
         tmp_path / "input.wav",
-        centroids,
+        voice_prints,
         embed,
         similarity_margin_threshold=0.10,
         duration_override_min_seconds=1.0,
@@ -165,7 +165,7 @@ async def test_identify_speakers_propagates_cluster_label_to_short_abstention(tm
             _word("brief", "cluster-a", 2.0, 2.3),
         ]
     )
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed(
         [
             Embedding(root=(1.0, 0.0)),
@@ -177,7 +177,7 @@ async def test_identify_speakers_propagates_cluster_label_to_short_abstention(tm
     result = await identify_speakers(
         transcript,
         tmp_path / "input.wav",
-        centroids,
+        voice_prints,
         embed,
         similarity_margin_threshold=0.1,
         cluster_propagation=ClusterPropagationConfig(),
@@ -188,13 +188,13 @@ async def test_identify_speakers_propagates_cluster_label_to_short_abstention(tm
 
 @pytest.mark.anyio
 async def test_identify_speakers_requires_both_duration_override_values(tmp_path: Path) -> None:
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
 
     with pytest.raises(ValueError, match="must either both be set or both be omitted"):
         await identify_speakers(
             _transcript(),
             tmp_path / "input.wav",
-            centroids,
+            voice_prints,
             _fake_embed([]),
             similarity_margin_threshold=0.10,
             duration_override_min_seconds=1.0,
@@ -205,16 +205,16 @@ async def test_identify_speakers_requires_both_duration_override_values(tmp_path
 async def test_allow_unassigned_false_assigns_best_match_below_threshold(tmp_path: Path) -> None:
     """With allow_unassigned=False, a low-margin match is assigned to the best candidate instead
     of UNASSIGNED_SPEAKER -- the margin check is skipped entirely, not just its threshold relaxed."""
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     ambiguous = Embedding(root=(0.70710678, 0.70710678))
     embed = _fake_embed([ambiguous, ambiguous])
 
     result = await identify_speakers(
-        _transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+        _transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1, allow_unassigned=False
     )
 
     assert all(u.speaker != UNASSIGNED_SPEAKER for u in result.utterances)
-    assert all(u.speaker in centroids for u in result.utterances)
+    assert all(u.speaker in voice_prints for u in result.utterances)
     # The margin is still recorded even though it wasn't used to gate the assignment.
     assert result.utterances[0].similarity_margin == pytest.approx(0.0, abs=1e-6)
 
@@ -224,11 +224,11 @@ async def test_allow_unassigned_false_still_leaves_too_short_utterance_unassigne
     """allow_unassigned only disables the margin-confidence check -- an utterance too short to
     embed at all has no comparison to make in the first place, so it's still unassigned."""
     transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 0.01)])
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([])
 
     result = await identify_speakers(
-        transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+        transcript, tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1, allow_unassigned=False
     )
 
     assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
@@ -239,11 +239,11 @@ async def test_allow_unassigned_false_still_leaves_nan_embedding_unassigned(tmp_
     """allow_unassigned only disables the margin-confidence check -- a NaN candidate embedding
     (a model/data bug) has no valid comparison to make, so it's still unassigned."""
     transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 1.0)])
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(math.nan, math.nan))])
 
     result = await identify_speakers(
-        transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, allow_unassigned=False
+        transcript, tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1, allow_unassigned=False
     )
 
     assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
@@ -251,10 +251,10 @@ async def test_allow_unassigned_false_still_leaves_nan_embedding_unassigned(tmp_
 
 @pytest.mark.anyio
 async def test_transcript_round_trips_similarity_margin(tmp_path: Path) -> None:
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
 
-    result = await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    result = await identify_speakers(_transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     path = tmp_path / "transcript.json"
     result.save(path)
@@ -276,10 +276,10 @@ async def test_identify_speakers_skips_embedding_for_too_short_utterance(tmp_pat
     monkeypatch.setattr(identify_speakers_module, "extract_clip", _fail_if_called)
 
     transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 0.01)])
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([])
 
-    result = await identify_speakers(transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    result = await identify_speakers(transcript, tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
     assert result.utterances[0].similarity_margin == pytest.approx(0.0)
@@ -290,10 +290,10 @@ async def test_identify_speakers_leaves_unassigned_on_nan_embedding(tmp_path: Pa
     """A candidate embedding that comes back NaN (a model/data bug, not a bad match) must
     still leave the utterance unassigned, with a NaN margin rather than a misleading number."""
     transcript = Transcript.from_words([_word("hi", "speaker_0", 0.0, 1.0)])
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(float("nan"), float("nan")))])
 
-    result = await identify_speakers(transcript, tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    result = await identify_speakers(transcript, tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     assert result.utterances[0].speaker == UNASSIGNED_SPEAKER
     assert result.utterances[0].similarity_margin is not None
@@ -305,10 +305,10 @@ async def test_identify_speakers_does_not_log_diagnostics_by_default(tmp_path: P
     log_diagnostic = MagicMock()
     monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
 
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
 
-    await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1)
+    await identify_speakers(_transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1)
 
     log_diagnostic.assert_not_called()
 
@@ -318,10 +318,12 @@ async def test_identify_speakers_logs_diagnostics_with_threshold_when_enabled(tm
     log_diagnostic = MagicMock()
     monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
 
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
     embed = _fake_embed([Embedding(root=(1.0, 0.0)), Embedding(root=(0.0, 1.0))])
 
-    await identify_speakers(_transcript(), tmp_path / "input.wav", centroids, embed, similarity_margin_threshold=0.1, log_diagnostics=True)
+    await identify_speakers(
+        _transcript(), tmp_path / "input.wav", voice_prints, embed, similarity_margin_threshold=0.1, log_diagnostics=True
+    )
 
     assert log_diagnostic.call_count == 2
     for call in log_diagnostic.call_args_list:
@@ -332,12 +334,12 @@ async def test_identify_speakers_logs_diagnostics_with_threshold_when_enabled(tm
 async def test_identify_speakers_logs_effective_duration_override_threshold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     log_diagnostic = MagicMock()
     monkeypatch.setattr(identify_speakers_module, "_log_diagnostic", log_diagnostic)
-    centroids = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
+    voice_prints = {"Alice": Embedding(root=(1.0, 0.0)), "Bob": Embedding(root=(0.0, 1.0))}
 
     await identify_speakers(
         Transcript.from_words([_word("long", "speaker_0", 0.0, 1.0)]),
         tmp_path / "input.wav",
-        centroids,
+        voice_prints,
         _fake_embed([Embedding(root=(1.0, 0.9))]),
         similarity_margin_threshold=0.10,
         duration_override_min_seconds=1.0,

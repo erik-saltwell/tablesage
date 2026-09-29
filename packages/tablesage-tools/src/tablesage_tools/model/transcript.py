@@ -26,7 +26,7 @@ class Utterance(BaseModel):
     words: list[TranscriptionWord]
     punctuated_text: str | None = None
     # The margin (best-match similarity minus runner-up) from `identify_speakers`'s
-    # comparison against attendee centroids -- set for every utterance (assigned or
+    # comparison against attendee voice prints -- set for every utterance (assigned or
     # UNASSIGNED_SPEAKER), None only for a transcript produced before this field existed.
     similarity_margin: float | None = None
     # True once a human has changed this utterance's speaker or displayed text in Manual

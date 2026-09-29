@@ -23,13 +23,13 @@ class Stage(Enum):
     """An `enhance_players_from_session` pipeline stage, reported to `on_progress`.
 
     EXTRACTING reports one running count across every attendee's qualifying utterances
-    (not reset per attendee). RECOMPUTING_CENTROIDS reports one running count of clips
+    (not reset per attendee). RECOMPUTING_VOICE_PRINTS reports one running count of clips
     embedded across every attendee's clip folder. Removing similarity outliers after an
     attendee's last clip is embedded isn't itemized, so the count pauses there.
     """
 
     EXTRACTING = "extracting"
-    RECOMPUTING_CENTROIDS = "recomputing_centroids"
+    RECOMPUTING_VOICE_PRINTS = "recomputing_voice_prints"
 
 
 OnProgress = Callable[[Stage, int, int], None]
@@ -125,7 +125,7 @@ def enhance_players_from_session(
     leaves an attendee worse off than before the run. This replace-as-a-unit rule is
     unconditional: even an attendee with zero qualifying utterances this run has their
     prior session clips deleted (see `select_enhancement_utterances` and the design doc).
-    Every attendee's centroid is recomputed afterward, regardless of whether they got new
+    Every attendee's voice print is recomputed afterward, regardless of whether they got new
     clips, since a zero-new-clips attendee may still have had stale clips retracted.
     """
     # Application passes a graph-validated source; direct callers still reject older reviews.
@@ -184,14 +184,14 @@ def enhance_players_from_session(
     clip_counts = {attendee.player_id: sum(1 for _ in player_folders[attendee.player_id].glob(VOICE_CLIP_GLOB)) for attendee in attendees}
     total_to_embed = sum(clip_counts.values())
     embedded_before = 0
-    _report(on_progress, Stage.RECOMPUTING_CENTROIDS, 0, total_to_embed)
+    _report(on_progress, Stage.RECOMPUTING_VOICE_PRINTS, 0, total_to_embed)
     for attendee in attendees:
         folder = player_folders[attendee.player_id]
 
         def on_clip_embedded(done: int, _total: int, offset: int = embedded_before) -> None:
-            _report(on_progress, Stage.RECOMPUTING_CENTROIDS, offset + done, total_to_embed)
+            _report(on_progress, Stage.RECOMPUTING_VOICE_PRINTS, offset + done, total_to_embed)
 
-        clips.recompute_centroid(
+        clips.recompute_voice_print(
             session,
             attendee.player_id,
             folder,
@@ -201,7 +201,7 @@ def enhance_players_from_session(
             outlier_settings.min_samples,
         )
         embedded_before += clip_counts[attendee.player_id]
-        _report(on_progress, Stage.RECOMPUTING_CENTROIDS, embedded_before, total_to_embed)
+        _report(on_progress, Stage.RECOMPUTING_VOICE_PRINTS, embedded_before, total_to_embed)
 
     enhanced_player_count = sum(1 for count in written_counts.values() if count > 0)
     return EnhanceResult(enhanced_player_count=enhanced_player_count, clip_count=total_clips)

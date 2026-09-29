@@ -36,7 +36,7 @@ _CLEAN_LABELS = {
 }
 _ENHANCE_LABELS = {
     EnhanceStage.EXTRACTING: "Extracting voice clips…",
-    EnhanceStage.RECOMPUTING_CENTROIDS: "Recomputing centroids…",
+    EnhanceStage.RECOMPUTING_VOICE_PRINTS: "Recomputing voice prints…",
 }
 
 
