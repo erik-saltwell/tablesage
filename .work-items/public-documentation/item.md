@@ -94,3 +94,5 @@ A qualitative review of all 32 public pages (no rubric exists, so nothing was sc
 - **Screenshots:** added three current guide captures (New Campaign dialog and attendance in Start a Campaign, Export in Generate and Export) and the recaptured Process Session screen in the new-player guide. Deleted 58 unreferenced images (44 in `images/guides/`, all 14 in `images/session-processing/`) and the empty `campaigns/`, `review-and-export/`, `session-preparation/`, and `session-processing/` image folders.
 
 Verification: 288 local links, anchors, and image paths resolve; `git diff --check` on `docs` and `README.md` is clean. Not verified: the "several gigabytes" disk-space figure.
+
+Replaced the installation page's vague "several gigabytes" with measured figures (2026-09-30): about 10 GB to start (roughly 8 GB for the installed libraries, measured on Linux from a development environment that includes CUDA packages; macOS not measured), about 0.5 GB of downloaded models, and about 230 MB per hour of recording per Session (115 MB/hour input audio plus an equal normalized review copy). Player voice samples measured 19–457 MB per Player in a real workspace.

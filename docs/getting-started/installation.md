@@ -9,7 +9,7 @@ This page installs TableSage and gets you to a working first launch.
 You need:
 
 - A computer with a terminal and an internet connection.
-- Several gigabytes of free disk space.
+- About 10 GB of free disk space to start: roughly 8 GB for TableSage and its machine-learning libraries (less on macOS), about 0.5 GB for the models it downloads, and room for your recordings. Each Session needs about 230 MB per hour of recording, and each Player's voice samples usually take tens of megabytes.
 - An [ElevenLabs](https://elevenlabs.io/) API key, for transcription and speaker diarization.
 - An API key for at least one language-model provider. TableSage supports OpenAI, Anthropic, and Google Gemini, and nothing else. The default model choices use OpenAI and Anthropic, so most first-time users want a key for each.
 
