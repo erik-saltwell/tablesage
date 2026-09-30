@@ -69,8 +69,8 @@ class ProcessSessionScreen(TableSageScreen):
     """
 
     section = "process session"
+    HIDDEN_BINDINGS = [Binding("escape", "pop_screen", "Back", show=False)]
     COMMON_BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
         Binding("c,C", "continue_processing", "Continue", key_display="C"),
         Binding("enter,r,R", "restart_step", "Restart Step", key_display="R"),
     ]

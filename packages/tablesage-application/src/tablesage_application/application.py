@@ -190,6 +190,12 @@ class Application:
             game_sessions = sorted(sessions.list_sessions(session, campaign_id), key=lambda item: item.sequence_number)
             if not game_sessions:
                 raise ValueError("This Campaign has no Sessions. Create Sessions and run Regenerate All Outputs first.")
+            # The upcoming Session may already exist before it is played; it has no history to read yet.
+            latest_folder = self._session_folder(session, game_sessions[-1])
+            if not artifacts.session_artifacts(latest_folder)[paths.ArtifactName.INPUT_AUDIO]:
+                game_sessions = game_sessions[:-1]
+                if not game_sessions:
+                    raise ValueError("This Campaign has no recorded Sessions yet. Process a Session's recording first.")
             graph = self._artifact_graph(session, campaign_id)
             history: list[previously_on.CampaignSession] = []
             problems: list[str] = []
@@ -208,7 +214,7 @@ class Application:
                     problems.append(f"Session {game_session.sequence_number:03d} — {game_session.name}: {exc}")
             if problems:
                 raise ValueError(
-                    "Every Session needs a current, valid, complete Scene Breakdown.\n\n"
+                    "Every Session except an unrecorded upcoming one needs a current, valid, complete Scene Breakdown.\n\n"
                     + "\n".join(problems)
                     + "\n\nRun Regenerate All Outputs from Campaign detail, then try again."
                 )
@@ -922,7 +928,7 @@ class Application:
             ),
             step(name.SEEDED_VOICE_SAMPLES, (ref(name.SEEDED_VOICE_SAMPLES),), (ref(name.REVIEWED_NEW_SPEAKER_ASSIGNMENTS),)),
             # Identification also reads returning players' voice voice prints from the database. Deliberately not a
-            # dependency: enhancing a player's profile from a later Session must not re-identify every earlier one.
+            # dependency: enhancing a player's voice print from a later Session must not re-identify every earlier one.
             step(
                 name.IDENTIFIED_TRANSCRIPT,
                 (ref(name.IDENTIFIED_TRANSCRIPT),),
@@ -985,9 +991,9 @@ class Application:
             step(
                 name.RECAP_SUMMARY, (ref(name.RECAP_SUMMARY),), (ref(name.SCENE_BREAKDOWN), prompt_input(PromptName.GENERATE_RECAP_SUMMARY))
             ),
-            # The voice-profile offer asks again only when the reviewed transcript -- where its clips come from -- changes.
-            step(name.VOICE_PROFILE_DECISION, (ref(name.VOICE_PROFILE_DECISION),), (ref(name.REVIEWED_TRANSCRIPT),)),
-            step(name.VOICE_PROFILE_ENHANCEMENT, (ref(name.VOICE_PROFILE_ENHANCEMENT),), (ref(name.VOICE_PROFILE_DECISION),)),
+            # The voice-print offer asks again only when the reviewed transcript -- where its clips come from -- changes.
+            step(name.VOICE_PRINT_DECISION, (ref(name.VOICE_PRINT_DECISION),), (ref(name.REVIEWED_TRANSCRIPT),)),
+            step(name.VOICE_PRINT_ENHANCEMENT, (ref(name.VOICE_PRINT_ENHANCEMENT),), (ref(name.VOICE_PRINT_DECISION),)),
         )
 
     @classmethod
@@ -1356,21 +1362,21 @@ class Application:
 
         processing_state.update(self.session_folder(session_id), apply, reason="step_failure_cleared")
 
-    def save_voice_profile_decision(self, session_id: uuid.UUID, *, accepted: bool) -> None:
-        """Improve Player Voice Profiles' decision: whether to add this Session's voice clips to its players' profiles."""
-        self._complete_section(session_id, paths.ArtifactName.VOICE_PROFILE_DECISION, {"accepted": accepted})
+    def save_voice_print_decision(self, session_id: uuid.UUID, *, accepted: bool) -> None:
+        """Improve Player Voice Prints' decision: whether to add this Session's voice clips to its players' voice samples."""
+        self._complete_section(session_id, paths.ArtifactName.VOICE_PRINT_DECISION, {"accepted": accepted})
 
-    def enhance_voice_profiles(
+    def enhance_voice_prints(
         self, session_id: uuid.UUID, on_progress: players_from_session.OnProgress | None = None
     ) -> players_from_session.EnhanceResult | None:
-        """Enhance Voice Profiles: when the offer was accepted, add this Session's clips to its players' profiles
+        """Enhance Voice Prints: when the offer was accepted, add this Session's clips to its players' voice samples
         (replacing any this Session added before, so re-running is harmless); record the receipt either way."""
-        decision = self._section(session_id, paths.ArtifactName.VOICE_PROFILE_DECISION)
+        decision = self._section(session_id, paths.ArtifactName.VOICE_PRINT_DECISION)
         accepted = isinstance(decision, dict) and bool(decision.get("accepted"))
         result = self.enhance_players_from_session(session_id, on_progress) if accepted else None
         self._complete_section(
             session_id,
-            paths.ArtifactName.VOICE_PROFILE_ENHANCEMENT,
+            paths.ArtifactName.VOICE_PRINT_ENHANCEMENT,
             {
                 "enhanced_player_count": result.enhanced_player_count if result is not None else 0,
                 "clip_count": result.clip_count if result is not None else 0,
@@ -1559,7 +1565,7 @@ class Application:
         """This Session's new players -- attendees with no usable voice voice print -- computed live from the database.
 
         Deliberately not persisted or part of artifact staleness: changing attendance or voice
-        profiles after the new-player steps ran does not invalidate them.
+        prints after the new-player steps ran does not invalidate them.
         """
         with Session(self._engine) as session:
             new_players: list[isolate_new_speakers_pipeline.NewPlayer] = []
@@ -1586,7 +1592,7 @@ class Application:
     def _usable_player_embedding(player: Player, expected_dimension: int | None = None) -> Embedding | None:
         """Validate a stored voice print before using it as identification evidence.
 
-        Profiles do not identify their embedding backend, so the caller can provide an expected
+        Voice prints do not identify their embedding backend, so the caller can provide an expected
         dimension when it is known.
         """
         if player.voice_print_embedding is None or player.sample_count <= 0:

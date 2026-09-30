@@ -101,7 +101,7 @@ enhance_voices:
   # of a transcribed session's utterances. This is a stricter bar than
   # speaker_identification's own duration-conditioned assignment rule above -- an utterance can be
   # confident enough to attribute to a player without being confident enough
-  # to bank as a new training sample for that player's voice profile.
+  # to bank as a new training sample for that player's voice print.
   min_margin_for_voice_sample: 0.15
   # Utterances shorter than this make weak training samples; excluded.
   min_clip_seconds: 1.0

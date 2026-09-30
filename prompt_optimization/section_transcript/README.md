@@ -38,6 +38,4 @@ Run a campaign-level holdout for the Dread Gods Teeth cases:
 uv run --project apps/optimize-prompts optimize-prompts section-transcript --run --holdout-prefix dread_gods_teeth_
 ```
 
-Each optimization run overwrites `outputs/best_prompt.md` with its selected
-winner and writes the supporting scores and run metadata to
-`outputs/best_prompt_result.json`.
+Each optimization run overwrites `outputs/best_prompt.md` with its selected winner and writes the supporting scores and run metadata to `outputs/best_prompt_result.json`.

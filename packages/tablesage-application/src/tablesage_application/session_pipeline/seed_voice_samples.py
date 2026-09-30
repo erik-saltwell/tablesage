@@ -123,7 +123,7 @@ def seed_voice_samples(
         seeded: list[SeededPlayer] = []
         for index, target in enumerate(targets, start=1):
             if on_progress is not None:
-                on_progress("Recomputing voice profiles…", index - 1, len(targets))
+                on_progress("Recomputing voice prints…", index - 1, len(targets))
             player = clips.recompute_voice_print(session, target.player_id, target.folder, embed, None, min_sample_similarity, min_samples)
             seeded.append(
                 SeededPlayer(

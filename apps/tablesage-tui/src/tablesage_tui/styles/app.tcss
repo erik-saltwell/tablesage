@@ -303,9 +303,18 @@ SettingsScreen {
     #settings-keys { padding-bottom: 1; }
     #settings-keys > Contents { padding-top: 1; padding-bottom: 0; }
     .credential-label { width: 27; height: 1; }
+    Button.credential-delete {
+        width: 14;
+        min-width: 14;
+        height: 1;
+        min-height: 1;
+        border: none !important;
+        padding: 0 1;
+        margin: 0 0 0 1;
+    }
     Input.credential-input {
         width: 1fr;
-        max-width: 40;
+        max-width: 25;
         height: 1;
         min-height: 1;
         border: none;
@@ -1578,7 +1587,7 @@ SessionDetailScreen {
             align: left middle;
 
             .field-label {
-                width: 14;
+                width: 16;
                 height: 1;
                 color: $fg-muted;
             }

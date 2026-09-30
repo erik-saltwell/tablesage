@@ -7,9 +7,7 @@ status: complete
 
 Replace Session Detail's separate audio, transcript-review, and output-generation entry points with a single, resumable processing flow.
 
-> **Architecture record retired (2026-09-28):** the separate Processing step architecture
-> work item was rolled back. This work item is the durable record of the current Session
-> processing flow and its implementation.
+> **Architecture record retired (2026-09-28):** the separate Processing step architecture work item was rolled back. This work item is the durable record of the current Session processing flow and its implementation.
 
 - [Idea](idea.md): the original three-phase direction, since superseded
 - [Quality rubric](rubric.md)
@@ -27,36 +25,17 @@ Replace Session Detail's separate audio, transcript-review, and output-generatio
 
 ## Completion (2026-09-28)
 
-The user confirmed this work item supersedes the rolled-back Processing step
-architecture record. The completed implementation, design decisions, and
-verification history above are retained here as the canonical handoff.
+The user confirmed this work item supersedes the rolled-back Processing step architecture record. The completed implementation, design decisions, and verification history above are retained here as the canonical handoff.
 
 ## Current implementation (verified against the code 2026-09-29)
 
-The design sections below record the earlier numbered-key flow. The code has since
-moved to the step-coordinator architecture; where they differ, the code wins:
+The design sections below record the earlier numbered-key flow. The code has since moved to the step-coordinator architecture; where they differ, the code wins:
 
-- **Steps:** `PROCESSING_STEPS` in `tablesage_application/processing_steps.py` is one ordered
-  list of manual and automatic steps (24 as of this note). Each review is bracketed by
-  automatic Suggest and Apply steps. Manual steps only record a decision.
-- **Driver:** `tablesage_tui/processing/coordinator.py` is the only thing that starts
-  processing. One run executes steps from the first incomplete step until a step is
-  cancelled or fails, or everything is complete. Step bodies live in
-  `tablesage_tui/processing/steps.py`.
-- **Process Session screen:** there are no number keys. **C** (Continue button, labeled
-  `Continue: <step>`) runs from the first incomplete step; **Enter/R** restarts a completed
-  row. New-player steps are hidden (not struck through) when there are no new players, and
-  the New Players column is hidden when empty. Failures show on the step's row; blockers
-  such as "no attendees" replace the Continue label. Up/Down visit manual rows only.
-- **State:** each Session folder holds `processing_state.json` (`records`, `sections`,
-  `drafts`, `failures`), see `session_pipeline/processing_state.py`. Completion and
-  staleness come from content fingerprints of declared inputs (`artifact_graph.py`), not
-  file modification times. Decisions, suggestions and receipts are sections of that file,
-  not the separate `*.json` receipt files described below (kept only for one-time import of
-  older Sessions).
-- **Prior-Session rebuilds:** an approval step, **Rebuild Prior Sessions**, appears only
-  when generating this Session would rebuild earlier ones. **Improve Player Voice
-  Profiles** and its automatic Enhance step follow Generate Artifacts.
+- **Steps:** `PROCESSING_STEPS` in `tablesage_application/processing_steps.py` is one ordered list of manual and automatic steps (24 as of this note). Each review is bracketed by automatic Suggest and Apply steps. Manual steps only record a decision.
+- **Driver:** `tablesage_tui/processing/coordinator.py` is the only thing that starts processing. One run executes steps from the first incomplete step until a step is cancelled or fails, or everything is complete. Step bodies live in `tablesage_tui/processing/steps.py`.
+- **Process Session screen:** there are no number keys. **C** (Continue button, labeled `Continue: <step>`) runs from the first incomplete step; **Enter/R** restarts a completed row. New-player steps are hidden (not struck through) when there are no new players, and the New Players column is hidden when empty. Failures show on the step's row; blockers such as "no attendees" replace the Continue label. Up/Down visit manual rows only.
+- **State:** each Session folder holds `processing_state.json` (`records`, `sections`, `drafts`, `failures`), see `session_pipeline/processing_state.py`. Completion and staleness come from content fingerprints of declared inputs (`artifact_graph.py`), not file modification times. Decisions, suggestions and receipts are sections of that file, not the separate `*.json` receipt files described below (kept only for one-time import of older Sessions).
+- **Prior-Session rebuilds:** an approval step, **Rebuild Prior Sessions**, appears only when generating this Session would rebuild earlier ones. **Improve Player Voice Profiles** and its automatic Enhance step follow Generate Artifacts.
 - **Public description:** `docs/concepts/session-processing*.md`.
 
 ## Step list as of 2026-09-24 (historical)

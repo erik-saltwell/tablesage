@@ -1,167 +1,91 @@
 # Processing with New Players
 
-This page follows [Session processing](session-processing.md) step by step
-for a Session with at least one **new player**: an attendee without a usable
-voice profile, usually because they have no voice samples yet. It builds on
-[Processing with returning players](session-processing-returning-players.md).
-Every step on that page runs here as well, and this page focuses on what is
-different.
+This workflow applies when at least one attendee has no usable [voice print](players.md#voice-prints), usually because they have no voice samples yet.
 
-On Session Detail, a new player's **Samples** count is a red **0**. Process
-Session lists them under **New Players**, and the new-player steps appear in
-its list of steps.
+All stages described in [Processing with Returning Players](session-processing-returning-players.md) still apply. The difference is an additional sequence that establishes new Players' voices before speaker identification.
 
-![Session Detail showing Jordan, a new player with no voice samples](../images/session-processing/session-detail-new-player.png)
+The complete workflow is:
 
-![Process Session with Jordan listed as a new player](../images/session-processing/process-session-new-player.png)
+1. **Import Audio** — The user supplies the Session's recording as the source for processing. The system cleans the audio of background noise if necessary.
+2. **Create Transcript** — The system turns speech into text and groups it by anonymous speaker.
+3. **Remove Bad Utterances** — The system removes brief acknowledgments that add no independent meaning.
+4. **Review Name Corrections** — The user reviews proposed corrections to misheard Player and character names so they can support identity clues.
+5. **Isolate New Speakers** — The system uses conversational evidence to propose utterances belonging to each new Player.
+6. **Review New Speaker Assignments** — The user confirms who spoke the proposed utterances before they become voice samples, and can ask the system to find more utterances that sound like the confirmed ones.
+7. **Seed Player Voice Samples** — The system builds initial voice prints from the confirmed speech.
+8. **Identify Speakers** — The system matches utterances against the voice prints of all attendees, including the newly seeded ones, leaving uncertain identities for review.
+9. **Extract Glossary Terms** — The user reviews suggested campaign names and terms and decides which to add to the Glossary.
+10. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
+11. **Review Transcript** — The user confirms the words and speaker assignments that will form the session record.
+12. **Assign Roles To Players** — The system attributes speech to character names and other Session Roles.
+13. **Generate Artifacts** — The system builds the ledger, scene breakdown, introductions, and summaries from the reviewed material, with user approval for any necessary rebuilding of prior Sessions.
+14. **Improve Player Voice Prints** — The user decides whether to add more samples from the reviewed transcript to improve recognition in future Sessions.
 
-## Why new players need extra steps
+The extra identity work gives new Players a voice reference before identification, while the later review ensures the Session's artifacts are built from an accepted transcript.
 
-Identify Speakers can only recognize a voice it has a profile for. Without
-extra help, every line a new player spoke would end up as **Unassigned
-Speaker**, and you would assign all of them by hand in Review Transcript.
+## Why New Players Need Extra Steps
 
-Instead, TableSage uses the recording itself to create a starting voice
-profile. It finds lines it is confident the new player spoke, has you
-confirm them, and saves them as that player's first voice samples, all
-before Identify Speakers runs. By the time speakers are identified, the new
-player is just another attendee with a voice profile.
+Voice comparison needs a reference for each person it is meant to recognize. Without a new Player's voice print, TableSage cannot reliably identify that Player from the sound of their voice alone.
 
-The new-player steps sit between **Remove Bad Utterances** and
-**Identify Speakers**. Name corrections also have automatic *Suggest* and
-*Apply* rows around your review. The four steps that matter most are:
+The transcript itself provides a starting point. Conversational clues suggest which lines belong to each new Player, human review confirms the evidence, and those confirmed lines become initial voice samples. Speaker identification can then use those samples to recognize additional speech in the Session.
 
-1. **Review Name Corrections** makes names in the transcript reliable.
-2. **Isolate New Speakers** uses those names and other clues to find each new
-   player's lines.
-3. **Review New Speaker Assignments** lets you confirm those lines.
-4. **Seed Player Voice Samples** turns the confirmed lines into voice samples.
+The extra work sits between **Remove Bad Utterances** and **Identify Speakers**:
 
-Add every attendee before you start processing. TableSage decides who is new
-from the attendance, and adding someone after these steps have run does not
-send processing back through them.
+1. **Review Name Corrections** makes names reliable enough to use as evidence, letting the GM review alternate spellings or typos in names that may be in the transcript.
+2. **Isolate New Speakers** proposes speech utterances belonging to each new Player.
+3. **Review New Speaker Assignments** confirms whose voice the samples contain, and lets the user find other utterances that sound like the seeding set.
+4. **Seed Player Voice Samples** builds initial voice prints from that speech.
 
-## Get the words
+The Session's attendance defines both established speakers and people whose voices need to be learned.
 
-**Import Audio**, **Create Transcript**, and **Remove Bad Utterances**
-work exactly as they do for
-[returning players](session-processing-returning-players.md#get-the-words).
+## Importing Audio and Transcription
 
-## Build the new players' voice profiles
+**Import Audio**, **Create Transcript**, and **Remove Bad Utterances** work as they do for [returning Players](session-processing-returning-players.md#import-audio). They produce a cleaned transcript with anonymous speaker labels and retain the recording as evidence.
+
+## Establish the New Players' Voices
+
+Here are the steps used to find voice samples for a new Player.
 
 ### Review Name Corrections
 
-Your Medium model compares the transcript with every attendee's player name
-and character names and proposes corrections for ones that were misheard,
-such as *Thor grim* for *Thorgrim* or *Brother Hal* for *Brother Hald*.
-Keep only real mishearings and choose **Apply & Continue**. The corrected
-transcript is what every later step works from.
+An LLM compares the transcript with attendees' Player and character names and proposes corrections for mishearings such as *Thor grim* for *Thorgrim*. Human review determines which corrections are valid before they are applied.
 
-![Name Corrections proposing three misheard names](../images/session-processing/review-name-corrections.png)
-
-This step comes first because the next one finds new players' lines largely
-from how people talk to and about each other: *I'm Jordan, and I'm playing
-Brother Hald*, *Welcome, Jordan*, or a question addressed to *Hald*. A
-misheard name hides that evidence. If there are no corrections to propose,
-the step completes without opening.
+Names matter here as clues to identity. An introduction such as *I'm Jordan, and I'm playing Brother Hald*, or an exchange addressed to *Hald*, can help establish who spoke. Correcting misheard names makes that evidence available to the next stage.
 
 ### Isolate New Speakers
 
-Your Medium model reads the whole Session and lists the lines it is confident
-each new player spoke, citing its evidence, and notes which of the
-transcript's anonymous speaker labels mostly belongs to them. TableSage keeps
-only lines that no other player is claimed for and that are long enough to
-make useful voice samples. It aims for about 30 seconds of speech per new
-player.
+An LLM reads the Session and proposes lines that belong to each new Player, citing conversational evidence. It also identifies anonymous speaker labels associated with those Players.
 
-If the model's picks fall short, TableSage tops them up with other lines
-from the speaker label the model gave that player, unless another player's
-picks share that label. It trims these additions by dropping the shortest
-lines and those that sound least like the player's own picks. A new player who still has too little
-speech—someone who barely spoke—is left for you to assign by hand in
-Review Transcript.
+TableSage retains proposals that are not claimed for competing Players and contain enough speech to make useful samples. When those proposals provide too little speech, it can supplement them from the associated anonymous speaker group and filter additions for acoustic consistency.
+
+The result is a set of candidate samples, not an established identity. Someone who barely spoke may still have too little evidence for a useful voice print.
 
 ### Review New Speaker Assignments
 
-Here you confirm the proposed lines. Every line you keep becomes a voice
-sample, so this is the most important check for a new player.
+Human review checks whether each candidate really contains the intended Player's voice. Listening to the recording helps distinguish a person speaking from someone merely mentioning or addressing them.
 
-![New Speaker Assignments with one wrongly proposed line removed](../images/session-processing/review-new-speaker-assignments.png)
+For example, *Hald, do the Deep Kin have a name…* mentions Jordan's character, but Priya may be the one asking the question. Treating it as Jordan's speech would mix Priya's voice into Jordan's samples. A few certain lines are more valuable than a larger collection of mixed voices.
 
-The left pane lists each new player with the number of kept lines and their
-total speech time. The right pane lists the selected player's proposed
-lines.
-
-- **R** plays the highlighted line. **Space** switches between Manual
-  playback and Auto, which moves on to the next line after each one plays.
-- **D** toggles a line between kept and removed. Removed lines are struck
-  through and marked **✗**.
-- **F** (**Find More**) searches the recording for more lines that sound
-  like the player's kept ones, while excluding voices TableSage already
-  knows. Use it when a player has too little speech.
-- **Esc** returns from the lines to the player list. **C** confirms the
-  review.
-
-Remove any line that you are not sure the new player spoke. In the example,
-the model picked *Hald, do the Deep Kin have a name…* because it mentions
-Hald, but Priya asked the question. Keeping it would mix Priya's voice into
-Jordan's profile. A few certain lines are better than more lines of mixed
-voices.
+When more evidence is needed, TableSage can search for speech acoustically similar to the confirmed candidates, comparing it with competing voices. Those additions also require human review. This expands the evidence without letting a voice match alone become proof of identity.
 
 ### Seed Player Voice Samples
 
-TableSage cuts each kept line from the recording into a voice clip in the
-player's folder and builds their voice profile from those clips. It applies
-no further filtering except a technical minimum clip length, because your
-review was the quality check.
+TableSage extracts confirmed utterances from the recording into the new Players' voice sample collections and computes their voice prints. Clips must meet a technical minimum length; duplicate and outlier samples are excluded from the computed voice print.
 
-From this point, the player is no longer new. The **New Players** panel
-is hidden. The new-player steps keep their rows and checks, because they did
-real work for this Session.
-
-## Find the speakers
+Seeding turns reviewed identity evidence into a reference for voice matching. A Player with enough usable samples can now be recognized in this Session and in future Sessions. Players with insufficient evidence still need human speaker assignment.
 
 ### Identify Speakers
 
-This step now runs with a voice profile for everyone, including the players
-seeded a moment ago. That is why seeding comes first. New players' lines are
-recognized by voice like everyone else's, including lines that the review
-never showed you.
+TableSage compares utterance voices with the established attendees' voice prints and the new voice prints created during seeding. It can recognize speech beyond the initial sample set, which is why seeding happens before this stage.
 
-## Fix the vocabulary, review, and build
+Uncertain matches remain **Unassigned Speaker**. An initial voice print is a starting reference, and its assignments still need checking during transcript review.
 
-The remaining steps are the same as for
-[returning players](session-processing-returning-players.md#fix-the-vocabulary):
-**Extract Glossary Terms**, **Spellcheck Against Glossary**, **Review
-Transcript**, **Assign Roles To Players**, and **Generate Artifacts**.
-Only a few points differ.
+## Complete Processing
 
-- **Name corrections are already applied.** Spellcheck focuses on glossary
-  terms. It also catches misspellings of attendees' player names.
-- **Check the new player's lines in Review Transcript.** Their profile was
-  built from only a few clips, so check their lines closely. Any lines they
-  spoke that TableSage could not isolate will be **Unassigned Speaker**.
-  Assign them here.
+The remaining stages follow the [returning-player workflow](session-processing-returning-players.md#extract-glossary-terms): **Extract Glossary Terms**, **Spellcheck Against Glossary**, **Review Transcript**, **Assign Roles To Players**, and **Generate Artifacts**.
 
-![Review Transcript after seeding, with Jordan identified by voice](../images/session-processing/review-transcript-new-player.png)
+Name corrections have already made Player and character names more reliable. Glossary extraction and spellchecking then establish consistent Campaign terminology. Transcript review checks speaker assignments and remaining text errors before the role transcript and artifacts are built.
 
-- **Accept the offer to improve voice profiles if you can.** After
-  generation, **Add Samples** adds clips from the reviewed transcript to
-  every attendee's profile. A newly seeded profile benefits most. As always,
-  do this only if you checked speaker assignments carefully, because a
-  mislabeled line teaches TableSage the wrong voice.
+New Players deserve particular attention during that review because their voices were learned from a small set of samples. Reviewing uncertain lines against the recording gives both the campaign record and any later voice learning a sounder foundation.
 
-## After processing
-
-Once the run is complete, the new player has voice samples of their own.
-
-![Session Detail after processing, with voice samples for Jordan](../images/session-processing/session-detail-after-seeding.png)
-
-The next time they attend, they are a returning player, and that Session
-follows the simpler workflow.
-
-If you later reopen **Review Name Corrections** and change what you
-accepted, every later step becomes out of date, including isolation, your
-new-speaker review, and seeding. Work forward from there again. Seeding
-changes only players listed in your new-speaker review. Running it again
-therefore never touches returning players' profiles.
+The optional **Improve Player Voice Prints** stage can add further samples from the reviewed transcript to all attendees' collections. Newly seeded Players can benefit especially from this additional evidence, provided the speaker assignments are correct.

@@ -68,14 +68,16 @@ class NewSpeakerAssignmentsScreen(TableSageScreen):
     """
 
     section = "process session · new speaker assignments"
+    HIDDEN_BINDINGS = [
+        Binding("escape", "leave_utterances", "Players", show=False),
+        Binding("escape", "cancel", "Cancel", show=False),
+    ]
     COMMON_BINDINGS = [
-        Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
-        Binding("r,R", "replay", "Replay", key_display="R"),
-        Binding("f,F", "find_more", "Find More", key_display="F"),
-        Binding("d,D,delete,backspace", "toggle_removed", "Keep/Remove", key_display="D"),
         Binding("c,C", "confirm", "Confirm", key_display="C"),
-        Binding("escape", "leave_utterances", "Players", key_display="Esc"),
-        Binding("escape", "cancel", "Cancel", key_display="Esc"),
+        Binding("f,F", "find_more", "Find More", key_display="F"),
+        Binding("r,R", "replay", "Replay", key_display="R"),
+        Binding("space", "toggle_mode", "Manual/Autoplay", key_display="Space"),
+        Binding("d,D,delete,backspace", "toggle_removed", "Delete Utterance", key_display="D"),
     ]
 
     def __init__(self, session_id: uuid.UUID, draft: DraftSlot | None = None) -> None:

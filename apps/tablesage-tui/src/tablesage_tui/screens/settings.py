@@ -14,6 +14,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Button, Collapsible, Input, Select, Static
 
 from ..dialogs import ConfirmationDialog, TextInputDialog
+from ..widgets.screen_actions_footer import ScreenActionsFooter
 from .base import TableSageScreen
 
 
@@ -23,10 +24,11 @@ def field_id(path: str) -> str:
 
 class SettingsScreen(TableSageScreen):
     section = "settings"
+    FOOTER_CLASS = ScreenActionsFooter
     AUTO_FOCUS = "Input, Select"
     COMMON_BINDINGS = [
-        Binding("ctrl+s", "save", "Save", key_display="Ctrl+S"),
-        Binding("ctrl+d", "remove_key", "Remove key", key_display="^D", priority=True),
+        Binding("c,C", "save", "Continue", key_display="C"),
+        Binding("d,D", "remove_key", "Delete Key", key_display="D"),
     ]
     HIDDEN_BINDINGS = [Binding("escape", "leave", "Back", show=False)]
 
@@ -48,9 +50,9 @@ class SettingsScreen(TableSageScreen):
         self._model_values = {path: str(self._initial[path]) for path in MODEL_FIELDS}
         with VerticalScroll(id="settings-scroll"):
             yield Static(
-                "Review settings and Save to begin. New fields have recommended defaults."
+                "Review settings and Continue to begin. New fields have recommended defaults."
                 if self.required
-                else "Workspace settings apply to subsequent actions. Save validates the entire form.",
+                else "Workspace settings apply to subsequent actions. Continue saves and validates the entire form.",
                 id="settings-intro",
             )
             with Collapsible(title="Keys", collapsed=False, id="settings-keys"):
@@ -67,6 +69,13 @@ class SettingsScreen(TableSageScreen):
                             key_input.tooltip = "Provided by shell environment; overrides the stored key."
                             key_input.disabled = True
                         yield key_input
+                        yield Button(
+                            "Delete Key",
+                            id=f"delete-key-{provider}",
+                            classes="credential-delete",
+                            compact=True,
+                            disabled=self.configuration.shell_provided(provider) or not self.configuration.stored.get(PROVIDERS[provider]),
+                        )
             with Collapsible(title="LLM", collapsed=False):
                 for path in MODEL_FIELDS:
                     label = {
@@ -83,7 +92,7 @@ class SettingsScreen(TableSageScreen):
                     )
             yield Static("", id="settings-error", classes="settings-error", markup=False)
             with Horizontal(classes="settings-buttons"):
-                yield Button("Save", id="settings-save", variant="primary")
+                yield Button("Continue", id="settings-save", variant="primary")
                 yield Button("Back", id="settings-back")
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
@@ -91,17 +100,28 @@ class SettingsScreen(TableSageScreen):
             provider = self._focused_provider()
             if provider is None or self.configuration.shell_provided(provider):
                 return None
-            if not (self.configuration.stored.get(PROVIDERS[provider]) or self.query_one(f"#key-{provider}", Input).value):
+            value = self.query_one(f"#key-{provider}", Input).value
+            if not value and (provider in self._removed_keys or not self.configuration.stored.get(PROVIDERS[provider])):
                 return None
         return False if action == "refresh_screen" else True
 
     def _focused_provider(self) -> str | None:
-        provider = (self.focused.id or "").removeprefix("key-") if self.focused else ""
+        focused_id = self.focused.id or "" if self.focused else ""
+        provider = focused_id.removeprefix("delete-key-").removeprefix("key-")
         return provider if provider in PROVIDERS else None
+
+    def _refresh_key_actions(self) -> None:
+        for provider in PROVIDERS:
+            self.query_one(f"#delete-key-{provider}", Button).disabled = (
+                self.configuration.shell_provided(provider)
+                or not (self.configuration.stored.get(PROVIDERS[provider]) or self.query_one(f"#key-{provider}", Input).value)
+                or (provider in self._removed_keys and not self.query_one(f"#key-{provider}", Input).value)
+            )
+        self.refresh_bindings()
 
     def _key_placeholder(self, provider: str) -> str:
         if provider in self._removed_keys:
-            return "Removed on Save"
+            return "Deleted on Continue"
         if self.configuration.stored.get(PROVIDERS[provider]) or self.configuration.shell_provided(provider):
             return "••••••••••••••••"
         return "Enter API key…"
@@ -120,7 +140,7 @@ class SettingsScreen(TableSageScreen):
             widget = self.query_one(f"#key-{provider}", Input)
             widget.value = ""
             widget.placeholder = self._key_placeholder(provider)
-        self.refresh_bindings()
+        self._refresh_key_actions()
 
     def _values(self) -> dict[str, Any]:
         return {path: self._model_values[path] for path in MODEL_FIELDS}
@@ -227,7 +247,7 @@ class SettingsScreen(TableSageScreen):
     def action_leave(self) -> None:
         def finish() -> None:
             if self.required:
-                self.notify("Save settings to finish setup, or use Ctrl-Q to quit.")
+                self.notify("Continue to save settings and finish setup, or use Ctrl-Q to quit.")
             else:
                 self.app.pop_screen()
 
@@ -256,7 +276,7 @@ class SettingsScreen(TableSageScreen):
         if not self.is_mounted:
             return
         if (event.input.id or "").startswith("key-"):
-            self.refresh_bindings()
+            self._refresh_key_actions()
             return
         path = (event.input.id or "").removeprefix("field-")
         if path in MODEL_FIELDS:
@@ -296,6 +316,8 @@ class SettingsScreen(TableSageScreen):
             self.action_save()
         elif key == "settings-back":
             self.action_leave()
+        elif key.startswith("delete-key-"):
+            self.action_remove_key()
 
     def action_remove_key(self) -> None:
         provider = self._focused_provider()
@@ -306,5 +328,5 @@ class SettingsScreen(TableSageScreen):
         if self.configuration.stored.get(PROVIDERS[provider]):
             self._removed_keys.add(provider)
         widget.placeholder = self._key_placeholder(provider)
-        self.notify("Removal takes effect on Save. Shell keys remain active.")
-        self.refresh_bindings()
+        self.notify("Deletion takes effect on Continue. Shell keys remain active.")
+        self._refresh_key_actions()

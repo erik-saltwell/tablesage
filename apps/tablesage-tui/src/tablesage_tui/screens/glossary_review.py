@@ -36,11 +36,11 @@ class GlossaryReviewScreen(TableSageScreen):
         Binding("escape", "cancel", "Cancel", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("n,N", "new_entry", "New", key_display="N"),
-        Binding("enter,e,E", "edit_entry", "Edit", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_entry", "Delete", key_display="D"),
-        Binding("f,F", "find_replace", "Find/Replace", key_display="F"),
         Binding("c,C", "complete", "Continue", key_display="C"),
+        Binding("f,F", "find_replace", "Find/Replace", key_display="F"),
+        Binding("n,N", "new_entry", "New Entry", key_display="N"),
+        Binding("enter,e,E", "edit_entry", "Edit Entry", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_entry", "Delete Entry", key_display="D"),
     ]
 
     def __init__(

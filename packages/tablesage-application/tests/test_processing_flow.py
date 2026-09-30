@@ -172,7 +172,7 @@ def test_returning_players_session_hides_new_player_rows(processed: tuple[Applic
         StepID.REVIEW_GLOSSARY_TERMS,
         StepID.REVIEW_SPELLING_CORRECTIONS,
         StepID.REVIEW_TRANSCRIPT,
-        StepID.IMPROVE_VOICE_PROFILES,
+        StepID.IMPROVE_VOICE_PRINTS,
     ]
 
 

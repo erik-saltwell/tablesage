@@ -60,9 +60,9 @@ class CampaignDetailScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
         Binding("s,S", "show_sessions", "Sessions", key_display="S"),
         Binding("g,G", "show_glossary", "Glossary", key_display="G"),
+        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
         Binding("n,N", "new_session_item", "New Session", key_display="N"),
         Binding("n,N", "new_glossary_item", "New Entry", key_display="N"),
         Binding("enter,e,E", "edit_session_item", "Edit Session", key_display="E"),
@@ -103,8 +103,8 @@ class CampaignDetailScreen(TableSageScreen):
                     yield Static("", id="campaign-game-system-value", classes="field-value")
 
             with Horizontal(id="campaign-detail-tabs"):
-                yield Static("[S] Sessions", id="tab-label-sessions", classes="tab-label")
-                yield Static("[G] Glossary", id="tab-label-glossary", classes="tab-label")
+                yield Static("[S] Sessions", id="tab-label-sessions", classes="tab-label", markup=False)
+                yield Static("[G] Glossary", id="tab-label-glossary", classes="tab-label", markup=False)
 
             with ContentSwitcher(id="campaign-detail-switcher", initial="sessions-tab"):
                 with Vertical(id="sessions-tab"):

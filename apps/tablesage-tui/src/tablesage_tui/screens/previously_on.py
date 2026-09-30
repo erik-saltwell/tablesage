@@ -22,6 +22,7 @@ from textual_fspicker import Filters
 
 from ..dialogs.file_picker import FileSave
 from ..dialogs.generic import ConfirmationDialog
+from ..widgets.screen_actions_footer import ScreenActionsFooter
 from .base import TableSageScreen
 
 
@@ -31,10 +32,11 @@ class ChoiceTree(Tree[SceneRef | int | None]):
 
 class PreviouslyOnScreen(TableSageScreen):
     section = "previously on"
+    FOOTER_CLASS = ScreenActionsFooter
     CSS_PATH = "../styles/previously_on.tcss"
+    HIDDEN_BINDINGS = [Binding("escape", "leave", "Exit", show=False)]
     COMMON_BINDINGS = [
-        Binding("escape", "leave", "Exit", key_display="Esc"),
-        Binding("ctrl+n", "continue", "Continue", key_display="^N"),
+        Binding("c,C", "continue", "Continue", key_display="C"),
     ]
 
     def __init__(self, history: CampaignHistory, ingredients: Ingredients) -> None:
@@ -68,7 +70,7 @@ class PreviouslyOnScreen(TableSageScreen):
                         yield TextArea(read_only=True, id="previously-on-evidence", tab_behavior="focus")
                 with Horizontal(classes="previously-on-actions"):
                     yield Button("Exit", id="previously-on-exit-entry")
-                    yield Button("Find Scenes", id="previously-on-scout", variant="primary", disabled=True)
+                    yield Button("Continue", id="previously-on-scout", variant="primary", disabled=True)
             with Vertical(id="previously-on-selection"):
                 yield Static("Choose any Scenes · Space / Enter to select or expand Sessions", markup=False)
                 with Horizontal(classes="previously-on-panes"):
@@ -81,7 +83,7 @@ class PreviouslyOnScreen(TableSageScreen):
                     yield Button("Back", id="previously-on-back")
                     yield Button("Exit", id="previously-on-exit-selection")
                     yield Button("Retry Save", id="previously-on-retry")
-                    yield Button("Save Markdown…", id="previously-on-save", variant="primary", disabled=True)
+                    yield Button("Continue", id="previously-on-save", variant="primary", disabled=True)
 
     def on_mount(self) -> None:
         tree = self.query_one("#previously-on-ingredients", ChoiceTree)

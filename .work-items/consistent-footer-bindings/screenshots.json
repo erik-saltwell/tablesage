@@ -1,0 +1,2502 @@
+[
+  {
+    "path": "docs/images/getting-started/landing-screen.png",
+    "screen": "LandingScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "327abcf37a8ab4878df09e6624c3a7635366249115a3fc0e1077999f3d566f34",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Campaigns",
+        "dock": "none"
+      },
+      {
+        "key": "P",
+        "label": "Players",
+        "dock": "none"
+      },
+      {
+        "key": "S",
+        "label": "Settings",
+        "dock": "none"
+      },
+      {
+        "key": "^Q",
+        "label": "Quit",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/existing-regenerate-all.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "0719081bdbd2856a9d7d50a2c8dfa22e59acd3261bf3eb8c098f6c20a0b495e7",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Glossary",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Session",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Session",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Session",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/fix-regenerate-confirm.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6ee56271877020bfa89d362b593f35dbc499fd2d7be1f22f880712a24fc43d9d",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/fix-regenerating.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "eccaf48620254ae890479c25198a8a1c443814275e97a5ea322d10a8dd7813a0",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/fix-review-pending.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f66b73be5e07678addfb3b654603f91866d52bcc5efaa8ea699c40c0a4fe75f9",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/fix-review-reopened.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "c04c2114b6ab144f83a4b4ce6334d9e1fc34d756b130c35694e018ce207688a7",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/fix-role-renamed.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "c6fdf66e938c2fa446097f2e02cc818a7ff966b5082d4011fa7e5f49db520d6e",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/fix-select-review.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "48bf54f2d68b26071ab0e0d19f8d5fd317b4aed7c41ce1338f982267ebf16203",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/move-campaign-exported.png",
+    "screen": "CampaignListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "eac7e0a8de2f0609a6d2b4bf2892993da2960778a11e8e26abe1a23f0e1b64d4",
+    "footer": [
+      {
+        "key": "N",
+        "label": "New Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/move-campaign-imported.png",
+    "screen": "CampaignListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "c79e922441ebcf5e68d56243e8fcecc55a00d730f19cbb201a8b9675ba8be0b7",
+    "footer": [
+      {
+        "key": "N",
+        "label": "New Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/move-import-failed.png",
+    "screen": "PlayerArchiveErrorsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6c159f669e6f3b5629b7aa93a707ff3172b6fb6f1c04bdedff7583f8f6e89264",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/move-players-exported.png",
+    "screen": "PlayersListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "41fca7cb3b1a8c12762dbd28a6c414e677ce4775e60645bd39aa8d284b644a1b",
+    "footer": [
+      {
+        "key": "S",
+        "label": "From Session",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Player",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Player",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Player",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/move-players-imported.png",
+    "screen": "PlayersListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f32b5fe6ac915205a30665c82885aed972d43bd6b383899e2213e9bd181c1623",
+    "footer": [
+      {
+        "key": "S",
+        "label": "From Session",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Player",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Player",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Player",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/plan-opportunities-saved.png",
+    "screen": "OpportunitiesScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "49a21d9b649b7c1687244614b900ee07540f9addacbdc0dbda1cc8abe838d85c",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Generate",
+        "dock": "none"
+      },
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/plan-opportunities.png",
+    "screen": "OpportunitiesScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "cedfe0bfb76887ef802d3b60e377722d68ac141b999cc11ec3fb5fbe491e4085",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Generate",
+        "dock": "none"
+      },
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-clean-audio.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "3f4eb38389db244376dae8ccfe1aab422b185c7445861eb9f94e13f227fbb534",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/process-generating.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e30f4faf45c95a815ff80bc5e004d17d33f8f0668657f20e7f9d203fd66124c6",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/process-glossary.png",
+    "screen": "GlossaryReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "ac5ed64bd41cf753b3d21156df3ff15c2f3a9ec44778d963610296ad04ba62e8",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Entry",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Entry",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Entry",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-improve.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "a115e90dc50e59f9df898a4b1ea93e2c72097f5655351ffc0a70d3a296b769f4",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/process-not-now.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "beaaddf1535d106bceefee277c93b6889a1413308017ac6c0f27221f8d582d30",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-review-assigned.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d6e017faea1b23b0d9e77faa312fd7024ece602c5b97666dc93869ef7281e1af",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-review-unassigned.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "31f3cbbfcac15ad5b9edaac1579f60c5da3fff5441a33500111ee71d0709a379",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-spellcheck.png",
+    "screen": "CorrectionsStepScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "29abe74d1ca6b35e40e3c26a18110c3f660760404e7088961187e34cee271d15",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Correction",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Correction",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Correction",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-start.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d6749dc96dc3006360d7386bd405395cb025d8211917f1102c6dd1b6e4863330",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/process-transcribing.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b092f237ae08ab1bb0e7c5ea1cb93ebf86f0cd377c6e71f3911386b9b283626e",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/recap-ingredients.png",
+    "screen": "PreviouslyOnScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d12bfc61936c0889f2ad7506ba1da1ec01409aca7224d5926960fa6e364ff564",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/recap-scenes.png",
+    "screen": "PreviouslyOnScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "603303959c6a5ee8ea0060cfad5dc14253efa6dbd6cea2c9c1698d8240cda094",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/recap-writing.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "7a1c54cd88704ccb20080b1d0f699108ae3e80b1d944980607a38239ec650494",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/session-processed.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f08cbbb3555a2c228f94b163a25d189471a1a0be05ea70a1f3d058411adf69fc",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/share-export-summary.png",
+    "screen": "ArtifactExportScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f6e4b8c769ae31981c7e164bebbfc1d6da3c426517115057222453e6d6363bf2",
+    "footer": [
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/share-exported.png",
+    "screen": "ArtifactExportScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f6e4b8c769ae31981c7e164bebbfc1d6da3c426517115057222453e6d6363bf2",
+    "footer": [
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-add-role.png",
+    "screen": "TextInputDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "7e7767cb13551ef7d42892cce61c13bc9879bbb1f45fafcba737c31d969561c8",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/start-campaign-attendance.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "987b7421ee00998fda1dd0152f980602cc6c3a7d64698024e5666ca19a5568af",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-attendee-gm.png",
+    "screen": "AttendeeDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f05fa19b9e2cb010df1370240858cddbf66b6be433eff5a6551123ae3e884edf",
+    "footer": [
+      {
+        "key": "R",
+        "label": "Add Role",
+        "dock": "none"
+      },
+      {
+        "key": "G",
+        "label": "Add Game Master",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Role",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Role",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-attendee-marcus.png",
+    "screen": "AttendeeDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "46790a6d460e9b651e29f557305e031f1a12fa8f25b315150474845214f56a9c",
+    "footer": [
+      {
+        "key": "R",
+        "label": "Add Role",
+        "dock": "none"
+      },
+      {
+        "key": "G",
+        "label": "Add Game Master",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Role",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Role",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-attendee-select.png",
+    "screen": "AttendeeDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "a410b78144bece566749da68b5623750b0d9fc424921d577cfa1a20a732570b0",
+    "footer": [
+      {
+        "key": "esc",
+        "label": "Dismiss menu",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-campaign-detail.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "5119849eef8c9f2c9890b06909cf2c52dc06096fc41d869080757b047d538b2e",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Glossary",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Session",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Session",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Session",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-campaign-list.png",
+    "screen": "CampaignListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d43404803c70203ffcdd7b21e25fc0b43baeabf469b580009f8ed69fe5ee0763",
+    "footer": [
+      {
+        "key": "N",
+        "label": "New Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-first-session.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "69bad0f54cd2028832dcdf484e60b2b9607e88a68d01a54c49105391d4b9d562",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-glossary-dialog.png",
+    "screen": "GlossaryEntryDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6580b1ca5a5a28c9ee822d5662ee9f46d22d985fb8c33880b72e11ba2dfe7ca5",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/start-campaign-glossary.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "9f6a3319f33c14cab22566c4702df7f5382b69ba0513883146810e0f420d8752",
+    "footer": [
+      {
+        "key": "S",
+        "label": "Sessions",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Entry",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Entry",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Entry",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-new-campaign-dialog.png",
+    "screen": "CampaignDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "5dca2f04033f0653cfa33f0ebb2ce00eb819983bc05991fe750af69ad282cb58",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/start-campaign-new-player.png",
+    "screen": "PlayerDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "9ca3a46b6eb3fa0303d328ba4b29a45df03195cada6753bbb330d45933a41659",
+    "footer": []
+  },
+  {
+    "path": "docs/images/guides/start-campaign-players.png",
+    "screen": "PlayersListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "9a8a5892848008be9c7fa05e1dc39290018e142b822b96eae5f36a769400634e",
+    "footer": [
+      {
+        "key": "S",
+        "label": "From Session",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Player",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Player",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Player",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-second-session.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "efa597909e2fb55a981616f19d0c53938bc4aa349fe014757d72e3f5e6cec1ee",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/start-campaign-sessions.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "8b7a63563640f46b352a4c368e5eb27379d5674a49280afa00a7cc5664876ea2",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Glossary",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Session",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Session",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Session",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/voices-from-session-done.png",
+    "screen": "PlayersListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f7819772df857c4deb9c4eb99489bf19171e93e7038dd081f14bcc11d1698266",
+    "footer": [
+      {
+        "key": "S",
+        "label": "From Session",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Player",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Player",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Player",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/guides/voices-from-session.png",
+    "screen": "SessionFromCampaignPickerDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e161162aaa1e93e85b54c4c748080d8431c8dd6d29f269af554d0bac487a184f",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/artifact-export.png",
+    "screen": "ArtifactExportScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "ed8f99039645154dd330d3e490e4260d450382878f5734dc9cd952d4fa049ebd",
+    "footer": [
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/attendee-dialog.png",
+    "screen": "AttendeeDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "4c3c391237cd09ea66976d7876aa334244d1dc7bdf0b60aa49b12ceacb00a9c7",
+    "footer": [
+      {
+        "key": "R",
+        "label": "Add Role",
+        "dock": "none"
+      },
+      {
+        "key": "G",
+        "label": "Add Game Master",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Role",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Role",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/campaign-detail-glossary.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "eba60f2af4254ac480cc66d124c8d6565b4f2fc1f9971fadaf98e1fc4d3ba0a5",
+    "footer": [
+      {
+        "key": "S",
+        "label": "Sessions",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Entry",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Entry",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Entry",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/campaign-detail-other-actions.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "1bed6fc2647857ba91a32a3e706963c1f9ceecbdad01dee48f4b35eae7e8b263",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/campaign-detail-sessions.png",
+    "screen": "CampaignDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e086d084942e61f2db73b328b5f9bc6b1e3f51f01dfebdf8bcaf9e11787f3d2f",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Glossary",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Session",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Session",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Session",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/campaign-dialog.png",
+    "screen": "CampaignDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "54aef57caa7b5b9ae55af51029ab69a787e47c1e2eb33d73ebbe3dbd7c3bc94c",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/campaign-list-other-actions.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "96efe05a727feb8a38aa57f7ec74fb079a3729263e4d6065e89f7d1d9082b73e",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/campaign-list.png",
+    "screen": "CampaignListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b82ea9f012e9b02fba01d54e5ace2987b32eca2249c31fd2e4af33071ac42f78",
+    "footer": [
+      {
+        "key": "N",
+        "label": "New Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Campaign",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/clean-session-confirm.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b2c7d249617f2f84a62b82dca9f8c2ac23741594bceeaa286f5799580dd62c55",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/delete-clip-confirm.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "f285c8707a329f968a9f5e14d9717569af2712b399901d3df4a79ac5a46db882",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/edit-utterance-dialog.png",
+    "screen": "ManualReviewUtteranceDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "13889a8b242ca71922d4ca14b32cf989d9d1f24dc596b60317c4d0ae1f82a299",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/export-ledger-format.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "0558eaea9ff5043b81686c5ec61c2663b1b87b6d0e3262114ccac925c5e27cdf",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/find-replace-dialog.png",
+    "screen": "FindReplaceDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d074dad097a865cde5cf1cb122c8a88a44f5f51816dfc67fe3b023cd0ba9d7eb",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/from-session-picker.png",
+    "screen": "SessionFromCampaignPickerDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "ad65363672a23d4a0ccfe02c8b223107ba90d1b4d64ca9d660562f239c8a36f9",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/glossary-entry-dialog.png",
+    "screen": "GlossaryEntryDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "8b74646ddc278242ad0e034a5ce4102b3f5d2d64b1f03cd19133c73fbc8c51f5",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/glossary-review.png",
+    "screen": "GlossaryReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e0af80bc3568fdc9164157aa2b5e2cd57332f8d5ba40e3a622868f95c86d5d6a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Entry",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Entry",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Entry",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/improve-voice-profiles.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d13e8c23d44e85e2cfda35693b6a623638b0dc7e0b5c79263f14b68050403103",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/landing-settings-required.png",
+    "screen": "LandingScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "9ad4594b8fd5c91255efdc32e13d62769979a89c843460f227e34d0b6029efd7",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Campaigns",
+        "dock": "none"
+      },
+      {
+        "key": "P",
+        "label": "Players",
+        "dock": "none"
+      },
+      {
+        "key": "S",
+        "label": "Settings",
+        "dock": "none"
+      },
+      {
+        "key": "^Q",
+        "label": "Quit",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/landing.png",
+    "screen": "LandingScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "327abcf37a8ab4878df09e6624c3a7635366249115a3fc0e1077999f3d566f34",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Campaigns",
+        "dock": "none"
+      },
+      {
+        "key": "P",
+        "label": "Players",
+        "dock": "none"
+      },
+      {
+        "key": "S",
+        "label": "Settings",
+        "dock": "none"
+      },
+      {
+        "key": "^Q",
+        "label": "Quit",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/name-corrections.png",
+    "screen": "CorrectionsStepScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "24e3f3b07d0bb2b6deb7d4529f37564461916d28764bcec38954f6cd2328bc6a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Correction",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Correction",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Correction",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/new-speaker-players.png",
+    "screen": "NewSpeakerAssignmentsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "db7baa989d3e47b61ff25e6aa67ede6cb2deac87ccc9ec4048ec82671e743038",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find More",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/new-speaker-utterances.png",
+    "screen": "NewSpeakerAssignmentsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "5f347c8c3a9c0203f6f1a9ba67fce66b8f02dcaf3d89de1ae27480594784056c",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find More",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/opportunities-entry.png",
+    "screen": "OpportunitiesScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e057b8d7de5201cfc8b1aa1df57673dc1105ce4f08c1df644f8edd42f5ba2402",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Generate",
+        "dock": "none"
+      },
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/opportunities-generated.png",
+    "screen": "OpportunitiesScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "55455626928da2207dbf6c8e15a59fd92732184dc37bacdd5551d3481a097d8a",
+    "footer": [
+      {
+        "key": "G",
+        "label": "Generate",
+        "dock": "none"
+      },
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/player-detail-other-actions.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "92da818bb709ab30b0074691b47b2f8123f1fc14722d95a7116dad057749866d",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/player-detail.png",
+    "screen": "PlayerDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "fdcbfdebb95bd48e6004dc0296b1ffd78affef38d05c74d7eef276c485e4b3e1",
+    "footer": [
+      {
+        "key": "F",
+        "label": "Folder Import",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Voice Clip",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/players-list-other-actions.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6a9578bf02b5f7f08c79db717de861409c7931f930a6f408ef0d750191e130d9",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/players-list.png",
+    "screen": "PlayersListScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6fc9cdbbeb842b178f49a5c364dde14f50fe2b3c7fdaafa37436fd853dd9b136",
+    "footer": [
+      {
+        "key": "S",
+        "label": "From Session",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Player",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Player",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Player",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/previously-on-discard.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "4eeb59250127bf24d1448d81ccec0f51d2d52efcb035215d40f7a67618bf9966",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/previously-on-entry.png",
+    "screen": "PreviouslyOnScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "aa88064124545a364b2f73efd9818547d8a18dc94981a54dd3babe73810d9a13",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/previously-on-scenes.png",
+    "screen": "PreviouslyOnScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "33834d5651254f4bdb82df1c6b205b10cdd3e8ffdb2ea478d959b3625e8930ee",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/process-session-complete.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b66e3657ef8c3bfce38159a61c81e2ce10f9731c35acb19cd7ab999fcffab107",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/process-session-midway.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e085711ccd5b1c720e1162696e463e9f2e23073e5c8cc04864e21419881497f2",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/process-session-new-player.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "45311b9fe928cd529b4995001416c23fc84fbf07ee8ab514b52c6ec3a6bff594",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/progress-dialog.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "c5c5c708a3a5567f219ef449bcbe83498d60e606b4b058ddde2f7a274420fb76",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/regenerate-dialog.png",
+    "screen": "ArtifactRegenerationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "3b39604ca81c0efab3fe979f70db91c2606ee2f2c5f20cbb0c6447556c3be7bb",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/review-transcript-removed.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b5dc87813473556bc052051c5af4c61388aa7060c920514bfd67679877b96e6a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/review-transcript.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "38b9ac44ecbd2e114b84405c432ce2cd938956f8a40a7ca393aa4a22fe7d8124",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/save-transcript-edits.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "3917e35ac0b66de532df01dec4c6357cb7587675888e6d0bbdfc39e4575d4e66",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/save-your-changes.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "37fbd2849ab598b540a6a603ae939eaeb51c2338e15e74770ba0901ec3427fb5",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/session-detail-new.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "6c9a9e2af9b0b38aff634d2fa6f0f3e9ab1c84f5c3a7a2bf73dc8e6acf71009b",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/session-detail-other-actions-new.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "a80c7323cf45c4f8605bc7fad5f6216a560af0066b636c501fff1b012573887c",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/session-detail-other-actions.png",
+    "screen": "OtherActionsDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "ac68d13d9a75c62c7b99844afa0b0307080c072528cec5f1f96e1b4b8fe55be7",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/session-detail-processed.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "762456eebdae481459ac6e85a86af612e911de36cd0b530538d34b7d535a9bfb",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/session-dialog.png",
+    "screen": "SessionDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "1a936e311e79a38b4d30468df69af20b13a9114f4bf96bf330b3a9c45e1d27fd",
+    "footer": []
+  },
+  {
+    "path": "docs/images/screens/settings-required.png",
+    "screen": "SettingsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d4d751e2c49e015c85df55b1e5739302df9f2cc9ddb1ac93d7e2e62d44d0f45d",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Key",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/spellcheck-removed.png",
+    "screen": "CorrectionsStepScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "cb63c13d550e92ea05a9e0913b728153cd5e62b35f7cec22c62a282772c50714",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Correction",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Correction",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Correction",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/screens/spelling-suggestion-dialog.png",
+    "screen": "SpellingSuggestionDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "2ee3ba0be07bd1a46ef45715d5d5380d7a3d41f598e63fdeb1852b2850d4625f",
+    "footer": []
+  },
+  {
+    "path": "docs/images/session-processing/clean-audio-prompt.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "3f4eb38389db244376dae8ccfe1aab422b185c7445861eb9f94e13f227fbb534",
+    "footer": []
+  },
+  {
+    "path": "docs/images/session-processing/extract-glossary-terms.png",
+    "screen": "GlossaryReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e0af80bc3568fdc9164157aa2b5e2cd57332f8d5ba40e3a622868f95c86d5d6a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Entry",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Entry",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Entry",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/generate-artifacts.png",
+    "screen": "ProgressDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "c5c5c708a3a5567f219ef449bcbe83498d60e606b4b058ddde2f7a274420fb76",
+    "footer": []
+  },
+  {
+    "path": "docs/images/session-processing/improve-voice-profiles.png",
+    "screen": "ConfirmationDialog",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d13e8c23d44e85e2cfda35693b6a623638b0dc7e0b5c79263f14b68050403103",
+    "footer": []
+  },
+  {
+    "path": "docs/images/session-processing/process-session-complete.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "b66e3657ef8c3bfce38159a61c81e2ce10f9731c35acb19cd7ab999fcffab107",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/process-session-new-player.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "45311b9fe928cd529b4995001416c23fc84fbf07ee8ab514b52c6ec3a6bff594",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/process-session-returning-players.png",
+    "screen": "ProcessSessionScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d690471ae05e28c1e00a8b7880166113167bb3bfeb375a566adc6b3112a7fa82",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Restart Step",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/review-name-corrections.png",
+    "screen": "CorrectionsStepScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "24e3f3b07d0bb2b6deb7d4529f37564461916d28764bcec38954f6cd2328bc6a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Correction",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Correction",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Correction",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/review-new-speaker-assignments.png",
+    "screen": "NewSpeakerAssignmentsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "5f347c8c3a9c0203f6f1a9ba67fce66b8f02dcaf3d89de1ae27480594784056c",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find More",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/review-transcript-new-player.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "d6e6708817e43f21b0479ab864edf1dae6537b1b1b81638bcbbd88e706d3224b",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/review-transcript.png",
+    "screen": "ManualReviewScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "38b9ac44ecbd2e114b84405c432ce2cd938956f8a40a7ca393aa4a22fe7d8124",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Confirm",
+        "dock": "none"
+      },
+      {
+        "key": "F",
+        "label": "Find/Replace",
+        "dock": "none"
+      },
+      {
+        "key": "R",
+        "label": "Replay",
+        "dock": "none"
+      },
+      {
+        "key": "Space",
+        "label": "Manual/Autoplay",
+        "dock": "none"
+      },
+      {
+        "key": "1-9",
+        "label": "Assign Player",
+        "dock": "none"
+      },
+      {
+        "key": "0",
+        "label": "Unassigned",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Utterance",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/session-detail-after-seeding.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "afe7a30bf4af6fc748725d4f6443a88331f769504c570f576f5a36848feba2ff",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/session-detail-new-player.png",
+    "screen": "SessionDetailScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "814d04e6e5a1e9cbf4754c75dd975383fabb10dd3ca97b958337856d185bc880",
+    "footer": [
+      {
+        "key": "P",
+        "label": "Process",
+        "dock": "none"
+      },
+      {
+        "key": "X",
+        "label": "Export",
+        "dock": "none"
+      },
+      {
+        "key": "M",
+        "label": "Edit Metadata",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Attendee",
+        "dock": "none"
+      },
+      {
+        "key": "?",
+        "label": "Other actions",
+        "dock": "right"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/session-processing/spellcheck-against-glossary.png",
+    "screen": "CorrectionsStepScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "29abe74d1ca6b35e40e3c26a18110c3f660760404e7088961187e34cee271d15",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "N",
+        "label": "New Correction",
+        "dock": "none"
+      },
+      {
+        "key": "E",
+        "label": "Edit Correction",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Correction",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/settings/model-select.png",
+    "screen": "SettingsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "5f70724bf4642f796ff615c2865a02dbccacca65bbdd8395a5148f030ef806a6",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Key",
+        "dock": "none"
+      }
+    ]
+  },
+  {
+    "path": "docs/images/settings/settings-screen.png",
+    "screen": "SettingsScreen",
+    "width": 1726,
+    "height": 1124,
+    "sha256": "e3a21f1d6b11d9d20697ce9215b074db6ca29df95f522134945547027cd25a8a",
+    "footer": [
+      {
+        "key": "C",
+        "label": "Continue",
+        "dock": "none"
+      },
+      {
+        "key": "D",
+        "label": "Delete Key",
+        "dock": "none"
+      }
+    ]
+  }
+]

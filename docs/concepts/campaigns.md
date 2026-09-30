@@ -1,92 +1,17 @@
 # Campaigns and Glossaries
 
-A **Campaign** is the long-lived home for a collection of Sessions played one after
-another and played by a similar group of players.  TableSage supports changes
-in players across Sessions, but does expect that each Session picks up where another
-leaves off.
+A **Campaign** is the long-lived home for a collection of Sessions played one after another representing one extended story. TableSage expects that each Session picks up where the previous one left off: every session summary opens with the previous Session's recap summary. If a game goes unrecorded, don't create a Session for it: the next session summary then recaps the last recorded Session. A Session with no recording leaves a *The prior Session recap is not available* placeholder in the following summary and stops the preparation tools, so delete any such Session. The only exception is the upcoming Session, which you can create before it is played.
 
 ## Campaigns
 
-A Campaign represents an ongoing game. It has a name and can include a
-description and game system, but its most important work is to organize the
-Sessions that belong to that game and the Glossary they share.
-
-A Campaign does not own a roster of Players or Roles. Players attend individual
-Sessions, and their Roles belong to that Session.
-
-On the Campaign list, **Other actions** (`?`) includes **Export Campaign** (`X`)
-for the highlighted Campaign and **Import Campaign** (`I`) for loading a Campaign
-archive. Export is disabled when no Campaign is selected.
+A Campaign represents an ongoing game. It has a name and can include a description and game system, but its most important contents are its Sessions and its Glossary.
 
 ## Sessions in a Campaign
 
-The Campaign gives its Sessions a sequence and a shared history. Each Session
-records one occasion of play; its artifacts preserve what happened and provide
-material that later Sessions can build on.
+The Campaign gives its Sessions a sequence and a shared history. Each Session records one occasion of play; its artifacts preserve what happened and provide material that later Sessions can build on.
 
-When a new Session follows an earlier one, TableSage can use the earlier
-Session's attendees and Roles as a starting point. The new Session remains its
-own record: changing it does not rewrite the Session that came before.
+## Glossary
 
-See [Sessions, Processing, and Session Artifacts](sessions.md) for how a
-recording becomes reviewed and structured material.
+A **Glossary** is the Campaign-specific reference for names and terminology: people, places, factions, items, setting concepts, and unusual spellings. Each entry records a term and an optional description.
 
-## Glossaries
-
-A **Glossary** is the Campaign-specific reference for names and terminology:
-people, places, factions, items, setting concepts, and unusual spellings. Each
-entry records a term and can include a description.
-
-The Glossary belongs to one Campaign because the same word can mean something
-different in another game. It gives the group one place to establish the names
-that should remain consistent as the Campaign grows.
-
-## Building the Glossary
-
-You can add and edit Glossary entries directly whenever the group already knows
-a term matters. TableSage also proposes candidate terms while processing a
-Session (the **Extract Glossary Terms** step), and can extract them from a
-Session's role-attributed transcript on Session Detail.
-
-Extraction creates proposals rather than changing the Glossary automatically.
-Review the proposed entries and accept the terms that belong in the Campaign's
-shared reference.
-
-Use **Other actions** (`?`) on Campaign Detail to **Export Glossary** (`X`) or
-**Import Glossary** (`I`), from either the Sessions or Glossary tab. Export asks
-where to save a JSON file; import asks which JSON file to read. The file contains
-an array of entries with `term` and optional `description` fields:
-
-```json
-[
-  {"term": "The Black Academy", "description": "A school of forbidden magic."}
-]
-```
-
-Import adds new terms and keeps existing definitions unchanged. Matching ignores
-capitalization and surrounding whitespace, so importing “the black academy”
-will not replace an existing “The Black Academy.” Repeated new terms in the file
-use the first definition. Invalid files are rejected without adding any entries.
-
-## Why the Glossary Matters
-
-A shared Glossary informs the spelling suggestions made while processing a Session and
-helps generated artifacts use the Campaign's established terminology
-consistently.
-
-It is more than a dictionary. The Glossary is the evolving reference for the
-people, places, and ideas the group expects to matter again.
-
-## The Campaign Record Over Time
-
-Sessions preserve individual occasions of play. Their artifacts make each
-Session useful after the recording is over, while the Glossary preserves shared
-context across them. Together, they make a Campaign easier to return to and
-continue.
-
-## Related guides
-
-- [Prepare the next Session](../guides/prepare-the-next-session.md) uses a
-  Campaign's history to build a "Previously On" recap and suggest opportunities.
-- [Review, regenerate, and export a Session](../guides/review-and-export.md#regenerate-every-session-in-a-campaign)
-  includes regenerating every Session's outputs from Campaign Detail.
+The Glossary belongs to one Campaign because the same word can mean something different in another game. It gives the group one place to establish the names that should remain consistent as the Campaign grows. A shared Glossary informs the spelling suggestions made while processing a Session and helps generated artifacts use the Campaign's established terminology consistently.

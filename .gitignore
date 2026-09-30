@@ -56,3 +56,9 @@ checkpoints/
 # Speaker-ID benchmark harness's on-disk embedding cache -- derived, not source.
 # benchmarks/data/ (the frozen session fixtures) is intentionally NOT ignored.
 benchmarks/.cache/
+
+# Local Obsidian and Syncthing metadata for the documentation vault.
+/docs/.obsidian/
+/docs/.stfolder/
+/docs/.stversions/
+/docs/.stignore

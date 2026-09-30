@@ -78,8 +78,7 @@ Verification:
   - `●` for a current completed phase.
   - `◐` for saved/in-progress work.
   - `○` for work not started.
-  - `!` for the persisted failed phase.
-  The active screen is styled independently from the status symbol.
+  - `!` for the persisted failed phase. The active screen is styled independently from the status symbol.
 - [x] Style the rail as a single row immediately above Footer in `app.tcss`, with compact behavior that remains readable at the app's supported narrow terminal width.
 - [x] Refresh the rail on mount, screen resume, F5, successful work, and failure.
 
@@ -97,8 +96,7 @@ Verification:
 
 - [x] Replace Session Detail's visible Import Audio, Review Transcript, and Generate Outputs bindings with two same-key `P` bindings whose dynamic actions make exactly one label visible:
   - `Process` when input audio is absent.
-  - `Continue Processing` when input audio exists.
-  This avoids mutating Textual's private binding map and lets `check_action()`/`refresh_bindings()` drive the footer label.
+  - `Continue Processing` when input audio exists. This avoids mutating Textual's private binding map and lets `check_action()`/`refresh_bindings()` drive the footer label.
 - [x] Make `P` resolve the safe phase through `Application` and route to the available stage. Audio opens its processing screen; Transcript and Outputs use their existing flows until their dedicated screens arrive in Phases 4 and 5. Refresh the binding label and artifact indicators when the flow returns.
 - [x] Add an Audio processing screen showing the current input-audio/transcript state, Add or Replace Audio, Retry Transcription when imported audio exists without a current transcript, Back/Exit, and Continue when the phase is already current.
 - [x] Move the current settings-aware import-and-transcribe orchestration out of Session Detail into an `Application` operation reusable by the Audio screen. Preserve source validation, WAV clean/skip choice, credential checks, settings injection, progress labels, atomic audio replacement, and transcription result counts.

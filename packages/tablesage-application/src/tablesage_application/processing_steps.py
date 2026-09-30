@@ -53,8 +53,8 @@ class StepID(StrEnum):
     ASSIGN_ROLES = "assign_roles"
     APPROVE_PRIOR_REBUILD = "approve_prior_rebuild"
     GENERATE_ARTIFACTS = "generate_artifacts"
-    IMPROVE_VOICE_PROFILES = "improve_voice_profiles"
-    ENHANCE_VOICE_PROFILES = "enhance_voice_profiles"
+    IMPROVE_VOICE_PRINTS = "improve_voice_prints"
+    ENHANCE_VOICE_PRINTS = "enhance_voice_prints"
 
 
 @dataclass(frozen=True)
@@ -166,8 +166,8 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
         ),
         llm_roles=("llm_model_high",),
     ),
-    ProcessingStep(StepID.IMPROVE_VOICE_PROFILES, _M, "Improve Player Voice Profiles", (ArtifactName.VOICE_PROFILE_DECISION,)),
-    ProcessingStep(StepID.ENHANCE_VOICE_PROFILES, _A, "Enhance Voice Profiles", (ArtifactName.VOICE_PROFILE_ENHANCEMENT,)),
+    ProcessingStep(StepID.IMPROVE_VOICE_PRINTS, _M, "Improve Player Voice Prints", (ArtifactName.VOICE_PRINT_DECISION,)),
+    ProcessingStep(StepID.ENHANCE_VOICE_PRINTS, _A, "Enhance Voice Prints", (ArtifactName.VOICE_PRINT_ENHANCEMENT,)),
 )
 
 STEPS_BY_ID: dict[StepID, ProcessingStep] = {step.id: step for step in PROCESSING_STEPS}

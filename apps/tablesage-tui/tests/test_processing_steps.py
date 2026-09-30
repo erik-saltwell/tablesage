@@ -391,40 +391,40 @@ def test_generation_uses_a_forced_artifact_once_and_reports_the_count() -> None:
     assert "force" not in context.facts
 
 
-# Improve Player Voice Profiles
+# Improve Player Voice Prints
 
 
-def test_voice_profile_offer_accepted_is_saved_quietly() -> None:
+def test_voice_print_offer_accepted_is_saved_quietly() -> None:
     application = _application()
     context = _Context(application, True)
 
-    assert _run(steps.improve_voice_profiles, context) == StepResult.success()
-    application.save_voice_profile_decision.assert_called_once_with(context.session_id, accepted=True)
+    assert _run(steps.improve_voice_prints, context) == StepResult.success()
+    application.save_voice_print_decision.assert_called_once_with(context.session_id, accepted=True)
 
 
-def test_voice_profile_offer_declined_says_how_to_do_it_later() -> None:
+def test_voice_print_offer_declined_says_how_to_do_it_later() -> None:
     application = _application()
     context = _Context(application, False)
 
-    result = _run(steps.improve_voice_profiles, context)
+    result = _run(steps.improve_voice_prints, context)
 
     assert result.outcome is Outcome.SUCCESS and "From Session" in (result.message or "")
-    application.save_voice_profile_decision.assert_called_once_with(context.session_id, accepted=False)
+    application.save_voice_print_decision.assert_called_once_with(context.session_id, accepted=False)
 
 
-def test_voice_profile_offer_dismissed_cancels() -> None:
+def test_voice_print_offer_dismissed_cancels() -> None:
     application = _application()
 
-    assert _run(steps.improve_voice_profiles, _Context(application, None)).outcome is Outcome.CANCEL
-    application.save_voice_profile_decision.assert_not_called()
+    assert _run(steps.improve_voice_prints, _Context(application, None)).outcome is Outcome.CANCEL
+    application.save_voice_print_decision.assert_not_called()
 
 
 def test_enhancement_reports_what_it_added_and_is_quiet_when_declined() -> None:
-    added = _application(enhance_voice_profiles=EnhanceResult(enhanced_player_count=2, clip_count=9))
-    declined = _application(enhance_voice_profiles=None)
+    added = _application(enhance_voice_prints=EnhanceResult(enhanced_player_count=2, clip_count=9))
+    declined = _application(enhance_voice_prints=None)
 
-    assert _run(steps.enhance_voice_profiles, _Context(added)) == StepResult.success("Enhanced 2 player(s) with 9 clip(s) total.")
-    assert _run(steps.enhance_voice_profiles, _Context(declined)) == StepResult.success()
+    assert _run(steps.enhance_voice_prints, _Context(added)) == StepResult.success("Enhanced 2 player(s) with 9 clip(s) total.")
+    assert _run(steps.enhance_voice_prints, _Context(declined)) == StepResult.success()
 
 
 # Automatic steps: each runs its application method behind the progress dialog

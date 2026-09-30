@@ -83,21 +83,18 @@ class ManualReviewScreen(TableSageScreen):
 
     section = "process session · review transcript"
 
+    HIDDEN_BINDINGS = [Binding("escape", "exit_review", "Exit", show=False)]
     COMMON_BINDINGS = [
-        Binding("escape", "exit_review", "Exit", key_display="Esc"),
-        Binding("space", "toggle_mode", "Auto/Manual", key_display="Space"),
-        Binding("r,R", "replay", "Replay", key_display="R"),
-        Binding("d,D,delete,backspace", "delete_utterance", "Keep/Remove", key_display="D"),
+        Binding("c,C", "complete", "Confirm", key_display="C"),
         Binding("f,F", "find_replace", "Find/Replace", key_display="F"),
-        Binding("0", "assign_speaker(0)", "Unassigned", key_display="0"),
+        Binding("r,R", "replay", "Replay", key_display="R"),
+        Binding("space", "toggle_mode", "Manual/Autoplay", key_display="Space"),
         *(
             Binding(str(n), f"assign_speaker({n})", "Assign Player", key_display="1-9", show=(n == 1))
             for n in range(1, _MAX_ASSIGNABLE_ATTENDEES + 1)
         ),
-        *(
-            Binding(f"ctrl+{n}", f"toggle_focus({n})", "Focus Player", key_display="^1-9", show=(n == 1))
-            for n in range(1, _MAX_ASSIGNABLE_ATTENDEES + 1)
-        ),
+        Binding("0", "assign_speaker(0)", "Unassigned", key_display="0"),
+        Binding("d,D,delete,backspace", "delete_utterance", "Delete Utterance", key_display="D"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:
@@ -153,12 +150,12 @@ class ManualReviewScreen(TableSageScreen):
             yield table
             with EqualWidthButtonRow(id="manual-review-actions"):
                 yield Button("Exit", id="manual-review-cancel")
-                yield Button("Complete", id="manual-review-complete", variant="primary")
+                yield Button("Confirm", id="manual-review-complete", variant="primary")
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         if action == "delete_utterance":
             return True if self._transcript is not None and self._transcript.utterances else None
-        if action in {"toggle_mode", "replay", "find_replace", "assign_speaker", "toggle_focus"}:
+        if action in {"toggle_mode", "replay", "find_replace", "assign_speaker"}:
             return True if self._transcript is not None else None
         return True
 
@@ -409,7 +406,7 @@ class ManualReviewScreen(TableSageScreen):
         self._play(self._playhead)
 
     def _update_mode_indicator(self) -> None:
-        label = "Auto" if self._playback.mode is PlaybackMode.AUTO else "Manual"
+        label = "Autoplay" if self._playback.mode is PlaybackMode.AUTO else "Manual"
         self.query_one("#manual-review-mode", Static).update(f"Mode: {label}")
 
     def _update_focus_indicator(self) -> None:

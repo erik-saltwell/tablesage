@@ -12,11 +12,13 @@ from textual_fspicker import Filters
 
 from ..dialogs.file_picker import FileSave
 from ..dialogs.generic import ConfirmationDialog
+from ..widgets.screen_actions_footer import ScreenActionsFooter
 from .base import TableSageScreen
 
 
 class OpportunitiesScreen(TableSageScreen):
     section = "generate opportunities"
+    FOOTER_CLASS = ScreenActionsFooter
     DEFAULT_CSS = """
     OpportunitiesScreen #opportunity-ending { height: auto; max-height: 5; overflow-y: auto; }
     OpportunitiesScreen #opportunity-prompt { height: 5; }
@@ -25,10 +27,10 @@ class OpportunitiesScreen(TableSageScreen):
     OpportunitiesScreen .opportunity-actions { height: 3; }
     OpportunitiesScreen Button { margin-right: 1; }
     """
+    HIDDEN_BINDINGS = [Binding("escape", "pop_screen", "Back", show=False)]
     COMMON_BINDINGS = [
-        Binding("escape", "pop_screen", "Back", key_display="Esc"),
-        Binding("ctrl+g", "generate", "Generate", key_display="Ctrl+G", priority=True),
-        Binding("ctrl+s", "save", "Save Markdown", key_display="Ctrl+S", priority=True),
+        Binding("g,G", "generate", "Generate", key_display="G"),
+        Binding("c,C", "save", "Continue", key_display="C"),
     ]
 
     def __init__(self, recap: CampaignSceneRecap) -> None:
@@ -45,7 +47,7 @@ class OpportunitiesScreen(TableSageScreen):
         yield TextArea(read_only=True, id="opportunity-results", tab_behavior="focus")
         with Horizontal(classes="opportunity-actions"):
             yield Button("Generate", id="opportunity-generate", disabled=True, variant="primary")
-            yield Button("Save Markdown…", id="opportunity-save", disabled=True)
+            yield Button("Continue", id="opportunity-save", disabled=True)
 
     def on_mount(self) -> None:
         self.query_one("#opportunity-prompt", TextArea).focus()

@@ -192,8 +192,8 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         ArtifactName.PLAYER_INTRODUCTIONS: (system_prompt_path(PromptName.GENERATE_PLAYER_INTRODUCTIONS),),
         ArtifactName.RECAP_SUMMARY: (system_prompt_path(PromptName.GENERATE_RECAP_SUMMARY),),
         ArtifactName.SUMMARY: (system_prompt_path(PromptName.SUMMARIZE_SESSION),),
-        ArtifactName.VOICE_PROFILE_DECISION: (),
-        ArtifactName.VOICE_PROFILE_ENHANCEMENT: (),
+        ArtifactName.VOICE_PRINT_DECISION: (),
+        ArtifactName.VOICE_PRINT_ENHANCEMENT: (),
     }
 
 

@@ -13,9 +13,9 @@ from textual.widgets import Static
 class TableSageHeader(Widget):
     version = reactive("0.3.1")
     section = reactive("welcome")
-    campaign = reactive("no campaign loaded")
+    campaign = reactive("")
 
-    def __init__(self, section: str = "welcome", campaign: str = "no campaign loaded", version: str = "0.3.1") -> None:
+    def __init__(self, section: str = "welcome", campaign: str = "", version: str = "0.3.1") -> None:
         super().__init__()
         self._initial_section = section
         self._initial_campaign = campaign
@@ -26,7 +26,7 @@ class TableSageHeader(Widget):
             yield Static("❦ TableSage", classes="brand")
             yield Static("", classes="header-context")
         with Horizontal(classes="info-panel"):
-            yield Static("", classes="header-campaign")
+            yield Static("", classes="header-campaign", markup=False)
             yield Static("", classes="clock")
 
     def on_mount(self) -> None:
@@ -44,7 +44,8 @@ class TableSageHeader(Widget):
             return
 
         header_context.update(f"v{self.version} · {self.section}")
-        header_campaign.update(f"{self.campaign} ·")
+        context = self.campaign or self.section
+        header_campaign.update(f"{context} ·" if context else "")
         self.update_clock()
 
     def update_clock(self) -> None:

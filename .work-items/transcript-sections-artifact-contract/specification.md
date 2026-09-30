@@ -39,8 +39,7 @@ Each non-null range is inclusive and zero-based. `start_index` and `end_index` a
 
 `role_transcript_sha256` binds the routing result to the exact bytes of `role_transcript.json`. The dependency graph treats a Role Transcript whose content changed as making Transcript Sections stale and regenerates it before downstream consumers run. Direct consumers still validate the digest rather than using stale routing.
 
-The packaged Section Transcript `system.md` is also a modification-time dependency. Changing it
-makes Transcript Sections and all transitive consumers stale.
+The packaged Section Transcript `system.md` is also a modification-time dependency. Changing it makes Transcript Sections and all transitive consumers stale.
 
 ## Section definitions
 

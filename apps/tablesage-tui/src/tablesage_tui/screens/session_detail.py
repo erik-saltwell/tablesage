@@ -38,17 +38,17 @@ class SessionDetailScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
-        Binding("n,N", "new_attendee", "New Player", key_display="N"),
-        Binding("enter,e,E", "edit_attendee", "Edit Player", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_attendee", "Delete Player", key_display="D"),
         Binding("p,P", "process", "Process", key_display="P"),
+        Binding("x,X", "export_artifacts", "Export", key_display="X"),
+        Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
+        Binding("n,N", "new_attendee", "New Attendee", key_display="N"),
+        Binding("enter,e,E", "edit_attendee", "Edit Attendee", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_attendee", "Delete Attendee", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("r,R", "regenerate", "Regenerate Artifact", key_display="R"),
         Binding("c,C", "clean_session", "Clean Session", key_display="C"),
         Binding("l,L", "extract_glossary", "Extract Glossary", key_display="L"),
-        Binding("x,X", "export_artifacts", "Export", key_display="X"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:

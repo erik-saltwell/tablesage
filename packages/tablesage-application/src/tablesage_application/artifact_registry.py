@@ -36,8 +36,8 @@ class ArtifactName(Enum):
     SPELLING_SUGGESTIONS = "spelling_suggestions"
     SPELLING_DECISIONS = "spelling_decisions"
     TRANSCRIPT_REVIEW_EDITS = "transcript_review_edits"
-    VOICE_PROFILE_DECISION = "voice_profile_decision"
-    VOICE_PROFILE_ENHANCEMENT = "voice_profile_enhancement"
+    VOICE_PRINT_DECISION = "voice_print_decision"
+    VOICE_PRINT_ENHANCEMENT = "voice_print_enhancement"
 
 
 class ArtifactCategory(Enum):
@@ -233,9 +233,9 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         display_name="Summary",
         companion_filenames=(SUMMARY_INPUTS_FILENAME,),
     ),
-    # The post-generation offer to add this Session's voice clips to its players' profiles, and its receipt.
-    ArtifactName.VOICE_PROFILE_DECISION: _section("Voice Profile Decision"),
-    ArtifactName.VOICE_PROFILE_ENHANCEMENT: _section("Voice Profile Enhancement"),
+    # The post-generation offer to add this Session's voice clips to its players' voice samples, and its receipt.
+    ArtifactName.VOICE_PRINT_DECISION: _section("Voice Print Decision"),
+    ArtifactName.VOICE_PRINT_ENHANCEMENT: _section("Voice Print Enhancement"),
 }
 
 

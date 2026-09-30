@@ -13,9 +13,9 @@ from ..player_names import validate_player_name
 class Player(SQLModel, table=True):
     """A top-level participant identity, independent of any campaign.
 
-    A player carries its own voice profile directly (voice print fields) rather
+    A player carries its own voice print directly (voice print fields) rather
     than through a separate table, since a player has at most one current
-    profile and no profile history is tracked.
+    voice print and no voice print history is tracked.
     """
 
     __table_args__ = (CheckConstraint("trim(name) != ''", name="ck_player_name_non_blank"),)

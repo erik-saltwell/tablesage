@@ -208,7 +208,7 @@ def test_enhance_players_from_session_rerun_replaces_prior_clips_as_a_unit(tmp_p
     first_run_clips = {p.name for p in alice_folder.glob("session-*.wav")}
     assert len(first_run_clips) == 2
 
-    # Simulate retranscription after the first run changed the voice-profile clocks.
+    # Simulate retranscription after the first run changed the voice-print clocks.
     session_folder = application.session_folder(session_id)
     for name in (ArtifactName.TRANSCRIPT, ArtifactName.TRANSCRIPT_TEXT):
         (session_folder / ARTIFACTS[name].filename).touch()

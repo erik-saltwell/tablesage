@@ -22,16 +22,16 @@ if TYPE_CHECKING:
 
 
 class PlayerDetailScreen(TableSageScreen):
-    """A single player's metadata, voice-profile state, and voice clips."""
+    """A single player's metadata, voice-print state, and voice clips."""
 
     section = "player detail"
     HIDDEN_BINDINGS = [
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
+        Binding("f,F", "import_from_directory", "Folder Import", key_display="F"),
         Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
-        Binding("d,D,delete,backspace", "delete_clip", "Delete", key_display="D"),
-        Binding("f,F", "import_from_directory", "Folder Imp", key_display="F"),
+        Binding("d,D,delete,backspace", "delete_clip", "Delete Voice Clip", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("r,R", "recompute_voice_print", "Recompute", key_display="R"),
@@ -307,7 +307,7 @@ class PlayerDetailScreen(TableSageScreen):
 
         if import_result.imported_count == 0:
             self.notify(
-                f"No usable clips imported; voice profile unchanged. Skipped {len(import_result.rejected_filenames)} clip(s).",
+                f"No usable clips imported; voice print unchanged. Skipped {len(import_result.rejected_filenames)} clip(s).",
                 severity="warning",
             )
             return

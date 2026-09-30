@@ -5,7 +5,7 @@ This module turns the rest of the old folder into sections:
 
 - The four old receipt and decision files become the sections they now are.
 - Steps that did not exist then (suggestions and decisions split out of the review steps, the import request, the
-  voice-profile offer) get placeholder sections marked `"legacy": true`, wherever the work they now precede was
+  voice-print offer) get placeholder sections marked `"legacy": true`, wherever the work they now precede was
   current. That keeps completed work complete. A placeholder's suggestions are empty, so a step reopened on an
   imported Session re-runs its suggestion step first (see the TUI's processing steps).
 - A completed transcript review becomes its edit list, so reopening it shows the review as it was left.
@@ -93,8 +93,8 @@ def build_sections(folder: Path, current: set[ArtifactName]) -> tuple[dict[str, 
         if ArtifactName.REVIEWED_TRANSCRIPT in current:
             carried.add(ArtifactName.TRANSCRIPT_REVIEW_EDITS)
     if ArtifactName.REVIEWED_TRANSCRIPT in current:
-        placeholder(ArtifactName.VOICE_PROFILE_DECISION, {"accepted": None})
-        placeholder(ArtifactName.VOICE_PROFILE_ENHANCEMENT, {"enhanced_player_count": 0, "clip_count": 0})
+        placeholder(ArtifactName.VOICE_PRINT_DECISION, {"accepted": None})
+        placeholder(ArtifactName.VOICE_PRINT_ENHANCEMENT, {"enhanced_player_count": 0, "clip_count": 0})
     return sections, carried
 
 

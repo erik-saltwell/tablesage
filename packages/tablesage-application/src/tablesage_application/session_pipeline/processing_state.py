@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 import widelog
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, model_validator
 
 from ..paths import ARTIFACTS
 from .atomic_files import atomic_write
@@ -34,6 +34,25 @@ BACKUP_FILENAME = "processing_state.json.bak"
 SCHEMA_VERSION = 1
 # Values up to this size are logged whole on each write; larger ones are logged by fingerprint only.
 _LOGGED_VALUE_LIMIT = 2_000
+# Keys written before "voice profile" became "voice print": artifact names (records, sections, and record
+# inputs as `artifact:<name>`) and step ids (drafts, failures). Read under their current names.
+_RENAMED_KEYS = {
+    "voice_profile_decision": "voice_print_decision",
+    "voice_profile_enhancement": "voice_print_enhancement",
+    "improve_voice_profiles": "improve_voice_prints",
+    "enhance_voice_profiles": "enhance_voice_prints",
+}
+
+
+def _renamed(mapping: Any) -> Any:
+    if not isinstance(mapping, dict):
+        return mapping
+    renamed = {}
+    for key, value in mapping.items():
+        prefix, _, name = key.rpartition(":")
+        current = _RENAMED_KEYS.get(name, name)
+        renamed[f"{prefix}:{current}" if prefix else current] = value
+    return renamed
 
 
 class InputFingerprint(BaseModel):
@@ -65,6 +84,20 @@ class ProcessingState(BaseModel):
     sections: dict[str, Any] = Field(default_factory=dict)
     drafts: dict[str, Any] = Field(default_factory=dict)
     failures: dict[str, StepFailure] = Field(default_factory=dict)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _rename_legacy_keys(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        data = {key: _renamed(data[key]) if key in ("sections", "drafts", "failures") else data[key] for key in data}
+        records = data.get("records")
+        if isinstance(records, dict):
+            data["records"] = {
+                name: {**record, "inputs": _renamed(record.get("inputs"))} if isinstance(record, dict) and "inputs" in record else record
+                for name, record in _renamed(records).items()
+            }
+        return data
 
 
 def state_path(session_folder: Path) -> Path:

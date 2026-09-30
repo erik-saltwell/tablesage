@@ -28,7 +28,7 @@ class ArtifactExportScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("enter,e,E", "export_selected", "Export", key_display="E"),
+        Binding("enter,x,X", "export_selected", "Export", key_display="X"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:

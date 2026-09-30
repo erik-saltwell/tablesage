@@ -49,7 +49,7 @@ async def test_inline_keys_are_single_line_masked_and_saved_together(configurati
         assert key.size.height == 1
         assert key.size.width >= 16
         high_model = screen.query_one("#field-llm_model_high", Select)
-        assert high_model.region.right == key.region.right
+        assert high_model.region.right == screen.query_one("#delete-key-openai").region.right
         settings_actions = screen.query_one(".settings-buttons")
         back = screen.query_one("#settings-back")
         assert back.region.right == settings_actions.region.right
@@ -58,7 +58,7 @@ async def test_inline_keys_are_single_line_masked_and_saved_together(configurati
         assert first_row is not None
         assert first_row.region.y - keys_title.region.bottom == 1
         save_binding = next(binding for binding in screen.COMMON_BINDINGS if binding.action == "save")
-        assert save_binding.key_display == "Ctrl+S"
+        assert save_binding.key_display == "C"
         assert all(binding.action != "help" for binding in screen.COMMON_BINDINGS)
         await pilot.press("f1")
         assert app.screen is screen
@@ -71,7 +71,8 @@ async def test_inline_keys_are_single_line_masked_and_saved_together(configurati
         gemini.focus()
         await pilot.press("n", "e", "w")
         assert configuration.stored.get("GEMINI_API_KEY") is None
-        await pilot.press("ctrl+s")
+        screen.query_one("#settings-save").focus()
+        await pilot.press("c")
         await pilot.pause()
         assert configuration.stored["GEMINI_API_KEY"] == "new"
         assert configuration.stored["OPENAI_API_KEY"] == "dummy-original-secret"
@@ -82,10 +83,12 @@ async def test_inline_keys_are_single_line_masked_and_saved_together(configurati
         assert isinstance(screen, SettingsScreen)
         key = screen.query_one("#key-openai", Input)
         key.focus()
-        await pilot.press("ctrl+d")
+        screen.query_one("#delete-key-openai").focus()
+        await pilot.press("d")
         assert configuration.stored["OPENAI_API_KEY"] == "dummy-original-secret"
         assert screen._dirty()
-        await pilot.press("ctrl+s")
+        screen.query_one("#settings-save").focus()
+        await pilot.press("c")
         assert configuration.stored.get("OPENAI_API_KEY") is None
         assert isinstance(app.screen, LandingScreen)
 
@@ -146,12 +149,14 @@ async def test_required_setup_cannot_escape_until_valid_save(configuration: Conf
         screen = app.screen
         # Invalid values never create or replace the workspace file.
         screen._set_model_value("llm_model", "unsupported/model")
-        await pilot.press("ctrl+s")
+        screen.query_one("#settings-save").focus()
+        await pilot.press("c")
         await pilot.pause()
         assert app.settings_review_required
         assert not configuration.settings_path.exists()
         screen._set_model_value("llm_model", "gemini/custom-model")
-        await pilot.press("ctrl+s")
+        screen.query_one("#settings-save").focus()
+        await pilot.press("c")
         await pilot.pause()
         assert not app.settings_review_required
         assert app.application.settings.settings_version == 1
@@ -254,7 +259,8 @@ async def test_only_llm_and_keys_are_exposed_and_hidden_settings_survive_save(co
         assert not screen.query("#field-remove_outliers--min_samples")
         assert not screen.query("#settings-reset-all")
         screen._set_model_value("llm_model", "gemini/custom-model")
-        await pilot.press("ctrl+s")
+        screen.query_one("#settings-save").focus()
+        await pilot.press("c")
         await pilot.pause()
         assert source.settings.model_dump(exclude={"settings_version", "llm_model"}) == before
         stored = yaml.safe_load(configuration.settings_path.read_text())

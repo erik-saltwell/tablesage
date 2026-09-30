@@ -58,7 +58,7 @@ def can_transcribe_audio(session: Session, session_id: uuid.UUID, session_folder
     """One shared precondition check, usable both for `T`'s enabled/disabled UI state and as a guard inside `transcribe_audio` itself.
 
     Audio preparation requires an input recording and attendees, but does not require
-    every attendee to already have a voice profile. Bootstrap processing persists raw
+    every attendee to already have a voice print. Bootstrap processing persists raw
     diarization and gathers identity evidence before later speaker identification.
     """
     if not session_artifacts(session_folder)[ArtifactName.INPUT_AUDIO]:

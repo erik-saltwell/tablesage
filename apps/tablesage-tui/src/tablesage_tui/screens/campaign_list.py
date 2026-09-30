@@ -35,7 +35,7 @@ class CampaignListScreen(TableSageScreen):
     COMMON_BINDINGS = [
         Binding("n,N", "new_campaign", "New Campaign", key_display="N"),
         Binding("enter,e,E", "open_campaign", "Edit Campaign", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_campaign", "Delete", key_display="D"),
+        Binding("d,D,delete,backspace", "delete_campaign", "Delete Campaign", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("c,C", "cleanup_campaigns", "Clean Up", key_display="C"),

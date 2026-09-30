@@ -37,12 +37,13 @@ class TableSageScreen(Screen[Any]):
     """Shared chrome for full-page TableSage screens. A processing step's screen dismisses with its result."""
 
     section = ""
-    campaign = "no campaign loaded"
+    campaign = ""
 
     # Every full-page screen inherits this hidden refresh binding.
     BINDINGS = [
         Binding("f5", "refresh_screen", "Refresh", key_display="F5", show=False),
     ]
+    FOOTER_CLASS: ClassVar[type[Footer]] = Footer
     COMMON_BINDINGS: ClassVar[list[Binding]] = []
     OTHER_BINDINGS: ClassVar[list[Binding]] = []
     HIDDEN_BINDINGS: ClassVar[list[Binding]] = []
@@ -95,7 +96,7 @@ class TableSageScreen(Screen[Any]):
             with Vertical(classes="screen-body"):
                 yield from self.compose_content()
 
-            yield Footer(classes="-has-other-actions" if self.OTHER_BINDINGS else None)
+            yield self.FOOTER_CLASS(classes="-has-other-actions" if self.OTHER_BINDINGS else None)
 
     def compose_content(self) -> ComposeResult:
         """Supply the content unique to a particular screen."""
@@ -230,7 +231,7 @@ class TableSageScreen(Screen[Any]):
         )
 
     def enhance_players_from_session(self, session_id: uuid.UUID, *, on_success: Callable[[EnhanceResult], None] | None = None) -> None:
-        """Add `session_id`'s voice clips to its players' profiles behind a progress dialog, then toast the result.
+        """Add `session_id`'s clips to its players' voice samples and recompute their voice prints, then toast the result.
 
         Shared by the Players screen's From Session action and the post-generation prompt in Process Session.
         """

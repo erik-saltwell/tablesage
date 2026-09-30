@@ -30,10 +30,10 @@ class PlayersListScreen(TableSageScreen):
         Binding("escape", "pop_screen", "Back", key_display="Esc", show=False),
     ]
     COMMON_BINDINGS = [
-        Binding("n,N", "new_player", "New Player", key_display="N"),
         Binding("s,S", "enhance_from_session", "From Session", key_display="S"),
+        Binding("n,N", "new_player", "New Player", key_display="N"),
         Binding("enter,e,E", "open_player", "Edit Player", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_player", "Delete", key_display="D"),
+        Binding("d,D,delete,backspace", "delete_player", "Delete Player", key_display="D"),
     ]
     OTHER_BINDINGS = [
         Binding("r,R", "recompute_all_voice_prints", "Recompute All Voice Prints", key_display="R"),

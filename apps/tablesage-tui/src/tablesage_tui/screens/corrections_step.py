@@ -25,12 +25,12 @@ class CorrectionsStepScreen(TableSageScreen):
     which the step saves; Cancel dismisses with None, first offering to keep changed rows as a draft.
     """
 
+    HIDDEN_BINDINGS = [Binding("escape", "cancel", "Cancel", show=False)]
     COMMON_BINDINGS = [
-        Binding("n,N", "new_correction", "New", key_display="N"),
-        Binding("enter,e,E", "edit_correction", "Edit", key_display="E"),
-        Binding("d,D,delete,backspace", "delete_correction", "Delete", key_display="D"),
-        Binding("c,C", "confirm", "Apply & Continue", key_display="C"),
-        Binding("escape", "cancel", "Cancel", key_display="Esc"),
+        Binding("c,C", "confirm", "Continue", key_display="C"),
+        Binding("n,N", "new_correction", "New Correction", key_display="N"),
+        Binding("enter,e,E", "edit_correction", "Edit Correction", key_display="E"),
+        Binding("d,D,delete,backspace", "delete_correction", "Delete Correction", key_display="D"),
     ]
 
     def __init__(
@@ -52,8 +52,6 @@ class CorrectionsStepScreen(TableSageScreen):
         self._suggestions = list(suggestions)
         self._draft = draft
         self._soft_remove = soft_remove
-        if soft_remove:
-            self._bindings.bind("d,D,delete,backspace", "delete_correction", "Keep/Remove", key_display="D")
         self._corrections = CorrectionsReview(
             self, "#corrections-step-table", noun="Correction", whole_words=whole_words, soft_remove=soft_remove
         )
@@ -69,7 +67,7 @@ class CorrectionsStepScreen(TableSageScreen):
             yield table
             with Horizontal(id="corrections-step-actions"):
                 yield Button("Cancel", id="corrections-step-cancel")
-                yield Button("Apply & Continue", id="corrections-step-confirm", variant="primary")
+                yield Button("Continue", id="corrections-step-confirm", variant="primary")
 
     def on_mount(self) -> None:
         self._corrections.load(self._transcript, self._suggestions)

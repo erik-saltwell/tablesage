@@ -6,7 +6,7 @@ Run with the installed TableSage Python:
 Requires an initialized, empty deployment on the first run. Subsequent runs verify
 the marked fixture without overwriting edits. Audio is silence, not a recording of
 the authored dialogue; do not use it for transcription or speaker-ID evaluation.
-No provider calls or real voice profiles are created.
+No provider calls or real voice prints are created.
 """
 
 from __future__ import annotations
@@ -366,7 +366,7 @@ def main() -> None:
     marker.write_text(
         "Fictional documentation fixture created by scripts/seed_docs_data.py.\n"
         "All dialogue and outputs are authored sample data, not generated processing results.\n"
-        "input_audio.wav files contain silence only. No real voice profiles are included.\n"
+        "input_audio.wav files contain silence only. No real voice prints are included.\n"
         "Iron Pact: three completed sessions. Other campaigns: setup and draft examples.\n",
         encoding="utf-8",
     )

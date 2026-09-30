@@ -47,7 +47,7 @@ async def test_export_selected_copies_to_chosen_destination(tmp_path: Path) -> N
     async with TableSageApp(application).run_test() as pilot:
         await _open_export_screen(pilot, session_id)
 
-        await pilot.press("e")
+        await pilot.press("x")
         await pilot.pause()
         picker = pilot.app.screen
         assert isinstance(picker, FileSave)
@@ -82,7 +82,7 @@ async def test_ledger_export_asks_for_format_then_exports_markdown(tmp_path: Pat
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_export_screen(pilot, session_id)
-        await pilot.press("e")
+        await pilot.press("x")
         await pilot.pause()
         assert isinstance(pilot.app.screen, ConfirmationDialog)
 
@@ -105,7 +105,7 @@ async def test_ledger_export_can_choose_json(tmp_path: Path) -> None:
 
     async with TableSageApp(application).run_test() as pilot:
         await _open_export_screen(pilot, session_id)
-        await pilot.press("e")
+        await pilot.press("x")
         await pilot.pause()
         await pilot.click("#confirmation-no")
         await pilot.pause()
@@ -145,7 +145,7 @@ async def test_export_cancelled_does_not_call_export() -> None:
     async with TableSageApp(application).run_test() as pilot:
         await _open_export_screen(pilot, uuid.uuid4())
 
-        await pilot.press("e")
+        await pilot.press("x")
         await pilot.pause()
         picker = pilot.app.screen
         assert isinstance(picker, FileSave)
@@ -165,7 +165,7 @@ async def test_export_failure_notifies_error(tmp_path: Path) -> None:
         await _open_export_screen(pilot, uuid.uuid4())
 
         with patch.object(ArtifactExportScreen, "notify") as notify:
-            await pilot.press("e")
+            await pilot.press("x")
             await pilot.pause()
             picker = pilot.app.screen
             assert isinstance(picker, FileSave)

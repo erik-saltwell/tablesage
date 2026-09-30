@@ -88,7 +88,7 @@ class VoiceMatchRequest:
     listed: Collection[int]
     # This player's removed Find More additions: together they form one rival voice.
     rejected: Collection[int]
-    # Stored voice prints of the attendees who already have a voice profile.
+    # Stored voice prints of the attendees who already have a voice print.
     known_voices: Sequence[Embedding]
     min_speech_seconds: float
     target_speech_seconds: float

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 from pathlib import Path
+from typing import cast
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -456,7 +457,7 @@ async def test_space_toggles_mode_indicator(tmp_path: Path) -> None:
 
         await pilot.press("space")
         await pilot.pause()
-        assert str(mode.render()) == "Mode: Auto"
+        assert str(mode.render()) == "Mode: Autoplay"
 
         await pilot.press("space")
         await pilot.pause()
@@ -473,7 +474,7 @@ async def test_arrow_key_forces_manual_mode(tmp_path: Path) -> None:
         await pilot.press("space")  # -> Auto
         await pilot.pause()
         mode = pilot.app.screen.query_one("#manual-review-mode", Static)
-        assert str(mode.render()) == "Mode: Auto"
+        assert str(mode.render()) == "Mode: Autoplay"
 
         await pilot.press("down")
         await pilot.pause()
@@ -520,7 +521,7 @@ async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off(tm
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        await pilot.press("ctrl+2")  # focus Bob
+        cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(2)  # focus Bob
         await pilot.pause()
 
         focus = pilot.app.screen.query_one("#manual-review-focus", Static)
@@ -530,7 +531,7 @@ async def test_single_player_mode_greys_out_other_rows_and_can_be_toggled_off(tm
         assert isinstance(table.get_cell("0", "speaker"), Text)  # Alice's row, not the focus -- dimmed
         assert not isinstance(table.get_cell("1", "speaker"), Text)  # Bob's row -- normal
 
-        await pilot.press("ctrl+2")  # toggle back off
+        cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(2)  # toggle back off
         await pilot.pause()
 
         assert str(focus.render()) == "Focus: All players"
@@ -545,7 +546,7 @@ async def test_single_player_mode_with_no_utterances_notifies_instead_of_togglin
         await _open_review_screen(pilot, uuid.uuid4())
 
         with patch.object(ManualReviewScreen, "notify") as notify:
-            await pilot.press("ctrl+3")  # Carol has no utterances in this transcript
+            cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(3)  # Carol has no utterances in this transcript
             await pilot.pause()
 
         notify.assert_called_once_with("No utterances currently assigned to Carol.", severity="warning")
@@ -560,7 +561,7 @@ async def test_arrow_key_skips_rows_outside_single_player_focus(tmp_path: Path) 
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        await pilot.press("ctrl+1")  # focus Alice: rows 0 and 2
+        cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(1)  # focus Alice: rows 0 and 2
         await pilot.pause()
 
         await pilot.press("down")
@@ -577,7 +578,7 @@ async def test_reassigning_the_focused_row_updates_membership_live(tmp_path: Pat
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        await pilot.press("ctrl+1")  # focus Alice, playhead on row 0
+        cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(1)  # focus Alice, playhead on row 0
         await pilot.pause()
 
         await pilot.press("2")  # reassign row 0 to Bob -- leaves the Alice focus set
@@ -595,7 +596,7 @@ async def test_mouse_click_on_a_filtered_row_bounces_back(tmp_path: Path) -> Non
     async with TableSageApp(application).run_test() as pilot:
         await _open_review_screen(pilot, uuid.uuid4())
 
-        await pilot.press("ctrl+1")  # focus Alice, playhead on row 0
+        cast(ManualReviewScreen, pilot.app.screen).action_toggle_focus(1)  # focus Alice, playhead on row 0
         await pilot.pause()
 
         table = pilot.app.screen.query_one("#manual-review-table", DataTable)

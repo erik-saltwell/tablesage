@@ -125,12 +125,14 @@ def test_binding_keys_and_footer_labels() -> None:
             "new_attendee",
             "edit_attendee",
             "delete_attendee",
+            "export_artifacts",
         )
     } == {
         "process": ("p,P", "Process", "P"),
-        "new_attendee": ("n,N", "New Player", "N"),
-        "edit_attendee": ("enter,e,E", "Edit Player", "E"),
-        "delete_attendee": ("d,D,delete,backspace", "Delete Player", "D"),
+        "new_attendee": ("n,N", "New Attendee", "N"),
+        "edit_attendee": ("enter,e,E", "Edit Attendee", "E"),
+        "delete_attendee": ("d,D,delete,backspace", "Delete Attendee", "D"),
+        "export_artifacts": ("x,X", "Export", "X"),
     }
 
     secondary = {binding.action: binding for binding in SessionDetailScreen.OTHER_BINDINGS}
@@ -140,13 +142,11 @@ def test_binding_keys_and_footer_labels() -> None:
             "regenerate",
             "clean_session",
             "extract_glossary",
-            "export_artifacts",
         )
     } == {
         "regenerate": ("r,R", "Regenerate Artifact", "R"),
         "clean_session": ("c,C", "Clean Session", "C"),
         "extract_glossary": ("l,L", "Extract Glossary", "L"),
-        "export_artifacts": ("x,X", "Export", "X"),
     }
 
 

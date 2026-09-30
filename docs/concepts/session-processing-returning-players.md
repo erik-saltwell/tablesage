@@ -1,201 +1,86 @@
 # Processing with Returning Players
 
-This page follows [Session processing](session-processing.md) step by step
-for the simpler workflow: every attendee already has a voice profile. That is
-the normal case once your group has played a Session or two. Process Session
-hides its New Players panel and the steps that exist only for new players.
+This [Session Processing](session-processing.md) workflow applies when every attendee already has a usable [voice print](players.md#voice-prints). TableSage can recognize their voices from existing samples, so processing moves directly from transcription to speaker identification. The extra steps for establishing new Players' voices have no work to do.
 
-![Process Session when every attendee has a voice profile](../images/session-processing/process-session-returning-players.png)
+The complete workflow is:
 
-The workflow falls into four stages:
+1. **Import Audio** — The user supplies the Session's recording as the source for processing. The system cleans the audio of background noise if necessary.
+2. **Create Transcript** — The system turns speech into text and groups it by anonymous speaker.
+3. **Remove Bad Utterances** — The system removes brief acknowledgments that add no independent meaning.
+4. **Identify Speakers** — The system matches utterances against attendees' voice prints, leaving uncertain identities for review.
+5. **Extract Glossary Terms** — The user reviews suggested campaign names and terms and decides which to add to the Glossary.
+6. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
+7. **Review Transcript** — The user confirms the words and speaker assignments that will form the session record.
+8. **Assign Roles To Players** — The system attributes speech to character names and other Session Roles.
+9. **Generate Artifacts** — The system builds the ledger, scene breakdown, introductions, and summaries from the reviewed material, with user approval for any necessary rebuilding of prior Sessions.
+10. **Improve Player Voice Prints** — The user decides whether to add more samples from the reviewed transcript to improve recognition in future Sessions.
 
-1. **Get the words** — turn the recording into a clean transcript.
-2. **Find the speakers** — decide who said each line.
-3. **Fix the vocabulary** — make the campaign's names and terms consistent.
-4. **Review and build** — confirm the transcript, then generate the
-   artifacts from it.
+## Import Audio
 
-Each stage exists so the next one has something trustworthy to work from.
+TableSage copies the recording into the Session as its **input audio**, the source for transcription and voice comparison. Noise cleaning can make speech clearer in a noisy recording; recordings that have already been cleaned can avoid another cleaning pass.
 
-## Get the words
+## Create Transcript
 
-### Import Audio
+ElevenLabs transcribes the recording and groups speech by speaker, a process called **diarization**. TableSage adds punctuation. Speakers initially have anonymous labels such as *speaker_0*: grouping a voice does not yet identify the person it belongs to.
 
-Press **C** (*Continue: Import Audio*) and choose the Session's recording. TableSage copies it into the
-Session as its **input audio**, the source for everything that follows.
+The result is the raw machine transcript.
 
-If you choose a `.wav` file, TableSage asks whether to run it through noise
-cleaning first. Answer **Yes** for a raw recording of a noisy table, or
-**No** if the file has already been cleaned. Other audio formats are always
-cleaned as they are imported.
+## Remove Bad Utterances
 
-![The Clean Audio? prompt shown after choosing a .wav recording](../images/session-processing/clean-audio-prompt.png)
+An LLM reviews short lines and removes pure **backchannels**: brief listener acknowledgments such as *mm-hmm* that contribute no independent meaning. A short response that carries meaningful information still belongs in the record.
 
-Importing starts a run of automatic steps behind a single progress dialog.
+Backchannels are difficult to identify by voice because they contain little speech. Removing them reduces clutter and uncertain assignments in later steps.
 
-### Create Transcript
+## Identify Speakers
 
-ElevenLabs transcribes the recording and separates it into speakers, then
-TableSage adds punctuation. At this point the speakers have anonymous labels
-such as *speaker_0*, not names. Keeping transcription separate from speaker
-identification means TableSage never has to transcribe the audio again when
-it identifies speakers again, which is the slowest and most expensive part.
+TableSage compares the voice in each utterance with the voice prints of the Session's attendees. Confident matches receive a Player's name; uncertain matches remain **Unassigned Speaker** for human review.
 
-The result is the **transcript** artifact on Session Detail: the raw
-machine record, before any correction.
+Attendance defines the possible speakers. An accurate attendee list therefore matters even when everyone's voice is already known. This step connects the anonymous speech groups from transcription to the people at the table.
 
-### Remove Bad Utterances
+## Extract Glossary Terms
 
-Your Low model reviews short lines and removes pure backchannels—the
-*yeah*, *mm-hmm*, and *right* that listeners say while someone else
-talks. They add nothing to the record, and because they are so short they
-are hard to attribute to a voice. Removing them first keeps them from
-cluttering every later step.
+Speech recognition often mishears a Campaign's invented names. The Campaign's Glossary provides an established spelling reference. An LLM proposes names and terms introduced in this Session, such as a newly discovered place, faction, or artifact. After human review, these are added to the Glossary.
 
-## Find the speakers
+This grows the Campaign's shared vocabulary while keeping speculative or incorrect suggestions out of its reference material.
 
-### The skipped new-player steps
+## Spellcheck Against Glossary
 
-**Review Name Corrections**, **Isolate New Speakers**, **Review New Speaker
-Assignments**, and **Seed Player Voice Samples** exist to build a voice
-profile for someone TableSage has never heard. With no new players there is
-nothing for them to do. They do not appear in the list; each one completes
-on its own, passing the transcript through unchanged, and processing
-continues without stopping.
+An LLM compares the transcript with glossary terms and attendees' player names, then proposes spelling corrections for human review. Because extraction comes first, newly accepted terms can immediately help correct other occurrences in the same Session: *Tide Warden Coil* can become *Tidewarden Coil*, for example.
 
-### Identify Speakers
+## Review Transcript
 
-TableSage compares the voice in each line with the voice profiles of the
-Session's attendees, and labels the line with the closest match. A line that
-does not clearly match anyone—often a very short one—is labeled
-**Unassigned Speaker** rather than guessed. You assign those during Review
-Transcript.
+Human review establishes the **reviewed transcript**: the accepted account of what was said and who said it. It resolves unassigned speakers, corrects wrong attributions and text, and removes speech that does not belong in the record. The recording remains available as evidence for those decisions.
 
-This is the step that voice profiles exist for. Only attendees are
-candidates, which is why the attendance on Session Detail needs to be right
-before you process.
+This is the last quality check before generation. An error left here can flow into the ledger, summaries, and any voice samples later taken from the Session, though LLMs are surprisingly resilient to small typos and misattributions.
 
-## Fix the vocabulary
+## Assign Roles To Players
 
-Speech recognition does not know your campaign's invented names. These two
-steps use the Campaign glossary to fix that, and they run in this order for a
-reason.
+TableSage creates the **role transcript**, replacing player names with their Session Roles: *Thorgrim* rather than *Bob*, or *Game Master* rather than *Alice*.
 
-### Extract Glossary Terms
+This connects the people who spoke to their identities in the game. Generated artifacts can then describe the fiction using the appropriate character names and table functions.
 
-Your Medium model reads the transcript and proposes names and terms from
-this Session that are not yet in the Campaign glossary—a newly discovered
-place, a faction, an artifact. Review the list: add, edit, or delete entries,
-then press **Continue** to add them to the glossary. If nothing new turns up,
-the step completes without opening.
+## Generate Artifacts
 
-![Review Glossary Entries proposing two new terms](../images/session-processing/extract-glossary-terms.png)
+An LLM builds the Session's outputs through a sequence of dependencies:
 
-### Spellcheck Against Glossary
+1. **Transcript sections** locate the opening recap, character introductions, and actual play, so later outputs use the relevant parts of the Session.
+2. The **ledger** records events, facts, and developments, accompanied by a scene breakdown that organizes the action. The ledger is the authoritative record of what happened inside the game during a Session.
+3. **Player introductions** collect the in-character introductions of player characters from the opening of the Session, kept separate from what happened in play.
+4. The **recap summary** distills the scene breakdown into a short account designed to be read at the table.
+5. The **session summary** is a longer player-ready account built from the ledger. It opens with the previous Session's recap summary and this Session's player introductions, and is designed to be sent to players before the next Session.
 
-With the glossary now up to date, your Medium model looks for places where
-the transcript misspells a glossary term or an attendee's name, and proposes
-corrections. Keep only the ones that are really misspellings, then choose
-**Apply & Continue**.
+Because each session summary includes the previous Session's recap summary, a Session's outputs depend on the Session before it. When an earlier Session's outputs are out of date, generation asks to rebuild them first.
 
-![Spellcheck Against Glossary proposing three corrections](../images/session-processing/spellcheck-against-glossary.png)
+See [Session Artifacts](sessions.md#session-artifacts) for what each output contributes to the campaign record.
 
-Because extraction runs first, a term you added a moment ago is checked
-too. In the example above, *Tidewarden Coil* was added by Extract Glossary
-Terms, and Spellcheck immediately catches a later *Tide Warden Coil*.
+## Improve Player Voice Prints
 
-Spellcheck knows attendees' player names and every glossary term. A misheard
-character name is only caught if it is in the glossary. Otherwise, fix it in
-Review Transcript with **Find/Replace**. Adding your player characters to the
-glossary once saves you from doing that every Session.
+After generation, suitable clips from the reviewed transcript can be added to the attendees' voice samples. This optional learning step gives future Sessions more evidence for recognizing the same people.
 
-## Review and build
+Its value depends on accurate speaker assignments. A mislabeled clip would teach TableSage the wrong voice, so only a carefully reviewed transcript should contribute samples.
 
-### Review Transcript
+## After Processing
 
-This is where you decide what the record says. The screen lists every line
-with its speaker, and you can listen to each one.
+The Session now has a reviewed transcript and generated artifacts that can be used for reference, shared with players, or carried into preparation for the next Session.
 
-![Review Transcript with one line still assigned to Unassigned Speaker](../images/session-processing/review-transcript.png)
-
-- Press a number key to assign the highlighted line to that attendee. The
-  legend at the top shows the numbers. **0** sets it back to Unassigned.
-- **R** replays the line's audio. **Space** switches between Manual
-  playback and Auto, which moves on to the next line after each one plays.
-- **Ctrl** plus a number focuses on one attendee's lines, which helps when
-  checking a single speaker.
-- **D** marks the line as removed (press it again to keep the line), and
-  **F** opens Find/Replace for the whole transcript.
-
-Pay particular attention to **Unassigned Speaker** lines and to anything
-that sounds wrong. When you are satisfied, choose **Complete** to save the
-**reviewed transcript**. If you leave with unsaved edits, TableSage offers to
-save them as a draft that the next visit resumes from, but only **Complete**
-finishes the step.
-
-Everything after this step is generated from your reviewed transcript, and
-so is any voice sample you later add from this Session. A mistake left here
-flows into the ledger, the summaries, and possibly a player's voice
-profile.
-
-### Assign Roles To Players
-
-Completing the review starts the rest of processing automatically. This
-step writes the **role transcript**. It replaces each player name with that
-attendee's Role—*Thorgrim* rather than *Bob*, *Game Master* rather than
-*Alice*—and drops any leftover unassigned backchannels. Artifacts are written
-about the fiction, so the generator needs to see who spoke in the story, not
-who sat at the table.
-
-### Generate Artifacts
-
-Your High model builds the Session's outputs from the role transcript, each
-from the ones before it:
-
-1. **Transcript sections** find where the opening recap, the character
-   introductions, and actual play begin, so each later output reads the
-   right part of the Session.
-2. The **ledger** records the events, facts, and developments of play, with
-   a scene breakdown alongside it.
-3. **Player introductions** capture how each character was introduced at
-   the start of the Session.
-4. The **recap summary** distills the scene breakdown into a short account
-   for use in later Sessions.
-5. The **session summary** is the player-ready account, built from the
-   ledger and player introductions. It also draws on the previous Session's
-   recap summary, which is why an earlier Session matters here.
-
-![Generate Artifacts building the ledger](../images/session-processing/generate-artifacts.png)
-
-If the previous Session's outputs are out of date, a **Rebuild Prior
-Sessions** row appears before this step and TableSage asks before doing extra
-work. **Regenerate Prior** rebuilds that Session first and then
-this one, and **Cancel** stops. If the previous Session can't be rebuilt
-because it was never reviewed, its existing recap is used as it stands, or
-the summary notes that no recap is available.
-
-### Improve Player Voice Profiles
-
-After generation, TableSage offers to add voice samples from this Session to
-the attendees' voice profiles. Each Session you add makes recognition in
-future Sessions more reliable.
-
-![The offer to add this Session's voice samples to players' profiles](../images/session-processing/improve-voice-profiles.png)
-
-Choose **Add Samples** only if you checked the speaker assignments carefully
-in Review Transcript. A mislabeled line would teach TableSage the wrong voice
-for a player. Choose **Not Now** if you are unsure. You can add them later
-from **From Session** on the Players screen.
-
-## After processing
-
-Every step now has a check, and the Session's artifacts are current on
-Session Detail.
-
-![Process Session after the run is complete](../images/session-processing/process-session-complete.png)
-
-You can reopen any finished step by selecting its row and pressing **Enter**
-or **R**. Changing its result
-puts every later step out of date. For example, accepting a different
-spellcheck correction means reviewing the transcript again and regenerating
-the artifacts.
+These outputs depend on the decisions made earlier. Changing an accepted spelling correction, for example, makes the later transcript review and artifacts out of date. Reprocessing the dependent stages restores a consistent record.

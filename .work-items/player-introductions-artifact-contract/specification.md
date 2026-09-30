@@ -10,8 +10,7 @@ The persisted artifact is `player_introductions.json` in the session folder. It 
 
 When the Introduction Range is `null`, no LLM call is made and an empty introductions artifact is persisted. An empty artifact is therefore a valid and meaningful result.
 
-The packaged Generate Player Introductions `system.md` is a build dependency. Changing it makes
-the artifact stale even though a particular run may take the valid no-LLM empty-range path.
+The packaged Generate Player Introductions `system.md` is a build dependency. Changing it makes the artifact stale even though a particular run may take the valid no-LLM empty-range path.
 
 ## Persisted schema
 

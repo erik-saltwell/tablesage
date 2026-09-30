@@ -1,16 +1,22 @@
 # Guides
 
-Task-focused pages for things you do with TableSage once it is installed. For the
-ideas behind them, see [Concepts](../concepts/index.md).
+Practical walkthroughs for common activities once TableSage is [installed](../getting-started/installation.md). Start with campaign setup, follow the processing guide that fits your attendees, then share the results or prepare for your next game.
 
-- [Update your settings](settings.md): API keys, the three language-model
-  choices, and what saving does.
-- [Review, regenerate, and export a Session](review-and-export.md): read the
-  Artifacts panel, rebuild an output, copy an artifact out of TableSage, clean a
-  Session, and regenerate a whole Campaign.
-- [Prepare the next Session](prepare-the-next-session.md): build a "Previously
-  On" recap from your Campaign's scenes, and get suggestions for bringing earlier
-  elements back into play.
-- [Manage players and voice samples](manage-players-and-voice-samples.md): add
-  samples, import clips from a folder, clean up a voice profile, and move players
-  between workspaces.
+## Your Campaign Workflow
+
+1. [Start a Campaign](start-a-campaign.md): create the Campaign and first Session, add attendees and Roles, and establish any vocabulary you already know.
+2. Process each recording with one of these guides. Choose based on whether every attendee has a usable voice print, not on how old the Campaign is: a later Session with a newcomer needs the new-player guide, while a new Campaign with already-known Players can use the returning-player guide.
+   - [Process a Session with New Players](process-session-new-players.md): confirm initial voice samples for anyone without a usable voice print, review the transcript, and generate outputs.
+   - [Process a Session with Returning Players](process-session-returning-players.md): check inherited attendance, process the next recording, review speech and speakers, and finish generation.
+3. [Generate and Export Session Outputs](review-and-export.md): choose what to share, check freshness, regenerate outputs, and export copies.
+4. [Prepare the Next Session](prepare-the-next-session.md): build a Previously On recap and discover opportunities to bring established campaign elements back into play.
+
+## Keep Your Campaign Working Well
+
+- [Correct a Processed Session](correct-processed-session.md): fix words, speaker assignments, attendance, and Roles, then refresh the affected outputs or start the Session over.
+- [Build and Maintain Your Campaign Glossary](build-campaign-glossary.md): establish spellings, review discoveries, correct entries, and reuse vocabulary.
+- [Improve Player Voice Recognition](manage-players-and-voice-samples.md): add reliable samples from Sessions or recordings, recompute voice prints, and clean up unsuitable clips.
+- [Move a Campaign to Another Workspace](move-campaign-workspace.md): export Players and campaign history, import them in the right order, and check the transfer.
+- [Update Your Settings](settings.md): configure keys and language models, save changes, and resolve configuration problems.
+
+For the ideas behind these tasks, see [Concepts](../concepts/index.md). For every screen's keys, secondary actions, and dialogs, see the [Screen Reference](../reference/screens/index.md).

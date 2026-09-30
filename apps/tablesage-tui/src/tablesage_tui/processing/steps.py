@@ -383,14 +383,14 @@ async def generate_artifacts(ctx: StepContext) -> StepResult:
     return StepResult.success(f"Generated {len(tasks)} output{'' if len(tasks) == 1 else 's'}.")
 
 
-# Improve Player Voice Profiles
+# Improve Player Voice Prints
 
 
-async def improve_voice_profiles(ctx: StepContext) -> StepResult:
+async def improve_voice_prints(ctx: StepContext) -> StepResult:
     answer = await ctx.confirm(
-        title="Improve Player Voice Profiles",
+        title="Improve Player Voice Prints",
         prompt=(
-            "Add voice samples from this Session to your players' voice profiles? This helps TableSage "
+            "Add voice samples from this Session and recompute your players' voice prints? This helps TableSage "
             "recognize them in future Sessions.\n\n"
             "Only do this if you've carefully reviewed the transcript's speaker assignments -- "
             "mislabeled lines will teach TableSage the wrong voice for a player."
@@ -401,16 +401,16 @@ async def improve_voice_profiles(ctx: StepContext) -> StepResult:
     )
     if answer is None:
         return StepResult.cancel()
-    await ctx.call(lambda: ctx.application.save_voice_profile_decision(ctx.session_id, accepted=answer))
+    await ctx.call(lambda: ctx.application.save_voice_print_decision(ctx.session_id, accepted=answer))
     if not answer:
         return StepResult.success("You can add this Session's voice samples later with From Session on the Players screen.")
     return StepResult.success()
 
 
-async def enhance_voice_profiles(ctx: StepContext) -> StepResult:
+async def enhance_voice_prints(ctx: StepContext) -> StepResult:
     result = await ctx.background(
         "Adding voice samples…",
-        lambda: ctx.application.enhance_voice_profiles(
+        lambda: ctx.application.enhance_voice_prints(
             ctx.session_id, on_progress=lambda stage, completed, total: ctx.progress(_ENHANCE_LABELS[stage], completed, total)
         ),
     )
@@ -442,6 +442,6 @@ STEP_FUNCTIONS: dict[StepID, StepFunction] = {
     StepID.ASSIGN_ROLES: assign_roles,
     StepID.APPROVE_PRIOR_REBUILD: approve_prior_rebuild,
     StepID.GENERATE_ARTIFACTS: generate_artifacts,
-    StepID.IMPROVE_VOICE_PROFILES: improve_voice_profiles,
-    StepID.ENHANCE_VOICE_PROFILES: enhance_voice_profiles,
+    StepID.IMPROVE_VOICE_PRINTS: improve_voice_prints,
+    StepID.ENHANCE_VOICE_PRINTS: enhance_voice_prints,
 }
