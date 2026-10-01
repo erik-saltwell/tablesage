@@ -17,15 +17,21 @@ TableSage turns recordings of tabletop roleplaying sessions into transcripts, re
 
 You need:
 
-- Python 3.12 or newer (managed for you by [uv](https://docs.astral.sh/uv/)) and Git.
+- Python 3.12 or newer
+- Git
+- UV - the python package manager [uv](https://docs.astral.sh/uv/)), [uv](https://docs.astral.sh/uv/).
 - FFmpeg with both `ffmpeg` and `ffplay`.
 - An [ElevenLabs](https://elevenlabs.io/) API key.
 - An API key for at least one of OpenAI, Anthropic, or Google Gemini.
 
+If you have these installed, you can install with the following command:
 ```sh
 uv tool install git+https://github.com/erik-saltwell/tablesage.git
-mkdir -p ~/Documents/tablesage && cd ~/Documents/tablesage
-tablesage-rpg
+```
+
+Then cd into an empty directory where your campaign data will be stored and run:
+```sh
+tablesage
 ```
 
 TableSage stores its data in the directory you launch it from, so start it from the same workspace each time. The [installation guide](docs/getting-started/installation.md) covers every step, including Windows and API-key setup.
