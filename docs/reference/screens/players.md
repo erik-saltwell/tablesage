@@ -59,7 +59,7 @@ To get to the Player Detail screen, select a Player from the Players List screen
 
 The header shows the Player's name.
 
-![Player Detail for Priya](../../images/screens/player-detail.png)
+![Player Detail for Priya Patel](../../images/screens/player-detail.png)
 
 The top of the screen shows:
 

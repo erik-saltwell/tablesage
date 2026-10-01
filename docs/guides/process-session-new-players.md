@@ -9,7 +9,7 @@ You need the session recording, configured [keys and models](settings.md), and a
 1. On Session Detail, check that everyone who spoke is in **Attendance**, including the GM, and that their Roles are correct.
 2. Press **P** (**Process**). The **New Players** panel names the attendees whose voices need to be learned.
 
-   ![Process Session before processing, listing Jordan under New Players](../images/screens/process-session-new-player.png)
+   ![Process Session before processing, listing Jordan Lee under New Players](../images/screens/process-session-new-player.png)
 
 3. Press **C** (**Continue**) and choose the recording. Supported formats are `.wav`, `.mp3`, `.m4a`, `.flac`, and `.ogg`.
 4. For a `.wav`, answer **Clean Audio?**: choose **Yes** for a raw recording or **No** if it has already been cleaned. Other supported formats are cleaned automatically.
@@ -31,7 +31,7 @@ The replacements apply across the transcript. Correct names help TableSage inter
 
 **Review New Speaker Assignments** proposes lines for each new Player. The lines you keep will become voice samples, so listen to them and keep only speech you are sure belongs to that person.
 
-A character name mentioned in a line is not enough to identify its speaker. If Priya says “Hald, what do you think?”, that is Priya's voice, even though Hald is Jordan's character. A few certain clips are more useful than a collection containing mixed voices.
+A character name mentioned in a line is not enough to identify its speaker. If Priya Patel says “Hald, what do you think?”, that is Priya's voice, even though Hald is Jordan Lee's character. A few certain clips are more useful than a collection containing mixed voices.
 
 1. Select a Player in the **Players** pane, then press **→** or **Enter** to enter their **Utterances**.
 2. Move through the lines to hear their clips.

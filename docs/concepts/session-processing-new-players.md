@@ -57,7 +57,7 @@ The result is a set of candidate samples, not an established identity. Someone w
 
 Human review checks whether each candidate really contains the intended Player's voice. Listening to the recording helps distinguish a person speaking from someone merely mentioning or addressing them.
 
-For example, *Hald, do the Deep Kin have a name…* mentions Jordan's character, but Priya may be the one asking the question. Treating it as Jordan's speech would mix Priya's voice into Jordan's samples. A few certain lines are more valuable than a larger collection of mixed voices.
+For example, *Hald, do the Deep Kin have a name…* mentions Jordan Lee's character, but Priya Patel may be the one asking the question. Treating it as Jordan's speech would mix Priya's voice into Jordan's samples. A few certain lines are more valuable than a larger collection of mixed voices.
 
 When more evidence is needed, TableSage can search for speech acoustically similar to the confirmed candidates, comparing it with competing voices. Those additions also require human review. This expands the evidence without letting a voice match alone become proof of identity.
 

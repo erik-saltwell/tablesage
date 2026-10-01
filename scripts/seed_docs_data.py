@@ -30,7 +30,12 @@ from tablesage_application.session_pipeline.generate_player_introductions import
     validate_player_introductions,
 )
 from tablesage_application.session_pipeline.role_transcript import RoleTranscript, RoleTranscriptUtterance
-from tablesage_application.session_pipeline.scene_breakdown import Scene, SceneBreakdownContent, persist_ledger_pair
+from tablesage_application.session_pipeline.scene_breakdown import (
+    Scene,
+    SceneBreakdown,
+    SceneBreakdownContent,
+    persist_ledger_pair,
+)
 from tablesage_application.session_pipeline.transcript_sections import (
     InclusiveUtteranceRange,
     TranscriptSectionsGenerationResponse,
@@ -43,11 +48,26 @@ from tablesage_tools.model import Transcript
 from tablesage_tools.model.transcript import TranscriptionWord, Utterance
 
 GM = "Game Master"
-PLAYERS = {GM: "Alice", "Thorgrim": "Bob", "Lyra": "Priya"}
+PLAYERS = {GM: "Alice Chen", "Thorgrim": "Bob Martinez", "Lyra": "Priya Patel"}
 INTRODUCTIONS = [
     PlayerIntroduction(character="Thorgrim", description="A dwarven shieldbearer searching for his missing sister, Dagna."),
     PlayerIntroduction(character="Lyra", description="An elven cartographer tracing the lost waterways beneath Ironhold."),
 ]
+
+# Session outputs this script writes by hand.
+AUTHORED = (
+    ArtifactName.INPUT_AUDIO,
+    ArtifactName.TRANSCRIPT,
+    ArtifactName.TRANSCRIPT_TEXT,
+    ArtifactName.REVIEWED_TRANSCRIPT,
+    ArtifactName.ROLE_TRANSCRIPT,
+    ArtifactName.TRANSCRIPT_SECTIONS,
+    ArtifactName.LEDGER,
+    ArtifactName.SCENE_BREAKDOWN,
+    ArtifactName.PLAYER_INTRODUCTIONS,
+    ArtifactName.RECAP_SUMMARY,
+    ArtifactName.SUMMARY,
+)
 
 # Each scene's entries are (role, established fact/action). These authored fixtures
 # deliberately keep transcript, Ledger, scene coverage, and summaries aligned.
@@ -286,29 +306,19 @@ def verify(app: Application) -> None:
         validate_player_introductions(introductions, ledger.attendees)
         Transcript.load(folder / "transcript.json")
         Transcript.load(folder / "transcript_reviewed.json")
-        # Registered for the reworked processing flow, but nothing generates them yet.
-        not_yet_generated = {
-            ArtifactName.NEW_SPEAKER_SET,
-            ArtifactName.NEW_SPEAKER_ASSIGNMENTS,
-            ArtifactName.CLEANED_TRANSCRIPT,
-            ArtifactName.REVIEWED_NEW_SPEAKER_ASSIGNMENTS,
-            ArtifactName.SPEAKER_ENHANCED_TRANSCRIPT,
-            ArtifactName.SPELLCHECKED_TRANSCRIPT,
-        }
-        expected = set(ArtifactName) - not_yet_generated
+        # The app imports these authored files as legacy outputs: present but stale, so Previously On and
+        # Opportunities refuse them. The screenshot launchers build that history from scene_breakdown.json.
         states = app.session_artifact_states(game_session.id)
-        invalid = {name.value: states[name].value for name in expected if states[name] != ArtifactStatus.CURRENT}
-        if invalid:
-            raise ValueError(f"Invalid artifact states for {game_session.name}: {invalid}")
+        missing = [name.value for name in AUTHORED if states[name] == ArtifactStatus.MISSING]
+        if missing:
+            raise ValueError(f"Missing authored outputs for {game_session.name}: {missing}")
+        breakdown = SceneBreakdown.load(folder / "scene_breakdown.json")
+        if breakdown.ledger_sha256 != hashlib.sha256((folder / "ledger.json").read_bytes()).hexdigest():
+            raise ValueError(f"Scene Breakdown provenance mismatch for {game_session.name}")
         export_count = len(app.exportable_artifacts(game_session.id))
-        print(f"Verified {game_session.name}: {len(ledger.utterances)} Ledger entries; {export_count} exports")
-    history = app.previously_on_history(campaign.id)
-    for session in history.sessions:
-        folder = app.session_folder(session.breakdown.session_id)
-        if session.breakdown.ledger_sha256 != hashlib.sha256((folder / "ledger.json").read_bytes()).hexdigest():
-            raise ValueError("Scene Breakdown provenance mismatch")
-    recap = app.create_campaign_scene_recap(campaign.id)
-    print(f"Campaign history ready: {len(history.sessions)} sessions, {len(recap.scenes)} scenes")
+        print(
+            f"Verified {game_session.name}: {len(ledger.utterances)} Ledger entries, {len(breakdown.scenes)} scenes; {export_count} exports"
+        )
 
 
 def main() -> None:

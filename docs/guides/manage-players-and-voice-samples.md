@@ -8,7 +8,7 @@ For a Player without a voice print, the usual starting point is [processing a Se
 
 ## Remove Incorrect Samples First
 
-Before adding more samples, check whether the existing ones are correct. For example, if Jordan's voice samples contain Priya's speech, adding more clips can preserve the confusion.
+Before adding more samples, check whether the existing ones are correct. For example, if Jordan Lee's voice samples contain Priya Patel's speech, adding more clips can preserve the confusion.
 
 The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. To find and remove a wrong clip:
 

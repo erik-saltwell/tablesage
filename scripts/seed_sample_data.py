@@ -42,22 +42,30 @@ def _ensure_glossary_entry(app: Application, campaign: Campaign, term: str, desc
     app.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term=term, description=description))
 
 
-def _ensure_sessions(app: Application, campaign: Campaign, sessions: list[tuple[str, date]]) -> None:
+def _ensure_sessions(app: Application, campaign: Campaign, sessions: list[tuple[str, date]], attendees: list[tuple[Player, str]]) -> None:
+    """Create missing sessions; give any session without attendance these (player, role) attendees.
+
+    A new session copies its predecessor's attendance, so normally only the first one is filled here.
+    """
     existing_names = {s.name for s in app.list_sessions(campaign.id)}
     for name, session_date in sessions:
-        if name in existing_names:
-            continue
-        app.create_session(campaign.id, name, session_date)
+        if name not in existing_names:
+            app.create_session(campaign.id, name, session_date)
+        game_session = next(s for s in app.list_sessions(campaign.id) if s.name == name)
+        if not app.list_attendance(game_session.id):
+            for player, role in attendees:
+                app.add_attendance_with_roles(game_session.id, player.id, [role])
 
 
 def seed(app: Application) -> None:
-    _get_or_create_player(app, "Alice")
-    _get_or_create_player(app, "Bob")
-    _get_or_create_player(app, "Priya")
-    _get_or_create_player(app, "Sam")
+    # Full names, as the documentation recommends, so Players who share a first name stay distinct.
+    alice = _get_or_create_player(app, "Alice Chen")
+    bob = _get_or_create_player(app, "Bob Martinez")
+    priya = _get_or_create_player(app, "Priya Patel")
+    sam = _get_or_create_player(app, "Sam Okafor")
 
     # A player with no voice clips/voice print yet, to exercise that empty state.
-    _get_or_create_player(app, "Jordan")
+    _get_or_create_player(app, "Jordan Lee")
 
     iron_pact = _get_or_create_campaign(
         app,
@@ -92,6 +100,7 @@ def seed(app: Application) -> None:
             ("Tunnels of the Deep Kin", date(2026, 1, 11)),
             ("The Ashspine Betrayal", date(2026, 1, 25)),
         ],
+        [(alice, "Game Master"), (priya, "Lyra"), (bob, "Thorgrim")],
     )
     _ensure_sessions(
         app,
@@ -100,8 +109,9 @@ def seed(app: Application) -> None:
             ("A Crown Without a Head", date(2026, 2, 1)),
             ("The Regent's Gambit", date(2026, 2, 15)),
         ],
+        [(priya, "Nadia"), (sam, "Kestrel"), (bob, "Game Master")],
     )
-    _ensure_sessions(app, voidfall, [("The Long Fall", date(2026, 3, 1))])
+    _ensure_sessions(app, voidfall, [("The Long Fall", date(2026, 3, 1))], [(alice, "Vex"), (priya, "Game Master"), (sam, "Juno")])
 
 
 def main() -> None:

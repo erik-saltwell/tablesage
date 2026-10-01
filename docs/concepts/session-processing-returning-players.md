@@ -57,7 +57,7 @@ This is the last quality check before generation. An error left here can flow in
 
 ## Assign Roles To Players
 
-TableSage creates the **role transcript**, replacing player names with their Session Roles: *Thorgrim* rather than *Bob*, or *Game Master* rather than *Alice*. Any brief acknowledgment still marked **Unassigned Speaker** after review is dropped at this point.
+TableSage creates the **role transcript**, replacing player names with their Session Roles: *Thorgrim* rather than *Bob Martinez*, or *Game Master* rather than *Alice Chen*. Any brief acknowledgment still marked **Unassigned Speaker** after review is dropped at this point.
 
 This connects the people who spoke to their identities in the game. Generated artifacts can then describe the fiction using the appropriate character names and table functions.
 

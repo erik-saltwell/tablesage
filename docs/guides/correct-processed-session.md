@@ -21,11 +21,11 @@ Changing a Session's transcript does not remove clips already added to a Player'
 
 ## Reopen a Transcript Review
 
-For example, suppose a line about promising payment was assigned to Jordan but was actually spoken by Priya:
+For example, suppose a line about promising payment was assigned to Jordan Lee but was actually spoken by Priya Patel:
 
 1. On Session Detail, press **P** (**Process**).
 2. Highlight the completed **Review Transcript** step and press **R** (**Restart Step**).
-3. Find the line, listen to its clip, and assign Priya using the legend's number key or the **Speaker** dropdown in **Edit Utterance**.
+3. Find the line, listen to its clip, and assign Priya Patel using the legend's number key or the **Speaker** dropdown in **Edit Utterance**.
 4. Correct any related text, then choose **Confirm**.
 5. Complete any later prompts. TableSage applies the correction and rebuilds the dependent outputs.
 

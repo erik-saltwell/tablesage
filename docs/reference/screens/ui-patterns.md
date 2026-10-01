@@ -48,7 +48,7 @@ These list keys appear on:
 - the voice clips on Player Detail, where there is only **D**;
 - the correction and glossary lists that processing asks you to review.
 
-![The Players List with Alice highlighted and the New Player, Edit Player, and Delete Player keys in the footer](../../images/screens/players-list.png)
+![The Players List with Alice Chen highlighted and the New Player, Edit Player, and Delete Player keys in the footer](../../images/screens/players-list.png)
 
 The footer labels these keys with what they act on, for example **New Campaign**, **Edit Session**, or **Delete Entry**. For lists with all three actions, **New**, **Edit**, and **Delete** appear together in that order at the end of the left-aligned bindings. Other main actions come before them. **? Other actions** stays last at the far right, so its position is consistent across screens.
 

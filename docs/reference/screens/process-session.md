@@ -29,7 +29,7 @@ The mark at the left of each row shows its state:
 
 Some steps appear only when they apply:
 
-- **New Players.** When any attendee is a new Player, their names are listed at the right, and six more steps appear: Suggest Name Corrections, **Review Name Corrections**, Apply Name Corrections, Isolate New Speakers, **Review New Speaker Assignments**, and Seed Player Voice Samples. The screenshot above shows a Session with a new Player, Jordan. A Session where everyone already has a voice print skips those steps:
+- **New Players.** When any attendee is a new Player, their names are listed at the right, and six more steps appear: Suggest Name Corrections, **Review Name Corrections**, Apply Name Corrections, Isolate New Speakers, **Review New Speaker Assignments**, and Seed Player Voice Samples. The screenshot above shows a Session with a new Player, Jordan Lee. A Session where everyone already has a voice print skips those steps:
 
   ![Process Session for returning Players, part-way through](../../images/screens/process-session-midway.png)
 

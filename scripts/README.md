@@ -11,7 +11,7 @@ Keep each utility in a single `.py` file when practical. Scripts should:
 
 ## Documentation sample data
 
-`seed_docs_data.py --cwd .for-docs` populates an initialized, empty documentation deployment with fictional players and campaigns. Run it with a Python environment containing TableSage. It uses `seed_sample_data.py` for the basic entities and adds three complete Iron Pact sessions with transcripts, Ledgers, scenes, introductions, recaps, and summaries. All outputs are authored fixtures; the WAV files contain silence, and no provider calls or real voice profiles are involved.
+`seed_docs_data.py --cwd .for-docs` populates an initialized, empty documentation deployment with fictional players and campaigns. Run it with a Python environment containing TableSage. It uses `seed_sample_data.py` for the basic entities and adds three complete Iron Pact sessions with transcripts, Ledgers, scenes, introductions, recaps, and summaries. All outputs are authored fixtures; the WAV files contain silence, and no provider calls or real voice prints are involved.
 
 The script backs up the empty database before seeding, refuses existing user data, and verifies a marked fixture on subsequent runs without overwriting edits. Textual MCP launch instructions for the seeded deployment are kept in the git-ignored `.for-docs/session-processing/README.md`.
 

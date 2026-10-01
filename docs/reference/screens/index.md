@@ -4,7 +4,7 @@ This section documents every screen in TableSage: what it shows, every key it re
 
 Start with [Common UI Patterns](ui-patterns.md). It covers the conventions every screen shares: going back with **Esc**, quitting with **Ctrl+Q**, the **New**, **Edit**, and **Delete** keys on lists, secondary actions and the **?** menu, unavailable actions, and the common dialogs.
 
-The screenshots use a fictional sample workspace: the *Iron Pact* Campaign, its Players Alice, Bob, Priya, and Jordan, and a Session called *The Flooded Cistern*. They were captured in a 140 × 44 terminal. In a narrower terminal, some footer labels can be cut off.
+The screenshots use a fictional sample workspace: the *Iron Pact* Campaign, its Players Alice Chen, Bob Martinez, Priya Patel, and Jordan Lee, and a Session called *The Flooded Cistern*. They were captured in a 140 × 44 terminal. In a narrower terminal, some footer labels can be cut off.
 
 ## Screens
 

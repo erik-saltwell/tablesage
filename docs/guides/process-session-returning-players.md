@@ -13,7 +13,7 @@ You need the recording and configured [keys and models](settings.md). This walkt
 
 The same date rule chooses the prior recap in the session summary; see [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
 
-For example, if Jordan played Brother Hald last time but switched characters, edit Jordan's Role for this Session. The person's voice remains the same; the Role tells generated outputs which character they played this time.
+For example, if Jordan Lee played Brother Hald last time but switched characters, edit Jordan's Role for this Session. The person's voice remains the same; the Role tells generated outputs which character they played this time.
 
 ## Import the Recording
 

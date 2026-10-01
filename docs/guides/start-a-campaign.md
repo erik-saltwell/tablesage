@@ -17,20 +17,18 @@ The Campaign now has a home for its Sessions and Glossary. Its first Session can
 
 ## Create the First Session
 
-On the Campaign's **Sessions** tab, press **N** (**New Session**). Give the Session a useful name, such as *Arrival at the Harbor*, and enter its required date as `YYYY-MM-DD`. Use a real calendar date, such as `2026-10-01`. A blank date shows *Date is required.* An impossible date or another format shows an inline error; correct it before continuing. Choose **Create Session**. TableSage opens Session Detail.
-
-TableSage uses Session dates to choose the prior recap for later session summaries. Older Sessions can still be undated; when every Session is undated, no prior recap is included. See [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
+On the Campaign's **Sessions** tab, press **N** (**New Session**). Give the Session a useful name, such as *Arrival at the Harbor*, and enter its required date as `YYYY-MM-DD`. Use a real calendar date, such as `2026-10-01`. Choose **Create Session**. TableSage opens Session Detail.
 
 The first Session starts with an empty Attendance list. Add everyone whose speech is in the recording, including the game master.
 
 ## Add Attendees and Roles
 
 1. Focus the **Attendance** table and press **N** (**New Attendee**).
-2. In **Player**, select an existing person, or choose **<New player…>** and enter their real-world name. TableSage creates the Player and returns to the attendee dialog.
+2. In **Player**, select an existing person, or choose **<New player…>** and enter their real-world name. TableSage creates the Player and returns to the attendee dialog. We recommend using the Player's full name, with normal spacing and capitalization, so that Players who share a first name stay distinct.
 3. Add their Role: press **R** (**Add Role**) for a character name, or **G** (**Add Game Master**) for the GM.
 4. Choose **Save**, then repeat for the other attendees.
 
-For example, Jordan is the Player and *Brother Hald* is their Role. Morgan is another Player with the *Game Master* Role. Use the Player's name for the person speaking and the Role for their identity in this particular Session. A Player can have more than one Role, but transcript attribution uses only the alphabetically first Role for all their speech; TableSage does not distinguish their characters line by line.
+For example, Jordan Lee is the Player and *Brother Hald* is their Role. Morgan Reyes is another Player with the *Game Master* Role. Use the Player's name for the person speaking and the Role for their identity in this particular Session. A Player can have more than one Role, but transcript attribution uses only the alphabetically first Role for all their speech; TableSage does not distinguish their characters line by line.
 
 ![The attendee dialog, with a Player selection and a list of Roles](../images/screens/attendee-dialog.png)
 

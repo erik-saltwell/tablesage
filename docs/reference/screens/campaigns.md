@@ -29,7 +29,7 @@ The list shows every Campaign in the workspace, one Campaign per two-line row: i
 |---|---|
 | **C** | **Clean Up.** After you confirm, removes campaign folders on disk that no longer have a Campaign in the database, such as those left by deleted Campaigns. A notification lists what was removed, or says there was nothing to remove. |
 | **X** | **Export Campaign.** Writes the highlighted Campaign, with its Sessions, Glossary, and files, to a ZIP archive (default name `campaign.zip`). Unavailable when no Campaign is highlighted. It refuses with *Wait for campaign processing to finish before exporting* while any of the Campaign's Sessions is being processed. |
-| **I** | **Import Campaign.** Imports a Campaign from a ZIP archive made by Export Campaign. Players are workspace-wide and aren't part of a campaign archive, so every Player who attended its Sessions must already exist here with the same name; use [Import Players](players.md#other-actions) first. If the import fails, an **Import Campaign Failed** window lists the problems, such as *Missing player: Jordan*. |
+| **I** | **Import Campaign.** Imports a Campaign from a ZIP archive made by Export Campaign. Players are workspace-wide and aren't part of a campaign archive, so every Player who attended its Sessions must already exist here with the same name; use [Import Players](players.md#other-actions) first. If the import fails, an **Import Campaign Failed** window lists the problems, such as *Missing player: Jordan Lee*. |
 
 ### Campaign Dialog
 
