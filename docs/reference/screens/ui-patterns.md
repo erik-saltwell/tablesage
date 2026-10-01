@@ -40,15 +40,17 @@ Most screens are built around a list, and the same three key bindings manage the
 | **E**, **Enter** | **Edit.** Opens the highlighted item: its detail screen if it has one, otherwise a dialog for editing it. Clicking the highlighted row again, or double-clicking a row, does the same. |
 | **D**, **Delete**, **Backspace** | **Delete** the highlighted item. |
 
-![The Players List with Alice highlighted and the New Player, Edit Player, and Delete Player keys in the footer](../../images/screens/players-list.png)
-
-The footer labels these keys with what they act on, for example **New Campaign**, **Edit Session**, or **Delete Entry**. For lists with all three actions, **New**, **Edit**, and **Delete** appear together in that order at the end of the left-aligned bindings. Other main actions come before them. **? Other actions** stays last at the far right, so its position is consistent across screens. These list keys appear on:
+These list keys appear on:
 
 - the Campaigns and Players lists;
 - the Sessions and Glossary tabs of Campaign Detail;
 - the attendance table on Session Detail;
 - the voice clips on Player Detail, where there is only **D**;
 - the correction and glossary lists that processing asks you to review.
+
+![The Players List with Alice highlighted and the New Player, Edit Player, and Delete Player keys in the footer](../../images/screens/players-list.png)
+
+The footer labels these keys with what they act on, for example **New Campaign**, **Edit Session**, or **Delete Entry**. For lists with all three actions, **New**, **Edit**, and **Delete** appear together in that order at the end of the left-aligned bindings. Other main actions come before them. **? Other actions** stays last at the far right, so its position is consistent across screens.
 
 Some behavior to expect:
 

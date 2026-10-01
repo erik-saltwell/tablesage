@@ -151,7 +151,7 @@ Spellcheck corrections match anywhere in the text, not only whole words.
 
 See [Shared Keys for Correction Lists](#shared-keys-for-correction-lists) for adding, editing, and confirming corrections.
 
-Restarting this review reopens saved corrections; it does not generate new suggestions from the current Glossary. To apply a later glossary change to reviewed speech, use **Review Transcript** and **Find/Replace**; see [Correct an Existing Entry](../../guides/build-campaign-glossary.md#correct-an-existing-entry).
+Restarting this review reopens saved corrections; it does not generate new suggestions from the current Glossary. To apply a later glossary change to reviewed speech, use **Review Transcript** and **Find/Replace**; see [Apply Glossary Changes to Processed Sessions](../../guides/build-campaign-glossary.md#apply-glossary-changes-to-processed-sessions).
 
 ## Review Transcript
 

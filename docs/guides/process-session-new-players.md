@@ -31,6 +31,8 @@ The replacements apply across the transcript. Correct names help TableSage inter
 
 **Review New Speaker Assignments** proposes lines for each new Player. The lines you keep will become voice samples, so listen to them and keep only speech you are sure belongs to that person.
 
+A character name mentioned in a line is not enough to identify its speaker. If Priya says “Hald, what do you think?”, that is Priya's voice, even though Hald is Jordan's character. A few certain clips are more useful than a collection containing mixed voices.
+
 1. Select a Player in the **Players** pane, then press **→** or **Enter** to enter their **Utterances**.
 2. Move through the lines to hear their clips.
 3. Press **D** to mark a wrong or uncertain line for removal. Press **D** again on that line to restore it.
@@ -39,7 +41,7 @@ The replacements apply across the transcript. Correct names help TableSage inter
 
 ![Reviewing candidate utterances for a new Player's voice samples](../images/screens/new-speaker-utterances.png)
 
-A character name mentioned in a line is not enough to identify its speaker. If Priya says “Hald, what do you think?”, that is Priya's voice, even though Hald is Jordan's character. A few certain clips are more useful than a collection containing mixed voices. If little usable speech remains, do not keep incorrect samples to increase the count; speaker assignments will need particular attention in transcript review.
+If little usable speech remains, do not keep incorrect samples to increase the count; speaker assignments will need particular attention in transcript review.
 
 TableSage seeds voice samples from the confirmed lines and then identifies speakers in the rest of the recording. Uncertain matches remain unassigned.
 

@@ -35,9 +35,14 @@ The **Artifacts** panel on Session Detail lists the user-facing [artifacts](../c
 | ◐ | Out of date: it exists, but something it depends on has changed since. |
 | ○ | Missing: it hasn't been produced yet. |
 
-An out-of-date artifact is still on disk and can still be exported. Changes to its source material, review decisions, or generation prompts can make it out of date. Reprocessing or regenerating brings it up to date; see [Regenerate an Artifact](#regenerate-an-artifact) below.
+An out-of-date artifact is still on disk and can still be exported. Reprocessing or regenerating brings it up to date; see [Regenerate an Artifact](#regenerate-an-artifact) below.
 
-Changes to attendance, Roles, Session dates, Glossary entries, or model choices can leave existing outputs marked **●**. Use **Regenerate Artifact** when those outputs need refreshing. First fix any transcript or attendance errors using [Correct a Processed Session](correct-processed-session.md); for date changes, see [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
+The marks track some kinds of change but not others:
+
+- **Can mark an output out of date (◐):** changes to its source material, review decisions, or generation prompts.
+- **Can leave an output marked current (●):** changes to attendance, Roles, Session dates, Glossary entries, or model choices.
+
+To refresh outputs after a change the marks don't track, first fix any transcript or attendance errors using [Correct a Processed Session](correct-processed-session.md), then use **Regenerate Artifact**. For date changes, see [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
 
 ## Regenerate an Artifact
 
@@ -68,9 +73,11 @@ You can stay on the Export screen and export several artifacts in a row. Two det
 
 ## Regenerate Every Session in a Campaign
 
+Use **Regenerate All Outputs** to refresh the whole Campaign's outputs after upgrading TableSage (updated prompts mark existing outputs out of date), and before building [Previously On or Opportunities](prepare-the-next-session.md), which need every Session's scene breakdown to be current.
+
 On Campaign Detail, **Regenerate All Outputs** (**O** under **Other actions**) checks every Session in the Campaign that has imported audio and rebuilds whatever is missing or out of date, in Session number order. A progress dialog shows which Session and which output it is working on.
 
-Sessions whose transcript review isn't complete and current are skipped, and the message shown when it finishes says how many. If no imported-audio Session has a current completed review, nothing is generated. Process any skipped Sessions separately, then run the action again. Use this after upgrading TableSage (updated prompts mark existing outputs out of date), and before building [Previously On or Opportunities](prepare-the-next-session.md), which need every Session's scene breakdown to be current.
+Sessions whose transcript review isn't complete and current are skipped, and the message shown when it finishes says how many. If no imported-audio Session has a current completed review, nothing is generated. Process any skipped Sessions separately, then run the action again.
 
 ## Check the Exported Copy
 
@@ -82,4 +89,4 @@ Regeneration updates TableSage's managed outputs. It does not update files you a
 
 If **Regenerate Artifact** or **Extract Glossary** fails, TableSage shows an error notification and records the failure beside the affected step on [Process Session](../reference/screens/process-session.md#what-the-screen-shows). Open that screen to inspect the failure, fix its cause, and press **Continue** to retry. Export and campaign-wide regeneration failures appear in notifications.
 
-Related tasks: to discard processing and import the recording again, see [Start the Session Over](correct-processed-session.md#start-the-session-over). For fresh vocabulary proposals from a Session, use Session Detail's **Extract Glossary**; see [Correct an Existing Entry](build-campaign-glossary.md#correct-an-existing-entry).
+Related tasks: to discard processing and import the recording again, see [Start the Session Over](correct-processed-session.md#start-the-session-over). For fresh vocabulary proposals from a Session, use Session Detail's **Extract Glossary**; see [Get Fresh Term Proposals from a Session](build-campaign-glossary.md#get-fresh-term-proposals-from-a-session).

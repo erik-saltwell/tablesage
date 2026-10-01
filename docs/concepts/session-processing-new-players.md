@@ -2,7 +2,7 @@
 
 This workflow applies when at least one attendee has no usable [voice print](players.md#voice-prints), usually because they have no voice samples yet.
 
-All stages described in [Processing with Returning Players](session-processing-returning-players.md) still apply. The difference is an additional sequence that establishes new Players' voices before speaker identification.
+All stages described in [Processing with Returning Players](session-processing-returning-players.md) still apply. The difference is an additional sequence, steps 4–7 below, that establishes new Players' voices between **Remove Bad Utterances** and **Identify Speakers**.
 
 The complete workflow is:
 
@@ -29,7 +29,7 @@ Voice comparison needs a reference for each person it is meant to recognize. Wit
 
 The transcript itself provides a starting point. Conversational clues suggest which lines belong to each new Player, human review confirms the evidence, and those confirmed lines become initial voice samples. Speaker identification can then use those samples to recognize additional speech in the Session.
 
-The extra work is steps 4–7 of the overview, between **Remove Bad Utterances** and **Identify Speakers**. The Session's attendance defines both the established speakers and the people whose voices need to be learned.
+The Session's attendance defines both the established speakers and the people whose voices need to be learned.
 
 ## Importing Audio and Transcription
 
@@ -37,7 +37,7 @@ The extra work is steps 4–7 of the overview, between **Remove Bad Utterances**
 
 ## Establish the New Players' Voices
 
-Here are the steps used to find voice samples for a new Player.
+Steps 4–7 find and confirm voice samples for each new Player; **Identify Speakers** then uses them to recognize the rest of their speech.
 
 ### Review Name Corrections
 

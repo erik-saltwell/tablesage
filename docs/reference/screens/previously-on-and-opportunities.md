@@ -8,9 +8,12 @@ To get to Create Previously On or Generate Opportunities, press **V** or **Y**, 
 
 These two campaign-wide tools help you prepare the next Session. For the task-level walkthrough, see [Prepare the Next Session](../../guides/prepare-the-next-session.md).
 
-Both tools read scene breakdowns in Session number order, ignoring the highest-numbered Session if it has no imported audio yet. If any remaining Session's Scene Breakdown is missing or out of date, neither opens. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs**. This order is independent of the dates used to [choose a session summary's prior recap](../../concepts/sessions.md#how-the-prior-recap-is-chosen). Both tools also need the key for your High model; see [Settings](welcome-and-settings.md#settings).
+Both tools share these rules:
 
-Both tools save only to a Markdown file with a `.md` extension, in an existing folder outside the workspace's `campaigns/` directory. A destination that breaks these rules is refused with a message such as *Save the recap outside managed Campaign data.*
+- **Campaign history.** They read scene breakdowns in Session number order, ignoring the highest-numbered Session if it has no imported audio yet. If any remaining Session's Scene Breakdown is missing or out of date, neither opens. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs**.
+- **Order, not dates.** That Session number order is independent of the dates used to [choose a session summary's prior recap](../../concepts/sessions.md#how-the-prior-recap-is-chosen).
+- **API key.** They need the key for your High model; see [Settings](welcome-and-settings.md#settings).
+- **Saving.** They save only to a Markdown file with a `.md` extension, in an existing folder outside the workspace's `campaigns/` directory. A destination that breaks these rules is refused with a message such as *Save the recap outside managed Campaign data.*
 
 ## Create Previously On
 

@@ -9,20 +9,22 @@ Both send campaign text to an LLM, which reads the history and writes the result
 
 ## What You Need First
 
-You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. The preparation tools check its history as follows:
+You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. For example, if next time the party will return to the harbor to claim a promised permit, focus your notes on that return. The recap can remind players of the bargain, while Opportunities can suggest ways earlier people, objects, or commitments might become useful there.
 
-1. Read Sessions in number order.
-2. Ignore the highest-numbered Session if it has no imported audio yet.
-3. Require every remaining Session to have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+Both preparation tools first check the Campaign's history:
 
-Session dates do not determine this order; they are used separately to [choose the prior recap in a session summary](../concepts/sessions.md#how-the-prior-recap-is-chosen). If you add older recordings later, check the starting situation before continuing.
+- They read Sessions in number order.
+- They ignore the highest-numbered Session if it has no imported audio yet.
+- They require every remaining Session to have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+
+Session dates do not determine this order; they are used separately to [choose the prior recap in a session summary](../concepts/sessions.md#how-the-prior-recap-is-chosen). This matters if you add a recording of an earlier game later: its new Session still gets the highest number, so once it is processed, the tools read it last and take their starting situation from where that game ended. In that case, check the starting situation each tool shows before continuing.
+
+To bring the history up to date and open a tool:
 
 1. From the Welcome screen, press **C** and open your Campaign.
 2. If the history needs refreshing, open **Other actions** (**?**) and choose **Regenerate All Outputs** (**O**); see [Regenerate Every Session in a Campaign](review-and-export.md#regenerate-every-session-in-a-campaign).
 3. Complete processing for any Sessions skipped because their transcript reviews are incomplete or out of date, then refresh again. If a listed Session has no recording at all (for example, a game that was never recorded), delete it; Regenerate All Outputs cannot build anything for it.
 4. Choose either preparation tool from **Other actions**. You can use one or both; neither depends on the other's result.
-
-For example, if next time the party will return to the harbor to claim a promised permit, focus your notes on that return. The recap can remind players of the bargain, while Opportunities can suggest ways earlier people, objects, or commitments might become useful there.
 
 ## Create Previously On
 

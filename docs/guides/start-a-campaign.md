@@ -61,6 +61,6 @@ You are ready to process when the Session's attendance and Roles are correct and
 
 ## Sessions without Recordings
 
-If a game was not recorded, leave it out of TableSage's Session list. A later summary uses the last eligible dated Session's recap, so it will not cover the unrecorded game. If you already created a Session for that game, delete it from the Campaign's **Sessions** tab with **D** and confirm. An empty Session can leave a missing-recap placeholder in a later summary and block the preparation tools.
+If a game was not recorded, leave it out of TableSage's Session list: an empty Session can leave a missing-recap placeholder in a later summary and block the preparation tools. If you already created a Session for that game, delete it from the Campaign's **Sessions** tab with **D** and confirm. Either way, a later summary uses the last eligible dated Session's recap, so it will not cover the unrecorded game.
 
 You can create the upcoming Session before playing it. [Previously On and Opportunities](prepare-the-next-session.md) ignore the highest-numbered Session when it has no imported audio yet.

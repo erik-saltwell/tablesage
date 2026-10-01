@@ -51,4 +51,6 @@ Outside the workspace, per user account:
 - `~/.cache/tablesage/`, holding the downloaded voice-embedding model.
 - The standard Hugging Face cache (`~/.cache/huggingface/` unless you have set `HF_HOME`), holding the downloaded punctuation model.
 
-TableSage does not sync these folders; the processing uploads described above are separate. Deleting a workspace directory or a cache directory removes what it contains; it does not touch your stored keys, which live in the separate per-user credentials file. Deleting a workspace also removes its `checkpoints/` folder, so TableSage downloads the noise-removal model again the next time you save settings in a new workspace.
+TableSage does not sync these folders anywhere. The processing uploads described in [What Leaves Your Computer](#what-leaves-your-computer) are separate.
+
+Deleting a workspace directory or a cache directory removes what it contains, but never your stored keys, which live in the separate per-user credentials file. Deleting a workspace also removes its `checkpoints/` folder, so TableSage downloads the noise-removal model again the next time you save settings in a new workspace.

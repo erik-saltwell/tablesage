@@ -38,7 +38,7 @@ On the same computer and user account, your existing API keys are shared with th
 
 Existing Players are matched by name, ignoring capitalization and surrounding spaces, and their clips are merged. Identical clips are skipped. If the destination already has Players, make sure matching names refer to the same people before importing.
 
-Campaign import requires every attendee to exist with the exact archived player name. A destination Player whose name differs in capitalization may be matched by player import but still fail the Campaign's exact-name check. Check the reported missing name and use **Edit Metadata** on Player Detail to make the name match before retrying campaign import.
+Campaign import requires every attendee to exist with the exact archived player name. A destination Player whose name differs in capitalization may be matched by player import but still fail the Campaign's exact-name check. For example, if the destination already has a Player named *priya* and the archive's attendee is *Priya*, player import merges Priya's clips into *priya*, but campaign import reports *Missing player: Priya*. Check the reported missing name and use **Edit Metadata** on Player Detail to make the name match before retrying campaign import.
 
 ## Import the Campaign
 

@@ -8,17 +8,21 @@ For a Player without a voice print, the usual starting point is [processing a Se
 
 ## Remove Incorrect Samples First
 
-The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. Select a Player and press **E** or **Enter** to open their page, which lists their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
-
 Before adding more samples, check whether the existing ones are correct. For example, if Jordan's voice samples contain Priya's speech, adding more clips can preserve the confusion.
 
-Open `players/<player-name>/` inside your workspace in a file manager and listen to its `.wav` files in an audio player. On Player Detail, select an incorrect clip by its filename and press **D** (**Delete Voice Clip**). TableSage confirms, then deletes the clip and recomputes the voice print from the remaining clips.
+The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. To find and remove a wrong clip:
+
+1. Select the Player and press **E** or **Enter** to open their page, which lists their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
+2. Open `players/<player-name>/` inside your workspace in a file manager and listen to its `.wav` files in an audio player.
+3. On Player Detail, select an incorrect clip by its filename and press **D** (**Delete Voice Clip**). TableSage confirms, then deletes the clip and recomputes the voice print from the remaining clips.
 
 Delete unsuitable clips rather than the Player. A Player who has attended a Session can't be deleted until they're removed from that attendance; see [Delete and Clean Up](../concepts/delete-and-clean.md).
 
 ## Add Samples from a Session
 
 **From Session** (**S** on the Players List) learns voice samples for the Session's current attendees. It is the same action that **Improve Player Voice Prints** offers at the end of processing. Use it if you chose **Not Now** and now want to learn from that reviewed recording, or to refresh samples after correcting speaker assignments.
+
+Only do this after checking speaker assignments carefully. A mislabeled line teaches TableSage the wrong voice for that Player.
 
 1. Press **S** and choose a Campaign, then a Session. Sessions with no transcript are dimmed and can't be chosen.
 2. TableSage cuts clips from the current transcript, replaces each attendee's earlier clips from this Session, and recomputes their voice print. A notification reports how many Players received new clips and how many clips were extracted.
@@ -32,8 +36,6 @@ TableSage chooses the source transcript in this order:
 3. If identification is unavailable, the initial machine transcript.
 
 For either machine transcript, it accepts only lines assigned to that Player with high confidence. Very short lines are skipped, and samples pass through the outlier check described below. If no current transcript is available, the action stops with an error.
-
-Only do this after checking speaker assignments carefully. A mislabeled line teaches TableSage the wrong voice for that Player.
 
 ## Import Clips from a Folder
 
@@ -56,6 +58,8 @@ How different a clip must be to count as an outlier, and the minimum number of c
 
 **Recompute All Voice Prints**, under **Other actions** on the Players List, runs a recompute for every Player. If it fails partway, it tells you which Player it stopped at and how many it finished.
 
+**Clean Up** (**C**), under **Other actions** on the Players List, is a different action from the Player page's **Clean Up**: it deletes player folders on disk that no longer belong to any Player, the leftovers of deleted Players. It does not touch the clips of existing Players.
+
 For every key on these screens, see [Players](../reference/screens/players.md) in the screen reference.
 
 ## Move Players Between Workspaces
@@ -71,8 +75,6 @@ For a complete campaign transfer, follow [Move a Campaign to Another Workspace](
 - **Clips:** skips identical clips, ignores files other than each Player's `.wav` clips, and recomputes voice prints.
 
 When it finishes, it reports how many Players it created and matched and how many clips it imported and skipped. An archive with unsafe or unexpected contents is rejected with nothing changed, and TableSage shows what was wrong.
-
-**Clean Up** (**C**) deletes player folders on disk that no longer belong to any Player, the leftovers of deleted Players.
 
 ## Check the Result in the Next Session
 

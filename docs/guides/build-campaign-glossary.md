@@ -31,6 +31,8 @@ For instance, establish *Tidewarden Coil* here, then keep a proposed correction 
 
 On the Campaign's Glossary tab, select a term and press **E** to change its spelling or description. Press **D** to delete an entry you no longer want, then confirm.
 
+## Apply Glossary Changes to Processed Sessions
+
 Changing the Glossary does not itself rewrite reviewed speech or refresh saved spelling suggestions. To apply a corrected name to an already processed Session:
 
 1. Open the Session, press **P**, highlight **Review Transcript**, and press **R**.
@@ -39,9 +41,11 @@ Changing the Glossary does not itself rewrite reviewed speech or refresh saved s
 
 See [Correct a Processed Session](correct-processed-session.md).
 
-Restarting **Spellcheck Against Glossary** reopens saved corrections; it does not ask the LLM for new suggestions based on the edited Glossary. You can edit or add corrections if that review opens. If there are no saved suggestions or decisions, it completes automatically; use **Review Transcript** instead.
+Restarting **Spellcheck Against Glossary** does not ask the LLM for new suggestions based on the edited Glossary; it only reopens the corrections saved earlier. If that review opens, you can edit or add corrections there. If there are no saved suggestions or decisions, it completes automatically, so use **Review Transcript** instead.
 
-If you want fresh term proposals from a Session, open **Other actions** (**?**) on Session Detail and choose **Extract Glossary** (**L**). This restarts glossary suggestions and review, followed by the dependent processing steps.
+## Get Fresh Term Proposals from a Session
+
+To have TableSage propose new terms from a Session again, open **Other actions** (**?**) on Session Detail and choose **Extract Glossary** (**L**). This restarts glossary suggestions and review, followed by the dependent processing steps.
 
 ## Reuse a Glossary
 

@@ -62,7 +62,7 @@ To download Python 3.12 ahead of time, run:
 uv python install 3.12
 ```
 
-This optional command adds a versioned executable without replacing your shell's `python` command by default. Python may serve other uv-managed applications; TableSage's dependencies stay isolated in its own [tool environment](https://docs.astral.sh/uv/concepts/tools/#tool-environments).
+By default, this adds a versioned Python executable and leaves your shell's `python` command unchanged. Other uv-managed applications can share that Python, while TableSage's dependencies stay isolated in its own [tool environment](https://docs.astral.sh/uv/concepts/tools/#tool-environments).
 
 ## Install Git
 
@@ -149,15 +149,15 @@ On the first launch, TableSage creates a `.tablesage/` folder in the workspace a
 
 Press **S** to open Settings.
 
-Enter your API keys and choose your language models. For the default model choices, you need:
+Enter your API keys and choose your language models. Settings asks for three models — High, Medium, and Low — so you can choose a stronger model for demanding work and a cheaper, faster one for simpler tasks.
+
+For the default model choices, you need:
 
 - an **ElevenLabs** key, for transcription and speaker diarization;
 - an **OpenAI** key, for the High model; and
 - an **Anthropic** key, for the Medium and Low models.
 
-If you select different models, add a key for each provider those choices use. Model IDs must take the form `provider/model-name`, where the provider is `anthropic`, `openai`, or `gemini`.
-
-Settings asks for three models — High, Medium, and Low — so you can choose a stronger model for demanding work and a cheaper, faster one for simpler tasks. See [Update Your Settings](../guides/settings.md#models-high-medium-and-low) for the model defaults and uses, key storage, and shell environment overrides.
+If you select different models, add a key for each provider those choices use. Model IDs must take the form `provider/model-name`, where the provider is `anthropic`, `openai`, or `gemini`. See [Update Your Settings](../guides/settings.md#models-high-medium-and-low) for the model defaults and uses, key storage, and shell environment overrides.
 
 Choose **Continue** to save, or move focus out of a key field and press **C**. Saving validates your model IDs, writes your settings, tests each configured model and downloads local audio-processing models if they aren't already installed — this may take a while.
 
@@ -169,5 +169,7 @@ Choose **Continue** to save, or move focus out of a key field and press **C**. S
 - **Settings will not save.** Check your model IDs. Each must use the `provider/model-name` form with `anthropic`, `openai`, or `gemini` as the provider. Settings moves focus to the first field with a problem.
 - **A connection test fails but the key looks right.** Check whether the key is coming from your shell environment rather than from TableSage — see [How Shell Environment Variables Override Keys](../guides/settings.md#how-shell-environment-variables-override-keys).
 - **"This workspace uses a newer settings schema."** The workspace was written by a newer version of TableSage than the one you have installed. Open it with that newer version.
+
+## Next Steps
 
 Next, follow [Start a Campaign](../guides/start-a-campaign.md) to set up your first Campaign and Session. The [Guides](../guides/index.md) cover everyday tasks such as processing a recording, exporting outputs, and preparing the next Session. [Concepts](../concepts/index.md) explains how TableSage recognizes Players' voices, what happens when it processes a Session, and what each generated document is.
