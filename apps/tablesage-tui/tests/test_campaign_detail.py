@@ -529,7 +529,7 @@ async def test_sessions_table_shows_sessions_sorted_by_sequence() -> None:
 @pytest.mark.anyio
 async def test_new_session_creates_and_opens_session_detail() -> None:
     campaign = Campaign(name="Iron Pact")
-    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One", session_date=date(2026, 10, 1))
     application = _application(campaign=campaign)
     application.create_session = MagicMock(return_value=created)
 
@@ -542,17 +542,18 @@ async def test_new_session_creates_and_opens_session_detail() -> None:
         assert isinstance(pilot.app.screen, SessionDialog)
 
         pilot.app.screen.query_one("#session-dialog-name", Input).value = "Session One"
+        pilot.app.screen.query_one("#session-dialog-date", Input).value = "2026-10-01"
         await pilot.press("enter")
         await _wait_for_progress_worker(pilot)
 
-        application.create_session.assert_called_once_with(campaign.id, "Session One", None)
+        application.create_session.assert_called_once_with(campaign.id, "Session One", date(2026, 10, 1))
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
 @pytest.mark.anyio
 async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -> None:
     campaign = Campaign(name="Iron Pact")
-    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One")
+    created = GameSession(campaign_id=campaign.id, sequence_number=1, name="Session One", session_date=date(2026, 10, 1))
     application = _application(campaign=campaign)
     application.session_folder_would_collide = MagicMock(return_value=True)
     application.delete_colliding_session_folder = MagicMock()
@@ -565,6 +566,7 @@ async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -
         await pilot.press("n")
         await pilot.pause()
         pilot.app.screen.query_one("#session-dialog-name", Input).value = "Session One"
+        pilot.app.screen.query_one("#session-dialog-date", Input).value = "2026-10-01"
         await pilot.press("enter")
         await pilot.pause()
 
@@ -575,7 +577,7 @@ async def test_new_session_folder_collision_prompts_then_deletes_and_creates() -
         await _wait_for_progress_worker(pilot)
 
         application.delete_colliding_session_folder.assert_called_once_with(campaign.id)
-        application.create_session.assert_called_once_with(campaign.id, "Session One", None)
+        application.create_session.assert_called_once_with(campaign.id, "Session One", date(2026, 10, 1))
         assert isinstance(pilot.app.screen, SessionDetailScreen)
 
 
@@ -595,6 +597,7 @@ async def test_new_session_folder_collision_cancelled_keeps_dialog_open_with_err
         dialog = pilot.app.screen
         assert isinstance(dialog, SessionDialog)
         dialog.query_one("#session-dialog-name", Input).value = "Session One"
+        dialog.query_one("#session-dialog-date", Input).value = "2026-10-01"
         await pilot.press("enter")
         await pilot.pause()
 
