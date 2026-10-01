@@ -24,6 +24,6 @@
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
 | Use voice print terminology everywhere | complete | [.work-items/voice-print-terminology/](.work-items/voice-print-terminology/) |
-| Workspace agent help | implementing | [.work-items/workspace-agent-help/](.work-items/workspace-agent-help/) |
+| Workspace agent help | complete | [.work-items/workspace-agent-help/](.work-items/workspace-agent-help/) |
 
 Historical designs, research and maintenance records are reference material, not additional active work items. Some may be retained locally in the Git-ignored `.archive/`; see the [engineering workflow](.work-items/workflow.md).

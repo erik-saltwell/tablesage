@@ -1,6 +1,6 @@
 ---
 name: "Workspace agent help"
-status: implementing
+status: complete
 ---
 
 # Workspace Agent Help
@@ -12,6 +12,14 @@ Let a user launch Claude Code, Codex, or Gemini CLI from their TableSage workspa
 
 - [progress.md](progress.md): implementation handoff, deviations from the intent, and verification results.
 
-## Resume Note
+## Completion
 
-Implementation of the code, documentation, packaging, and screenshots is done and verified by direct checks (see [progress.md](progress.md)). The status stays `implementing` because one acceptance condition is unmet: the broken-workspace validation with Claude Code and Codex, which the user needs to run. Its results decide the next Troubleshooting FAQ entries and whether a `doctor` command is justified. Nothing has been committed.
+Completed on 2026-10-01 at the user's explicit request. The code, documentation, packaging, and screenshots were implemented and checked directly, as recorded in [progress.md](progress.md): lint, formatting, and type checks pass; the commands, agent-file handling, opt-out, installed-wheel contents, Welcome screen layout, and docs links were exercised by hand. No tests were added, per the workflow.
+
+Known limitations at completion, none of which block closure:
+
+- **Validation not run:** the broken-workspace test with Claude Code and Codex (see [idea.md](idea.md#validating-the-bet)) has not been done. It is the only check of whether an agent diagnoses well from the Troubleshooting FAQ, and of whether Codex finds `AGENTS.md` and Gemini CLI follows the `@` import. Its results would decide the next FAQ entries and whether a `doctor` command is warranted.
+- **Open decision:** launching TableSage in the home folder or a repo subfolder creates the agent stub files there, which Claude Code and Gemini CLI also read from parent folders. A guard (such as skipping the stubs in the home folder) was proposed and not implemented.
+- **Existing test failures:** 3 `test_campaign_detail.py::test_new_session_*` tests fail because of the user's separate, uncommitted required-date change, not this work.
+- **Quality rubric:** no evaluation was performed, so every dimension in [intent.md](intent.md#quality-rubric) is unassessed.
+- **Not committed:** all changes remain in the working tree.

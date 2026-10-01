@@ -70,7 +70,9 @@ Implementation started 2026-10-01 at the user's request, directly after fleshing
 
 `ruff check`, `ruff format --check`, and `ty check` pass. The existing suites give 689 passed and 3 failed; the three are the same `test_campaign_detail.py::test_new_session_*` failures caused by the user's uncommitted required-date change, as above. No tests were added.
 
-## Remaining
+## Remaining (Carried Over at Completion)
+
+The item was marked complete on 2026-10-01 at the user's request with the following not done:
 
 - **Not run: the broken-workspace validation of the central bet.** Set up four or five deliberately broken workspaces and ask Claude Code and Codex to diagnose them, then refine the Troubleshooting FAQ and decide whether `doctor` is needed. This needs those agents run by the user. Gemini CLI's handling of `@` imports and Codex's handling of `AGENTS.md` are also confirmed only by this run.
 - No rubric evaluation has been recorded. Every dimension in [intent.md](intent.md#quality-rubric) is unassessed.
