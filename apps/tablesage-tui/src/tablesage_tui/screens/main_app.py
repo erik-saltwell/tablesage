@@ -7,14 +7,17 @@ from typing import Any
 
 import widelog
 from tablesage_application import Application
+from tablesage_application.agent_help import AgentFilesStatus
 from tablesage_application.configuration import Configuration, validate_models
 from tablesage_application.observability import configure_logging
+from tablesage_application.paths import workspace_state_dir
 from tablesage_model.setup import ensure_settings
 from textual.app import App
 from textual.binding import Binding
 from textual.notifications import SeverityLevel
 from textual.screen import Screen
 
+from ..agent_help import refresh_agent_files
 from ..processing.coordinator import ProcessingCoordinator
 from ..processing.steps import STEP_FUNCTIONS
 from ..resources import load_resource
@@ -26,13 +29,20 @@ class TableSageApp(App):
     ERROR_NOTIFICATION_TIMEOUT = float("inf")
 
     def __init__(
-        self, application: Application | None = None, *, configuration: Configuration | None = None, settings_review_required: bool = False
+        self,
+        application: Application | None = None,
+        *,
+        configuration: Configuration | None = None,
+        settings_review_required: bool = False,
+        agent_files: AgentFilesStatus | None = None,
     ) -> None:
         # `main()` is the real composition root and always injects settings-loaded
         # Application; this fallback (tests, ad-hoc scripts) gets AppSettings() defaults.
         self.application = application or Application()
         self.configuration = configuration
         self.settings_review_required = settings_review_required
+        # What launch did with the coding-agent help files, for Advanced Help; None when nothing was attempted.
+        self.agent_files = agent_files
         super().__init__()
         # The one thing that starts Session processing work (see `processing.coordinator`).
         self.coordinator = ProcessingCoordinator(self, STEP_FUNCTIONS)
@@ -127,14 +137,21 @@ class TableSageApp(App):
 
 
 def main() -> None:
+    cwd = Path.cwd()
+    # An existing workspace's coding-agent help is refreshed before anything that can stop startup, since a failed
+    # launch is when the user may turn to an agent. A new workspace gets it only once the media tools are known to be
+    # present, so a folder TableSage can't run in never becomes a workspace.
+    if workspace_state_dir(cwd).is_dir():
+        refresh_agent_files(cwd)
     ensure_media_tools()
+    agent_files = refresh_agent_files(cwd)
     configuration = Configuration(Path.cwd())
     configure_logging(Path.cwd())
     settings = ensure_settings(None, load_resource("settings.yaml"))
     review_required = configuration.needs_review(settings)
     validate_models(settings)
     application = Application(settings=settings)
-    app = TableSageApp(application, configuration=configuration, settings_review_required=review_required)
+    app = TableSageApp(application, configuration=configuration, settings_review_required=review_required, agent_files=agent_files)
     app.run()
 
 

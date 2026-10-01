@@ -12,13 +12,14 @@ The Welcome screen appears every time TableSage starts. Everything else is opene
 
 ![The Welcome screen](../../images/screens/landing.png)
 
-The three lines under the logo are also buttons. You can click them instead of pressing the key.
+The four lines under the logo are also buttons. You can click them instead of pressing the key.
 
 | Key | Action |
 |---|---|
 | **C** | Open [Campaigns](campaigns.md). |
 | **P** | Open [Players](players.md). |
 | **S** | Open [Settings](#settings). |
+| **H** | Open [Advanced Help](#advanced-help). |
 | **Ctrl+Q** | Quit TableSage. This is the only screen whose footer shows it, but it works everywhere. |
 
 ### When Settings Must Be Reviewed First
@@ -28,6 +29,20 @@ On a new workspace, or after an update adds settings you haven't seen, TableSage
 ![The Welcome screen while settings still need to be reviewed](../../images/screens/landing-settings-required.png)
 
 Press **S**, check your keys and models, and save. Campaigns and Players become available as soon as the save succeeds.
+
+### Advanced Help
+
+Press **H** to open the **Advanced Help** dialog. It explains how to get help from an AI coding agent: open a terminal in the workspace directory, whose path the dialog shows, and start Claude Code, Codex, or Gemini CLI there. It also lists example questions and reminds you that what the agent reads is sent to its provider. **H** works even while settings still need to be reviewed.
+
+![The Advanced Help dialog](../../images/screens/advanced-help.png)
+
+A line near the bottom reports the agent help files TableSage keeps in the workspace:
+
+- *Agent help files are ready in this folder.*
+- *TableSage left your own CLAUDE.md unchanged*, followed by the line to add to that file so your agent finds TableSage's instructions. The message names whichever of `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` were already yours.
+- *Agent help files are turned off*, when `install_agent_files` is `false` in `.tablesage/settings.yaml`.
+
+Close the dialog with **Close**, **Enter**, or **Esc**. The [Advanced Help](../../guides/advanced-help.md) guide explains the feature in full.
 
 ## Settings
 

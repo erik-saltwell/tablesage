@@ -850,7 +850,8 @@ SpellingSuggestionDialog,
 PlayerDialog,
 CampaignDialog,
 SessionDialog,
-OtherActionsDialog {
+OtherActionsDialog,
+AdvancedHelpDialog {
     align: center middle;
     background: $overlay-bg;
 
@@ -877,6 +878,33 @@ OtherActionsDialog {
         border-title-align: left;
         border-title-color: $fg-accent;
         border-title-style: bold;
+    }
+
+    #advanced-help-dialog {
+        width: 76;
+        height: auto;
+        background: $pine-750;
+        color: $surface-2-fg;
+        border: solid $surface-border;
+        padding: 1 2;
+
+        border-title-align: left;
+        border-title-color: $fg-accent;
+        border-title-style: bold;
+
+        Static {
+            margin-bottom: 1;
+        }
+
+        #advanced-help-workspace {
+            color: $fg-accent;
+            padding-left: 2;
+        }
+
+        /* The button row's own top margin separates it from this last paragraph. */
+        #advanced-help-privacy {
+            margin-bottom: 0;
+        }
     }
 
     #other-actions-dialog {
@@ -1232,7 +1260,7 @@ LandingScreen {
 
     #welcome-panel {
         width: 80;
-        height: 31;
+        height: 32;
 
         #welcome-content {
             width: 100%;
@@ -1308,7 +1336,7 @@ LandingScreen {
         #welcome-actions {
             width: auto;
             height: auto;
-            margin-top: 2;
+            margin-top: 1;
         }
 
         .call-to-action {

@@ -89,4 +89,6 @@ Regeneration updates TableSage's managed outputs. It does not update files you a
 
 If **Regenerate Artifact** or **Extract Glossary** fails, TableSage shows an error notification and records the failure beside the affected step on [Process Session](../reference/screens/process-session.md#what-the-screen-shows). Open that screen to inspect the failure, fix its cause, and press **Continue** to retry. Export and campaign-wide regeneration failures appear in notifications.
 
+If the cause isn't clear, an AI coding agent started in your workspace can read the logs and the Session's records to find it; see [Advanced Help](advanced-help.md) and the [Troubleshooting FAQ](../reference/troubleshooting-faq.md).
+
 Related tasks: to discard processing and import the recording again, see [Start the Session Over](correct-processed-session.md#start-the-session-over). For fresh vocabulary proposals from a Session, use Session Detail's **Extract Glossary**; see [Get Fresh Term Proposals from a Session](build-campaign-glossary.md#get-fresh-term-proposals-from-a-session).

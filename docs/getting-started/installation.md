@@ -1,7 +1,5 @@
 # Install TableSage
 
-TableSage is a terminal application for game masters who want to turn session recordings into transcripts, recaps, and reusable campaign material. It runs in a workspace directory that you choose; one workspace can hold multiple Campaigns.
-
 This page installs TableSage and gets you to a working first launch.
 
 ## Before You Begin
@@ -11,7 +9,7 @@ You need:
 - A computer with a terminal and an internet connection.
 - About 10 GB of free disk space to start, plus room for recordings and voice samples.
 - An [ElevenLabs](https://elevenlabs.io/) API key, for transcription and speaker diarization.
-- An API key for at least one language-model provider. TableSage supports OpenAI, Anthropic, and Google Gemini, and nothing else. The default model choices use OpenAI and Anthropic, so most first-time users want a key for each.
+- An API key for at least one language-model provider. TableSage supports OpenAI, Anthropic, and Google Gemini, and nothing else. The default model choices use OpenAI and Anthropic, but you can change this after installing the application.
 
 Plan for these approximate storage needs:
 
@@ -23,10 +21,6 @@ Plan for these approximate storage needs:
 | Each Player's voice samples | Tens to a few hundred megabytes |
 
 You will install **uv** to manage Python and install TableSage, **Git** to fetch its source, and **FFmpeg** to read and play audio.
-
-## Choose a Terminal
-
-Use your system's terminal. On Windows, [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) provides a better display than the legacy console window.
 
 ## Install uv
 
@@ -66,7 +60,7 @@ By default, this adds a versioned Python executable and leaves your shell's `pyt
 
 ## Install Git
 
-The installation command below uses Git to fetch TableSage's source. If Git is not already installed, follow the [Git installation instructions](https://git-scm.com/install/) for your operating system. Make sure Git is added to your `PATH`, then restart your terminal and check:
+The installation command below uses Git to fetch the Tablesage application. If Git is not already installed, follow the [Git installation instructions](https://git-scm.com/install/) for your operating system. Make sure Git is added to your `PATH`, then restart your terminal and check:
 
 ```sh
 git --version
@@ -170,6 +164,11 @@ Choose **Continue** to save, or move focus out of a key field and press **C**. S
 - **A connection test fails but the key looks right.** Check whether the key is coming from your shell environment rather than from TableSage — see [How Shell Environment Variables Override Keys](../guides/settings.md#how-shell-environment-variables-override-keys).
 - **"This workspace uses a newer settings schema."** The workspace was written by a newer version of TableSage than the one you have installed. Open it with that newer version.
 
+If TableSage has opened this workspace before, an AI coding agent started in the workspace can look into the problem with you; see [Advanced Help](../guides/advanced-help.md).
+
 ## Next Steps
 
-Next, follow [Start a Campaign](../guides/start-a-campaign.md) to set up your first Campaign and Session. The [Guides](../guides/index.md) cover everyday tasks such as processing a recording, exporting outputs, and preparing the next Session. [Concepts](../concepts/index.md) explains how TableSage recognizes Players' voices, what happens when it processes a Session, and what each generated document is.
+* [Start a Campaign](../guides/start-a-campaign.md) to set up your first Campaign and Session. 
+* [Guides](../guides/index.md) cover everyday tasks such as processing a recording, exporting outputs, and preparing the next Session. 
+* [Concepts](../concepts/index.md) explains how TableSage recognizes Players' voices, what happens when it processes a Session, and what each generated document is.
+* [Advanced Help](../guides/advanced-help.md) explains how to ask Claude Code, Codex, or Gemini CLI for help with TableSage.

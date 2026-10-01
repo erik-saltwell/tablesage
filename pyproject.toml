@@ -1,6 +1,6 @@
 [project]
 name = "tablesage-rpg"
-version = "0.1.0"
+version = "1.0.0"
 description = "Turn tabletop roleplaying session recordings into transcripts, recaps, and campaign summaries."
 readme = "README.md"
 license = "CC-BY-NC-4.0"
@@ -35,8 +35,8 @@ dependencies = [
 ]
 
 [project.scripts]
-tablesage-rpg = "tablesage_tui.screens:main"
-tablesage = "tablesage_tui.screens:main"
+tablesage-rpg = "tablesage_tui.cli:main"
+tablesage = "tablesage_tui.cli:main"
 
 [project.urls]
 Repository = "https://github.com/erik-saltwell/tablesage"
@@ -47,19 +47,33 @@ requires = ["hatchling>=1.27,<2"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = [
+# `packages` spelled out as only-include + sources so `docs/` can join them: the public docs ship
+# inside the app as the help topics `tablesage report-help-topics` and `output-help-topic` serve to
+# coding agents (see `tablesage_tui.resources.docs_directory`). Unlike force-include, this honors
+# `exclude`, keeping Syncthing's `docs/.stversions` history out of wheels built from a working tree.
+only-include = [
   "apps/tablesage-tui/src/tablesage_tui",
   "packages/tablesage-application/src/tablesage_application",
   "packages/tablesage-model/src/tablesage_model",
   "packages/tablesage-tools/src/tablesage_tools",
+  "docs",
 ]
+exclude = ["docs/.stversions"]
+
+[tool.hatch.build.targets.wheel.sources]
+"apps/tablesage-tui/src" = ""
+"packages/tablesage-application/src" = ""
+"packages/tablesage-model/src" = ""
+"packages/tablesage-tools/src" = ""
+"docs" = "tablesage_tui/resources/docs"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
-  "pyproject.toml", "README.md", "LICENSE",
+  "pyproject.toml", "README.md", "LICENSE", "docs",
   "apps/tablesage-tui/src", "packages/tablesage-application/src",
   "packages/tablesage-model/src", "packages/tablesage-tools/src",
 ]
+exclude = ["docs/.stversions"]
 
 [dependency-groups]
 dev = [

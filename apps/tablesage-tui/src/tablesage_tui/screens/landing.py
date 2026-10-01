@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import cast
 
 from textual.app import ComposeResult
@@ -5,6 +6,7 @@ from textual.binding import Binding
 from textual.containers import Grid, Vertical
 from textual.widgets import Static
 
+from ..dialogs.advanced_help import AdvancedHelpDialog
 from ..widgets import AsciiArt, CommandButton, EmptyWidget
 from .base import TableSageScreen
 from .campaign_list import CampaignListScreen
@@ -20,6 +22,7 @@ class LandingScreen(TableSageScreen):
         Binding("c,C", "show_campaigns", "Campaigns", key_display="C"),
         Binding("p,P", "show_players", "Players", key_display="P"),
         Binding("s,S", "app.open_settings", "Settings", key_display="S"),
+        Binding("h,H", "show_advanced_help", "Advanced Help", key_display="H"),
         # The only screen that shows Quit -- every other screen inherits the
         # app-level binding (still works via ctrl+q) but keeps it out of its
         # footer.
@@ -79,6 +82,11 @@ class LandingScreen(TableSageScreen):
                         yield Static("S", classes="keycap")
                         yield Static(" to edit settings")
 
+                    with CommandButton("show_advanced_help", id="show-advanced-help-command", classes="call-to-action"):
+                        yield Static("> type ")
+                        yield Static("H", classes="keycap")
+                        yield Static(" for advanced help")
+
     def on_mount(self) -> None:
         self._sync_navigation()
 
@@ -100,6 +108,11 @@ class LandingScreen(TableSageScreen):
     def action_show_players(self) -> None:
         if self.check_action("show_players", ()):
             self.app.push_screen(PlayersListScreen())
+
+    def action_show_advanced_help(self) -> None:
+        from .main_app import TableSageApp
+
+        self.app.push_screen(AdvancedHelpDialog(Path.cwd(), cast(TableSageApp, self.app).agent_files))
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         from .main_app import TableSageApp

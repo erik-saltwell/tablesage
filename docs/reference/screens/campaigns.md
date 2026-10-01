@@ -111,7 +111,7 @@ In the glossary entry dialog, **Term** is required, and **Description** is optio
 ![The New Session dialog](../../images/screens/session-dialog.png)
 
 - **Name** is required.
-- **Date** is optional. If you enter one, use the form `YYYY-MM-DD`; any other form is refused with a message inside the dialog.
+- **Date** is required when creating a Session. Leaving it blank shows *Date is required.* Enter a real calendar date in exactly `YYYY-MM-DD` form; an invalid date or another format shows *'your entry' isn't a valid date (expected YYYY-MM-DD).* The dialog stays open and keeps your entries so you can correct them. When editing an existing Session's metadata, the date remains optional.
 
 Dates determine which Session supplies the prior recap in a session summary; see [How the Prior Recap Is Chosen](../../concepts/sessions.md#how-the-prior-recap-is-chosen).
 

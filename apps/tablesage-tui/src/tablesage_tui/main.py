@@ -1,4 +1,4 @@
-from tablesage_tui.screens import main
+from tablesage_tui.cli import main
 
 if __name__ == "__main__":
     main()

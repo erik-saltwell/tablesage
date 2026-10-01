@@ -28,10 +28,13 @@ __all__ = [
     "ArtifactStorage",
     "campaign_folder",
     "campaigns_root",
+    "database_path",
     "logs_root",
     "player_folder",
     "players_root",
     "session_folder",
+    "settings_path",
+    "workspace_state_dir",
 ]
 
 
@@ -48,8 +51,21 @@ def players_root(cwd: Path) -> Path:
     return cwd / "players"
 
 
+def workspace_state_dir(cwd: Path) -> Path:
+    """`.tablesage/`, whose presence marks `cwd` as a workspace. Unlike `tablesage_model`'s resolvers, never creates it."""
+    return cwd / ".tablesage"
+
+
+def database_path(cwd: Path) -> Path:
+    return workspace_state_dir(cwd) / "tablesage.db"
+
+
+def settings_path(cwd: Path) -> Path:
+    return workspace_state_dir(cwd) / "settings.yaml"
+
+
 def logs_root(cwd: Path) -> Path:
-    return cwd / ".tablesage" / "logs"
+    return workspace_state_dir(cwd) / "logs"
 
 
 def campaign_folder(cwd: Path, campaign_name: str) -> Path:

@@ -2,7 +2,7 @@
 
 TableSage turns recordings of tabletop roleplaying sessions into transcripts, recaps, and a lasting campaign record. It is a terminal application for game masters.
 
-![The TableSage Welcome screen, offering Campaigns, Players, and Settings](docs/images/getting-started/landing-screen.png)
+![The TableSage Welcome screen, offering Campaigns, Players, Settings, and Advanced Help](docs/images/getting-started/landing-screen.png)
 
 ## What It Does
 
@@ -49,6 +49,8 @@ TableSage stores its data in the directory you launch it from, so start it from 
 - [Guides](docs/guides/index.md): task walkthroughs for setup, processing, exports, and campaign preparation
 - [Screen Reference](docs/reference/screens/index.md): every screen, key, secondary action, and dialog, with screenshots
 - [Privacy and Data Handling](docs/reference/privacy.md): what leaves your computer and what stays on it
+- [Advanced Help](docs/guides/advanced-help.md): ask Claude Code, Codex, or Gemini CLI for help from your workspace
+- [Troubleshooting FAQ](docs/reference/troubleshooting-faq.md): problems the other pages don't explain
 
 ## License
 

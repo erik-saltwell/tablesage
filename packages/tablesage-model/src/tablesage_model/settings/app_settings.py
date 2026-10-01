@@ -172,6 +172,9 @@ class GenerateArtifactsSettings(BaseModel, frozen=True):
 class AppSettings(BaseModel, frozen=True):
     # Zero means that this workspace has not acknowledged the current schema.
     settings_version: int = Field(default=0, ge=0)
+    # Read leniently at launch, before these settings load (see `tablesage_application.agent_help`), so it needs
+    # no settings_version bump; only an explicit false turns the workspace's coding-agent help files off.
+    install_agent_files: bool = True
     connection_test_timeout: PositiveInt = 30
     opportunities_timeout: PositiveInt = 600
     previously_on: PreviouslyOnSettings = Field(default_factory=PreviouslyOnSettings)

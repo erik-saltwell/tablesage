@@ -8,7 +8,7 @@ You need an installed TableSage workspace. If this is your first launch, complet
 
 1. From the Welcome screen, press **C** to open **Campaigns**.
 2. Press **N** (**New Campaign**).
-3. Enter a **Name**, such as *Salt Marsh*. Add a **Description** and **Game System** if useful, then choose **Create Campaign**.
+3. Enter a **Name**, such as *Salt Marsh*. Add a **Description** and **Game System**,  then choose **Create Campaign**.
 4. Select the Campaign in the list and press **E** or **Enter** to open it.
 
 ![The New Campaign dialog with a name, description, and game system filled in](../images/guides/start-campaign-new-campaign-dialog.png)
@@ -17,9 +17,9 @@ The Campaign now has a home for its Sessions and Glossary. Its first Session can
 
 ## Create the First Session
 
-On the Campaign's **Sessions** tab, press **N** (**New Session**). Give the Session a useful name, such as *Arrival at the Harbor*, and optionally enter its date as `YYYY-MM-DD`. Choose **Create Session**. TableSage opens Session Detail.
+On the Campaign's **Sessions** tab, press **N** (**New Session**). Give the Session a useful name, such as *Arrival at the Harbor*, and enter its required date as `YYYY-MM-DD`. Use a real calendar date, such as `2026-10-01`. A blank date shows *Date is required.* An impossible date or another format shows an inline error; correct it before continuing. Choose **Create Session**. TableSage opens Session Detail.
 
-Record the date if you want later session summaries to include this game's recap. TableSage chooses the prior recap by date; when every Session is undated, no prior recap is included. See [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
+TableSage uses Session dates to choose the prior recap for later session summaries. Older Sessions can still be undated; when every Session is undated, no prior recap is included. See [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
 
 The first Session starts with an empty Attendance list. Add everyone whose speech is in the recording, including the game master.
 

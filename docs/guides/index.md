@@ -18,5 +18,9 @@ Practical walkthroughs for common activities once TableSage is [installed](../ge
 - [Improve Player Voice Recognition](manage-players-and-voice-samples.md): add reliable samples from Sessions or recordings, recompute voice prints, and clean up unsuitable clips.
 - [Move a Campaign to Another Workspace](move-campaign-workspace.md): export Players and campaign history, import them in the right order, and check the transfer.
 - [Update Your Settings](settings.md): configure keys and language models, save changes, and resolve configuration problems.
+- [Advanced Help](advanced-help.md): ask Claude Code, Codex, or Gemini CLI how to do something, or why something isn't working, from your workspace.
 
-For the ideas behind these tasks, see [Concepts](../concepts/index.md). For every screen's keys, secondary actions, and dialogs, see the [Screen Reference](../reference/screens/index.md).
+## Next Steps
+
+*  [Concepts](../concepts/index.md) explains the ideas behind these workflows and provides a high-level overview of Tablesage works. 
+* [Screen Reference](../reference/screens/index.md) provides a detailed reference guide for the table sage user interface.

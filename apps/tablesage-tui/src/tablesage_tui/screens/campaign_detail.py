@@ -291,7 +291,7 @@ class CampaignDetailScreen(TableSageScreen):
             self.call_after_refresh(self.app.push_screen, SessionDetailScreen(created.id))
             return None
 
-        self.app.push_screen(SessionDialog(title="New Session", submit_label="Create Session", on_submit=on_submit))
+        self.app.push_screen(SessionDialog(title="New Session", submit_label="Create Session", on_submit=on_submit, date_required=True))
 
     def _open_session(self) -> None:
         session_id = self._selected_row_id("sessions-table")

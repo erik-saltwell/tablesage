@@ -5,6 +5,9 @@
 # exists, your edits there persist and this file is never consulted again).
 
 settings_version: 0
+# Keep AGENTS.md, CLAUDE.md, and GEMINI.md in this workspace (and .tablesage/agent-guide.md) so a coding agent
+# launched here can help with TableSage. Set to false to stop creating them; delete any existing ones yourself.
+install_agent_files: true
 connection_test_timeout: 30
 opportunities_timeout: 600  # Generate Opportunities uses llm_model_high.
 

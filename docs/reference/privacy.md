@@ -7,6 +7,7 @@ What TableSage sends to outside services, what stays on your computer, and where
 - **Session audio** is uploaded to [ElevenLabs](https://elevenlabs.io/) for transcription and speaker diarization during **Create Transcript**. Importing prepares the audio locally; creating or recreating the transcript uploads it.
 - **Transcript text** is sent to your configured language-model providers — Anthropic, OpenAI, or Gemini — to propose corrections, extract glossary entries, find a new Player's lines, and generate session outputs.
 - **Campaign context and preparation notes** are also sent to those providers as needed. This includes Player names, Roles, Glossary entries, campaign metadata, and generated records such as ledgers and scene breakdowns. **Create Previously On** and **Generate Opportunities** send campaign history and the notes you enter about the upcoming Session.
+- **Anything an AI coding agent reads** is sent to that agent's provider if you use [Advanced Help](../guides/advanced-help.md). TableSage prepares agents such as Claude Code, Codex, and Gemini CLI to help in your workspace, and they can read its logs, records, transcripts, and generated documents. TableSage asks them to check names, dates, and processing records before reading content.
 
 See [Models: High, Medium, and Low](../guides/settings.md#models-high-medium-and-low) for which model tier each action uses, and [Session Artifacts](../concepts/sessions.md#session-artifacts) for what each generated document contains.
 
@@ -39,10 +40,12 @@ Inside your workspace:
   tablesage.db      your campaigns, sessions, players, and glossaries
   settings.yaml     this workspace's settings
   logs/             application logs
+  agent-guide.md    instructions for AI coding agents started in the workspace
 campaigns/
   <campaign name>/<session number>/   session audio and generated documents
 players/            player voice samples
 checkpoints/        the noise-removal model, downloaded into the folder you launch from
+AGENTS.md, CLAUDE.md, GEMINI.md   pointers to the agent guide
 ```
 
 Outside the workspace, per user account:

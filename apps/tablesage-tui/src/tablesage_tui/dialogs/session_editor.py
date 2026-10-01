@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Awaitable, Callable
 from datetime import date
 
@@ -17,7 +18,7 @@ OnSessionSubmit = Callable[[str, date | None], Awaitable[str | None]]
 class SessionDialog(ModalScreen[None]):
     """Collect a session's name and date for both creation and metadata editing.
 
-    Field-level validation here covers name non-blankness and date format (`YYYY-MM-DD`) only --
+    Field-level validation covers name non-blankness, an optional required date, and strict date format (`YYYY-MM-DD`) --
     the date starts blank and has no default. Everything else -- the application call -- is the
     caller's `on_submit`, awaited here: `None` dismisses, a string is shown as an inline error
     with every field's typed value kept (see `intent.md` in the `metadata-below-lists` work
@@ -37,6 +38,7 @@ class SessionDialog(ModalScreen[None]):
         name: str = "",
         session_date: date | None = None,
         submit_label: str = "Save",
+        date_required: bool = False,
     ) -> None:
         super().__init__()
         self._title = title
@@ -44,6 +46,7 @@ class SessionDialog(ModalScreen[None]):
         self._name = name
         self._session_date = session_date
         self._submit_label = submit_label
+        self._date_required = date_required
 
     def compose(self) -> ComposeResult:
         with Vertical(id="session-dialog") as dialog:
@@ -56,7 +59,7 @@ class SessionDialog(ModalScreen[None]):
                 yield Input(
                     id="session-dialog-date",
                     value=str(self._session_date) if self._session_date else "",
-                    placeholder="YYYY-MM-DD (optional)",
+                    placeholder="YYYY-MM-DD (required)" if self._date_required else "YYYY-MM-DD (optional)",
                 )
             yield Static("", id="session-dialog-error", classes="dialog-error", markup=False)
             with EqualWidthButtonRow(classes="dialog-actions"):
@@ -88,9 +91,14 @@ class SessionDialog(ModalScreen[None]):
         raw_date = self.query_one("#session-dialog-date", Input).value.strip()
         session_date: date | None
         if not raw_date:
+            if self._date_required:
+                self._show_error("Date is required.")
+                return
             session_date = None
         else:
             try:
+                if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", raw_date):
+                    raise ValueError("Expected YYYY-MM-DD")
                 session_date = date.fromisoformat(raw_date)
             except ValueError:
                 self._show_error(f"'{raw_date}' isn't a valid date (expected YYYY-MM-DD).")

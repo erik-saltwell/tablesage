@@ -7,6 +7,7 @@
 | Consistent footer binding order | complete | [.work-items/consistent-footer-bindings/](.work-items/consistent-footer-bindings/) |
 | Investigate disfluency and backchannel removal approaches | complete | [.work-items/disfluency-backchannel-removal/](.work-items/disfluency-backchannel-removal/) |
 | Documentation guides | complete | [.work-items/documentation-guides/](.work-items/documentation-guides/) |
+| enhance-readme | registered | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
 | Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
 | Move metadata fields below lists so bindings show up | complete | [.work-items/metadata-below-lists/](.work-items/metadata-below-lists/) |
@@ -23,5 +24,6 @@
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
 | Use voice print terminology everywhere | complete | [.work-items/voice-print-terminology/](.work-items/voice-print-terminology/) |
+| Workspace agent help | implementing | [.work-items/workspace-agent-help/](.work-items/workspace-agent-help/) |
 
 Historical designs, research and maintenance records are reference material, not additional active work items. Some may be retained locally in the Git-ignored `.archive/`; see the [engineering workflow](.work-items/workflow.md).

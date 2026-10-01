@@ -6,19 +6,28 @@ from pathlib import Path
 import sqlalchemy
 from alembic import command
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import Engine, event
 
 from .._paths import resolve_database_path
 
+_MIGRATIONS_DIR = Path(__file__).parent.parent / "_migrations"
+
 
 def ensure_database(cwd: Path | None = None) -> Path:
     db_path: Path = resolve_database_path(cwd)
-    migrations_dir = Path(__file__).parent.parent / "_migrations"
     config = Config()
-    config.set_main_option("script_location", str(migrations_dir))
+    config.set_main_option("script_location", str(_MIGRATIONS_DIR))
     config.set_main_option("sqlalchemy.url", f"sqlite:///{db_path}")
     command.upgrade(config, "head")
     return db_path
+
+
+def expected_database_revision() -> str | None:
+    """The migration revision this version of TableSage upgrades a workspace database to; reads no database."""
+    config = Config()
+    config.set_main_option("script_location", str(_MIGRATIONS_DIR))
+    return ScriptDirectory.from_config(config).get_current_head()
 
 
 def create_engine(db_path: Path) -> Engine:
