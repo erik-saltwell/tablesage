@@ -9,7 +9,11 @@ Both send campaign text to an LLM, which reads the history and writes the result
 
 ## What You Need First
 
-You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. Preparation tools read Sessions in number order and ignore the highest-numbered Session if it has no imported audio yet. Every remaining Session must have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. The preparation tools check its history as follows:
+
+1. Read Sessions in number order.
+2. Ignore the highest-numbered Session if it has no imported audio yet.
+3. Require every remaining Session to have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
 
 Session dates do not determine this order; they are used separately to [choose the prior recap in a session summary](../concepts/sessions.md#how-the-prior-recap-is-chosen). If you add older recordings later, check the starting situation before continuing.
 
@@ -24,7 +28,9 @@ For example, if next time the party will return to the harbor to claim a promise
 
 Choose **Create Previously On** (**V**). The tool works in two stages.
 
-**1. Say what is coming.** TableSage reads the Campaign and shows:
+### 1. Say What Is Coming
+
+TableSage reads the Campaign and shows:
 
 - **Starting situation**, pre-filled from where the highest-numbered Session included in the history ended. Edit it to match how you actually plan to open.
 - **What might happen next Session?** Your notes on where play may go.
@@ -32,9 +38,16 @@ Choose **Create Previously On** (**V**). The tool works in two stages.
 
 Select at least one ingredient or write some notes, then choose **Continue** or press **C** with focus outside a text field. If a suggestion is wrong, correct it in your notes. For the harbor example, select the official and the permit commitment, and explain that the party intends to collect what was promised.
 
-**2. Choose the scenes.** TableSage recommends scenes from across the Campaign, starred **★ Scout**, with a rationale for each that only you see. The list shows every Session and its scenes. Press **Space** or **Enter** to add or remove a scene, or to expand a Session, and focus a scene to read its full record. You may choose any scenes, not only the recommended ones.
+### 2. Choose the Scenes
 
-Choose scenes that give players the context they need for the opening: the original bargain, any changed conditions, and where the party ended last time. Choose **Continue** (**C**), pick a destination, and TableSage writes a concise recap of only the scenes you chose. The suggested filename names the Campaign and the next session number. If the file already exists, you are asked to replace it, and the old file stays intact until the new one is written. If saving fails, fix the cause and choose **Retry Save**.
+TableSage recommends scenes from across the Campaign, starred **★ Scout**, with a rationale for each that only you see. The list shows every Session and its scenes. You may choose any scenes, not only the recommended ones.
+
+- Press **Space** or **Enter** to add or remove a scene, or to expand a Session.
+- Focus a scene to read its full record.
+
+Choose scenes that give players the context they need for the opening: the original bargain, any changed conditions, and where the party ended last time.
+
+Choose **Continue** (**C**), pick a destination, and TableSage writes a concise recap of only the scenes you chose. The suggested filename names the Campaign and the next session number. If the file already exists, you are asked to replace it, and the old file stays intact until the new one is written. If saving fails, fix the cause and choose **Retry Save**.
 
 **Back** returns to stage one. **Exit** (or **Esc**) asks before discarding your inputs, because this tool does not keep drafts.
 

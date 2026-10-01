@@ -10,6 +10,19 @@ To get to a processing review screen, press **C** on the Process Session screen 
 
 If a step finds nothing to review, such as a spellcheck with no suggestions, it completes without opening its screen.
 
+## Reviews and Prompts
+
+- [Import Audio](#import-audio)
+- [Review Name Corrections](#review-name-corrections) — new Players only
+- [Review New Speaker Assignments](#review-new-speaker-assignments) — new Players only
+- [Extract Glossary Terms](#extract-glossary-terms)
+- [Spellcheck Against Glossary](#spellcheck-against-glossary)
+- [Review Transcript](#review-transcript)
+- [Rebuild Prior Sessions](#rebuild-prior-sessions) — only when needed
+- [Improve Player Voice Prints](#improve-player-voice-prints)
+
+Review Name Corrections and Spellcheck Against Glossary use the [Shared Keys for Correction Lists](#shared-keys-for-correction-lists).
+
 ## Import Audio
 
 ### How to Get Here
@@ -61,6 +74,8 @@ To get to **Review Name Corrections**, press **C** on the Process Session screen
 
 Name corrections match whole words only. On this screen, **D** deletes the correction from the list.
 
+See [Shared Keys for Correction Lists](#shared-keys-for-correction-lists) for adding, editing, and confirming corrections.
+
 ## Review New Speaker Assignments
 
 ### How to Get Here
@@ -83,11 +98,15 @@ Press **→** or **Enter** in the Players pane to move into that Player's uttera
 | Key | Action | Pane |
 |---|---|---|
 | **C** | **Confirm.** Saves the kept lines and continues the run. The **Confirm** button does the same. | Both |
-| **F** | **Find More.** Searches the rest of the Session for lines that sound like this Player's kept lines, and adds them marked **+**. Listen to each addition and remove any that aren't the Player. Removed Find More additions also steer later searches away from that voice. You need to keep at least one line first. When nothing more is found, a notification says so. | Both |
+| **F** | **Find More.** Adds similar-sounding lines, marked **+**; keep at least one line first. See [Find More](#find-more) below. | Both |
 | **R** | **Replay** the highlighted line. | Utterances |
 | **Space** | **Manual/Autoplay.** In Autoplay mode, each line plays through and then moves to the next. Moving the cursor yourself switches back to Manual. | Utterances |
 | **D**, **Delete**, **Backspace** | **Delete Utterance.** Toggles the highlighted line between kept and removed, then moves to the next line. A removed line is struck through and marked **✗**; press **D** on it again to keep it. | Utterances |
 | **Esc** | In Utterances: back to Players. In Players: **Cancel**, which ends the run and offers to [save a draft](ui-patterns.md#drafts). | Both |
+
+### Find More
+
+**Find More** searches the rest of the Session for lines that sound like this Player's kept lines. Listen to each addition and remove any that aren't the Player. Removed Find More additions also steer later searches away from that voice. When nothing more is found, a notification says so.
 
 ## Extract Glossary Terms
 
@@ -129,6 +148,8 @@ TableSage looks for glossary terms and names that the transcript misspells, such
 On this screen, removing is reversible. **D** toggles the highlighted correction between kept and removed. A removed correction stays in the list, struck through and marked **✗**, and pressing **D** again brings it back. Only one correction for each **From** text can be active. Keeping, adding, or editing one removes any other correction for the same text.
 
 Spellcheck corrections match anywhere in the text, not only whole words.
+
+See [Shared Keys for Correction Lists](#shared-keys-for-correction-lists) for adding, editing, and confirming corrections.
 
 Restarting this review reopens saved corrections; it does not generate new suggestions from the current Glossary. To apply a later glossary change to reviewed speech, use **Review Transcript** and **Find/Replace**; see [Correct an Existing Entry](../../guides/build-campaign-glossary.md#correct-an-existing-entry).
 

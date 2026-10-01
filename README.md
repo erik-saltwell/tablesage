@@ -15,7 +15,12 @@ TableSage turns recordings of tabletop roleplaying sessions into transcripts, re
 
 ## Get started
 
-You need Python 3.12 or newer (managed for you by [uv](https://docs.astral.sh/uv/)), Git, FFmpeg with both `ffmpeg` and `ffplay`, an [ElevenLabs](https://elevenlabs.io/) API key, and an API key for at least one of OpenAI, Anthropic, or Google Gemini.
+You need:
+
+- Python 3.12 or newer (managed for you by [uv](https://docs.astral.sh/uv/)) and Git.
+- FFmpeg with both `ffmpeg` and `ffplay`.
+- An [ElevenLabs](https://elevenlabs.io/) API key.
+- An API key for at least one of OpenAI, Anthropic, or Google Gemini.
 
 ```sh
 uv tool install git+https://github.com/erik-saltwell/tablesage.git

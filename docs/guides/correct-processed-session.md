@@ -39,8 +39,10 @@ On Session Detail, focus **Attendance**. Use **E** to change an attendee's Playe
 
 Attendance and Role edits do not automatically mark completed processing or outputs out of date. Existing outputs can still show **●** while using the old attendees or Roles, so explicitly refresh the affected work:
 
-- **Attendees changed:** press **P**, highlight **Review Transcript**, and press **R**. Correct the affected lines' speakers, then **Confirm** and finish any later prompts. Adding an attendee does not rerun voice identification or the new-player steps; assign their lines manually here. After checking those assignments, you can [add voice samples from the Session](manage-players-and-voice-samples.md#add-samples-from-a-session).
-- **Roles or attendees changed:** once the transcript review is complete and current, return to Session Detail and choose **Regenerate Artifact** (**R** under **Other actions**). Select **Role Transcript** and confirm. This applies the current Roles and rebuilds the dependent outputs, even if the transcript review itself was unchanged.
+1. **If attendees changed, correct speaker assignments first.** Press **P**, highlight **Review Transcript**, and press **R**. Correct the affected lines' speakers, then **Confirm** and finish any later prompts. Skip this step if only Roles changed.
+2. **For either change, regenerate the Role Transcript.** Once the transcript review is complete and current, return to Session Detail and choose **Regenerate Artifact** (**R** under **Other actions**). Select **Role Transcript** and confirm. This applies the current Roles and rebuilds the dependent outputs, even if the transcript review itself was unchanged.
+
+Adding an attendee does not rerun voice identification or the new-player steps; assign their lines manually in transcript review. After checking those assignments, you can [add voice samples from the Session](manage-players-and-voice-samples.md#add-samples-from-a-session).
 
 If an attendee has multiple Roles, transcript attribution uses only the alphabetically first Role for all their speech.
 

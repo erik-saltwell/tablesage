@@ -17,7 +17,9 @@ For example, if Jordan played Brother Hald last time but switched characters, ed
 
 ## Import the Recording
 
-Press **P** (**Process**), then **C** (**Continue**). Choose the recording (`.wav`, `.mp3`, `.m4a`, `.flac`, or `.ogg`). For a `.wav`, choose **Yes** at **Clean Audio?** for raw audio or **No** for audio that has already been cleaned. Other supported formats are cleaned automatically.
+1. Press **P** (**Process**), then **C** (**Continue**).
+2. Choose the recording (`.wav`, `.mp3`, `.m4a`, `.flac`, or `.ogg`).
+3. For a `.wav`, choose **Yes** at **Clean Audio?** for raw audio or **No** for audio that has already been cleaned. Other supported formats are cleaned automatically.
 
 TableSage imports and transcribes the recording, filters likely listener acknowledgments, and matches voices to the attendees. Because everyone has a voice print, the new-player reviews are hidden. Uncertain matches are left for transcript review.
 

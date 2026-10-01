@@ -25,15 +25,25 @@ Delete unsuitable clips rather than the Player. A Player who has attended a Sess
 
 Replacement removes an attendee's earlier clips from this Session even when no new lines qualify. Clips from other Sessions and folder imports remain.
 
-TableSage uses a completed [Review Transcript](../concepts/session-processing-returning-players.md#review-transcript) only while it is current, trusting your speaker assignments. Otherwise it uses the current identified transcript, or the initial machine transcript if identification is unavailable, and accepts only lines assigned to that Player with high confidence. Very short lines are skipped, and samples pass through the outlier check described below. If no current transcript is available, the action stops with an error.
+TableSage chooses the source transcript in this order:
+
+1. A current, completed [Review Transcript](../concepts/session-processing-returning-players.md#review-transcript), trusting your speaker assignments.
+2. Otherwise, the current identified transcript.
+3. If identification is unavailable, the initial machine transcript.
+
+For either machine transcript, it accepts only lines assigned to that Player with high confidence. Very short lines are skipped, and samples pass through the outlier check described below. If no current transcript is available, the action stops with an error.
 
 Only do this after checking speaker assignments carefully. A mislabeled line teaches TableSage the wrong voice for that Player.
 
 ## Import Clips from a Folder
 
-On the Player's page, press **F** (**Folder Import**) and choose a folder containing `.wav` recordings of that person speaking. The folder is read as-is: subfolders are not searched, and the folder must hold at least one `.wav`.
+Use a folder containing `.wav` recordings of that person speaking. The folder is read as-is: subfolders are not searched, and the folder must hold at least one `.wav`.
 
-TableSage asks whether to **clean** the audio (remove noise and convert the format) before importing. Answer **Yes** for raw recordings and **No** for clips that are already clean. If you import from the same folder again, TableSage asks before replacing the clips from the earlier import. When it finishes, it reports how many clips were imported, replaced, skipped because they couldn't be used, and removed as outliers. If no clip could be used, the voice print is left unchanged.
+1. On the Player's page, press **F** (**Folder Import**) and choose the folder.
+2. TableSage asks whether to **clean** the audio (remove noise and convert the format) before importing. Answer **Yes** for raw recordings and **No** for clips that are already clean.
+3. If you import from the same folder again, TableSage asks before replacing the clips from the earlier import.
+
+When it finishes, it reports how many clips were imported, replaced, skipped because they couldn't be used, and removed as outliers. If no clip could be used, the voice print is left unchanged.
 
 ## Recompute and Clean Up Voice Prints
 
@@ -54,7 +64,13 @@ For a complete campaign transfer, follow [Move a Campaign to Another Workspace](
 
 **Export Players** (**X**) writes every Player and their voice clips to a single `players.zip`. Choose where to save it.
 
-**Import Players** (**I**) reads a `.zip` made by Export Players. For each Player in the archive, TableSage creates them if they don't exist or, if a Player with that name already exists (ignoring capitalization and surrounding spaces), adds any clips they don't already have. Identical clips are skipped, files other than each Player's `.wav` clips are ignored, and voice prints are recomputed. When it finishes it reports how many Players it created and matched and how many clips it imported and skipped. An archive with unsafe or unexpected contents is rejected with nothing changed, and TableSage shows what was wrong.
+**Import Players** (**I**) reads a `.zip` made by Export Players:
+
+- **New Player names:** creates the Players.
+- **Existing Player names:** adds clips they don't already have. Names are matched ignoring capitalization and surrounding spaces.
+- **Clips:** skips identical clips, ignores files other than each Player's `.wav` clips, and recomputes voice prints.
+
+When it finishes, it reports how many Players it created and matched and how many clips it imported and skipped. An archive with unsafe or unexpected contents is rejected with nothing changed, and TableSage shows what was wrong.
 
 **Clean Up** (**C**) deletes player folders on disk that no longer belong to any Player, the leftovers of deleted Players.
 
