@@ -6,13 +6,17 @@ import shutil
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import widelog
 from tablesage_tools.audio.ffmpeg import extract_clip
 from tablesage_tools.model import Transcript
 
-from ..campaign_corrections import Mapping
 from ..paths import ARTIFACTS, ArtifactName
+
+if TYPE_CHECKING:
+    # Annotation only: `campaign_corrections` imports this package, so a runtime import here is circular.
+    from ..campaign_corrections import Mapping
 
 REVIEW_CLIPS_DIRNAME = "speaker_review_clips"
 
