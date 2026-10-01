@@ -9,11 +9,12 @@ Open the Session from your Campaign's **Sessions** tab. Keep the original record
 | What needs fixing? | Start here |
 |---|---|
 | One line's words or speaker, or speech that should be removed | Restart **Review Transcript**. |
-| A repeated misheard campaign term | Check the campaign glossary, then restart **Spellcheck Against Glossary**. |
+| A repeated misheard campaign term | Check the campaign glossary, then restart **Review Transcript** and use **Find/Replace**. |
 | Proposed new terms | Restart **Extract Glossary Terms**, or use Session Detail's **Extract Glossary** to obtain fresh proposals. |
 | A player or character name used to identify a new speaker | Restart **Review Name Corrections** when that new-player step is present. |
 | Wrong lines accepted as a new Player's voice samples | Check their voice clips as well as the Session; follow [Improve Player Voice Recognition](manage-players-and-voice-samples.md). |
-| The attendee list or the character someone played | Edit **Attendance** on Session Detail, then continue processing from the first incomplete step. |
+| The attendee list | Edit **Attendance**, explicitly restart **Review Transcript** to correct speaker assignments, then regenerate **Role Transcript**. |
+| The character someone played | Edit their Roles in **Attendance**, then regenerate **Role Transcript**. |
 | An output needs another generation attempt, with the reviewed transcript already correct | Use [Regenerate Artifact](review-and-export.md#regenerate-an-artifact). |
 
 Changing a Session's transcript does not remove clips already added to a Player's voice samples. If incorrect assignments were used for voice learning, remove those clips too before relying on it in another Session.
@@ -28,7 +29,7 @@ For example, suppose a line about promising payment was assigned to Jordan but w
 4. Correct any related text, then choose **Confirm**.
 5. Complete any later prompts. TableSage applies the correction and rebuilds the dependent outputs.
 
-The same restart pattern applies to other completed review steps. Choose the earliest review whose decision needs changing. When you confirm the restarted review, every later step that depends on it runs again, which may include further reviews before generation.
+The same restart pattern applies to other completed review steps. Choose the earliest review whose decision needs changing. When the accepted content changes, processing rebuilds the affected work, which may include further reviews before generation. Confirming the same decision leaves later work current.
 
 If the review is already the next incomplete step, use **C** (**Continue**) instead. To pause midway, leave with **Esc** and save a draft when offered.
 
@@ -36,7 +37,12 @@ If the review is already the next incomplete step, use **C** (**Continue**) inst
 
 On Session Detail, focus **Attendance**. Use **E** to change an attendee's Player or Roles, **N** to add someone missing, or **D** to remove someone who did not speak in the recording. Each attendee needs at least one Role.
 
-Then press **P** and **C** to continue. Attendance and Role edits can invalidate earlier processing decisions as well as generated outputs, so follow the first incomplete step shown. **Regenerate Artifact** is available only when the reviewed transcript is current; it cannot substitute for a review that needs completing again.
+Attendance and Role edits do not automatically mark completed processing or outputs out of date. Existing outputs can still show **●** while using the old attendees or Roles, so explicitly refresh the affected work:
+
+- **Attendees changed:** press **P**, highlight **Review Transcript**, and press **R**. Correct the affected lines' speakers, then **Confirm** and finish any later prompts. Adding an attendee does not rerun voice identification or the new-player steps; assign their lines manually here. After checking those assignments, you can [add voice samples from the Session](manage-players-and-voice-samples.md#add-samples-from-a-session).
+- **Roles or attendees changed:** once the transcript review is complete and current, return to Session Detail and choose **Regenerate Artifact** (**R** under **Other actions**). Select **Role Transcript** and confirm. This applies the current Roles and rebuilds the dependent outputs, even if the transcript review itself was unchanged.
+
+If an attendee has multiple Roles, transcript attribution uses only the alphabetically first Role for all their speech.
 
 ## Refresh the Campaign After a Correction
 

@@ -30,4 +30,4 @@ The database and these files work together: the database holds the records and r
 
 ## Shared API Keys
 
-API keys are the exception to workspace-specific data and settings: they are stored once per user account and shared across workspaces. You can view and edit them through **Settings** (press **S** on the Welcome screen). Changing or removing a stored key there updates the shared credentials used by all TableSage instances and workspaces for that user account. Other workspace data and settings remain separate. See [Where Keys Live](../guides/settings.md#where-keys-live) for details, including how shell environment variables can override stored keys.
+API keys are stored once per user account and shared across workspaces. You can edit them in **Settings** (press **S** on the Welcome screen). Saving a key change updates the shared credentials file and the instance where you saved it. Other running instances retain their loaded keys; restart them to use the change. See [Where Keys Live](../guides/settings.md#where-keys-live) for details, including how shell environment variables can override stored keys.

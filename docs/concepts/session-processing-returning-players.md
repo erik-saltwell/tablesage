@@ -6,7 +6,7 @@ The complete workflow is:
 
 1. **Import Audio** — The user supplies the Session's recording as the source for processing. The system cleans the audio of background noise if necessary.
 2. **Create Transcript** — The system turns speech into text and groups it by anonymous speaker.
-3. **Remove Bad Utterances** — The system removes brief acknowledgments that add no independent meaning.
+3. **Remove Bad Utterances** — The system filters likely listener acknowledgments from short replies.
 4. **Identify Speakers** — The system matches utterances against attendees' voice prints, leaving uncertain identities for review.
 5. **Extract Glossary Terms** — The user reviews suggested campaign names and terms and decides which to add to the Glossary.
 6. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
@@ -17,17 +17,19 @@ The complete workflow is:
 
 ## Import Audio
 
-TableSage copies the recording into the Session as its **input audio**, the source for transcription and voice comparison. Noise cleaning can make speech clearer in a noisy recording; recordings that have already been cleaned can avoid another cleaning pass.
+TableSage imports the recording as the Session's **input audio**, converting it to 16 kHz mono for transcription and voice comparison. It also creates a normalized copy for review playback. Noise cleaning can make speech clearer in a noisy recording; recordings that have already been cleaned can skip noise removal. The original recording is left unchanged.
 
 ## Create Transcript
 
-ElevenLabs transcribes the recording and groups speech by speaker, a process called **diarization**. TableSage adds punctuation. Speakers initially have anonymous labels such as *speaker_0*: grouping a voice does not yet identify the person it belongs to.
+ElevenLabs transcribes the recording and groups speech by speaker, a process called **diarization**. ElevenLabs also omits filler words, false starts, and stutters, so the transcript is a clean record rather than a word-for-word one. TableSage adds punctuation. Speakers initially have anonymous labels such as *speaker_0*: grouping a voice does not yet identify the person it belongs to.
 
 The result is the raw machine transcript.
 
 ## Remove Bad Utterances
 
-An LLM reviews short lines and removes pure **backchannels**: brief listener acknowledgments such as *mm-hmm* that contribute no independent meaning. A short response that carries meaningful information still belongs in the record.
+TableSage tries to remove **backchannels**: brief listener acknowledgments such as *mm-hmm* that contribute no independent meaning. It finds short phrases that may be acknowledgments, then asks an LLM whether the preceding line was a question. Candidate replies to questions are kept; other candidates are removed.
+
+This rule can also remove meaningful replies, such as an objection of *No* after a statement. The initial transcript preserves the text before this cleanup and remains available for comparison with the recording.
 
 Backchannels are difficult to identify by voice because they contain little speech. Removing them reduces clutter and uncertain assignments in later steps.
 
@@ -51,11 +53,11 @@ An LLM compares the transcript with glossary terms and attendees' player names, 
 
 Human review establishes the **reviewed transcript**: the accepted account of what was said and who said it. It resolves unassigned speakers, corrects wrong attributions and text, and removes speech that does not belong in the record. The recording remains available as evidence for those decisions.
 
-This is the last quality check before generation. An error left here can flow into the ledger, summaries, and any voice samples later taken from the Session, though LLMs are surprisingly resilient to small typos and misattributions.
+This is the last quality check before generation. An error left here can flow into the ledger, summaries, and any voice samples later taken from the Session.
 
 ## Assign Roles To Players
 
-TableSage creates the **role transcript**, replacing player names with their Session Roles: *Thorgrim* rather than *Bob*, or *Game Master* rather than *Alice*.
+TableSage creates the **role transcript**, replacing player names with their Session Roles: *Thorgrim* rather than *Bob*, or *Game Master* rather than *Alice*. Any brief acknowledgment still marked **Unassigned Speaker** after review is dropped at this point.
 
 This connects the people who spoke to their identities in the game. Generated artifacts can then describe the fiction using the appropriate character names and table functions.
 
@@ -67,15 +69,15 @@ An LLM builds the Session's outputs through a sequence of dependencies:
 2. The **ledger** records events, facts, and developments, accompanied by a scene breakdown that organizes the action. The ledger is the authoritative record of what happened inside the game during a Session.
 3. **Player introductions** collect the in-character introductions of player characters from the opening of the Session, kept separate from what happened in play.
 4. The **recap summary** distills the scene breakdown into a short account designed to be read at the table.
-5. The **session summary** is a longer player-ready account built from the ledger. It opens with the previous Session's recap summary and this Session's player introductions, and is designed to be sent to players before the next Session.
+5. The **session summary** is a longer player-ready account built from the ledger. It includes the prior Session's recap summary, when available, and this Session's player introductions, and is designed to be sent to players before the next Session.
 
-Because each session summary includes the previous Session's recap summary, a Session's outputs depend on the Session before it. When an earlier Session's outputs are out of date, generation asks to rebuild them first.
+A session summary depends on the earlier recap selected by date; see [How the Prior Recap Is Chosen](sessions.md#how-the-prior-recap-is-chosen). When the required earlier outputs are out of date and can be rebuilt, generation asks to rebuild them first.
 
 See [Session Artifacts](sessions.md#session-artifacts) for what each output contributes to the campaign record.
 
 ## Improve Player Voice Prints
 
-After generation, suitable clips from the reviewed transcript can be added to the attendees' voice samples. This optional learning step gives future Sessions more evidence for recognizing the same people.
+After generation, suitable clips from the reviewed transcript can refresh the attendees' voice samples, replacing any earlier clips from this Session. This optional learning step gives future Sessions more evidence for recognizing the same people. See [Add Samples from a Session](../guides/manage-players-and-voice-samples.md#add-samples-from-a-session) for replacement details.
 
 Its value depends on accurate speaker assignments. A mislabeled clip would teach TableSage the wrong voice, so only a carefully reviewed transcript should contribute samples.
 

@@ -9,7 +9,9 @@ Both send campaign text to an LLM, which reads the history and writes the result
 
 ## What You Need First
 
-You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. Every Session in the Campaign must have a **current, complete scene breakdown**. The one exception is the most recent Session when it has no recording yet: if you have already created the Session you are preparing for, it is ignored. If any other Session doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+You need a Campaign with at least one processed Session, plus some idea of the situation you expect next. Preparation tools read Sessions in number order and ignore the highest-numbered Session if it has no imported audio yet. Every remaining Session must have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+
+Session dates do not determine this order; they are used separately to [choose the prior recap in a session summary](../concepts/sessions.md#how-the-prior-recap-is-chosen). If you add older recordings later, check the starting situation before continuing.
 
 1. From the Welcome screen, press **C** and open your Campaign.
 2. If the history needs refreshing, open **Other actions** (**?**) and choose **Regenerate All Outputs** (**O**); see [Regenerate Every Session in a Campaign](review-and-export.md#regenerate-every-session-in-a-campaign).
@@ -24,7 +26,7 @@ Choose **Create Previously On** (**V**). The tool works in two stages.
 
 **1. Say what is coming.** TableSage reads the Campaign and shows:
 
-- **Starting situation**, pre-filled from where the last Session ended. Edit it to match how you actually plan to open.
+- **Starting situation**, pre-filled from where the highest-numbered Session included in the history ended. Edit it to match how you actually plan to open.
 - **What might happen next Session?** Your notes on where play may go.
 - **Campaign ingredients**: up to five candidates in each of *People & Factions*, *Threads & Commitments*, *Active Pressures*, and *Places & Objects*, each with its current state. Focus one to read the scenes it comes from. Press **Space** or **Enter** to select the ones that matter.
 

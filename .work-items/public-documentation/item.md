@@ -96,3 +96,81 @@ A qualitative review of all 32 public pages (no rubric exists, so nothing was sc
 Verification: 288 local links, anchors, and image paths resolve; `git diff --check` on `docs` and `README.md` is clean. Not verified: the "several gigabytes" disk-space figure.
 
 Replaced the installation page's vague "several gigabytes" with measured figures (2026-09-30): about 10 GB to start (roughly 8 GB for the installed libraries, measured on Linux from a development environment that includes CUDA packages; macOS not measured), about 0.5 GB of downloaded models, and about 230 MB per hour of recording per Session (115 MB/hour input audio plus an equal normalized review copy). Player voice samples measured 19–457 MB per Player in a real workspace.
+
+## Review Recommendations Applied (2026-09-30)
+
+Applied all eight recommendations from the accuracy, conciseness, and clarity review at the user's request:
+
+1. Added Git to the README prerequisites and added installation guidance, a `git --version` check, and missing-Git troubleshooting to [Install TableSage](../../docs/getting-started/installation.md).
+2. Corrected [Improve Player Voice Recognition](../../docs/guides/manage-players-and-voice-samples.md) to direct users to their workspace's Player folder and an external audio player before selecting an incorrect clip by filename on Player Detail.
+3. Added [How the Prior Recap Is Chosen](../../docs/concepts/sessions.md#how-the-prior-recap-is-chosen), explaining date-based selection, undated Sessions, the absence of a recap when no eligible dated Session exists, and explicit regeneration after date changes. Updated the Campaign concepts, returning-player processing concepts, creation guides, and Session dialog reference to agree.
+4. Added the required first-launch Settings save before imports in [Move a Campaign to Another Workspace](../../docs/guides/move-campaign-workspace.md), including shared keys on the same computer and account versus destination-specific model choices.
+5. Clarified [Privacy and Data Handling](../../docs/reference/privacy.md) to distinguish provider processing uploads, local storage, and Hugging Face downloads of locally used models.
+6. Corrected the Python isolation explanation: Python can serve other uv-managed applications, while TableSage's dependencies are isolated in its tool environment.
+7. Shortened both processing guides' glossary, spellcheck, and transcript-review instructions while retaining essential controls and decisions. Detailed playback and editing controls now link to [Processing Review Screens](../../docs/reference/screens/processing-review-screens.md).
+8. Simplified the Campaign concept opening, moved missing-recording guidance to [Sessions without Recordings](../../docs/guides/start-a-campaign.md#sessions-without-recordings), and replaced installation's duplicate model-default table with a link to Settings.
+
+Verification: checked the behavior against Session date selection and summary composition, Player Detail bindings, Welcome navigation gates, Settings saving, preparation-history validation, and local-model download code. Checked Git and uv guidance against their official documentation. All 310 local links, anchors, and image references across the README, 31 public pages, and four tool READMEs resolve; `git diff --check` passes. Fresh installations and screenshots were not exercised, and no site build was run because MkDocs configuration is absent.
+
+This review pass is finished. The broader public-documentation item remains `implementing`, consistent with `WORK-ITEMS.md`, with site configuration and publication still outstanding. The numerical rubric remains undefined and unassessed; the user explicitly authorized applying these recommendations.
+
+## Recovery and Clarity Fixes (2026-09-30)
+
+Applied all eight findings from the subsequent documentation review at the user's request:
+
+1. Corrected [Correct a Processed Session](../../docs/guides/correct-processed-session.md#correct-attendance-or-roles): attendance and Role edits leave completed processing current. The guide now directs users to explicitly reopen transcript review for speaker corrections and regenerate Role Transcript to apply the current attendees and Roles. Newly added attendees require manual speaker assignments in an already processed Session.
+2. Corrected [Build and Maintain Your Campaign Glossary](../../docs/guides/build-campaign-glossary.md#correct-an-existing-entry) and the spellcheck reference: restarting spellcheck reopens saved corrections rather than generating new suggestions from the edited Glossary. The documented recovery uses Review Transcript's Find/Replace, including when an empty spellcheck review completes automatically.
+3. Documented the multiple-Role limitation in the Player concepts, campaign-start guide, correction guide, and attendee-dialog reference: all a Player's speech is attributed to their alphabetically first Role.
+4. Reconciled the correction guide, output guide, and Process Session reference: changed accepted content rebuilds affected work; confirming the same review decision leaves later work current.
+5. Standardized the New Player definition on an attendee without a usable voice print, including the Settings guide's description of name correction.
+6. Clarified shared credential changes in the workspace concepts and Settings guide: saving updates the shared file and the current instance; other running instances must restart to load the change, and shell environment variables retain precedence.
+7. Removed the unsupported reassurance about LLM resilience to typos and misattributions from the returning-player processing concepts.
+8. Shortened the workflow-selection concepts and removed duplicated opening navigation from the Previously On and Opportunities reference, preserving its How to Get Here sections.
+
+Verification: isolated execution in a temporary workspace confirmed that Role and attendee edits leave artifact states unchanged, explicit Role Transcript regeneration applies the alphabetically first Role and schedules dependent outputs, transcript review accepts a newly added attendee's speaker assignment, spellcheck restart retains saved corrections without a new suggestion call, unchanged spelling decisions preserve completed downstream work, and Find/Replace applies an updated glossary spelling. External processing services and expensive audio operations were stubbed using existing fixture helpers; no unit tests were created or changed. Checked credential loading and review-opening behavior against the code. All 306 local links, anchors, and image references across the README and 31 public pages resolve; `git diff --check` passes. Fresh installations, screenshots, and a site build were not exercised.
+
+This requested documentation pass is complete. The broader item remains `implementing`, with site configuration and publication outstanding. The numerical rubric remains undefined and unassessed; the user explicitly authorized these updates.
+
+## Accuracy, Clarity, and Conciseness Fixes (2026-09-30)
+
+Applied the findings of a further accuracy, conciseness, and clarity review at the user's request:
+
+- **Accuracy (checked against the code):** folder import takes only top-level `.wav` files (`voice_clips/clips.py`); the **Samples** column counts clips used in the voice print, and a red 0 means no voice print yet (Start a Campaign, Session Detail reference, Improve Player Voice Recognition); voice samples take tens to a few hundred megabytes per Player; Create Previously On uses the High model for ingredients, scene recommendations, and the recap (`settings.yaml`); installation now suggests `uv python install 3.12`, the version the development environment runs (3.14 is untested, although `uv.lock` has cp314 wheels).
+- **Newly documented behavior:** ElevenLabs omits filler words, false starts, and stutters (`no_verbatim`), and Assign Roles To Players drops brief acknowledgments still unassigned after review (`clean_transcript.py`).
+- **Clarity:** removed the unexplained "samples without a usable voice print" sentence, "shared" Glossary, the tangled preparation-exception sentence, the ambiguous list-keys reference and shortened step names in `ui-patterns.md`, installation's tier wording (now High/Medium/Low), and the mismatched Extract Glossary link text.
+- **Conciseness:** replaced the new-player concept page's repeated step list with a pointer to the overview; trimmed the repeated date advice in the returning-player guide and Session Dialog reference.
+- Not changed: the repeated "How to Get Here" lines and duplicated review sections in the processing guides, which were earlier user choices.
+
+Verification: all 306 local links and anchors across the README and 31 public pages resolve; `git diff --check` passes. No site build, fresh installation, or Python 3.14 install was exercised. The numerical rubric remains undefined and unassessed.
+
+## Privacy, Freshness, and Readability Fixes (2026-09-30)
+
+Applied all six findings from the latest public-documentation review at the user's request:
+
+1. Expanded [Privacy and Data Handling](../../docs/reference/privacy.md) to include Player names, Roles, Glossary entries, campaign metadata, generated records, and preparation notes sent to LLM providers. Corrected the audio-upload trigger to **Create Transcript**, including the corresponding Settings guide wording.
+2. Narrowed the current-artifact indicator's meaning in [Generate and Export Session Outputs](../../docs/guides/review-and-export.md#read-the-artifacts-panel). Documented that attendance, Role, date, Glossary, and model changes can leave outputs marked current, with guidance on source corrections and explicit regeneration.
+3. Corrected [Import Audio](../../docs/reference/screens/processing-review-screens.md#import-audio): **No** skips noise removal, while every import converts to 16 kHz mono and creates normalized review audio. Reconciled the returning-player processing concept page and preserved the distinction between imported audio and the original file.
+4. Clarified Session-number ordering, the single highest-numbered unrecorded Session exception, and the starting-situation source in [Prepare the Next Session](../../docs/guides/prepare-the-next-session.md). Reconciled the campaign-start guide and the Campaigns and preparation-tool screen references, distinguishing this order from date-based summary recap selection.
+5. Narrowed the shared UI guidance to the six screens where **F5** reloads data, renamed its section **Shared Keys**, and documented the attendee dialog's explicit **Save** action as an exception to Enter submission.
+6. Combined the repeated Campaign and Session concept openings and simplified the voice-print definition to a numeric reference built from a Player's voice samples.
+
+Verification: checked the wording against the audio-import pipeline, artifact dependency declarations, preparation-history ordering, LLM preparation inputs, screen refresh implementations, and attendee dialog submission code. The preceding review also directly confirmed WAV conversion and normalized review audio in a temporary directory. All 310 local links, anchors, and image references across the README and 31 public pages resolve; `git diff --check` passes. Existing edits were preserved. No site build, fresh installation, or screenshot recapture was performed; MkDocs configuration is still absent.
+
+This requested pass is complete. The broader item remains `implementing`, consistent with `WORK-ITEMS.md`, with site configuration and publication outstanding. The numerical rubric remains undefined and unassessed; the user explicitly authorized these updates.
+
+## Voice Learning and Readability Fixes (2026-09-30)
+
+Applied all eight proposed changes from the public-documentation review at the user's request:
+
+1. Explained **From Session** replacement of each current attendee's earlier clips from that Session, including when no new lines qualify, and its preference for a current completed transcript review. Reconciled the voice-recognition guide, processing guides and concepts, and Player and processing-review references, including replacement of initial seed clips.
+2. Replaced the guarantee that meaningful short replies survive automatic cleanup with the actual question-check rule and its limitation. The processing concepts explain that the initial transcript preserves the pre-cleanup text; the Settings guide links to that explanation.
+3. Narrowed **Find More** rejection guidance to removed Find More additions, matching the screen's negative-example selection.
+4. Replaced the installation page's normal Welcome screenshot with the existing first-launch capture showing Campaigns and Players disabled.
+5. Replaced “oldest Session first” with explicit Session number ordering in the output guide.
+6. Shortened the shared UI's quitting guidance, retained the screen comparison table, and consolidated draft details without removing save/discard behavior or the special quit guards.
+7. Condensed model uses into the Settings table and replaced the repeated task lists with short model-choice guidance, preserving High-model use across all Previously On stages.
+8. Made advance Python download explicitly optional, shortened terminal guidance, and moved installation storage estimates into a table.
+
+Verification: rechecked transcript source selection, session-clip replacement, Find More rejection handling, and the backchannel question-check rule against the implementation. Markdown parsing confirms all 314 local links, heading anchors, and image references across the README and 31 public pages resolve. `git diff --check` passes. The replacement screenshot was visually inspected during the review; no new screenshot, site build, fresh installation, or live provider workflow was run. Existing edits were preserved.
+
+This requested pass is complete. The broader item remains `implementing`, matching its master-list row, with site configuration and publication outstanding. The numerical rubric remains undefined and unassessed; the user explicitly authorized these changes.

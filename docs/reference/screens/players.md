@@ -20,7 +20,7 @@ Players belong to the whole workspace, not to one Campaign. Each Player has a vo
 
 | Key | Action | Available |
 |---|---|---|
-| **S** | **From Session.** Adds voice samples from a transcribed Session to the voice samples of that Session's attendees and recomputes their voice prints; see [From Session](#from-session). | Always |
+| **S** | **From Session.** Refreshes attendees' voice samples from a transcribed Session and recomputes their voice prints; see [From Session](#from-session). | Always |
 | **N** | **New Player.** Asks for a name. The name becomes the Player's folder name on disk, so it can't contain `/` or `\`, and it can't be `.` or `..`. Names that differ only in capitalization count as the same name. Problems are shown inside the dialog. | Always |
 | **E**, **Enter** | **Edit Player.** Opens the highlighted Player in [Player Detail](#player-detail). | When a Player is highlighted |
 | **D**, **Delete**, **Backspace** | **Delete Player.** Deletes the highlighted Player, after you confirm. A Player who has attended any Session can't be deleted, and TableSage explains this before asking. Remove their attendance first. The Player's folder stays on disk until you run **Clean Up**. | When a Player is highlighted |
@@ -45,7 +45,9 @@ Import and export move Players between workspaces; see [Move a Campaign to Anoth
 
 ![The From Session picker](../../images/screens/from-session-picker.png)
 
-Sessions that haven't been transcribed are listed but dimmed, with the status *No transcript*. Selecting one is refused with *This session hasn't been transcribed yet.* For a *Ready* Session, TableSage cuts voice clips of each attendee from that Session and recomputes their voice prints, behind a progress dialog. A notification then reports how many Players and clips were added.
+Sessions that haven't been transcribed are listed but dimmed, with the status *No transcript*. Selecting one is refused with *This session hasn't been transcribed yet.* For a *Ready* Session, TableSage cuts voice clips for its current attendees and recomputes their voice prints, behind a progress dialog. A notification reports how many Players received new clips and how many clips were extracted.
+
+For each attendee, this replaces their earlier clips from the same Session, even if no new clips qualify. TableSage trusts human assignments only when the completed transcript review is current; otherwise it uses high-confidence machine assignments. See [Add Samples from a Session](../../guides/manage-players-and-voice-samples.md#add-samples-from-a-session) for source selection and replacement details.
 
 Only use this on a Session whose speaker assignments you have reviewed carefully. A mislabeled line teaches TableSage the wrong voice for a Player. Process Session offers the same thing at the end of processing; see [Improve Player Voice Prints](processing-review-screens.md#improve-player-voice-prints).
 
@@ -91,7 +93,7 @@ The **Voice Clips** table lists every clip file in the Player's folder and its l
 
 ### Import Clips from a Folder
 
-**F** imports every audio clip in a folder you choose:
+**F** imports every `.wav` clip at the top level of a folder you choose:
 
 1. Choose the folder in the directory picker. TableSage checks that it contains clips it can import; if not, it says why and stops.
 2. **Clean Audio** asks whether to denoise and reformat the files first. Choose **Yes** for raw recordings and **No** for audio that is already clean. **Cancel** stops the import.

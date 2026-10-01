@@ -19,6 +19,8 @@ The Campaign now has a home for its Sessions and Glossary. Its first Session can
 
 On the Campaign's **Sessions** tab, press **N** (**New Session**). Give the Session a useful name, such as *Arrival at the Harbor*, and optionally enter its date as `YYYY-MM-DD`. Choose **Create Session**. TableSage opens Session Detail.
 
+Record the date if you want later session summaries to include this game's recap. TableSage chooses the prior recap by date; when every Session is undated, no prior recap is included. See [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
+
 The first Session starts with an empty Attendance list. Add everyone whose speech is in the recording, including the game master.
 
 ## Add Attendees and Roles
@@ -28,15 +30,15 @@ The first Session starts with an empty Attendance list. Add everyone whose speec
 3. Add their Role: press **R** (**Add Role**) for a character name, or **G** (**Add Game Master**) for the GM.
 4. Choose **Save**, then repeat for the other attendees.
 
-For example, Jordan is the Player and *Brother Hald* is their Role. Morgan is another Player with the *Game Master* Role. Use the Player's name for the person speaking and the Role for their identity in this particular Session. A Player can have more than one Role.
+For example, Jordan is the Player and *Brother Hald* is their Role. Morgan is another Player with the *Game Master* Role. Use the Player's name for the person speaking and the Role for their identity in this particular Session. A Player can have more than one Role, but transcript attribution uses only the alphabetically first Role for all their speech; TableSage does not distinguish their characters line by line.
 
 ![The attendee dialog, with a Player selection and a list of Roles](../images/screens/attendee-dialog.png)
 
 **Save** becomes available once you have selected a Player and supplied at least one Role. Before processing, check that everyone who spoke is listed and that character names are spelled correctly.
 
-![Session Detail with four attendees and their Roles; a red 0 marks a new Player with no voice samples yet](../images/guides/start-campaign-attendance.png)
+![Session Detail with four attendees and their Roles; a red 0 marks a new Player with no voice print yet](../images/guides/start-campaign-attendance.png)
 
-The **Samples** column shows how many voice samples each Player has. A red **0** marks a new Player whose voice TableSage will learn from this recording.
+The **Samples** column shows how many voice samples each Player's voice print was built from. A red **0** means the Player has no voice print yet: a new Player whose voice TableSage will learn from this recording.
 
 Reuse an existing Player when the same person joins another Campaign in this workspace; their voice print is shared across Campaigns.
 
@@ -56,3 +58,9 @@ Return to the **Sessions** tab with **S**, open the Session, and press **P** (**
 A Player with no samples is expected at this point. You can learn their voice from the session recording; you do not need to prepare separate voice clips before starting.
 
 You are ready to process when the Session's attendance and Roles are correct and you have its recording. For later recordings, create another Session in this Campaign rather than another Campaign.
+
+## Sessions without Recordings
+
+If a game was not recorded, leave it out of TableSage's Session list. A later summary uses the last eligible dated Session's recap, so it will not cover the unrecorded game. If you already created a Session for that game, delete it from the Campaign's **Sessions** tab with **D** and confirm. An empty Session can leave a missing-recap placeholder in a later summary and block the preparation tools.
+
+You can create the upcoming Session before playing it. [Previously On and Opportunities](prepare-the-next-session.md) ignore the highest-numbered Session when it has no imported audio yet.

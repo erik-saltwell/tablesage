@@ -20,17 +20,19 @@ If you are going to use a Session to enhance your Players' voice samples, review
 
 ## Voice Prints
 
-A **voice print** is an embedding: a compact numeric representation of a voice, derived from a single utterance or a collection of voice samples.
+A **voice print** is a numeric reference built from a Player's voice samples, used to recognize their voice in a recording.
 
 TableSage uses the voice print to compare a recorded utterance in a Session with the voices of the Players attending the Session. When you update a Player's voice samples, TableSage recomputes the voice print. A Player without usable samples does not yet have a voice print to match.
 
 ## New Players
 
-A **new Player** is a Player with no voice samples yet, and therefore no usable voice print. Processing a Session with a new Player includes extra steps that learn their voice from the recording.
+A **new Player** is an attendee without a usable voice print, usually because they have no voice samples yet. Processing a Session with a new Player includes extra steps that learn their voice from the recording.
 
 ## Roles
 
 A **Role** is the identity or function a Player takes in a particular Session. It is most often a character name, but it can also be **Game Master** or another table function.
+
+A Player can have several Roles, but the role transcript attributes all their speech to the alphabetically first Role. It does not identify which character they were playing on each line.
 
 When you create a new Session, TableSage copies the attendees and Roles of the latest dated Session before it as a starting point; see [Process a Session with Returning Players](../guides/process-session-returning-players.md#create-the-session-and-check-attendance).
 

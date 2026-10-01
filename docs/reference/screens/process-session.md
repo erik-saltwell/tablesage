@@ -53,7 +53,7 @@ The button at the bottom right tells you what will happen:
 | Key | Action | Available |
 |---|---|---|
 | **C** | **Continue.** Runs from the first incomplete step. The run carries on through automatic steps and opens each review step's screen in turn. It stops when a review screen is cancelled, when a step fails, or when every step is complete. | When no run is in progress, nothing blocks processing, and a step remains |
-| **R**, **Enter** | **Restart Step.** On a completed review step, runs that step again, followed by every later step that depends on it. On the next step (**›**), it does the same as **Continue**. Steps that haven't been reached can't be selected. | When no run is in progress and a completed or next review step is highlighted |
+| **R**, **Enter** | **Restart Step.** Reopens a completed review, then rebuilds affected work when the accepted content changes. Confirming the same decision leaves later work current. On the next step (**›**), it does the same as **Continue**. Steps that haven't been reached can't be selected. | When no run is in progress and a completed or next review step is highlighted |
 | **↑ ↓** | Move between review steps. The cursor skips automatic steps, which can't be restarted on their own. | Always |
 | **Esc** | **Back** to Session Detail. | Always |
 

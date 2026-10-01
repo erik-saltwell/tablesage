@@ -6,9 +6,9 @@
 
 To get to Create Previously On or Generate Opportunities, press **V** or **Y**, respectively, on the Campaign Detail screen (these actions also appear in **Other actions**).
 
-These two campaign-wide tools help you prepare the next Session. Both are opened from **Other actions** in [Campaign Detail](campaigns.md#campaign-detail): **V** opens Create Previously On, and **Y** opens Generate Opportunities. For the task-level walkthrough, see [Prepare the Next Session](../../guides/prepare-the-next-session.md).
+These two campaign-wide tools help you prepare the next Session. For the task-level walkthrough, see [Prepare the Next Session](../../guides/prepare-the-next-session.md).
 
-Both tools read every Session's Scene Breakdown. The most recent Session is ignored if it has no imported audio, so an upcoming Session you have already created doesn't get in the way. If any other Session's Scene Breakdown is missing or out of date, neither opens. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs**. Both also use an LLM, so they need the key for your High model; see [Settings](welcome-and-settings.md#settings).
+Both tools read scene breakdowns in Session number order, ignoring the highest-numbered Session if it has no imported audio yet. If any remaining Session's Scene Breakdown is missing or out of date, neither opens. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs**. This order is independent of the dates used to [choose a session summary's prior recap](../../concepts/sessions.md#how-the-prior-recap-is-chosen). Both tools also need the key for your High model; see [Settings](welcome-and-settings.md#settings).
 
 ## Create Previously On
 
@@ -28,7 +28,7 @@ The screen has two stages, both with **C Continue** as the primary action. While
 
 | Area | What to do |
 |---|---|
-| **Starting situation** | Where the story stands. It is filled in from the end of the most recent Session, and you can edit it. |
+| **Starting situation** | Filled in from the end of the highest-numbered Session included in the history. Edit it to match your planned opening. |
 | **What might happen next Session?** | Your notes on what you expect to come up. You can also correct the ingredients here. |
 | **Campaign ingredients** | Suggestions grouped under *People & Factions*, *Threads & Commitments*, *Active Pressures*, and *Places & Objects*. Press **Space** or **Enter** on an ingredient to select it (**[x]**) or clear it. On a group heading, the same keys collapse or expand the group. A group with nothing to suggest shows *No strong candidates*. |
 | **Evidence pane** (below the ingredients) | For the highlighted ingredient, its current state and the Scenes it comes from. |
@@ -71,7 +71,7 @@ Generate Opportunities suggests ways to bring earlier campaign elements back int
 
 ![Generate Opportunities before generating](../../images/screens/opportunities-entry.png)
 
-The line at the top is where the Campaign's most recent Session ended. Below it:
+The line at the top shows where the highest-numbered Session included in the history ended. Below it:
 
 1. **What might happen next Session? (required)** Describe what you expect. **Generate** stays disabled until this has text.
 2. **Generate** (**G**) asks an LLM for opportunities. Each has a title, the campaign element it draws on (*From the Campaign*), and the *Opportunity* itself.

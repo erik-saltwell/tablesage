@@ -8,7 +8,7 @@ The complete workflow is:
 
 1. **Import Audio** — The user supplies the Session's recording as the source for processing. The system cleans the audio of background noise if necessary.
 2. **Create Transcript** — The system turns speech into text and groups it by anonymous speaker.
-3. **Remove Bad Utterances** — The system removes brief acknowledgments that add no independent meaning.
+3. **Remove Bad Utterances** — The system filters likely listener acknowledgments from short replies.
 4. **Review Name Corrections** — The user reviews proposed corrections to misheard Player and character names so they can support identity clues.
 5. **Isolate New Speakers** — The system uses conversational evidence to propose utterances belonging to each new Player.
 6. **Review New Speaker Assignments** — The user confirms who spoke the proposed utterances before they become voice samples, and can ask the system to find more utterances that sound like the confirmed ones.
@@ -29,14 +29,7 @@ Voice comparison needs a reference for each person it is meant to recognize. Wit
 
 The transcript itself provides a starting point. Conversational clues suggest which lines belong to each new Player, human review confirms the evidence, and those confirmed lines become initial voice samples. Speaker identification can then use those samples to recognize additional speech in the Session.
 
-The extra work sits between **Remove Bad Utterances** and **Identify Speakers**:
-
-1. **Review Name Corrections** makes names reliable enough to use as evidence, letting the GM review alternate spellings or typos in names that may be in the transcript.
-2. **Isolate New Speakers** proposes speech utterances belonging to each new Player.
-3. **Review New Speaker Assignments** confirms whose voice the samples contain, and lets the user find other utterances that sound like the seeding set.
-4. **Seed Player Voice Samples** builds initial voice prints from that speech.
-
-The Session's attendance defines both established speakers and people whose voices need to be learned.
+The extra work is steps 4–7 of the overview, between **Remove Bad Utterances** and **Identify Speakers**. The Session's attendance defines both the established speakers and the people whose voices need to be learned.
 
 ## Importing Audio and Transcription
 
@@ -88,4 +81,4 @@ Name corrections have already made Player and character names more reliable. Glo
 
 New Players deserve particular attention during that review because their voices were learned from a small set of samples. Reviewing uncertain lines against the recording gives both the campaign record and any later voice learning a sounder foundation.
 
-The optional **Improve Player Voice Prints** stage can add further samples from the reviewed transcript to all attendees' collections. Newly seeded Players can benefit especially from this additional evidence, provided the speaker assignments are correct.
+The optional **Improve Player Voice Prints** stage learns samples from the reviewed transcript for all attendees, replacing their earlier clips from this Session, including the initial seed clips. Newly seeded Players can benefit especially from the fuller reviewed record, provided the speaker assignments are correct.

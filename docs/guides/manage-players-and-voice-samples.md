@@ -8,20 +8,24 @@ For a Player without a voice print, the usual starting point is [processing a Se
 
 ## Remove Incorrect Samples First
 
-The Players List shows each Player's number of **Samples** (a red **0** means none) and whether their **Voice Print** is *ready*. Select a Player and press **E** or **Enter** to open their page, which lists their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
+The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. Select a Player and press **E** or **Enter** to open their page, which lists their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
 
-Before adding more samples, check whether the existing ones are correct. For example, if Jordan's voice samples contain Priya's speech, adding more clips without removing those mistakes can preserve the confusion. On Jordan's page, listen to the clips, select a known wrong one, and press **D** (**Delete Voice Clip**). TableSage confirms, then recomputes the voice print from the remaining clips.
+Before adding more samples, check whether the existing ones are correct. For example, if Jordan's voice samples contain Priya's speech, adding more clips can preserve the confusion.
+
+Open `players/<player-name>/` inside your workspace in a file manager and listen to its `.wav` files in an audio player. On Player Detail, select an incorrect clip by its filename and press **D** (**Delete Voice Clip**). TableSage confirms, then deletes the clip and recomputes the voice print from the remaining clips.
 
 Delete unsuitable clips rather than the Player. A Player who has attended a Session can't be deleted until they're removed from that attendance; see [Delete and Clean Up](../concepts/delete-and-clean.md).
 
 ## Add Samples from a Session
 
-**From Session** (**S** on the Players List) adds clips from a Session to the voice samples of everyone who attended it. It is the same action that **Improve Player Voice Prints** offers at the end of processing, available whenever you decide to do it. Use this if you chose **Not Now** during processing and now want to learn from that reviewed recording.
+**From Session** (**S** on the Players List) learns voice samples for the Session's current attendees. It is the same action that **Improve Player Voice Prints** offers at the end of processing. Use it if you chose **Not Now** and now want to learn from that reviewed recording, or to refresh samples after correcting speaker assignments.
 
 1. Press **S** and choose a Campaign, then a Session. Sessions with no transcript are dimmed and can't be chosen.
-2. TableSage cuts clips from that Session's transcript and recomputes each attendee's voice print. A toast reports how many Players and clips were affected.
+2. TableSage cuts clips from the current transcript, replaces each attendee's earlier clips from this Session, and recomputes their voice print. A notification reports how many Players received new clips and how many clips were extracted.
 
-Which lines become samples depends on how far the Session got. If you completed [Review Transcript](../concepts/session-processing-returning-players.md#review-transcript), TableSage trusts your speaker assignments and uses those lines. Otherwise it uses only lines it identified with high confidence. In both cases very short lines are skipped, and the results still pass through the outlier check described below.
+Replacement removes an attendee's earlier clips from this Session even when no new lines qualify. Clips from other Sessions and folder imports remain.
+
+TableSage uses a completed [Review Transcript](../concepts/session-processing-returning-players.md#review-transcript) only while it is current, trusting your speaker assignments. Otherwise it uses the current identified transcript, or the initial machine transcript if identification is unavailable, and accepts only lines assigned to that Player with high confidence. Very short lines are skipped, and samples pass through the outlier check described below. If no current transcript is available, the action stops with an error.
 
 Only do this after checking speaker assignments carefully. A mislabeled line teaches TableSage the wrong voice for that Player.
 

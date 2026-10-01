@@ -42,7 +42,7 @@ Most screens are built around a list, and the same three key bindings manage the
 
 ![The Players List with Alice highlighted and the New Player, Edit Player, and Delete Player keys in the footer](../../images/screens/players-list.png)
 
-The footer labels these keys with what they act on, for example **New Campaign**, **Edit Session**, or **Delete Entry**. For lists with all three actions, **New**, **Edit**, and **Delete** appear together in that order at the end of the left-aligned bindings. Other main actions come before them. **? Other actions** stays last at the far right, so its position is consistent across screens. You'll find them on:
+The footer labels these keys with what they act on, for example **New Campaign**, **Edit Session**, or **Delete Entry**. For lists with all three actions, **New**, **Edit**, and **Delete** appear together in that order at the end of the left-aligned bindings. Other main actions come before them. **? Other actions** stays last at the far right, so its position is consistent across screens. These list keys appear on:
 
 - the Campaigns and Players lists;
 - the Sessions and Glossary tabs of Campaign Detail;
@@ -60,10 +60,10 @@ Some behavior to expect:
 
 ### Dialogs for New and Edited Items
 
-The dialogs that add or edit an item work the same way:
+Most dialogs that add or edit an item share these conventions:
 
 - The first field has focus when the dialog opens. **Tab** and **Shift+Tab** move between fields.
-- **Enter** in a field submits the dialog, like pressing its main button.
+- **Enter** in a text field submits most simple editing dialogs, like pressing their main button. In the attendee dialog, select the Player, add Roles, then click **Save** or focus that button and press **Enter**.
 - **Esc** or **Cancel** closes the dialog without saving.
 - A problem, such as a name that is already taken, appears inside the dialog. What you typed is kept, so you can fix it and try again.
 
@@ -122,16 +122,16 @@ An action that doesn't apply to the current view at all is hidden instead. For e
 Which part of the screen has focus can matter too:
 
 - On Session Detail, the attendance keys (**N**, **E**, **D**) work only while the attendance table has focus.
-- On New Speaker Assignments, the footer changes depending on which of the two panes you are in.
+- On Review New Speaker Assignments, the footer changes depending on which of the two panes you are in.
 - While a text field has focus, letter keys type into the field instead of running actions. To use **C Continue** or **G Generate** on a text-entry screen, press **Tab** to move focus out of the editable field first, or click the corresponding button or footer action. In Settings, focus a provider's **Delete Key** button to use **D** for that key; typing **c** or **d** into a key field remains ordinary text entry.
 
-## Keys That Work Everywhere
+## Shared Keys
 
 | Key | What it does |
 |---|---|
 | **Esc** | Back, or Cancel in a dialog. |
 | **Ctrl+Q** | Quit TableSage. |
-| **F5** | Reload the screen's data from disk and the database. Use it after changing files outside TableSage. It isn't shown in any footer, and it does nothing on the Welcome and Settings screens, which have nothing to reload. |
+| **F5** | Reload data on Campaigns List, Campaign Detail, Players List, Player Detail, Session Detail, and Process Session. Use it after changing files outside TableSage. It is hidden in the footer and does nothing on the other screens. |
 | **Tab**, **Shift+Tab** | Move focus between tables, fields, and buttons. |
 
 Keys are not case-sensitive: **n** and **N** do the same thing. Where two keys do the same thing, the footer shows one of them. For example, **Enter** also does what the footer lists under **E**, and **Delete** and **Backspace** also do what it lists under **D**.
@@ -140,24 +140,16 @@ Keys are not case-sensitive: **n** and **N** do the same thing. Where two keys d
 
 **Ctrl+Q** quits TableSage from any screen. The footer shows it only on the Welcome screen, but it works everywhere, even while a dialog is open.
 
-Before quitting, TableSage checks for unsaved work in three places:
+Review Transcript, Create Previously On, and Settings use the unsaved-work prompts described in [Leaving a Screen](#leaving-a-screen) before quitting. If a dialog is open over one of them, close it first. Other screens quit immediately; to retain edits in another processing review, leave with **Esc** and save a [draft](#drafts) before quitting.
 
-- **Review Transcript.** If you have unsaved edits, it asks whether to save them as a draft.
-- **Create Previously On.** If you have entered anything, it asks whether to discard it.
-- **Settings.** If you changed anything, it offers to save or discard your changes.
-
-If a dialog is open over one of these screens, TableSage asks you to close the dialog first. Everywhere else, **Ctrl+Q** quits straight away, without asking. In particular:
-
-- On the other processing review screens, unsaved changes are lost. To keep them as a draft, leave with **Esc** first.
-- If processing is running, it stops. Steps that have finished stay finished. The next time you press **Continue** in Process Session, processing picks up from the first step that didn't finish.
+Quitting stops active processing. Finished steps remain complete; **Continue** resumes from the first unfinished step.
 
 ## Leaving a Screen
 
 | Screen | What Esc (or Exit or Cancel) does |
 |---|---|
 | Lists, detail screens, Export Artifact, Process Session, Generate Opportunities | Goes straight back. Generate Opportunities doesn't keep its results, so save them first if you want them. |
-| Name Corrections, Spellcheck Against Glossary, Extract Glossary Terms, New Speaker Assignments | Leaves without finishing the step. If you changed anything, TableSage offers to save a draft first; see [Drafts](#drafts). |
-| Review Transcript | Leaves without finishing the step. If you changed anything, it offers to save your edits first (**Save Transcript Edits?**). |
+| Review Transcript, Review Name Corrections, Spellcheck Against Glossary, Extract Glossary Terms, Review New Speaker Assignments | Leaves without finishing the step. If you changed anything, offers to save a [draft](#drafts). Review Transcript titles this prompt **Save Transcript Edits?**. |
 | Create Previously On | If you entered anything, asks **Discard Previously On?** first. This workflow keeps no drafts. |
 | Settings | If you changed anything, offers **Save** or **Discard** first. When settings must be reviewed before first use, you can't leave until you save. |
 
@@ -187,15 +179,15 @@ During processing, each automatic step checks for its keys just before it runs, 
 
 ### Drafts
 
-The processing review screens can keep unfinished work. If you leave one after changing something, TableSage asks whether to keep your changes:
+When a processing review offers to save your changes:
 
 ![The Save Your Changes? prompt when leaving the glossary review](../../images/screens/save-your-changes.png)
 
-- **Save** keeps your changes as a draft and leaves. The next time processing reaches that step, the screen reopens with your draft. A draft is used only if what the step is reviewing hasn't changed since.
+- **Save** keeps your changes as a draft and leaves.
 - **Don't Save** discards your changes and leaves.
 - **Cancel** (or **Esc**) keeps you on the screen.
 
-A draft never completes a step. You finish a step only by confirming its screen. Review Transcript asks the same question under the title **Save Transcript Edits?**.
+The next time processing reaches that step, it reopens with your draft if the source material hasn't changed. Confirm the review to complete the step; saving a draft leaves it unfinished.
 
 ### File Pickers
 

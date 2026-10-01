@@ -27,7 +27,7 @@ Keys are not part of the workspace. They are stored once per user account, in a 
 - macOS: `~/Library/Application Support/tablesage/.env`
 - Windows: `%LOCALAPPDATA%\tablesage\.env`
 
-This means you configure keys once, not once per campaign workspace. It also means removing a workspace directory never deletes your keys, and a key mistake affects every workspace until you fix it.
+You configure keys once for all your workspaces, and removing a workspace directory never deletes them. Saving a key change updates the shared file and the current instance; restart other running TableSage instances to load the change. Shell environment variables still take precedence.
 
 ### How Shell Environment Variables Override Keys
 
@@ -41,39 +41,25 @@ This is useful for CI, shared machines, or keeping a key out of the on-disk `.en
 
 ## Models: High, Medium, and Low
 
-Settings asks for three model IDs, each handling a different weight of work.
+Choose a model for each tier:
 
 | Model | Default | Used for |
 |---|---|---|
-| **High** | `openai/gpt-6-astra` | Writing a Session's outputs from its transcript and creating campaign-wide material |
-| **Medium** | `anthropic/claude-sonnet-4-5` | Helping you review transcripts, build Glossaries, and find new Players' lines |
-| **Low** | `anthropic/claude-haiku-4-5` | Short, high-volume checks while audio is imported |
+| **High** | `openai/gpt-6-astra` | Session artifacts and regeneration; Previously On and Opportunities |
+| **Medium** | `anthropic/claude-sonnet-4-5` | Glossary extraction and spellcheck; new-player name corrections and speech proposals |
+| **Low** | `anthropic/claude-haiku-4-5` | **Remove Bad Utterances** |
 
 Each field is a dropdown of bundled presets across Anthropic, OpenAI, and Gemini, plus **Custom…** if you want a different model from one of those three providers. A custom ID must take the form `provider/model-name`, where `provider` is exactly `anthropic`, `openai`, or `gemini`. Other providers are not supported at this time.
 
 ![The High model dropdown open, showing preset choices and Custom…](../images/settings/model-select.png)
 
-### What Each Tier Actually Does
+### Choosing Models
 
-**High model.** Use your most capable model here. It does the long reading and writing that produces what you keep from each Session — see [Session Artifacts](../concepts/sessions.md#session-artifacts) for what each generated document actually is:
+**High:** use your most capable model for lengthy transcripts and campaign history. It writes the [Session Artifacts](../concepts/sessions.md#session-artifacts); **Create Previously On** also uses it at all three stages: gathering ingredients, recommending scenes, and writing the recap. Cost depends on the model and the amount of text it processes.
 
-- **Process Session → Generate Artifacts**: the model reads the role transcript and writes the transcript sections, ledger and scene breakdown, player introductions, recap summary, and session summary.
-- **Regenerate Artifact** and **Regenerate All Outputs**: the same generation, run on demand.
-- **Create Previously On**: the model generates the recap.
-- **Generate Opportunities**: the model generates opportunities.
+**Medium:** choose a model that handles invented names and conversational context well. You review its proposals before they are applied. New-player identity work can require it to read the whole transcript.
 
-These are the longest and most expensive calls TableSage makes.
-
-**Medium model.** Handles moderate tasks where you check the result:
-
-- **Process Session → Spellcheck Against Glossary**: The model proposes corrections based on the [campaign glossary](../concepts/campaigns.md#glossary).
-- **Process Session → Extract Glossary Terms** and Session Detail's **Extract Glossary**: the model proposes new glossary entries based on the transcript.
-- **Process Session → Review Name Corrections**: when a Session has Players without voice samples, the model proposes corrections for misheard Player and character names, which you review before they are applied.
-- **Process Session → Isolate New Speakers**: for those same Players, the model reads the whole transcript and picks the lines each one most likely spoke; you confirm them in Review New Speaker Assignments.
-
-**Low model.** Handles operations where a fast, inexpensive model is enough.
-
-- **Process Session → Remove Bad Utterances**: after transcribing, the model removes brief listener acknowledgments that add no independent meaning. Short replies that convey meaningful information remain; see [Remove Bad Utterances](../concepts/session-processing-returning-players.md#remove-bad-utterances) for where this fits in processing.
+**Low:** a fast, inexpensive model handles batches of short phrases during **Remove Bad Utterances**, checking whether each phrase follows a question. This tries to preserve answers while removing listener acknowledgments, but meaningful replies can still be removed; see [Remove Bad Utterances](../concepts/session-processing-returning-players.md#remove-bad-utterances).
 
 ## Saving
 
@@ -83,7 +69,7 @@ Choose **Continue**, or move focus out of an editable key field and press **C**,
 2. Sends a very short test message to each of your three configured models, using your saved keys.
 3. If every model responds, downloads any local audio-processing models that are not already installed (noise removal, voice embeddings, and punctuation). This may take a while the first time, since some voice models install locally; once they are installed, this step finishes immediately on later saves.
 
-If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved even though the check failed, so correct the key or model ID and save again. The ElevenLabs key is not tested here — it is first exercised when you import session audio.
+If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved even though the check failed, so correct the key or model ID and save again. The ElevenLabs key is not tested here; it is first used to upload audio during **Create Transcript**.
 
 Leaving Settings with unsaved changes prompts you to save or discard them.
 

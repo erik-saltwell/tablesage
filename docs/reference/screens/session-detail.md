@@ -13,7 +13,7 @@ Session Detail is where you set up a Session before processing and check its res
 ## What the Screen Shows
 
 - **Name**, **Date**, and **Last Transcribed** at the top. **Last Transcribed** is the time the Session's transcript was last created, and it is blank until then.
-- **Attendance.** One row per Player who attended: their voice-sample count (**Samples**, with a red **0** for a Player with no samples yet), the **Player**, and the **Roles** they played. An attendee with no usable voice print is a *new Player*, and processing identifies them from what is said at the table. See [Processing with New Players](../../concepts/session-processing-new-players.md).
+- **Attendance.** One row per Player who attended: the number of voice samples in their voice print (**Samples**, with a red **0** for a Player with no voice print yet), the **Player**, and the **Roles** they played. An attendee with no usable voice print is a *new Player*, and processing identifies them from what is said at the table. See [Processing with New Players](../../concepts/session-processing-new-players.md).
 - **Errors.** Failures from **Clean Session** are listed here. Processing failures, including those from **Regenerate Artifact**, appear as an error notification and on the failed step's row in [Process Session](process-session.md).
 - **Artifacts.** The Session's user-facing outputs, each marked **●** current, **◐** out of date, or **○** missing. See [Read the Artifacts Panel](../../guides/review-and-export.md#read-the-artifacts-panel).
 
@@ -62,7 +62,7 @@ The dialog is titled **Add Attendee** when adding someone and **Edit Attendee** 
 ![The Edit Attendee dialog](../../images/screens/attendee-dialog.png)
 
 - **Player.** Choose from the Players who aren't already attending. Choosing **<New player…>** asks for a name, creates the Player, and returns you to the dialog with that Player selected and your Roles kept.
-- **Role.** The Roles this Player had in this Session, such as a character name or *Game Master*. A Player can have more than one.
+- **Role.** The Roles this Player had in this Session, such as a character name or *Game Master*. A Player can have more than one, but the role transcript attributes all their speech to the alphabetically first Role.
 
 The dialog has its own keys, shown at its foot:
 

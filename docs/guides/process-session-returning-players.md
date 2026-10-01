@@ -11,36 +11,32 @@ You need the recording and configured [keys and models](settings.md). This walkt
 3. On Session Detail, check the **Attendance** list. TableSage copies attendance and Roles from the latest dated Session before the new Session's date. If the new Session is undated, it uses the latest dated Session; if no eligible Session exists, attendance starts empty.
 4. Remove anyone who was absent with **D**, add anyone missing with **N**, and edit changed character Roles with **E**. Include the GM and everyone else who spoke in the recording.
 
+The same date rule chooses the prior recap in the session summary; see [How the Prior Recap Is Chosen](../concepts/sessions.md#how-the-prior-recap-is-chosen).
+
 For example, if Jordan played Brother Hald last time but switched characters, edit Jordan's Role for this Session. The person's voice remains the same; the Role tells generated outputs which character they played this time.
 
 ## Import the Recording
 
 Press **P** (**Process**), then **C** (**Continue**). Choose the recording (`.wav`, `.mp3`, `.m4a`, `.flac`, or `.ogg`). For a `.wav`, choose **Yes** at **Clean Audio?** for raw audio or **No** for audio that has already been cleaned. Other supported formats are cleaned automatically.
 
-TableSage imports and transcribes the recording, removes brief acknowledgments that add no independent meaning, and matches voices to the attendees. Because everyone has a voice print, the new-player reviews are hidden. Uncertain matches are left for transcript review.
+TableSage imports and transcribes the recording, filters likely listener acknowledgments, and matches voices to the attendees. Because everyone has a voice print, the new-player reviews are hidden. Uncertain matches are left for transcript review.
 
 ## Check New Terms and Spelling
 
-In **Extract Glossary Terms**, check proposed campaign names and terms before they enter the Glossary:
+1. In **Extract Glossary Terms**, establish the correct spellings of new names. Use **E** to edit, **D** to remove a proposal, or **N** to add a term. **Continue** adds the remaining entries to the Glossary.
+2. In **Spellcheck Against Glossary**, check each replacement and its **Occurrences** count. Edit with **E** or toggle an incorrect replacement off with **D**, then choose **Continue**.
 
-- **E** or **Enter** edits a term or description.
-- **D** removes a proposal you do not want.
-- **N** adds a missing entry.
-- **Continue** adds the remaining entries to the campaign glossary and moves on.
-
-Next, **Spellcheck Against Glossary** proposes transcript replacements using campaign vocabulary and previously approved corrections. Check each **From** → **To** pair and its **Occurrences** count, especially before keeping a replacement that affects many lines. Edit with **E**, add with **N**, and press **D** to toggle an incorrect replacement off. Choose **Continue** when the kept corrections are right. Either review may complete automatically if there is nothing to check.
-
-For example, a newly introduced *Tidewarden Coil* can be added to the Glossary and used immediately to correct *Tide Warden Coil* in the transcript. See [Build and Maintain Your Campaign Glossary](build-campaign-glossary.md).
+Either review may complete automatically if there is nothing to check. For all controls, see [Extract Glossary Terms](../reference/screens/processing-review-screens.md#extract-glossary-terms) and [Spellcheck Against Glossary](../reference/screens/processing-review-screens.md#spellcheck-against-glossary). See [Build and Maintain Your Campaign Glossary](build-campaign-glossary.md) for vocabulary guidance and corrections reused across Sessions.
 
 ## Review Speech and Speakers
 
 **Review Transcript** is your final check of what was said and who said it. Check uncertain assignments and any lines whose wording could change the account of what happened. Known voices still need review: a confident match can be wrong.
 
-1. Move through the lines to listen. Press **R** to replay, or **Space** to switch between Manual and Autoplay.
-2. Correct the speaker using the attendee numbers (**1**–**9**) in the legend. **Edit Utterance** also offers every attendee in a dropdown, including anyone beyond the first nine.
-3. Press **Enter** on a selected line to open **Edit Utterance** and change its text or speaker. The only exception is the first Enter on a freshly opened review, before you have moved to another line: it plays the first line instead, and a second Enter opens it.
-4. Use **D** to mark a line for removal, or **F** to correct repeated text with **Find/Replace**.
-5. Choose **Confirm** when the transcript is ready.
+1. Move through the lines to listen and compare them with the text.
+2. Correct speakers with the legend's number keys. After moving to a line, press **Enter** for **Edit Utterance** to fix text or choose any attendee. Use **D** to mark unwanted speech for removal.
+3. Choose **Confirm** when the transcript is ready.
+
+See [Review Transcript](../reference/screens/processing-review-screens.md#review-transcript) for playback, editing, and **Find/Replace** controls.
 
 ![Review Transcript with an utterance marked for removal](../images/screens/review-transcript-removed.png)
 
@@ -50,7 +46,7 @@ If you need to pause, press **Esc** and choose **Save** when offered to retain y
 
 TableSage applies your review, replaces player names with their Roles, and generates the Session's outputs. If earlier outputs must be rebuilt first, **Prior Sessions Are Out of Date** asks for approval; choose **Regenerate Prior** to proceed.
 
-At **Improve Player Voice Prints**, choose **Add Samples** to learn from this carefully reviewed recording, or **Not Now** to finish without adding clips. You can [add samples later](manage-players-and-voice-samples.md#add-samples-from-a-session).
+At **Improve Player Voice Prints**, choose **Add Samples** to learn from this carefully reviewed recording, replacing any earlier clips from this Session, or **Not Now** to keep existing samples. You can [learn from the Session later](manage-players-and-voice-samples.md#add-samples-from-a-session).
 
 When Process Session says **All steps complete**, return to Session Detail with **Esc**. The generated outputs should have current **●** indicators. Next, [Generate and Export Session Outputs](review-and-export.md) for your players, or [prepare for the next Session](prepare-the-next-session.md).
 

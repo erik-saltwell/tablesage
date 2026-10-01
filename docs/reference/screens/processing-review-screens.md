@@ -21,10 +21,10 @@ To get to the **Import Audio** file picker, press **C** on the Process Session s
 For a `.wav` file, **Clean Audio?** asks whether to run it through noise cleaning before importing:
 
 - **Yes** cleans it. Choose this for a raw recording.
-- **No** imports it as it is. Choose this if the file has already been cleaned.
+- **No** skips noise removal. Choose this if the file has already been cleaned.
 - **Cancel** or **Esc** ends the run without importing anything.
 
-Other formats are always cleaned. Importing, cleaning, and transcribing then run automatically and can take several minutes for a long Session.
+Other formats are always cleaned. Every import converts the recording to 16 kHz mono audio and creates a separate normalized copy for review playback, even when you choose **No**. The original file is left unchanged. Importing, cleaning, and transcribing then run automatically and can take several minutes for a long Session.
 
 ## Shared Keys for Correction Lists
 
@@ -83,7 +83,7 @@ Press **→** or **Enter** in the Players pane to move into that Player's uttera
 | Key | Action | Pane |
 |---|---|---|
 | **C** | **Confirm.** Saves the kept lines and continues the run. The **Confirm** button does the same. | Both |
-| **F** | **Find More.** Searches the rest of the Session for lines that sound like this Player's kept lines, and adds them marked **+**. Listen to each addition and remove any that aren't the Player. Lines you remove steer later searches away from that voice. You need to keep at least one line first. When nothing more is found, a notification says so. | Both |
+| **F** | **Find More.** Searches the rest of the Session for lines that sound like this Player's kept lines, and adds them marked **+**. Listen to each addition and remove any that aren't the Player. Removed Find More additions also steer later searches away from that voice. You need to keep at least one line first. When nothing more is found, a notification says so. | Both |
 | **R** | **Replay** the highlighted line. | Utterances |
 | **Space** | **Manual/Autoplay.** In Autoplay mode, each line plays through and then moves to the next. Moving the cursor yourself switches back to Manual. | Utterances |
 | **D**, **Delete**, **Backspace** | **Delete Utterance.** Toggles the highlighted line between kept and removed, then moves to the next line. A removed line is struck through and marked **✗**; press **D** on it again to keep it. | Utterances |
@@ -129,6 +129,8 @@ TableSage looks for glossary terms and names that the transcript misspells, such
 On this screen, removing is reversible. **D** toggles the highlighted correction between kept and removed. A removed correction stays in the list, struck through and marked **✗**, and pressing **D** again brings it back. Only one correction for each **From** text can be active. Keeping, adding, or editing one removes any other correction for the same text.
 
 Spellcheck corrections match anywhere in the text, not only whole words.
+
+Restarting this review reopens saved corrections; it does not generate new suggestions from the current Glossary. To apply a later glossary change to reviewed speech, use **Review Transcript** and **Find/Replace**; see [Correct an Existing Entry](../../guides/build-campaign-glossary.md#correct-an-existing-entry).
 
 ## Review Transcript
 
@@ -209,7 +211,7 @@ The last review step offers to add voice samples from this Session to the attend
 
 ![The Improve Player Voice Prints prompt](../../images/screens/improve-voice-prints.png)
 
-- **Add Samples** cuts clips of each attendee from this Session, adds them to their voice samples, and recomputes their voice prints.
+- **Add Samples** cuts clips for each attendee, replaces their earlier clips from this Session, and recomputes their voice print. Earlier clips are removed even if no new clips qualify; see [Add Samples from a Session](../../guides/manage-players-and-voice-samples.md#add-samples-from-a-session).
 - **Not Now** completes processing without adding samples. A notification reminds you that you can add them later with [From Session](players.md#from-session) on the Players List.
 
 Choose **Add Samples** only if you have carefully checked the speaker of each line in Review Transcript. A mislabeled line teaches TableSage the wrong voice for a Player.

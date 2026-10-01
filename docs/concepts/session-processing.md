@@ -13,15 +13,15 @@ Processing also calls outside services, so you need an ElevenLabs key for transc
 
 ## Two Workflows
 
-TableSage recognizes speakers by comparing their voices with each attendee's **voice print**: the voice print built from that Player's voice samples (see [Players, Voice Samples, Voice Prints, and Roles](players.md)). Everything else in processing depends on knowing who said what, so the workflow depends on whether every attendee already has a voice print.
+TableSage recognizes speakers by comparing utterances with attendees' **voice prints**, built from their voice samples (see [Players, Voice Samples, Voice Prints, and Roles](players.md)). The workflow depends on whether every attendee already has a usable voice print.
 
-A **new player** is an attendee without a usable voice print—usually someone attending their first Session who has no voice samples yet.
+A **new Player** is an attendee without a usable voice print—usually someone attending their first Session who has no voice samples yet.
 
-You never choose a workflow. Process Session looks at the attendees and follows the right one:
+TableSage chooses the workflow from the attendees:
 
-- **[Processing with Returning Players](session-processing-returning-players.md)** applies when every attendee already has a voice print. The **New Players** panel is hidden, and the steps that serve new Players do not appear in the list. They still run behind the scenes without asking anything of you, so you move straight from the transcript to speaker identification.
-- **[Processing with New Players](session-processing-new-players.md)** applies when at least one attendee is a new Player. Those Players are listed in the **New Players** panel. The extra steps for **New Players** find lines each new Player spoke in this recording, let you confirm them, and turn them into that Player's first voice samples—so that speaker identification can recognize them along with everyone else.
+- **[Processing with Returning Players](session-processing-returning-players.md)** uses existing voice prints when every attendee has a usable one.
+- **[Processing with New Players](session-processing-new-players.md)** establishes voice prints for attendees who need them, using speech you confirm from the recording before identifying speakers.
 
 ## Exporting Artifacts
 
-Once you are done processing a Session, you can export its artifacts to somewhere else on disk, where you can use them as you see fit. See [Sessions, Processing, and Session Artifacts](sessions.md) for what each artifact is.
+After processing, you can export copies of the Session's artifacts to use or share. See [Sessions, Processing, and Session Artifacts](sessions.md) for what each artifact is.

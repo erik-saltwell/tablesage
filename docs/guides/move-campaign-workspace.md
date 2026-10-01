@@ -25,7 +25,9 @@ cd ~/Documents/tablesage-new
 tablesage-rpg
 ```
 
-If the destination is a different computer or user account, [configure its service keys](settings.md) before processing there. API keys are not included in these archives. Model settings are workspace-specific; choose them in the destination workspace too.
+In every new workspace, press **S** on the Welcome screen, check your keys and model choices, and choose **Continue** to save and check Settings before importing. Players and Campaigns remain unavailable until settings are saved. See [Update Your Settings](settings.md).
+
+On the same computer and user account, your existing API keys are shared with the new workspace. On a different computer or user account, configure them again; the archives do not include keys. Model choices are workspace-specific, so check them in either case.
 
 ## Import Players First
 
