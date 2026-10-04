@@ -13,16 +13,17 @@ You need:
 
 Plan for these approximate storage needs:
 
-| Material | Size |
-|---|---|
-| TableSage and its machine-learning libraries | 8 GB (less on macOS) |
-| Downloaded models | 0.5 GB |
-| Each Session's audio | 230 MB per hour of recording |
-| Each Player's voice samples | Tens to a few hundred megabytes |
+| Material                                     | Size                            |
+| -------------------------------------------- | ------------------------------- |
+| TableSage and its machine-learning libraries | 8 GB (less on macOS)            |
+| Downloaded models                            | 0.5 GB                          |
+| Each Session's audio                         | 230 MB per hour of recording    |
+| Each Player's voice samples                  | Tens to a few hundred megabytes |
 
 You will install **uv** to manage Python and install TableSage, **Git** to fetch its source, and **FFmpeg** to read and play audio.
 
-## Install uv
+## Install Dependencies
+### uv
 
 [uv](https://docs.astral.sh/uv/) is the tool that installs and runs TableSage. It also downloads and manages the Python version TableSage needs, so you do not have to install Python separately first.
 
@@ -46,11 +47,11 @@ uv --version
 
 If the installer offers to add uv to your `PATH`, accept. If `uv --version` still fails after restarting the terminal, follow the `PATH` instructions the installer printed.
 
-### Optional: Download Python Ahead of Time
+#### Optional: Download Python Ahead of Time
 
 TableSage requires Python 3.12 or newer. uv uses a suitable existing installation or downloads one when you install TableSage.
 
-To download Python 3.12 ahead of time, run:
+If you want to download Python 3.12 yourself, run:
 
 ```sh
 uv python install 3.12
@@ -58,7 +59,7 @@ uv python install 3.12
 
 By default, this adds a versioned Python executable and leaves your shell's `python` command unchanged. Other uv-managed applications can share that Python, while TableSage's dependencies stay isolated in its own [tool environment](https://docs.astral.sh/uv/concepts/tools/#tool-environments).
 
-## Install Git
+### Install Git
 
 The installation command below uses Git to fetch the Tablesage application. If Git is not already installed, follow the [Git installation instructions](https://git-scm.com/install/) for your operating system. Make sure Git is added to your `PATH`, then restart your terminal and check:
 
@@ -68,9 +69,9 @@ git --version
 
 This must work before you install or update TableSage.
 
-## Install FFmpeg
+### Install FFmpeg
 
-TableSage checks for `ffmpeg` and `ffplay` before it opens and exits with an error if either is missing. Install an FFmpeg distribution that provides both commands, then restart your terminal.
+FFMmpeg is used by TableSage to process and play audio.  TableSage checks for `ffmpeg` and `ffplay` before it opens and exits with an error if either is missing. Install an FFmpeg distribution that provides both commands, then restart your terminal.
 
 ```sh
 # Ubuntu or Debian
@@ -141,9 +142,11 @@ On the first launch, TableSage creates a `.tablesage/` folder in the workspace a
 
 ## Configure Your API Keys and Models
 
-Press **S** to open Settings.
+After you launch TableSage, press **S** to open Settings.
 
 Enter your API keys and choose your language models. Settings asks for three models — High, Medium, and Low — so you can choose a stronger model for demanding work and a cheaper, faster one for simpler tasks.
+
+![The Settings screen, showing the API-key fields and High, Medium, and Low model selectors](../images/settings/settings-screen.png)
 
 For the default model choices, you need:
 
@@ -151,7 +154,7 @@ For the default model choices, you need:
 - an **OpenAI** key, for the High model; and
 - an **Anthropic** key, for the Medium and Low models.
 
-If you select different models, add a key for each provider those choices use. Model IDs must take the form `provider/model-name`, where the provider is `anthropic`, `openai`, or `gemini`. See [Update Your Settings](../guides/settings.md#models-high-medium-and-low) for the model defaults and uses, key storage, and shell environment overrides.
+You must configure the API keys for any models selected in settings. Model IDs must take the form `provider/model-name`, where the provider is `anthropic`, `openai`, or `gemini`. See [Update Your Settings](../guides/settings.md#models-high-medium-and-low) for detailed instructions and discussions of key storage, and how to use shell environment variables to specify your keys.
 
 Choose **Continue** to save, or move focus out of a key field and press **C**. Saving validates your model IDs, writes your settings, tests each configured model and downloads local audio-processing models if they aren't already installed — this may take a while.
 

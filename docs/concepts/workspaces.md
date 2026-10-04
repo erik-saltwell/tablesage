@@ -17,16 +17,16 @@ Start TableSage from that same directory to return to your existing data. The sa
 
 Paths below are relative to the workspace directory.
 
-| Path | Purpose |
-|---|---|
-| `.tablesage/tablesage.db` | The database of Players, Campaigns, Sessions, attendance, Roles, Glossaries, and stored voice prints. |
-| `.tablesage/settings.yaml` | This workspace's [settings](../guides/settings.md), including model choices and processing options. |
-| `.tablesage/logs/` | Application and processing logs, including `tablesage.log`, used to understand activity and diagnose problems. |
-| `.tablesage/agent-guide.md` | Instructions for an AI coding agent started in the workspace, replaced whenever a different version of TableSage starts. See [Advanced Help](../guides/advanced-help.md). |
-| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | Short pointers that lead Codex, Claude Code, and Gemini CLI to the agent guide. TableSage creates them when missing and never changes them afterwards. |
-| `players/<player-name>/` | A Player's voice sample audio clips. |
-| `campaigns/<campaign-name>/` | A Campaign's files, with numbered session folders such as `001/` containing audio, transcripts, and generated artifacts. |
-| `checkpoints/` | The downloaded noise-removal model, stored in the launch directory. It can be downloaded again, so it does not need preserving. |
+| Path                                  | Purpose                                                                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.tablesage/tablesage.db`             | The database of Players, Campaigns, Sessions, attendance, Roles, Glossaries, and stored voice prints.                                                                     |
+| `.tablesage/settings.yaml`            | This workspace's [settings](../guides/settings.md), including model choices and processing options.                                                                       |
+| `.tablesage/logs/`                    | Application and processing logs, including `tablesage.log`, used to understand activity and diagnose problems.                                                            |
+| `.tablesage/agent-guide.md`           | Instructions for an AI coding agent started in the workspace, replaced whenever a different version of TableSage starts. See [Advanced Help](../guides/advanced-help.md). |
+| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | Short pointers that lead Codex, Claude Code, and Gemini CLI to the agent guide. TableSage creates them when missing and never changes them afterwards.                    |
+| `players/<player-name>/`              | Audio clips of a Player's voice samples.                                                                                                                                  |
+| `campaigns/<campaign-name>/`          | A Campaign's files, with numbered session folders such as `001/` containing audio, transcripts, and generated artifacts.                                                  |
+| `checkpoints/`                        | The downloaded noise-removal model, stored in the launch directory. It can be downloaded again, so it does not need preserving.                                           |
 
 The database and these files work together: the database holds the records and relationships, while the directories hold audio and documents. To preserve a workspace, keep both its `.tablesage/` directory and its Player and Campaign files.
 

@@ -4,12 +4,12 @@ Practical walkthroughs for common activities once TableSage is [installed](../ge
 
 ## Your Campaign Workflow
 
-1. [Start a Campaign](start-a-campaign.md): create the Campaign and first Session, add attendees and Roles, and establish any vocabulary you already know.
+1. [Start a Campaign](start-a-campaign.md): create the Campaign and first Session, add attendees and Roles, and establish any campaign vocabulary you already know.
 2. Process each recording with one of these guides. Choose based on whether every attendee has a usable voice print, not on how old the Campaign is: a later Session with a newcomer needs the new-player guide, while a new Campaign with already-known Players can use the returning-player guide.
-   - [Process a Session with New Players](process-session-new-players.md): confirm initial voice samples for anyone without a usable voice print, review the transcript, and generate outputs.
-   - [Process a Session with Returning Players](process-session-returning-players.md): check inherited attendance, process the next recording, review speech and speakers, and finish generation.
+	   - [Process a Session with New Players](process-session-new-players.md): confirm initial voice samples for anyone without a usable voice print, review the transcript, and generate outputs.
+	   - [Process a Session with Returning Players](process-session-returning-players.md): check inherited attendance, process the next recording, review speech and speakers, and finish generation.
 3. [Generate and Export Session Outputs](review-and-export.md): choose what to share, check freshness, regenerate outputs, and export copies.
-4. [Prepare the Next Session](prepare-the-next-session.md): build a Previously On recap and discover opportunities to bring established campaign elements back into play.
+4. [Prepare the Next Session](prepare-the-next-session.md): build a "Previously On" recap and discover opportunities to bring established campaign elements back into play.
 
 ## Keep Your Campaign Working Well
 
@@ -22,5 +22,5 @@ Practical walkthroughs for common activities once TableSage is [installed](../ge
 
 ## Next Steps
 
-*  [Concepts](../concepts/index.md) explains the ideas behind these workflows and provides a high-level overview of Tablesage works. 
+*  [Concepts](../concepts/index.md) explains the ideas behind these workflows and provides a high-level overview of how TableSage works. 
 * [Screen Reference](../reference/screens/index.md) provides a detailed reference guide for the table sage user interface.

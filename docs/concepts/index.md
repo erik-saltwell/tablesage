@@ -9,4 +9,4 @@ TableSage turns tabletop roleplaying session recordings into a lasting campaign 
 - [Session Processing](session-processing.md) walks through each processing step and why it exists, with separate workflows for Sessions with only [returning Players](session-processing-returning-players.md) and those with [new Players](session-processing-new-players.md).
 - [Delete and Clean Up](delete-and-clean.md) explains why deleting a Player, Campaign, or Session leaves its files in place until an explicit cleanup.
 
-For task-focused walkthroughs, see the [Guides](../guides/index.md).
+For more task-focused walkthroughs, see the [Guides](../guides/index.md).

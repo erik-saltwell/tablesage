@@ -1,22 +1,28 @@
 # Sessions, Processing, and Session Artifacts
 
-A **Session** records one occasion of tabletop play within a Campaign. It has a name, an optional date, and a sequence number, and can hold the recording, transcript, and generated outputs.
+A **Session** records one occasion of tabletop play within a Campaign. It has a name, an optional date, and a sequence number. It  holds a cleaned version of the original recording, a transcript, and generated outputs.
 
-Dates determine which Session supplies the prior recap in a session summary; see [How the Prior Recap Is Chosen](#how-the-prior-recap-is-chosen).
+## Session Dates
 
+Session dates tell TableSage the chronological order of sessions, which helps it build beginning-of-session recaps; see [How the Prior Recap Is Chosen](sessions.md#how-the-prior-recap-is-chosen). 
 ## Attendance and Roles
 
-The session attendance record captures which Players took part in that Session. Each attendee record stores the real-world Player and their session-specific Roles, which tell TableSage what character or function that Player had in the game. See [Players, Voice Samples, Voice Prints, and Roles](players.md) for more on the distinction.
+TableSage keeps an attendance record which captures Players that  took part in a Session. Each attendee record stores the real-world Player and their session-specific Roles. Roles tell TableSage what character or function that Player had in the game. See [Players, Voice Samples, Voice Prints, and Roles](players.md) for more on the distinction.
 
 ## Processing a Session
 
-Processing turns a recording into material the group can read, review, and reuse. TableSage transcribes the recording, identifies who spoke each line, and asks you to review names, vocabulary, and the transcript before an LLM generates the Session's artifacts from the reviewed record. [Session Processing](session-processing.md) explains the steps and why each exists.
+Processing turns a recording into material the group can read, review, and reuse. TableSage processes a session by:
+* Transcribing the recording
+* Identifying who spoke each line
+* Doing a find and replace mis-spelled or mis-heard glossary terms.
+* Generating summaries and other human-readable artifacts.
+During these steps, TableSage asks the user to approve the work it is about to do and to review crucial decisions; see [Session Processing](session-processing.md) for a more detailed explanation of the steps involved.
 
 ## Session Artifacts
 
-**Session artifacts** are the durable records TableSage derives from a Session. The following artifacts are exposed in the Session UI:
+**Session artifacts** are the durable records TableSage derives from a Session recording. The following artifacts are available to export from a Session: 
 
-- **Input audio** is the recording TableSage processes.
+- The **Input audio** is the cleaned recording of a session.
 - A **transcript** records the initial speech-to-text result.
 - A **reviewed transcript** is the corrected version the group trusts.
 - A **role transcript** is a version of the reviewed transcript where utterances are ascribed to Roles rather than Players.
@@ -26,12 +32,10 @@ Processing turns a recording into material the group can read, review, and reuse
 
 ## How the Prior Recap Is Chosen
 
-When generating a session summary, TableSage chooses the prior Session within the same Campaign by date:
+When generating a session summary, TableSage chooses the prior Session (by date) within the same Campaign:
 
 - For a dated Session, it uses the latest Session with a strictly earlier date.
-- For an undated Session, it uses the latest dated Session.
-- If no eligible dated Session exists, it inserts no prior recap. This includes Campaigns where every Session is undated.
+- If no eligible dated Session exists, it inserts no prior recap.
 
-Session numbers do not determine this choice. Record dates if you want summaries to open with the preceding game's recap. If the chosen prior Session has no recap and cannot be rebuilt, the summary contains a *The prior Session recap is not available* placeholder.
+If the chosen prior Session has no recap and cannot be rebuilt, the summary contains a *The prior Session recap is not available* placeholder.
 
-Changing a Session's date does not replace the prior recap in an existing summary. Regenerate **Summary** to use the current date; see [Regenerate an Artifact](../guides/review-and-export.md#regenerate-an-artifact).

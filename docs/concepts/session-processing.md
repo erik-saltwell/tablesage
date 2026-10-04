@@ -1,6 +1,6 @@
 # Session Processing
 
-**Session processing** turns the recording of one Session into a reviewed, speaker-attributed transcript and the artifacts built from it: the ledger, the recap summary, and the player-ready session summary. It is a fixed sequence of steps. TableSage runs some of them automatically; at others it stops and asks you to check its work before anything is built on top of it.
+**Session processing** is the process of turning a recording into a transcript, summaries and related artifacts. It is a fixed sequence of steps. TableSage runs some of them automatically; at others it stops and asks you to check its work before anything is built on top of it.
 
 ## Before You Process
 
