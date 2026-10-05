@@ -216,7 +216,7 @@ def test_changing_a_document_makes_only_its_dependents_stale(processed: tuple[Ap
     assert next_step is not None and next_step.id is StepID.SUGGEST_GLOSSARY_TERMS
 
 
-def test_reopened_step_completed_with_the_same_decision_leaves_later_steps_current(
+def test_reopened_step_completed_with_the_same_decision_preserves_processing_but_requires_transcript_review(
     processed: tuple[Application, uuid.UUID], stubs: _Stubs
 ) -> None:
     application, sid = processed
@@ -233,7 +233,7 @@ def test_reopened_step_completed_with_the_same_decision_leaves_later_steps_curre
 
     application.save_glossary_decisions(sid, stubs.glossary)
 
-    assert _incomplete(application, sid)[0] is StepID.ASSIGN_ROLES
+    assert _incomplete(application, sid)[0] is StepID.REVIEW_TRANSCRIPT
 
 
 def test_a_changed_decision_makes_the_steps_after_it_run_again(processed: tuple[Application, uuid.UUID]) -> None:
@@ -245,14 +245,14 @@ def test_a_changed_decision_makes_the_steps_after_it_run_again(processed: tuple[
 
 
 def test_re_adding_the_same_glossary_decision_keeps_spellcheck_current(processed: tuple[Application, uuid.UUID]) -> None:
-    """The receipt lists the decided entries, not the newly added ones, so a repeat commit changes nothing downstream."""
+    """An identical receipt preserves spellcheck freshness; restarting still discards transcript-review work."""
     application, sid = processed
     application.reopen_step(sid, StepID.ADD_GLOSSARY_ENTRIES)
 
     result = application.add_glossary_entries(sid)
 
     assert result.added_count == 0 and result.skipped_duplicate_count == 1
-    assert _incomplete(application, sid)[0] is StepID.ASSIGN_ROLES
+    assert _incomplete(application, sid)[0] is StepID.REVIEW_TRANSCRIPT
 
 
 def test_empty_decision_is_reported_as_nothing_to_review(tmp_path: Path, processed: tuple[Application, uuid.UUID], stubs: _Stubs) -> None:

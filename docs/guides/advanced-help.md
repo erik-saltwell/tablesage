@@ -30,10 +30,26 @@ TableSage gives the agent four read-only commands, which you can also run yourse
 |---|---|
 | `tablesage report-help-topics` | Lists every page of this documentation with a one-line description. |
 | `tablesage output-help-topic <topic-id>` | Prints one page, such as `tablesage output-help-topic guides/start-a-campaign`. |
-| `tablesage report-schema` | Prints the structure of the workspace database. |
+| `tablesage report-schema` | Prints the database structure, its actual and expected migration revisions, and the installed app's expected settings version. |
 | `tablesage run-query "<SQL>"` | Runs a database query that can only read. It shows up to 100 rows. |
 
 None of these commands changes your workspace, and the query command can't modify the database. TableSage also tells the agent never to edit TableSage's files and to have you make changes through the app instead. That instruction is guidance, not enforcement: an agent that ignores it could still edit files in your workspace, so check what it proposes before you approve file changes.
+
+All four commands require the workspace folder containing `.tablesage/`. Each prints the installed version and workspace path first. Help topics are copies of the same public documentation available on GitHub, matching the installed application; an editable installation reads its checkout's `docs/`. Use these topics rather than the latest GitHub pages when versions differ. Links written `topic:<id>` refer to other help topics, and image links point to installed image files.
+
+Queries show up to 100 rows and truncate values longer than 200 characters. Use `LIMIT`, `--max-rows N`, or `--full-values` as needed. A missing database or failed query returns an error; the commands do not initialize, migrate, or repair it. Diagnostic commands also avoid interactive startup and app-start logging. Invalid settings do not prevent access to public help.
+
+## Boundaries for Agent Diagnosis
+
+The workspace agent guide points here for these instructions. Application behavior is explained in these public docs; an agent should not inspect application source code or import the application to reconstruct its behavior.
+
+- Never create, edit, move, or delete workspace files under `.tablesage/`, `players/`, or `campaigns/`, and never change the database. Recommend the documented screen and action instead.
+- Use `tablesage run-query` for database access; do not open the database through tools that can write.
+- Start with file listings, names, dates, completion records, and fingerprints. For processing-state questions, inspect selected metadata using [Processing State and Freshness](../reference/processing-state-and-freshness.md), rather than printing whole JSON files containing review decisions or drafts.
+- Do not read Session narrative content for a freshness diagnosis. Local hashing may calculate fingerprints without printing file contents. Do not play audio, open voice samples, or inspect model checkpoints.
+- Logs can contain Session text and other private data. Select only the relevant operation, timestamp, and error fields, and avoid prompt logs unless a content-specific question requires them.
+- Never print or repeat API keys; report only whether one is configured.
+- Use the exact screen, key, and action names documented here. Explain evidence and uncertainty; do not invent recovery actions or silently change the workspace.
 
 ## Your Privacy
 
@@ -44,7 +60,7 @@ The agent sends what it reads to its own AI provider. That can include Campaign 
 TableSage adds these files to your workspace so the agents can find their instructions:
 
 - `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` in the workspace directory. Each is a short pointer, read by Claude Code, Gemini CLI, and Codex respectively. TableSage creates a pointer only when the file is missing and never rewrites it afterwards, so you can add your own notes to it.
-- `.tablesage/agent-guide.md`, the agent's instructions. TableSage replaces it whenever you start a different version of TableSage.
+- `.tablesage/agent-guide.md`, a pointer to the public help topics. TableSage refreshes it at startup when the installed guide template or version changes.
 
 If you already have your own `CLAUDE.md`, `GEMINI.md`, or `AGENTS.md`, TableSage leaves it unchanged. The **Advanced Help** dialog on the Welcome screen says so and shows the line to add to your file so your agent finds TableSage's instructions.
 
@@ -52,9 +68,12 @@ To stop TableSage from adding these files, set `install_agent_files: false` in `
 
 ## If the Agent Says Its Help Is Out of Date
 
-After you update TableSage, the agent's commands may report that the help is missing or out of date. Run `tablesage` once in the workspace to refresh it. You can quit straight away, and the refresh happens even if TableSage then reports a startup problem. Then ask your question again.
+After you update TableSage, commands may warn that `.tablesage/agent-guide.md` is missing or out of date. They continue using the installed app's commands and public help topics; you do not need to start the interactive app before diagnosis. The warning does not mean that the returned help topics are outdated. An old guide may say to stop and launch the app first; follow this page's current instructions instead. A normal launch refreshes the guide when agent files are enabled, but diagnostic commands never rewrite it.
+
+If an old editable installation starts the TUI when you request a report, update or reinstall it so its launcher uses the current CLI. Current source also accepts the legacy `tablesage_tui.screens:main` launcher path. An installed release cannot receive that compatibility change until it is updated.
 
 ## Related Pages
 
 - [Troubleshooting FAQ](../reference/troubleshooting-faq.md) answers questions about problems the other pages don't explain. It is the first page the agent reads when diagnosing a problem.
 - [Workspaces](../concepts/workspaces.md) describes what each file and folder in a workspace holds.
+- [Processing State and Freshness](../reference/processing-state-and-freshness.md) explains completion records, required outputs and inputs, and how stale processing blocks later work.

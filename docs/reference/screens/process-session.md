@@ -53,11 +53,11 @@ The button at the bottom right tells you what will happen:
 | Key | Action | Available |
 |---|---|---|
 | **C** | **Continue.** Runs from the first incomplete step. The run carries on through automatic steps and opens each review step's screen in turn. It stops when a review screen is cancelled, when a step fails, or when every step is complete. | When no run is in progress, nothing blocks processing, and a step remains |
-| **R**, **Enter** | **Restart Step.** Reopens a completed review, then rebuilds affected work when the accepted content changes. Confirming the same decision leaves later work current. On the next step (**›**), it does the same as **Continue**. Steps that haven't been reached can't be selected. | When no run is in progress and a completed or next review step is highlighted |
-| **↑ ↓** | Move between review steps. The cursor skips automatic steps, which can't be restarted on their own. | Always |
+| **R**, **Enter** | **Restart from here.** Reopens a completed review or reruns a completed automatic step, then rebuilds affected work. Unchanged results can leave later work current, but restarting before **Review Transcript** discards its saved edits and drafts. On the next step (**›**), it does the same as **Continue**. Steps that haven't been reached cannot start yet. | When no run is in progress, nothing blocks processing, and a completed or next step is highlighted |
+| **↑ ↓** | Move between review steps. The cursor skips automatic steps; click an automatic row to highlight it for **Restart from here**. | Always |
 | **Esc** | **Back** to Session Detail. | Always |
 
-**Esc** remains available for going back but is hidden in the footer. The footer shows **C Continue** followed by **R Restart Step**.
+**Esc** remains available for going back but is hidden in the footer. The footer shows **C Continue** followed by **R Restart from here**.
 
 The screen never starts processing by itself. Opening it only shows where the Session stands.
 

@@ -121,6 +121,7 @@ def _completes(
     def decorate(method: Callable[Concatenate[Application, uuid.UUID, _P], _R]) -> Callable[Concatenate[Application, uuid.UUID, _P], _R]:
         @functools.wraps(method)
         def wrapper(self: Application, session_id: uuid.UUID, /, *args: _P.args, **kwargs: _P.kwargs) -> _R:
+            self._invalidate_transcript_review_for(session_id, *names)
             result = method(self, session_id, *args, **kwargs)
             self._record_completion(session_id, *names)
             return result
@@ -1216,6 +1217,7 @@ class Application:
         record = processing_state.CompletionRecord(
             completed_at=processing_state.now(), inputs=artifact_graph_pipeline.current_fingerprints(step, graph.state)
         )
+        self._invalidate_transcript_review_for(session_id, name)
 
         def apply(state: processing_state.ProcessingState) -> None:
             state.sections[name.value] = value
@@ -1324,8 +1326,10 @@ class Application:
 
     def reopen_step(self, session_id: uuid.UUID, step_id: processing_steps.StepID) -> None:
         """Restart a step: mark its outputs incomplete, keeping their content (a manual step reopens as it was left).
-        Completing it again with the same result leaves everything after it current."""
+        Completing it again with the same result preserves downstream content freshness, but upstream restarts
+        permanently discard transcript-review work."""
         step = processing_steps.STEPS_BY_ID[step_id]
+        self._invalidate_transcript_review_for(session_id, *step.outputs)
 
         def apply(state: processing_state.ProcessingState) -> None:
             for name in step.outputs:
@@ -1339,6 +1343,7 @@ class Application:
 
     def reopen_artifact(self, session_id: uuid.UUID, name: paths.ArtifactName) -> None:
         """Mark one output incomplete, keeping its content, so the step producing it runs again (Regenerate Artifact)."""
+        self._invalidate_transcript_review_for(session_id, name)
 
         def apply(state: processing_state.ProcessingState) -> None:
             record = state.records.get(name.value)
@@ -2139,6 +2144,7 @@ class Application:
             if not enabled:
                 raise RuntimeError(reason or "Cannot transcribe audio.")
 
+        self._invalidate_transcript_review_for(session_id, paths.ArtifactName.TRANSCRIPT)
         return transcribe_audio.transcribe_audio(
             session_folder,
             self.session_player_voice_prints(session_id),
@@ -2626,18 +2632,27 @@ class Application:
 
     def save_review_draft(self, session_id: uuid.UUID, transcript: Transcript | transcript_review.ReviewDecision) -> None:
         """Review Transcript's draft: the reviewer's unfinished edits, as an edit list."""
+        inputs = self._transcript_review_inputs(session_id)
+        if inputs is None:
+            raise ValueError("Transcript review inputs aren't current, so this work can't be saved as a draft.")
         decision = transcript if isinstance(transcript, transcript_review.ReviewDecision) else transcript_review.ReviewDecision(transcript)
         edits = transcript_edits_pipeline.diff(self.transcript_review_source(session_id), decision.transcript)
         value = {
             **edits.model_dump(mode="json"),
+            "review_inputs": inputs,
             "removed_indices": list(decision.removed_indices),
             "find_replacements": [mapping.as_dict() for mapping in decision.find_replacements],
         }
         self.save_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP, paths.ArtifactName.SPELLCHECKED_TRANSCRIPT, value)
 
     def load_review_draft(self, session_id: uuid.UUID) -> transcript_review.ReviewDecision | None:
+        inputs = self._transcript_review_inputs(session_id)
+        if inputs is None:
+            return None
         value = self.load_step_draft(session_id, _REVIEW_TRANSCRIPT_STEP)
-        if value is None:
+        if not isinstance(value, dict) or value.get("review_inputs") != inputs:
+            if _REVIEW_TRANSCRIPT_STEP in processing_state.load(self.session_folder(session_id)).drafts:
+                self.discard_review_draft(session_id)
             return None
         try:
             edits = transcript_edits_pipeline.TranscriptEdits.model_validate(value)
@@ -2683,8 +2698,74 @@ class Application:
         """What Review Transcript edits: the spellchecked transcript."""
         return Transcript.load(self.session_folder(session_id) / paths.ARTIFACTS[paths.ArtifactName.SPELLCHECKED_TRANSCRIPT].filename)
 
+    @staticmethod
+    def _clear_transcript_review(state: processing_state.ProcessingState) -> None:
+        """Discard incompatible review work; no later rebuild can make it valid again."""
+        state.drafts.pop(_REVIEW_TRANSCRIPT_STEP, None)
+        name = paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value
+        state.sections.pop(name, None)
+        state.records.pop(name, None)
+
+    def _discard_transcript_review(self, session_id: uuid.UUID) -> None:
+        folder = self.session_folder(session_id)
+        state = processing_state.load(folder)
+        name = paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value
+        if _REVIEW_TRANSCRIPT_STEP in state.drafts or name in state.sections or name in state.records:
+            processing_state.update(folder, self._clear_transcript_review, reason="transcript_review_invalidated")
+
+    def _invalidate_transcript_review_for(self, session_id: uuid.UUID, *names: paths.ArtifactName) -> None:
+        """Upstream restarts and producers invalidate review work even when they recreate identical content."""
+        folder = self.session_folder(session_id)
+        steps = self._session_steps(folder)
+        producers = {
+            output.name: step for step in steps for output in step.outputs if isinstance(output, artifact_graph_pipeline.ArtifactRef)
+        }
+        upstream: set[paths.ArtifactName] = set()
+
+        def visit(name: paths.ArtifactName) -> None:
+            step = producers.get(name)
+            if step is None:
+                return
+            for dependency in step.dependencies:
+                if isinstance(dependency, artifact_graph_pipeline.ArtifactRef) and dependency.name not in upstream:
+                    upstream.add(dependency.name)
+                    visit(dependency.name)
+
+        visit(paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
+        if upstream.intersection(names):
+            self._discard_transcript_review(session_id)
+
+    def _transcript_review_inputs(self, session_id: uuid.UUID) -> dict[str, str] | None:
+        """Validate review dependencies, independently of the review's own reopened completion flag."""
+        with Session(self._engine) as session:
+            game_session = sessions.get_session(session, session_id)
+            folder = self._session_folder(session, game_session)
+            graph = self._artifact_graph(session, game_session.campaign_id)
+        ref = artifact_graph_pipeline.ArtifactRef(folder, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
+        step = graph.step_for(ref)
+        if step is None:
+            self._discard_transcript_review(session_id)
+            return None
+        if any(
+            graph.status(dependency) is not artifact_graph_pipeline.ArtifactStatus.CURRENT
+            for dependency in step.dependencies
+            if isinstance(dependency, artifact_graph_pipeline.ArtifactRef)
+        ):
+            self._discard_transcript_review(session_id)
+            return None
+        inputs = {key: fingerprint.sha256 for key, fingerprint in artifact_graph_pipeline.current_fingerprints(step, graph.state).items()}
+        state = graph.state(folder)
+        record = state.records.get(paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value)
+        if paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value in state.sections and (
+            record is None or any(record.inputs.get(key) is None or record.inputs[key].sha256 != value for key, value in inputs.items())
+        ):
+            self._discard_transcript_review(session_id)
+        return inputs
+
     def saved_transcript_review(self, session_id: uuid.UUID) -> transcript_review.ReviewDecision | None:
         """The last completed review applied to the current source, to reopen the step as it was left."""
+        if self._transcript_review_inputs(session_id) is None:
+            return None
         value = self._section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
         if value is None:
             return None
@@ -2697,6 +2778,8 @@ class Application:
 
     def save_transcript_review(self, session_id: uuid.UUID, transcript: Transcript | transcript_review.ReviewDecision) -> None:
         """Review Transcript's decision: the reviewer's edits to the spellchecked transcript."""
+        if self._transcript_review_inputs(session_id) is None:
+            raise ValueError("Transcript review inputs aren't current, so this review can't be completed.")
         decision = transcript if isinstance(transcript, transcript_review.ReviewDecision) else transcript_review.ReviewDecision(transcript)
         previous = self._section(session_id, paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
         old_replacements = (

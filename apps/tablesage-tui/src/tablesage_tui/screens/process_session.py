@@ -72,7 +72,7 @@ class ProcessSessionScreen(TableSageScreen):
     HIDDEN_BINDINGS = [Binding("escape", "pop_screen", "Back", show=False)]
     COMMON_BINDINGS = [
         Binding("c,C", "continue_processing", "Continue", key_display="C"),
-        Binding("enter,r,R", "restart_step", "Restart Step", key_display="R"),
+        Binding("enter,r,R", "restart_step", "Restart from here", key_display="R"),
     ]
 
     def __init__(self, session_id: uuid.UUID) -> None:

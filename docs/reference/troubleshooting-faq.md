@@ -34,11 +34,17 @@ Each processing step builds on the outputs of earlier steps. When a step complet
 
 Attendance, Roles, Session dates, Glossary entries, and model choices are not fingerprinted. After changing them, existing outputs stay marked current (●) but still reflect the old details, so regenerate the outputs that should include the change. The same page lists which changes the marks track.
 
+An output can also be out of date when a required companion output is missing, a completion record is absent or incomplete, a required input was never recorded, or an upstream step is out of date. Existing files alone do not prove completed, current processing. See [Processing State and Freshness](processing-state-and-freshness.md) for the rules, required dependencies, metadata inspection, and recovery limits after an upgrade.
+
 ### Why Did My Unfinished Review Edits Disappear?
 
 When you cancel a review step with unsaved work, TableSage keeps it as a draft tied to the exact transcript you were reviewing. If that transcript changes before you return, for example because an earlier step ran again, the draft no longer matches and TableSage discards it rather than apply your edits to different text.
 
 ## Finding What Went Wrong
+
+### Can I Rerun a Completed Automatic Step?
+
+Yes. On **Session Detail**, press **P** (**Process**), click the automatic step's row, then press **R** (**Restart from here**). Arrow keys skip automatic rows, but clicking selects them. This works even when the step is complete and its outputs are current. Processing must be idle and free of blockers. Restarting before **Review Transcript** discards its saved edits and drafts, so choose the latest step that can apply your correction. See [Correct a Processed Session](../guides/correct-processed-session.md) and [Processing State and Freshness](processing-state-and-freshness.md#restart-a-completed-step).
 
 ### Where Can I See Why a Step Failed?
 
@@ -70,4 +76,4 @@ IDs are UUIDs stored as 32-character hexadecimal text without dashes, in `campai
 
 ### Which Settings and Database Versions Does This TableSage Expect?
 
-`tablesage report-schema` prints the database's migration revision and the one the installed TableSage expects. If they differ, launching TableSage upgrades an older database. A revision the installed version doesn't recognize means a newer TableSage has used the workspace. The expected settings version is given in the agent guide, `.tablesage/agent-guide.md`.
+`tablesage report-schema` prints the database's migration revision and the one the installed TableSage expects, plus its expected settings version. Compare that version with `settings_version` in `.tablesage/settings.yaml`. If database revisions differ, launching TableSage upgrades an older database. An unrecognized revision may belong to a newer version or another database history; the report alone cannot establish which. These read-only commands do not run migrations. A missing or outdated agent guide produces a warning, not a requirement to start the app before diagnosis.

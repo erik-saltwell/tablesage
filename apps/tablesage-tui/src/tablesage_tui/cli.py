@@ -13,7 +13,6 @@ from collections.abc import Sequence
 from pathlib import Path
 
 NO_WORKSPACE_EXIT = 2
-HELP_OUT_OF_DATE_EXIT = 3
 _SECTION_TITLES = {"getting-started": "Getting Started", "concepts": "Concepts", "guides": "Guides", "reference": "Reference"}
 
 
@@ -73,11 +72,11 @@ def _run(args: argparse.Namespace) -> int:
     print(f"TableSage {version} · workspace {cwd}", flush=True)
     if agent_files_enabled(cwd) and not guide_is_current(cwd, version):
         print(
-            f"TableSage's help for coding agents is missing or out of date for version {version}. Run `tablesage` once "
-            "in this folder to update it -- you can quit straight away, and it updates even if TableSage then reports "
-            "an error. Then run this command again."
+            f"Warning: the workspace agent guide is missing or out of date for TableSage {version}. "
+            "Continuing with the installed application's commands and public help topics. "
+            "Read `tablesage output-help-topic guides/advanced-help` for current instructions.",
+            file=sys.stderr,
         )
-        return HELP_OUT_OF_DATE_EXIT
     command = {
         "report-help-topics": _report_help_topics,
         "output-help-topic": _output_help_topic,
@@ -139,6 +138,7 @@ def _database(cwd: Path) -> Path | None:
 
 def _report_schema(cwd: Path, args: argparse.Namespace) -> int:
     from tablesage_application.agent_help import database_revision, schema_statements
+    from tablesage_application.configuration import SETTINGS_VERSION
     from tablesage_model.setup import expected_database_revision
 
     database = _database(cwd)
@@ -146,6 +146,7 @@ def _report_schema(cwd: Path, args: argparse.Namespace) -> int:
         return 1
     revision, expected = database_revision(database), expected_database_revision()
     print(f"Database revision: {revision or 'none'} (this version of TableSage expects {expected})")
+    print(f"Expected settings version: {SETTINGS_VERSION}")
     if revision != expected:
         print(
             "The database is not at the revision this version expects. Launching TableSage migrates an older database; "

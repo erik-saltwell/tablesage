@@ -171,6 +171,7 @@ class SessionDetailScreen(TableSageScreen):
         for name, widget in self._indicators.items():
             status = artifact_states[name]
             widget.update(self._indicator_text(ARTIFACTS[name].display_name, status))
+            widget.tooltip = self._indicator_tooltip(name, status)
             widget.set_class(status is ArtifactStatus.MISSING, "artifact-missing")
             widget.set_class(status is ArtifactStatus.STALE, "artifact-stale")
 
@@ -195,6 +196,16 @@ class SessionDetailScreen(TableSageScreen):
         else:
             value = modified_at.strftime("%Y-%m-%d %H:%M")
         self.query_one("#session-last-transcribed-value", Static).update(value)
+
+    @staticmethod
+    def _indicator_tooltip(name: ArtifactName, status: ArtifactStatus) -> str:
+        if status is ArtifactStatus.MISSING:
+            if name is ArtifactName.INPUT_AUDIO:
+                return "Missing: Input audio hasn't been imported yet. Process the Session to import it."
+            return "Missing: This artifact hasn't been created yet. Process the Session to create it."
+        if status is ArtifactStatus.CURRENT:
+            return "Current: This artifact is up to date with its inputs."
+        return "Out of date: This artifact exists but needs processing again before it is current."
 
     @staticmethod
     def _indicator_text(label: str, status: ArtifactStatus) -> str:

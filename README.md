@@ -51,6 +51,7 @@ TableSage stores its data in the directory you launch it from, so start it from 
 - [Privacy and Data Handling](docs/reference/privacy.md): what leaves your computer and what stays on it
 - [Advanced Help](docs/guides/advanced-help.md): ask Claude Code, Codex, or Gemini CLI for help from your workspace
 - [Troubleshooting FAQ](docs/reference/troubleshooting-faq.md): problems the other pages don't explain
+- [Processing State and Freshness](docs/reference/processing-state-and-freshness.md): completion metadata, dependencies, and recovery limits
 
 ## License
 

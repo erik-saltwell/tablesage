@@ -21,7 +21,6 @@ During processing, **Extract Glossary Terms** proposes new entries from the reco
 - Correct spellings and descriptions with **E** or **Enter**.
 - Remove inaccurate or unwanted entries with **D**.
 - Add a missing term with **N**.
-- Use **F** (**Find/Replace**) if several proposals share the same misspelling.
 
 The remaining entries are added to the Glossary; existing terms are skipped. The following **Spellcheck Against Glossary** review uses the expanded vocabulary immediately. Check its proposed replacements, including their occurrence counts, rather than assuming every suggestion is right.
 
@@ -45,7 +44,7 @@ Restarting **Spellcheck Against Glossary** does not ask the LLM for new suggesti
 
 ## Get Fresh Term Proposals from a Session
 
-To have TableSage propose new terms from a Session again, open **Other actions** (**?**) on Session Detail and choose **Extract Glossary** (**L**). This restarts glossary suggestions and review, followed by the dependent processing steps.
+To have TableSage propose new terms from a Session again, open **Other actions** (**?**) on Session Detail and choose **Extract Glossary** (**L**).
 
 ## Reuse a Glossary
 

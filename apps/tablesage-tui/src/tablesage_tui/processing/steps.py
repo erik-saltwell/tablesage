@@ -143,11 +143,12 @@ async def _review_corrections(
     if await ctx.call(lambda: application.is_imported_placeholder(ctx.session_id, suggestions_artifact)):
         await ctx.background("Finding suggestions…", lambda: propose(ctx.session_id))
     transcript, suggestions, decided = await ctx.call(lambda: load(ctx.session_id))
-    if not suggestions and not decided:
-        await ctx.call(lambda: save(ctx.session_id, ()))
-        return StepResult.success()
     draft = _draft(ctx, step_id, suggestions_artifact)
     saved_draft = await ctx.call(draft.load)
+    # An empty proposal can still have unfinished manual corrections to resume.
+    if not suggestions and not decided and saved_draft is None:
+        await ctx.call(lambda: save(ctx.session_id, ()))
+        return StepResult.success()
     rows = _suggestions(saved_draft) if saved_draft is not None else (decided if decided is not None else suggestions)
     corrections = await ctx.show(
         CorrectionsStepScreen(

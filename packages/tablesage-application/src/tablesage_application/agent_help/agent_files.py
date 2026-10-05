@@ -1,7 +1,7 @@
 """The files that let a coding agent (Claude Code, Codex, Gemini CLI) launched in a workspace help with TableSage.
 
-TableSage owns `.tablesage/agent-guide.md` and rewrites it whenever the version recorded in it differs from the
-running app's. The workspace-root `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` are stubs that point at the guide:
+TableSage owns `.tablesage/agent-guide.md` and refreshes it whenever the installed template or version changes.
+The workspace-root `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md` are stubs that point at the guide:
 created when missing, never rewritten (so anything the user adds to them survives), and never touched at all when
 the user's own file -- one without the TableSage marker -- is already there.
 """
@@ -99,8 +99,9 @@ def install_agent_files(cwd: Path, version: str, guide_body: str) -> AgentFilesS
     if not agent_files_enabled(cwd):
         return AgentFilesStatus(enabled=False)
     try:
-        if not guide_is_current(cwd, version):
-            atomic_write(guide_path(cwd), f"{version_line(version)}\n{guide_body}")
+        desired = f"{version_line(version)}\n{guide_body}"
+        if not guide_is_current(cwd, version) or guide_path(cwd).read_text(encoding="utf-8") != desired:
+            atomic_write(guide_path(cwd), desired)
         return AgentFilesStatus(enabled=True, stubs=tuple(_ensure_stub(cwd / filename, line) for filename, line in _STUBS))
     except OSError as exc:
         return AgentFilesStatus(enabled=True, error=str(exc))
