@@ -15,6 +15,7 @@ from textual.widgets import DataTable, Static
 from ..dialogs import ConfirmationDialog, PlayerDialog
 from ..dialogs.file_picker import SelectDirectory
 from ..widgets.tablesage_header import TableSageHeader
+from ..widgets.voice_clip_table import VoiceClipTable
 from .base import TableSageScreen
 
 if TYPE_CHECKING:
@@ -31,6 +32,9 @@ class PlayerDetailScreen(TableSageScreen):
     COMMON_BINDINGS = [
         Binding("f,F", "import_from_directory", "Folder Import", key_display="F"),
         Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
+        Binding("v,V", "review_samples", "Review Samples", key_display="V"),
+        Binding("p,P", "play_clip", "Play", key_display="P"),
+        Binding("space", "toggle_mode", "Manual/Autoplay", key_display="Space"),
         Binding("d,D,delete,backspace", "delete_clip", "Delete Voice Clip", key_display="D"),
     ]
     OTHER_BINDINGS = [
@@ -65,13 +69,18 @@ class PlayerDetailScreen(TableSageScreen):
                     yield Static("", id="player-total-duration-value", classes="field-value")
 
             yield Static("Voice Clips", classes="section-title")
-            table: DataTable[str] = DataTable(id="voice-clips-table", cursor_type="row", zebra_stripes=True, classes="tablesage-table")
+            yield Static("Mode: Manual", id="player-playback-mode")
+            table = VoiceClipTable(
+                id="voice-clips-table", clip_path=lambda filename: self.application.voice_clip_path(self._player_id, filename)
+            )
             table.add_column("Clip", key="filename")
             table.add_column("Duration", key="duration")
             yield table
 
     def on_mount(self) -> None:
         self.refresh_data()
+        self.query_one(VoiceClipTable).focus()
+        self.query_one(VoiceClipTable).play_selected()
 
     def refresh_data(self) -> None:
         player = self.application.get_player(self._player_id)
@@ -134,14 +143,14 @@ class PlayerDetailScreen(TableSageScreen):
     # Voice clips
 
     def _reload_voice_clips(self) -> None:
-        table = self.query_one("#voice-clips-table", DataTable)
+        table = self.query_one("#voice-clips-table", VoiceClipTable)
         selected = self._selected_clip_filename()
 
-        table.clear()
+        table.reset_clips()
         restored_row: int | None = None
         total_duration = 0.0
         for index, clip in enumerate(self.application.list_voice_clips(self._player_id)):
-            table.add_row(clip.filename, f"{clip.duration_seconds:.1f}s", key=clip.filename)
+            table.add_clip(clip.filename, clip.duration_seconds, clip.filename, f"{clip.duration_seconds:.1f}s")
             total_duration += clip.duration_seconds
             if selected is not None and clip.filename == selected:
                 restored_row = index
@@ -153,9 +162,30 @@ class PlayerDetailScreen(TableSageScreen):
         self.refresh_bindings()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if action == "delete_clip":
+        if action in {"delete_clip", "play_clip", "toggle_mode"}:
             return True if self._selected_clip_filename() is not None else None
         return True
+
+    def on_voice_clip_table_playback_changed(self) -> None:
+        self.query_one("#player-playback-mode", Static).update(f"Mode: {self.query_one(VoiceClipTable).mode_label}")
+
+    def action_play_clip(self) -> None:
+        self.query_one(VoiceClipTable).play_selected()
+
+    def action_toggle_mode(self) -> None:
+        self.query_one(VoiceClipTable).toggle_mode()
+
+    def action_review_samples(self) -> None:
+        from .voice_sample_review import VoiceSampleReviewScreen
+
+        self.query_one(VoiceClipTable).stop_playback()
+        self.app.push_screen(VoiceSampleReviewScreen(self._player_id, self._player_name), lambda _result: self.refresh_data())
+
+    def on_screen_suspend(self) -> None:
+        self.query_one(VoiceClipTable).stop_playback()
+
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        self.refresh_bindings()
 
     @staticmethod
     def _format_duration(total_seconds: float) -> str:

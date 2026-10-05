@@ -80,8 +80,13 @@ class TableSageApp(App):
         from .previously_on import PreviouslyOnScreen
         from .settings import SettingsScreen
         from .speaker_review import ManualReviewScreen
+        from .voice_sample_review import VoiceSampleReviewScreen
 
-        if isinstance(self.screen, PreviouslyOnScreen):
+        if isinstance(self.screen, VoiceSampleReviewScreen):
+            self.screen.confirm_leave(self.exit, quitting=True)
+        elif any(isinstance(screen, VoiceSampleReviewScreen) for screen in self.screen_stack):
+            self.notify("Close the current dialog before discarding sample removals or quitting.")
+        elif isinstance(self.screen, PreviouslyOnScreen):
             self.screen.confirm_leave(self.exit)
         elif isinstance(self.screen, ManualReviewScreen):
             self.screen.confirm_leave(self.exit)

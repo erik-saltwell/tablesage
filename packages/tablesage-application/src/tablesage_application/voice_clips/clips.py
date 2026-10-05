@@ -8,7 +8,7 @@ import shutil
 import tempfile
 import uuid
 import wave
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -41,9 +41,15 @@ def list_voice_clips(player_folder: Path) -> list[VoiceClip]:
     """List voice clip files in a player's folder. The filesystem is the source of truth here — there is no voice-sample table."""
     if not player_folder.exists():
         return []
-    return [
-        VoiceClip(filename=path.name, duration_seconds=_wav_duration_seconds(path)) for path in sorted(player_folder.glob(VOICE_CLIP_GLOB))
-    ]
+    result = []
+    for path in sorted(player_folder.glob(VOICE_CLIP_GLOB)):
+        try:
+            duration = _wav_duration_seconds(path)
+        except (OSError, EOFError, wave.Error):
+            # Keep unusable files visible so the user can still delete them by filename.
+            duration = 0.0
+        result.append(VoiceClip(filename=path.name, duration_seconds=duration))
+    return result
 
 
 def _wav_duration_seconds(path: Path) -> float:
@@ -62,6 +68,7 @@ def _compute_recompute_result(
     on_progress: Callable[[int, int], None] | None,
     min_sample_similarity: float,
     min_samples: int,
+    clip_paths: Sequence[Path] | None = None,
 ) -> tuple[Embedding | None, int, tuple[Path, ...]]:
     """Embed every clip on disk and compute the voice print, without touching the DB or filesystem.
 
@@ -69,7 +76,8 @@ def _compute_recompute_result(
     that actually contributed to it, and every clip path that didn't
     (duplicates, pruned outliers) -- still present on disk either way.
     """
-    clip_paths = sorted(player_folder.glob(VOICE_CLIP_GLOB)) if player_folder.exists() else []
+    if clip_paths is None:
+        clip_paths = sorted(player_folder.glob(VOICE_CLIP_GLOB)) if player_folder.exists() else []
     if not clip_paths:
         return None, 0, ()
 
@@ -133,6 +141,8 @@ def cleanup_voice_clips(
     on_progress: Callable[[int, int], None] | None = None,
     min_sample_similarity: float = DEFAULT_MIN_SAMPLE_SIMILARITY,
     min_samples: int = DEFAULT_MIN_SAMPLES,
+    *,
+    eligible_paths: Sequence[Path] | None = None,
 ) -> tuple[Player, list[str]]:
     """Recompute the voice print, then delete every clip file that didn't contribute to it.
 
@@ -145,12 +155,13 @@ def cleanup_voice_clips(
     can't leave a persisted voice print that disagrees with what's on disk.
     `min_sample_similarity`/`min_samples` normally come from the caller's
     loaded `AppSettings.remove_outliers`. Returns the updated player and the
-    filenames that were deleted.
+    filenames that were deleted. Review preparation can supply `eligible_paths`
+    to leave unreadable/unscorable files untouched rather than aborting the review.
     """
     with widelog.wide_event(op="cleanup_voice_clips", player_id=str(player_id), player_folder=str(player_folder)) as log:
         player = get_player(session, player_id)
         voice_print, used_count, unused_paths = _compute_recompute_result(
-            player_folder, embed, on_progress, min_sample_similarity, min_samples
+            player_folder, embed, on_progress, min_sample_similarity, min_samples, eligible_paths
         )
         for path in unused_paths:
             path.unlink(missing_ok=True)

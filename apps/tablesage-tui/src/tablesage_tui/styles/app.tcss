@@ -1522,6 +1522,16 @@ CampaignDetailScreen {
 /* ******************************** */
 
 PlayerDetailScreen {
+    #player-playback-mode {
+        height: 1;
+        margin-bottom: 1;
+        color: $fg-accent;
+        text-style: bold;
+    }
+
+    #voice-clips-table {
+        height: 1fr;
+    }
     .screen-body {
         padding: 1 2;
     }
@@ -1585,6 +1595,48 @@ PlayerDetailScreen {
         margin: 0 0 1 0;
         color: $fg-accent;
         text-style: bold;
+    }
+}
+
+VoiceSampleReviewScreen {
+    .screen-body {
+        padding: 1 0;
+    }
+
+    #voice-sample-review-panel {
+        width: 1fr;
+        height: 1fr;
+        margin: 0 2;
+    }
+
+    #voice-sample-review-help,
+    #voice-sample-review-cleanup {
+        height: auto;
+        margin-bottom: 1;
+        color: $fg-muted;
+    }
+
+    #voice-sample-review-status {
+        height: 1;
+        margin-bottom: 1;
+        color: $fg-accent;
+        text-style: bold;
+    }
+
+    #voice-sample-review-table {
+        height: 1fr;
+    }
+
+    #voice-sample-review-actions {
+        height: auto;
+        align: right middle;
+        margin-top: 1;
+        /* Match the clip panel's margin, border, and inner padding. */
+        padding-right: 5;
+        Button {
+            min-width: 20;
+            margin-left: 1;
+        }
     }
 }
 

@@ -10,11 +10,18 @@ For a Player without a voice print, the usual starting point is [processing a Se
 
 Before adding more samples, check whether the existing ones are correct. For example, if Jordan Lee's voice samples contain Priya Patel's speech, adding more clips can preserve the confusion.
 
-The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. To find and remove a wrong clip:
+The Players List shows how many **Samples** each Player's voice print was built from (a red **0** means no voice print yet) and whether their **Voice Print** is *ready*. Use **Review Samples** to hear the clips that sound least like the Player's voice print first:
 
 1. Select the Player and press **E** or **Enter** to open their page, which lists their **Voice Clips**, when the voice print was **Computed**, and the total **Duration** of their clips.
-2. Open `players/<player-name>/` inside your workspace in a file manager and listen to its `.wav` files in an audio player.
-3. On Player Detail, select an incorrect clip by its filename and press **D** (**Delete Voice Clip**). TableSage confirms, then deletes the clip and recomputes the voice print from the remaining clips.
+2. Press **V** (**Review Samples**). Before opening the list, TableSage recomputes the voice print and permanently deletes duplicate and outlier clips excluded from it. This automatic cleanup remains applied even if you cancel the review; it is not the **Clean Audio** denoising used during import.
+3. Listen to the first 20 clips, ordered from least to most similar to the voice print. Lower scores mean the clip sounds less like the Player's voice print. Listen before removing it—a low score does not prove it belongs to someone else. There is no transcript text; the question is whether this is the Player the clip is assigned to.
+4. Moving to a row plays its clip. **R** replays it, and **Space** toggles **Manual/Autoplay**. Moving the cursor yourself returns to Manual. Autoplay stops at the end of the loaded list; press **L** (**Load 20 More**) to append another batch, as often as needed. Scores and ordering stay fixed during this review.
+5. Press **D**, **Delete**, or **Backspace** to mark an incorrect clip for deletion and move to the next clip. The marked row stays visible, struck through and marked **✗**. You can listen again and press **D** on it to restore it.
+6. Press **C** or the **Continue** button below the table, aligned to its right edge, to delete all marked clips, recompute the voice print once, and return to Player Detail. With no marked removals, Continue returns without recomputing again. **Cancel**, beside Continue, or **Esc** discards pending removals; if any are marked, choose **Discard** or **Keep Reviewing**. Quitting with pending removals likewise offers **Discard and Quit** or **Keep Reviewing**. These choices never undo the initial cleanup, and no draft is saved.
+
+Clips that cannot be scored are skipped and reported, and remain on disk. If no usable clips or voice print remain, TableSage returns to Player Detail with an explanation. If applying changes fails, its error explains any permanent changes already made and whether **Recompute** is needed.
+
+For a particular clip, you can also listen directly on Player Detail: moving between rows plays clips, **P** (**Play**) replays the selected clip, and **Space** toggles Manual/Autoplay. Its **D** (**Delete Voice Clip**) action still confirms and immediately deletes one clip and recomputes the voice print. For all review controls, see [Review Samples](../reference/screens/players.md#review-samples).
 
 Delete unsuitable clips rather than the Player. A Player who has attended a Session can't be deleted until they're removed from that attendance; see [Delete and Clean Up](../concepts/delete-and-clean.md).
 

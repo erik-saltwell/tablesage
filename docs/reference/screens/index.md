@@ -4,7 +4,7 @@ This section documents every screen in TableSage: what it shows, every key it re
 
 Start with [Common UI Patterns](ui-patterns.md). It covers the conventions every screen shares: going back with **Esc**, quitting with **Ctrl+Q**, the **New**, **Edit**, and **Delete** keys on lists, secondary actions and the **?** menu, unavailable actions, and the common dialogs.
 
-The screenshots use a fictional sample workspace: the *Iron Pact* Campaign, its Players Alice Chen, Bob Martinez, Priya Patel, and Jordan Lee, and a Session called *The Flooded Cistern*. They were captured in a 140 × 44 terminal. In a narrower terminal, some footer labels can be cut off.
+The screenshots use a fictional sample workspace: the *Iron Pact* Campaign, its Players Alice Chen, Bob Martinez, Priya Patel, and Jordan Lee, and a Session called *The Flooded Cistern*. Most were captured in a 140 × 44 terminal; the Player Detail playback and Review Samples captures use 160 × 44 so the added controls are visible. Those clip review captures use synthetic audio and illustrative similarity scores. In a narrower terminal, some footer labels can be cut off.
 
 ## Screens
 
@@ -17,6 +17,7 @@ The screenshots use a fictional sample workspace: the *Iron Pact* Campaign, its 
 | Campaign Detail | **E** or **Enter** on a Campaign | [Campaigns](campaigns.md#campaign-detail) |
 | Players | **P** on the Welcome screen | [Players](players.md) |
 | Player Detail | **E** or **Enter** on a Player | [Players](players.md#player-detail) |
+| Review Samples | **V** on Player Detail | [Players](players.md#review-samples) |
 | Session Detail | **E** or **Enter** on a Session in Campaign Detail | [Session Detail](session-detail.md) |
 | Export Artifact | **X** on Session Detail | [Session Detail](session-detail.md#export-artifact) |
 | Process Session | **P** on Session Detail | [Process Session](process-session.md) |
@@ -39,4 +40,5 @@ Welcome
 │       └── Generate Opportunities
 └── Players
     └── Player Detail
+        └── Review Samples
 ```

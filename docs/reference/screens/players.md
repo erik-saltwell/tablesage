@@ -73,10 +73,15 @@ The top of the screen shows:
 
 The **Voice Clips** table lists every clip file in the Player's folder and its length. Clips added from a Session are named after the Campaign and Session they came from.
 
+Moving between rows plays the highlighted clip, stopping any previous playback. **P** replays it. The playback **Mode** is shown above the list; **Space** toggles Manual/Autoplay. Autoplay advances through this Player's clips and returns to Manual at the end. Moving the cursor yourself also returns to Manual. Playback stops when you leave the screen or open a dialog.
+
 | Key | Action | Available |
 |---|---|---|
 | **F** | **Folder Import.** Imports clips from a folder. See [Import Clips from a Folder](#import-clips-from-a-folder). | Always |
 | **M** | **Edit Metadata.** Renames the Player, which also renames their folder. If a leftover folder already has the new name, TableSage asks whether to delete it and continue. | Always |
+| **V** | **Review Samples.** Opens the ranked clip review after automatic cleanup; see [Review Samples](#review-samples). | Always |
+| **P** | **Play.** Plays or replays the highlighted clip. | When a clip is highlighted |
+| **Space** | **Manual/Autoplay.** Toggles automatic playback of successive clips. | When a clip is highlighted |
 | **D**, **Delete**, **Backspace** | **Delete Voice Clip.** Deletes the highlighted clip, after you confirm. The clip file is deleted, and the voice print is recomputed from the remaining clips. | When a clip is highlighted |
 | **Esc** | Back to the Players List. | Always |
 
@@ -99,3 +104,35 @@ The **Voice Clips** table lists every clip file in the Player's folder and its l
 2. **Clean Audio** asks whether to denoise and reformat the files first. Choose **Yes** for raw recordings and **No** for audio that is already clean. **Cancel** stops the import.
 3. If you have imported from this folder before, **Replace Prior Import** says how many earlier clips will be replaced. Confirm to continue.
 4. TableSage imports the clips and recomputes the voice print. A notification reports how many clips it imported and replaced. It also reports any clips it skipped because they couldn't be used, and any it removed as outliers. If no clip could be used, the voice print is left unchanged, and a warning says so.
+
+## Review Samples
+
+### How to Get Here
+
+Press **V** (**Review Samples**) on Player Detail. This screen helps you check whether each stored clip is spoken by the Player it is assigned to, starting with the least similar voices. It displays filename, duration, and **Similarity**, with no transcript text.
+
+![Review Samples with a marked clip and another batch loaded](../../images/screens/review-samples.png)
+
+Before the list appears, TableSage recomputes the voice print and **permanently deletes** excluded duplicate and outlier clips. This automatic cleanup uses the same outlier settings as **Clean Up**, and survives cancellation. It does not denoise audio. If the Player has clips but no voice print, preparation computes one; if cleanup leaves no clips or no usable voice print, you return to refreshed Player Detail with an explanation.
+
+The first **20** remaining clips appear in order from least to most similar to the post-cleanup voice print, or fewer if fewer are available. Lower scores mean the clip sounds less like the Player's voice print. Listen before removing it—a low score does not prove it belongs to someone else. Similarity is a comparison score, not a confidence percentage.
+
+The status line shows the playback mode, loaded and total clip counts, and number marked for deletion. The line below reports how many files cleanup deleted and how many unscorable clips were skipped. Skipped files remain untouched by review. If no clips can be scored, you return to Player Detail.
+
+The **Cancel** and **Continue** buttons sit below the clip panel, with **Continue** aligned to the table's right edge.
+
+### Keys
+
+| Key | Action |
+|---|---|
+| **C** | **Continue.** Deletes marked clips, recomputes the voice print once, and returns to refreshed Player Detail. With nothing marked, returns without another recomputation. The **Continue** button does the same. |
+| **L** | **Load 20 More.** Appends the next 20 unseen clips, or the remaining clips if fewer are left. Available until all clips are loaded. It preserves the current row, playback, and removal marks. Scores and ranking stay fixed for the visit. |
+| **R** | **Replay** the highlighted clip. Player Detail uses **P** for playback and keeps **R** for Recompute. |
+| **Space** | **Manual/Autoplay.** Autoplay plays successive loaded clips. At the end it returns to Manual without loading more. Moving the cursor yourself also switches to Manual. |
+| **D**, **Delete**, **Backspace** | **Delete Clip.** Toggles the highlighted clip's removal mark, then advances to play the next clip if one exists. A marked row stays visible, struck through and marked **✗**. Return to it and press **D** again to restore it. |
+| **Esc** | **Cancel.** Returns without applying pending removals. If any are marked, offers **Discard** or **Keep Reviewing**. The **Cancel** button does the same. |
+| **Ctrl+Q** | Quits; with pending removals, offers **Discard and Quit** or **Keep Reviewing**. Quitting never applies marked deletions. |
+
+The initial cleanup remains permanent after Cancel or quitting; only review removal marks are discarded. No draft is saved. Close an open dialog before quitting. Playback stops on leaving or opening a dialog. Reopening Review Samples creates a new ranking against the current voice print.
+
+If cleanup or applying removals fails, TableSage returns to refreshed Player Detail with an error explaining any files already deleted and any need to run **Recompute**. Permanent file changes are not rolled back.

@@ -56,6 +56,7 @@ from .session_pipeline.atomic_files import atomic_write
 from .session_pipeline.remove_backchannels import remove_backchannels
 from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
 from .voice_clips import clips
+from .voice_clips.review import VoiceSampleReview, prepare_review
 
 _REVIEW_TRANSCRIPT_STEP = "review_transcript"
 
@@ -402,6 +403,62 @@ class Application:
         with Session(self._engine) as session:
             player = players.get_player(session, player_id)
             return clips.list_voice_clips(paths.player_folder(self._cwd, player.name))
+
+    def voice_clip_path(self, player_id: uuid.UUID, filename: str) -> Path:
+        """Resolve a single sample in this player's folder, never an arbitrary path."""
+        if not filename or Path(filename).name != filename or not filename.endswith(".wav"):
+            raise ValueError("Invalid voice clip filename.")
+        player = self.get_player(player_id)
+        folder = paths.player_folder(self._cwd, player.name)
+        candidate = folder / filename
+        if candidate.resolve().parent != folder.resolve():
+            raise ValueError("Voice clip is outside the player's folder.")
+        return candidate
+
+    def prepare_voice_sample_review(self, player_id: uuid.UUID, on_progress: Callable[[int, int], None] | None = None) -> VoiceSampleReview:
+        """Permanent cleanup followed by a fixed ranking of all usable remaining samples."""
+        player = self.get_player(player_id)
+        folder = paths.player_folder(self._cwd, player.name)
+        before = {sample.filename for sample in clips.list_voice_clips(folder)}
+        try:
+            with Session(self._engine) as session:
+                outliers = self._settings.remove_outliers
+                result = prepare_review(
+                    session, player_id, folder, self._embed_clip, outliers.min_sample_similarity, outliers.min_samples, on_progress
+                )
+                session.commit()
+                return result
+        except Exception as exc:
+            deleted = sorted(name for name in before if not (folder / name).exists())
+            raise RuntimeError(
+                f"Review preparation failed: {exc}. {len(deleted)} clip(s) were deleted during cleanup. "
+                "Run Recompute if the voice print needs rebuilding; cleanup deletions cannot be undone."
+            ) from exc
+
+    def delete_voice_clips(
+        self, player_id: uuid.UUID, filenames: Sequence[str], on_progress: Callable[[int, int], None] | None = None
+    ) -> Player:
+        """Apply a review's batch of removals and recompute once, reporting partial failures."""
+        targets = [self.voice_clip_path(player_id, name) for name in dict.fromkeys(filenames)]
+        deleted: list[str] = []
+        phase = "deleting samples"
+        try:
+            # Validate every target before deleting any of them.
+            for path in targets:
+                if not path.is_file():
+                    raise ValueError(f"Voice clip '{path.name}' not found.")
+            for path in targets:
+                path.unlink()
+                deleted.append(path.name)
+            if not targets:
+                return self.get_player(player_id)
+            phase = "recomputing the voice print"
+            return self.recompute_voice_print(player_id, on_progress)
+        except Exception as exc:
+            raise RuntimeError(
+                f"Failed while {phase}: {exc}. {len(deleted)} clip(s) were deleted. "
+                "Deleted files cannot be restored by Cancel. Run Recompute to rebuild the voice print."
+            ) from exc
 
     def delete_voice_clip(self, player_id: uuid.UUID, filename: str, on_progress: Callable[[int, int], None] | None = None) -> Player:
         with Session(self._engine) as session:

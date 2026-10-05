@@ -18,7 +18,7 @@
 | Normalized audio for session review | complete | [.work-items/normalized-review-audio/](.work-items/normalized-review-audio/) |
 | Preserve existing Session reviews across the normalized audio upgrade | complete | [.work-items/normalized-review-audio-migration/](.work-items/normalized-review-audio-migration/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
-| Improve the player review flow: play clips from Player Detail and add a command to review and delete clips belonging to another Player | registered | [.work-items/player-review-flow/](.work-items/player-review-flow/) |
+| Improve the player review flow: play clips from Player Detail and add a command to review and delete clips belonging to another Player | complete | [.work-items/player-review-flow/](.work-items/player-review-flow/) |
 | Preparation tools allow an empty latest Session | complete | [.work-items/prep-tools-empty-latest-session/](.work-items/prep-tools-empty-latest-session/) |
 | Public documentation | complete | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
