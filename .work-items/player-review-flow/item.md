@@ -11,4 +11,4 @@ See [intent.md](intent.md) for the agreed behavior, [plan.md](plan.md) for imple
 
 ## Resume Note
 
-Implementation and required documentation updates are complete. The user-requested Player Detail and Review Samples screenshots were captured through Textual MCP and saved with the public documentation. Lint, formatting, type checks, 57 existing tests, wheel build, and direct/UI behavior checks passed; progress.md records verification limitations. No rubric assessment was performed. The user reviewed the final button alignment and authorized committing and pushing all changes.
+The Player Detail **V — Review Outliers** binding, review screen title, documentation, and affected screenshots have been updated and verified. The original implementation was committed and pushed as edee315; this naming follow-up is uncommitted. See progress.md for verification and screenshot evidence.

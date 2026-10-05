@@ -142,7 +142,7 @@ Keys are not case-sensitive: **n** and **N** do the same thing. Where two keys d
 
 **Ctrl+Q** quits TableSage from any screen. The footer shows it only on the Welcome screen, but it works everywhere, even while a dialog is open.
 
-Review Transcript, Review Samples, Create Previously On, and Settings use the unsaved-work prompts described in [Leaving a Screen](#leaving-a-screen) before quitting. Review Samples offers **Discard and Quit** or **Keep Reviewing** when clip removals are pending; quitting never applies those removals, but its automatic cleanup is already permanent. If a dialog is open over one of these screens, close it first. Other screens quit immediately; to retain edits in another processing review, leave with **Esc** and save a [draft](#drafts) before quitting.
+Review Transcript, Review Outliers, Create Previously On, and Settings use the unsaved-work prompts described in [Leaving a Screen](#leaving-a-screen) before quitting. Review Outliers offers **Discard and Quit** or **Keep Reviewing** when clip removals are pending; quitting never applies those removals, but its automatic cleanup is already permanent. If a dialog is open over one of these screens, close it first. Other screens quit immediately; to retain edits in another processing review, leave with **Esc** and save a [draft](#drafts) before quitting.
 
 Quitting stops active processing. Finished steps remain complete; **Continue** resumes from the first unfinished step.
 
@@ -153,14 +153,14 @@ Quitting stops active processing. Finished steps remain complete; **Continue** r
 | Lists, detail screens, Export Artifact, Process Session, Generate Opportunities | Goes straight back. Generate Opportunities doesn't keep its results, so save them first if you want them. |
 | Review Transcript, Review Name Corrections, Spellcheck Against Glossary, Extract Glossary Terms, Review New Speaker Assignments | Leaves without finishing the step. If you changed anything, offers to save a [draft](#drafts). Review Transcript titles this prompt **Save Transcript Edits?**. |
 | Create Previously On | If you entered anything, asks **Discard Previously On?** first. This workflow keeps no drafts. |
-| Review Samples | With marked clips, offers **Discard** or **Keep Reviewing**. Discard leaves without applying marked removals and saves no draft. The automatic cleanup performed before review remains permanent. |
+| Review Outliers | With marked clips, offers **Discard** or **Keep Reviewing**. Discard leaves without applying marked removals and saves no draft. The automatic cleanup performed before review remains permanent. |
 | Settings | If you changed anything, offers **Save** or **Discard** first. When settings must be reviewed before first use, you can't leave until you save. |
 
 ## Dialogs
 
 ### Confirmation Dialogs
 
-Deleting, cleaning up, and other consequential actions usually ask first. Review Samples automatically cleans up excluded duplicate and outlier files before loading; that cleanup is permanent even if you cancel. Within its review list, Delete only marks a clip, and **Continue** applies all marked deletions. Player Detail's single-clip deletion still asks first. A confirmation dialog has up to three buttons:
+Deleting, cleaning up, and other consequential actions usually ask first. Review Outliers automatically cleans up excluded duplicate and outlier files before loading; that cleanup is permanent even if you cancel. Within its review list, Delete only marks a clip, and **Continue** applies all marked deletions. Player Detail's single-clip deletion still asks first. A confirmation dialog has up to three buttons:
 
 - **Cancel**, on the left, closes the dialog and does nothing. **Esc** does the same.
 - The other two buttons carry the choice, for example **No** and **Yes**, or **Don't Save** and **Save**.

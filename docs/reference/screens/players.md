@@ -79,7 +79,7 @@ Moving between rows plays the highlighted clip, stopping any previous playback. 
 |---|---|---|
 | **F** | **Folder Import.** Imports clips from a folder. See [Import Clips from a Folder](#import-clips-from-a-folder). | Always |
 | **M** | **Edit Metadata.** Renames the Player, which also renames their folder. If a leftover folder already has the new name, TableSage asks whether to delete it and continue. | Always |
-| **V** | **Review Samples.** Opens the ranked clip review after automatic cleanup; see [Review Samples](#review-samples). | Always |
+| **V** | **Review Outliers.** Opens the ranked clip review after automatic cleanup; see [Review Outliers](#review-outliers). | Always |
 | **P** | **Play.** Plays or replays the highlighted clip. | When a clip is highlighted |
 | **Space** | **Manual/Autoplay.** Toggles automatic playback of successive clips. | When a clip is highlighted |
 | **D**, **Delete**, **Backspace** | **Delete Voice Clip.** Deletes the highlighted clip, after you confirm. The clip file is deleted, and the voice print is recomputed from the remaining clips. | When a clip is highlighted |
@@ -105,13 +105,13 @@ Moving between rows plays the highlighted clip, stopping any previous playback. 
 3. If you have imported from this folder before, **Replace Prior Import** says how many earlier clips will be replaced. Confirm to continue.
 4. TableSage imports the clips and recomputes the voice print. A notification reports how many clips it imported and replaced. It also reports any clips it skipped because they couldn't be used, and any it removed as outliers. If no clip could be used, the voice print is left unchanged, and a warning says so.
 
-## Review Samples
+## Review Outliers
 
 ### How to Get Here
 
-Press **V** (**Review Samples**) on Player Detail. This screen helps you check whether each stored clip is spoken by the Player it is assigned to, starting with the least similar voices. It displays filename, duration, and **Similarity**, with no transcript text.
+Press **V** (**Review Outliers**) on Player Detail. This screen helps you check whether each stored clip is spoken by the Player it is assigned to, starting with the least similar voices. It displays filename, duration, and **Similarity**, with no transcript text.
 
-![Review Samples with a marked clip and another batch loaded](../../images/screens/review-samples.png)
+![Review Outliers with a marked clip and another batch loaded](../../images/screens/review-samples.png)
 
 Before the list appears, TableSage recomputes the voice print and **permanently deletes** excluded duplicate and outlier clips. This automatic cleanup uses the same outlier settings as **Clean Up**, and survives cancellation. It does not denoise audio. If the Player has clips but no voice print, preparation computes one; if cleanup leaves no clips or no usable voice print, you return to refreshed Player Detail with an explanation.
 
@@ -133,6 +133,6 @@ The **Cancel** and **Continue** buttons sit below the clip panel, with **Continu
 | **Esc** | **Cancel.** Returns without applying pending removals. If any are marked, offers **Discard** or **Keep Reviewing**. The **Cancel** button does the same. |
 | **Ctrl+Q** | Quits; with pending removals, offers **Discard and Quit** or **Keep Reviewing**. Quitting never applies marked deletions. |
 
-The initial cleanup remains permanent after Cancel or quitting; only review removal marks are discarded. No draft is saved. Close an open dialog before quitting. Playback stops on leaving or opening a dialog. Reopening Review Samples creates a new ranking against the current voice print.
+The initial cleanup remains permanent after Cancel or quitting; only review removal marks are discarded. No draft is saved. Close an open dialog before quitting. Playback stops on leaving or opening a dialog. Reopening Review Outliers creates a new ranking against the current voice print.
 
 If cleanup or applying removals fails, TableSage returns to refreshed Player Detail with an error explaining any files already deleted and any need to run **Recompute**. Permanent file changes are not rolled back.

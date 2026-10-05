@@ -32,7 +32,7 @@ class PlayerDetailScreen(TableSageScreen):
     COMMON_BINDINGS = [
         Binding("f,F", "import_from_directory", "Folder Import", key_display="F"),
         Binding("m,M", "edit_metadata", "Edit Metadata", key_display="M"),
-        Binding("v,V", "review_samples", "Review Samples", key_display="V"),
+        Binding("v,V", "review_samples", "Review Outliers", key_display="V"),
         Binding("p,P", "play_clip", "Play", key_display="P"),
         Binding("space", "toggle_mode", "Manual/Autoplay", key_display="Space"),
         Binding("d,D,delete,backspace", "delete_clip", "Delete Voice Clip", key_display="D"),

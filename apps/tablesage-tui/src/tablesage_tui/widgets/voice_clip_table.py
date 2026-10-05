@@ -12,7 +12,7 @@ from ..audio_playback import PlaybackMode, ReviewPlayback
 
 
 class VoiceClipTable(DataTable[object]):
-    """Shared row-driven clip playback for Player Detail and Review Samples."""
+    """Shared row-driven clip playback for Player Detail and Review Outliers."""
 
     class PlaybackChanged(Message):
         pass

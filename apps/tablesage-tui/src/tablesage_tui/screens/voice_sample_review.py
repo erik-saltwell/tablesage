@@ -22,7 +22,7 @@ _BATCH_SIZE = 20
 class VoiceSampleReviewScreen(TableSageScreen):
     """Review the least similar stored samples, with reversible removals in fixed batches."""
 
-    section = "review samples"
+    section = "review outliers"
     HIDDEN_BINDINGS = [Binding("escape", "cancel", "Cancel", show=False)]
     COMMON_BINDINGS = [
         Binding("c,C", "continue", "Continue", key_display="C"),
@@ -46,7 +46,7 @@ class VoiceSampleReviewScreen(TableSageScreen):
 
     def compose_content(self) -> ComposeResult:
         with Vertical(id="voice-sample-review-panel", classes="panel surface-2") as panel:
-            panel.border_title = f" Review Samples · {self.campaign} "
+            panel.border_title = f" Review Outliers · {self.campaign} "
             yield Static(
                 "Listen for the right speaker. Lower similarity puts a clip earlier; it does not prove a wrong speaker.",
                 id="voice-sample-review-help",
@@ -67,7 +67,7 @@ class VoiceSampleReviewScreen(TableSageScreen):
 
     def on_mount(self) -> None:
         self.run_with_progress(
-            title="Review Samples",
+            title="Review Outliers",
             message="Cleaning up excluded clips and comparing remaining voices…",
             work=lambda: self.application.prepare_voice_sample_review(self._player_id, self.report_progress),
             on_success=self._show_review,
