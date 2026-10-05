@@ -80,7 +80,6 @@ class PlayerDetailScreen(TableSageScreen):
     def on_mount(self) -> None:
         self.refresh_data()
         self.query_one(VoiceClipTable).focus()
-        self.query_one(VoiceClipTable).play_selected()
 
     def refresh_data(self) -> None:
         player = self.application.get_player(self._player_id)
@@ -146,17 +145,19 @@ class PlayerDetailScreen(TableSageScreen):
         table = self.query_one("#voice-clips-table", VoiceClipTable)
         selected = self._selected_clip_filename()
 
-        table.reset_clips()
-        restored_row: int | None = None
         total_duration = 0.0
-        for index, clip in enumerate(self.application.list_voice_clips(self._player_id)):
-            table.add_clip(clip.filename, clip.duration_seconds, clip.filename, f"{clip.duration_seconds:.1f}s")
-            total_duration += clip.duration_seconds
-            if selected is not None and clip.filename == selected:
-                restored_row = index
+        # Loading and restoring a selection should stay silent; user navigation still plays clips.
+        with table.prevent(DataTable.RowHighlighted):
+            table.reset_clips()
+            restored_row: int | None = None
+            for index, clip in enumerate(self.application.list_voice_clips(self._player_id)):
+                table.add_clip(clip.filename, clip.duration_seconds, clip.filename, f"{clip.duration_seconds:.1f}s")
+                total_duration += clip.duration_seconds
+                if selected is not None and clip.filename == selected:
+                    restored_row = index
 
-        if restored_row is not None:
-            table.move_cursor(row=restored_row)
+            if restored_row is not None:
+                table.move_cursor(row=restored_row)
 
         self.query_one("#player-total-duration-value", Static).update(self._format_duration(total_duration))
         self.refresh_bindings()

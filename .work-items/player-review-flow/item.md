@@ -11,4 +11,4 @@ See [intent.md](intent.md) for the agreed behavior, [plan.md](plan.md) for imple
 
 ## Resume Note
 
-The Player Detail **V — Review Outliers** binding, review screen title, documentation, and affected screenshots have been updated and verified. The original implementation was committed and pushed as edee315; this naming follow-up is uncommitted. See progress.md for verification and screenshot evidence.
+Player Detail now opens silently in Manual mode; row clicks and arrow navigation still play clips. Documentation updates and the refreshed Player Detail screenshot are complete. The Review Outliers rename is committed as 196b7fb; this silent-entry follow-up remains uncommitted. See progress.md for verification.

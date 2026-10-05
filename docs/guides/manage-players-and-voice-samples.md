@@ -21,7 +21,7 @@ The Players List shows how many **Samples** each Player's voice print was built 
 
 Clips that cannot be scored are skipped and reported, and remain on disk. If no usable clips or voice print remain, TableSage returns to Player Detail with an explanation. If applying changes fails, its error explains any permanent changes already made and whether **Recompute** is needed.
 
-For a particular clip, you can also listen directly on Player Detail: moving between rows plays clips, **P** (**Play**) replays the selected clip, and **Space** toggles Manual/Autoplay. Its **D** (**Delete Voice Clip**) action still confirms and immediately deletes one clip and recomputes the voice print. For all review controls, see [Review Outliers](../reference/screens/players.md#review-outliers).
+For a particular clip, you can also listen directly on Player Detail. It opens in **Manual** mode without playing the first clip. Clicking a row or using **Up** and **Down** to move between rows plays clips, **P** (**Play**) replays the selected clip, and **Space** toggles Manual/Autoplay. Its **D** (**Delete Voice Clip**) action still confirms and immediately deletes one clip and recomputes the voice print. For all review controls, see [Review Outliers](../reference/screens/players.md#review-outliers).
 
 Delete unsuitable clips rather than the Player. A Player who has attended a Session can't be deleted until they're removed from that attendance; see [Delete and Clean Up](../concepts/delete-and-clean.md).
 

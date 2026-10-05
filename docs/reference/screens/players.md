@@ -73,7 +73,7 @@ The top of the screen shows:
 
 The **Voice Clips** table lists every clip file in the Player's folder and its length. Clips added from a Session are named after the Campaign and Session they came from.
 
-Moving between rows plays the highlighted clip, stopping any previous playback. **P** replays it. The playback **Mode** is shown above the list; **Space** toggles Manual/Autoplay. Autoplay advances through this Player's clips and returns to Manual at the end. Moving the cursor yourself also returns to Manual. Playback stops when you leave the screen or open a dialog.
+Player Detail opens in **Manual** mode without playing the first clip. Clicking a row or moving between rows with **Up** and **Down** plays the highlighted clip, stopping any previous playback. **P** replays it. The playback **Mode** is shown above the list; **Space** toggles Manual/Autoplay. Autoplay advances through this Player's clips and returns to Manual at the end. Moving the cursor yourself also returns to Manual. Playback stops when you leave the screen or open a dialog.
 
 | Key | Action | Available |
 |---|---|---|

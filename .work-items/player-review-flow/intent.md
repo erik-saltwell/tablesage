@@ -19,7 +19,7 @@ The registered work item covers playback from Player Detail and a command to rev
 - Place **Cancel** and **Continue** below the clip panel, right aligned with padding so **Continue** ends at the table's right edge.
 - Show the playback mode clearly. Stop playback when leaving the review or changing the Player being reviewed.
 
-Player Detail's existing clip list supports familiar playback interactions: moving between rows automatically plays clips, **P — Play** plays or replays the selected clip, and **Space** toggles Manual/Autoplay. Keep **R — Recompute** and **C — Clean Up** on Player Detail. It has no staged removals or new Continue/Cancel flow; deletion still asks for confirmation and immediately deletes the selected clip and recomputes the voice print. This narrows the earlier proposal to use staged removal in both places: staged, crossed-out rows belong only to the dedicated review screen.
+Player Detail opens in Manual mode without playing the first clip. Its existing clip list supports familiar playback interactions: clicking a row or moving between rows with Up and Down plays clips, **P — Play** plays or replays the selected clip, and **Space** toggles Manual/Autoplay. Keep **R — Recompute** and **C — Clean Up** on Player Detail. It has no staged removals or new Continue/Cancel flow; deletion still asks for confirmation and immediately deletes the selected clip and recomputes the voice print. This narrows the earlier proposal to use staged removal in both places: staged, crossed-out rows belong only to the dedicated review screen.
 
 A separate **Review Outliers** screen opens from Player Detail with **V** and uses the familiar review UI patterns to prioritize suspicious samples.
 
@@ -82,6 +82,7 @@ Use actual final screen labels and key bindings when updating public documentati
 
 ## Observable Acceptance Conditions
 
+- Player Detail opens in Manual mode without playing its initial selection. Clicking a clip or moving between rows with Up and Down plays it; P remains available for explicit playback.
 - A user can listen to stored Player clips inside TableSage from Player Detail and through the review command, using familiar playback interactions. Player Detail uses P for Play, preserves R for Recompute, and keeps immediate confirmed single-clip deletion; Review Outliers stages removals.
 - No transcript text is needed to load, display, or review these samples.
 - Automatic cleanup precedes review and persists after Cancel. A missing voice print is computed when possible; inability to obtain one is explained.
