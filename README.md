@@ -16,7 +16,9 @@ TableSage helps you spend less time reconstructing the game and more time prepar
 
 ## Demonstration
 
-This is a summary TableSage generated from an actual play session. Omitted passages (removed for brevity) are marked with `...`.
+This is a summary TableSage generated from an actual play session.
+- Omitted passages (removed for brevity) are marked with `...`.
+- Spoiler warning for the OSR adventure "The Black Wyrm of Brandonsford"
 
 > ### Starting Situation
 >
