@@ -1,6 +1,6 @@
 [project]
 name = "tablesage-rpg"
-version = "1.0.0"
+version = "1.0.1"
 description = "Turn tabletop roleplaying session recordings into transcripts, recaps, and campaign summaries."
 readme = "README.md"
 license = "CC-BY-NC-4.0"

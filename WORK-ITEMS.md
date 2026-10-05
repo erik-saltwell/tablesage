@@ -8,7 +8,7 @@
 | Improve the Correct a Processed Session guide (docs/guides/correct-processed-session.md) | complete | [.work-items/correct-processed-session-guide/](.work-items/correct-processed-session-guide/) |
 | Investigate disfluency and backchannel removal approaches | complete | [.work-items/disfluency-backchannel-removal/](.work-items/disfluency-backchannel-removal/) |
 | Documentation guides | complete | [.work-items/documentation-guides/](.work-items/documentation-guides/) |
-| enhance-readme | registered | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
+| enhance-readme | complete | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
 | Prevent Review Transcript from loading saved edits after audio re-import or dependency reprocessing | complete | [.work-items/invalidate-saved-transcript-edits/](.work-items/invalidate-saved-transcript-edits/) |
 | Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
@@ -26,6 +26,7 @@
 | Explain missing, current, and out-of-date artifact states with tooltips on Session Detail | complete | [.work-items/session-artifact-state-tooltips/](.work-items/session-artifact-state-tooltips/) |
 | Make automatic steps more visually distinct in Session Processing | complete | [.work-items/session-processing-automatic-step-styling/](.work-items/session-processing-automatic-step-styling/) |
 | Session processing flow | complete | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
+| Review session summary quality across various prompts | registered | [.work-items/session-summary-prompt-quality/](.work-items/session-summary-prompt-quality/) |
 | Skip the Spellcheck Against Glossary screen during Session processing when no corrections are proposed | complete | [.work-items/skip-empty-spellcheck-review/](.work-items/skip-empty-spellcheck-review/) |
 | Working, source-independent agent diagnostics | complete | [.work-items/source-independent-diagnostics/](.work-items/source-independent-diagnostics/) |
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
