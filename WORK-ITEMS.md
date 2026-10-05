@@ -16,10 +16,11 @@
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |
 | Normalized audio for session review | complete | [.work-items/normalized-review-audio/](.work-items/normalized-review-audio/) |
-| Preserve existing Session reviews across the normalized audio upgrade | registered | [.work-items/normalized-review-audio-migration/](.work-items/normalized-review-audio-migration/) |
+| Preserve existing Session reviews across the normalized audio upgrade | complete | [.work-items/normalized-review-audio-migration/](.work-items/normalized-review-audio-migration/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
+| Improve the player review flow: play clips from Player Detail and add a command to review and delete clips belonging to another Player | registered | [.work-items/player-review-flow/](.work-items/player-review-flow/) |
 | Preparation tools allow an empty latest Session | complete | [.work-items/prep-tools-empty-latest-session/](.work-items/prep-tools-empty-latest-session/) |
-| Public documentation | implementing | [.work-items/public-documentation/](.work-items/public-documentation/) |
+| Public documentation | complete | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
 | Scene Breakdown artifact contract | complete | [.work-items/scene-breakdown-artifact-contract/](.work-items/scene-breakdown-artifact-contract/) |
 | Explain missing, current, and out-of-date artifact states with tooltips on Session Detail | complete | [.work-items/session-artifact-state-tooltips/](.work-items/session-artifact-state-tooltips/) |

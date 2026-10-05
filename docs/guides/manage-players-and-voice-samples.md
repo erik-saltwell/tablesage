@@ -27,14 +27,6 @@ Only do this after checking speaker assignments carefully. A mislabeled line tea
 1. Press **S** and choose a Campaign, then a Session. Sessions with no transcript are dimmed and can't be chosen.
 2. TableSage cuts clips from the current transcript, replaces each attendee's earlier clips from this Session, and recomputes their voice print. A notification reports how many Players received new clips and how many clips were extracted.
 
-Replacement removes an attendee's earlier clips from this Session even when no new lines qualify. Clips from other Sessions and folder imports remain.
-
-TableSage chooses the source transcript in this order:
-
-1. A current, completed [Review Transcript](../concepts/session-processing-returning-players.md#review-transcript), trusting your speaker assignments.
-2. Otherwise, the current identified transcript.
-3. If identification is unavailable, the initial machine transcript.
-
 For either machine transcript, it accepts only lines assigned to that Player with high confidence. Very short lines are skipped, and samples pass through the outlier check described below. If no current transcript is available, the action stops with an error.
 
 ## Import Clips from a Folder
@@ -42,7 +34,7 @@ For either machine transcript, it accepts only lines assigned to that Player wit
 Use a folder containing `.wav` recordings of that person speaking. The folder is read as-is: subfolders are not searched, and the folder must hold at least one `.wav`.
 
 1. On the Player's page, press **F** (**Folder Import**) and choose the folder.
-2. TableSage asks whether to **clean** the audio (remove noise and convert the format) before importing. Answer **Yes** for raw recordings and **No** for clips that are already clean.
+2. TableSage asks whether to **clean** the audio (remove noise and convert the format) before importing. Answer **Yes** for raw recordings and **No** for clips that are already clean, such as clips created by tablesage during session processing.
 3. If you import from the same folder again, TableSage asks before replacing the clips from the earlier import.
 
 When it finishes, it reports how many clips were imported, replaced, skipped because they couldn't be used, and removed as outliers. If no clip could be used, the voice print is left unchanged.
@@ -51,16 +43,14 @@ When it finishes, it reports how many clips were imported, replaced, skipped bec
 
 On the Player's page, open **Other actions** (**?**):
 
-- **Recompute** rebuilds the voice print from the clips on disk without deleting anything. Duplicate clips and clips that don't sound like the rest are left out of the voice print but stay on disk.
-- **Clean Up** does the same recompute and then **permanently deletes** the duplicate and outlier clips it left out. TableSage asks first.
+- **Recompute** rebuilds the voice print from the clips on disk without deleting anything. TableSage keeps voice prints up to date so this feature is usually only useful in the event of a bug in the application.
+- **Clean Up** does the same recompute and then **permanently deletes** the duplicate and outlier clips it left out. TableSage asks first. This command is only useful for clearing up disk space, as these clips are never used in processing a player's voice print.
 
 How different a clip must be to count as an outlier, and the minimum number of clips it will keep, are set in the workspace's `.tablesage/settings.yaml` (`remove_outliers`). Adding a clip or Session's worth of samples can change which clips count as outliers.
 
 **Recompute All Voice Prints**, under **Other actions** on the Players List, runs a recompute for every Player. If it fails partway, it tells you which Player it stopped at and how many it finished.
 
-**Clean Up** (**C**), under **Other actions** on the Players List, is a different action from the Player page's **Clean Up**: it deletes player folders on disk that no longer belong to any Player, the leftovers of deleted Players. It does not touch the clips of existing Players.
-
-For every key on these screens, see [Players](../reference/screens/players.md) in the screen reference.
+For more on these screens, see [Players](../reference/screens/players.md) in the screen reference.
 
 ## Move Players Between Workspaces
 
@@ -75,9 +65,3 @@ For a complete campaign transfer, follow [Move a Campaign to Another Workspace](
 - **Clips:** skips identical clips, ignores files other than each Player's `.wav` clips, and recomputes voice prints.
 
 When it finishes, it reports how many Players it created and matched and how many clips it imported and skipped. An archive with unsafe or unexpected contents is rejected with nothing changed, and TableSage shows what was wrong.
-
-## Check the Result in the Next Session
-
-After adding samples or recomputing, check that the Players List shows a ready voice print and that Player Detail shows its sample count and computation time. Those indicators confirm a voice print exists; they do not measure recognition accuracy.
-
-Process the next recording and check the Player's assignments in **Review Transcript**, comparing them with the audio. If misassignments persist, inspect the source samples again and correct the current Session before using it for further voice learning. Updating a voice print does not rewrite already generated session outputs; follow [Correct a Processed Session](correct-processed-session.md) when an existing record needs repair.

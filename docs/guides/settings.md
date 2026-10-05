@@ -1,6 +1,6 @@
 # Update Your Settings
 
-Set up the service API keys and three language-model choices TableSage needs before it can process Sessions, then save and check them. See [Install TableSage](../getting-started/installation.md) for getting here the first time, and [Privacy and Data Handling](../reference/privacy.md) for what TableSage sends to which service.
+In this guide you will learn how to set up the service API keys and three language-model choices TableSage needs before it can process Sessions, then save and check them. See [Install TableSage](../getting-started/installation.md) for getting here the first time, and [Privacy and Data Handling](../reference/privacy.md) for what TableSage sends to which service.
 
 Open Settings from the Welcome screen by pressing **S**. If a step needs a key you haven't set, TableSage also offers an **Open Settings** button.
 
@@ -37,8 +37,6 @@ Before TableSage reads its stored keys, it checks your environment variables for
 - The field is not editable.
 - **Delete Key** cannot remove it, since there is nothing stored to remove; the environment variable stays active until you change your shell.
 
-This is useful for CI, shared machines, or keeping a key out of the on-disk `.env` file entirely.
-
 ## Models: High, Medium, and Low
 
 Choose a model for each tier:
@@ -67,12 +65,6 @@ Choose **Continue**, or move focus out of an editable key field and press **C**,
 
 1. Validates every model ID and writes your settings and any key changes to disk.
 2. Sends a very short test message to each of your three configured models, using your saved keys.
-3. If every model responds, downloads any local audio-processing models that are not already installed (noise removal, voice embeddings, and punctuation). This may take a while the first time, since some voice models install locally; once they are installed, this step finishes immediately on later saves.
+3. If every model responds, Tablesage downloads any local audio-processing models that are not already installed (noise removal, voice embeddings, and punctuation). This may take a while the first time, since some voice models install locally; once they are installed, this step finishes immediately on later saves.
 
 If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved even though the check failed, so correct the key or model ID and save again. The ElevenLabs key is not tested here; it is first used to upload audio during **Create Transcript**.
-
-Leaving Settings with unsaved changes prompts you to save or discard them.
-
-## Continue After a Successful Save
-
-You are ready when the model checks and required local-model downloads finish successfully. Return to [Start a Campaign](start-a-campaign.md) for first-time setup, or reopen your Session's Process screen and choose **Continue** to retry work that stopped for missing credentials. If a key field is read-only, change its shell environment variable as described above rather than trying to replace it in Settings.

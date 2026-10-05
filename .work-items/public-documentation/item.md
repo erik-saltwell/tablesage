@@ -1,13 +1,17 @@
 ---
 name: "Public documentation"
-status: implementing
+status: complete
 ---
 
 # Public documentation
 
 Create and publish a GM-facing documentation experience for TableSage RPG. The current direction is recorded in [intent.md](intent.md). The planning notes once referenced here (`toc-plan.md`, `readme-toc-plan.md`, `progress.md`, `ui-behavior-findings.md`) were never committed and are not retained; the intent's information architecture and the current `docs/` tree are the record. Screenshot capture tooling and its instructions live in the git-ignored `.for-docs/session-processing/README.md`, and `scripts/README.md` describes the fixture seeder.
 
-## Resume note
+## Completion (2026-10-05)
+
+Marked complete at the user's explicit direction. Public documentation is maintained in `docs/`, with the repository README as its front door. The notes below preserve earlier work and verification history; references to ongoing implementation or outstanding site publication describe the status at those earlier dates. This closure does not claim a new site deployment or publication verification.
+
+## Historical Resume Note
 
 Created the public documentation directory structure at the user's request: `docs/getting-started/`, `docs/guides/`, and `docs/reference/`, plus screenshot folders under `docs/images/` for `getting-started`, `campaigns`, `session-processing`, `review-and-export`, and `session-preparation`. Empty directories contain `.gitkeep` files so Git can retain them.
 

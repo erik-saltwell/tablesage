@@ -2,7 +2,7 @@
 
 Keep a shared spelling reference for the Campaign's people, places, factions, objects, and unusual terms. The Glossary helps TableSage propose transcript corrections and use consistent names in generated outputs.
 
-You need a Campaign. From the Welcome screen, press **C**, open the Campaign, and press **G** to select its **Glossary** tab. Each Campaign has its own Glossary.
+ Glossary management happens inside a campaign. From the Welcome screen, press **C**, open the Campaign, and press **G** to select its **Glossary** tab. Each Campaign has its own Glossary.
 
 ## Add Names Before Processing
 
@@ -16,13 +16,13 @@ For example, add *Tidewarden Coil* with the description “Harbor official who h
 
 ## Accept Discoveries from a Session
 
-During processing, **Extract Glossary Terms** proposes new entries from the recording. Before choosing **Continue**:
+During processing, **Extract Glossary Terms** proposes new entries from the recording. Before continuing:
 
 - Correct spellings and descriptions with **E** or **Enter**.
 - Remove inaccurate or unwanted entries with **D**.
 - Add a missing term with **N**.
 
-The remaining entries are added to the Glossary; existing terms are skipped. The following **Spellcheck Against Glossary** review uses the expanded vocabulary immediately. Check its proposed replacements, including their occurrence counts, rather than assuming every suggestion is right.
+The remaining entries are added to the Glossary; terms already in the glossary are skipped. The following **Spellcheck Against Glossary** review uses the expanded vocabulary immediately. Check its proposed replacements, including their occurrence counts, rather than assuming every suggestion is right.
 
 For instance, establish *Tidewarden Coil* here, then keep a proposed correction from *Tide Warden Coil* in the spellcheck. Corrections you approve are suggested again in later Sessions, so repeated mishearings become easier to handle.
 
@@ -57,4 +57,4 @@ On Campaign Detail, press **?** to open **Other actions**:
 
 Import adds entries and skips terms that already exist; it does not overwrite existing descriptions. Edit an existing entry directly if its content needs changing. Use a file created by Export Glossary when moving vocabulary between Campaigns.
 
-You are done when the Glossary contains the correct names and context you want processing to use. For affected Sessions, complete the spelling/transcript reviews and [refresh their outputs](review-and-export.md) before exporting new copies.
+You are done when the Glossary contains the correct names and context you want processing to use.
