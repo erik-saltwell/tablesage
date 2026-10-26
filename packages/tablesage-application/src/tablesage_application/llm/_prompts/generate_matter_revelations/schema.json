@@ -1,0 +1,117 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "revelations"
+  ],
+  "properties": {
+    "revelations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Revelation"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Revelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "inclusion_basis",
+        "mystery_progress",
+        "impact",
+        "evidentiary_strength",
+        "unexpectedness"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^!！]*$"
+        },
+        "impact": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "evidentiary_strength": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "inclusion_basis": {
+          "type": "string",
+          "enum": [
+            "mystery_progress",
+            "reframing"
+          ]
+        },
+        "mystery_progress": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "trivial",
+            "limited",
+            "substantial",
+            "resolved",
+            null
+          ]
+        },
+        "unexpectedness": {
+          "type": "string",
+          "enum": [
+            "trivial",
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "inclusion_basis": {
+              "enum": [
+                "mystery_progress"
+              ]
+            },
+            "mystery_progress": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "limited",
+                "substantial",
+                "resolved"
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "inclusion_basis": {
+              "enum": [
+                "reframing"
+              ]
+            },
+            "mystery_progress": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

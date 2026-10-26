@@ -1,5 +1,7 @@
 # Generate and Export Session Outputs
 
+Processing currently generates **Ledger**, **Scene Log**, and ten internal Matters artifacts. Summary and Table Recap generation is temporarily paused; their UI entries and existing exports remain available. Hidden artifacts are omitted from **Regenerate Artifact** and **Export Artifact**, but the dependency graph rebuilds them when needed. Previously On and campaign preparation Opportunities are also temporarily unavailable.
+
 Produce the documents you want to share with players or keep for reference, then export copies to a location you choose. Initial generation happens at the end of processing; you can return later to rebuild an output or refresh the Campaign.
 
 You need a Session that has completed processing its audio recording. If you have not reached that point, follow [Process a Session with New Players](process-session-new-players.md) or [Process a Session with Returning Players](process-session-returning-players.md). 
@@ -11,12 +13,12 @@ Use different artifacts, depending on how you will use them.
 | Your task                                                                                               | Output to use                                                            |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Send players an account of the latest Session                                                           | **Summary**, the player-ready session summary                            |
-| Read a short recap of that Session at the table                                                         | **Recap Summary**                                                        |
+| Read a short recap of that Session at the table                                                         | **Table Recap**                                                        |
 | Look up what happened and which facts were established                                                  | **Ledger**, exported as readable Markdown or structured JSON             |
 | Check what was actually said in a session                                                               | **Role Transcript**                                                      |
 | Build a recap that highlights things in the campaign that are likely to be relevant in the next session | [Create Previously On](prepare-the-next-session.md#create-previously-on) |
 
-If you look in the session folder of your workspace, you will see other artifacts like Transcript Sections, Scene Breakdown, and Player Introductions.  These are used internally but are not expected to be valuable to users of TableSage. See [Session Artifacts](../concepts/sessions.md#session-artifacts) for more details about generated artifacts.
+The **Scene Log** contains scenes, events, discoveries and scene/session cues. Separate internal Matters artifacts track Present Matters, Goals, Obligations, Brewing Troubles, Goal Impediments, Opportunities, Mysteries, New Assets, Revelations and Developments. Transcript Sections and optional Player Introductions remain internal artifacts. See [Session Artifacts](../concepts/sessions.md#session-artifacts) for more details about generated artifacts.
 
 ## Read the Artifacts Panel
 
@@ -42,23 +44,23 @@ The **Artifacts** panel on Session Detail lists the user-facing [artifacts](../c
 You can stay on the Export screen and export several artifacts in a row. Two details to know:
 
 - If the artifact is out of date, TableSage warns you and asks whether to export it anyway.
-- The **Ledger** can be exported as **JSON** (the structured record) or **Markdown** (a readable version). You are asked which you want.
+- The **Ledger** and **Scene Log** can be exported as **JSON** (the structured record) or **Markdown** (a readable version). You are asked which you want.
 
 ## Regenerate an Artifact
 
 Use this when you want TableSage to write an output again and the reviewed transcript is already correct and current. For example, regenerate **Summary** if you want another generation attempt based on the same accepted record.
 
 1. On Session Detail, press **?** to open **Other actions**, then choose **Regenerate Artifact** (**R**).
-2. Choose what to rebuild: **Role Transcript**, **Transcript Sections**, **Ledger + Scene Breakdown**, **Player Introductions**, **Recap Summary**, or **Summary**.
+2. Choose what to rebuild: **Role Transcript**, **Transcript Sections**, **Ledger**, **Scene Log**, **Player Introductions**, **Table Recap**, or **Summary**.
 3. Confirm. TableSage rebuilds the artifact you chose and updates the outputs that depend on it.
 
-Regenerate Artifact is available only when the Session has a current reviewed transcript, because every generated output is built from it. It runs as a normal processing run, so it can't overlap another one; if processing is already running, TableSage tells you to wait.
+Regenerate Artifact is available only when the Session has a current reviewed transcript, because every generated output is built from it. A reviewed transcript explicitly accepted through a backed-up maintenance migration also meets this requirement; see [Processing State and Freshness](../reference/processing-state-and-freshness.md#explicitly-adopted-reviewed-transcripts). It runs as a normal processing run, so it can't overlap another one; if processing is already running, TableSage tells you to wait.
 
 ## Regenerate Every Session in a Campaign
 
-From the Campaign Screen, use **Regenerate All Outputs** (on the secondary actions panel - press **?**) to refresh the whole Campaign's outputs after upgrading TableSage (updated prompts mark existing outputs out of date), and before building [Previously On or Opportunities](prepare-the-next-session.md), which need every Session's scene breakdown to be current.
+From the Campaign Screen, use **Regenerate All Outputs** (on the secondary actions panel - press **?**) to refresh the whole Campaign's outputs after upgrading TableSage (updated prompts mark existing outputs out of date), and before building [Previously On or Opportunities](prepare-the-next-session.md), which need every recorded Session’s Scene Log to be current.
 
-Sessions whose transcript review isn't complete and current are skipped, and the message shown when it finishes says how many. If no imported-audio Session has a current completed review, nothing is generated. Process any skipped Sessions separately, then run the action again.
+Sessions whose transcript review isn't complete and current are skipped, and the message shown when it finishes says how many. A later Session that needs a missing or stale earlier Scene Log remains blocked until that earlier Session can be regenerated. If no imported-audio Session has a current completed review, nothing is generated. Process any skipped Sessions separately, then run the action again.
 
 ## Check the Exported Copy
 

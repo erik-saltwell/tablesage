@@ -1,0 +1,159 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mysteries"
+  ],
+  "properties": {
+    "mysteries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Mystery"
+      }
+    }
+  },
+  "$defs": {
+    "Mystery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "grounding",
+        "investigative_depth",
+        "narrative_payoff",
+        "investigative_potential",
+        "question_type",
+        "lifecycle",
+        "advanced_this_session"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grounding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rank",
+            "justification"
+          ],
+          "properties": {
+            "rank": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "justification": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "investigative_depth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rank",
+            "justification"
+          ],
+          "properties": {
+            "rank": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "justification": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "narrative_payoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rank",
+            "justification"
+          ],
+          "properties": {
+            "rank": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "justification": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "investigative_potential": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rank",
+            "justification"
+          ],
+          "properties": {
+            "rank": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "justification": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "question_type": {
+          "type": "string",
+          "enum": [
+            "open_ended",
+            "closed_ended"
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "open",
+            "resolved",
+            "obsolete"
+          ]
+        },
+        "advanced_this_session": {
+          "type": "boolean"
+        },
+        "goal_id": {
+          "type": "string",
+          "pattern": "^goal_[0-9]+$"
+        },
+        "impediment_id": {
+          "type": "string",
+          "pattern": "^impediment_[0-9]+$"
+        },
+        "opportunity_id": {
+          "type": "string",
+          "pattern": "^opportunity_[0-9]+$"
+        }
+      }
+    }
+  }
+}

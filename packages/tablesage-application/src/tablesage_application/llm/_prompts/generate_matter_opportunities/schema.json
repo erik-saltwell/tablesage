@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "opportunities"
+  ],
+  "properties": {
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Opportunity"
+      }
+    }
+  },
+  "$defs": {
+    "Opportunity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "opening",
+        "action",
+        "advantage",
+        "goal_id",
+        "goal_impediment_title",
+        "lifecycle",
+        "parent_opportunity_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^opportunity_([0-9]+|new_[0-9]+)$"
+        },
+        "opening": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "advantage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "goal_id": {
+          "type": "string",
+          "pattern": "^goal_[0-9]+$"
+        },
+        "goal_impediment_title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "available",
+            "captured",
+            "lost",
+            "obsolete"
+          ]
+        },
+        "parent_opportunity_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^opportunity_([0-9]+|new_[0-9]+)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

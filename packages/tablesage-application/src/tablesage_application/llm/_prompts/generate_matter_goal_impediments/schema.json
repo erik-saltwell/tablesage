@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "goal_impediments"
+  ],
+  "properties": {
+    "goal_impediments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/GoalImpediment"
+      }
+    }
+  },
+  "$defs": {
+    "GoalImpediment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "details",
+        "goal_ids",
+        "lifecycle"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "details": {
+          "type": "string"
+        },
+        "goal_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^goal_[0-9]+$"
+          }
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "anticipated",
+            "active",
+            "resolved",
+            "obsolete"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^impediment_(new_)?[0-9]+$"
+        }
+      }
+    }
+  }
+}

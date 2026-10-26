@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 from .artifact_registry import ArtifactName
+from .session_pipeline.bundles.campaign_matters import SECTIONS
 
 
 class StepKind(StrEnum):
@@ -159,10 +160,8 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
         (
             ArtifactName.TRANSCRIPT_SECTIONS,
             ArtifactName.LEDGER,
-            ArtifactName.SCENE_BREAKDOWN,
-            ArtifactName.PLAYER_INTRODUCTIONS,
-            ArtifactName.RECAP_SUMMARY,
-            ArtifactName.SUMMARY,
+            ArtifactName.SCENE_LOG,
+            *(ArtifactName(section) for section in SECTIONS),
         ),
         llm_roles=("llm_model_high",),
     ),
@@ -213,6 +212,8 @@ class ProcessingOverview:
     new_players: tuple[str, ...]
     # Conditions that stop processing entirely (e.g. no attendees); Continue shows the first.
     blockers: tuple[str, ...]
+    # Accepted reviewed transcripts allow generation to resume past historical machine steps.
+    resume_from: StepID | None = None
 
     def state(self, step_id: StepID) -> StepState:
         return next(state for state in self.steps if state.step.id == step_id)
@@ -220,4 +221,5 @@ class ProcessingOverview:
     @property
     def next_step(self) -> ProcessingStep | None:
         """The first incomplete step, where Continue starts."""
-        return next((state.step for state in self.steps if not state.complete), None)
+        start = 0 if self.resume_from is None else next(i for i, state in enumerate(self.steps) if state.step.id == self.resume_from)
+        return next((state.step for state in self.steps[start:] if not state.complete), None)

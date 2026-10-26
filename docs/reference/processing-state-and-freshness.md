@@ -21,11 +21,19 @@ A file artifact is **missing** if its file does not exist. A section artifact is
 - A currently required input has no recorded fingerprint.
 - An artifact input is itself missing or out of date.
 - An input's current fingerprint differs from the recorded fingerprint.
-- An interrupted pair write left `.audio-import-incomplete` (Input Audio and Normalized Review Audio) or `.ledger-generation-incomplete` (Ledger and Scene Breakdown).
+- An interrupted pair write left `.audio-import-incomplete` (Input Audio and Normalized Review Audio) or an artifact’s `.ledger-v5-generation-incomplete`, `.scene_log-generation-incomplete`, `.summary-generation-incomplete`, or `.table_recap-generation-incomplete` marker. These suppress incomplete narrative outputs until recovery/regeneration; the older Ledger/Scene Breakdown marker is also recognized.
 
 Otherwise the artifact is **current**. Artifacts with no producing step are current when present; companion artifacts share their producer's completion record. The record's `completed_at` timestamp is historical evidence, not the test of currentness. Obsolete recorded inputs are ignored when the installed version no longer requires them. A new required input absent from an older record makes the step out of date, even if no existing file changed.
 
 Freshness propagates through dependencies. A missing Import Audio output can make Input Audio stale, which makes Transcript stale, and so on to reviewed transcripts and generated outputs. There can also be independent blockers farther down the chain: inspect the relevant records for missing required inputs even after finding an earlier stale dependency.
+
+### Explicitly Adopted Reviewed Transcripts
+
+A reviewed transcript can be explicitly accepted as a migration checkpoint after a human confirms that the existing review should remain authoritative. This is application support used by a separate maintenance utility; upgrades do not adopt transcripts automatically, and there is no migration action in the UI.
+
+The `reviewed_transcript_checkpoint` field in `processing_state.json` records the Session ID, SHA-256 of `transcript_reviewed.json`, adoption date, source revision, and backup reference. The reviewed transcript is current while those file bytes match the accepted checksum. This acceptance replaces the requirement for its historical machine-processing inputs to be current; it does not certify or change those earlier steps. Generated outputs still follow their normal completion records and dependencies, and a maintenance update rebuilds them using the accepted review.
+
+Missing or changed transcript bytes invalidate the checkpoint and downstream outputs. Explicitly restarting upstream processing or replacing the review revokes acceptance and resumes normal processing rules. Merely inspecting old review decisions leaves them intact. Earlier processing rows may remain out of date after adoption. The processing coordinator resumes after the accepted review; use output regeneration rather than explicitly restarting those earlier rows when preserving it. Back up the workspace before adoption, and retain its historical review decisions.
 
 An unreadable or invalid `processing_state.json` makes the application try `processing_state.json.bak`; if both fail, it uses empty state. Report uncertainty when the metadata cannot be parsed rather than diagnosing it as an ordinary completed Session. Merely inspecting metadata does not perform the app's legacy import or migrations.
 
@@ -33,7 +41,7 @@ An unreadable or invalid `processing_state.json` makes the application try `proc
 
 `records` maps the producer names below to `{complete, completed_at, inputs}`. Each input has a `sha256` digest. File inputs also store `size` and `mtime_ns`, allowing unchanged files to be recognized without hashing again. A changed file timestamp alone does not prove stale content: the app compares content hashes when those attributes differ. Section inputs hash canonical JSON with sorted keys and compact separators; they have no file size or modification time.
 
-Input keys are `artifact:<name>` for this Session, `artifact:<NNN>/<name>` for another Session, and `prompt:<name>` for a packaged system prompt. System-prompt changes after an application upgrade can invalidate generated outputs. Input Audio and Normalized Review Audio share the `input_audio` producer record. Transcript JSON and Markdown share `transcript`; Ledger JSON, Ledger Markdown, and Scene Breakdown share `ledger`.
+Input keys are `artifact:<name>` for this Session, `artifact:<NNN>/<name>` for another Session, `prompt:<name>` or `prompt:<name>/<file>` for packaged generation resources, and `value:<name>` for configuration/context values. Narrative outputs fingerprint their templates, schemas, input/assembly/rendering code, generation controls, and relevant context. Input Audio and Normalized Review Audio share `input_audio`; Transcript JSON and Markdown share `transcript`. Each narrative JSON/Markdown pair has its own producer record.
 
 The following local Python example prints only metadata and fingerprints. Replace the Session path before running it. It parses JSON locally but does not print section values, drafts, transcripts, or audio. File hashing also stays local and emits only hashes. It locates packaged prompt data without reading source code or importing the application.
 
@@ -52,6 +60,7 @@ section_hashes = {
     for key, value in sections.items()
 }
 print(json.dumps({"version": state.get("version"), "records": state.get("records", {}),
+                  "reviewed_transcript_checkpoint": state.get("reviewed_transcript_checkpoint"),
                   "section_sha256": section_hashes, "draft_keys": sorted(state.get("drafts", {}))}, indent=2))
 for path in sorted(folder.iterdir()):
     if path.is_file() and path.name not in {"processing_state.json", "processing_state.json.bak"}:
@@ -97,17 +106,43 @@ These are the producer names used in `records`, their required outputs, and thei
 | `transcript_review_edits` | `transcript_review_edits` section | `spellchecked_transcript`, `normalized_review_audio` |
 | `reviewed_transcript` | `transcript_reviewed.json` | `spellchecked_transcript`, `transcript_review_edits` |
 | `role_transcript` | `role_transcript.json` | `reviewed_transcript` |
-| `transcript_sections` | `transcript_sections.json` | `role_transcript`, `prompt:section_transcript` |
-| `ledger` | `ledger.json`, `ledger.md`, `scene_breakdown.json` | `role_transcript`, `transcript_sections`, `prompt:generate_ledger` |
-| `player_introductions` | `player_introductions.json` | `role_transcript`, `transcript_sections`, `prompt:generate_player_introductions` |
-| `recap_summary` | `recap_summary.md` | `scene_breakdown`, `prompt:generate_recap_summary` |
-| `summary` | `summary.md` | `ledger`, `player_introductions`, `prompt:summarize_session`; previous Session's `recap_summary` when applicable |
+| `transcript_sections` | `transcript_sections.json` | `role_transcript`, roster/bootstrap context, prompt bundle, input code, model and timeout |
+| `ledger` | `ledger.json`, `ledger.md` | `role_transcript`, `transcript_sections`, Ledger bundle, model/options, roster, Glossary and bootstrap mode |
+| `scene_log` | `scene_log.json`, `scene_log.md` | current `ledger`, prior recorded Session’s `present_matters`, roster, Glossary, predecessor identity, Scene Log bundle and generation controls |
+| `player_introductions` | `player_introductions.json` | `role_transcript`, `transcript_sections`, roster, Glossary, Campaign name/system, Session date, prompt bundle, input code, model and timeout |
+| `table_recap` | `table_recap.json`, `table_recap.md` | `scene_log`, Table Recap bundle, generation controls and recap length settings |
+| `summary` | `summary.json`, `summary.md` | `scene_log`, Summary bundle and generation controls |
 | `voice_print_decision` | `voice_print_decision` section | `reviewed_transcript` |
 | `voice_print_enhancement` | `voice_print_enhancement` section | `voice_print_decision` |
 
-`normalized_review_audio` is the companion artifact of `input_audio`; `transcript_text` is `transcript.md`; `scene_breakdown` is the companion artifact of `ledger`. A Summary's previous Session comes from `.summary-inputs.json` when recorded, otherwise from Session dates. Its previous recap dependency applies only while that prior Session has a current reviewed transcript; otherwise generation can use a placeholder. Other campaign preparation tools still require current Scene Breakdowns; see [Previously On and Opportunities](screens/previously-on-and-opportunities.md).
+`normalized_review_audio` is the companion of `input_audio`; `transcript_text` is `transcript.md`. Ledger and Scene Log are independent steps. Scene Log continuity follows recorded Session sequence numbers and the previous Present Matters. Summary and Table Recap generation is temporarily disabled; their existing indicators and exports remain. A missing/stale predecessor blocks later generation rather than producing a placeholder. Campaign preparation tools are temporarily disabled; see [Previously On and Opportunities](screens/previously-on-and-opportunities.md).
 
-Attendance, Roles, Session dates, campaign Glossary contents, model choices, and later changes to Player voice prints are not fingerprinted. Current marks do not promise those details are up to date; see [Correct a Processed Session](../guides/correct-processed-session.md).
+Narrative generation records its input fingerprints before making model calls. If an input changes during generation, the output remains out of date instead of being certified against the changed input. Ledger freshness includes the roster, Glossary, Session name and first-session bootstrap mode; narrative freshness includes model/options and generation timeout; Table Recap also includes its length settings. Earlier audio/speaker processing still does not fingerprint every external configuration or later voice-print change.
+
+Legacy Scene Breakdown and Recap Summary files are retained for reading/export, but do not satisfy the new Scene Log/Matters contract. Opening a workspace performs no model calls. Regenerate narrative outputs through normal actions once the reviewed transcript is current.
+
+## Internal Matters Artifacts
+
+Each Matters producer writes `<category>.json` with exactly its category key, plus `<category>.evidence.json` containing the raw response, normalized unfiltered response, model and options. Both files are required for completion. Raw attempts, including rejected responses, are retained separately under `.generation-records/`. Every call validates the complete raw response before normalizing IDs, checking links and filtering. Stored results preserve retained fields and order. Later calls and later Sessions consume only these filtered publications.
+
+| Producer | Current Matter Inputs | Prior Matter Inputs |
+|---|---|---|
+| `present_matters` | None | Present Matters |
+| `obligations` | None | Obligations |
+| `goals` | None | Goals |
+| `brewing_troubles` | Goals | Brewing Troubles |
+| `goal_impediments` | Goals | Goal Impediments |
+| `opportunities` | Goals, Goal Impediments | Opportunities |
+| `mysteries` | Goals, Goal Impediments, Opportunities | Mysteries |
+| `new_assets` | Goals, Goal Impediments, Opportunities | New Assets, Goals, Goal Impediments, Opportunities |
+| `revelations` | Goals, Mysteries, Goal Impediments, Obligations, Opportunities | The same five categories |
+| `developments` | New Assets, Revelations | None |
+
+Every producer also consumes the full current Scene Log and its prompt/schema/input/filtering code and effective generation controls. All except Developments consume attending party Roles. Non-bootstrap prior inputs are required dependencies, never replaced by empty state. A first Session uses explicit empty prior values. Revelations never consumes prior Revelations; Developments has no prior inputs. Scene Log uses prior Present Matters as context only, rather than earlier Open Matters.
+
+All narrative and Matters calls use the configured High model. Ledger and Scene Log use high reasoning effort; Matters use medium effort. These effective options are fingerprinted. The Campaign-local `.matter-ids.sqlite3` reserves Goal, Impediment and Opportunity IDs transactionally, including IDs later filtered out. It survives Session cleanup and travels with the Campaign folder. Failed builds can leave unused numbers; numbers are never reassigned. Allocation metadata is deliberately not a freshness dependency, so allocating a new ID does not invalidate earlier outputs.
+
+Hidden producers remain part of **Generate Artifacts** completion and dependency-driven regeneration, without new selectable artifact rows. Old files or legacy completion metadata never certify the new Matters producers.
 
 ## Missing Normalized Audio after an Upgrade
 
@@ -115,7 +150,7 @@ Older processed Sessions may retain transcripts, outputs, and completion records
 
 Check all three conditions: the normalized file's presence, the speaker review's recorded audio fingerprint, and the transcript review's recorded audio fingerprint. Restoring the file alone cannot make a record current if its required fingerprint is absent. Conversely, missing fingerprints can invalidate review and outputs even when both audio files exist and Import Audio is current.
 
-Do not create completion records, insert fingerprints, or manufacture the missing WAV by hand. This version has no targeted migration that certifies those older reviews against the new audio requirement. Reprocessing is supported; preserving the old review decisions without repeating the necessary steps requires separate migration support.
+Do not create completion records, insert fingerprints, or manufacture the missing WAV by hand. Normal reprocessing is supported. An explicitly adopted reviewed-transcript checkpoint can preserve an accepted human review for downstream regeneration, but it does not certify the historical audio or speaker-review steps against the new audio requirement. Adoption requires a backed-up maintenance process and an explicit decision to keep the reviewed transcript authoritative.
 
 ## What Blocks Recovery and Generation
 

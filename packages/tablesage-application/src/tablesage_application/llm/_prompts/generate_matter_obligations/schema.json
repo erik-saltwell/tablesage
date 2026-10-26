@@ -1,0 +1,68 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "obligations"
+  ],
+  "properties": {
+    "obligations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Obligation"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "details",
+        "burden",
+        "consequence",
+        "lifecycle"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/Text"
+        },
+        "details": {
+          "type": "string"
+        },
+        "burden": {
+          "type": "string",
+          "enum": [
+            "trivial",
+            "minor",
+            "major",
+            "extreme"
+          ]
+        },
+        "consequence": {
+          "type": "string",
+          "enum": [
+            "trivial",
+            "minor",
+            "major",
+            "extreme"
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "outstanding",
+            "fulfilled",
+            "released",
+            "breached",
+            "obsolete"
+          ]
+        }
+      }
+    }
+  }
+}

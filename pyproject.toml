@@ -15,6 +15,7 @@ dependencies = [
   "jinja2>=3.1.0",
   "jiwer>=3.1.0",
   "litellm>=1.99.0",
+  "jsonschema>=4.23",
   "modelscope[framework]>=1.36.3",
   "numpy>=1.26.4",
   "punctuators>=0.0.7",

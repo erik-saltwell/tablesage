@@ -1,6 +1,8 @@
 # Prepare the Next Session
 
-Turn campaign history into a recap to read at the table and possible ways to bring established elements back into play. Two tools on Campaign Detail read the **scene breakdowns** of your earlier Sessions (the scene-by-scene record produced during processing):
+**Create Previously On** and **Generate Opportunities** are temporarily unavailable while the Matters pipeline is being updated. Their Campaign Detail actions remain in place and explain the pause without calling an LLM. The workflow below describes the retained preparation tools.
+
+Turn campaign history into a recap to read at the table and possible ways to bring established elements back into play. Two tools on Campaign Detail read the **Scene Logs** of your earlier Sessions (the scene-by-scene record produced during processing):
 
 - **Create Previously On** helps you pick the scenes worth recalling and writes a short "previously on…" recap you can read to the table.
 - **Generate Opportunities** suggests established campaign elements that could return in a useful or surprising way in the Session you have in mind.
@@ -15,7 +17,7 @@ Both preparation tools first check the Campaign's history:
 
 - They read Sessions in number order.
 - They ignore the highest-numbered Session if it has no imported audio yet.
-- They require every remaining Session to have a **current, complete scene breakdown**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
+- They require every remaining Session to have a **current, complete Scene Log**. If any doesn't qualify, TableSage stops and lists which Sessions have a problem and why.
 
 Session dates do not determine this order; they are used separately to [choose the prior recap in a session summary](../concepts/sessions.md#how-the-prior-recap-is-chosen). This matters if you add a recording of an earlier game later: its new Session still gets the highest number, so once it is processed, the tools read it last and take their starting situation from where that game ended. In that case, check the starting situation each tool shows before continuing.
 
@@ -69,4 +71,4 @@ If your Campaign is too large for the model to read in one pass, TableSage says 
 
 Open the saved Markdown files and read them before play. Check the Previously On recap against what your players should remember, and adapt it for your voice. Choose the opportunities that fit your game; proposed developments are possibilities for you to consider, not established campaign facts.
 
-You are ready when you have a recap you can read and any opportunities you want to keep in your preparation notes. If a recap of only the latest Session is enough, [export its Recap Summary](review-and-export.md) instead. After the next game, [process its recording](process-session-returning-players.md), using the [new-player workflow](process-session-new-players.md) if someone without a usable voice print joins.
+You are ready when you have a recap you can read and any opportunities you want to keep in your preparation notes. If a recap of only the latest Session is enough, [export its Table Recap](review-and-export.md) instead. After the next game, [process its recording](process-session-returning-players.md), using the [new-player workflow](process-session-new-players.md) if someone without a usable voice print joins.

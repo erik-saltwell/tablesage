@@ -1,0 +1,116 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "brewing_troubles"
+  ],
+  "properties": {
+    "brewing_troubles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/BrewingTrouble"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "BrewingTrouble": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "details",
+        "established_situation",
+        "anticipated_development",
+        "development_kind",
+        "harm_origin",
+        "negative_outcome_clarity",
+        "outcome_severity",
+        "evidentiary_strength",
+        "evidence_of_progression",
+        "preventability",
+        "lifecycle"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/Text"
+        },
+        "details": {
+          "type": "string"
+        },
+        "established_situation": {
+          "type": "string"
+        },
+        "anticipated_development": {
+          "type": "string"
+        },
+        "development_kind": {
+          "type": "string",
+          "enum": [
+            "emerging_harm",
+            "recurring_harm",
+            "continuing_condition",
+            "conditional_danger",
+            "unclear"
+          ]
+        },
+        "harm_origin": {
+          "type": "string",
+          "enum": [
+            "party",
+            "external",
+            "unclear"
+          ]
+        },
+        "negative_outcome_clarity": {
+          "$ref": "#/$defs/TroubleEvaluation"
+        },
+        "outcome_severity": {
+          "$ref": "#/$defs/TroubleEvaluation"
+        },
+        "evidentiary_strength": {
+          "$ref": "#/$defs/TroubleEvaluation"
+        },
+        "evidence_of_progression": {
+          "$ref": "#/$defs/TroubleEvaluation"
+        },
+        "preventability": {
+          "$ref": "#/$defs/TroubleEvaluation"
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "developing",
+            "prevented",
+            "materialized",
+            "obsolete"
+          ]
+        }
+      }
+    },
+    "TroubleEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "justification"
+      ],
+      "properties": {
+        "rank": {
+          "type": "string",
+          "enum": [
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "justification": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

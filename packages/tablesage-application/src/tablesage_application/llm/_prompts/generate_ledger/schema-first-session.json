@@ -1,0 +1,281 @@
+{
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "action",
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "description": "The role or character associated with this move.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "entity": {
+          "description": "The entity acting in the game world.",
+          "minLength": 1,
+          "title": "Entity",
+          "type": "string"
+        },
+        "action": {
+          "description": "What the entity does.",
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "entity",
+        "action"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "Correction": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "correction",
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "description": "The role or character associated with this move.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "revision": {
+          "description": "The revised canonical state, including what prior understanding it changes.",
+          "minLength": 1,
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "revision"
+      ],
+      "title": "Correction",
+      "type": "object"
+    },
+    "Expression": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "expression",
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "description": "The role or character associated with this move.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "entity": {
+          "description": "The entity whose inner life is expressed.",
+          "minLength": 1,
+          "title": "Entity",
+          "type": "string"
+        },
+        "sentiment": {
+          "description": "What the entity feels or realizes.",
+          "minLength": 1,
+          "title": "Sentiment",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "entity",
+        "sentiment"
+      ],
+      "title": "Expression",
+      "type": "object"
+    },
+    "LedgerContent": {
+      "additionalProperties": false,
+      "properties": {
+        "utterances": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Narration"
+              },
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/Speech"
+              },
+              {
+                "$ref": "#/$defs/Expression"
+              },
+              {
+                "$ref": "#/$defs/Correction"
+              },
+              {
+                "$ref": "#/$defs/Question"
+              }
+            ]
+          },
+          "title": "Utterances",
+          "type": "array"
+        }
+      },
+      "required": [
+        "utterances"
+      ],
+      "title": "LedgerContent",
+      "type": "object"
+    },
+    "Narration": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "narration",
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "description": "The role or character associated with this move.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "fact": {
+          "description": "Something established as true about the game state.",
+          "minLength": 1,
+          "title": "Fact",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "fact"
+      ],
+      "title": "Narration",
+      "type": "object"
+    },
+    "Question": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "question",
+          "title": "Type",
+          "type": "string"
+        },
+        "asker": {
+          "description": "The player asking, by name, not the in-fiction character or role.",
+          "minLength": 1,
+          "title": "Asker",
+          "type": "string"
+        },
+        "question": {
+          "description": "What was asked.",
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "resolver": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The player who resolved it, by name, if resolved.",
+          "title": "Resolver"
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The resolving answer, if resolved.",
+          "title": "Resolution"
+        }
+      },
+      "required": [
+        "type",
+        "asker",
+        "question",
+        "resolver",
+        "resolution"
+      ],
+      "title": "Question",
+      "type": "object"
+    },
+    "Speech": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "speech",
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "description": "The role or character associated with this move.",
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "entity": {
+          "description": "The entity speaking in the game world.",
+          "minLength": 1,
+          "title": "Entity",
+          "type": "string"
+        },
+        "statement": {
+          "description": "What the entity says, verbatim or paraphrased.",
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "source",
+        "entity",
+        "statement"
+      ],
+      "title": "Speech",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "starting_situation": {
+      "description": "A concise statement of the immediate situation at the beginning of this Session.",
+      "minLength": 1,
+      "title": "Starting Situation",
+      "type": "string"
+    },
+    "ledger": {
+      "$ref": "#/$defs/LedgerContent"
+    }
+  },
+  "required": [
+    "starting_situation",
+    "ledger"
+  ],
+  "title": "LedgerFirstSessionResponse",
+  "type": "object"
+}

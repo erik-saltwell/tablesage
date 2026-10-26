@@ -76,6 +76,16 @@ class StepFailure(BaseModel):
     run_id: str | None = None
 
 
+class ReviewedTranscriptCheckpoint(BaseModel):
+    """Explicit acceptance of an imported human review, independent of historical machine steps."""
+
+    session_id: str
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    adopted_at: datetime
+    source_revision: str
+    backup_reference: str
+
+
 class ProcessingState(BaseModel):
     version: int = SCHEMA_VERSION
     # Set once a Session processed before this document existed has been imported (see `needs_legacy_import`).
@@ -84,6 +94,7 @@ class ProcessingState(BaseModel):
     sections: dict[str, Any] = Field(default_factory=dict)
     drafts: dict[str, Any] = Field(default_factory=dict)
     failures: dict[str, StepFailure] = Field(default_factory=dict)
+    reviewed_transcript_checkpoint: ReviewedTranscriptCheckpoint | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -164,6 +175,11 @@ def _changes(before: ProcessingState, after: ProcessingState) -> dict[str, objec
     changed: dict[str, object] = {}
     if before.legacy_imported_at != after.legacy_imported_at:
         changed["legacy_imported_at"] = {"old": before.legacy_imported_at, "new": after.legacy_imported_at}
+    if before.reviewed_transcript_checkpoint != after.reviewed_transcript_checkpoint:
+        changed["reviewed_transcript_checkpoint"] = {
+            "old": before.model_dump(mode="json")["reviewed_transcript_checkpoint"],
+            "new": after.model_dump(mode="json")["reviewed_transcript_checkpoint"],
+        }
     for part in ("records", "sections", "drafts", "failures"):
         old: dict[str, Any] = before.model_dump(mode="json")[part]
         new: dict[str, Any] = after.model_dump(mode="json")[part]

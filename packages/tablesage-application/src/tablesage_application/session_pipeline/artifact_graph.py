@@ -8,6 +8,7 @@ from pathlib import Path
 
 from ..paths import ARTIFACTS, ArtifactName
 from . import processing_state
+from .bundles.campaign_matters import SECTIONS
 
 
 class ArtifactStatus(StrEnum):
@@ -48,7 +49,13 @@ class SystemPromptInput:
     path: Path
 
 
-Dependency = ArtifactRef | SystemPromptInput
+@dataclass(frozen=True)
+class ValueInput:
+    key: str
+    value: object
+
+
+Dependency = ArtifactRef | SystemPromptInput | ValueInput
 
 
 @dataclass(frozen=True)
@@ -72,8 +79,11 @@ class GenerationTask:
 def dependency_key(owner_folder: Path, dependency: Dependency) -> str:
     """How a completion record names an input. Keys never hold absolute paths, so a copied or moved campaign
     keeps matching: an artifact in another Session of the campaign is named by its sibling folder."""
+    if isinstance(dependency, ValueInput):
+        return f"value:{dependency.key}"
     if isinstance(dependency, SystemPromptInput):
-        return f"prompt:{dependency.path.parent.name}"
+        suffix = "" if dependency.path.name == "system.md" else f"/{dependency.path.name}"
+        return f"prompt:{dependency.path.parent.name}{suffix}"
     if dependency.session_folder == owner_folder:
         return f"artifact:{dependency.name.value}"
     return f"artifact:{dependency.session_folder.name}/{dependency.name.value}"
@@ -84,6 +94,8 @@ StateLoader = Callable[[Path], processing_state.ProcessingState]
 
 def _fingerprint(dependency: Dependency, states: StateLoader) -> processing_state.InputFingerprint | None:
     """A dependency's current fingerprint, or None when it doesn't exist."""
+    if isinstance(dependency, ValueInput):
+        return processing_state.value_fingerprint(dependency.value)
     if isinstance(dependency, ArtifactRef) and dependency.is_section:
         sections = states(dependency.session_folder).sections
         return processing_state.value_fingerprint(sections[dependency.name.value]) if dependency.name.value in sections else None
@@ -91,6 +103,8 @@ def _fingerprint(dependency: Dependency, states: StateLoader) -> processing_stat
 
 
 def _matches(dependency: Dependency, recorded: processing_state.InputFingerprint, states: StateLoader) -> bool:
+    if isinstance(dependency, ValueInput):
+        return processing_state.value_fingerprint(dependency.value).sha256 == recorded.sha256
     if isinstance(dependency, ArtifactRef) and dependency.is_section:
         current = _fingerprint(dependency, states)
         return current is not None and current.sha256 == recorded.sha256
@@ -155,6 +169,14 @@ class ArtifactGraph:
             return ArtifactStatus.MISSING
         if artifact in self._interrupted:
             return ArtifactStatus.STALE
+        if artifact.name is ArtifactName.REVIEWED_TRANSCRIPT:
+            checkpoint = self.state(artifact.session_folder).reviewed_transcript_checkpoint
+            if checkpoint is not None:
+                # Hash the actual bytes: adoption does not pretend historical machine inputs are current.
+                fingerprint = processing_state.file_fingerprint(artifact.path)
+                return (
+                    ArtifactStatus.CURRENT if fingerprint is not None and fingerprint.sha256 == checkpoint.sha256 else ArtifactStatus.STALE
+                )
         step = self.step_for(artifact)
         if step is None:
             return ArtifactStatus.CURRENT
@@ -201,6 +223,8 @@ class LegacyArtifactGraph(ArtifactGraph):
 
         newest_dependency_ns = 0
         for dependency in step.dependencies:
+            if isinstance(dependency, ValueInput):
+                continue
             if isinstance(dependency, SystemPromptInput):
                 if not dependency.path.is_file():
                     return ArtifactStatus.STALE
@@ -218,25 +242,16 @@ GENERATION_ORDER: tuple[ArtifactName, ...] = (
     ArtifactName.ROLE_TRANSCRIPT,
     ArtifactName.TRANSCRIPT_SECTIONS,
     ArtifactName.LEDGER,
-    ArtifactName.PLAYER_INTRODUCTIONS,
-    ArtifactName.RECAP_SUMMARY,
-    ArtifactName.SUMMARY,
+    ArtifactName.SCENE_LOG,
+    *(ArtifactName(section) for section in SECTIONS),
 )
 
-GENERATION_LABELS: dict[ArtifactName, str] = {
-    ArtifactName.ROLE_TRANSCRIPT: "Role Transcript",
-    ArtifactName.TRANSCRIPT_SECTIONS: "Transcript Sections",
-    ArtifactName.LEDGER: "Ledger + Scene Breakdown",
-    ArtifactName.PLAYER_INTRODUCTIONS: "Player Introductions",
-    ArtifactName.RECAP_SUMMARY: "Recap Summary",
-    ArtifactName.SUMMARY: "Summary",
-}
-
-GENERATION_DEPENDENCIES: dict[ArtifactName, frozenset[ArtifactName]] = {
-    ArtifactName.ROLE_TRANSCRIPT: frozenset(),
-    ArtifactName.TRANSCRIPT_SECTIONS: frozenset({ArtifactName.ROLE_TRANSCRIPT}),
-    ArtifactName.LEDGER: frozenset({ArtifactName.ROLE_TRANSCRIPT, ArtifactName.TRANSCRIPT_SECTIONS}),
-    ArtifactName.PLAYER_INTRODUCTIONS: frozenset({ArtifactName.ROLE_TRANSCRIPT, ArtifactName.TRANSCRIPT_SECTIONS}),
-    ArtifactName.RECAP_SUMMARY: frozenset({ArtifactName.LEDGER}),
-    ArtifactName.SUMMARY: frozenset({ArtifactName.LEDGER, ArtifactName.PLAYER_INTRODUCTIONS}),
-}
+DEFERRED_GENERATION = frozenset({ArtifactName.TABLE_RECAP, ArtifactName.SUMMARY, ArtifactName.RECAP_SUMMARY})
+REGENERATABLE = frozenset((*GENERATION_ORDER, ArtifactName.PLAYER_INTRODUCTIONS))
+# Deferred visible actions remain present; hidden producers are never selectable.
+REGENERATION_CHOICES = tuple(
+    name
+    for name in (*GENERATION_ORDER, ArtifactName.TABLE_RECAP, ArtifactName.SUMMARY, ArtifactName.PLAYER_INTRODUCTIONS)
+    if ARTIFACTS[name].should_show_in_ui
+)
+GENERATION_LABELS: dict[ArtifactName, str] = {name: spec.display_name for name, spec in ARTIFACTS.items()}

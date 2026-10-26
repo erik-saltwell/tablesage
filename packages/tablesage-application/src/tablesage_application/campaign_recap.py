@@ -7,8 +7,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
-from .previously_on import CampaignHistory
-from .session_pipeline.scene_breakdown import Scene
+from .previously_on import CampaignHistory, Scene
 
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 

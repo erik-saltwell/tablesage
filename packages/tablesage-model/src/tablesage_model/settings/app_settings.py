@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field, PositiveInt, model_validator
 
 from .type_aliases import ScribeLanguageCode, ScribeModelId
@@ -163,10 +165,23 @@ class PreviouslyOnSettings(BaseModel, frozen=True):
 
 
 class GenerateArtifactsSettings(BaseModel, frozen=True):
-    """Generate Artifacts' five llm_model_high calls (Transcript Sections, Ledger, Player
-    Introductions, Recap Summary, Summary) share this timeout."""
+    """Narrative generation uses the High model, shared timeout, and explicit recap guidance."""
 
     timeout: PositiveInt = 2400
+    recap_target_words: int | None = Field(default=450, gt=0, strict=True)
+    recap_orientation_words: int | None = Field(default=50, gt=0, strict=True)
+    model_options: dict[str, object] = Field(default_factory=dict)
+    narrative_effort: Literal["high"] = "high"
+    matters_effort: Literal["medium"] = "medium"
+
+    @model_validator(mode="after")
+    def validate_recap_length(self) -> GenerateArtifactsSettings:
+        if (self.recap_target_words is None) != (self.recap_orientation_words is None):
+            raise ValueError("Recap target and orientation word limits must both be given or both be null.")
+        if self.recap_target_words is not None and self.recap_orientation_words is not None:
+            if self.recap_orientation_words >= self.recap_target_words:
+                raise ValueError("Recap orientation limit must be smaller than the total target.")
+        return self
 
 
 class AppSettings(BaseModel, frozen=True):

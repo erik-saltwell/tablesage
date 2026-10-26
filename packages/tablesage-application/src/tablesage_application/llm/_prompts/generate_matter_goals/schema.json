@@ -1,0 +1,86 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "goals"
+  ],
+  "properties": {
+    "goals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Goal"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "details",
+        "significance",
+        "lifecycle",
+        "session_activity",
+        "parent_goal_id",
+        "superseded_by_goal_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^goal_(new_)?[0-9]+$"
+        },
+        "title": {
+          "$ref": "#/$defs/Text"
+        },
+        "details": {
+          "type": "string"
+        },
+        "significance": {
+          "type": "string",
+          "enum": [
+            "adventure_goal",
+            "side_goal",
+            "incidental_goal"
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "open",
+            "resolved",
+            "obsolete",
+            "abandoned",
+            "superseded"
+          ]
+        },
+        "session_activity": {
+          "type": "string",
+          "enum": [
+            "pursued",
+            "not_pursued"
+          ]
+        },
+        "parent_goal_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^goal_(new_)?[0-9]+$"
+        },
+        "superseded_by_goal_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^goal_(new_)?[0-9]+$"
+        }
+      }
+    }
+  }
+}

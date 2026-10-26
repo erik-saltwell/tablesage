@@ -13,7 +13,7 @@ from dotenv.parser import parse_stream
 from platformdirs import user_config_path
 from tablesage_model.settings import AppSettings
 
-SETTINGS_VERSION = 1
+SETTINGS_VERSION = 2
 PROVIDERS = {
     "elevenlabs": "ELEVENLABS_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",

@@ -94,11 +94,11 @@ class ArtifactExportScreen(TableSageScreen):
         self._continue_export(artifact_name)
 
     def _continue_export(self, artifact_name: ArtifactName) -> None:
-        if artifact_name is ArtifactName.LEDGER:
+        if artifact_name in (ArtifactName.LEDGER, ArtifactName.SCENE_LOG):
             self.app.push_screen(
                 ConfirmationDialog(
-                    title="Export Ledger",
-                    prompt="Choose the Ledger format to export.",
+                    title=f"Export {ARTIFACTS[artifact_name].display_name}",
+                    prompt=f"Choose the {ARTIFACTS[artifact_name].display_name} format to export.",
                     no_label="JSON",
                     yes_label="Markdown",
                 ),
@@ -109,7 +109,7 @@ class ArtifactExportScreen(TableSageScreen):
         self._pick_export_destination(artifact_name, markdown=False)
 
     def _pick_export_destination(self, artifact_name: ArtifactName, *, markdown: bool) -> None:
-        default_filename = "ledger.md" if artifact_name is ArtifactName.LEDGER and markdown else ARTIFACTS[artifact_name].filename
+        default_filename = f"{artifact_name.value}.md" if markdown else ARTIFACTS[artifact_name].filename
 
         def on_picked(destination: Path | None) -> None:
             if destination is None:
@@ -117,9 +117,11 @@ class ArtifactExportScreen(TableSageScreen):
             try:
                 if artifact_name is ArtifactName.LEDGER and markdown:
                     self.application.export_ledger_markdown(self._session_id, destination)
+                elif artifact_name is ArtifactName.SCENE_LOG and markdown:
+                    self.application.export_artifact(self._session_id, artifact_name, destination, companion="scene_log.md")
                 else:
                     self.application.export_artifact(self._session_id, artifact_name, destination)
-            except OSError as exc:
+            except (OSError, ValueError) as exc:
                 self.notify(str(exc), severity="error")
                 return
             self.notify(f"Exported to {destination}.")

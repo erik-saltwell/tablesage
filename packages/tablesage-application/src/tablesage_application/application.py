@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import functools
+import hashlib
 import json
 import math
 import shutil
@@ -35,14 +36,13 @@ from .entities import session_processing as session_processing_entities
 from .llm import PromptName, system_prompt_path
 from .player_archive import PlayerArchiveResult
 from .session_pipeline import artifact_graph as artifact_graph_pipeline
-from .session_pipeline import artifacts, import_audio, processing, processing_state, transcribe_audio, transcript_review
+from .session_pipeline import artifacts, import_audio, narrative, processing, processing_state, transcribe_audio, transcript_review
+from .session_pipeline import campaign_matters as matters_pipeline
 from .session_pipeline import clean_transcript as clean_transcript_pipeline
 from .session_pipeline import extract_glossary as extract_glossary_pipeline
 from .session_pipeline import find_voice_matches as find_voice_matches_pipeline
 from .session_pipeline import generate_ledger as generate_ledger_pipeline
 from .session_pipeline import generate_player_introductions as player_introductions_pipeline
-from .session_pipeline import generate_recap_summary as recap_summary_pipeline
-from .session_pipeline import generate_summary as generate_summary_pipeline
 from .session_pipeline import isolate_new_speakers as isolate_new_speakers_pipeline
 from .session_pipeline import legacy_import as legacy_import_pipeline
 from .session_pipeline import name_corrections as name_corrections_pipeline
@@ -54,7 +54,6 @@ from .session_pipeline import transcript_edits as transcript_edits_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
 from .session_pipeline.atomic_files import atomic_write
 from .session_pipeline.remove_backchannels import remove_backchannels
-from .session_pipeline.scene_breakdown import load_current_scene_breakdown, persist_ledger_pair
 from .voice_clips import clips
 from .voice_clips.review import VoiceSampleReview, prepare_review
 
@@ -123,8 +122,23 @@ def _completes(
         @functools.wraps(method)
         def wrapper(self: Application, session_id: uuid.UUID, /, *args: _P.args, **kwargs: _P.kwargs) -> _R:
             self._invalidate_transcript_review_for(session_id, *names)
+            snapshot = None
+            if any(
+                name
+                in (
+                    paths.ArtifactName.TRANSCRIPT_SECTIONS,
+                    paths.ArtifactName.PLAYER_INTRODUCTIONS,
+                    paths.ArtifactName.LEDGER,
+                    paths.ArtifactName.SCENE_LOG,
+                    paths.ArtifactName.SUMMARY,
+                    paths.ArtifactName.TABLE_RECAP,
+                    *matters_pipeline.MATTERS.values(),
+                )
+                for name in names
+            ):
+                snapshot = self._generation_input_snapshot(session_id, names)
             result = method(self, session_id, *args, **kwargs)
-            self._record_completion(session_id, *names)
+            self._record_completion(session_id, *names, input_snapshot=snapshot)
             return result
 
         return wrapper
@@ -186,74 +200,23 @@ class Application:
     # Campaigns
 
     def previously_on_history(self, campaign_id: uuid.UUID) -> previously_on.CampaignHistory:
-        """Validate every Session and take an in-memory snapshot without generating artifacts."""
-        with Session(self._engine) as session:
-            campaign = campaigns.get_campaign(session, campaign_id)
-            game_sessions = sorted(sessions.list_sessions(session, campaign_id), key=lambda item: item.sequence_number)
-            if not game_sessions:
-                raise ValueError("This Campaign has no Sessions. Create Sessions and run Regenerate All Outputs first.")
-            # The upcoming Session may already exist before it is played; it has no history to read yet.
-            latest_folder = self._session_folder(session, game_sessions[-1])
-            if not artifacts.session_artifacts(latest_folder)[paths.ArtifactName.INPUT_AUDIO]:
-                game_sessions = game_sessions[:-1]
-                if not game_sessions:
-                    raise ValueError("This Campaign has no recorded Sessions yet. Process a Session's recording first.")
-            graph = self._artifact_graph(session, campaign_id)
-            history: list[previously_on.CampaignSession] = []
-            problems: list[str] = []
-            for game_session in game_sessions:
-                folder = self._session_folder(session, game_session)
-                ref = artifact_graph_pipeline.ArtifactRef(folder, paths.ArtifactName.SCENE_BREAKDOWN)
-                try:
-                    status = graph.status(ref)
-                    if status is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
-                        raise ValueError(f"Scene Breakdown is {status.value} or its generation is incomplete")
-                    breakdown = load_current_scene_breakdown(folder)
-                    if breakdown.session_id != game_session.id:
-                        raise ValueError("Scene Breakdown belongs to a different Session")
-                    history.append(previously_on.CampaignSession(sequence_number=game_session.sequence_number, breakdown=breakdown))
-                except (ValueError, OSError) as exc:
-                    problems.append(f"Session {game_session.sequence_number:03d} — {game_session.name}: {exc}")
-            if problems:
-                raise ValueError(
-                    "Every Session except an unrecorded upcoming one needs a current, valid, complete Scene Breakdown.\n\n"
-                    + "\n".join(problems)
-                    + "\n\nRun Regenerate All Outputs from Campaign detail, then try again."
-                )
-            return previously_on.CampaignHistory(
-                campaign_name=campaign.name,
-                sessions=tuple(history),
-                glossary=tuple(
-                    previously_on.GlossaryEntry(term=entry.term, description=entry.description)
-                    for entry in sorted(glossary.list_glossary_entries(session, campaign_id), key=lambda item: item.term.casefold())
-                ),
-            )
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def create_campaign_scene_recap(self, campaign_id: uuid.UUID) -> campaign_recap.CampaignSceneRecap:
-        """Create a chronological Campaign recap from every current Scene Breakdown."""
-        history = self.previously_on_history(campaign_id)
-        return campaign_recap.create_campaign_scene_recap(campaign_id, history)
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def previously_on_ingredients(self, history: previously_on.CampaignHistory) -> previously_on.Ingredients:
-        with widelog.wide_event(op="previously_on_ingredients", session_count=len(history.sessions)):
-            return asyncio.run(
-                previously_on.generate_ingredients(history, self._settings.llm_model_high, self._settings.previously_on.ingredient_timeout)
-            )
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def generate_opportunities(self, campaign_id: uuid.UUID, prompt: str) -> opportunities.OpportunityResult:
-        if not prompt.strip():
-            raise ValueError("Describe what might happen next Session first.")
-        recap = self.create_campaign_scene_recap(campaign_id)
-        with widelog.wide_event(op="generate_opportunities", scene_count=len(recap.scenes)):
-            return asyncio.run(opportunities.generate(recap, prompt, self._settings.llm_model_high, self._settings.opportunities_timeout))
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def save_opportunities(self, result: opportunities.OpportunityResult, destination: Path, *, overwrite: bool = False) -> None:
         destination = self.previously_on_destination(destination)
         opportunities.save(result, destination, overwrite=overwrite)
 
     def previously_on_scout(self, data: previously_on.ScoutInput) -> previously_on.ScoutResult:
-        with widelog.wide_event(op="previously_on_scout", session_count=len(data.history.sessions)):
-            return asyncio.run(previously_on.scout_scenes(data, self._settings.llm_model_high, self._settings.previously_on.scout_timeout))
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def previously_on_destination(self, destination: Path) -> Path:
         destination = destination.expanduser().resolve()
@@ -266,15 +229,7 @@ class Application:
         return destination
 
     def export_previously_on(self, data: previously_on.EditorInput, destination: Path, *, overwrite: bool = False) -> None:
-        destination = self.previously_on_destination(destination)
-        if not data.selected_scenes:
-            raise ValueError("Select at least one Scene before exporting.")
-        with widelog.wide_event(op="export_previously_on", scene_count=len(data.selected_scenes)):
-            asyncio.run(
-                previously_on.write_recap(
-                    data, destination, self._settings.llm_model_high, self._settings.previously_on.editor_timeout, overwrite=overwrite
-                )
-            )
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def export_campaign(self, campaign_id: uuid.UUID, destination: Path) -> None:
         from .campaign_archive import export_campaign
@@ -892,6 +847,8 @@ class Application:
     def _artifact_graph(self, session: Session, campaign_id: uuid.UUID, *, legacy: bool = False) -> artifact_graph_pipeline.ArtifactGraph:
         """The campaign's build graph. Sessions not yet imported into `processing_state.json` are imported first
         (see `_import_legacy_sessions`); `legacy` builds the retired modification-time graph that import uses."""
+        if not legacy:
+            return self._narrative_graph(session, campaign_id)
         graph_type = artifact_graph_pipeline.LegacyArtifactGraph if legacy else artifact_graph_pipeline.ArtifactGraph
 
         prompt_input = self._prompt_input
@@ -940,6 +897,162 @@ class Application:
             steps.append(artifact_graph_pipeline.BuildStep(paths.ArtifactName.SUMMARY, (summary,), tuple(summary_dependencies)))
 
         return graph_type(tuple(steps), interrupted=frozenset(interrupted))
+
+    def _previous_recorded_session(self, session: Session, current: GameSession) -> GameSession | None:
+        candidates = [
+            item
+            for item in sessions.list_sessions(session, current.campaign_id)
+            if item.sequence_number < current.sequence_number
+            and any(
+                (self._session_folder(session, item) / filename).is_file()
+                for filename in ("input_audio.wav", "role_transcript.json", "ledger.json")
+            )
+        ]
+        return max(candidates, key=lambda item: item.sequence_number, default=None)
+
+    def _is_first_recorded_session(self, session_id: uuid.UUID) -> bool:
+        with Session(self._engine) as session:
+            return self._previous_recorded_session(session, sessions.get_session(session, session_id)) is None
+
+    def _generation_options(self, *, matters: bool = False) -> dict[str, Any]:
+        settings = self._settings.generate_artifacts
+        return {
+            **settings.model_options,
+            "reasoning_effort": settings.matters_effort if matters else settings.narrative_effort,
+            # Unsupported effort must fail at transport rather than silently disappear.
+            "drop_params": False,
+        }
+
+    def _narrative_graph(self, session: Session, campaign_id: uuid.UUID) -> artifact_graph_pipeline.ArtifactGraph:
+        graph, names = artifact_graph_pipeline, paths.ArtifactName
+        game_sessions = sessions.list_sessions(session, campaign_id)
+        self._import_legacy_sessions(session, campaign_id, [self._session_folder(session, item) for item in game_sessions])
+        steps: list[artifact_graph_pipeline.BuildStep] = []
+        interrupted: set[artifact_graph_pipeline.ArtifactRef] = set()
+        for item in game_sessions:
+            folder = self._session_folder(session, item)
+            ref = functools.partial(graph.ArtifactRef, folder)
+            retired = {names.LEDGER, names.RECAP_SUMMARY, names.TRANSCRIPT_SECTIONS, names.PLAYER_INTRODUCTIONS}
+            steps.extend(step for step in self._session_steps(folder) if step.name not in retired)
+            previous = self._previous_recorded_session(session, item)
+            prior_folder = self._session_folder(session, previous) if previous else None
+
+            def bundle(prompt: PromptName, *, matters: bool = False) -> tuple[artifact_graph_pipeline.Dependency, ...]:
+                directory = system_prompt_path(prompt).parent
+                resource_names = ("system.md", "template.j2", "schema.json")
+                if prompt is PromptName.GENERATE_LEDGER:
+                    resource_names += ("schema-first-session.json",)
+                resources = tuple(graph.SystemPromptInput(directory / filename) for filename in resource_names)
+                modules = (matters_pipeline, matters_pipeline.inputs) if matters else (narrative,)
+                if prompt is PromptName.GENERATE_LEDGER:
+                    modules += (narrative.ledger_inputs, narrative.ledger_render, generate_ledger_pipeline, transcript_sections_pipeline)
+                elif prompt is PromptName.GENERATE_SCENE_LOG:
+                    modules += (narrative.scene_inputs, narrative.scene_log_render)
+                # Shared renderer/transport changes also invalidate their consumers.
+                from .llm import llm_helper
+
+                modules += (llm_helper,)
+                implementation = (graph.SystemPromptInput(Path(__file__)),) + tuple(
+                    graph.SystemPromptInput(Path(module.__file__)) for module in modules
+                )
+                controls = {
+                    "model": self._settings.llm_model_high,
+                    "options": self._generation_options(matters=matters),
+                    "timeout": self._settings.generate_artifacts.timeout,
+                    "contract": narrative.CONTRACT_VERSION,
+                }
+                return resources + implementation + (graph.ValueInput("generation_controls", controls),)
+
+            roster = [{"player_name": a.player_name, "roles": list(a.roles)} for a in sessions.list_attendance(session, item.id)]
+            glossary_input = [
+                {"term": g.term, "description": g.description}
+                for g in sorted(glossary.list_glossary_entries(session, campaign_id), key=lambda g: g.term.casefold())
+            ]
+            # Existing post-role producers also declare their real metadata and prompt inputs.
+            campaign = session.get(Campaign, campaign_id)
+            for name, prompt, module, metadata in (
+                (
+                    names.TRANSCRIPT_SECTIONS,
+                    PromptName.SECTION_TRANSCRIPT,
+                    transcript_sections_pipeline,
+                    {"roster": roster, "bootstrap": previous is None},
+                ),
+                (
+                    names.PLAYER_INTRODUCTIONS,
+                    PromptName.GENERATE_PLAYER_INTRODUCTIONS,
+                    player_introductions_pipeline,
+                    {
+                        "roster": roster,
+                        "glossary": glossary_input,
+                        "campaign": campaign.name if campaign else None,
+                        "game_system": campaign.game_system if campaign else None,
+                        "session_date": item.session_date.isoformat() if item.session_date else None,
+                    },
+                ),
+            ):
+                directory = system_prompt_path(prompt).parent
+                deps = (ref(names.ROLE_TRANSCRIPT),) + ((ref(names.TRANSCRIPT_SECTIONS),) if name is names.PLAYER_INTRODUCTIONS else ())
+                deps += tuple(
+                    graph.SystemPromptInput(path) for path in sorted(directory.iterdir()) if path.suffix in (".md", ".j2", ".json")
+                )
+                deps += (
+                    graph.SystemPromptInput(Path(module.__file__)),
+                    graph.ValueInput("context", metadata),
+                    graph.ValueInput(
+                        "generation_controls",
+                        {"model": self._settings.llm_model_high, "timeout": self._settings.generate_artifacts.timeout},
+                    ),
+                )
+                steps.append(graph.BuildStep(name, (ref(name),), deps))
+            predecessor = (graph.ValueInput("previous_session_id", str(previous.id) if previous else None),)
+            context = graph.ValueInput("narrative_context", {"roster": roster, "glossary": glossary_input, "name": item.name})
+            ledger_dependencies = (
+                ref(names.ROLE_TRANSCRIPT),
+                ref(names.TRANSCRIPT_SECTIONS),
+                context,
+                graph.ValueInput("bootstrap", previous is None),
+            ) + bundle(PromptName.GENERATE_LEDGER)
+            steps.append(graph.BuildStep(names.LEDGER, (ref(names.LEDGER), graph.FileRef(folder / "ledger.md")), ledger_dependencies))
+            scene_dependencies = (
+                (ref(names.LEDGER), context)
+                + predecessor
+                + ((graph.ArtifactRef(prior_folder, names.PRESENT_MATTERS),) if prior_folder else ())
+                + bundle(PromptName.GENERATE_SCENE_LOG)
+            )
+            steps.append(
+                graph.BuildStep(names.SCENE_LOG, (ref(names.SCENE_LOG), graph.FileRef(folder / "scene_log.md")), scene_dependencies)
+            )
+            for section, name in matters_pipeline.MATTERS.items():
+                dependencies = (ref(names.SCENE_LOG),) + tuple(
+                    ref(matters_pipeline.MATTERS[key]) for key in matters_pipeline.inputs.DEPENDENCIES[section]
+                )
+                if section != "developments":
+                    party = [role for attendee in roster for role in attendee["roles"] if role != "Game Master"]
+                    dependencies += (graph.ValueInput("party", party),) + predecessor
+                    if prior_folder:
+                        dependencies += tuple(
+                            graph.ArtifactRef(prior_folder, matters_pipeline.MATTERS[key])
+                            for key in matters_pipeline.PRIOR_DEPENDENCIES[section]
+                        )
+                dependencies += bundle(matters_pipeline.PROMPTS[section], matters=True)
+                steps.append(graph.BuildStep(name, (ref(name), graph.FileRef(folder / f"{section}.evidence.json")), dependencies))
+            # Keep deferred output indicators/freshness; they are never scheduled for generation.
+            for name, prompt in ((names.SUMMARY, PromptName.SUMMARIZE_SESSION), (names.TABLE_RECAP, PromptName.GENERATE_TABLE_RECAP)):
+                steps.append(
+                    graph.BuildStep(
+                        name,
+                        (ref(name), graph.FileRef(folder / f"{name.value}.json")),
+                        (ref(names.SCENE_LOG), graph.ValueInput("generation_disabled", True)) + bundle(prompt),
+                    )
+                )
+            for name in (names.LEDGER, names.SCENE_LOG, names.SUMMARY, names.TABLE_RECAP, *matters_pipeline.MATTERS.values()):
+                if (folder / narrative.marker_name(name.value)).exists():
+                    interrupted.add(ref(name))
+            if (folder / paths.LEDGER_PAIR_MARKER).exists():
+                interrupted.add(ref(names.LEDGER))
+            if (folder / paths.AUDIO_PAIR_MARKER).exists():
+                interrupted.update((ref(names.INPUT_AUDIO), ref(names.NORMALIZED_REVIEW_AUDIO)))
+        return graph.ArtifactGraph(tuple(steps), interrupted=frozenset(interrupted))
 
     @staticmethod
     def _prompt_input(name: PromptName) -> artifact_graph_pipeline.SystemPromptInput:
@@ -1217,6 +1330,14 @@ class Application:
             with widelog.wide_event(op="processing_state.legacy_import", session_folder=str(folder)) as log:
                 records: dict[str, processing_state.CompletionRecord] = {}
                 for step in graph.steps:
+                    if step.name in (
+                        paths.ArtifactName.LEDGER,
+                        paths.ArtifactName.SCENE_LOG,
+                        paths.ArtifactName.SUMMARY,
+                        paths.ArtifactName.TABLE_RECAP,
+                        *matters_pipeline.MATTERS.values(),
+                    ):
+                        continue
                     if step.folder != folder:
                         continue
                     outputs = [output for output in step.outputs if isinstance(output, artifact_graph_pipeline.ArtifactRef)]
@@ -1239,7 +1360,27 @@ class Application:
                     moved_to_legacy=moved,
                 )
 
-    def _record_completion(self, session_id: uuid.UUID, *names: paths.ArtifactName) -> None:
+    def _generation_input_snapshot(
+        self, session_id: uuid.UUID, names: Sequence[paths.ArtifactName]
+    ) -> dict[paths.ArtifactName, dict[str, processing_state.InputFingerprint]]:
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._session_folder(session, item)
+            graph = self._artifact_graph(session, item.campaign_id)
+            result = {}
+            for name in names:
+                step = graph.step_for(artifact_graph_pipeline.ArtifactRef(folder, name))
+                if step is None:
+                    raise ValueError(f"No build step produces {name.value}.")
+                result[name] = artifact_graph_pipeline.current_fingerprints(step, graph.state)
+            return result
+
+    def _record_completion(
+        self,
+        session_id: uuid.UUID,
+        *names: paths.ArtifactName,
+        input_snapshot: dict[paths.ArtifactName, dict[str, processing_state.InputFingerprint]] | None = None,
+    ) -> None:
         """Mark build steps complete: record each declared input's fingerprint as it is now. Producers call this
         after writing their outputs -- also when they left identical output unwritten."""
         with Session(self._engine) as session:
@@ -1252,7 +1393,10 @@ class Application:
             if step is None:
                 raise ValueError(f"No build step produces {paths.ARTIFACTS[name].display_name}.")
             records[name.value] = processing_state.CompletionRecord(
-                completed_at=processing_state.now(), inputs=artifact_graph_pipeline.current_fingerprints(step, graph.state)
+                completed_at=processing_state.now(),
+                inputs=input_snapshot[name]
+                if input_snapshot is not None
+                else artifact_graph_pipeline.current_fingerprints(step, graph.state),
             )
 
         def apply(state: processing_state.ProcessingState) -> None:
@@ -1305,6 +1449,12 @@ class Application:
         def current(name: paths.ArtifactName) -> bool:
             return states[name] is artifact_graph_pipeline.ArtifactStatus.CURRENT
 
+        resume_from = (
+            processing_steps.StepID.ASSIGN_ROLES
+            if state.reviewed_transcript_checkpoint is not None and current(paths.ArtifactName.REVIEWED_TRANSCRIPT)
+            else None
+        )
+
         # New-player rows: once Isolate New Speakers has run, its proposals decide (players seeded by this Session
         # are no longer new, but their rows stay); before that, the live attendee list does.
         proposals = state.sections.get(paths.ArtifactName.NEW_SPEAKER_ASSIGNMENTS.value)
@@ -1316,6 +1466,8 @@ class Application:
         step_states: list[processing_steps.StepState] = []
         predecessors_complete = True
         for step in processing_steps.PROCESSING_STEPS:
+            if step.id is resume_from:
+                predecessors_complete = True
             if step.id is processing_steps.StepID.APPROVE_PRIOR_REBUILD:
                 prior = self.prior_rebuild_tasks(session_id) if predecessors_complete else ()
                 complete = predecessors_complete and self._prior_rebuild_approved(state, prior)
@@ -1337,7 +1489,9 @@ class Application:
                 )
             )
             predecessors_complete = predecessors_complete and complete
-        return processing_steps.ProcessingOverview(steps=tuple(step_states), new_players=new_players, blockers=blockers)
+        return processing_steps.ProcessingOverview(
+            steps=tuple(step_states), new_players=new_players, blockers=blockers, resume_from=resume_from
+        )
 
     @staticmethod
     def _reviewed_nothing(state: processing_state.ProcessingState, step_id: processing_steps.StepID) -> bool:
@@ -1493,20 +1647,30 @@ class Application:
             folder_by_id = {item.id: self._session_folder(session, item) for item in campaign_sessions}
             session_id_by_folder = {folder: item_id for item_id, folder in folder_by_id.items()}
 
-            if force is not None and force not in artifact_graph_pipeline.GENERATION_DEPENDENCIES:
+            if force in artifact_graph_pipeline.DEFERRED_GENERATION:
+                raise ValueError(matters_pipeline.DISABLED_MESSAGE)
+            if force is not None and force not in artifact_graph_pipeline.REGENERATABLE:
                 raise ValueError(f"{paths.ARTIFACTS[force].display_name} cannot be regenerated from this screen.")
 
             requested = set(artifact_graph_pipeline.GENERATION_ORDER) if force is None else {force}
             forced: set[paths.ArtifactName] = set()
             if force is not None:
                 forced.add(force)
+                # Use the actual producer graph for downstream closure, not a second dependency map.
                 changed = True
                 while changed:
                     changed = False
-                    for candidate, candidate_dependencies in artifact_graph_pipeline.GENERATION_DEPENDENCIES.items():
-                        if candidate not in requested and candidate_dependencies & requested:
-                            requested.add(candidate)
-                            forced.add(candidate)
+                    for step in graph.steps:
+                        if step.folder != folder_by_id[session_id] or step.name not in artifact_graph_pipeline.REGENERATABLE:
+                            continue
+                        if step.name not in requested and any(
+                            isinstance(dep, artifact_graph_pipeline.ArtifactRef)
+                            and dep.session_folder == step.folder
+                            and dep.name in requested
+                            for dep in step.dependencies
+                        ):
+                            requested.add(step.name)
+                            forced.add(step.name)
                             changed = True
 
             plan: list[artifact_graph_pipeline.GenerationTask] = []
@@ -1531,19 +1695,19 @@ class Application:
                     if dependency_status is artifact_graph_pipeline.ArtifactStatus.CURRENT:
                         continue
                     dependency_step = graph.step_for(dependency)
-                    if dependency_step is None or dependency_step.name not in artifact_graph_pipeline.GENERATION_DEPENDENCIES:
+                    if dependency_step is None or dependency_step.name not in artifact_graph_pipeline.REGENERATABLE:
                         raise ValueError(
                             f"{paths.ARTIFACTS[dependency.name].display_name} must be current before outputs can be generated."
                         )
                     dependency_session_id = session_id_by_folder[dependency.session_folder]
                     if dependency_session_id != session_id and not rebuild_prior_sessions:
-                        continue
+                        raise ValueError("Required prior-Session artifacts must be current. Rebuild prior Sessions to continue.")
                     ensure(dependency_session_id, dependency_step.name)
 
                 scheduled.add(key)
                 plan.append(artifact_graph_pipeline.GenerationTask(target_session_id, name))
 
-            for name in artifact_graph_pipeline.GENERATION_ORDER:
+            for name in (*artifact_graph_pipeline.GENERATION_ORDER, paths.ArtifactName.PLAYER_INTRODUCTIONS):
                 if name in requested:
                     ensure(session_id, name, is_forced=name in forced)
             return tuple(plan)
@@ -1569,12 +1733,9 @@ class Application:
             ),
             paths.ArtifactName.TRANSCRIPT_SECTIONS: self.generate_transcript_sections,
             paths.ArtifactName.LEDGER: self.generate_ledger,
+            paths.ArtifactName.SCENE_LOG: self.generate_scene_log,
             paths.ArtifactName.PLAYER_INTRODUCTIONS: self.generate_player_introductions,
-            paths.ArtifactName.RECAP_SUMMARY: self.generate_recap_summary,
-            paths.ArtifactName.SUMMARY: lambda task_session_id: self.generate_summary(
-                task_session_id,
-                omit_stale_prior_recap=not rebuild_prior_sessions,
-            ),
+            **{name: functools.partial(self.generate_matter, name=name) for name in matters_pipeline.MATTERS.values()},
         }
         for completed, task in enumerate(plan):
             if on_stage is not None:
@@ -1596,10 +1757,20 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             return artifacts.can_export_artifacts(self._session_folder(session, game_session))
 
-    def export_artifact(self, session_id: uuid.UUID, artifact_name: paths.ArtifactName, destination: Path) -> None:
+    def export_artifact(
+        self, session_id: uuid.UUID, artifact_name: paths.ArtifactName, destination: Path, *, companion: str | None = None
+    ) -> None:
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
-            artifacts.export_artifact(self._session_folder(session, game_session), artifact_name, destination)
+            folder = self._session_folder(session, game_session)
+            if companion is not None:
+                if companion not in paths.ARTIFACTS[artifact_name].companion_filenames:
+                    raise ValueError("Unknown artifact companion.")
+                if not artifacts.session_artifacts(folder)[artifact_name]:
+                    raise ValueError("Artifact is missing or its replacement was interrupted.")
+                shutil.copyfile(folder / companion, destination)
+            else:
+                artifacts.export_artifact(folder, artifact_name, destination)
 
     def export_ledger_markdown(self, session_id: uuid.UUID, destination: Path) -> None:
         """Render the canonical Ledger on demand and export its human-readable Markdown view."""
@@ -1607,9 +1778,11 @@ class Application:
             game_session = sessions.get_session(session, session_id)
             session_folder = self._session_folder(session, game_session)
         ledger_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
-        markdown_path = session_folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME
-        markdown_path.write_text(generate_ledger_pipeline.Ledger.load(ledger_path).to_markdown(), encoding="utf-8")
-        shutil.copyfile(markdown_path, destination)
+        if not artifacts.session_artifacts(session_folder)[paths.ArtifactName.LEDGER]:
+            raise ValueError("Ledger is missing or its replacement was interrupted.")
+        ledger = generate_ledger_pipeline.Ledger.load(ledger_path)
+        markdown = narrative.render_ledger(ledger) if ledger.version == 5 else ledger.to_markdown()
+        destination.write_text(markdown, encoding="utf-8")
 
     def session_player_voice_prints(self, session_id: uuid.UUID) -> dict[str, Embedding]:
         """Attending players' voice voice prints, keyed by player name -- `transcribe_audio`'s speaker-ID input."""
@@ -2303,7 +2476,7 @@ class Application:
             )
             target = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
             result = transcript_sections_pipeline.persist_transcript_sections(generated, role_path, target)
-            if result.starting_context_range is None:
+            if result.starting_context_range is None and self._is_first_recorded_session(session_id):
                 raise transcript_sections_pipeline.TranscriptSectionsValidationError(
                     "Transcript sectioning found no usable starting situation; downstream generation cannot continue."
                 )
@@ -2311,80 +2484,11 @@ class Application:
                 artifact_path=str(target),
                 recap_range=result.recap_range.model_dump() if result.recap_range is not None else None,
                 introduction_range=result.introduction_range.model_dump() if result.introduction_range is not None else None,
-                starting_context_range=result.starting_context_range.model_dump(),
+                starting_context_range=result.starting_context_range.model_dump() if result.starting_context_range else None,
                 session_start_index=result.session_start_index,
                 failed=False,
             )
             return result
-
-    @_completes(paths.ArtifactName.LEDGER)
-    def generate_ledger(self, session_id: uuid.UUID) -> None:
-        """Generate and replace a Session's matched Ledger and Scene Breakdown artifacts."""
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            session_folder = self._session_folder(session, game_session)
-            enabled, reason = generate_ledger_pipeline.can_generate_ledger(session_folder)
-            if not enabled:
-                raise ValueError(reason or "Cannot generate Ledger.")
-
-            attendees = sessions.list_attendance(session, session_id)
-            known_roles = tuple(sorted({role for attendee in attendees for role in attendee.roles}))
-            ledger_attendees = tuple(
-                generate_ledger_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
-                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
-            )
-            glossary_entries = sorted(
-                glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold()
-            )
-            ledger_glossary = tuple(
-                generate_ledger_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in glossary_entries
-            )
-            role_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.ROLE_TRANSCRIPT].filename
-            sections_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.TRANSCRIPT_SECTIONS].filename
-            role_transcript = transcript_sections_pipeline.RoleTranscript.load(role_path)
-            transcript_sections = transcript_sections_pipeline.load_current_transcript_sections(role_path, sections_path)
-            routed_transcript = transcript_sections_pipeline.route_transcript(role_transcript, transcript_sections)
-            session_name = game_session.name
-
-        with widelog.wide_event(
-            op="generate_session_ledger",
-            session_id=str(session_id),
-            session_folder=str(session_folder),
-            known_role_count=len(known_roles),
-            glossary_count=len(ledger_glossary),
-            starting_context_utterance_count=len(routed_transcript.starting_context),
-            session_utterance_count=len(routed_transcript.session),
-        ) as log:
-            generated = asyncio.run(
-                generate_ledger_pipeline.generate_ledger(
-                    routed_transcript.starting_context,
-                    routed_transcript.session,
-                    known_roles,
-                    ledger_attendees,
-                    ledger_glossary,
-                    self._settings.llm_model_high,
-                    timeout=self._settings.generate_artifacts.timeout,
-                )
-            )
-            ledger = generate_ledger_pipeline.Ledger(
-                version=4,
-                session_id=session_id,
-                session_name=session_name,
-                attendees=ledger_attendees,
-                starting_situation=generated.starting_situation,
-                utterances=generated.ledger.utterances,
-            )
-            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename
-            markdown_target = session_folder / generate_ledger_pipeline.LEDGER_MARKDOWN_FILENAME
-            breakdown = persist_ledger_pair(ledger, generated.scene_breakdown, session_folder)
-            log.set(
-                ledger_utterance_count=len(ledger.utterances),
-                scene_count=len(breakdown.scenes),
-                ledger_json_path=str(target),
-                ledger_markdown_path=str(markdown_target),
-                scene_breakdown_path=str(session_folder / paths.ARTIFACTS[paths.ArtifactName.SCENE_BREAKDOWN].filename),
-                failed=False,
-            )
 
     def can_generate_player_introductions(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -2452,187 +2556,182 @@ class Application:
             return result
 
     def can_generate_recap_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            return recap_summary_pipeline.can_generate_recap_summary(self._session_folder(session, game_session))
+        return False, matters_pipeline.DISABLED_MESSAGE
 
     @_completes(paths.ArtifactName.RECAP_SUMMARY)
     def generate_recap_summary(self, session_id: uuid.UUID) -> str:
-        """Generate and atomically persist a compact recap from the current Scene Breakdown."""
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
+
+    def _require_current(self, session: Session, game_session: GameSession, name: paths.ArtifactName) -> Path:
+        folder = self._session_folder(session, game_session)
+        status = self._artifact_graph(session, game_session.campaign_id).status(artifact_graph_pipeline.ArtifactRef(folder, name))
+        if status is not artifact_graph_pipeline.ArtifactStatus.CURRENT:
+            raise ValueError(f"{paths.ARTIFACTS[name].display_name} is {status.value}; regenerate it first.")
+        if name is paths.ArtifactName.SCENE_LOG:
+            source = narrative.SceneLog.load(folder)
+            previous = self._previous_recorded_session(session, game_session)
+            expected = previous.id if previous else None
+            if source.session_id != game_session.id or source.previous_session_id != expected:
+                raise ValueError("Scene Log identity or predecessor differs from this Campaign; regenerate it first.")
+        return folder
+
+    @_completes(paths.ArtifactName.LEDGER)
+    def generate_ledger(self, session_id: uuid.UUID) -> None:
         with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            campaign = session.get(Campaign, game_session.campaign_id)
-            if campaign is None:
-                raise ValueError("Campaign not found.")
-            session_folder = self._session_folder(session, game_session)
-            enabled, reason = recap_summary_pipeline.can_generate_recap_summary(session_folder)
-            if not enabled:
-                raise ValueError(reason or "Cannot generate Recap Summary.")
-
-            entries = sorted(
-                glossary.list_glossary_entries(session, game_session.campaign_id),
-                key=lambda entry: entry.term.casefold(),
-            )
-            prompt_glossary = tuple(
-                recap_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
-            )
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.ROLE_TRANSCRIPT)
+            self._require_current(session, item, paths.ArtifactName.TRANSCRIPT_SECTIONS)
+            first = self._previous_recorded_session(session, item) is None
+            role_path, sections_path = folder / "role_transcript.json", folder / "transcript_sections.json"
+            roles = transcript_sections_pipeline.RoleTranscript.load(role_path)
+            sections = transcript_sections_pipeline.load_current_transcript_sections(role_path, sections_path)
+            routed = transcript_sections_pipeline.route_transcript(roles, sections, require_starting_context=first)
             attendees = sessions.list_attendance(session, session_id)
-            prompt_attendees = tuple(
-                recap_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
-                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
+            inputs = narrative.ledger_inputs.LedgerPromptInputs(
+                attendees=[narrative.ledger_inputs.SessionAttendee(a.player_name, list(a.roles)) for a in attendees],
+                glossary=[
+                    narrative.ledger_inputs.GlossaryEntry(g.term, g.description)
+                    for g in sorted(glossary.list_glossary_entries(session, item.campaign_id), key=lambda g: g.term.casefold())
+                ],
+                session_utterances=[narrative.ledger_inputs.TranscriptUtterance(u.speaker, u.text) for u in routed.session],
+                starting_context=[narrative.ledger_inputs.TranscriptUtterance(u.speaker, u.text) for u in routed.starting_context]
+                if first
+                else None,
             )
-            breakdown = load_current_scene_breakdown(session_folder)
-            if breakdown.session_id != session_id:
-                raise ValueError("Scene Breakdown belongs to a different Session.")
-            breakdown_text = breakdown.model_dump_json(indent=2)
-            campaign_name = campaign.name
-            session_date = game_session.session_date.isoformat() if game_session.session_date else None
-            game_system = campaign.game_system
+            session_name = item.name
+        generated = asyncio.run(
+            narrative.generate_ledger(
+                inputs,
+                self._settings.llm_model_high,
+                self._settings.generate_artifacts.timeout,
+                self._generation_options(),
+                folder=folder,
+            )
+        )
+        ledger = generate_ledger_pipeline.Ledger(
+            version=5,
+            session_id=session_id,
+            session_name=session_name,
+            attendees=tuple(generate_ledger_pipeline.Attendee(player_name=a.player_name, roles=tuple(a.roles)) for a in inputs.attendees),
+            starting_situation=generated.starting_situation,
+            utterances=generated.ledger.utterances,
+        )
+        narrative.persist_record(folder, "ledger", ledger, narrative.render_ledger(ledger))
+        # A completed independent Ledger also repairs the retired joint-generation interruption gate.
+        (folder / paths.LEDGER_PAIR_MARKER).unlink(missing_ok=True)
 
-        with widelog.wide_event(
-            op="generate_recap_summary",
-            session_id=str(session_id),
-            session_folder=str(session_folder),
-            attendee_count=len(prompt_attendees),
-            glossary_entry_count=len(prompt_glossary),
-            scene_breakdown_chars=len(breakdown_text),
-        ) as log:
-            recap = asyncio.run(
-                recap_summary_pipeline.generate_recap_summary(
-                    breakdown_text,
-                    prompt_attendees,
-                    prompt_glossary,
-                    campaign_name,
-                    session_date,
-                    game_system,
-                    self._settings.llm_model_high,
-                    timeout=self._settings.generate_artifacts.timeout,
-                )
+    @_completes(paths.ArtifactName.SCENE_LOG)
+    def generate_scene_log(self, session_id: uuid.UUID) -> None:
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.LEDGER)
+            prior = self._previous_recorded_session(session, item)
+            previous = None
+            if prior:
+                prior_folder = self._require_current(session, prior, paths.ArtifactName.PRESENT_MATTERS)
+                previous = narrative.scene_inputs.PresentMatters(**matters_pipeline.load(prior_folder, "present_matters"))
+            ledger = generate_ledger_pipeline.Ledger.load(folder / "ledger.json")
+            if ledger.version != 5 or ledger.session_id != session_id:
+                raise ValueError("Regenerate this Session’s Ledger using the new contract first.")
+            attendees = sessions.list_attendance(session, session_id)
+            inputs = narrative.scene_inputs.SceneLogPromptInputs(
+                attendees=[narrative.scene_inputs.SessionAttendee(a.player_name, list(a.roles)) for a in attendees],
+                glossary=[
+                    narrative.scene_inputs.GlossaryEntry(g.term, g.description)
+                    for g in sorted(glossary.list_glossary_entries(session, item.campaign_id), key=lambda g: g.term.casefold())
+                ],
+                ledger_entries=[entry.model_dump() for entry in ledger.utterances],
+                starting_situation=narrative.scene_inputs.choose_starting_situation(ledger.starting_situation, previous),
             )
-            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename
-            recap_summary_pipeline.persist_recap_summary(recap, target)
-            log.set(recap_chars=len(recap), artifact_path=str(target), failed=False)
-            return recap
+        result = asyncio.run(
+            narrative.generate_scene_log(
+                ledger,
+                inputs,
+                prior.id if prior else None,
+                self._settings.llm_model_high,
+                self._settings.generate_artifacts.timeout,
+                self._generation_options(),
+                folder=folder,
+            )
+        )
+        narrative.persist_record(folder, "scene_log", result, narrative.render_scene_log(result))
+
+    def generate_matter(self, session_id: uuid.UUID, name: paths.ArtifactName) -> None:
+        section = name.value
+        if section not in matters_pipeline.MATTERS:
+            raise ValueError(f"Not a Matters artifact: {section}")
+        self._invalidate_transcript_review_for(session_id, name)
+        snapshot = self._generation_input_snapshot(session_id, (name,))
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.SCENE_LOG)
+            source = narrative.SceneLog.load(folder)
+            current = {}
+            for key in matters_pipeline.inputs.DEPENDENCIES[section]:
+                self._require_current(session, item, matters_pipeline.MATTERS[key])
+                current[key] = matters_pipeline.load(folder, key)
+            prior = self._previous_recorded_session(session, item) if section != "developments" else None
+            previous_sections = {}
+            if prior:
+                for key in matters_pipeline.PRIOR_DEPENDENCIES[section]:
+                    prior_folder = self._require_current(session, prior, matters_pipeline.MATTERS[key])
+                    previous_sections[key] = matters_pipeline.load(prior_folder, key)
+            previous = (
+                None if section in {"revelations", "developments"} else previous_sections.get(section, matters_pipeline.empty(section))
+            )
+            if section == "goal_impediments":
+                previous = matters_pipeline.inputs.prepare_previous_impediments(cast(list[dict], previous))
+            prior_keys = (
+                matters_pipeline.inputs.REVELATION_MATTER_KINDS
+                if section == "revelations"
+                else matters_pipeline.inputs.ASSET_MATTER_KINDS
+                if section == "new_assets"
+                else ()
+            )
+            previous_matters = {key: previous_sections.get(key, []) for key in prior_keys} if prior_keys else None
+            party = (
+                []
+                if section == "developments"
+                else [r for a in sessions.list_attendance(session, session_id) for r in a.roles if r != "Game Master"]
+            )
+            prompt_inputs = matters_pipeline.inputs.CampaignMattersPromptInputs(
+                party=party,
+                scenes=source.content()["scenes"],
+                section=section,
+                previous=previous,
+                current_sections=current,
+                previous_matters=previous_matters,
+            )
+        asyncio.run(
+            matters_pipeline.generate(
+                folder,
+                prompt_inputs,
+                self._settings.llm_model_high,
+                self._settings.generate_artifacts.timeout,
+                self._generation_options(matters=True),
+            )
+        )
+        self._record_completion(session_id, name, input_snapshot=snapshot)
+
+    def _summary_source(self, session_id: uuid.UUID) -> tuple[Path, narrative.SceneLog]:
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.SCENE_LOG)
+            source = narrative.SceneLog.load(folder)
+            if source.session_id != session_id:
+                raise ValueError("Scene Log belongs to a different Session.")
+            return folder, source
 
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            previous_session = sessions.find_prior_session(session, game_session.campaign_id, game_session.session_date)
-            previous_folder = self._session_folder(session, previous_session) if previous_session is not None else None
-            return processing.can_generate_summary(self._session_folder(session, game_session), previous_folder)
+        return False, matters_pipeline.DISABLED_MESSAGE
 
     @_completes(paths.ArtifactName.SUMMARY)
     def generate_summary(self, session_id: uuid.UUID, *, omit_stale_prior_recap: bool = False) -> None:
-        """Generate and atomically replace a session's Markdown summary from its Ledger."""
-        with Session(self._engine) as session:
-            game_session = sessions.get_session(session, session_id)
-            campaign = session.get(Campaign, game_session.campaign_id)
-            if campaign is None:
-                raise ValueError("Campaign not found.")
-            session_folder = self._session_folder(session, game_session)
-            previous_session = sessions.find_prior_session(session, game_session.campaign_id, game_session.session_date)
-            previous_folder = self._session_folder(session, previous_session) if previous_session is not None else None
-            graph = self._artifact_graph(session, game_session.campaign_id)
-            previous_recap_is_current = previous_folder is None or (
-                graph.status(artifact_graph_pipeline.ArtifactRef(previous_folder, paths.ArtifactName.RECAP_SUMMARY))
-                is artifact_graph_pipeline.ArtifactStatus.CURRENT
-            )
-            # A previous Session that can't be regenerated contributes whatever recap it already has, or the
-            # placeholder when it has none, without asking. One the caller chose not to rebuild ("Current Only")
-            # gets the placeholder.
-            previous_recap_path = (
-                previous_folder / paths.ARTIFACTS[paths.ArtifactName.RECAP_SUMMARY].filename if previous_folder is not None else None
-            )
-            previous_unregenerable = previous_folder is not None and not self._previous_session_regenerable(graph, previous_folder)
-            omit_previous_recap = previous_recap_path is not None and (
-                (previous_unregenerable and not previous_recap_path.is_file())
-                or (not previous_unregenerable and omit_stale_prior_recap and not previous_recap_is_current)
-            )
-            required_previous_folder = None if omit_previous_recap or previous_unregenerable else previous_folder
-            enabled, reason = processing.can_generate_summary(session_folder, required_previous_folder)
-            if not enabled:
-                raise ValueError(reason or "Cannot generate summary.")
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
-            entries = sorted(glossary.list_glossary_entries(session, game_session.campaign_id), key=lambda entry: entry.term.casefold())
-            prompt_glossary = [
-                generate_summary_pipeline.GlossaryPromptEntry(term=entry.term, description=entry.description) for entry in entries
-            ]
-            attendees = sessions.list_attendance(session, session_id)
-            prompt_attendees = tuple(
-                generate_summary_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles)
-                for attendee in sorted(attendees, key=lambda attendee: attendee.player_name.casefold())
-            )
-            introduction_attendees = tuple(
-                player_introductions_pipeline.Attendee(player_name=attendee.player_name, roles=attendee.roles) for attendee in attendees
-            )
-            ledger_text = (session_folder / paths.ARTIFACTS[paths.ArtifactName.LEDGER].filename).read_text(encoding="utf-8")
-            campaign_name = campaign.name
-            session_date = game_session.session_date.isoformat() if game_session.session_date else None
-            game_system = campaign.game_system
-
-        with widelog.wide_event(
-            op="generate_summary",
-            session_id=str(session_id),
-            session_folder=str(session_folder),
-            previous_session_id=str(previous_session.id) if previous_session is not None else None,
-            has_previous_session=previous_session is not None,
-            attendee_count=len(prompt_attendees),
-            glossary_entry_count=len(prompt_glossary),
-            ledger_chars=len(ledger_text),
-        ) as log:
-            summary = asyncio.run(
-                generate_summary_pipeline.generate_summary(
-                    ledger_text,
-                    prompt_attendees,
-                    prompt_glossary,
-                    campaign_name,
-                    session_date,
-                    game_system,
-                    self._settings.llm_model_high,
-                    timeout=self._settings.generate_artifacts.timeout,
-                )
-            )
-            introductions_path = session_folder / paths.ARTIFACTS[paths.ArtifactName.PLAYER_INTRODUCTIONS].filename
-            recap = (
-                generate_summary_pipeline.RECAP_UNAVAILABLE_PLACEHOLDER
-                if omit_previous_recap
-                else previous_recap_path.read_text(encoding="utf-8")
-                if previous_recap_path is not None
-                else None
-            )
-            introductions = player_introductions_pipeline.PlayerIntroductions.load(introductions_path)
-            if introductions.session_id != session_id:
-                raise generate_summary_pipeline.SummaryCompositionError("Player Introductions belong to a different Session.")
-            player_introductions_pipeline.validate_player_introductions(introductions, introduction_attendees)
-            composed_summary = generate_summary_pipeline.compose_summary(summary, recap, introductions.to_markdown())
-            target = session_folder / paths.ARTIFACTS[paths.ArtifactName.SUMMARY].filename
-            inputs_target = session_folder / paths.SUMMARY_INPUTS_FILENAME
-            temp_target = target.with_name(f".{target.stem}.tmp{target.suffix}")
-            temp_inputs_target = inputs_target.with_name(".summary-inputs.tmp.json")
-            summary_replaced = False
-            try:
-                temp_target.write_text(composed_summary, encoding="utf-8")
-                temp_inputs_target.write_text(
-                    json.dumps({"previous_session_id": str(previous_session.id) if previous_session is not None else None}) + "\n",
-                    encoding="utf-8",
-                )
-                temp_target.replace(target)
-                summary_replaced = True
-                temp_inputs_target.replace(inputs_target)
-            except Exception:
-                temp_target.unlink(missing_ok=True)
-                temp_inputs_target.unlink(missing_ok=True)
-                if summary_replaced:
-                    inputs_target.unlink(missing_ok=True)
-                raise
-            log.set(
-                summary_template_chars=len(summary),
-                recap_chars=len(recap) if recap is not None else 0,
-                introduction_count=len(introductions.introductions),
-                composed_summary_chars=len(composed_summary),
-                artifact_path=str(target),
-                failed=False,
-            )
+    @_completes(paths.ArtifactName.TABLE_RECAP)
+    def generate_table_recap(self, session_id: uuid.UUID) -> str:
+        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
 
     def can_transcribe_audio(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:
@@ -2762,12 +2861,18 @@ class Application:
         name = paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value
         state.sections.pop(name, None)
         state.records.pop(name, None)
+        state.reviewed_transcript_checkpoint = None
 
     def _discard_transcript_review(self, session_id: uuid.UUID) -> None:
         folder = self.session_folder(session_id)
         state = processing_state.load(folder)
         name = paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS.value
-        if _REVIEW_TRANSCRIPT_STEP in state.drafts or name in state.sections or name in state.records:
+        if (
+            _REVIEW_TRANSCRIPT_STEP in state.drafts
+            or name in state.sections
+            or name in state.records
+            or state.reviewed_transcript_checkpoint is not None
+        ):
             processing_state.update(folder, self._clear_transcript_review, reason="transcript_review_invalidated")
 
     def _invalidate_transcript_review_for(self, session_id: uuid.UUID, *names: paths.ArtifactName) -> None:
@@ -2789,11 +2894,19 @@ class Application:
                     visit(dependency.name)
 
         visit(paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS)
-        if upstream.intersection(names):
+        checkpoint = processing_state.load(folder).reviewed_transcript_checkpoint
+        replacing_review = checkpoint is not None and bool(
+            {paths.ArtifactName.TRANSCRIPT_REVIEW_EDITS, paths.ArtifactName.REVIEWED_TRANSCRIPT}.intersection(names)
+        )
+        if upstream.intersection(names) or replacing_review:
             self._discard_transcript_review(session_id)
 
     def _transcript_review_inputs(self, session_id: uuid.UUID) -> dict[str, str] | None:
         """Validate review dependencies, independently of the review's own reopened completion flag."""
+        if processing_state.load(self.session_folder(session_id)).reviewed_transcript_checkpoint is not None:
+            # An adopted final transcript is not a replay of edits against a newly generated machine input.
+            # Merely inspecting saved review work must not erase its historical decisions or acceptance.
+            return None
         with Session(self._engine) as session:
             game_session = sessions.get_session(session, session_id)
             folder = self._session_folder(session, game_session)
@@ -2869,6 +2982,53 @@ class Application:
         """Complete Review Transcript and write the reviewed transcript (decision, then apply)."""
         self.save_transcript_review(session_id, transcript)
         self.apply_transcript_review(session_id)
+
+    def adopt_reviewed_transcript(
+        self,
+        session_id: uuid.UUID,
+        *,
+        expected_sha256: str,
+        source_revision: str,
+        backup_reference: str,
+    ) -> None:
+        """Accept an existing human-reviewed transcript without rewriting it or its historical review decisions.
+
+        This explicit migration boundary enables downstream regeneration while machine steps stay historical.
+        Callers must stop processing and back up the workspace before adoption. Upstream restarts revoke it.
+        """
+        folder = self.session_folder(session_id)
+        path = folder / paths.ARTIFACTS[paths.ArtifactName.REVIEWED_TRANSCRIPT].filename
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != expected_sha256:
+            raise ValueError("The reviewed transcript changed since migration preview.")
+        transcript = Transcript.model_validate_json(raw)
+        if not transcript.utterances:
+            raise ValueError("Cannot adopt an empty reviewed transcript.")
+        speakers = {a.player_name for a in self.list_attendance(session_id)} | {UNASSIGNED_SPEAKER}
+        if any(u.speaker not in speakers for u in transcript.utterances):
+            raise ValueError("Reviewed transcript speakers do not match the current Session's attendees.")
+        if any(not math.isfinite(u.start) or not math.isfinite(u.end) or u.start < 0 or u.end < u.start for u in transcript.utterances):
+            raise ValueError("Reviewed transcript has invalid audio timestamps.")
+        if not source_revision.strip() or not backup_reference.strip():
+            raise ValueError("Record the source revision and backup location for adoption.")
+
+        def accept(state: processing_state.ProcessingState) -> None:
+            if hashlib.sha256(path.read_bytes()).hexdigest() != expected_sha256:
+                raise ValueError("The reviewed transcript changed during adoption.")
+            existing = state.reviewed_transcript_checkpoint
+            if existing is not None:
+                if existing.sha256 == expected_sha256 and existing.session_id == str(session_id):
+                    return
+                raise ValueError("A different reviewed transcript was already adopted; inspect the previous migration.")
+            state.reviewed_transcript_checkpoint = processing_state.ReviewedTranscriptCheckpoint(
+                session_id=str(session_id),
+                sha256=expected_sha256,
+                adopted_at=processing_state.now(),
+                source_revision=source_revision,
+                backup_reference=backup_reference,
+            )
+
+        processing_state.update(folder, accept, reason="reviewed_transcript_adopted")
 
     def count_adjusted_utterances(self, session_id: uuid.UUID) -> int:
         with Session(self._engine) as session:

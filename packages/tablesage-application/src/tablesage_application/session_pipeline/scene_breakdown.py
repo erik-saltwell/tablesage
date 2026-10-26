@@ -115,6 +115,8 @@ def persist_ledger_pair(ledger: Ledger, content: SceneBreakdownContent, session_
     Handled write failures restore the old files. A process interruption leaves a marker so
     readers refuse a potentially mixed pair until regeneration succeeds.
     """
+    if ledger.starting_situation is None:
+        raise ValueError("Legacy Scene Breakdown requires a starting Situation.")
     content.validate_coverage(len(ledger.utterances))
     ledger_bytes = (ledger.model_dump_json(indent=2) + "\n").encode("utf-8")
     breakdown = SceneBreakdown(

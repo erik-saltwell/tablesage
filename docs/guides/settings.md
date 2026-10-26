@@ -68,3 +68,13 @@ Choose **Continue**, or move focus out of an editable key field and press **C**,
 3. If every model responds, Tablesage downloads any local audio-processing models that are not already installed (noise removal, voice embeddings, and punctuation). This may take a while the first time, since some voice models install locally; once they are installed, this step finishes immediately on later saves.
 
 If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved even though the check failed, so correct the key or model ID and save again. The ElevenLabs key is not tested here; it is first used to upload audio during **Create Transcript**.
+
+## Table Recap Length
+
+The deployed `.tablesage/settings.yaml` supports `generate_artifacts.recap_target_words` (default 450) and `generate_artifacts.recap_orientation_words` (default 50). Both must be positive and the orientation limit must be smaller than the total target, or set both to `null` to omit length guidance. The model receives these values as instructions; actual output can exceed them. Changing these settings makes existing Table Recaps out of date.
+
+`generate_artifacts.model_options` passes provider-specific generation options to the narrative calls. High model selection and the generation timeout also affect narrative freshness. Settings schema version 2 introduces these fields; existing workspace settings are preserved and new fields receive defaults until saved.
+
+## Artifact Generation Effort
+
+Ledger, Scene Log and the internal Matters categories use the configured **High model**. The deployed `generate_artifacts.narrative_effort` value is `high`; `generate_artifacts.matters_effort` is `medium`, matching the ported prompts. These stage values override `reasoning_effort` in `generate_artifacts.model_options`. Unsupported effort is reported as a generation failure; parameter dropping is disabled for these calls. Summary, Table Recap and Campaign preparation generation are temporarily paused.

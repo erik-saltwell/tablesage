@@ -7,6 +7,7 @@ import widelog
 
 from ..paths import ARTIFACTS, AUDIO_PAIR_MARKER, LEDGER_PAIR_MARKER, ArtifactName
 from . import processing_state
+from .narrative import marker_name
 
 
 def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
@@ -21,6 +22,9 @@ def delete_artifact(session_folder: Path, artifact_name: ArtifactName) -> None:
     if artifact_name is ArtifactName.LEDGER:
         (session_folder / ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].filename).unlink(missing_ok=True)
         (session_folder / LEDGER_PAIR_MARKER).unlink(missing_ok=True)
+    (session_folder / marker_name(artifact_name.value)).unlink(missing_ok=True)
+    for backup in session_folder.glob(f".{artifact_name.value}-*.bak"):
+        backup.unlink(missing_ok=True)
     if artifact_name is ArtifactName.INPUT_AUDIO:
         for name in (ArtifactName.INPUT_AUDIO, ArtifactName.NORMALIZED_REVIEW_AUDIO):
             (session_folder / f".audio-import-{ARTIFACTS[name].filename}.bak").unlink(missing_ok=True)
@@ -35,6 +39,11 @@ def session_artifacts(session_folder: Path) -> dict[ArtifactName, bool]:
     }
     if (session_folder / LEDGER_PAIR_MARKER).exists():
         for name in (ArtifactName.LEDGER, ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY, ArtifactName.SUMMARY):
+            existing[name] = False
+    for name, spec in ARTIFACTS.items():
+        if not spec.is_file:
+            continue
+        if (session_folder / marker_name(name.value)).exists():
             existing[name] = False
     if (session_folder / AUDIO_PAIR_MARKER).exists():
         for name in (ArtifactName.INPUT_AUDIO, ArtifactName.NORMALIZED_REVIEW_AUDIO):

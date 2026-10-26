@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, cast
 
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.processing_steps import StepID
-from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, ArtifactStatus
+from tablesage_application.session_pipeline.artifact_graph import DEFERRED_GENERATION, GENERATION_LABELS, ArtifactStatus
+from tablesage_application.session_pipeline.campaign_matters import DISABLED_MESSAGE
 from tablesage_model.model import Player
 from tablesage_model.player_names import validate_player_name
 from textual.app import ComposeResult
@@ -169,7 +170,8 @@ class SessionDetailScreen(TableSageScreen):
         self._refresh_last_transcribed()
         artifact_states = self._artifact_states()
         for name, widget in self._indicators.items():
-            status = artifact_states[name]
+            status = artifact_states.get(name, ArtifactStatus.MISSING)
+            widget.display = name not in (ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY) or status is not ArtifactStatus.MISSING
             widget.update(self._indicator_text(ARTIFACTS[name].display_name, status))
             widget.tooltip = self._indicator_tooltip(name, status)
             widget.set_class(status is ArtifactStatus.MISSING, "artifact-missing")
@@ -199,6 +201,8 @@ class SessionDetailScreen(TableSageScreen):
 
     @staticmethod
     def _indicator_tooltip(name: ArtifactName, status: ArtifactStatus) -> str:
+        if name in (ArtifactName.SCENE_BREAKDOWN, ArtifactName.RECAP_SUMMARY):
+            return "Legacy artifact: retained from the older pipeline. Generate Scene Log and Table Recap for current outputs."
         if status is ArtifactStatus.MISSING:
             if name is ArtifactName.INPUT_AUDIO:
                 return "Missing: Input audio hasn't been imported yet. Process the Session to import it."
@@ -273,6 +277,9 @@ class SessionDetailScreen(TableSageScreen):
     def action_regenerate(self) -> None:
         def on_selected(selected: ArtifactName | None) -> None:
             if selected is None:
+                return
+            if selected in DEFERRED_GENERATION:
+                self.notify(DISABLED_MESSAGE)
                 return
 
             def on_confirm(confirmed: bool | None) -> None:

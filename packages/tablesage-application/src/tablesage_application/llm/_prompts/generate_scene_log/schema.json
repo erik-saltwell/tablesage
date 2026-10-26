@@ -1,0 +1,154 @@
+{
+  "title": "SceneLog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenes",
+    "session_cue"
+  ],
+  "properties": {
+    "scenes": {
+      "description": "The session's scenes in order.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/Scene"
+      }
+    },
+    "session_cue": {
+      "description": "The session's most memorable scene cue, copied exactly from one of scenes[].scene_cue after considering all scenes.",
+      "$ref": "#/$defs/Text"
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Participant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "note"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/Text"
+        },
+        "note": {
+          "description": "Arrival, departure or limited involvement that matters; otherwise null.",
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "Scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "location",
+        "participants",
+        "overview",
+        "scene_cue",
+        "events",
+        "outcome"
+      ],
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/Text"
+        },
+        "participants": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "party_members",
+            "non_player_characters"
+          ],
+          "properties": {
+            "party_members": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Participant"
+              }
+            },
+            "non_player_characters": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Participant"
+              }
+            }
+          }
+        },
+        "overview": {
+          "$ref": "#/$defs/Text"
+        },
+        "scene_cue": {
+          "$ref": "#/$defs/Text"
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "discoveries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Discovery"
+          },
+          "minItems": 1
+        },
+        "outcome": {
+          "$ref": "#/$defs/Text"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "importance"
+      ],
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "importance": {
+          "$ref": "#/$defs/Importance"
+        }
+      }
+    },
+    "Importance": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "Discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "importance"
+      ],
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "importance": {
+          "$ref": "#/$defs/Importance"
+        }
+      }
+    }
+  }
+}

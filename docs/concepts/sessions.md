@@ -4,7 +4,7 @@ A **Session** records one occasion of tabletop play within a Campaign. It has a 
 
 ## Session Dates
 
-Session dates tell TableSage the chronological order of sessions, which helps it build beginning-of-session recaps; see [How the Prior Recap Is Chosen](sessions.md#how-the-prior-recap-is-chosen). 
+Session dates describe when play happened. Narrative continuity follows recorded Session sequence numbers; see [How Continuity Is Carried Forward](#how-continuity-is-carried-forward).
 ## Attendance and Roles
 
 TableSage keeps an attendance record which captures Players that  took part in a Session. Each attendee record stores the real-world Player and their session-specific Roles. Roles tell TableSage what character or function that Player had in the game. See [Players, Voice Samples, Voice Prints, and Roles](players.md) for more on the distinction.
@@ -27,15 +27,18 @@ During these steps, TableSage asks the user to approve the work it is about to d
 - A **reviewed transcript** is the corrected version the group trusts.
 - A **role transcript** is a version of the reviewed transcript where utterances are ascribed to Roles rather than Players.
 - A **ledger** is the authoritative record of what happened in your game during a Session.
-- A **session summary** is a fuller account of what happened during the Session, with an opening recap from the prior Session chosen by date, when available, and any character introductions. It is designed for the GM and for players to read before they get to the table.
-- A **recap summary** is a short recap of your Session, designed to be read aloud by the GM at the start of the next Session.
+- A **Scene Log** organizes the Ledger into scenes with participants, events, discoveries, outcomes and memorable cues. It is available as structured JSON or readable Markdown.
+- Existing **session summaries** remain available to read and export. New generation is temporarily paused while the Matters pipeline is integrated.
+- Existing **Table Recaps** remain available to read and export. New generation is temporarily paused; a later step will define the updated recap inputs.
 
-## How the Prior Recap Is Chosen
+TableSage also stores ten internal Matters artifacts: Present Matters, Goals, Obligations, Brewing Troubles, Goal Impediments, Opportunities, Mysteries, New Assets, Revelations and Developments. They have independent dependencies and completion records, but no selectable artifact rows or exports.
 
-When generating a session summary, TableSage chooses the prior Session (by date) within the same Campaign:
+## How Continuity Is Carried Forward
 
-- For a dated Session, it uses the latest Session with a strictly earlier date.
-- If no eligible dated Session exists, it inserts no prior recap.
+The first recorded Session derives its opening Situation from its transcript’s starting context. Every later Scene Log uses the previous recorded Session’s Present Matters as context. Each cumulative Matters category reconciles its own filtered prior state against the current Scene Log. The predecessor is the highest earlier recorded Session number, including undated Sessions. An unrecorded upcoming Session supplies no continuity.
 
-If the chosen prior Session has no recap and cannot be rebuilt, the summary contains a *The prior Session recap is not available* placeholder.
+Missing or out-of-date prior Matters must be rebuilt before their consumers can run. TableSage does not substitute a recap placeholder or treat a later Session as the first one. Merely opening a workspace never generates these artifacts.
 
+## Existing Workspaces
+
+Old Scene Breakdown and Recap Summary files remain available as legacy artifacts. Regenerate outputs from current reviewed transcripts to produce the new Scene Logs and internal Matters. An old Scene Breakdown cannot supply the new contract by changing its filename. Reviewed transcripts are preserved by narrative regeneration. When a legacy Ledger or Summary is first replaced, its original bytes are kept under the Session’s `legacy/narrative/` folder.

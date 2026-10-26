@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from tablesage_application.paths import ArtifactName
-from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, GENERATION_ORDER
+from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, REGENERATION_CHOICES
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical
@@ -26,7 +26,7 @@ class ArtifactRegenerationDialog(ModalScreen[ArtifactName | None]):
 
     def on_mount(self) -> None:
         table = self.query_one("#artifact-regeneration-table", DataTable)
-        for name in GENERATION_ORDER:
+        for name in REGENERATION_CHOICES:
             table.add_row(GENERATION_LABELS[name], key=name.value)
         table.focus()
 

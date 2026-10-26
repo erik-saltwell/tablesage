@@ -10,7 +10,13 @@ from typing import Annotated
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from .llm import PromptName, call_llm_with_prompt
-from .session_pipeline.scene_breakdown import Scene, SceneBreakdown
+from .session_pipeline.narrative import LegacySceneLog as SceneLog
+from .session_pipeline.narrative import Scene as NewScene
+from .session_pipeline.scene_breakdown import Scene as LegacyScene
+from .session_pipeline.scene_breakdown import SceneBreakdown as LegacySceneBreakdown
+
+Scene = NewScene | LegacyScene
+SceneBreakdown = SceneLog | LegacySceneBreakdown
 
 Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 

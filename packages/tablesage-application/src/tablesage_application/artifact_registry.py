@@ -19,6 +19,18 @@ class ArtifactName(Enum):
     SPELLCHECKED_TRANSCRIPT = "spellchecked_transcript"
     LEDGER = "ledger"
     SCENE_BREAKDOWN = "scene_breakdown"
+    SCENE_LOG = "scene_log"
+    PRESENT_MATTERS = "present_matters"
+    OBLIGATIONS = "obligations"
+    GOALS = "goals"
+    BREWING_TROUBLES = "brewing_troubles"
+    GOAL_IMPEDIMENTS = "goal_impediments"
+    OPPORTUNITIES = "opportunities"
+    MYSTERIES = "mysteries"
+    NEW_ASSETS = "new_assets"
+    REVELATIONS = "revelations"
+    DEVELOPMENTS = "developments"
+    TABLE_RECAP = "table_recap"
     SUMMARY = "summary"
     TRANSCRIPT = "transcript"
     TRANSCRIPT_TEXT = "transcript_text"
@@ -211,8 +223,22 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
     ArtifactName.SCENE_BREAKDOWN: ArtifactSpec(
         "scene_breakdown.json",
         ArtifactCategory.FROM_TRANSCRIPT,
-        should_show_in_ui=False,
-        display_name="Scene Breakdown",
+        should_show_in_ui=True,
+        display_name="Scene Breakdown (Legacy)",
+    ),
+    ArtifactName.SCENE_LOG: ArtifactSpec(
+        "scene_log.json",
+        ArtifactCategory.FROM_LOG,
+        True,
+        "Scene Log",
+        companion_filenames=("scene_log.md",),
+    ),
+    ArtifactName.TABLE_RECAP: ArtifactSpec(
+        "table_recap.md",
+        ArtifactCategory.FROM_LOG,
+        True,
+        "Table Recap",
+        companion_filenames=("table_recap.json",),
     ),
     ArtifactName.PLAYER_INTRODUCTIONS: ArtifactSpec(
         "player_introductions.json",
@@ -224,19 +250,40 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         "recap_summary.md",
         ArtifactCategory.FROM_LOG,
         should_show_in_ui=True,
-        display_name="Recap Summary",
+        display_name="Recap Summary (Legacy)",
     ),
     ArtifactName.SUMMARY: ArtifactSpec(
         "summary.md",
         ArtifactCategory.FROM_LOG,
         should_show_in_ui=True,
         display_name="Summary",
-        companion_filenames=(SUMMARY_INPUTS_FILENAME,),
+        companion_filenames=("summary.json", SUMMARY_INPUTS_FILENAME),
     ),
     # The post-generation offer to add this Session's voice clips to its players' voice samples, and its receipt.
     ArtifactName.VOICE_PRINT_DECISION: _section("Voice Print Decision"),
     ArtifactName.VOICE_PRINT_ENHANCEMENT: _section("Voice Print Enhancement"),
 }
 
+
+# Independent Matters state is internal until combined presentation is designed.
+for _section_name in (
+    "present_matters",
+    "obligations",
+    "goals",
+    "brewing_troubles",
+    "goal_impediments",
+    "opportunities",
+    "mysteries",
+    "new_assets",
+    "revelations",
+    "developments",
+):
+    ARTIFACTS[ArtifactName(_section_name)] = ArtifactSpec(
+        f"{_section_name}.json",
+        ArtifactCategory.FROM_LOG,
+        False,
+        _section_name.replace("_", " ").title(),
+        companion_filenames=(f"{_section_name}.evidence.json",),
+    )
 
 FILE_ARTIFACTS: tuple[ArtifactName, ...] = tuple(name for name, spec in ARTIFACTS.items() if spec.is_file)

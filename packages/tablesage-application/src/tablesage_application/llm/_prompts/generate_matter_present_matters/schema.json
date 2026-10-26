@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "present_matters"
+  ],
+  "properties": {
+    "present_matters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_position",
+        "immediate_goals",
+        "present_danger"
+      ],
+      "properties": {
+        "current_position": {
+          "$ref": "#/$defs/Text"
+        },
+        "immediate_goals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Text"
+          }
+        },
+        "present_danger": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Text"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

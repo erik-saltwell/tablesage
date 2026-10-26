@@ -1,0 +1,60 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "developments"
+  ],
+  "properties": {
+    "developments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "description",
+          "narrative_impact",
+          "lasting_consequences",
+          "screen_time"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^!]*$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "narrative_impact": {
+            "type": "string",
+            "enum": [
+              "trivial",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "lasting_consequences": {
+            "type": "string",
+            "enum": [
+              "trivial",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "screen_time": {
+            "type": "string",
+            "enum": [
+              "trivial",
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<session_attendees>
+{% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
+{% endfor %}</session_attendees>
+
+<glossary>
+{% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
+{% endfor %}</glossary>
+
+{% if starting_situation %}<starting_situation>
+{{ starting_situation }}
+</starting_situation>
+
+{% endif %}<ledger>
+{{ ledger }}
+</ledger>

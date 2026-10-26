@@ -240,7 +240,9 @@ def _inclusive_slice(transcript: RoleTranscript, section_range: InclusiveUtteran
     return _without_indices(transcript.utterances[section_range.start_index : section_range.end_index + 1])
 
 
-def route_transcript(role_transcript: RoleTranscript, sections: TranscriptSections) -> RoutedTranscript:
+def route_transcript(
+    role_transcript: RoleTranscript, sections: TranscriptSections, *, require_starting_context: bool = True
+) -> RoutedTranscript:
     """Build index-free views for the three side outputs and session-only Ledger input."""
     validate_generation_response(
         TranscriptSectionsGenerationResponse(
@@ -252,7 +254,7 @@ def route_transcript(role_transcript: RoleTranscript, sections: TranscriptSectio
         ),
         len(role_transcript.utterances),
     )
-    if sections.starting_context_range is None:
+    if require_starting_context and sections.starting_context_range is None:
         raise TranscriptSectionsValidationError("starting_context_range is required before downstream generation can continue.")
     return RoutedTranscript(
         recap=_inclusive_slice(role_transcript, sections.recap_range),

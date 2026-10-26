@@ -1,7 +1,3 @@
-<known_session_roles>
-{% for role in known_roles %}- {{ role }}
-{% endfor %}</known_session_roles>
-
 <session_attendees>
 {% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
 {% endfor %}</session_attendees>
@@ -10,23 +6,22 @@
 {% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
 {% endfor %}</glossary>
 
-<starting_context>
+{% if starting_context %}<starting_context>
 {{ starting_context }}
 </starting_context>
 
-<session_utterances>
+{% endif %}<session_utterances>
 {{ session_utterances }}
 </session_utterances>
 {% if validation_feedback %}
 
 <validation_feedback>
-The previous response was rejected. Generate a complete corrected pair from the original inputs.
+The previous response was rejected. Generate a complete corrected response from the original inputs.
 {{ validation_feedback }}
 </validation_feedback>
 <rejected_candidate>
 {{ rejected_candidate | default("") }}
 </rejected_candidate>
 This candidate is an invalid draft, not an additional factual source. Use the original transcript
-to correct it. Return the complete joint response; do not remove real events or merge distinct
-scenes to make reference validation easier.
+to correct it. Return the complete response; do not remove real events to make validation easier.
 {% endif %}

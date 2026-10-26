@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 from collections.abc import Mapping
+from copy import deepcopy
 from importlib.metadata import version
 from typing import Any
 
@@ -11,6 +13,15 @@ from pydantic import BaseModel, ValidationError
 
 _ASTRA_MODEL = "openai/gpt-6-astra"
 _ASTRA_MEDIUM_THINKING_OPTIONS = {"reasoning_effort": "medium", "allowed_openai_params": ["reasoning_effort"]}
+_ANTHROPIC_MODEL_METADATA = {
+    "claude-opus-5-5": {
+        "litellm_provider": "anthropic",
+        "mode": "chat",
+        "supports_native_structured_output": True,
+        "max_output_tokens": 128_000,
+        "max_input_tokens": 1_000_000,
+    }
+}
 
 
 def _remove_schema_keyword(value: Any, keyword: str) -> None:
@@ -85,7 +96,7 @@ async def call_llm(
     system_prompt: str,
     user_prompt: str,
     model: str,
-    response_format: type[BaseModel] | None = None,
+    response_format: type[BaseModel] | Mapping[str, Any] | None = None,
     timeout: float | None = None,
     prompt_name: str | None = None,
     model_options: Mapping[str, Any] | None = None,
@@ -100,8 +111,9 @@ async def call_llm(
     *strict_schema* requests strict mode, which needs every field required and no ``oneOf``.
     *timeout* is forwarded to litellm as-is; `None` (the default) leaves litellm's own default
     (600 seconds) in effect. *prompt_name* is diagnostic context only and is never sent to the
-    provider. *model_options* passes provider-specific controls such as reasoning effort through
-    to LiteLLM.
+    provider. Opus 5.5 uses streaming internally to keep long requests active, then assembles
+    the complete response; an explicit *timeout* also bounds the full stream. *model_options*
+    passes provider-specific controls such as reasoning effort through to LiteLLM.
     """
     import litellm
 
@@ -109,15 +121,36 @@ async def call_llm(
 
     require_credential(model.partition("/")[0], model)
 
+    provider, _, model_name = model.partition("/")
+    if provider == "anthropic" and model_name in _ANTHROPIC_MODEL_METADATA:
+        # Older bundled LiteLLM catalogs omit this capability and fall back to forced tool use,
+        # which Opus 5.5 rejects, and a tiny output budget that can be exhausted by thinking.
+        # These are published model capabilities, not task-specific generation controls.
+        # Keep LiteLLM's native defaults, schema conversion, and explicit max_tokens overrides.
+        metadata = _ANTHROPIC_MODEL_METADATA[model_name]
+        litellm.register_model({model_name: metadata, model: metadata})
+
     effective_model_options = dict(model_options) if model_options is not None else {}
     if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
         effective_model_options = {**_ASTRA_MEDIUM_THINKING_OPTIONS, **effective_model_options}
+
+    request_options = dict(effective_model_options)
+    if provider == "anthropic" and model_name in _ANTHROPIC_MODEL_METADATA:
+        request_options.setdefault("stream", True)
+    streaming = bool(request_options.get("stream"))
 
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    response_schema = response_format.model_json_schema() if response_format is not None else None
+    response_schema = (
+        deepcopy(dict(response_format))
+        if isinstance(response_format, Mapping)
+        else response_format.model_json_schema()
+        if response_format is not None
+        else None
+    )
+    schema_name = response_format.__name__ if isinstance(response_format, type) else (prompt_name or "artifact")
     if response_schema is not None:
         # Anthropic structured outputs reject this Pydantic annotation. The
         # oneOf branches and their const type fields preserve the union itself.
@@ -127,7 +160,7 @@ async def call_llm(
     provider_response_format = (
         {
             "type": "json_schema",
-            "json_schema": {"name": response_format.__name__, "schema": response_schema, **({"strict": True} if strict_schema else {})},
+            "json_schema": {"name": schema_name, "schema": response_schema, **({"strict": True} if strict_schema else {})},
         }
         if response_format is not None
         else None
@@ -143,20 +176,35 @@ async def call_llm(
         system_prompt_chars=len(system_prompt),
         user_prompt_chars=len(user_prompt),
         response_kind="structured_json" if response_format is not None else "text",
-        response_schema_name=response_format.__name__ if response_format is not None else None,
+        response_schema_name=schema_name if response_format is not None else None,
         response_schema=response_schema,
         response_schema_sha256=hashlib.sha256(canonical_schema.encode()).hexdigest() if canonical_schema else None,
         response_schema_supported=litellm.supports_response_schema(model=model) if response_format is not None else None,
         strict_schema=strict_schema if response_format is not None else None,
         model_options=effective_model_options or None,
+        streaming=streaming,
     ) as log:
-        response = await litellm.acompletion(
-            model=model,
-            messages=messages,
-            response_format=provider_response_format,
-            timeout=timeout,
-            **effective_model_options,
-        )
+        async with asyncio.timeout(timeout if streaming else None):
+            response = await litellm.acompletion(
+                model=model,
+                messages=messages,
+                response_format=provider_response_format,
+                timeout=timeout,
+                **request_options,
+            )
+            if streaming:
+                chunks = []
+                try:
+                    async for chunk in response:
+                        chunks.append(chunk)
+                finally:
+                    await response.aclose()
+                log.set(stream_chunk_count=len(chunks))
+                if not any(
+                    _choice_value(choice, "finish_reason") for chunk in chunks for choice in (_response_value(chunk, "choices") or [])
+                ):
+                    raise ValueError("LLM stream ended without a final completion event")
+                response = litellm.stream_chunk_builder(chunks, messages=messages)
         choices = _response_value(response, "choices") or []
         choice = choices[0]
         content = _message_content(choice)
@@ -179,6 +227,8 @@ async def call_llm(
             else:
                 log.set(response_json_valid=True, response_json_shape=_json_shape(parsed_content))
 
+            if isinstance(response_format, Mapping):
+                return content
             try:
                 response_format.model_validate_json(content)
             except ValidationError as exc:

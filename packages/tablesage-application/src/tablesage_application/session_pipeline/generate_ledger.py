@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import json
 import uuid
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Annotated, Literal, Self
+from typing import Annotated, Any, Literal, Self
 
 import widelog
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError, model_validator
 
 from ..llm import PromptName, call_llm_with_prompt
+from ..llm.llm_helper import PromptExecution
 from ..paths import ARTIFACTS, ArtifactName
 from .scene_breakdown import SceneBreakdownContent
 from .transcript_sections import RoutedUtterance
@@ -92,12 +93,18 @@ class Attendee(_StrictModel):
 
 
 class Ledger(_StrictModel):
-    version: Literal[4] = 4
+    version: Literal[4, 5] = 4
     session_id: uuid.UUID
     session_name: NonEmptyText
     attendees: tuple[Attendee, ...] = ()
-    starting_situation: NonEmptyText
+    starting_situation: NonEmptyText | None = None
     utterances: list[LedgerUtterance]
+
+    @model_validator(mode="after")
+    def validate_legacy_starting_situation(self) -> Self:
+        if self.version == 4 and self.starting_situation is None:
+            raise ValueError("Legacy Ledger v4 requires starting_situation.")
+        return self
 
     def save(self, path: Path) -> None:
         path.write_text(f"{self.model_dump_json(indent=2)}\n", encoding="utf-8")
@@ -113,7 +120,9 @@ class Ledger(_StrictModel):
         else:
             lines.append("_No attendees recorded._")
 
-        lines.extend(["", "## Starting Situation", "", self.starting_situation, "", "## Session", ""])
+        if self.starting_situation is not None:
+            lines.extend(["", "## Starting Situation", "", self.starting_situation])
+        lines.extend(["", "## Session", ""])
         for index, utterance in enumerate(self.utterances, start=1):
             lines.append(_render_markdown_utterance(index, utterance))
             lines.append("")
@@ -210,22 +219,14 @@ def _attendee_warning_count(response: LedgerGenerationResponse, known_players: f
     return warning_count
 
 
-async def generate_ledger(
+def prepare_ledger_prompt_data(
     starting_context: Sequence[RoutedUtterance],
     session_utterances: Sequence[RoutedUtterance],
     known_roles: Sequence[str],
     attendees: Sequence[Attendee],
     glossary: Sequence[GlossaryPromptEntry],
-    model: str,
-    timeout: float | None = None,
-) -> LedgerGenerationResponse:
-    """Generate the best structurally valid current-session Ledger content in at most three attempts.
-
-    Structurally invalid responses are unavailable as candidates. Unknown Question attendees are
-    warnings: they trigger another attempt, but after the final attempt the parseable candidate
-    with the fewest warnings is returned (earliest wins ties). Regular `source` values are
-    intentionally unrestricted beyond the schema's non-empty-string rule.
-    """
+) -> LedgerPromptData:
+    """Normalize and serialize production inputs for both generation and offline rendering."""
     normalized_roles = tuple(sorted({role.strip() for role in known_roles if role.strip()}))
     normalized_attendees = tuple(
         sorted(
@@ -239,16 +240,45 @@ async def generate_ledger(
             key=lambda attendee: attendee.player_name.casefold(),
         )
     )
-    known_player_set = frozenset(attendee.player_name for attendee in normalized_attendees)
-    prompt_data = LedgerPromptData(
+    return LedgerPromptData(
         starting_context=json.dumps([utterance.model_dump() for utterance in starting_context], ensure_ascii=False, indent=2),
         session_utterances=json.dumps([utterance.model_dump() for utterance in session_utterances], ensure_ascii=False, indent=2),
         known_roles=normalized_roles,
         attendees=normalized_attendees,
         glossary=tuple(glossary),
     )
+
+
+async def generate_ledger(
+    starting_context: Sequence[RoutedUtterance],
+    session_utterances: Sequence[RoutedUtterance],
+    known_roles: Sequence[str],
+    attendees: Sequence[Attendee],
+    glossary: Sequence[GlossaryPromptEntry],
+    model: str,
+    timeout: float | None = None,
+    *,
+    execution: PromptExecution | None = None,
+    model_options: Mapping[str, Any] | None = None,
+) -> LedgerGenerationResponse:
+    """Generate the best structurally valid current-session Ledger content in at most three attempts.
+
+    Structurally invalid responses are unavailable as candidates. Unknown Question attendees are
+    warnings: they trigger another attempt, but after the final attempt the parseable candidate
+    with the fewest warnings is returned (earliest wins ties). Regular `source` values are
+    intentionally unrestricted beyond the schema's non-empty-string rule.
+    """
+    prompt_data = prepare_ledger_prompt_data(starting_context, session_utterances, known_roles, attendees, glossary)
+    normalized_roles, normalized_attendees = prompt_data.known_roles, prompt_data.attendees
+    known_player_set = frozenset(attendee.player_name for attendee in normalized_attendees)
     candidates: list[_Candidate] = []
     last_error: Exception | None = None
+
+    call_options: dict[str, Any] = {}
+    if execution is not None:
+        call_options["execution"] = execution
+    if model_options is not None:
+        call_options["model_options"] = model_options
 
     with widelog.wide_event(
         op="generate_ledger",
@@ -267,6 +297,7 @@ async def generate_ledger(
                 model,
                 response_model=LedgerGenerationResponse,
                 timeout=timeout,
+                **call_options,
             )
             try:
                 response = LedgerGenerationResponse.model_validate_json(raw)
