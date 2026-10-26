@@ -1,17 +1,9 @@
-<session_metadata>
-Campaign: {{ campaign_name }}
-Game system: {{ game_system if game_system else "unspecified" }}
-Session date: {{ session_date if session_date else "unknown" }}
-</session_metadata>
+Write the scene bullets for this Session Summary. The caller copies titles, opening Situation and Endcap; return only numbered scene bullet arrays matching the generation schema.
 
-<session_attendees>
-{% for attendee in attendees %}- {{ attendee.player_name }}{% if attendee.roles %}: {{ attendee.roles | join(", ") }}{% endif %}
-{% endfor %}</session_attendees>
+<opening_situation>
+{{ opening_situation }}
+</opening_situation>
 
-<glossary>
-{% for entry in glossary %}- {{ entry.term }}{% if entry.description %}: {{ entry.description }}{% endif %}
-{% endfor %}</glossary>
-
-<session_ledger>
-{{ ledger }}
-</session_ledger>
+<scenes>
+{{ scenes }}
+</scenes>

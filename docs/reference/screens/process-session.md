@@ -63,7 +63,7 @@ The screen never starts processing by itself. Opening it only shows where the Se
 
 ## During a Run
 
-Consecutive automatic steps share one [progress dialog](ui-patterns.md#progress-dialogs). It is titled with the running step and describes what that step is doing, for example *Generating Ledger + Scene Breakdown…*. When the run reaches a review step, the progress dialog closes and the step's screen opens. Confirming that screen continues the run. Cancelling it ends the run, and you can resume later with **Continue**.
+Consecutive automatic steps share one [progress dialog](ui-patterns.md#progress-dialogs). It is titled with the running step and describes what that step is doing, for example *Generating Scene Log…*. When the run reaches a review step, the progress dialog closes and the step's screen opens. Confirming that screen continues the run. Cancelling it ends the run, and you can resume later with **Continue**.
 
 ![Processing generates the Session's outputs](../../images/screens/progress-dialog.png)
 

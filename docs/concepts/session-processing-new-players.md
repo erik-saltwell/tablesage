@@ -18,7 +18,7 @@ The complete workflow is:
 10. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
 11. **Review Transcript** — The user confirms the text and speaker assignments for each utterance, forming the session record.
 12. **Assign Roles To Players** — The system attributes speech to character names and other Session Roles.
-13. **Generate Artifacts** — The system builds the ledger, scene breakdown, introductions, and summaries from the reviewed material.
+13. **Generate Artifacts** — The system builds the Ledger, Scene Log, Table Recap, and Summary from the reviewed material.
 14. **Improve Player Voice Prints** — The user decides whether to add more samples from the reviewed transcript to improve recognition in future Sessions.
 
 ## Why New Players Need Extra Steps

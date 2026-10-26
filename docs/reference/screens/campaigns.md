@@ -102,7 +102,7 @@ In the glossary entry dialog, **Term** is required, and **Description** is optio
 | **Y** | **Generate Opportunities.** Opens [Generate Opportunities](previously-on-and-opportunities.md#generate-opportunities). |
 | **V** | **Create Previously On.** Opens [Create Previously On](previously-on-and-opportunities.md#create-previously-on). |
 
-**Generate Opportunities** and **Create Previously On** read scene breakdowns in Session number order, ignoring the highest-numbered Session if it has no imported audio yet. If any remaining Session's Scene Breakdown is missing or out of date, they don't open. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs** first.
+**Generate Opportunities** and **Create Previously On** read Scene Logs in Session number order, ignoring the highest-numbered Session if it has no imported audio yet. If any remaining Session's Scene Log is missing or out of date, they don't open. Instead, an error lists the Sessions that need attention and suggests running **Regenerate All Outputs** first.
 
 ### Session Dialog
 
@@ -113,6 +113,6 @@ In the glossary entry dialog, **Term** is required, and **Description** is optio
 - **Name** is required.
 - **Date** is required when creating a Session. Leaving it blank shows *Date is required.* Enter a real calendar date in exactly `YYYY-MM-DD` form; an invalid date or another format shows *'your entry' isn't a valid date (expected YYYY-MM-DD).* The dialog stays open and keeps your entries so you can correct them. When editing an existing Session's metadata, the date remains optional.
 
-Dates determine which Session supplies the prior recap in a session summary; see [How the Prior Recap Is Chosen](../../concepts/sessions.md#how-the-prior-recap-is-chosen).
+Dates describe when play happened. Recorded Session sequence numbers determine Endcap continuity; see [How Continuity Is Carried Forward](../../concepts/sessions.md#how-continuity-is-carried-forward).
 
 A Session's folder is named after its number, not its name, so you can rename a Session freely. When you create a Session, TableSage checks whether a leftover folder already uses the next number, for example after you deleted the most recent Session. If so, it asks whether to delete that folder and continue.

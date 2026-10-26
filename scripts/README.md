@@ -75,3 +75,15 @@ uv run python scripts/review_transcript_sections.py "Campaign Name" "Session Nam
 The supplied transcript is used as-is. It must preserve the original utterance indices and contain enough of the opening to support the ranges and active-play boundary under review.
 
 The current script's printed Sol/Fable juror labels are historical and do not match all model selections. It validates the complete recommendation's bounds/version/hash but does not require every explanatory value-review entry. The former review-utility guide is retained only in the local archive. Calls use provider credentials and incur usage; the canonical sections file is never overwritten.
+
+## Session Summary Experiment
+
+[Session Summary Experiment](summary_experiment.md) describes the isolated workspace, user processing handoff, and `summary_experiment.py` commands for frozen inputs, historical prompt rendering, independent candidate runs, and blind review packets. Preparation is offline; provider generation requires an explicit `run --execute`.
+
+## Preserve Reviewed Transcripts during an Update
+
+[Update from Reviewed Transcripts](migrate_reviewed_sessions.md) documents the one-off `migrate_reviewed_sessions.py` utility. It previews backed-up reviews, explicitly adopts them as accepted checkpoints, and optionally regenerates downstream outputs using deployed settings. It preserves transcript bytes and historical decisions, records migration provenance, and supports resuming partial generation.
+
+## Ledger and Summary Prompt Harness
+
+[Ledger and Summary Prompt Harness](prompt_experiment.md) documents `prompt_experiment.py`: prepare independent frozen inputs once, then run one Ledger or Summary experiment using production generators. Complete prompts, responses, retries, timings, and validation evidence share an execution-start timestamp. Existing good Ledger and bad Summary are baselines; no extra baseline calls or mandatory repeated batches.

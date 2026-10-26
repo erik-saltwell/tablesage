@@ -1,0 +1,56 @@
+{
+  "version": 5,
+  "session_id": "179509e9-119d-4ba0-9596-e92ceda5eee5",
+  "session_name": "Session 1",
+  "attendees": [
+    {
+      "player_name": "Morgan",
+      "roles": [
+        "Game Master"
+      ]
+    },
+    {
+      "player_name": "Alice",
+      "roles": [
+        "Hero"
+      ]
+    }
+  ],
+  "starting_situation": "At dawn, Hero stands at the old bridge, where a locked iron gate blocks the way; a guard says the brass key is in the mill.",
+  "utterances": [
+    {
+      "type": "narration",
+      "source": "Game Master",
+      "fact": "At dawn, Hero stands at the old bridge, where a locked iron gate blocks the way."
+    },
+    {
+      "type": "speech",
+      "source": "Game Master",
+      "entity": "Guard",
+      "statement": "The brass key is in the mill."
+    },
+    {
+      "type": "expression",
+      "source": "Hero",
+      "entity": "Hero",
+      "sentiment": "Intends to find the brass key in order to cross the bridge."
+    },
+    {
+      "type": "action",
+      "source": "Game Master",
+      "entity": "Hero",
+      "action": "Walks to the mill."
+    },
+    {
+      "type": "narration",
+      "source": "Game Master",
+      "fact": "At the mill, an empty iron hook hangs beside the doorway; the key is missing."
+    },
+    {
+      "type": "action",
+      "source": "Game Master",
+      "entity": "Hero",
+      "action": "Stops at the mill doorway to investigate."
+    }
+  ]
+}

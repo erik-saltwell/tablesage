@@ -23,13 +23,8 @@ def can_process_session(session: Session, session_id: uuid.UUID, session_folder:
 
 
 def can_generate_summary(session_folder: Path, previous_session_folder: Path | None = None) -> tuple[bool, str | None]:
-    existing = session_artifacts(session_folder)
-    if not existing[ArtifactName.LEDGER]:
-        return False, "Generate the Ledger first."
-    if not existing[ArtifactName.PLAYER_INTRODUCTIONS]:
-        return False, "Generate Player Introductions first."
-    if previous_session_folder is not None and not session_artifacts(previous_session_folder)[ArtifactName.RECAP_SUMMARY]:
-        return False, "Generate the previous Session's Recap Summary first."
+    if not session_artifacts(session_folder)[ArtifactName.SCENE_LOG]:
+        return False, "Generate the Scene Log first."
     return True, None
 
 

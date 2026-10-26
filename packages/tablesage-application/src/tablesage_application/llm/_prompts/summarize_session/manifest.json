@@ -1,0 +1,16 @@
+{
+  "saved_at": "2026-10-11T00:50:07.130914+00:00",
+  "source": "output/session-summary-bullet-trial-2026-10-10-01/prompts",
+  "approved": true,
+  "files_sha256": {
+    "README.md": "c500b0f00759ad6de9849aa231ac28195147db19a6022ee29161aab2a8f6fdb0",
+    "system.md": "b777ccb24ff028bb94628dfba0bf05544112d92d85062147d7eb5280603913e4",
+    "render.py": "3d17f9a0ee0dbfd414bf63b3775e8e14fc3720237b706823b4ab39e189c9ae8f",
+    "schema-generation.json": "c618b7587dc069d9ea2291c81c33fc929079c232bbe4cdbc6f4ce08b0fd71be5",
+    "schema.json": "c9cd69124db97b5910b4a0bb1bbdf3baf3391e0c12c3beecb0206f99d24788a8",
+    "models.py": "ab7fd4f366c9b558fc30be45ebbb00d14561d8d2271d5a377cab4f821ff7ad6c",
+    "run_trial.py": "c7ab42e5a16ad6383aad67a699d07c83cfb432e6f9a3f3021e7945ddd40a76a4",
+    "template.j2": "0d29184744c4c13aaa360b1083e1dd5efa311756ddf6d9c9b016731a80fd28b0"
+  },
+  "note": "Final prompt, model, schemas and renderer match the reviewed bullet trial. Final README and runner document/use the promoted path."
+}

@@ -1,0 +1,179 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenes",
+    "endcap"
+  ],
+  "properties": {
+    "scenes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scene"
+      },
+      "minItems": 1
+    },
+    "endcap": {
+      "$ref": "#/$defs/endcap"
+    }
+  },
+  "$defs": {
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "location",
+        "node_description",
+        "group",
+        "goals",
+        "obstacle",
+        "approach",
+        "outcome",
+        "scene_moments"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "node_description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "goals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "obstacle": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approach": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scene_moments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/moment"
+          }
+        }
+      }
+    },
+    "moment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matter",
+        "change",
+        "text"
+      ],
+      "properties": {
+        "matter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "change": {
+          "type": "string",
+          "enum": [
+            "opened",
+            "advanced",
+            "resolved"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "matter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matter",
+        "kind",
+        "thread",
+        "text"
+      ],
+      "properties": {
+        "matter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "active_goal",
+            "unresolved_mystery",
+            "outstanding_obligation",
+            "developing_threat",
+            "available_opportunity"
+          ]
+        },
+        "thread": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "endcap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "end_situation",
+        "session_matters"
+      ],
+      "properties": {
+        "end_situation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_matters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/matter"
+          }
+        }
+      }
+    }
+  }
+}

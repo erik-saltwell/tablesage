@@ -12,7 +12,7 @@ It produces four views for downstream work:
 Role Transcript
  ├── recap_range ───────────────► Routed recap view (available to pipeline consumers)
  ├── introduction_range ────────► Player Introductions pipeline
- ├── starting_context_range ────► Ledger starting_situation
+ ├── starting_context_range ────► first Ledger bootstrap Situation
  └── session_start_index ───────► Ledger current-session utterances
 ```
 
@@ -61,7 +61,7 @@ The persisted ranges are converted to index-free `(speaker, text)` sequences:
 - `starting_context`: the inclusive Starting Context Range;
 - `session`: every Role Transcript utterance from `session_start_index` to the end.
 
-Routing for the complete downstream bundle requires `starting_context_range` to be present. If sectioning cannot establish a usable starting situation, the application stops downstream generation rather than inventing one. Player Introductions can still independently slice its optional range: a missing Introduction Range becomes `None` and produces a valid empty artifact.
+Routing for the first recorded Session requires `starting_context_range` to be present. If sectioning cannot establish a usable bootstrap Situation, the application stops rather than inventing one. Later Sessions receive opening continuity from a prior Scene Log Endcap and can route current play without this slice. Player Introductions can still independently slice its optional range: a missing Introduction Range becomes `None` and produces a valid empty artifact.
 
 ## Generation and validation
 

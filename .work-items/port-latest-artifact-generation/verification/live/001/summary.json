@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "session_id": "179509e9-119d-4ba0-9596-e92ceda5eee5",
+  "opening_situation": "At dawn, Hero stands at the old bridge, where a locked iron gate blocks the way; a guard says the brass key is in the mill.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Locked iron gate at dawn",
+      "bullets": [
+        "At the old bridge, a locked iron gate stopped Hero from crossing.",
+        "The Guard said the brass key is in the mill, and Hero resolved to find it and open the gate."
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Empty iron hook beside the doorway",
+      "bullets": [
+        "At the mill, Hero found an empty iron hook beside the doorway and no brass key, despite the Guard's claim.",
+        "Hero stopped at the doorway and began investigating, with the key still not found."
+      ]
+    }
+  ],
+  "endcap": {
+    "end_situation": "Hero is alone at the mill doorway, investigating beside the empty iron hook where the brass key is missing.",
+    "session_matters": [
+      {
+        "matter": "Cross the old bridge",
+        "kind": "active_goal",
+        "thread": "Cross the old bridge",
+        "text": "Hero wants to cross the old bridge, which is blocked by a locked iron gate that needs the brass key."
+      },
+      {
+        "matter": "Whereabouts of the brass key",
+        "kind": "unresolved_mystery",
+        "thread": "Cross the old bridge",
+        "text": "Where is the brass key? The bridge Guard said it is in the mill, but the iron hook beside the mill doorway is empty and the key is missing."
+      }
+    ]
+  }
+}

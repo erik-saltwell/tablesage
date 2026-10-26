@@ -2,16 +2,19 @@
 
 | Name | Status | Folder |
 |---|---|---|
-| Benchmarking v2 | defining-success | [.work-items/benchmarking-v2/](.work-items/benchmarking-v2/) |
+| Benchmarking v2 | complete | [.work-items/benchmarking-v2/](.work-items/benchmarking-v2/) |
 | Consistent Delete | complete | [.work-items/consistent-delete/](.work-items/consistent-delete/) |
 | Consistent footer binding order | complete | [.work-items/consistent-footer-bindings/](.work-items/consistent-footer-bindings/) |
 | Improve the Correct a Processed Session guide (docs/guides/correct-processed-session.md) | complete | [.work-items/correct-processed-session-guide/](.work-items/correct-processed-session-guide/) |
+| Diegetic summary or recap: collaborate with an LLM agent to reframe session events as an in-world account | registered | [.work-items/diegetic-summary-recap/](.work-items/diegetic-summary-recap/) |
 | Investigate disfluency and backchannel removal approaches | complete | [.work-items/disfluency-backchannel-removal/](.work-items/disfluency-backchannel-removal/) |
 | Documentation guides | complete | [.work-items/documentation-guides/](.work-items/documentation-guides/) |
 | enhance-readme | complete | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
+| Chat with an LLM in the app | ideating | [.work-items/in-app-llm-chat/](.work-items/in-app-llm-chat/) |
 | Prevent Review Transcript from loading saved edits after audio re-import or dependency reprocessing | complete | [.work-items/invalidate-saved-transcript-edits/](.work-items/invalidate-saved-transcript-edits/) |
 | Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
+| Improve Ledger prompt efficiency | registered | [.work-items/ledger-prompt-efficiency/](.work-items/ledger-prompt-efficiency/) |
 | Move metadata fields below lists so bindings show up | complete | [.work-items/metadata-below-lists/](.work-items/metadata-below-lists/) |
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |
@@ -19,19 +22,23 @@
 | Preserve existing Session reviews across the normalized audio upgrade | complete | [.work-items/normalized-review-audio-migration/](.work-items/normalized-review-audio-migration/) |
 | Player Introductions artifact contract | complete | [.work-items/player-introductions-artifact-contract/](.work-items/player-introductions-artifact-contract/) |
 | Improve the player review flow: play clips from Player Detail and add a command to review and delete clips belonging to another Player | complete | [.work-items/player-review-flow/](.work-items/player-review-flow/) |
+| Port latest artifact generation | complete | [.work-items/port-latest-artifact-generation/](.work-items/port-latest-artifact-generation/) |
 | port tablesage matters artifacts | complete | [.work-items/port-tablesage-matters-artifacts/](.work-items/port-tablesage-matters-artifacts/) |
 | Preparation tools allow an empty latest Session | complete | [.work-items/prep-tools-empty-latest-session/](.work-items/prep-tools-empty-latest-session/) |
 | Public documentation | complete | [.work-items/public-documentation/](.work-items/public-documentation/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
 | Scene Breakdown artifact contract | complete | [.work-items/scene-breakdown-artifact-contract/](.work-items/scene-breakdown-artifact-contract/) |
+| Improve the summary scene log for reincorporation | complete | [.work-items/scene-log-reincorporation/](.work-items/scene-log-reincorporation/) |
 | Explain missing, current, and out-of-date artifact states with tooltips on Session Detail | complete | [.work-items/session-artifact-state-tooltips/](.work-items/session-artifact-state-tooltips/) |
 | Make automatic steps more visually distinct in Session Processing | complete | [.work-items/session-processing-automatic-step-styling/](.work-items/session-processing-automatic-step-styling/) |
 | Session processing flow | complete | [.work-items/session-processing-flow/](.work-items/session-processing-flow/) |
-| Review session summary quality across various prompts | registered | [.work-items/session-summary-prompt-quality/](.work-items/session-summary-prompt-quality/) |
+| Review session summary quality across various prompts | complete | [.work-items/session-summary-prompt-quality/](.work-items/session-summary-prompt-quality/) |
 | Skip the Spellcheck Against Glossary screen during Session processing when no corrections are proposed | complete | [.work-items/skip-empty-spellcheck-review/](.work-items/skip-empty-spellcheck-review/) |
 | Working, source-independent agent diagnostics | complete | [.work-items/source-independent-diagnostics/](.work-items/source-independent-diagnostics/) |
+| Rename the Summary's Recap section to Previous Session Recap | complete | [.work-items/summary-previous-session-recap/](.work-items/summary-previous-session-recap/) |
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
+| Trim old and irrelevant open matters from combined campaign scene logs and return a new scene log JSON | ideating | [.work-items/trim-inactive-scene-log-matters/](.work-items/trim-inactive-scene-log-matters/) |
 | Use voice print terminology everywhere | complete | [.work-items/voice-print-terminology/](.work-items/voice-print-terminology/) |
 | Workspace agent help | complete | [.work-items/workspace-agent-help/](.work-items/workspace-agent-help/) |
 

@@ -1,5 +1,7 @@
 # Scene Breakdown and Recap
 
+This specification records the retired joint-generation contract for legacy files. New output generation follows [Narrative Artifact Contracts](../port-latest-artifact-generation/specification.md): independent Ledger and Scene Log generation, Endcap continuity, bullet Session Summary, and Table Recap. Existing Scene Breakdown and Recap Summary files are retained; they are not new-contract continuity inputs.
+
 Scene Breakdown is a compact, machine-readable account of every scene in one session. It supports recap generation and campaign-scale reading without sending complete Ledgers. A locally retained design discussion may record the product decisions; this specification defines their implementation.
 
 ## Joint generation and source boundaries

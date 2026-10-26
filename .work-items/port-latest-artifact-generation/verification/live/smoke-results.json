@@ -1,0 +1,7 @@
+{
+  "model": "anthropic/claude-opus-5-5",
+  "sessions": 2,
+  "calls": 8,
+  "checks": "generation schemas, continuity, exact Summary copying, no-op reruns",
+  "workspace": "/tmp/tablesage-port-live-enyjgef0"
+}

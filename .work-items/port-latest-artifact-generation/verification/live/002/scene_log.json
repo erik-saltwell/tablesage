@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "session_id": "79a2d1a6-e6c4-4900-96f7-4dad2b749ae7",
+  "session_name": "Session 2",
+  "previous_session_id": "179509e9-119d-4ba0-9596-e92ceda5eee5",
+  "opening_situation": "Hero is alone at the mill doorway, investigating beside the empty iron hook where the brass key is missing.",
+  "scenes": [
+    {
+      "title": "Brass key beneath a loose floorboard",
+      "location": "The mill",
+      "node_description": "The mill where the bridge Guard said the brass key would be, though its iron hook by the doorway stood empty.",
+      "group": [
+        "Hero"
+      ],
+      "goals": [
+        "Find the brass key"
+      ],
+      "obstacle": "The brass key was missing from its iron hook beside the mill doorway.",
+      "approach": "Hero searched the mill.",
+      "outcome": "Hero found the brass key beneath a loose floorboard.",
+      "scene_moments": []
+    },
+    {
+      "title": "Resting on the far bank at noon",
+      "location": "The old bridge",
+      "node_description": "The old bridge, barred by a locked iron gate that needed the brass key.",
+      "group": [
+        "Hero"
+      ],
+      "goals": [
+        "Cross the old bridge"
+      ],
+      "obstacle": "The locked iron gate blocking the bridge.",
+      "approach": "Hero unlocked the gate with the brass key.",
+      "outcome": "The gate opened, and Hero crossed the bridge and rested on the far bank at noon.",
+      "scene_moments": []
+    }
+  ],
+  "endcap": {
+    "end_situation": "Hero is alone on the far bank of the old bridge, resting at noon.",
+    "session_matters": []
+  }
+}

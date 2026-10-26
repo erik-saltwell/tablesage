@@ -6,11 +6,11 @@ The Ledger is TableSage's canonical, structured record of one session's current 
 
 Transcript Sections routes the role-attributed transcript into a starting-context view and a current-session view. Ledger generation consumes those two views, attendee roles, and glossary spellings. It runs after the Role Transcript and Transcript Sections artifacts exist.
 
-One structured LLM call generates the shared `starting_situation`, `ledger: {utterances}`, and `scene_breakdown: {ending_situation, scenes}` directly from the routed transcript. The response has exactly those three top-level fields; no scratchpad is returned. See [Scene Breakdown](../scene-breakdown-artifact-contract/specification.md) for the paired schema and reference rules.
+One structured LLM call generates only `ledger: {utterances}`, plus `starting_situation` for the first recorded Session when opening context is supplied. Scene Log is generated separately from Ledger and the prior Endcap. See [Narrative Artifact Contracts](../port-latest-artifact-generation/specification.md) for the current pipeline; the old Scene Breakdown specification is retained for legacy files.
 
-The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Breakdown are sibling outputs of one generation step. Replacing Ledger makes its actual consumers stale because their recorded input fingerprints (content hashes) no longer match; it does not delete them or make its Scene Breakdown sibling stale.
+The persisted artifact is `ledger.json`; its deterministic human-readable companion is `ledger.md`. Both live in the session folder. Ledger and Scene Log are independent producer steps. Replacing Ledger makes Scene Log and its downstream consumers stale through content fingerprints; it does not delete their files.
 
-The packaged Generate Ledger `system.md` is an input to the shared build step. A changed prompt (by content, not modification time) makes both Ledger and Scene Breakdown stale.
+The packaged Ledger system prompt, template, schemas, input/assembly code and generation controls are build dependencies. Roster, Glossary, Session name and bootstrap mode are also fingerprinted. Changes propagate through Scene Log to Summary and Table Recap.
 
 ## Source boundaries
 
@@ -25,15 +25,15 @@ The starting-context and current-session slices can overlap at the transition in
 
 ## Persisted schema
 
-`ledger.json` is a strict JSON object: unknown fields are rejected, all text fields are trimmed and non-empty, and `version` is always `4`.
+`ledger.json` is a strict JSON object: unknown fields are rejected, utterance text is trimmed and non-empty, and new generation persists `version: 5`. Legacy version 4 remains loadable.
 
 ```text
 Ledger
-├── version: 4
+├── version: 5
 ├── session_id: UUID
 ├── session_name: non-empty string
 ├── attendees: [{ player_name, roles[] }]
-├── starting_situation: non-empty string
+├── starting_situation: non-empty bootstrap string or null
 └── utterances: ordered array of Ledger utterances
 ```
 
@@ -64,17 +64,10 @@ Classify by the move made at the table, not by grammatical form. For example, an
 
 Every claim must be directly traceable to the permitted transcript slice. Rephrasing and removal of disfluencies are allowed; genre-conventional details, assumed motives, customary dialogue, responses, and outcomes are not.
 
-## Generation and validation
+## Generation and Validation
 
-The generator makes at most three structured-output attempts. Structurally invalid results, including incomplete or overlapping scene coverage, are discarded as a pair. Validation errors are included in the next attempt. A structurally valid candidate whose question attendees do not match the current attendee roster is retried; after the final attempt, the candidate with the fewest such warnings wins, with earlier attempts breaking ties.
+The generator makes at most three structured-output attempts. Structural failures retry with validation feedback. Question attendees are checked against the roster; after warning-only retries, the valid candidate with fewest warnings wins, with earlier attempts breaking ties.
 
-Generation requires a current `role_transcript.json` and `transcript_sections.json`. The sections artifact is bound to the exact Role Transcript bytes with SHA-256; a stale sections artifact prevents generation instead of silently routing changed text.
+Generation requires current Role Transcript and Transcript Sections; routing checks the Role Transcript digest. First-session bootstrap requires usable starting context; later Sessions may route current play without an opening-context slice. The model never receives prior Endcaps or recaps. The application supplies Session metadata and persists Ledger JSON/Markdown as one recoverable pair.
 
-The application builds both persisted artifacts with the same starting situation. Handled replacement failures roll back the pair and Ledger Markdown. Interrupted replacements leave a marker that blocks use until regeneration. Existing downstream files remain on disk and become stale when their inputs' content changes. Existing Ledgers retain version 4; generating a recap requires generating the shared step when Scene Breakdown is absent.
-
-## Authoritative implementation references
-
-- Schema, rendering, validation, and generation: [`generate_ledger.py`](../../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_ledger.py)
-- Prompt contract: [`generate_ledger/system.md`](../../packages/tablesage-application/src/tablesage_application/llm/_prompts/generate_ledger/system.md)
-- Session orchestration and recursive freshness: [`application.py`](../../packages/tablesage-application/src/tablesage_application/application.py) and [`artifact_graph.py`](../../packages/tablesage-application/src/tablesage_application/session_pipeline/artifact_graph.py)
-- Artifact filenames and categories: [`paths.py`](../../packages/tablesage-application/src/tablesage_application/paths.py)
+Current implementation is [narrative.py](../../packages/tablesage-application/src/tablesage_application/session_pipeline/narrative.py). Utterance types, legacy loading and Markdown rendering remain in [generate_ledger.py](../../packages/tablesage-application/src/tablesage_application/session_pipeline/generate_ledger.py). See [Narrative Artifact Contracts](../port-latest-artifact-generation/specification.md) for continuity, persistence and freshness.

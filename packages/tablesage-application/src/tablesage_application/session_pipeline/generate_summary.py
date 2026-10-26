@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import Any
 
 import widelog
 
 from ..llm import PromptName, call_llm_with_prompt
+from ..llm.llm_helper import PromptExecution
 
 RECAP_MARKER = "<!-- RECAP -->"
 PLAYER_INTRODUCTIONS_MARKER = "<!-- PLAYER_INTRODUCTIONS -->"
@@ -89,6 +91,9 @@ async def generate_summary(
     game_system: str | None,
     model: str,
     timeout: float | None = None,
+    *,
+    execution: PromptExecution | None = None,
+    model_options: Mapping[str, Any] | None = None,
 ) -> str:
     """Generate normalized Markdown from source-agnostic summary prompt data.
 
@@ -106,10 +111,16 @@ async def generate_summary(
     )
     last_error: SummaryValidationError | None = None
 
+    call_options: dict[str, Any] = {}
+    if execution is not None:
+        call_options["execution"] = execution
+    if model_options is not None:
+        call_options["model_options"] = model_options
+
     with widelog.wide_event(op="generate_summary_template", model=model) as log:
         for attempt in range(1, MAX_GENERATION_ATTEMPTS + 1):
             log.set(attempt_count=attempt)
-            raw = await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, prompt_data, model, timeout=timeout)
+            raw = await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, prompt_data, model, timeout=timeout, **call_options)
             try:
                 summary = validate_summary_markers(raw)
             except SummaryValidationError as exc:

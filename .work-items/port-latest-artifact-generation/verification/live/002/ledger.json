@@ -1,0 +1,38 @@
+{
+  "version": 5,
+  "session_id": "79a2d1a6-e6c4-4900-96f7-4dad2b749ae7",
+  "session_name": "Session 2",
+  "attendees": [
+    {
+      "player_name": "Morgan",
+      "roles": [
+        "Game Master"
+      ]
+    },
+    {
+      "player_name": "Alice",
+      "roles": [
+        "Hero"
+      ]
+    }
+  ],
+  "starting_situation": null,
+  "utterances": [
+    {
+      "type": "narration",
+      "source": "Game Master",
+      "fact": "Hero is at the mill and finds the brass key beneath a loose floorboard."
+    },
+    {
+      "type": "action",
+      "source": "Hero",
+      "entity": "Hero",
+      "action": "Takes the brass key back to the bridge and opens the gate with it."
+    },
+    {
+      "type": "narration",
+      "source": "Game Master",
+      "fact": "The gate opens. Hero crosses the bridge and rests on the far bank at noon."
+    }
+  ]
+}

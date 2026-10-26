@@ -106,8 +106,8 @@ The screen lists this Session's artifacts that exist. The screen stays open afte
 Exporting always copies the file; the Session keeps its own copy. Before the file picker opens:
 
 - If the artifact is out of date, **Artifact Is Stale** asks whether to export it anyway. **Continue** goes ahead, and **Back** doesn't.
-- For the **Ledger**, **Export Ledger** asks which format you want: **Markdown** for reading or **JSON** for other tools.
+- For the **Ledger** and **Scene Log**, the export dialog asks which format you want: **Markdown** for reading or **JSON** for other tools.
 
 ![Choosing the Ledger export format](../../images/screens/export-ledger-format.png)
 
-Then choose where to save the file. The suggested name is the artifact's own file name, or `ledger.md` for a Markdown Ledger. A notification confirms where it was written. See [Export an Artifact](../../guides/review-and-export.md#export-an-artifact).
+Then choose where to save the file. The suggested name is the artifact's own file name, or `ledger.md` / `scene_log.md` for a readable structured artifact. A notification confirms where it was written. See [Export an Artifact](../../guides/review-and-export.md#export-an-artifact).

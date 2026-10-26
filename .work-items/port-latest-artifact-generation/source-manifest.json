@@ -1,0 +1,52 @@
+{
+  "recorded_on": "2026-10-11",
+  "source_workspace": "/home/eriksalt/data/tablesage_summary_test",
+  "bundles": {
+    "ledger": {
+      "path": "prompts/final/ledger",
+      "sha256": {
+        "README.md": "1249f723502f2a43f73c5f4a035c53d2edc2bb8c5b1a44acc368ce7af0939d44",
+        "models.py": "735daccd242f2289756255266542279e971dca28c21bbec0e4bd3b488f3e8791",
+        "schema-first-session.json": "f980845bd17458dd1569cd069c5e9821311cd20b101365ce923704a68d2ddde8",
+        "schema.json": "a705575fc559df09323d433926430c4020949f214d9a02b194c3402fc9d80012",
+        "system.md": "57f545545d9498e9e7a6fc6515f0044349e19b16ff9184a83c79e789927342ad",
+        "template.j2": "61c4c0ca3382f346fc8d2fd5e6e3c7223d1ff9b838aa7b6d2d1d322f38377633"
+      }
+    },
+    "scene_log": {
+      "path": "prompts/scene-log/candidate",
+      "sha256": {
+        "README.md": "1bf553f30664845c4417e901f67e6031436973d726f3bd3bce7b7be7864f282a",
+        "models.py": "48b8504f59cd204e5f0db710b210508e98c981edea1bf1bad4f9486c2d27f5e1",
+        "schema-generation.json": "36188466a7f724b142c0aaed52f7560990602185d20c2e602519961f005c42f1",
+        "schema.json": "123d6d06d8af6beea01062acdb87087b11fc52dda571ecaa77c68107f0959b19",
+        "system.md": "02a207e4d2a2ebb11bbb0f39d7baf6045495edf8c4473d7a8fe41e801e05891d",
+        "template.j2": "2e091f1a4a72a3d2bc687f57e7d91a7bb67287e07858d13186750f72ad941c1c"
+      }
+    },
+    "session_summary": {
+      "path": "prompts/final/session-summary",
+      "sha256": {
+        "README.md": "c500b0f00759ad6de9849aa231ac28195147db19a6022ee29161aab2a8f6fdb0",
+        "manifest.json": "4ee553098cf120d644b4bc1fdaa8623d40bf153d59c433e0c11fc97f97eb9051",
+        "models.py": "ab7fd4f366c9b558fc30be45ebbb00d14561d8d2271d5a377cab4f821ff7ad6c",
+        "render.py": "3d17f9a0ee0dbfd414bf63b3775e8e14fc3720237b706823b4ab39e189c9ae8f",
+        "schema-generation.json": "c618b7587dc069d9ea2291c81c33fc929079c232bbe4cdbc6f4ce08b0fd71be5",
+        "schema.json": "c9cd69124db97b5910b4a0bb1bbdf3baf3391e0c12c3beecb0206f99d24788a8",
+        "system.md": "b777ccb24ff028bb94628dfba0bf05544112d92d85062147d7eb5280603913e4",
+        "template.j2": "0d29184744c4c13aaa360b1083e1dd5efa311756ddf6d9c9b016731a80fd28b0"
+      }
+    },
+    "table_recap": {
+      "path": "prompts/table-recap/candidate",
+      "sha256": {
+        "README.md": "e884f4ba2a066f138005a7cda14c9d873cae63d2822687d9f3daabda4d4d8a13",
+        "models.py": "a475fb28451bb2929ebd95d6948ec8aaf7e9de475adfa0715f205563911dcc8d",
+        "render.py": "6db355477deeb8e09f340183356d58112afcee158713a83ffb5d6c3f2f6940a4",
+        "schema.json": "9828b672eec8b75129a962a722d7bf69d66bece0aef01245433194f6d510ccd1",
+        "system.md": "1709a7cddc1cbea8ed0bc329c58f2d24b1e2937f185b5f3202328867a3f79ac7",
+        "template.j2": "f3c08980a2c43730f75b45a46b4e5ae6178c21d34f46f80f73db4606c63eb084"
+      }
+    }
+  }
+}

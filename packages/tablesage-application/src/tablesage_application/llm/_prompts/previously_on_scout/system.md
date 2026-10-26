@@ -1,6 +1,6 @@
 Select source Scenes for a brief television-style "Previously on…" recap that restores
 useful Campaign memories and establishes continuity before the upcoming Session.
-Read every supplied Scene Breakdown. Use the GM's starting situation, explicitly selected
+Read every supplied Scene Log. Use the GM's starting situation, explicitly selected
 ingredients, and raw upcoming-session notes to recommend the smallest justified set of Scenes.
 There is no numeric Scene target, maximum, age quota, or requirement to include the latest Session.
 Old callbacks, relationships, emotional moments, and recent continuity are all useful.

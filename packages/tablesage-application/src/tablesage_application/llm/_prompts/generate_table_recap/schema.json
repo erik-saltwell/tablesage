@@ -1,0 +1,39 @@
+{
+  "title": "Table Recap",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "orientation",
+    "threads"
+  ],
+  "properties": {
+    "orientation": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\r\\n]+$"
+    },
+    "threads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label",
+          "text"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\r\\n]+$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\r\\n]+$"
+          }
+        }
+      }
+    }
+  }
+}

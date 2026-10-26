@@ -12,7 +12,7 @@ The complete workflow is:
 6. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
 7. **Review Transcript** — The user confirms the text and speaker assignments for each utterance, forming the session record.
 8. **Assign Roles To Players** — The system attributes speech to character names and other Session Roles.
-9. **Generate Artifacts** — The system builds the ledger, scene breakdown, introductions, and summaries from the reviewed material.
+9. **Generate Artifacts** — The system builds the Ledger, Scene Log, Table Recap, and Summary from the reviewed material.
 10. **Improve Player Voice Prints** — The user decides whether to add more samples from the reviewed transcript to improve recognition in future Sessions.
 
 
@@ -62,15 +62,14 @@ This connects the people who spoke to their identities in the game. Summaries an
 
 An LLM builds the Session's outputs through a sequence of dependencies:
 
-1. **Transcript sections** locate the opening recap, character introductions, and actual play, so later outputs use the relevant parts of the Session.
-2. The **ledger** records events, facts, and developments, accompanied by a scene breakdown that organizes the action. The ledger is the authoritative record of what happened inside the game during a Session.
-3. **Player introductions** collect the in-character introductions of player characters from the opening of the Session, kept separate from what happened in play.
-4. The **recap summary** distills the scene breakdown into a short account designed to be read at the table.
-5. The **session summary** is a longer player-ready account built from the ledger. It includes the prior Session's recap summary, when available, and this Session's player introductions, and is designed to be sent to players before the next Session.
-See [Session Artifacts](sessions.md#session-artifacts) for what each output contributes to the campaign record.
+1. **Transcript Sections** locate opening context and the start of active play.
+2. The **Ledger** records current-session fiction. Only the first recorded Session also generates its bootstrap Situation.
+3. The **Scene Log** organizes Ledger entries into scenes and reconciles unresolved matters from the previous recorded Session’s Endcap.
+4. The **Table Recap** selects reminders from that Scene Log for reading aloud.
+5. The **Summary** generates scene bullets and copies the opening Situation, scene titles, and full Endcap exactly.
 
-### How TableSage Generates its Recap
-Session Summaries include a recap of the previous session.  This is *not* taken from the recording, it is computed from the last session that has occurred; see [How the Prior Recap Is Chosen](sessions.md#how-the-prior-recap-is-chosen). 
+Summary and Table Recap are independent presentations of the same Scene Log. The Summary does not insert a prior recap or Player Characters section. If prior continuity needs rebuilding, earlier Scene Logs are generated first. See [How Continuity Is Carried Forward](sessions.md#how-continuity-is-carried-forward).
+
 ## Improve Player Voice Prints
 
 After generation, suitable clips from the reviewed transcript can refresh the attendees' voice samples, replacing any earlier clips from this Session. This optional learning step gives future Sessions more evidence for recognizing the same people. See [Add Samples from a Session](../guides/manage-players-and-voice-samples.md#add-samples-from-a-session) for replacement details.
