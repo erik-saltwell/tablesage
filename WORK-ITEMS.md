@@ -19,7 +19,7 @@
 | Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
 | Improve Ledger prompt efficiency | complete | [.work-items/ledger-prompt-efficiency/](.work-items/ledger-prompt-efficiency/) |
-| Matters: clearer wording for Summary and Table Recap | implementing | [.work-items/matters-plain-language/](.work-items/matters-plain-language/) |
+| Matters: clearer wording for Summary and Table Recap | complete | [.work-items/matters-plain-language/](.work-items/matters-plain-language/) |
 | Move metadata fields below lists so bindings show up | complete | [.work-items/metadata-below-lists/](.work-items/metadata-below-lists/) |
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
 | New player in session | complete | [.work-items/new-player-in-session/](.work-items/new-player-in-session/) |

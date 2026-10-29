@@ -2,7 +2,7 @@
 
 ## Current state (2026-10-28)
 
-Phases 0–4 of [plan.md](plan.md) are done. Phase 5 (regenerate Brandonsford and evaluate against the rubric) has not started; it makes LLM calls for every Matters category in all four Sessions and waits on the user's go-ahead.
+Complete at the user's explicit direction on 2026-10-28. Phases 0–4 of [plan.md](plan.md) are done. Phase 5 (regenerate Brandonsford and evaluate against the rubric) was not performed; all five quality dimensions remain unassessed. The item is closed with that verification limitation.
 
 ## Completed
 
@@ -27,8 +27,10 @@ Phases 0–4 of [plan.md](plan.md) are done. Phase 5 (regenerate Brandonsford an
 
 ## Prompt version
 
-The edits sit uncommitted in the working tree, on top of the also-uncommitted Improve Phrasing prompt changes. Name the evaluated version by date, or by commit once committed.
+The prompt and contract edits are committed in `f7a7352` (Add Matters and recap workflow updates). No generated-output evaluation was performed against that version.
 
-## Next
+## Completion verification and publication
 
-Regenerate Brandonsford with Regenerate All Outputs, diff each `summary.md` against the baseline, and write `evaluations.md` against the five rubric dimensions (plan Phase 5).
+The attempted push to `origin/main` ran the repository's pre-push checks: Ruff formatting, Ruff linting, and the main type check passed; pytest reported 39 failed and 699 passed, blocking publication. The prompt-optimization checks were skipped because no relevant files changed. No test bypass was used. Local main already contains the implementation, so no branch merge is needed. Publication remains pending resolution of the failed hook or explicit authorization to bypass it.
+
+A separate `git diff --check origin/main..HEAD` also reported existing trailing whitespace or extra final blank lines in two historical research documents and the Obligations prompt. These were not changed as part of this completion record.
