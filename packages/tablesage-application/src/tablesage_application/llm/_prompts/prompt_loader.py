@@ -14,6 +14,7 @@ class PromptName(StrEnum):
     GENERATE_LEDGER = "generate_ledger"
     GENERATE_SCENE_LOG = "generate_scene_log"
     GENERATE_TABLE_RECAP = "generate_table_recap"
+    GENERATE_SPOKEN_TABLE_RECAP = "generate_spoken_table_recap"
     GENERATE_MATTER_PRESENT_MATTERS = "generate_matter_present_matters"
     GENERATE_MATTER_OBLIGATIONS = "generate_matter_obligations"
     GENERATE_MATTER_GOALS = "generate_matter_goals"

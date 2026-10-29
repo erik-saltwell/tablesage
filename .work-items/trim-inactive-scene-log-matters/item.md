@@ -1,6 +1,6 @@
 ---
 name: "Trim old and irrelevant open matters from combined campaign scene logs and return a new scene log JSON"
-status: ideating
+status: complete
 ---
 
 # Clean Up Irrelevant Scene Log Endcap Matters
@@ -10,3 +10,5 @@ Use an LLM cleanup pass after Scene Log generation to remove Endcap matters that
 ## Resume Note
 
 The user approved the three qualitative dimensions in [intent.md](intent.md#quality-rubric): Noise removal, Live-matter preservation, and Grounded judgment. At the user’s direction, stop intent clarification and workshop the idea using this rubric. Whether grounded inference from campaign progression is sufficient remains unsettled; the earlier recommendation was not accepted. Planning and implementation have not begun.
+
+Closed without implementation on 2026-10-28 at the user's direction.

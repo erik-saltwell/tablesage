@@ -23,8 +23,10 @@
       "required": [
         "title",
         "details",
+        "commitment_type",
         "burden",
         "consequence",
+        "stake",
         "lifecycle"
       ],
       "properties": {
@@ -33,6 +35,17 @@
         },
         "details": {
           "type": "string"
+        },
+        "commitment_type": {
+          "type": "string",
+          "enum": [
+            "general_agreement",
+            "personal_promise",
+            "debt",
+            "bargain",
+            "assigned_duty",
+            "oath"
+          ]
         },
         "burden": {
           "type": "string",
@@ -50,6 +63,15 @@
             "minor",
             "major",
             "extreme"
+          ]
+        },
+        "stake": {
+          "type": "string",
+          "enum": [
+            "trivial",
+            "low",
+            "medium",
+            "high"
           ]
         },
         "lifecycle": {

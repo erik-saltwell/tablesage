@@ -1,0 +1,42 @@
+{#- Section headings, spoken verbatim at the table. Each Matters prompt writes its bullets to follow its heading
+    here, so when you change a heading, update the matching prompt's "Read-aloud wording" section too. -#}
+{% set headings = {
+    "developments": "Last session...",
+    "revelations": "You learned",
+    "new_assets": "You gained",
+    "goals": "Your goals",
+    "goal_impediments": "Standing in your way",
+    "opportunities": "What could help",
+    "mysteries": "Still unanswered",
+    "obligations": "Promises and debts",
+    "brewing_troubles": "Meanwhile",
+    "current_position": "As we return",
+    "present_danger": "The danger right now",
+} %}
+# {{campaign_name}}
+**{% if session_date %}{{ session_date }}: {% endif %}{{ session_cue }}**
+
+{% for section in ("developments", "revelations", "new_assets") if historical_matters[section] %}
+## {{ headings[section] }}
+{% for matter in historical_matters[section] %}
+- {{ matter }}
+{% endfor %}
+
+{% endfor %}
+{% for section in ("goals", "goal_impediments", "opportunities", "mysteries", "obligations", "brewing_troubles") if open_matters[section] %}
+## {{ headings[section] }}
+{% for matter in open_matters[section] %}
+- {{ matter }}
+{% endfor %}
+
+{% endfor %}
+## {{ headings.current_position }}
+- {{ present_matters.current_position }}
+
+{% if present_matters.present_danger %}
+## {{ headings.present_danger }}
+{% for matter in present_matters.present_danger %}
+- {{ matter }}
+{% endfor %}
+
+{% endif %}

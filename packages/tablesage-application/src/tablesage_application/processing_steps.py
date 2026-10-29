@@ -162,8 +162,11 @@ PROCESSING_STEPS: tuple[ProcessingStep, ...] = (
             ArtifactName.LEDGER,
             ArtifactName.SCENE_LOG,
             *(ArtifactName(section) for section in SECTIONS),
+            ArtifactName.POST_SESSION_MATTERS,
+            ArtifactName.SUMMARY,
+            ArtifactName.TABLE_RECAP,
         ),
-        llm_roles=("llm_model_high",),
+        # Model credentials are checked against the actual generation plan in the step function.
     ),
     ProcessingStep(StepID.IMPROVE_VOICE_PRINTS, _M, "Improve Player Voice Prints", (ArtifactName.VOICE_PRINT_DECISION,)),
     ProcessingStep(StepID.ENHANCE_VOICE_PRINTS, _A, "Enhance Voice Prints", (ArtifactName.VOICE_PRINT_ENHANCEMENT,)),

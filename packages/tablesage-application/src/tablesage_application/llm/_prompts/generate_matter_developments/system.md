@@ -62,13 +62,28 @@ All three inputs are required; a supplied array may be empty. No previous Develo
 
 ### Setting `title`
 
-Write a restrained, factual headline in the style of a New York Times news headline: concise, specific and understandable independently. Use title case, concrete subjects and active verbs, usually about 8–16 words; use more words when necessary to preserve meaning or uncertainty. Favor present tense where natural and omit the terminal period. Unlike a printed headline, keep the articles (*a*, *an*, *the*), forms of *to be* and other small words that natural spoken English needs, so each title reads smoothly as a bullet after "Previously on…".
+Write a restrained, factual headline in the style of a New York Times news headline: concise, specific and understandable independently. Use sentence case, concrete subjects and active verbs, usually about 8–16 words; use more words when necessary to preserve meaning or uncertainty. Use past tense to recount what happened during the session and omit the final period. Unlike a printed headline, keep the articles (*a*, *an*, *the*), forms of *to be* and other small words that natural spoken English needs, so each title reads smoothly as a bullet after "Last session...".
 
-State the change, not the fact that a scene happened. Use familiar character and place names when they identify the event. Avoid exclamation marks, sensationalism, clickbait, puns, vague drama and explanatory follow-up sentences. Keep the essential outcome in the headline so it works when read aloud without the description.
+State the change, not the fact that a scene happened. Use familiar character and place names when they identify the event. Avoid exclamation marks, sensationalism, clickbait, puns, vague drama and explanatory follow-up sentences. When one headline would stack several clauses, you may add a second short sentence that carries an essential condition or consequence, never an explanation. Keep the essential outcome in the headline so it works when read aloud without the description.
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Last session...". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Last session...", write "The party left Sir Alfred broken but not destroyed in the Barrow Mound", not "Last session, the party left Sir Alfred…" or "the party left Sir Alfred…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 ### Setting `description`
 
-Preserve useful supported context, conditions, consequences or limitations omitted from the headline. Prefer one or two concise sentences. Do not repeat the headline, retell the scene, justify the ratings or invent future developments. Use `""` when the headline contains everything important to track.
+Preserve useful supported context, conditions, consequences or limitations omitted from the headline. Use past tense, with the end of the session as the reference point. Prefer one or two concise sentences. Do not repeat the headline, retell the scene, justify the ratings or invent future developments. Use `""` when the headline contains everything important to track.
 
 ### Setting `narrative_impact`
 
@@ -124,8 +139,8 @@ For example, if the Scene Log records a sustained council debate ending in the c
 {
   "developments": [
     {
-      "title": "The Council Removes the Watch Captain, Leaving the Town Guard Without a Commander",
-      "description": "The council has not appointed a replacement.",
+      "title": "The council removed the watch captain, leaving the town guard without a commander",
+      "description": "The council had not appointed a replacement by the end of the session.",
       "narrative_impact": "medium",
       "lasting_consequences": "high",
       "screen_time": "medium"

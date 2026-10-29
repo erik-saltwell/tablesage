@@ -1,5 +1,19 @@
 # Completed Matters Port
 
+## Opportunity Titles Follow-Up
+
+Added a required nonempty `title` to the Opportunity schema and generation prompt: a short, simple sentence combining the opening, action and potential advantage while preserving essential conditions, attribution and uncertainty. The prompt covers carried entries and ended lifecycles and includes a schema-valid nine-field example. Existing detailed fields, IDs, hierarchy and filters are unchanged. Post-Session Matters inherits the schema and copies titles losslessly; Table Recap now reads `title` rather than `opening`.
+
+Direct execution verified the packaged example, rejection of missing/empty titles, title preservation through ID normalization/filtering/combined assembly, and title-only recap rendering. Ruff for the changed renderer and `git diff --check` passed. No model call or saved artifact regeneration occurred; old Opportunity publications require regeneration before they meet the new schema. Generated title quality remains unverified until generation.
+
+## Developments Past-Tense Follow-Up
+
+Changed the Developments prompt from present-tense headlines to past-tense titles and descriptions, using Session end as the reference point. Updated the output example to match. Verified the packaged prompt loads with the new guidance and no remaining present-tense instruction; `git diff --check` passes. No artifacts were regenerated and no model call was made.
+
+## Immediate Goals Readability Follow-Up
+
+Updated the Present Matters system prompt to retain articles and other small words in immediate goals and state goals directly without `Player:` or player/character-name labels. Added contrasting shorthand and label examples; necessary attribution for a subset of the party belongs naturally in the goal wording. This changes wording guidance only; goal selection, schema, filtering and recap rendering remain unchanged. Direct prompt/resource and renderer checks confirm the instruction is packaged, prompt changes participate in freshness, and the deterministic recap preserves the supplied words. No model call or artifact regeneration was performed; generated wording quality remains unverified until generation.
+
 Implemented the [current contract](specification.md). The work uses the source guide and imported prompt/schema resources, standalone filtering, per-Campaign durable IDs, the configured High model, high Ledger/Scene Log effort and medium Matters effort. Hidden category artifacts participate in graph-based planning/completion and remain absent from selectable UI lists. Deferred recap/summary and campaign preparation generators are disabled with existing UI entry points retained.
 
 ## Verification

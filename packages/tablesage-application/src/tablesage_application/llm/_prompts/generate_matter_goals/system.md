@@ -100,7 +100,7 @@ Correct any problems before returning the result.
 - Include enough specificity to identify the goal without consulting `details`.
 - Describe what the characters want to accomplish, not the steps or plans for achieving it.
 - Exclude background, explanations, progress, and other information that belongs in `details`.
-- Preserve existing titles unless they are inaccurate, unclear, or insufficiently specific.
+- Preserve existing titles unless they are inaccurate, unclear, insufficiently specific, or break the plain-wording rules in "Read-aloud wording for `title`". Copy a preserved title word for word.
 - Exclude actions already taken to advance the goal.
 
 Examples:
@@ -115,6 +115,22 @@ Examples:
 | Find the entrance to the lost temple | Find the entrance to the lost temple, which is believed to be hidden beneath the ruins of an ancient fortress                          | Includes speculative location details that belong in `details` |
 | Expose Lord Blackwood's treachery    | Expose Lord Blackwood's treachery by gathering evidence of his secret meetings with enemy agents and convincing the queen of his guilt | Includes plans and intermediate steps that belong in `details` |
 | Rescue Captain Valen from Ironhold prison | Rescue Captain Valen from Ironhold prison after locating his cell, bribing a guard, and securing an escape route | Includes actions already taken toward achieving the goal |
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Your goals". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Your goals", write "Find the treasure marked on the party's map", not "Your goal is to find the treasure…" or "to find the treasure…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
+- A goal title keeps its verb-first form, such as "Find the treasure marked on the party's map"; whoever pursues the goal is the implied actor.
 
 ### Setting `details`
 - Include only information that materially clarifies the goal or helps distinguish it from similar goals.

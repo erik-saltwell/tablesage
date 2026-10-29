@@ -46,11 +46,13 @@ An unsuccessful attempt does not itself establish a continuing impediment. Prese
 
 Goals state desired outcomes. Impediments state established obstructions to those outcomes. Mysteries state consequential unanswered questions; not knowing an answer alone is insufficient. Opportunities state available advantages or ways to overcome an obstruction. A reported solution does not automatically become a mandatory requirement: preserve its attribution and uncertainty rather than asserting that it is the only possible method. Obligations and opportunities alone are not goal links: an impediment must affect a supplied goal.
 
-Brewing Troubles qualifies through continuing harm or constraint; Goal Impediments qualifies through obstruction of a particular goal. The same situation may independently qualify for both. Describe only the obstruction here. An obstacle confined to the stopping scene belongs with Immediate Goals or Present Danger rather than this cumulative category.
+Brewing Troubles qualifies through continuing harm or constraint; Goal Impediments qualifies through obstruction of a particular goal. The same situation may independently qualify for both. Describe only the obstruction here. An obstacle confined to the stopping scene is outside this cumulative category; an immediate threat belongs in Present Danger.
 
 ### Set `id`
 
 Preserve each supplied permanent `impediment_<n>` ID as wording, links or lifecycle change. Reconcile every identified previous entry, including ended entries. New obstacles receive distinct temporary IDs `impediment_new_001`, `impediment_new_002`, and so forth; code assigns permanent IDs after validation. Never invent a permanent ID or reuse an ended entry's ID for a different obstacle. Prior historical objects without IDs are assigned permanent IDs by the input adapter before rendering; preserve those supplied IDs too. Do not merge two identified prior entries by silently dropping one; reassess superseded duplicates as obsolete while retaining their IDs.
+
+When a previous entry carries forward and its obstruction, facts and lifecycle are unchanged, copy its existing title word for word. Reword it only when it breaks the plain-wording rules in "Read-aloud wording for `title`" or when its facts or lifecycle have changed.
 
 ### Set links and lifecycle
 
@@ -66,7 +68,22 @@ Obtaining a proposed countermeasure does not by itself resolve the blocking cond
 
 ### Write titles and details
 
-Make each title understandable without looking up a goal ID. Name the defining actor, condition, object or restriction and the pursuit it obstructs. Keep useful uncertainty and attribution. Put essential qualifications in `details`; omit event chronology, progress reports and suggested tactics.
+Make each title understandable without looking up a goal ID. Name the defining actor, condition, object or restriction and the pursuit it obstructs. Keep useful uncertainty and attribution, naming the source before the claim. Put essential qualifications in `details`; omit event chronology, progress reports and suggested tactics.
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Standing in your way". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Standing in your way", write "Ordinary weapons cannot pierce the black dragon's scales", not "Standing in your way is that ordinary weapons…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 # Output Description
 

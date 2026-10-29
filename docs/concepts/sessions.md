@@ -28,8 +28,9 @@ During these steps, TableSage asks the user to approve the work it is about to d
 - A **role transcript** is a version of the reviewed transcript where utterances are ascribed to Roles rather than Players.
 - A **ledger** is the authoritative record of what happened in your game during a Session.
 - A **Scene Log** organizes the Ledger into scenes with participants, events, discoveries, outcomes and memorable cues. It is available as structured JSON or readable Markdown.
-- Existing **session summaries** remain available to read and export. New generation is temporarily paused while the Matters pipeline is integrated.
-- Existing **Table Recaps** remain available to read and export. New generation is temporarily paused; a later step will define the updated recap inputs.
+- **Post-Session Matters** combines this Session’s Developments, Revelations, New Assets, Present Matters and six Open Matters categories into one JSON export. It copies the existing filtered records without another LLM call.
+- **Summary** turns Post-Session Matters into structured Markdown a Game Master can read aloud at the table, using titles and primary text and omitting descriptions and evaluation metadata. It includes the current position and present danger. Its headings are meant to be spoken, and the LLM that writes each Matters category already words its entries to follow their heading: in sentence case, as phrases that sound natural read aloud. Rendering the Summary itself uses deterministic code and makes no LLM call.
+- **Table Recap** uses an LLM to present all Summary content in the second person. It keeps the bullet sections and ends with one prose passage combining the current position and any immediate danger under **As we return**. It exports as Markdown.
 
 TableSage also stores ten internal Matters artifacts: Present Matters, Goals, Obligations, Brewing Troubles, Goal Impediments, Opportunities, Mysteries, New Assets, Revelations and Developments. They have independent dependencies and completion records, but no selectable artifact rows or exports.
 

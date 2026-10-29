@@ -1,0 +1,25 @@
+{
+  "title": "Spoken Table Recap",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sections", "closing"],
+  "properties": {
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["heading", "bullets"],
+        "properties": {
+          "heading": {"type": "string", "minLength": 1},
+          "bullets": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}
+          }
+        }
+      }
+    },
+    "closing": {"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}
+  }
+}

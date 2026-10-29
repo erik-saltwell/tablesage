@@ -165,7 +165,7 @@ class PreviouslyOnSettings(BaseModel, frozen=True):
 
 
 class GenerateArtifactsSettings(BaseModel, frozen=True):
-    """Narrative generation uses the High model, shared timeout, and explicit recap guidance."""
+    """Narrative generation uses the High model, shared timeout, and validation controls."""
 
     timeout: PositiveInt = 2400
     recap_target_words: int | None = Field(default=450, gt=0, strict=True)
@@ -173,6 +173,8 @@ class GenerateArtifactsSettings(BaseModel, frozen=True):
     model_options: dict[str, object] = Field(default_factory=dict)
     narrative_effort: Literal["high"] = "high"
     matters_effort: Literal["medium"] = "medium"
+    matters_validation_retries: int = Field(default=1, ge=0, le=1, strict=True)
+    table_recap_validation_retries: int = Field(default=1, ge=0, le=1, strict=True)
 
     @model_validator(mode="after")
     def validate_recap_length(self) -> GenerateArtifactsSettings:

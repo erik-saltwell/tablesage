@@ -41,7 +41,9 @@ An unreadable or invalid `processing_state.json` makes the application try `proc
 
 `records` maps the producer names below to `{complete, completed_at, inputs}`. Each input has a `sha256` digest. File inputs also store `size` and `mtime_ns`, allowing unchanged files to be recognized without hashing again. A changed file timestamp alone does not prove stale content: the app compares content hashes when those attributes differ. Section inputs hash canonical JSON with sorted keys and compact separators; they have no file size or modification time.
 
-Input keys are `artifact:<name>` for this Session, `artifact:<NNN>/<name>` for another Session, `prompt:<name>` or `prompt:<name>/<file>` for packaged generation resources, and `value:<name>` for configuration/context values. Narrative outputs fingerprint their templates, schemas, input/assembly/rendering code, generation controls, and relevant context. Input Audio and Normalized Review Audio share `input_audio`; Transcript JSON and Markdown share `transcript`. Each narrative JSON/Markdown pair has its own producer record.
+Input keys are `artifact:<name>` for this Session, `artifact:<NNN>/<name>` for another Session, `prompt:<name>` or `prompt:<name>/<file>` for packaged generation resources, and `value:<name>` for configuration/context values. Narrative outputs fingerprint their prompts, templates, schemas, generation controls, and relevant context. Input Audio and Normalized Review Audio share `input_audio`; Transcript JSON and Markdown share `transcript`. Each narrative JSON/Markdown pair has its own producer record.
+
+Python source files are not freshness dependencies. Editing Application, generation, filtering or rendering Python code does not mark outputs out of date. Use **Regenerate Artifact** to force a rebuild when applying a code change. **Regenerate All Outputs** still refreshes only missing or out-of-date outputs. Older completion records may retain Python fingerprint entries; they are ignored and need no migration.
 
 The following local Python example prints only metadata and fingerprints. Replace the Session path before running it. It parses JSON locally but does not print section values, drafts, transcripts, or audio. File hashing also stays local and emits only hashes. It locates packaged prompt data without reading source code or importing the application.
 
@@ -110,14 +112,14 @@ These are the producer names used in `records`, their required outputs, and thei
 | `ledger` | `ledger.json`, `ledger.md` | `role_transcript`, `transcript_sections`, Ledger bundle, model/options, roster, Glossary and bootstrap mode |
 | `scene_log` | `scene_log.json`, `scene_log.md` | current `ledger`, prior recorded Session’s `present_matters`, roster, Glossary, predecessor identity, Scene Log bundle and generation controls |
 | `player_introductions` | `player_introductions.json` | `role_transcript`, `transcript_sections`, roster, Glossary, Campaign name/system, Session date, prompt bundle, input code, model and timeout |
-| `table_recap` | `table_recap.json`, `table_recap.md` | `scene_log`, Table Recap bundle, generation controls and recap length settings |
-| `summary` | `summary.json`, `summary.md` | `scene_log`, Summary bundle and generation controls |
+| `table_recap` | `table_recap.md` | Current Summary, presentation prompt/template/schema and model controls |
+| `summary` | `summary.md` | `post_session_matters`, `scene_log`, Campaign name, Session date, renderer code and Jinja template |
 | `voice_print_decision` | `voice_print_decision` section | `reviewed_transcript` |
 | `voice_print_enhancement` | `voice_print_enhancement` section | `voice_print_decision` |
 
-`normalized_review_audio` is the companion of `input_audio`; `transcript_text` is `transcript.md`. Ledger and Scene Log are independent steps. Scene Log continuity follows recorded Session sequence numbers and the previous Present Matters. Summary and Table Recap generation is temporarily disabled; their existing indicators and exports remain. A missing/stale predecessor blocks later generation rather than producing a placeholder. Campaign preparation tools are temporarily disabled; see [Previously On and Opportunities](screens/previously-on-and-opportunities.md).
+`normalized_review_audio` is the companion of `input_audio`; `transcript_text` is `transcript.md`. Ledger and Scene Log are independent steps. Scene Log continuity follows recorded Session sequence numbers and the previous Present Matters. Table Recap follows Summary and uses an LLM for second-person presentation and closing prose. Summary is generated deterministically from Post-Session Matters. A missing/stale predecessor blocks later generation rather than producing a placeholder. Campaign preparation tools are temporarily disabled; see [Previously On and Opportunities](screens/previously-on-and-opportunities.md).
 
-Narrative generation records its input fingerprints before making model calls. If an input changes during generation, the output remains out of date instead of being certified against the changed input. Ledger freshness includes the roster, Glossary, Session name and first-session bootstrap mode; narrative freshness includes model/options and generation timeout; Table Recap also includes its length settings. Earlier audio/speaker processing still does not fingerprint every external configuration or later voice-print change.
+Narrative generation records its input fingerprints before making model calls. If an input changes during generation, the output remains out of date instead of being certified against the changed input. Ledger freshness includes the roster, Glossary, Session name and first-session bootstrap mode; model-generated narrative freshness includes model/options and generation timeout. Summary tracks its combined JSON input, Scene Log, Campaign name, Session date and Jinja template, with no model or length-setting dependency. Earlier audio/speaker processing still does not fingerprint every external configuration or later voice-print change.
 
 Legacy Scene Breakdown and Recap Summary files are retained for reading/export, but do not satisfy the new Scene Log/Matters contract. Opening a workspace performs no model calls. Regenerate narrative outputs through normal actions once the reviewed transcript is current.
 
@@ -128,7 +130,7 @@ Each Matters producer writes `<category>.json` with exactly its category key, pl
 | Producer | Current Matter Inputs | Prior Matter Inputs |
 |---|---|---|
 | `present_matters` | None | Present Matters |
-| `obligations` | None | Obligations |
+| `obligations` | Goals, Goal Impediments, Opportunities | Obligations |
 | `goals` | None | Goals |
 | `brewing_troubles` | Goals | Brewing Troubles |
 | `goal_impediments` | Goals | Goal Impediments |
@@ -138,11 +140,31 @@ Each Matters producer writes `<category>.json` with exactly its category key, pl
 | `revelations` | Goals, Mysteries, Goal Impediments, Obligations, Opportunities | The same five categories |
 | `developments` | New Assets, Revelations | None |
 
-Every producer also consumes the full current Scene Log and its prompt/schema/input/filtering code and effective generation controls. All except Developments consume attending party Roles. Non-bootstrap prior inputs are required dependencies, never replaced by empty state. A first Session uses explicit empty prior values. Revelations never consumes prior Revelations; Developments has no prior inputs. Scene Log uses prior Present Matters as context only, rather than earlier Open Matters.
+Every producer also consumes the full current Scene Log and its prompt, template, schema and effective generation controls. All except Developments consume attending party Roles. Non-bootstrap prior inputs are required dependencies, never replaced by empty state. A first Session uses explicit empty prior values. Revelations never consumes prior Revelations; Developments has no prior inputs. Scene Log uses prior Present Matters as context only, rather than earlier Open Matters.
 
 All narrative and Matters calls use the configured High model. Ledger and Scene Log use high reasoning effort; Matters use medium effort. These effective options are fingerprinted. The Campaign-local `.matter-ids.sqlite3` reserves Goal, Impediment and Opportunity IDs transactionally, including IDs later filtered out. It survives Session cleanup and travels with the Campaign folder. Failed builds can leave unused numbers; numbers are never reassigned. Allocation metadata is deliberately not a freshness dependency, so allocating a new ID does not invalidate earlier outputs.
 
 Hidden producers remain part of **Generate Artifacts** completion and dependency-driven regeneration, without new selectable artifact rows. Old files or legacy completion metadata never certify the new Matters producers.
+
+## Post-Session Matters
+
+`post_session_matters` produces the visible `post_session_matters.json` file after all ten Matters publications are current. Its completion inputs are those ten current-Session artifacts, the combined schema and the owning Session UUID. Prior Sessions, Scene Log and model settings participate through the existing source dependencies; assembly does not consume them directly. It uses no LLM, allocates no IDs and reapplies no filtering. The previous output is preserved if an input is missing, stale or invalid, or replacement fails.
+
+The JSON has `version: 1`, `session_id`, `historical_matters` (Developments, Revelations, New Assets), `present_matters` (`current_position`, `present_danger`) and `open_matters` (Goals, Goal Impediments, Opportunities, Mysteries, Obligations, Brewing Troubles). Historical entries belong to the Session just completed. All arrays remain present when empty. Full nested validation reuses the source category schemas without duplicating their definitions.
+
+**Regenerate Artifact** and **Regenerate All Outputs** assemble the file when needed and repair required missing or stale inputs through the same dependency graph. An assembly-only run does not require model credentials; a plan containing model generation still checks the configured High model's credentials. **Generate Artifacts** requires this combined output to be current before the step completes. **Export Artifact** copies its JSON directly, and **Clean Session** deletes it with the other artifacts. The individual Matters remain hidden. Interrupted assembly uses `.post_session_matters-generation-incomplete` and the existing recovery behavior.
+
+## Deterministic Session Summary
+
+`summary` reads the owning Session’s current `post_session_matters.json` and existing Scene Log Session cue, and writes only `summary.md`, intended to be read aloud at the table. The title includes the recorded Session date and that cue. It uses titles or primary text, skips empty categories and exact duplicates, and finishes with Current Position and Present Danger. It excludes descriptions, details, benefits, suggested actions, IDs, ratings and justifications. No LLM, API key, new filtering or ID allocation is involved. The read-aloud wording (sentence case, bullets that follow their heading) comes from the Matters prompts, which are told the Summary heading each primary field appears under. Any leftover `summary.phrasing.json` from a briefly used phrasing pass is archived and deleted on the next write. Prior `summary.md`, `summary.json` and `.summary-inputs.json` files are archived by content hash under `legacy/narrative/` before replacement. JSON/input companions are legacy files, not required current outputs.
+
+The producer snapshots Post-Session Matters, Scene Log, Campaign name, Session date and template fingerprints before rendering. Missing, stale, invalid or foreign-Session inputs fail before replacement; interrupted or failed writes use the existing rollback mechanism. A source change stales Post-Session Matters and then Session Summary. A template-only change stales Session Summary and its dependent Table Recap; a Python renderer change requires explicit regeneration. Campaign name and Session date changes also invalidate the summary heading. **Generate Artifacts** requires Summary to be current; existing regeneration and Markdown export actions handle it. Table Recap also needs to be current for **Generate Artifacts** to complete; campaign preparation generation remains disabled.
+
+### Editing the Session Summary Template
+
+In a source checkout, edit `packages/tablesage-application/src/tablesage_application/session_pipeline/session_summary.j2` to change the title, headings, section order or Markdown layout. Headings live in the template's `headings` mapping. Each Matters prompt's "Read-aloud wording" section names the heading its primary field follows, so when you rename a heading, update that prompt too; the changed prompt then makes the affected Matters out of date. The template is packaged with the application and read on each render. Template edits make Summary out of date; use **Regenerate Artifact → Summary** or `tablesage regenerate-session-summary --campaign NAME --session NUMBER` from the workspace directory to apply them. Existing saved Markdown is preserved until regeneration.
+
+`campaign_name` is the owning Campaign’s name, used as the main title. `session_date` is the recorded date as `YYYY-MM-DD`, or `None` for an undated Session; the default title omits absent dates. `session_cue` is the existing memorable cue from the current Scene Log, reused without another model call. Both appear in the title. `historical_matters` and `open_matters` expose category names with lists of prepared primary text. `present_matters.current_position` is a string; `present_matters.present_danger` is a list. Use `join(' ')` for paragraphs or Jinja loops for bullet lists. Python retains source validation, text cleanup, duplicate handling and exclusion of descriptions and metadata. A syntax error, unknown variable or empty rendered result fails without replacing the previous summary.
 
 ## Missing Normalized Audio after an Upgrade
 

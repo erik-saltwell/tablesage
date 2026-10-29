@@ -47,7 +47,7 @@ DISABLED_MESSAGE = "Temporarily unavailable while Matters artifacts are being po
 
 def empty(section: str) -> Any:
     if section == "present_matters":
-        return {"current_position": None, "immediate_goals": [], "present_danger": []}
+        return {"current_position": None, "present_danger": []}
     return []
 
 
@@ -106,7 +106,15 @@ def allocate_ids(campaign_folder: Path, section: str, entries: list[dict], previ
 def select(section: str, entries: Any) -> Any:
     """Standalone filters; preserve every retained field and relative order."""
     if section == "obligations":
-        return [e for e in entries if e["lifecycle"] == "outstanding" and e["burden"] != "trivial" and e["consequence"] != "trivial"]
+        return [
+            e
+            for e in entries
+            if e["commitment_type"] != "general_agreement"
+            and e["stake"] != "trivial"
+            and e["lifecycle"] == "outstanding"
+            and e["burden"] != "trivial"
+            and e["consequence"] != "trivial"
+        ]
     if section == "goals":
         return [
             e
@@ -152,27 +160,49 @@ def postprocess(section: str, response: dict, previous: Any, current: dict, camp
 
 
 async def generate(
-    folder: Path, prompt_inputs: inputs.CampaignMattersPromptInputs, model: str, timeout: float, model_options: Mapping[str, Any]
+    folder: Path,
+    prompt_inputs: inputs.CampaignMattersPromptInputs,
+    model: str,
+    timeout: float,
+    model_options: Mapping[str, Any],
+    *,
+    validation_retries: int,
 ) -> None:
     from .narrative import persist, schema
 
     section = prompt_inputs.section
     prompt = PROMPTS[section]
+    if validation_retries not in (0, 1):
+        raise ValueError("Matters validation retries must be zero or one.")
     with widelog.wide_event(op="generate_matters", section=section, model=model) as log:
-        raw = await call_llm_with_prompt(
-            prompt,
-            prompt_inputs,
-            model,
-            response_model=schema(prompt),
-            timeout=timeout,
-            model_options=model_options,
-        )
-        # Keep rejected responses without ever using them as downstream state.
-        atomic_write(folder / ".generation-records" / section / f"{uuid.uuid4().hex}.json", raw.encode())
-        response = json.loads(raw)
-        normalized = postprocess(section, response, prompt_inputs.previous, prompt_inputs.current_sections, folder.parent)
-        selected = {section: select(section, normalized[section])}
-        validate(section, selected)
+        validation_failures = []
+        for attempt in range(1, validation_retries + 2):
+            log.set(attempt_count=attempt)
+            raw = await call_llm_with_prompt(
+                prompt,
+                prompt_inputs,
+                model,
+                response_model=schema(prompt),
+                timeout=timeout,
+                model_options=model_options,
+            )
+            # Save each attempt before validation; persistence failures must not trigger model retries.
+            evidence_path = folder / ".generation-records" / section / f"{uuid.uuid4().hex}.json"
+            atomic_write(evidence_path, raw.encode())
+            try:
+                response = json.loads(raw)
+                normalized = postprocess(section, response, prompt_inputs.previous, prompt_inputs.current_sections, folder.parent)
+                selected = {section: select(section, normalized[section])}
+                validate(section, selected)
+            except (ValueError, jsonschema.ValidationError) as exc:
+                validation_failures.append(
+                    {"attempt": attempt, "error_type": type(exc).__name__, "error": str(exc), "evidence_path": str(evidence_path)}
+                )
+                log.set(validation_failures=validation_failures)
+                if attempt > validation_retries:
+                    raise
+                continue
+            break
         evidence = {"raw_response": response, "normalized_response": normalized, "model": model, "options": dict(model_options)}
         persist(
             folder,

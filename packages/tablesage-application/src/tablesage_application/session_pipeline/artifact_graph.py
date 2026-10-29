@@ -44,7 +44,7 @@ class FileRef:
 
 @dataclass(frozen=True)
 class SystemPromptInput:
-    """A packaged LLM system prompt whose content affects generated outputs."""
+    """A packaged prompt, template or schema whose content affects generated outputs."""
 
     path: Path
 
@@ -244,14 +244,14 @@ GENERATION_ORDER: tuple[ArtifactName, ...] = (
     ArtifactName.LEDGER,
     ArtifactName.SCENE_LOG,
     *(ArtifactName(section) for section in SECTIONS),
+    ArtifactName.POST_SESSION_MATTERS,
+    ArtifactName.SUMMARY,
+    ArtifactName.TABLE_RECAP,
 )
 
-DEFERRED_GENERATION = frozenset({ArtifactName.TABLE_RECAP, ArtifactName.SUMMARY, ArtifactName.RECAP_SUMMARY})
+DEFERRED_GENERATION = frozenset({ArtifactName.RECAP_SUMMARY})
 REGENERATABLE = frozenset((*GENERATION_ORDER, ArtifactName.PLAYER_INTRODUCTIONS))
-# Deferred visible actions remain present; hidden producers are never selectable.
-REGENERATION_CHOICES = tuple(
-    name
-    for name in (*GENERATION_ORDER, ArtifactName.TABLE_RECAP, ArtifactName.SUMMARY, ArtifactName.PLAYER_INTRODUCTIONS)
-    if ARTIFACTS[name].should_show_in_ui
-)
+MODEL_GENERATED_ARTIFACTS = REGENERATABLE - {ArtifactName.ROLE_TRANSCRIPT, ArtifactName.POST_SESSION_MATTERS, ArtifactName.SUMMARY}
+# Hidden producers are never selectable.
+REGENERATION_CHOICES = tuple(name for name in (*GENERATION_ORDER, ArtifactName.PLAYER_INTRODUCTIONS) if ARTIFACTS[name].should_show_in_ui)
 GENERATION_LABELS: dict[ArtifactName, str] = {name: spec.display_name for name, spec in ARTIFACTS.items()}

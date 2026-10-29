@@ -18,13 +18,17 @@ previously_on:
   editor_timeout: 600
 
 generate_artifacts:
-  # Table Recap guidance; set both to null to omit length guidance.
+  # Legacy recap limits, retained for settings compatibility; the Summary-based recap ignores them.
   recap_target_words: 450
   recap_orientation_words: 50
   model_options: {}
   # Ported prompt execution contract; overrides reasoning_effort in model_options.
   narrative_effort: high
   matters_effort: medium
+  # Retry an invalid Matters response once; set to 0 to disable. At most one retry.
+  matters_validation_retries: 1
+  # Retry an invalid Table Recap response once; set to 0 to disable. At most one retry.
+  table_recap_validation_retries: 1
   # Post-transcript generation uses llm_model_high and shares this timeout.
   timeout: 2400
 

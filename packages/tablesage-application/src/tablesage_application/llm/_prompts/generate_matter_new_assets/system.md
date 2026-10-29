@@ -81,9 +81,28 @@ Use the supplied matter descriptions and Scene Log together to establish support
 
 Use direct, natural language and familiar names. Make each property understandable independently, allowing limited repetition when necessary. Prefer a short noun phrase for the name and one concise sentence for the benefit.
 
+Keep the short name, compact benefit, existing capitalization and formatting. Retain articles, pronouns, prepositions, auxiliary verbs and other small words needed for natural reading in both properties. Shorten by removing incidental content or choosing tighter wording, not by dropping grammatical words. A name may remain a natural noun phrase; do not force it into a full sentence. For a benefit, prefer "The key opens the gate leading to the captive" over "Key opens gate leading to captive". Allow a few extra words rather than producing telegraphic shorthand, without adding background, new facts or explanatory sentences.
+
 Explain the established support rather than listing a generic capability. For a Goal to rescue a captive behind a locked gate, prefer "Opens the north gate blocking access to the captive" over "Opens the north gate." This is a hypothetical example, not permission to invent a captive or gate in the supplied campaign.
 
 Keep profiles, acquisition history and incidental equipment out of the benefit. Preserve limitations that change the contribution and attribution that affects certainty. Do not turn a reported effect into a guarantee or an acknowledged favor into promised assistance. Compensation still owed belongs separately in Obligations, not in the asset's benefit; do not output other categories here.
+
+### Read-aloud wording for `name`
+
+The Session Summary shows `name` as a bullet under the heading "You gained". At the table, the Game Master reads the heading aloud and then each bullet, so write `name` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- The guidance applies to `name` only; write `benefit` as before.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "You gained", write "Sir Brandon's magic sword", not "You gained Sir Brandon's magic sword".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
+- These rules apply to `name`, which may stay a short noun phrase; they do not change how `benefit` is written.
 
 ### Setting Support References
 

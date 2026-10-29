@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Post-Session Matters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "session_id", "historical_matters", "present_matters", "open_matters"],
+  "properties": {
+    "version": {"const": 1},
+    "session_id": {"type": "string", "format": "uuid"},
+    "historical_matters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["developments", "revelations", "new_assets"],
+      "properties": {
+        "developments": {"$ref": "#/$defs/developments"},
+        "revelations": {"$ref": "#/$defs/revelations"},
+        "new_assets": {"$ref": "#/$defs/new_assets"}
+      }
+    },
+    "present_matters": {"$ref": "#/$defs/present_matters"},
+    "open_matters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goals", "goal_impediments", "opportunities", "mysteries", "obligations", "brewing_troubles"],
+      "properties": {
+        "goals": {"$ref": "#/$defs/goals"},
+        "goal_impediments": {"$ref": "#/$defs/goal_impediments"},
+        "opportunities": {"$ref": "#/$defs/opportunities"},
+        "mysteries": {"$ref": "#/$defs/mysteries"},
+        "obligations": {"$ref": "#/$defs/obligations"},
+        "brewing_troubles": {"$ref": "#/$defs/brewing_troubles"}
+      }
+    }
+  }
+}

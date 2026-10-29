@@ -7,13 +7,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 OPEN_MATTER_KINDS = ["goals", "mysteries", "obligations", "brewing_troubles", "opportunities", "goal_impediments"]
-PRESENT_KINDS = ["immediate_goals", "present_danger"]
+PRESENT_KINDS = ["present_danger"]
 
 WAVES = (
-    ("present_matters", "obligations", "goals"),
+    ("present_matters", "goals"),
     ("brewing_troubles", "goal_impediments"),
     ("opportunities",),
-    ("mysteries", "new_assets"),
+    ("obligations", "mysteries", "new_assets"),
     ("revelations",),
     ("developments",),
 )
@@ -23,7 +23,7 @@ ASSET_MATTER_KINDS = ("goals", "goal_impediments", "opportunities")
 
 DEPENDENCIES = {
     "present_matters": (),
-    "obligations": (),
+    "obligations": ("goals", "goal_impediments", "opportunities"),
     "brewing_troubles": ("goals",),
     "goal_impediments": ("goals",),
     "new_assets": ASSET_MATTER_KINDS,

@@ -46,9 +46,12 @@ from .session_pipeline import generate_player_introductions as player_introducti
 from .session_pipeline import isolate_new_speakers as isolate_new_speakers_pipeline
 from .session_pipeline import legacy_import as legacy_import_pipeline
 from .session_pipeline import name_corrections as name_corrections_pipeline
+from .session_pipeline import post_session_matters as post_session_matters_pipeline
 from .session_pipeline import review_new_speaker_assignments as review_new_speaker_assignments_pipeline
 from .session_pipeline import seed_voice_samples as seed_voice_samples_pipeline
 from .session_pipeline import session_processing as session_processing_pipeline
+from .session_pipeline import session_summary as session_summary_pipeline
+from .session_pipeline import spoken_table_recap as table_recap_pipeline
 from .session_pipeline import suggest_spelling_corrections as suggest_spelling_corrections_pipeline
 from .session_pipeline import transcript_edits as transcript_edits_pipeline
 from .session_pipeline import transcript_sections as transcript_sections_pipeline
@@ -132,6 +135,7 @@ def _completes(
                     paths.ArtifactName.SCENE_LOG,
                     paths.ArtifactName.SUMMARY,
                     paths.ArtifactName.TABLE_RECAP,
+                    paths.ArtifactName.POST_SESSION_MATTERS,
                     *matters_pipeline.MATTERS.values(),
                 )
                 for name in names
@@ -943,25 +947,15 @@ class Application:
                 if prompt is PromptName.GENERATE_LEDGER:
                     resource_names += ("schema-first-session.json",)
                 resources = tuple(graph.SystemPromptInput(directory / filename) for filename in resource_names)
-                modules = (matters_pipeline, matters_pipeline.inputs) if matters else (narrative,)
-                if prompt is PromptName.GENERATE_LEDGER:
-                    modules += (narrative.ledger_inputs, narrative.ledger_render, generate_ledger_pipeline, transcript_sections_pipeline)
-                elif prompt is PromptName.GENERATE_SCENE_LOG:
-                    modules += (narrative.scene_inputs, narrative.scene_log_render)
-                # Shared renderer/transport changes also invalidate their consumers.
-                from .llm import llm_helper
-
-                modules += (llm_helper,)
-                implementation = (graph.SystemPromptInput(Path(__file__)),) + tuple(
-                    graph.SystemPromptInput(Path(module.__file__)) for module in modules
-                )
                 controls = {
                     "model": self._settings.llm_model_high,
                     "options": self._generation_options(matters=matters),
                     "timeout": self._settings.generate_artifacts.timeout,
                     "contract": narrative.CONTRACT_VERSION,
                 }
-                return resources + implementation + (graph.ValueInput("generation_controls", controls),)
+                if matters:
+                    controls["validation_retries"] = self._settings.generate_artifacts.matters_validation_retries
+                return resources + (graph.ValueInput("generation_controls", controls),)
 
             roster = [{"player_name": a.player_name, "roles": list(a.roles)} for a in sessions.list_attendance(session, item.id)]
             glossary_input = [
@@ -970,17 +964,15 @@ class Application:
             ]
             # Existing post-role producers also declare their real metadata and prompt inputs.
             campaign = session.get(Campaign, campaign_id)
-            for name, prompt, module, metadata in (
+            for name, prompt, metadata in (
                 (
                     names.TRANSCRIPT_SECTIONS,
                     PromptName.SECTION_TRANSCRIPT,
-                    transcript_sections_pipeline,
                     {"roster": roster, "bootstrap": previous is None},
                 ),
                 (
                     names.PLAYER_INTRODUCTIONS,
                     PromptName.GENERATE_PLAYER_INTRODUCTIONS,
-                    player_introductions_pipeline,
                     {
                         "roster": roster,
                         "glossary": glossary_input,
@@ -996,7 +988,6 @@ class Application:
                     graph.SystemPromptInput(path) for path in sorted(directory.iterdir()) if path.suffix in (".md", ".j2", ".json")
                 )
                 deps += (
-                    graph.SystemPromptInput(Path(module.__file__)),
                     graph.ValueInput("context", metadata),
                     graph.ValueInput(
                         "generation_controls",
@@ -1036,16 +1027,50 @@ class Application:
                         )
                 dependencies += bundle(matters_pipeline.PROMPTS[section], matters=True)
                 steps.append(graph.BuildStep(name, (ref(name), graph.FileRef(folder / f"{section}.evidence.json")), dependencies))
-            # Keep deferred output indicators/freshness; they are never scheduled for generation.
-            for name, prompt in ((names.SUMMARY, PromptName.SUMMARIZE_SESSION), (names.TABLE_RECAP, PromptName.GENERATE_TABLE_RECAP)):
-                steps.append(
-                    graph.BuildStep(
-                        name,
-                        (ref(name), graph.FileRef(folder / f"{name.value}.json")),
-                        (ref(names.SCENE_LOG), graph.ValueInput("generation_disabled", True)) + bundle(prompt),
-                    )
+            steps.append(
+                graph.BuildStep(
+                    names.POST_SESSION_MATTERS,
+                    (ref(names.POST_SESSION_MATTERS),),
+                    tuple(ref(matters_pipeline.MATTERS[key]) for key in post_session_matters_pipeline.INPUT_SECTIONS)
+                    + (
+                        graph.SystemPromptInput(post_session_matters_pipeline.SCHEMA_PATH),
+                        graph.ValueInput("session_id", str(item.id)),
+                    ),
                 )
-            for name in (names.LEDGER, names.SCENE_LOG, names.SUMMARY, names.TABLE_RECAP, *matters_pipeline.MATTERS.values()):
+            )
+            steps.append(
+                graph.BuildStep(
+                    names.SUMMARY,
+                    (ref(names.SUMMARY),),
+                    (
+                        ref(names.POST_SESSION_MATTERS),
+                        ref(names.SCENE_LOG),
+                        graph.SystemPromptInput(session_summary_pipeline.TEMPLATE_PATH),
+                        graph.ValueInput("campaign_name", campaign.name if campaign else None),
+                        graph.ValueInput("session_date", item.session_date.isoformat() if item.session_date else None),
+                    ),
+                )
+            )
+            steps.append(
+                graph.BuildStep(
+                    names.TABLE_RECAP,
+                    (ref(names.TABLE_RECAP),),
+                    (ref(names.SUMMARY),)
+                    + bundle(table_recap_pipeline.PROMPT)
+                    + (
+                        graph.ValueInput("table_recap_contract", table_recap_pipeline.CONTRACT_VERSION),
+                        graph.ValueInput("validation_retries", self._settings.generate_artifacts.table_recap_validation_retries),
+                    ),
+                )
+            )
+            for name in (
+                names.LEDGER,
+                names.SCENE_LOG,
+                names.SUMMARY,
+                names.TABLE_RECAP,
+                names.POST_SESSION_MATTERS,
+                *matters_pipeline.MATTERS.values(),
+            ):
                 if (folder / narrative.marker_name(name.value)).exists():
                     interrupted.add(ref(name))
             if (folder / paths.LEDGER_PAIR_MARKER).exists():
@@ -1335,6 +1360,7 @@ class Application:
                         paths.ArtifactName.SCENE_LOG,
                         paths.ArtifactName.SUMMARY,
                         paths.ArtifactName.TABLE_RECAP,
+                        paths.ArtifactName.POST_SESSION_MATTERS,
                         *matters_pipeline.MATTERS.values(),
                     ):
                         continue
@@ -1734,6 +1760,9 @@ class Application:
             paths.ArtifactName.TRANSCRIPT_SECTIONS: self.generate_transcript_sections,
             paths.ArtifactName.LEDGER: self.generate_ledger,
             paths.ArtifactName.SCENE_LOG: self.generate_scene_log,
+            paths.ArtifactName.POST_SESSION_MATTERS: self.generate_post_session_matters,
+            paths.ArtifactName.SUMMARY: self.generate_summary,
+            paths.ArtifactName.TABLE_RECAP: self.generate_table_recap,
             paths.ArtifactName.PLAYER_INTRODUCTIONS: self.generate_player_introductions,
             **{name: functools.partial(self.generate_matter, name=name) for name in matters_pipeline.MATTERS.values()},
         }
@@ -2709,9 +2738,22 @@ class Application:
                 self._settings.llm_model_high,
                 self._settings.generate_artifacts.timeout,
                 self._generation_options(matters=True),
+                validation_retries=self._settings.generate_artifacts.matters_validation_retries,
             )
         )
         self._record_completion(session_id, name, input_snapshot=snapshot)
+
+    @_completes(paths.ArtifactName.POST_SESSION_MATTERS)
+    def generate_post_session_matters(self, session_id: uuid.UUID) -> None:
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._session_folder(session, item)
+            sections = {}
+            for section in post_session_matters_pipeline.INPUT_SECTIONS:
+                self._require_current(session, item, matters_pipeline.MATTERS[section])
+                sections[section] = matters_pipeline.load(folder, section)
+        document = post_session_matters_pipeline.assemble(session_id, sections)
+        post_session_matters_pipeline.persist(folder, document)
 
     def _summary_source(self, session_id: uuid.UUID) -> tuple[Path, narrative.SceneLog]:
         with Session(self._engine) as session:
@@ -2723,15 +2765,57 @@ class Application:
             return folder, source
 
     def can_generate_summary(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
-        return False, matters_pipeline.DISABLED_MESSAGE
-
-    @_completes(paths.ArtifactName.SUMMARY)
-    def generate_summary(self, session_id: uuid.UUID, *, omit_stale_prior_recap: bool = False) -> None:
-        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
+        try:
+            with Session(self._engine) as session:
+                item = sessions.get_session(session, session_id)
+                for name in (paths.ArtifactName.POST_SESSION_MATTERS, paths.ArtifactName.SCENE_LOG):
+                    self._require_current(session, item, name)
+        except ValueError as exc:
+            return False, str(exc)
+        return True, None
 
     @_completes(paths.ArtifactName.TABLE_RECAP)
     def generate_table_recap(self, session_id: uuid.UUID) -> str:
-        raise ValueError(matters_pipeline.DISABLED_MESSAGE)
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.SUMMARY)
+            source = table_recap_pipeline.parse((folder / "summary.md").read_text("utf-8"))
+        self.require_credentials("llm_model_high")
+        markdown = asyncio.run(
+            table_recap_pipeline.generate(
+                source,
+                self._settings.llm_model_high,
+                self._settings.generate_artifacts.timeout,
+                self._generation_options(),
+                validation_retries=self._settings.generate_artifacts.table_recap_validation_retries,
+                folder=folder,
+            )
+        )
+        table_recap_pipeline.persist(folder, markdown)
+        return markdown
+
+    @_completes(paths.ArtifactName.SUMMARY)
+    def generate_summary(self, session_id: uuid.UUID, *, omit_stale_prior_recap: bool = False) -> str:
+        with Session(self._engine) as session:
+            item = sessions.get_session(session, session_id)
+            folder = self._require_current(session, item, paths.ArtifactName.POST_SESSION_MATTERS)
+            document = post_session_matters_pipeline.load(folder)
+            if document["session_id"] != str(session_id):
+                raise ValueError("Post-Session Matters belongs to a different Session.")
+            self._require_current(session, item, paths.ArtifactName.SCENE_LOG)
+            scene_log = narrative.SceneLog.load(folder)
+            if scene_log.session_id != session_id:
+                raise ValueError("Scene Log belongs to a different Session.")
+            campaign_name = campaigns.get_campaign(session, item.campaign_id).name
+            session_date = item.session_date
+        markdown = session_summary_pipeline.render(
+            session_summary_pipeline.prepare(document),
+            campaign_name=campaign_name,
+            session_date=session_date,
+            session_cue=scene_log.session_cue,
+        )
+        session_summary_pipeline.persist(folder, markdown)
+        return markdown
 
     def can_transcribe_audio(self, session_id: uuid.UUID) -> tuple[bool, str | None]:
         with Session(self._engine) as session:

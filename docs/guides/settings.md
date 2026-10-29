@@ -69,12 +69,14 @@ Choose **Continue**, or move focus out of an editable key field and press **C**,
 
 If a model test fails, Settings stays open and shows which model failed and why. Your settings are still saved even though the check failed, so correct the key or model ID and save again. The ElevenLabs key is not tested here; it is first used to upload audio during **Create Transcript**.
 
-## Table Recap Length
+## Table Recap Settings
 
-The deployed `.tablesage/settings.yaml` supports `generate_artifacts.recap_target_words` (default 450) and `generate_artifacts.recap_orientation_words` (default 50). Both must be positive and the orientation limit must be smaller than the total target, or set both to `null` to omit length guidance. The model receives these values as instructions; actual output can exceed them. Changing these settings makes existing Table Recaps out of date.
+The Summary-based Table Recap preserves all Summary content, so it ignores the legacy `generate_artifacts.recap_target_words` and `generate_artifacts.recap_orientation_words` settings. They remain accepted for compatibility. `generate_artifacts.table_recap_validation_retries` defaults to `1`, allowing one additional call after an invalid JSON, schema or layout response; set it to `0` to disable that retry. Authentication, transport and filesystem failures are not retried by this validation policy.
+
+`generate_artifacts.matters_validation_retries` defaults to `1`: each internal Matters call retries once if its response fails JSON, schema, ID or link validation. A second invalid response stops generation. Set it to `0` to disable this retry; other values are rejected. Each returned attempt is retained as generation evidence, and only valid results replace saved outputs. Provider or file-writing failures do not trigger this validation retry. Ledger and Scene Log keep their existing retry behavior.
 
 `generate_artifacts.model_options` passes provider-specific generation options to the narrative calls. High model selection and the generation timeout also affect narrative freshness. Settings schema version 2 introduces these fields; existing workspace settings are preserved and new fields receive defaults until saved.
 
 ## Artifact Generation Effort
 
-Ledger, Scene Log and the internal Matters categories use the configured **High model**. The deployed `generate_artifacts.narrative_effort` value is `high`; `generate_artifacts.matters_effort` is `medium`, matching the ported prompts. These stage values override `reasoning_effort` in `generate_artifacts.model_options`. Unsupported effort is reported as a generation failure; parameter dropping is disabled for these calls. Summary, Table Recap and Campaign preparation generation are temporarily paused.
+Ledger, Scene Log and the internal Matters categories use the configured **High model**. The deployed `generate_artifacts.narrative_effort` value is `high`; `generate_artifacts.matters_effort` is `medium`, matching the ported prompts. These stage values override `reasoning_effort` in `generate_artifacts.model_options`. Unsupported effort is reported as a generation failure; parameter dropping is disabled for these calls. Post-Session Matters assembly and Summary rendering use no model. Table Recap uses the same narrative model controls; campaign preparation generation remains temporarily paused.

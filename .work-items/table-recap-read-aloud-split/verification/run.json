@@ -1,0 +1,7 @@
+{
+  "model": "anthropic/claude-opus-5-5",
+  "source": "Synthetic representative Session Summary, not a live Campaign output",
+  "source_bullet_count": 16,
+  "non_closing_bullet_count": 13,
+  "prompt": "generate_spoken_table_recap"
+}

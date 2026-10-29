@@ -1,5 +1,9 @@
 # Narrative Artifact Contracts
 
+> **Table Recap amendment (2026-10-28):** The [Spoken Table Recap contract](../table-recap-read-aloud-split/specification.md) enables a separate LLM presentation step from the current Session Summary. It supersedes statements below that Table Recap is paused or consumes other source artifacts. The deterministic Summary and campaign preparation behavior are unchanged.
+
+This historical contract is superseded by the [Matters port](../port-tablesage-matters-artifacts/specification.md) and the [Deterministic Table Recap](../deterministic-table-recap/specification.md) contract. In particular, the current Table Recap consumes Post-Session Matters and uses no model.
+
 The application imports the selected Ledger, newer Scene Log candidate, approved bullet Session Summary, and provisional Table Recap candidate from the research workspace. Packaged resources are the runtime source of truth; the application never reads the external experiment directory.
 
 ## Pipeline and Sources

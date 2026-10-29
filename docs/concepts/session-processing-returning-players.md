@@ -12,7 +12,7 @@ The complete workflow is:
 6. **Spellcheck Against Glossary** — The user reviews proposed transcript corrections based on the Campaign's Glossary and player names.
 7. **Review Transcript** — The user confirms the text and speaker assignments for each utterance, forming the session record.
 8. **Assign Roles To Players** — The system attributes speech to character names and other Session Roles.
-9. **Generate Artifacts** — The system builds the Ledger, Scene Log, Table Recap, and Summary from the reviewed material.
+9. **Generate Artifacts** — The system builds the Ledger, Scene Log, Post-Session Matters, and Summary from the reviewed material.
 10. **Improve Player Voice Prints** — The user decides whether to add more samples from the reviewed transcript to improve recognition in future Sessions.
 
 
@@ -60,15 +60,15 @@ This connects the people who spoke to their identities in the game. Summaries an
 
 ## Generate Artifacts
 
-An LLM builds the Session's outputs through a sequence of dependencies:
+TableSage builds the Session's outputs through a sequence of dependencies:
 
-1. **Transcript Sections** locate opening context and the start of active play.
-2. The **Ledger** records current-session fiction. Only the first recorded Session also generates its bootstrap Situation.
-3. The **Scene Log** organizes Ledger entries into scenes and reconciles unresolved matters from the previous recorded Session’s Endcap.
-4. The **Table Recap** selects reminders from that Scene Log for reading aloud.
-5. The **Summary** generates scene bullets and copies the opening Situation, scene titles, and full Endcap exactly.
+1. An LLM creates **Transcript Sections** to locate opening context and the start of active play.
+2. An LLM builds the **Ledger** from current-session fiction. Only the first recorded Session also generates its bootstrap situation.
+3. An LLM organizes the Ledger into the **Scene Log**, using the preceding Session's Present Matters for continuity.
+4. The internal Matters producers extract and filter historical, present and open matters from the Scene Log and their declared prior inputs.
+5. Deterministic code combines those publications into **Post-Session Matters**, then renders a structured Markdown **Summary** of the Session that a Game Master can read aloud.
 
-Summary and Table Recap are independent presentations of the same Scene Log. The Summary does not insert a prior recap or Player Characters section. If prior continuity needs rebuilding, earlier Scene Logs are generated first. See [How Continuity Is Carried Forward](sessions.md#how-continuity-is-carried-forward).
+Summary copies titles and primary text without descriptions or evaluation metadata. The Matters producers already word that text to follow its Summary heading, so the Summary needs no additional model call. A subsequent LLM step turns the Summary into a second-person Table Recap, retaining all content and bullet sections and combining the current position and danger into closing prose. If prior continuity needs rebuilding, the dependency graph repairs the required earlier artifacts first. See [How Continuity Is Carried Forward](sessions.md#how-continuity-is-carried-forward).
 
 ## Improve Player Voice Prints
 

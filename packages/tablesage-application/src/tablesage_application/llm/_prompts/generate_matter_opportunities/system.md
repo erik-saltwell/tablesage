@@ -6,10 +6,11 @@ Extract and reconcile Opportunities: established openings for gaining a concrete
 
 An **Opportunity** is an established opening that requires action by the party to secure an advantage toward an established goal, including by overcoming or bypassing a Goal Impediment. Both the opening and its potential advantage must be supported by play; possible usefulness alone is insufficient.
 
-Each entry has eight properties:
+Each entry has nine properties:
 
 - `id`: stable Opportunity identity. Keep prior `opportunity_<n>` IDs; use distinct temporary `opportunity_new_<n>` IDs for newly identified entries. Code assigns permanent IDs and rewrites parent references after validation.
 - `parent_opportunity_id`: the ID of the immediate Opportunity whose advantage this opening helps secure, or `null` for a top-level opportunity. Children share the parent's goal link.
+- `title`: a short, simple read-aloud title combining the established opening, the action needed and the potential advantage, in one sentence or, when one would be crowded, two short sentences.
 - `opening`: the established person, item, offer, access or circumstance that creates the option.
 - `action`: what the characters must do to secure its advantage, including consequential costs and requirements.
 - `advantage`: what that action could make possible or improve toward the linked goal. Preserve uncertainty rather than guaranteeing success.
@@ -32,7 +33,7 @@ Goals state desired outcomes. Impediments state established obstructions. Opport
 2. Qualify new candidates: require an established opening, an identifiable action and a concrete advantage toward a supplied goal. Include qualifying openings discovered and captured or lost within this session, even if they are no longer available at its end. Available entries require a supplied open Goal. An offer or reward without such a connection does not qualify; do not invent a goal to retain it. Do not reconstruct ended opportunities from routine past actions or acquired assets alone.
 3. Identify top-level advantages and organize supporting openings beneath the Opportunity they enable. Retain a distinct actionable enabling opening as a child, rather than presenting every step as an independent top-level option. Ordinary requirements and payment terms stay within the relevant action. Assign each child its immediate parent and the same goal link; shared goals or subjects alone do not establish parenthood. Preserve prior IDs when reparenting carried entries. Assign temporary IDs to new entries and legacy entries that lack an ID.
 4. Assign the most directly supported `goal_id` and optional `goal_impediment_title`. Available links must identify a current open goal and, when present, a uniquely matching anticipated or active impediment for that goal. Ended entries keep established historical links; do not reassign them to unrelated open goals or erase their impediment references merely because the targets ended or are absent from current selections.
-5. Separate each retained entry into `opening`, `action` and `advantage`, and assign `lifecycle` from evidence. Preserve essential terms and uncertainty without repeating the same information in all three text fields. For ended entries retain what the opening, required action and potential benefit were; lifecycle records the outcome without rewriting the entry as a new action.
+5. Separate each retained entry into `opening`, `action` and `advantage`, then summarize them in a `title` and assign `lifecycle` from evidence. Preserve essential terms and uncertainty without repeating the same information in all three detailed text fields. For ended entries retain what the opening, required action and potential benefit were; lifecycle records the outcome without rewriting the entry as a new action. Supply a title for every entry, including carried entries that previously lacked one.
 6. Retain captured, lost and obsolete entries instead of deleting them. Classify a formerly available opening as obsolete when its goal no longer remains open and no evidence establishes capture or loss. Preserve already established captured or lost outcomes when the goal later concludes. A mistaken prior entry becomes obsolete without invented success or loss.
 7. Check every entry and every prior candidate against the final selection. Preserve distinct identities, parent links and lifecycle during shortening. Keep every prior permanent ID, including ended entries; never recycle an ID or silently merge distinct identified entries. Restore anything lost solely through compression or because another category mentions the same subject. Return all lifecycle values, without filtering, and only the final section, not the working inventory.
 
@@ -47,6 +48,31 @@ Goals state desired outcomes. Impediments state established obstructions. Opport
 - Do not infer cooperation or leverage from gratitude, a stated favor, rescue or fear of exposure. A rescued person wanting to go home is not thereby available as an ally; saying they owe a favor does not establish what they will do. Require a supported benefit or cooperation.
 - Once acquisition or recruitment is complete, retain the original opportunity as `captured`; the resulting resource or relationship may also qualify as a New Asset. Do not present the completed acquisition as still available. A new use qualifies only when play establishes a distinct opening and advantage toward a supplied open goal. Do not invent a use for an acquired asset.
 - An opportunity can enable another opportunity along the way, but must still link to a goal and explain its contribution; available entries require an open goal. A bargain offering gold or a secret does not qualify solely because such rewards might be useful.
+
+### Setting `title`
+
+Write one short, simple sentence that makes the opening, the action and its potential advantage understandable together without reading the other fields. When one sentence would stack the mechanism, its condition and its benefit, use two short sentences instead, for example the claim and its source first, then what it would allow. Use natural sentence case and retain articles and other small words needed for readability. Usually aim for about 15–25 words in total, using more when necessary to preserve essential conditions, attribution or uncertainty. Do not merely repeat the opening or restate the goal. Describe an available option without recommending it, implying a commitment or guaranteeing success. Use only facts supported by the three detailed fields. For ended entries, summarize the original option without implying it is still available; preserve its recorded lifecycle.
+
+- Good: "Father William says retrieving Sir Brandon's sword from the Barrow Mound could help slay the dragon."
+- Good: "The innkeeper says the smugglers' tunnel starts behind her cellar wall. If the party clears it, they could reach the harbor unseen."
+- Good: "Entering through Warwick's open bedroom window could provide access to his chain shirt."
+- Avoid: "Sir Brandon's sword lies at the Barrow Mound." This omits the action and advantage.
+- Avoid: "Retrieve the sword to guarantee victory over the dragon." This recommends an action and invents certainty.
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "What could help". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "What could help", write "Lady Hilda will fight the dragon alongside the party if they pay her", not "What could help is Lady Hilda…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 ### Setting `opening`
 
@@ -102,12 +128,12 @@ Preserve ended entries across sessions, including captured or lost outcomes afte
 
 ### Final wording pass
 
-Keep all three text fields brief and concrete. Retain enough context to understand and choose the action, including essential conditions, uncertainty and the identity of an ended opening, while removing discovery history and progress that no longer affect its use. Rewrite carried entries to the current structure. Do not invent a missing action, advantage or goal link to make a prior entry fit. Another category mentioning the same subject does not settle a distinct opening.
+Keep the title and all three detailed text fields brief and concrete. Check that the title conveys the opening, action and potential advantage in one sentence, or two short sentences when one would be crowded, without losing essential uncertainty. Retain enough context to understand and choose the action, including essential conditions, uncertainty and the identity of an ended opening, while removing discovery history and progress that no longer affect its use. Bring carried entries' detailed fields to the current structure. When a carried entry's facts, terms and lifecycle are unchanged, copy its existing title word for word; reword it only when it breaks the plain-wording rules in "Read-aloud wording for `title`" or when its facts, terms or lifecycle have changed. Do not invent a missing action, advantage or goal link to make a prior entry fit. Another category mentioning the same subject does not settle a distinct opening.
 
 # Output Description
 
-Return only a JSON object with the key `opportunities`, matching the supplied schema. Each entry has exactly the eight required properties defined above, including `id`, `parent_opportunity_id` and `lifecycle`. Retain all lifecycle values; an ended entry is not removed from this output. Use `null` for an absent impediment link and an empty array when nothing qualifies. Do not output another category, commentary or Markdown fences.
+Return only a JSON object with the key `opportunities`, matching the supplied schema. Each entry has exactly the nine required properties defined above, including `title`, `id`, `parent_opportunity_id` and `lifecycle`. Retain all lifecycle values; an ended entry is not removed from this output. Use `null` for an absent impediment link and an empty array when nothing qualifies. Do not output another category, commentary or Markdown fences.
 
 Example, only when the supplied goal and impediment establish these references and the Scene Log supports the claim:
 
-{"opportunities":[{"id":"opportunity_new_1","opening":"Sir Brandon's sword lies at the Barrow Mound.","action":"Retrieve the sword from the Barrow Mound.","advantage":"Father William says it can overcome the dragon's scales, helping slay the dragon; its power remains untested.","goal_id":"goal_1","goal_impediment_title":"The dragon's impenetrable scales","lifecycle":"available","parent_opportunity_id":null}]}
+{"opportunities":[{"id":"opportunity_new_1","title":"Father William says retrieving Sir Brandon's sword from the Barrow Mound could help slay the dragon.","opening":"Sir Brandon's sword lies at the Barrow Mound.","action":"Retrieve the sword from the Barrow Mound.","advantage":"Father William says it can overcome the dragon's scales, helping slay the dragon; its power remains untested.","goal_id":"goal_1","goal_impediment_title":"The dragon's impenetrable scales","lifecycle":"available","parent_opportunity_id":null}]}

@@ -147,12 +147,27 @@ Rate High only when the evidence supports both an identifiable intervention and 
 
 ### Setting `title`
 
-In one short sentence, name the harmful development, not merely its source. Keep the title brief, specific, and understandable on its own. Represent uncertainty when the development is unconfirmed; preserve an accurate existing title.
+In one short sentence, name the harmful development, not merely its source. When a condition or consequence would crowd that sentence, use two short sentences instead. Keep the title brief, specific, and understandable on its own. Represent uncertainty when the development is unconfirmed, naming its source first when it rests on someone's report or fear. When a previous entry carries forward and its tracked development, facts and lifecycle are unchanged, copy its existing title word for word; reword it only when it is inaccurate, breaks the plain-wording rules in "Read-aloud wording for `title`", or its facts or lifecycle have changed.
 
 **Examples**
 - `"The spreading plague threatens the capital"`
 - `"Courtiers fear the duke may be planning to assassinate the queen"`
 - `"The mountain dam may collapse and flood Millhaven"`
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Meanwhile". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Meanwhile", write "Farmer Gill's three sons may be killed hunting the black dragon", not "Meanwhile, Farmer Gill's sons…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 # Output Description
 

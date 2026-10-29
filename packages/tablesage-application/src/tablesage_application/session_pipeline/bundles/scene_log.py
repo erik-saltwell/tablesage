@@ -21,13 +21,10 @@ class PresentMatters:
     """The previous session's Present Matters, as written by Campaign Matters."""
 
     current_position: str
-    immediate_goals: list[str] = field(default_factory=list)
     present_danger: list[str] = field(default_factory=list)
 
     def to_passage(self) -> str:
         parts = [f"Current position: {self.current_position}"]
-        if self.immediate_goals:
-            parts.append("Immediate goals: " + " ".join(self.immediate_goals))
         if self.present_danger:
             parts.append("Present danger: " + " ".join(self.present_danger))
         return "\n".join(parts)

@@ -1,0 +1,10 @@
+Create the second-person Table Recap from this Session Summary. Preserve every bullet's content; combine only the final position and optional danger sections into closing prose.
+
+<session_summary>
+{{ summary_markdown }}
+</session_summary>
+
+Required non-closing sections and bullet counts, in order:
+{{ layout | tojson }}
+
+Return only {"sections": [{"heading": "copied heading", "bullets": ["rewritten bullet"]}], "closing": "combined position and danger prose"}.

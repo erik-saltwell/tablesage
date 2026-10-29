@@ -77,13 +77,29 @@ Require a consequential change to an earlier understanding supported by a suppli
 
 ### Setting `text`
 
-- Write one restrained, factual headline in the style of a New York Times news headline: concise, specific, informative, and understandable independently. Use title case and concrete verbs, usually about 8–16 words; use more words when essential to preserve attribution, uncertainty or a defining condition. Favor present tense where natural. Omit the terminal period. Use no exclamation marks, sensationalism, clickbait, puns, article body or explanatory follow-up sentence. State the knowledge rather than how it was learned, the action taken, or a matter's bookkeeping. Do not append matter IDs, explanatory relevance statements, or claims that a Mystery is now resolved.
+- Write one restrained, factual headline in the style of a New York Times news headline: concise, specific, informative, and understandable independently. Use sentence case and concrete verbs, usually about 8–16 words; use more words when essential to preserve attribution, uncertainty or a defining condition. Favor present tense where natural. Omit the final period. Use no exclamation marks, sensationalism, clickbait, puns, article body or explanatory follow-up sentence. When one headline would stack several clauses, you may add a second short sentence that carries an essential condition or attribution, never an explanation. State the knowledge rather than how it was learned, the action taken, or a matter's bookkeeping. Do not append matter IDs, explanatory relevance statements, or claims that a Mystery is now resolved.
+- Keep the concise headline structure, sentence case and formatting, but retain articles, pronouns, prepositions, auxiliary verbs and other small words needed for natural reading. Shorten by removing incidental content or choosing tighter wording, not by dropping grammatical words. Allow a few extra words rather than forcing telegraphic phrasing to meet the usual length. For example, prefer "The archivist says the seal was broken before the guests arrived" over "Archivist says seal broken before guests arrived". Do not expand the headline into a paragraph or change its supported meaning, attribution or certainty.
 - Preserve attribution when a finding rests on uncertain testimony, a suspicion, an opinion, or conflicting accounts. Do not turn an uncontested allegation into truth merely because nobody contradicted it. Strongly established knowledge can be stated directly.
 - For conflicting accounts, preserve the meaningful disagreement without deciding who is right. For audience-only disclosures, make character ignorance clear when needed to avoid implying the characters share the knowledge.
 - Keep details that change the finding's meaning or use, such as conditions, weaknesses, important limitations, or reasons for secrecy. Remove incidental precision, background, acquisition history, and route descriptions unless essential to the qualifying discovery.
 - When correcting a supported prior belief, identify what it replaces when needed to understand the reversal. Do not list rejected guesses merely because a Mystery was answered.
 - Another category mentioning the same fact does not disqualify it. State the independent knowledge without repeating that category's action, current trouble, or lifecycle narrative.
 - Player speculation alone does not establish new world knowledge. An established in-fiction suspicion or conflicting account may qualify as such; do not promote table guesses into evidence.
+
+### Read-aloud wording for `text`
+
+The Session Summary shows `text` as a bullet under the heading "You learned". At the table, the Game Master reads the heading aloud and then each bullet, so write `text` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "You learned", write "Bral hid the dwarves' hoard in the dragon's lair", not "You learned that Bral hid the hoard…" or "that Bral hid the hoard…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 ### Setting `inclusion_basis`
 
@@ -161,7 +177,7 @@ Example, assuming a supplied observatory Mystery and a supplied courier-rescue G
 {
   "revelations": [
     {
-      "text": "Watcher Reports Unidentified Visitor at Observatory's Locked Service Hatch",
+      "text": "A watcher reports an unidentified visitor at the observatory's locked service hatch",
       "inclusion_basis": "mystery_progress",
       "mystery_progress": "limited",
       "impact": "medium",
@@ -169,7 +185,7 @@ Example, assuming a supplied observatory Mystery and a supplied courier-rescue G
       "unexpectedness": "medium"
     },
     {
-      "text": "Courier Arranged Own Confinement, Contrary to Party’s Belief",
+      "text": "The courier arranged their own confinement, contrary to the party's belief",
       "inclusion_basis": "reframing",
       "mystery_progress": null,
       "impact": "high",

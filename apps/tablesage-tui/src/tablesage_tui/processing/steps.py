@@ -16,7 +16,7 @@ from tablesage_application.paths import ArtifactName
 from tablesage_application.players_from_session import Stage as EnhanceStage
 from tablesage_application.processing_steps import StepID
 from tablesage_application.session_pipeline import clean_transcript, transcribe_audio
-from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, GenerationTask
+from tablesage_application.session_pipeline.artifact_graph import GENERATION_LABELS, MODEL_GENERATED_ARTIFACTS, GenerationTask
 from tablesage_application.session_pipeline.extract_glossary import GlossaryProposal
 from tablesage_application.session_pipeline.suggest_spelling_corrections import SpellingSuggestion
 from textual_fspicker import Filters
@@ -366,6 +366,13 @@ async def approve_prior_rebuild(ctx: StepContext) -> StepResult:
 
 async def generate_artifacts(ctx: StepContext) -> StepResult:
     force = ctx.facts.pop("force", None)
+
+    def preflight() -> None:
+        plan = ctx.application.generation_plan(ctx.session_id, force=force)
+        if any(task.artifact_name in MODEL_GENERATED_ARTIFACTS for task in plan):
+            ctx.application.require_credentials("llm_model_high")
+
+    await ctx.call(preflight)
 
     def on_stage(task: GenerationTask, _completed: int, _total: int) -> None:
         ctx.progress(f"Generating {GENERATION_LABELS[task.artifact_name]}…")

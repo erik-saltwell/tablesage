@@ -85,7 +85,7 @@ Account for every supplied prior question in the complete response before downst
 - Reassess historical or misclassified entries under the current definition, assigning honest dimension ranks. Do not use `obsolete` to mean that an entry never qualified.
 - Merge a newly discovered candidate into its matching prior question rather than creating a duplicate. Keep distinct follow-up or independently answerable questions separate.
 
-Return each reconciled question once, alongside new candidates. This prompt uses no IDs: preserve continuity through the underlying question and recognizable wording, not by inventing identity fields.
+Return each reconciled question once, alongside new candidates. This prompt uses no IDs: preserve continuity through the underlying question, not by inventing identity fields. When a previous Mystery carries forward and its question is unchanged, copy its existing title word for word. Reword it only when it breaks the plain-wording rules in "Read-aloud wording for `title`" or when new evidence changes the question itself.
 
 ### Step 4: Establish Distinct Questions
 
@@ -125,6 +125,22 @@ Write one direct, neutral question that is understandable without the classifica
 - An unidentified sword alone does not support “What dark history does this sword conceal?”
 - Learning a guard's patrol time may be vital to a burglary, but practical importance alone does not make it a Mystery.
 - Contradictory accounts of why two siblings stopped speaking can support an interpersonal Mystery without danger or a large-scale plot.
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Still unanswered". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Still unanswered", write "Where did the new dragon near Brandonsford come from?", not "It is still unanswered where the dragon came from".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
+- A Mystery title stays one question. Keep it clear with short, direct wording rather than splitting it into two sentences.
 
 ### Setting `grounding`
 

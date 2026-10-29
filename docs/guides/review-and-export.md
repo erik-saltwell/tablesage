@@ -1,6 +1,6 @@
 # Generate and Export Session Outputs
 
-Processing currently generates **Ledger**, **Scene Log**, and ten internal Matters artifacts. Summary and Table Recap generation is temporarily paused; their UI entries and existing exports remain available. Hidden artifacts are omitted from **Regenerate Artifact** and **Export Artifact**, but the dependency graph rebuilds them when needed. Previously On and campaign preparation Opportunities are also temporarily unavailable.
+Processing generates **Ledger**, **Scene Log**, ten internal Matters artifacts, their visible **Post-Session Matters** JSON combination, and a deterministic Markdown **Summary** meant for reading aloud. A subsequent LLM step generates **Table Recap** from Summary for spoken delivery in the second person. Hidden artifacts are omitted from **Regenerate Artifact** and **Export Artifact**, but the dependency graph rebuilds them when needed. Previously On and campaign preparation Opportunities are also temporarily unavailable.
 
 Produce the documents you want to share with players or keep for reference, then export copies to a location you choose. Initial generation happens at the end of processing; you can return later to rebuild an output or refresh the Campaign.
 
@@ -13,12 +13,19 @@ Use different artifacts, depending on how you will use them.
 | Your task                                                                                               | Output to use                                                            |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Send players an account of the latest Session                                                           | **Summary**, the player-ready session summary                            |
-| Read a short recap of that Session at the table                                                         | **Table Recap**                                                        |
+| Read or paraphrase the latest Session recap to players | **Table Recap** |
 | Look up what happened and which facts were established                                                  | **Ledger**, exported as readable Markdown or structured JSON             |
+| Inspect or share the Session’s historical, present and open matters | **Post-Session Matters**, exported as JSON |
 | Check what was actually said in a session                                                               | **Role Transcript**                                                      |
 | Build a recap that highlights things in the campaign that are likely to be relevant in the next session | [Create Previously On](prepare-the-next-session.md#create-previously-on) |
 
-The **Scene Log** contains scenes, events, discoveries and scene/session cues. Separate internal Matters artifacts track Present Matters, Goals, Obligations, Brewing Troubles, Goal Impediments, Opportunities, Mysteries, New Assets, Revelations and Developments. Transcript Sections and optional Player Introductions remain internal artifacts. See [Session Artifacts](../concepts/sessions.md#session-artifacts) for more details about generated artifacts.
+The **Scene Log** contains scenes, events, discoveries and scene/session cues. Separate internal Matters artifacts track Present Matters, Goals, Obligations, Brewing Troubles, Goal Impediments, Opportunities, Mysteries, New Assets, Revelations and Developments. **Post-Session Matters** combines those ten stored publications in one JSON file without generating or rewriting their content. It appears in the artifact panel, regeneration choices and export list. Reassembling current inputs needs no model API key; missing or stale inputs may require model generation first. Transcript Sections and optional Player Introductions remain internal artifacts. See [Session Artifacts](../concepts/sessions.md#session-artifacts) for more details about generated artifacts.
+
+**Summary** uses the existing filtered titles and primary text without descriptions, details, IDs or ratings, under headings meant to be spoken: **Last session...**, **You learned**, **You gained**, **Your goals**, **Standing in your way**, **What could help**, **Still unanswered**, **Promises and debts**, **Meanwhile**, **As we return** and **The danger right now**. Empty groups are omitted. The Matters prompts word each entry in sentence case to read naturally after its heading. If Post-Session Matters is current, rendering or regenerating Summary needs no model API key. Export copies `summary.md`; no structured JSON companion is generated.
+
+**Table Recap** preserves every Summary section and bullet, addressing the player-character group as “you” while retaining individual character names. It combines the current position and any immediate danger into one closing prose passage under **As we return**. Generating it requires an LLM connection; exporting the existing Markdown does not. Regenerating Summary through the app also updates the dependent Table Recap.
+
+To regenerate only the Table Recap from a current Summary, run `tablesage regenerate-table-recap --campaign NAME --session NUMBER` from the workspace folder. This command requires model credentials and does not rebuild missing or stale prerequisites. `tablesage regenerate-session-summary` remains a direct, model-free Summary render; regenerate the Recap afterward if needed.
 
 ## Read the Artifacts Panel
 
@@ -48,13 +55,29 @@ You can stay on the Export screen and export several artifacts in a row. Two det
 
 ## Regenerate an Artifact
 
-Use this when you want TableSage to write an output again and the reviewed transcript is already correct and current. For example, regenerate **Summary** if you want another generation attempt based on the same accepted record.
+Use this when you want TableSage to write an output again and the reviewed transcript is already correct and current. For example, regenerate **Summary** after editing its Jinja template.
 
 1. On Session Detail, press **?** to open **Other actions**, then choose **Regenerate Artifact** (**R**).
 2. Choose what to rebuild: **Role Transcript**, **Transcript Sections**, **Ledger**, **Scene Log**, **Player Introductions**, **Table Recap**, or **Summary**.
 3. Confirm. TableSage rebuilds the artifact you chose and updates the outputs that depend on it.
 
 Regenerate Artifact is available only when the Session has a current reviewed transcript, because every generated output is built from it. A reviewed transcript explicitly accepted through a backed-up maintenance migration also meets this requirement; see [Processing State and Freshness](../reference/processing-state-and-freshness.md#explicitly-adopted-reviewed-transcripts). It runs as a normal processing run, so it can't overlap another one; if processing is already running, TableSage tells you to wait.
+
+## Regenerate Session Summary from the Terminal
+
+From your workspace directory (the folder containing `.tablesage/`), run:
+
+```sh
+tablesage regenerate-session-summary --campaign Brandonsford --session 001
+```
+
+Use the exact Campaign name and the Session sequence number. This archives any previous summary and replaces that Session’s `summary.md` using its current Post-Session Matters, existing Scene Log Session cue, recorded date, and the latest Jinja template, records completion and prints the output path. It opens no TUI and requires no model API key. Missing, stale or invalid inputs produce an error; the command does not rebuild upstream artifacts or call an LLM. The workspace database and settings must already be initialized for the installed version.
+
+For this source checkout, use its virtual environment’s `tablesage` executable. For example, from the repo’s `deployment/` directory:
+
+```sh
+../.venv/bin/tablesage regenerate-session-summary --campaign Brandonsford --session 001
+```
 
 ## Regenerate Every Session in a Campaign
 

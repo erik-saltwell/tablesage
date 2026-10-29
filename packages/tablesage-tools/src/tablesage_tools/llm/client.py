@@ -18,6 +18,8 @@ _ANTHROPIC_MODEL_METADATA = {
         "litellm_provider": "anthropic",
         "mode": "chat",
         "supports_native_structured_output": True,
+        "supports_reasoning": True,
+        "supports_adaptive_thinking": True,
         "max_output_tokens": 128_000,
         "max_input_tokens": 1_000_000,
     }
@@ -46,6 +48,42 @@ def _make_strict(value: Any) -> None:
     elif isinstance(value, list):
         for child in value:
             _make_strict(child)
+
+
+def _adapt_anthropic_schema(value: Any) -> None:
+    """Adapt schema features that Anthropic cannot reliably compile.
+
+    Regex and object-level conditional checks become guidance. Required fields,
+    types and enums still constrain decoding. Callers validate the
+    returned document against the untouched source schema, including these conditions.
+    Standalone unions (such as nullable fields) remain provider-enforced.
+    """
+    if isinstance(value, dict):
+        if "pattern" in value:
+            pattern = value.pop("pattern")
+            value["description"] = (value.get("description", "") + f" Must match this regular expression: {pattern}").strip()
+        if value.get("type") == "object" and "properties" in value and "anyOf" in value:
+            conditions = value.pop("anyOf")
+            guidance = "Must satisfy at least one of these additional constraints: " + json.dumps(conditions, ensure_ascii=False)
+            value["description"] = (value.get("description", "") + " " + guidance).strip()
+        types = value.get("type")
+        if isinstance(types, list) and set(types) == {"string", "null"} and isinstance(value.get("enum"), list):
+            # The provider rejects mixed-type enums attached to a type array.
+            # Typed alternatives retain the exact allowed string/null values.
+            alternatives = []
+            strings = [item for item in value["enum"] if isinstance(item, str)]
+            common = {key: item for key, item in value.items() if key not in {"type", "enum"}}
+            if strings:
+                alternatives.append({**deepcopy(common), "type": "string", "enum": strings})
+            if None in value["enum"]:
+                alternatives.append({**deepcopy(common), "type": "null"})
+            value.clear()
+            value["anyOf"] = alternatives
+        for child in value.values():
+            _adapt_anthropic_schema(child)
+    elif isinstance(value, list):
+        for child in value:
+            _adapt_anthropic_schema(child)
 
 
 def _json_shape(value: Any, *, depth: int = 0) -> dict[str, Any]:
@@ -125,6 +163,7 @@ async def call_llm(
     if provider == "anthropic" and model_name in _ANTHROPIC_MODEL_METADATA:
         # Older bundled LiteLLM catalogs omit this capability and fall back to forced tool use,
         # which Opus 5.5 rejects, and a tiny output budget that can be exhausted by thinking.
+        # Register adaptive thinking too so explicit effort reaches output_config.effort.
         # These are published model capabilities, not task-specific generation controls.
         # Keep LiteLLM's native defaults, schema conversion, and explicit max_tokens overrides.
         metadata = _ANTHROPIC_MODEL_METADATA[model_name]
@@ -157,6 +196,8 @@ async def call_llm(
         _remove_schema_keyword(response_schema, "discriminator")
         if strict_schema:
             _make_strict(response_schema)
+        if provider == "anthropic":
+            _adapt_anthropic_schema(response_schema)
     provider_response_format = (
         {
             "type": "json_schema",

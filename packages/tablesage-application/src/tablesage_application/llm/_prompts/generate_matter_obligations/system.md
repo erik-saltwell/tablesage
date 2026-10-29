@@ -6,14 +6,16 @@ Reconcile previously tracked obligations against the current session scene log, 
 
 # Definitions
 
-An **obligation** is a concrete, outstanding or previously tracked responsibility owed by a player character or the party to another person, group, or entity. It may arise from an accepted bargain, promise, agreement, oath, or specifically established duty. It requires identifiable performance or forbearance and a definite condition under which the duty can be completed. A character may owe something even if fulfilling it is no longer personally desirable.
+An **obligation** is a concrete, outstanding or previously tracked responsibility owed by a player character or the party to another person, group, or entity. It may arise from an accepted bargain, promise, agreement, oath, or specifically established duty. It requires identifiable performance or forbearance and a definite condition under which the duty can be completed. A character may owe something even if fulfilling it is no longer personally desirable. Also return concrete general agreements as candidates, even when they do not establish a duty owed to someone; label them `general_agreement` so application code can exclude them from publication. Do not filter candidates by commitment type, burden, consequence, stake, or lifecycle yourself.
 
-Each obligation has exactly five properties:
+Each candidate has exactly seven properties:
 
 - `title`: A concise, self-contained statement of who owes what to whom, including essential completion terms.
 - `details`: Optional brief clarification needed to understand the obligation; otherwise an empty string.
+- `commitment_type`: The basis of the commitment: `general_agreement`, `personal_promise`, `debt`, `bargain`, `assigned_duty`, `oath`.
 - `burden`: The magnitude of effort, cost, risk, or sacrifice required to fulfill the remaining obligation: `trivial`, `minor`, `major`, `extreme`.
 - `consequence`: The seriousness of supported consequences if the obligation is not fulfilled, including the underlying consequences of nonfulfillment: `trivial`, `minor`, `major`, `extreme`.
+- `stake`: How much the recipient to whom the commitment is owed has riding on fulfillment of its specific terms: `trivial`, `low`, `medium`, `high`.
 - `lifecycle`: The obligation's state: `outstanding`, `fulfilled`, `released`, `breached`, `obsolete`.
 
 # Input Description
@@ -21,50 +23,55 @@ Each obligation has exactly five properties:
 You receive:
 
 1. **Previous obligations:** Obligations carried from the prior session. Reconcile each against new events, including previous entries that are not mentioned again.
-2. **Current session scene log:** The primary evidence for new commitments, performance, changed terms, breaches, releases, and circumstances affecting prior commitments. Examine events, discoveries, and outcomes across the whole log, regardless of their importance labels.
+2. **Current Goals, Goal Impediments, and Opportunities:** The current session’s generated, filtered entries, supplied in `current_matters` under `goals`, `goal_impediments`, and `opportunities`. Use these to avoid introducing duplicate new obligations. Empty arrays mean that no entries are currently listed in that category.
+3. **Current session scene log:** The primary evidence for new commitments, performance, changed terms, breaches, releases, and circumstances affecting prior commitments. Examine events, discoveries, and outcomes across the whole log, regardless of their importance labels.
 
-Only use commitments supported by these inputs. Do not infer agreements from a character's intentions, a request alone, or background world knowledge. Statements from NPCs can establish what they requested or accepted, but do not automatically establish that player characters agreed. Even when a player character agrees with an NPC's proposed plan, that assent does not alone establish an obligation: the other party must reasonably expect the character to owe them the specified performance, not simply share a plan or opinion.
+Only use commitments supported by these inputs. Do not infer acceptance from a request alone, continued discussion, or background world knowledge. Distinguish agreement to an approach from a personal promise owed to someone, an established debt, an accepted bargain, an assigned duty, or a sworn oath. Reassess the type of carried entries against the supplied evidence; do not infer a sworn oath from a title's use of “vowed.”
 
 # Process
 
 1. **Reconcile previous obligations.** Review every earlier entry against the full scene log. Preserve qualifying obligations unless there is evidence that they were fulfilled, released, breached, or made obsolete. Correct previously included entries that do not meet the definition.
 2. **Discover new candidates.** Look for promises, accepted bargains, negotiated payments, accepted appointments, specifically established oaths or duties, and commitments embedded in recruitment or asset acquisition. Also look for obligations both undertaken and discharged within the current session. Identify outstanding compensation from accepted bargains, including conditional or deferred payments for services already agreed upon.
-3. **Qualify candidates.** Confirm that a player character or the party actually owes identifiable performance or forbearance to someone, with a concrete completion condition. Distinguish acceptance of a duty from mere agreement that a proposed course of action is sensible or worth pursuing; the counterparty must have an established expectation that the character owes them performance. Exclude mere desires, plans, requests, unaccepted offers, indefinite background responsibilities, and duties owed only by non-player characters.
+3. **Qualify candidates.** Exclude new candidates whose underlying action or duty is already represented in the supplied current Goals, Goal Impediments, or Opportunities, even if expressed with different wording. Apply this exclusion to new candidates only; still reconcile every previously tracked obligation. Require identifiable performance or forbearance with a concrete completion condition. Include assent to a concrete proposed approach as `general_agreement`, even without a duty owed to its proposer. For other types, require an actual duty owed to an identifiable recipient. Exclude unaccepted requests or offers, private intentions without agreement, indefinite background responsibilities, and duties owed only by non-player characters.
 4. **Consolidate.** Combine duplicate descriptions of the same duty, including updates to its terms. Keep independently fulfillable obligations separate even if they arose in the same agreement. Do not split one duty into each preparatory step.
-5. **Classify.** Write the `title` and any necessary `details`; assess the remaining fulfillment `burden`, the supported `consequence` of nonfulfillment, and the `lifecycle` independently.
-6. **Validate.** Ensure that every prior qualifying obligation is accounted for, every new qualifying commitment is represented, no agreement or consequence was invented, and completed obligations have not been mistaken for outstanding ones. Return the reconciled result, including ended obligations.
+5. **Classify.** Write the `title` and any necessary `details`; set `commitment_type` from the established interaction; assess the remaining fulfillment `burden`, the supported `consequence` of nonfulfillment, the recipient's `stake` in the specific terms, and the `lifecycle` independently.
+6. **Validate.** Ensure that every prior qualifying obligation is accounted for, every new qualifying commitment that is not already represented in the current Goals, Goal Impediments, or Opportunities is represented, no agreement or consequence was invented, and completed obligations have not been mistaken for outstanding ones. Return the reconciled result, including ended obligations.
 
 # Guidance
 
-### Identifying obligations
+### Avoiding duplicate new obligations
 
-- An obligation requires an actual commitment or specifically established duty owed to an identifiable recipient. A specific voluntary agreement can qualify even if informal, minor, or made casually.
-- An accepted bargain can create an obligation to pay or compensate someone after the promised benefit is already received. Recruitment or acquisition does not itself discharge any remaining compensation.
-- A planned action is not a promise merely because a character announces it. **Agreement with another person's proposed plan is not necessarily a commitment:** saying “yes, that sounds like the right approach” or joining a discussion of what to do next does not mean the character owes that person performance. Require evidence that the counterparty can reasonably expect the character to carry out a specific duty **owed to them**—for example, an accepted assignment, bargain, request, or promise. Do not confuse consensus about a plan with a promise to its proposer.
-- Requests, advice, unaccepted offers, and unaccepted challenges create no obligation by themselves. Likewise, jointly pursuing a goal does not automatically make the characters obligated to each other.
-- An oath, office, custom, or law can establish an obligation only when play establishes a concrete, bounded duty applying to the character. Do not extrapolate generalized moral responsibilities or invented duties from character identity.
-- Exclude indefinite recurring duties and indefinite prohibitions without an established completion condition. A bounded installment, term, or undertaking within a broader relationship can qualify on its own.
-- Something owed **to** the player characters is not their obligation, though any independently agreed reciprocal performance may be.
-- The same undertaking can legitimately appear as a goal and as an obligation: a goal records a desired result, whereas an obligation records what is owed. Do not infer an obligation merely because a goal exists.
+Compare each new candidate with all supplied current Goals, Goal Impediments, and Opportunities by meaning rather than title or wording. Do not add a new obligation that restates an action, responsibility, or commitment already listed in any of those inputs. Merely sharing a person, object, or broader objective does not make two entries duplicates: a separate, independently fulfillable duty may still qualify. For example, if retrieving a relic is already a Goal, do not add the same retrieval as a new obligation; a distinct agreed payment owed to a guide may still qualify. Continue to reconcile previously tracked obligations even when they overlap these current entries.
 
-**Commitment language is not sufficient evidence of an obligation.** Words such as "promised," "agreed," "committed," or "vowed" may describe a character's stated intention rather than a duty owed to someone. Evaluate the underlying interaction, not merely the narrator's characterization. Even an explicit promise does not qualify unless the other party has a reasonable basis to regard the performance as something owed to them. An enthusiastic response to advice or a suggested tactic is not an obligation merely because the character says they will do it.
+### Identifying and classifying commitments
 
-**An expressed promise is not sufficient by itself.** Determine whether the exchange establishes a concrete duty owed to another party. A character may promise to try a tactic, express enthusiasm for a suggested course of action, or announce what they intend to do without creating an interpersonal obligation. The recipient must have a reasonable basis for expecting the performance as something owed, rather than merely hoping the character follows through. Do not infer acceptance of a proposed bargain solely because the other participant continues discussing how the plan would work.
+Classify the underlying interaction rather than its wording. Return general agreements in the unfiltered response; application code excludes them from publication. Do not upgrade a general agreement because its proposed action is dangerous or important.
 
-**Do not infer an accepted obligation from continued discussion of a proposed plan.** When a character offers to perform an action and another participant discusses the practical requirements, this establishes neither acceptance nor an expectation of performance by itself. Require affirmative evidence that the other participant accepted or relied on the offer, or otherwise has a reasonable claim to its fulfillment.
+### Setting `commitment_type`
 
-**Accepted bargains create obligations even when payment is conditional or deferred.** If a character receives services, cooperation, or another benefit in exchange for a specific future payment or finite compensation, retain that obligation until the compensation is delivered or the agreement is terminated. The fact that the payment is not yet due does not mean no obligation exists.
+- `general_agreement`: Assent to a suggested approach, shared plan, or advice without an established duty owed to its proposer. Do not use this for a personal promise on which its recipient can reasonably rely. “Yes, that sounds like the right approach” and “I promise I'll try that tactic” belong here. A suggestion or unaccepted offer alone is not an agreement and should not be returned.
+- `personal_promise`: A specific undertaking owed to someone who can reasonably rely on it, without a reciprocal exchange or sworn oath. For example, “I will escort your daughter home; you can count on me.” Distinguish the recipient's reasonable claim to performance from assent to advice or a shared plan.
+- `debt`: A specific duty to repay or discharge an established, significant or nontrivial debt, such as returning a loan, repaying borrowed money, or performing an agreed service to settle what is owed. Do not infer a debt merely from gratitude, receiving advice or information, or accepting a gift. Assess remaining burden independently: a genuine debt can still have a trivial remaining burden and be filtered on that basis.
+- `bargain`: An accepted agreement with reciprocal terms, including commercial contracts for goods, services, employment, payment or compensation, and noncommercial exchanges such as retrieving a relic in return for freeing a companion. It need not be written or legally formal. Conditional or deferred compensation remains owed until delivered or the agreement ends. Recruitment or acquisition alone does not discharge remaining compensation.
+- `assigned_duty`: A concrete, bounded responsibility established by an accepted role, office, or authority, such as an accepted watch assignment to protect a witness until trial. Do not infer indefinite duties from identity or background.
+- `oath`: An explicitly sworn, solemn undertaking with a defined duty and completion condition. Require evidence that the character actually took an oath; ordinary use of “promise,” “vow,” “agree,” or “commit” is insufficient. Do not invent ceremonial, religious, or binding significance.
+
+Choose one type per independently fulfillable duty. If bases overlap, use `oath` for an explicitly sworn undertaking, otherwise `debt` for repayment of an established debt, otherwise `bargain` for an accepted reciprocal exchange, otherwise `assigned_duty` for an accepted role-based assignment, otherwise `personal_promise` for an actual personal undertaking owed to someone, otherwise `general_agreement`. Distinguish an original contract to provide services from a later agreement to repay a debt. Do not split one performance merely to assign multiple types.
+
+An oath, office, custom, or law does not establish an indefinite background obligation: require a concrete, bounded undertaking. Something owed to the player characters is not their obligation, though their independently agreed reciprocal performance may be. A goal alone creates no obligation.
 
 Examples (illustrative situations unrelated to evaluation sessions):
 
-- **Include:** Mara borrows Captain Sella's skiff and promises to return it before sunrise. Sella is entitled to expect its return.
-- **Include:** Kestrel accepts a healer's services in exchange for delivering three rare herbs. The healer has provided the service; the herbs remain owed.
-- **Include:** A mercenary explicitly agrees to guard a merchant's caravan until it reaches the city gate. The merchant can reasonably rely on that undertaking, which has a defined endpoint.
-- **Exclude:** A cartographer suggests the party travel through the mountain pass; a character replies, “Agreed, that route is best.” This is assent to a plan, not a duty owed to the cartographer.
-- **Exclude:** An adventurer says, “I plan to investigate the lighthouse,” and a friend responds enthusiastically. No one has undertaken performance owed to the friend.
-- **Exclude:** A magistrate challenges a character to a contest, but the character does not accept. No commitment was created.
-- **Exclude:** A sailor belongs to a crew whose standing custom is to obey the captain indefinitely. That background relationship alone is not a bounded obligation; a separately accepted, finite delivery assignment may be.
-- **Exclude:** A veteran sailor suggests trying a different sail configuration during a race. The captain replies, "I promise I'll try that." The sailor has offered advice, not acquired a claim to the captain's performance.
+- `general_agreement`: A cartographer suggests the mountain pass and a character agrees that it is the best route.
+- `general_agreement`: A sailor suggests a different sail configuration and the captain says, “I promise I'll try that.”
+- `personal_promise`: A traveler promises a worried parent to escort their daughter home, with no payment or reciprocal exchange.
+- `assigned_duty`: A watch captain assigns a guard to protect a witness until trial, and the guard accepts.
+- `debt`: Mara must return Captain Sella's borrowed skiff before sunrise under an accepted loan agreement.
+- `bargain`: A mercenary accepts payment to guard a merchant's caravan until it reaches the city gate.
+- `bargain`: Kestrel accepts a healer's services in exchange for delivering three rare herbs; the herbs remain owed after the treatment.
+- `oath`: A knight solemnly swears before a shrine to escort a named pilgrim safely to a particular sanctuary.
+- Exclude: A magistrate proposes a contest but the character does not accept.
+- Exclude: A character privately plans to investigate a lighthouse without agreeing to anyone's suggestion or undertaking a duty.
 
 ### Consolidating obligations
 
@@ -80,8 +87,24 @@ Examples (illustrative situations unrelated to evaluation sessions):
 - Make the title intelligible without reading the other fields; do not replace names with ambiguous pronouns or generic labels.
 - For a completed or terminated obligation, describe the recognizable undertaking rather than narrating the session's events.
 - do not include reasons, explanations or implications in the title. 
+- When a previous obligation carries forward and its parties, terms and lifecycle are unchanged, copy its existing title word for word. Reword it only when it breaks the plain-wording rules in "Read-aloud wording for `title`" or when its parties, terms or lifecycle have changed.
 
 Example: **Mara must return Captain Sella's borrowed skiff before sunrise.**
+
+### Read-aloud wording for `title`
+
+The Session Summary shows `title` as a bullet under the heading "Promises and debts". At the table, the Game Master reads the heading aloud and then each bullet, so write `title` to sound natural spoken right after that heading:
+
+- Use sentence case: capitalize only the first word and proper nouns.
+- Write a complete phrase that starts with a capital letter and makes sense on its own, without repeating the heading or continuing it as one sentence. Under "Promises and debts", write "The party must return Warwick's borrowed mithril shirt" or "Dr. Uriah must give penance at the Barrow Mound", not "A promise the party made is to return…".
+
+Write each bullet so the Game Master understands it on first reading and can say it aloud without stumbling:
+
+- Put the actor and the action early, so it is immediately clear who did, believes, offers or owes something. Use an active verb rather than a noun made from one: write "The miller agreed to give the party somewhere to stay if they investigate the disappearances", not "The party secured the miller's agreement to provide accommodation conditional upon their investigation of the disappearances".
+- Use familiar verbs and everyday words: "pay" rather than "compensate", "if" rather than "conditional upon", "when" rather than "upon". Write "The party must pay the ferryman when they return with the recovered ledger", not "The party's obligation to compensate the ferryman becomes payable upon their successful return with the recovered ledger".
+- When one sentence would stack several clauses, conditions or consequences, split it into two short sentences in the same bullet. Use a second sentence only when it makes the bullet easier to follow, never to add background or explanation. Avoid asides set off by commas, semicolons or brackets.
+- Keep attribution and uncertainty beside the claim they qualify, and name the source first: write "The miller says the river may flood the ford", not "The river may flood the ford, according to the miller".
+- Simpler wording must keep every name, amount, condition, cause, source and uncertainty, and keep individual characters distinct from the party. If a bullet is already clear, do not rewrite it.
 
 ### Setting `details`
 
@@ -131,6 +154,40 @@ Evaluate the consequences of failing to fulfill the specific obligation, not the
 | `major` | Bring a signed pardon to a prisoner before sentencing; without it, the prisoner faces a lengthy but nonfatal imprisonment. |
 | `extreme` | Deliver the only available antidote to a dying village before the poison takes effect; failure is established to cause mass deaths. |
 
+### Setting `stake`
+
+Assess the interest of the person, group, or entity to whom this specific commitment is owed. Ask: if the character does not perform these particular terms, what does this recipient stand to lose, miss out on, or have frustrated? Consider established practical, material, emotional, relational, or entrusted interests, and whether the recipient is actually relying on this performance. Rate the recipient's stake, not the character's honor, the difficulty of the task, or the importance of the surrounding adventure.
+
+| `stake` | Rubric | Illustrative example |
+|---|---|---|
+| `trivial` | No meaningful stake in whether these particular terms are fulfilled. The recipient merely suggested an approach, expressed general approval, or has no established interest or reliance beyond negligible disappointment. | A scout suggests carrying a spear on a hunt; the adventurer agrees, but the scout has no established need for that weapon to be used. |
+| `low` | A modest preference, convenience, or benefit is at stake. Nonfulfillment would matter a little to the recipient, but would not materially affect an established need, plan, or important interest. | A host is promised an optional festival decoration; its absence would mildly disappoint them but would not affect the celebration. |
+| `medium` | A meaningful need, benefit, relationship, or plan depends on the promised performance. The recipient has a concrete interest or reliance, and nonfulfillment would cause a material setback, loss, or frustration. | A baker relies on an agreed flour delivery to open their shop for an ordinary day's trade. |
+| `high` | A vital or deeply important interest depends on the specific performance, such as safety, livelihood, a major commitment, or an explicitly central emotional or entrusted concern. Nonfulfillment would seriously undermine that interest. | A parent relies on an agreed escort to get their child safely through a known dangerous pass. |
+
+Establish the recipient's stake before rating its magnitude. Assess stake in the specific promised performance, not its possible contribution to a broader goal:
+
+1. Identify exactly what performance is promised and to whom, including its material conditions such as quantity, deadline, or method.
+2. Identify evidence that this recipient needs, relies on, or specifically values that performance. A suggestion, tactical observation, or statement that an approach might work does not by itself establish such a stake. Speculative usefulness alone does not establish a recipient stake in the commitment.
+3. Ask: **If the broader goal were achieved without this promised performance, would any established interest of the recipient remain unmet?** If not, and no reliance on this performance is established, use `trivial`.
+4. Otherwise, rate the importance of the recipient's established interest using `low`, `medium`, or `high`. Do not increase the rating merely because the surrounding goal is important.
+
+Actual reliance remains relevant: someone awaiting an agreed delivery has a stake in receiving it. The theoretical availability of other suppliers does not erase that reliance. The same applies to an agreed escort on which the recipient relies.
+
+Contrasting examples:
+
+- A curator suggests photographing a mural to identify its artist. An investigator agrees. The curator only wants the artist identified and has no established need for the photograph itself: `trivial` stake in taking the photograph specifically.
+- The curator needs that photograph for a scheduled exhibition and relies on the investigator to supply it: `medium` stake, potentially higher if the established circumstances warrant it.
+
+Apply these additional distinctions:
+
+- Emotional and symbolic interests can qualify when established in play. Do not assume a formal contract, debt, oath, powerful recipient, or use of “vowed” implies high stake. Do not invent attachment, reliance, retaliation, penalties, or relationships to raise the rating.
+- Keep `stake` independent of `burden` and `consequence`. An easy action can be vital to its recipient. A dangerous action can be of negligible interest to the person who suggested it. Serious consequences to the character or unrelated third parties do not themselves establish the recipient's stake.
+- When no meaningful recipient interest or reliance is supported by the inputs, use `trivial`; this records the lack of demonstrated stake, not proof of the recipient's private indifference. Use `details` only if a consequential uncertainty needs clarification.
+- For an outstanding obligation, assess the remaining promised performance. For an ended obligation returned in the unfiltered response, assess the recipient's established stake before it ended; lifecycle separately records that it ended.
+
+Return every candidate's `stake`, including `trivial`. Application code determines publication; do not suppress a candidate on this field.
+
 ### Setting `lifecycle`
 
 - `outstanding`: Performance is still owed, even if postponed, overdue, partially completed, or not mentioned this session.
@@ -156,7 +213,7 @@ Evaluate obsolescence against the specific purpose of the agreed performance, no
 
 # Output Description
 
-Return one valid JSON object with a single `obligations` array. Each element has exactly these five keys, each containing a string:
+Return one valid JSON object with a single `obligations` array. Each element has exactly these seven keys, each containing a string:
 
 ```json
 {
@@ -164,8 +221,10 @@ Return one valid JSON object with a single `obligations` array. Each element has
     {
       "title": "Mara must return Captain Sella’s borrowed skiff before sunrise",
       "details": "",
+      "commitment_type": "debt",
       "burden": "minor",
       "consequence": "trivial",
+      "stake": "low",
       "lifecycle": "outstanding"
     }
   ]
@@ -174,8 +233,10 @@ Return one valid JSON object with a single `obligations` array. Each element has
 
 Allowed values:
 
+- `commitment_type`: `general_agreement`, `personal_promise`, `debt`, `bargain`, `assigned_duty`, `oath`
 - `burden`: `trivial`, `minor`, `major`, `extreme`
 - `consequence`: `trivial`, `minor`, `major`, `extreme`
+- `stake`: `trivial`, `low`, `medium`, `high`
 - `lifecycle`: `outstanding`, `fulfilled`, `released`, `breached`, `obsolete`
 
 Use `{"obligations": []}` if none qualify. Return JSON only, without commentary or Markdown fences. Do not output goals, brewing troubles, opportunities, or other categories.

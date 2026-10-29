@@ -20,6 +20,7 @@ class ArtifactName(Enum):
     LEDGER = "ledger"
     SCENE_BREAKDOWN = "scene_breakdown"
     SCENE_LOG = "scene_log"
+    POST_SESSION_MATTERS = "post_session_matters"
     PRESENT_MATTERS = "present_matters"
     OBLIGATIONS = "obligations"
     GOALS = "goals"
@@ -233,11 +234,18 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         "Scene Log",
         companion_filenames=("scene_log.md",),
     ),
+    ArtifactName.POST_SESSION_MATTERS: ArtifactSpec(
+        "post_session_matters.json",
+        ArtifactCategory.FROM_LOG,
+        should_show_in_ui=True,
+        display_name="Post-Session Matters",
+    ),
     ArtifactName.TABLE_RECAP: ArtifactSpec(
         "table_recap.md",
         ArtifactCategory.FROM_LOG,
         True,
         "Table Recap",
+        # Retained for cleanup of older structured recaps; the current output is Markdown only.
         companion_filenames=("table_recap.json",),
     ),
     ArtifactName.PLAYER_INTRODUCTIONS: ArtifactSpec(
@@ -257,7 +265,8 @@ ARTIFACTS: dict[ArtifactName, ArtifactSpec] = {
         ArtifactCategory.FROM_LOG,
         should_show_in_ui=True,
         display_name="Summary",
-        companion_filenames=("summary.json", SUMMARY_INPUTS_FILENAME),
+        # Legacy companions, including the retired phrasing record, remain available for cleanup only.
+        companion_filenames=("summary.phrasing.json", "summary.json", SUMMARY_INPUTS_FILENAME),
     ),
     # The post-generation offer to add this Session's voice clips to its players' voice samples, and its receipt.
     ArtifactName.VOICE_PRINT_DECISION: _section("Voice Print Decision"),

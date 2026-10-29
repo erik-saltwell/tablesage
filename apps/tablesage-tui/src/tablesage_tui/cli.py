@@ -1,7 +1,9 @@
-"""The `tablesage` command. With no command it launches the TUI; the commands only read the current folder's workspace.
+"""The `tablesage` command, operating on the current folder's workspace.
 
-The commands exist so a coding agent launched in a workspace can read TableSage's help and inspect the workspace.
-They are handled before any TUI startup work, so they never create settings, run migrations, or write logs.
+With no command it launches the TUI. Diagnostic commands are read-only and skip
+TUI startup, settings creation, migrations and logging. The explicit summary command
+renders Markdown without model calls; the explicit recap command calls an LLM
+using the current Summary. Neither rebuilds upstream artifacts.
 """
 
 from __future__ import annotations
@@ -38,8 +40,8 @@ def _parser() -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(
         prog="tablesage",
-        description="Run with no command to launch TableSage in the current folder. The commands below only read the "
-        "workspace in the current folder; they let a coding agent answer questions about TableSage.",
+        description="Run with no command to launch TableSage in the current folder. Commands inspect this workspace "
+        "or regenerate a Session Summary or Table Recap.",
     )
     commands = parser.add_subparsers(dest="command", metavar="<command>")
     commands.add_parser("report-help-topics", help="list the help topics with a one-line description of each")
@@ -50,6 +52,14 @@ def _parser() -> argparse.ArgumentParser:
     query.add_argument("sql", help="the SQL statement to run")
     query.add_argument("--max-rows", type=_positive_int, default=DEFAULT_MAX_ROWS, help=f"rows to print (default {DEFAULT_MAX_ROWS})")
     query.add_argument("--full-values", action="store_true", help=f"print values longer than {DEFAULT_MAX_CELL_CHARS} characters in full")
+    recap = commands.add_parser(
+        "regenerate-table-recap", help="generate a second-person Table Recap from one current Session Summary using an LLM"
+    )
+    recap.add_argument("--campaign", required=True, help="the Campaign's exact name")
+    recap.add_argument("--session", required=True, type=_positive_int, help="the Session sequence number, such as 001")
+    summary = commands.add_parser("regenerate-session-summary", help="regenerate one Session's Markdown Summary without model calls")
+    summary.add_argument("--campaign", required=True, help="the Campaign's exact name")
+    summary.add_argument("--session", required=True, type=_positive_int, help="the Session sequence number, such as 001")
     return parser
 
 
@@ -70,7 +80,11 @@ def _run(args: argparse.Namespace) -> int:
     version = app_version()
     # Flushed so the header still comes first when stdout is piped and an error goes to stderr.
     print(f"TableSage {version} · workspace {cwd}", flush=True)
-    if agent_files_enabled(cwd) and not guide_is_current(cwd, version):
+    if (
+        args.command not in {"regenerate-table-recap", "regenerate-session-summary"}
+        and agent_files_enabled(cwd)
+        and not guide_is_current(cwd, version)
+    ):
         print(
             f"Warning: the workspace agent guide is missing or out of date for TableSage {version}. "
             "Continuing with the installed application's commands and public help topics. "
@@ -82,8 +96,72 @@ def _run(args: argparse.Namespace) -> int:
         "output-help-topic": _output_help_topic,
         "report-schema": _report_schema,
         "run-query": _run_query,
+        "regenerate-table-recap": _regenerate_table_recap,
+        "regenerate-session-summary": _regenerate_session_summary,
     }[args.command]
     return command(cwd, args)
+
+
+def _regenerate_table_recap(cwd: Path, args: argparse.Namespace) -> int:
+    return _regenerate_session_artifact(cwd, args, recap=True)
+
+
+def _regenerate_session_summary(cwd: Path, args: argparse.Namespace) -> int:
+    return _regenerate_session_artifact(cwd, args, recap=False)
+
+
+def _regenerate_session_artifact(cwd: Path, args: argparse.Namespace, *, recap: bool) -> int:
+    import jinja2
+    import jsonschema
+    from sqlalchemy.exc import SQLAlchemyError
+    from tablesage_application import Application, paths
+    from tablesage_application.agent_help import database_revision
+    from tablesage_application.observability import configure_logging
+    from tablesage_model.setup import ensure_settings, expected_database_revision
+
+    from .resources import load_resource
+
+    label = "Table Recap" if recap else "Session Summary"
+    database = _database(cwd)
+    if database is None:
+        return 1
+    try:
+        if database_revision(database) != expected_database_revision():
+            raise ValueError("The database needs an upgrade. Open this workspace in TableSage first.")
+        if not (cwd / ".tablesage" / "settings.yaml").is_file():
+            raise ValueError("Workspace settings are missing. Open this workspace in TableSage first.")
+        settings = ensure_settings(cwd, load_resource("settings.yaml"))
+        configure_logging(cwd)
+        application = Application(cwd=cwd, settings=settings)
+        matches = [campaign for campaign in application.list_campaigns() if campaign.name == args.campaign]
+        if len(matches) != 1:
+            raise ValueError(f"Campaign not found: {args.campaign}")
+        sessions = [session for session in application.list_sessions(matches[0].id) if session.sequence_number == args.session]
+        if len(sessions) != 1:
+            raise ValueError(f"Session {args.session:03d} not found in Campaign {args.campaign}.")
+        session_id = sessions[0].id
+        if recap:
+            from tablesage_application.configuration import Configuration
+
+            Configuration(cwd)  # Load the same stored provider credentials as the TUI.
+            application.generate_table_recap(session_id)
+        else:
+            application.generate_summary(session_id)
+        artifact = paths.ArtifactName.TABLE_RECAP if recap else paths.ArtifactName.SUMMARY
+        destination = application.session_folder(session_id) / paths.ARTIFACTS[artifact].filename
+    except jsonschema.ValidationError as exc:
+        print(f"Cannot regenerate {label}: invalid input at {exc.json_path}: {exc.message}", file=sys.stderr)
+        return 1
+    except (OSError, ValueError, sqlite3.Error, SQLAlchemyError, jinja2.TemplateError) as exc:
+        print(f"Cannot regenerate {label}: {exc}", file=sys.stderr)
+        return 1
+    except Exception as exc:
+        if not recap:
+            raise
+        print(f"Cannot regenerate {label}: {exc}", file=sys.stderr)
+        return 1
+    print(f"Generated {destination}")
+    return 0
 
 
 def _docs_directory() -> Path | None:
