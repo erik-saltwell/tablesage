@@ -45,7 +45,7 @@ def test_review_acknowledgement_and_invalid_model_do_not_overwrite(configuration
     saved = configuration.save_settings(AppSettings())
     assert not configuration.needs_review(saved)
     before = configuration.settings_path.read_text()
-    assert yaml.safe_load(before)["settings_version"] == 1
+    assert yaml.safe_load(before)["settings_version"] == 2
     with pytest.raises(ValueError, match="llm_model"):
         configuration.save_settings(AppSettings(llm_model="groq/something"))
     assert configuration.settings_path.read_text() == before

@@ -104,8 +104,9 @@ def test_pair_persistence_keeps_sibling_provenance_and_downstream_outputs(tmp_pa
     assert (tmp_path / "summary.md").read_text() == "old summary"
     assert (tmp_path / "recap_summary.md").read_text() == "old recap"
     assert session_artifacts(tmp_path)[ArtifactName.SCENE_BREAKDOWN]
-    assert not ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].should_show_in_ui
-    assert ArtifactName.SCENE_BREAKDOWN not in exportable_artifacts(tmp_path)
+    assert ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].should_show_in_ui
+    assert ARTIFACTS[ArtifactName.SCENE_BREAKDOWN].display_name == "Scene Breakdown (Legacy)"
+    assert ArtifactName.SCENE_BREAKDOWN in exportable_artifacts(tmp_path)
     # The digest records joint-generation provenance, but sibling edits do not
     # make Scene Breakdown unusable.
     with (tmp_path / "ledger.json").open("a") as stream:

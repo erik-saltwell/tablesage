@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import uuid
-from datetime import date
 from pathlib import Path
 from typing import Any, cast
 
@@ -19,8 +18,7 @@ from tablesage_application.session_pipeline.scene_breakdown import (
     SceneBreakdownContent,
     persist_ledger_pair,
 )
-from tablesage_model.model import Campaign, GlossaryEntry, Player
-from tablesage_model.settings import AppSettings
+from tablesage_model.model import Campaign
 
 
 def _content() -> SceneBreakdownContent:
@@ -140,74 +138,25 @@ async def test_recap_provider_failure_is_not_retried(monkeypatch: pytest.MonkeyP
     assert calls == 1
 
 
-def test_application_generates_recap_without_automatically_invalidating_any_summary(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    application = Application(tmp_path, AppSettings(llm_model_high="high-model"))
+def test_paused_recap_generation_preserves_summaries_and_never_calls_provider(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from unittest.mock import AsyncMock
+
+    application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    application.update_campaign(campaign.id, None, "Blades in the Dark")
-    player = application.create_player(Player(name="Alice"))
-    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Zaria", description="a wizard"))
-    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Aldor", description=None))
-    game_session = application.create_session(campaign.id, "Session One", date(2026, 8, 18))
-    attendee = application.add_attendance(game_session.id, player.id)
-    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria"])
-    next_session = application.create_session(campaign.id, "Session Two", date(2026, 8, 25))
-    expected_ledger = _write_ledger(application, game_session.id)
-    session_folder = application.session_folder(game_session.id)
-    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    summary_path.write_text("stale summary\n", encoding="utf-8")
-    next_summary_path = application.session_folder(next_session.id) / ARTIFACTS[ArtifactName.SUMMARY].filename
-    next_summary_path.write_text("user-owned stale summary\n", encoding="utf-8")
-    captured: dict[str, object] = {}
-
-    async def _stub_generate_recap_summary(
-        scene_breakdown: str,
-        attendees: tuple[Attendee, ...],
-        glossary: tuple[GlossaryPromptEntry, ...],
-        campaign_name: str,
-        session_date: str | None,
-        game_system: str | None,
-        model: str,
-        timeout: float | None = None,
-    ) -> str:
-        captured.update(
-            scene_breakdown=scene_breakdown,
-            attendees=attendees,
-            glossary=glossary,
-            campaign_name=campaign_name,
-            session_date=session_date,
-            game_system=game_system,
-            model=model,
-        )
-        return "## Recap\n\n- The gate — The party entered the city.\n"
-
-    monkeypatch.setattr(module, "generate_recap_summary", _stub_generate_recap_summary)
-
-    result = application.generate_recap_summary(game_session.id)
-
-    recap_path = session_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename
-    assert result == "## Recap\n\n- The gate — The party entered the city.\n"
-    assert recap_path.read_text(encoding="utf-8") == result
-    assert summary_path.read_text(encoding="utf-8") == "stale summary\n"
-    assert next_summary_path.read_text(encoding="utf-8") == "user-owned stale summary\n"
-    assert captured == {
-        "scene_breakdown": expected_ledger,
-        "attendees": (Attendee(player_name="Alice", roles=("Zaria",)),),
-        "glossary": (
-            GlossaryPromptEntry(term="Aldor", description=None),
-            GlossaryPromptEntry(term="Zaria", description="a wizard"),
-        ),
-        "campaign_name": "Iron Pact",
-        "session_date": "2026-08-18",
-        "game_system": "Blades in the Dark",
-        "model": "high-model",
-    }
-    assert not (session_folder / ".recap_summary.tmp.md").exists()
+    current = application.create_session(campaign.id, "Session One")
+    following = application.create_session(campaign.id, "Session Two")
+    paths = [application.session_folder(item.id) / "summary.md" for item in (current, following)]
+    for path in paths:
+        path.write_text("existing summary\n")
+    call = AsyncMock()
+    monkeypatch.setattr(module, "generate_recap_summary", call)
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        application.generate_recap_summary(current.id)
+    assert all(path.read_text() == "existing summary\n" for path in paths)
+    call.assert_not_called()
 
 
-def test_application_preserves_existing_recap_and_summary_when_generation_fails(
+def test_paused_recap_generation_preserves_existing_recap_and_summary(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -226,7 +175,7 @@ def test_application_preserves_existing_recap_and_summary_when_generation_fails(
 
     monkeypatch.setattr(module, "generate_recap_summary", _failing_generate)
 
-    with pytest.raises(RuntimeError, match="provider failed"):
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
         application.generate_recap_summary(game_session.id)
 
     assert recap_path.read_text(encoding="utf-8") == "old recap\n"

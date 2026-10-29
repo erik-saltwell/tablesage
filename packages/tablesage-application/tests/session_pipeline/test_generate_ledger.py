@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,7 @@ from tablesage_application import Application
 from tablesage_application.llm import PromptName
 from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import generate_ledger as generate_ledger_module
+from tablesage_application.session_pipeline import narrative
 from tablesage_application.session_pipeline.generate_ledger import (
     Action,
     Attendee,
@@ -443,6 +445,7 @@ def test_application_can_generate_ledger_requires_role_transcript(tmp_path: Path
 def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_replaces_atomically(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    complete_campaign: Callable[[Application, uuid.UUID], None],
 ) -> None:
     application = Application(tmp_path, AppSettings(llm_model_high="test-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
@@ -468,51 +471,46 @@ def test_application_generate_ledger_reads_role_transcript_injects_metadata_and_
     captured: dict[str, object] = {}
 
     async def _stub_generate_ledger(
-        starting_context: tuple[RoutedUtterance, ...],
-        session_utterances: tuple[RoutedUtterance, ...],
-        known_roles: list[str] | tuple[str, ...],
-        attendees: tuple[Attendee, ...],
-        glossary: tuple[GlossaryPromptEntry, ...],
-        model: str,
-        timeout: float | None = None,
-    ) -> LedgerGenerationResponse:
-        captured.update(
-            starting_context=starting_context,
-            session_utterances=session_utterances,
-            known_roles=known_roles,
-            attendees=attendees,
-            glossary=glossary,
-            model=model,
+        inputs: narrative.ledger_inputs.LedgerPromptInputs, model: str, timeout: float, model_options: dict[str, Any], *, folder: Path
+    ) -> narrative.LedgerResponse:
+        captured.update(inputs=inputs, model=model, timeout=timeout, model_options=model_options)
+        return narrative.LedgerResponse(
+            starting_situation="The party wakes beside the river.",
+            ledger=_response(source="Narrator", asker="Alice", resolver="Alice").ledger,
         )
-        return _response(source="Narrator", asker="Alice", resolver="Alice")
 
-    monkeypatch.setattr(generate_ledger_module, "generate_ledger", _stub_generate_ledger)
+    monkeypatch.setattr(narrative, "generate_ledger", _stub_generate_ledger)
+    complete_campaign(application, campaign.id)
 
     application.generate_ledger(game_session.id)
 
     ledger_path = session_folder / ARTIFACTS[ArtifactName.LEDGER].filename
     ledger_markdown_path = session_folder / "ledger.md"
     ledger = Ledger.model_validate_json(ledger_path.read_text(encoding="utf-8"))
-    assert ledger.version == 4
+    assert ledger.version == 5
     assert ledger.session_id == game_session.id
     assert ledger.session_name == "Session One"
     assert ledger.attendees == (Attendee(player_name="Alice", roles=("Narrator", "Zaria")),)
-    assert captured == {
-        "starting_context": (RoutedUtterance(speaker="Narrator", text="The party wakes beside the river."),),
-        "session_utterances": (RoutedUtterance(speaker="Zaria", text="I light a signal fire."),),
-        "known_roles": ("Narrator", "Zaria"),
-        "attendees": (Attendee(player_name="Alice", roles=("Narrator", "Zaria")),),
-        "glossary": (GlossaryPromptEntry(term="Ashmoor", description="The blighted moorland."),),
-        "model": "test-model",
-    }
+    inputs = captured["inputs"]
+    assert isinstance(inputs, narrative.ledger_inputs.LedgerPromptInputs)
+    assert [(u.speaker, u.text) for u in inputs.starting_context or []] == [("Narrator", "The party wakes beside the river.")]
+    assert [(u.speaker, u.text) for u in inputs.session_utterances] == [("Zaria", "I light a signal fire.")]
+    assert [(a.player_name, a.roles) for a in inputs.attendees] == [("Alice", ["Narrator", "Zaria"])]
+    assert [(g.term, g.description) for g in inputs.glossary] == [("Ashmoor", "The blighted moorland.")]
+    assert captured["model"] == "test-model"
+    assert captured["model_options"] == {"reasoning_effort": "high", "drop_params": False}
     assert summary_path.read_text(encoding="utf-8") == "stale summary\n"
     assert recap_path.read_text(encoding="utf-8") == "stale recap\n"
-    assert ledger_markdown_path.read_text(encoding="utf-8") == ledger.to_markdown()
+    assert ledger_markdown_path.read_text(encoding="utf-8") == narrative.render_ledger(ledger)
     assert not (session_folder / ".ledger.tmp.json").exists()
     assert not (session_folder / ".ledger.tmp.md").exists()
 
 
-def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_application_generate_ledger_preserves_existing_artifacts_on_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    complete_campaign: Callable[[Application, uuid.UUID], None],
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
@@ -538,7 +536,8 @@ def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp
     async def _failing_generate_ledger(*args: object, **kwargs: object) -> LedgerGenerationResponse:
         raise RuntimeError("provider failed")
 
-    monkeypatch.setattr(generate_ledger_module, "generate_ledger", _failing_generate_ledger)
+    monkeypatch.setattr(narrative, "generate_ledger", _failing_generate_ledger)
+    complete_campaign(application, campaign.id)
 
     with pytest.raises(RuntimeError, match="provider failed"):
         application.generate_ledger(game_session.id)
@@ -549,7 +548,11 @@ def test_application_generate_ledger_preserves_existing_artifacts_on_failure(tmp
     assert not (session_folder / ".ledger.tmp.json").exists()
 
 
-def test_application_generate_ledger_rejects_stale_transcript_sections(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_application_generate_ledger_rejects_stale_transcript_sections(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    complete_campaign: Callable[[Application, uuid.UUID], None],
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
@@ -561,6 +564,7 @@ def test_application_generate_ledger_rejects_stale_transcript_sections(tmp_path:
         ]
     )
     _write_role_and_sections(session_folder, role_transcript)
+    complete_campaign(application, campaign.id)
     role_path = session_folder / ARTIFACTS[ArtifactName.ROLE_TRANSCRIPT].filename
     role_path.write_text(role_path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
     called = False
@@ -570,15 +574,15 @@ def test_application_generate_ledger_rejects_stale_transcript_sections(tmp_path:
         called = True
         return _response()
 
-    monkeypatch.setattr(generate_ledger_module, "generate_ledger", _stub_generate_ledger)
+    monkeypatch.setattr(narrative, "generate_ledger", _stub_generate_ledger)
 
-    with pytest.raises(ValueError, match="different role transcript"):
+    with pytest.raises(ValueError, match="Transcript Sections is stale"):
         application.generate_ledger(game_session.id)
 
     assert called is False
 
 
-def test_application_lazily_creates_and_exports_ledger_markdown(tmp_path: Path) -> None:
+def test_application_exports_ledger_markdown_without_rewriting_canonical_pair(tmp_path: Path) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
@@ -595,4 +599,4 @@ def test_application_lazily_creates_and_exports_ledger_markdown(tmp_path: Path) 
     application.export_ledger_markdown(game_session.id, destination)
 
     assert destination.read_text(encoding="utf-8") == ledger.to_markdown()
-    assert (session_folder / "ledger.md").read_text(encoding="utf-8") == ledger.to_markdown()
+    assert not (session_folder / "ledger.md").exists()

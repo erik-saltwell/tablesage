@@ -12,7 +12,8 @@ from tablesage_application.llm._prompts import read_prompt_template, read_system
 
 @dataclass
 class _SummaryPromptData:
-    ledger: str
+    opening_situation: str
+    scenes: str = "[]"
     attendees: list[dict[str, object]] = field(default_factory=list)
     glossary: list[dict[str, str | None]] = field(default_factory=list)
     campaign_name: str = "Iron Pact"
@@ -28,21 +29,20 @@ def test_read_system_prompt_and_template_for_summarize_session() -> None:
     system_prompt = read_system_prompt(PromptName.SUMMARIZE_SESSION)
     template = read_prompt_template(PromptName.SUMMARIZE_SESSION)
 
-    assert "# Overview" in system_prompt
-    assert "# Input Description" in system_prompt
-    assert "{{ ledger }}" in template
-    assert "{{ campaign_name }}" in template
+    assert "# Role" in system_prompt
+    assert "Scene Log" in system_prompt
+    assert "{{ opening_situation }}" in template
+    assert "{{ scenes }}" in template
 
 
 def test_read_system_prompt_and_template_for_generate_ledger() -> None:
     system_prompt = read_system_prompt(PromptName.GENERATE_LEDGER)
     template = read_prompt_template(PromptName.GENERATE_LEDGER)
 
-    assert "Ledger Format v4" in system_prompt
+    assert "# Overview" in system_prompt
     assert "`starting_situation`" in system_prompt
     assert "Ledger Format v3" not in system_prompt
     assert "<session_transcript>" not in system_prompt
-    assert "{% for role in known_roles %}" in template
     assert "{% for attendee in attendees %}" in template
     assert "{% for entry in glossary %}" in template
     assert "{{ starting_context }}" in template
@@ -111,7 +111,7 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
 
     result = await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
-        _SummaryPromptData(ledger='{"utterances": []}'),
+        _SummaryPromptData(opening_situation='{"utterances": []}'),
         model="anthropic/claude-sonnet-4-5",
         response_model=_SummaryResult,
     )
@@ -121,17 +121,16 @@ async def test_call_llm_with_prompt_renders_template_and_forwards_to_tools(monke
     assert captured["response_format"] is _SummaryResult
     assert captured["prompt_name"] == "summarize_session"
     assert '{"utterances": []}' in captured["user_prompt"]
-    assert "<glossary>" in captured["user_prompt"]  # glossary section is present even when empty
-    assert "Campaign: Iron Pact" in captured["user_prompt"]
-    assert "Game system: unspecified" in captured["user_prompt"]  # None renders as "unspecified", not the literal "None"
-    assert "Session date: unknown" in captured["user_prompt"]  # None renders as "unknown", not the literal "None"
+    assert "<opening_situation>" in captured["user_prompt"]
+    assert "<scenes>" in captured["user_prompt"]
     assert captured["system_prompt"] == read_system_prompt(PromptName.SUMMARIZE_SESSION)
 
 
 @pytest.mark.anyio
 async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: pytest.MonkeyPatch) -> None:
     class _PydanticPromptData(BaseModel):
-        ledger: str
+        opening_situation: str
+        scenes: str = "[]"
         attendees: list[dict[str, object]]
         glossary: list[dict[str, str | None]]
         campaign_name: str
@@ -156,7 +155,7 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
     await call_llm_with_prompt(
         PromptName.SUMMARIZE_SESSION,
         _PydanticPromptData(
-            ledger='{"utterances": []}',
+            opening_situation='{"utterances": []}',
             attendees=[{"player_name": "Alice", "roles": ["Zaria"]}],
             glossary=[
                 {"term": "Aldor", "description": None},
@@ -168,8 +167,8 @@ async def test_call_llm_with_prompt_accepts_pydantic_template_data(monkeypatch: 
         ),
     )
 
-    assert "- Aldor\n" in captured["user_prompt"]
-    assert "Eldoria: a kingdom" in captured["user_prompt"]
+    assert '{"utterances": []}' in captured["user_prompt"]
+    assert "<scenes>\n[]" in captured["user_prompt"]
     assert "None" not in captured["user_prompt"]
 
 
@@ -190,7 +189,7 @@ async def test_call_llm_with_prompt_uses_default_model(monkeypatch: pytest.Monke
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
 
-    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(ledger="x"))
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(opening_situation="x"))
 
     assert captured["model"] == DEFAULT_LLM_MODEL
 
@@ -212,7 +211,7 @@ async def test_call_llm_with_prompt_forwards_timeout(monkeypatch: pytest.MonkeyP
 
     monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", fake_call_llm)
 
-    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(ledger="x"), timeout=1200)
+    await call_llm_with_prompt(PromptName.SUMMARIZE_SESSION, _SummaryPromptData(opening_situation="x"), timeout=1200)
 
     assert captured["timeout"] == 1200
 

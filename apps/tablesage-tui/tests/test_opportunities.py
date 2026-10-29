@@ -82,24 +82,21 @@ async def test_generation_sends_complete_recap_and_settings(monkeypatch: pytest.
     assert call.call_args.kwargs["timeout"] == 123
 
 
-def test_application_revalidates_history_and_uses_deployed_settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_paused_application_opportunities_never_reads_history_or_calls_provider(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     from unittest.mock import AsyncMock
 
     from tablesage_application import Application, opportunities
     from tablesage_model.settings import AppSettings
 
     app = Application(tmp_path, settings=AppSettings(llm_model_high="provider/model", opportunities_timeout=123))
-    history = recap()
-    loader = MagicMock(return_value=history)
+    loader = MagicMock(side_effect=AssertionError("History must not be read while paused"))
     monkeypatch.setattr(app, "create_campaign_scene_recap", loader)
-    generate_mock = AsyncMock(return_value=result())
+    generate_mock = AsyncMock()
     monkeypatch.setattr(opportunities, "generate", generate_mock)
-    assert app.generate_opportunities(history.campaign_id, "Cross the river") == result()
-    generate_mock.assert_awaited_once_with(history, "Cross the river", "provider/model", 123)
-    loader.side_effect = ValueError("Scene Breakdown is stale")
-    with pytest.raises(ValueError, match="stale"):
-        app.generate_opportunities(history.campaign_id, "Cross the river")
-    assert generate_mock.await_count == 1
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        app.generate_opportunities(recap().campaign_id, "Cross the river")
+    loader.assert_not_called()
+    generate_mock.assert_not_called()
 
 
 @pytest.mark.anyio

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import os
 import time
+import uuid
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 
@@ -9,7 +11,7 @@ from sqlmodel import Session
 from tablesage_application import Application
 from tablesage_application.llm import PromptName, system_prompt_path
 from tablesage_application.paths import ARTIFACTS, ArtifactName
-from tablesage_application.session_pipeline import processing_state
+from tablesage_application.session_pipeline import campaign_matters, post_session_matters, processing_state, session_summary
 from tablesage_application.session_pipeline.artifact_graph import (
     ArtifactGraph,
     ArtifactRef,
@@ -166,7 +168,7 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         for step in graph.steps
         if step.folder == application.session_folder(game_session.id)
     }
-    assert prompt_paths_by_step == {
+    expected: dict[ArtifactName, tuple[Path, ...]] = {
         ArtifactName.IMPORT_REQUEST: (),
         ArtifactName.INPUT_AUDIO: (),
         ArtifactName.TRANSCRIPT: (),
@@ -187,115 +189,152 @@ def test_application_declares_every_llm_system_prompt_dependency(tmp_path: Path)
         ArtifactName.TRANSCRIPT_REVIEW_EDITS: (),
         ArtifactName.REVIEWED_TRANSCRIPT: (),
         ArtifactName.ROLE_TRANSCRIPT: (),
-        ArtifactName.TRANSCRIPT_SECTIONS: (system_prompt_path(PromptName.SECTION_TRANSCRIPT),),
-        ArtifactName.LEDGER: (system_prompt_path(PromptName.GENERATE_LEDGER),),
-        ArtifactName.PLAYER_INTRODUCTIONS: (system_prompt_path(PromptName.GENERATE_PLAYER_INTRODUCTIONS),),
-        ArtifactName.RECAP_SUMMARY: (system_prompt_path(PromptName.GENERATE_RECAP_SUMMARY),),
-        ArtifactName.SUMMARY: (system_prompt_path(PromptName.SUMMARIZE_SESSION),),
         ArtifactName.VOICE_PRINT_DECISION: (),
         ArtifactName.VOICE_PRINT_ENHANCEMENT: (),
     }
+    for name, prompt in {
+        ArtifactName.TRANSCRIPT_SECTIONS: PromptName.SECTION_TRANSCRIPT,
+        ArtifactName.PLAYER_INTRODUCTIONS: PromptName.GENERATE_PLAYER_INTRODUCTIONS,
+    }.items():
+        expected[name] = tuple(
+            path for path in sorted(system_prompt_path(prompt).parent.iterdir()) if path.suffix in (".md", ".j2", ".json")
+        )
+    for name, prompt in {
+        ArtifactName.LEDGER: PromptName.GENERATE_LEDGER,
+        ArtifactName.SCENE_LOG: PromptName.GENERATE_SCENE_LOG,
+        ArtifactName.TABLE_RECAP: PromptName.GENERATE_SPOKEN_TABLE_RECAP,
+        **{name: campaign_matters.PROMPTS[section] for section, name in campaign_matters.MATTERS.items()},
+    }.items():
+        resources = ("system.md", "template.j2", "schema.json") + (("schema-first-session.json",) if name is ArtifactName.LEDGER else ())
+        expected[name] = tuple(system_prompt_path(prompt).parent / resource for resource in resources)
+    expected[ArtifactName.POST_SESSION_MATTERS] = (post_session_matters.SCHEMA_PATH,)
+    expected[ArtifactName.SUMMARY] = (session_summary.TEMPLATE_PATH,)
+    assert prompt_paths_by_step == expected
 
 
-def test_application_plan_propagates_staleness_through_dependencies(tmp_path: Path) -> None:
+NARRATIVE_OUTPUTS = (
+    ArtifactName.LEDGER,
+    ArtifactName.SCENE_LOG,
+    ArtifactName.PRESENT_MATTERS,
+    ArtifactName.GOALS,
+    ArtifactName.BREWING_TROUBLES,
+    ArtifactName.GOAL_IMPEDIMENTS,
+    ArtifactName.OPPORTUNITIES,
+    ArtifactName.MYSTERIES,
+    ArtifactName.NEW_ASSETS,
+    ArtifactName.OBLIGATIONS,
+    ArtifactName.REVELATIONS,
+    ArtifactName.DEVELOPMENTS,
+    ArtifactName.POST_SESSION_MATTERS,
+    ArtifactName.SUMMARY,
+    ArtifactName.TABLE_RECAP,
+)
+
+
+def test_application_plan_propagates_staleness_through_dependencies(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = application.session_folder(game_session.id)
-    baseline = time.time_ns() + 1_000_000_000
-    _write_complete_session(folder, baseline)
-    _write_at(folder, ArtifactName.ROLE_TRANSCRIPT, baseline + 10)
-    _write_at(folder, ArtifactName.RECAP_SUMMARY, baseline + 20)
-    _write_at(folder, ArtifactName.SUMMARY, baseline + 20)
-
-    assert application.generation_plan(game_session.id) == (
-        GenerationTask(game_session.id, ArtifactName.TRANSCRIPT_SECTIONS),
-        GenerationTask(game_session.id, ArtifactName.LEDGER),
-        GenerationTask(game_session.id, ArtifactName.PLAYER_INTRODUCTIONS),
-        GenerationTask(game_session.id, ArtifactName.RECAP_SUMMARY),
-        GenerationTask(game_session.id, ArtifactName.SUMMARY),
-    )
+    _write_complete_session(folder, time.time_ns())
+    complete_campaign(application, campaign.id)
+    (folder / "role_transcript.json").write_text("changed role transcript")
+    plan = application.generation_plan(game_session.id)
+    assert set(plan) == {GenerationTask(game_session.id, name) for name in (ArtifactName.TRANSCRIPT_SECTIONS, *NARRATIVE_OUTPUTS)}
+    names = [task.artifact_name for task in plan]
+    assert names.index(ArtifactName.TRANSCRIPT_SECTIONS) < names.index(ArtifactName.LEDGER) < names.index(ArtifactName.SCENE_LOG)
+    assert names.index(ArtifactName.POST_SESSION_MATTERS) < names.index(ArtifactName.SUMMARY) < names.index(ArtifactName.TABLE_RECAP)
 
 
-def test_hand_edited_ledger_rebuilds_only_its_true_consumer(tmp_path: Path) -> None:
+def test_hand_edited_ledger_rebuilds_scene_log_and_downstream_matters(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = application.session_folder(game_session.id)
-    baseline = time.time_ns() + 1_000_000_000
-    _write_complete_session(folder, baseline)
-    _write_at(folder, ArtifactName.LEDGER, baseline + 10)
-
+    _write_complete_session(folder, time.time_ns())
+    complete_campaign(application, campaign.id)
+    (folder / "ledger.json").write_text("hand-edited ledger")
     states = application.session_artifact_states(game_session.id)
     assert states[ArtifactName.LEDGER] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.SCENE_BREAKDOWN] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.RECAP_SUMMARY] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.SUMMARY] is ArtifactStatus.STALE
-    assert application.generation_plan(game_session.id) == (GenerationTask(game_session.id, ArtifactName.SUMMARY),)
+    assert states[ArtifactName.TRANSCRIPT_SECTIONS] is ArtifactStatus.CURRENT
+    assert all(states[name] is ArtifactStatus.STALE for name in NARRATIVE_OUTPUTS if name is not ArtifactName.LEDGER)
+    assert set(application.generation_plan(game_session.id)) == {
+        GenerationTask(game_session.id, name) for name in NARRATIVE_OUTPUTS if name is not ArtifactName.LEDGER
+    }
 
 
-def test_hand_edited_scene_rebuilds_only_its_true_consumer(tmp_path: Path) -> None:
+def test_hand_edited_scene_log_rebuilds_matters_and_summary(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
     folder = application.session_folder(game_session.id)
-    baseline = time.time_ns() + 1_000_000_000
-    _write_complete_session(folder, baseline)
-    _write_at(folder, ArtifactName.SCENE_BREAKDOWN, baseline + 10)
-
+    _write_complete_session(folder, time.time_ns())
+    complete_campaign(application, campaign.id)
+    (folder / "scene_log.json").write_text("hand-edited scene log")
     states = application.session_artifact_states(game_session.id)
     assert states[ArtifactName.LEDGER] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.SCENE_BREAKDOWN] is ArtifactStatus.CURRENT
-    assert states[ArtifactName.RECAP_SUMMARY] is ArtifactStatus.STALE
-    assert states[ArtifactName.SUMMARY] is ArtifactStatus.CURRENT
-    assert application.generation_plan(game_session.id) == (GenerationTask(game_session.id, ArtifactName.RECAP_SUMMARY),)
+    assert states[ArtifactName.SCENE_LOG] is ArtifactStatus.CURRENT
+    expected = set(NARRATIVE_OUTPUTS) - {ArtifactName.LEDGER, ArtifactName.SCENE_LOG}
+    assert all(states[name] is ArtifactStatus.STALE for name in expected)
+    assert set(application.generation_plan(game_session.id)) == {GenerationTask(game_session.id, name) for name in expected}
 
 
-def test_glossary_changes_do_not_stale_session_artifacts(tmp_path: Path) -> None:
+def test_glossary_changes_stale_only_producers_that_consume_glossary(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
+    from tablesage_model.model import GlossaryEntry
+
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    baseline = time.time_ns() + 1_000_000_000
-    _write_complete_session(application.session_folder(game_session.id), baseline)
-    with Session(application._engine) as session:
-        stored = session.get(Campaign, campaign.id)
-        assert stored is not None
-        stored.glossary_updated_at = stored.glossary_updated_at.replace(year=stored.glossary_updated_at.year + 1)
-        session.commit()
-
+    _write_complete_session(application.session_folder(game_session.id), time.time_ns())
+    complete_campaign(application, campaign.id)
+    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Aldor", description="A wizard"))
     states = application.session_artifact_states(game_session.id)
-    assert all(status is ArtifactStatus.CURRENT for status in states.values())
+    assert states[ArtifactName.ROLE_TRANSCRIPT] is ArtifactStatus.CURRENT
+    assert states[ArtifactName.TRANSCRIPT_SECTIONS] is ArtifactStatus.CURRENT
+    assert states[ArtifactName.PLAYER_INTRODUCTIONS] is ArtifactStatus.STALE
+    assert all(states[name] is ArtifactStatus.STALE for name in NARRATIVE_OUTPUTS)
 
 
-def test_force_rebuilds_selected_step_and_its_downstream_consumers(tmp_path: Path) -> None:
+def test_force_rebuilds_selected_step_and_its_downstream_consumers(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    _write_complete_session(application.session_folder(game_session.id), time.time_ns() + 1_000_000_000)
-
-    assert application.generation_plan(game_session.id, force=ArtifactName.LEDGER) == (
-        GenerationTask(game_session.id, ArtifactName.LEDGER),
-        GenerationTask(game_session.id, ArtifactName.RECAP_SUMMARY),
-        GenerationTask(game_session.id, ArtifactName.SUMMARY),
-    )
+    _write_complete_session(application.session_folder(game_session.id), time.time_ns())
+    complete_campaign(application, campaign.id)
+    plan = application.generation_plan(game_session.id, force=ArtifactName.LEDGER)
+    assert set(plan) == {GenerationTask(game_session.id, name) for name in NARRATIVE_OUTPUTS}
+    assert plan[0] == GenerationTask(game_session.id, ArtifactName.LEDGER)
 
 
-def test_current_summary_plan_recursively_repairs_previous_session_recap(tmp_path: Path) -> None:
+def test_current_summary_plan_recursively_repairs_previous_matters(
+    tmp_path: Path, complete_campaign: Callable[[Application, uuid.UUID], None]
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     previous = application.create_session(campaign.id, "Previous", date(2026, 1, 1))
     current = application.create_session(campaign.id, "Current", date(2026, 1, 8))
-    baseline = time.time_ns() + 1_000_000_000
-    _write_complete_session(application.session_folder(previous.id), baseline)
-    _write_complete_session(application.session_folder(current.id), baseline + 20)
-    (application.session_folder(current.id) / ".summary-inputs.json").write_text(
-        f'{{"previous_session_id": "{previous.id}"}}\n', encoding="utf-8"
-    )
-    _write_at(application.session_folder(previous.id), ArtifactName.ROLE_TRANSCRIPT, baseline + 10)
-
-    assert application.generation_plan(current.id) == (
-        GenerationTask(previous.id, ArtifactName.TRANSCRIPT_SECTIONS),
-        GenerationTask(previous.id, ArtifactName.LEDGER),
-        GenerationTask(previous.id, ArtifactName.RECAP_SUMMARY),
-        GenerationTask(current.id, ArtifactName.SUMMARY),
+    for item in (previous, current):
+        _write_complete_session(application.session_folder(item.id), time.time_ns())
+    complete_campaign(application, campaign.id)
+    (application.session_folder(previous.id) / "role_transcript.json").write_text("changed transcript")
+    plan = application.generation_plan(current.id, force=ArtifactName.SUMMARY)
+    tasks = set(plan)
+    assert GenerationTask(previous.id, ArtifactName.PRESENT_MATTERS) in tasks
+    assert GenerationTask(previous.id, ArtifactName.LEDGER) in tasks
+    assert GenerationTask(previous.id, ArtifactName.TABLE_RECAP) not in tasks
+    assert GenerationTask(current.id, ArtifactName.SCENE_LOG) in tasks
+    assert GenerationTask(current.id, ArtifactName.SUMMARY) in tasks
+    assert GenerationTask(current.id, ArtifactName.TABLE_RECAP) in tasks
+    assert plan.index(GenerationTask(previous.id, ArtifactName.PRESENT_MATTERS)) < plan.index(
+        GenerationTask(current.id, ArtifactName.SCENE_LOG)
     )

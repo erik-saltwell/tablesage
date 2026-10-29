@@ -159,7 +159,7 @@ async def test_required_setup_cannot_escape_until_valid_save(configuration: Conf
         await pilot.press("c")
         await pilot.pause()
         assert not app.settings_review_required
-        assert app.application.settings.settings_version == 1
+        assert app.application.settings.settings_version == 2
         assert not isinstance(app.screen, SettingsScreen)
         assert not app.screen.query_one("#show-campaigns-command", CommandButton).disabled
         assert not app.screen.query_one("#show-players-command", CommandButton).disabled

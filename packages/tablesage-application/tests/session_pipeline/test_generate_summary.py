@@ -1,17 +1,18 @@
 from __future__ import annotations
 
+import json
 import uuid
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
+import jsonschema
 import pytest
 from tablesage_application import Application
 from tablesage_application.llm import PromptName
-from tablesage_application.paths import ARTIFACTS, ArtifactName
 from tablesage_application.session_pipeline import generate_summary as generate_summary_module
-from tablesage_application.session_pipeline.generate_ledger import Ledger, Narration
-from tablesage_application.session_pipeline.generate_player_introductions import PlayerIntroduction, PlayerIntroductions
+from tablesage_application.session_pipeline import session_summary
 from tablesage_application.session_pipeline.generate_summary import (
     PLAYER_INTRODUCTIONS_MARKER,
     RECAP_MARKER,
@@ -19,7 +20,7 @@ from tablesage_application.session_pipeline.generate_summary import (
     GlossaryPromptEntry,
     SummaryValidationError,
 )
-from tablesage_model.model import Campaign, GlossaryEntry, Player
+from tablesage_model.model import Campaign
 from tablesage_model.settings import AppSettings
 
 
@@ -75,119 +76,54 @@ async def test_generate_summary_rejects_empty_response(monkeypatch: pytest.Monke
     assert call_count == 3
 
 
-def test_application_generate_summary_reads_ledger_sorts_glossary_and_replaces_atomically(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+def test_application_generate_summary_reads_current_matters_and_scene_cue_without_model(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
 ) -> None:
     application = Application(tmp_path, AppSettings(llm_model_high="test-model"))
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    application.update_campaign(campaign.id, None, "Blades in the Dark")
-    player = application.create_player(Player(name="Alice"))
-    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Zaria", description="a wizard"))
-    application.create_glossary_entry(GlossaryEntry(campaign_id=campaign.id, term="Aldor", description=None))
-    previous_session = application.create_session(campaign.id, "Previous Session", date(2026, 8, 11))
     game_session = application.create_session(campaign.id, "Session One", date(2026, 8, 18))
-    attendee = application.add_attendance(game_session.id, player.id)
-    application.set_attendance_roles(game_session.id, attendee.attendance_id, ["Zaria"])
+    folder = summary_sources(application, game_session.id)
+    (folder / "summary.md").write_text("old summary\n")
+    (folder / "table_recap.md").write_text("existing recap\n")
+    complete_campaign(application, campaign.id)
 
-    session_folder = application.session_folder(game_session.id)
-    previous_folder = application.session_folder(previous_session.id)
-    ledger = Ledger(
-        session_id=game_session.id,
-        session_name="Session One",
-        starting_situation="The party stands before the gate.",
-        utterances=[Narration(type="narration", source="Game Master", fact="The gate opens.")],
-    )
-    expected_ledger_text = ledger.model_dump_json(indent=2) + "\n"
-    ledger.save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
-    (previous_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text(
-        "## Recap\n\n- The party escaped the flooded mine.\n",
-        encoding="utf-8",
-    )
-    (session_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text(
-        "## Recap\n\n- This current-Session Recap must not be inserted here.\n",
-        encoding="utf-8",
-    )
-    PlayerIntroductions(
-        session_id=game_session.id,
-        introductions=[PlayerIntroduction(character="Zaria", description="An elven wizard.")],
-    ).save(session_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename)
-    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    summary_path.write_text("old summary\n", encoding="utf-8")
-    captured: dict[str, object] = {}
+    def unexpected_model(*args: object, **kwargs: object) -> str:
+        raise AssertionError("Summary must remain model-free")
 
-    async def _stub_generate_summary(
-        ledger_text: str,
-        attendees: list[Attendee],
-        glossary: list[GlossaryPromptEntry],
-        campaign_name: str,
-        session_date: str | None,
-        game_system: str | None,
-        model: str,
-        timeout: float | None = None,
-    ) -> str:
-        captured.update(
-            ledger=ledger_text,
-            attendees=attendees,
-            glossary=glossary,
-            campaign_name=campaign_name,
-            session_date=session_date,
-            game_system=game_system,
-            model=model,
-        )
-        return f"# The Adventure\n\n{RECAP_MARKER}\n\n{PLAYER_INTRODUCTIONS_MARKER}\n\n## Starting Situation\n\n- At the gate.\n"
-
-    monkeypatch.setattr(generate_summary_module, "generate_summary", _stub_generate_summary)
-
-    application.generate_summary(game_session.id)
-
-    assert summary_path.read_text(encoding="utf-8") == (
-        "# The Adventure\n\n"
-        "## Recap\n\n"
-        "- The party escaped the flooded mine.\n\n"
-        "## Player Characters\n\n"
-        "- **Zaria** — An elven wizard.\n\n"
-        "## Starting Situation\n\n"
-        "- At the gate.\n"
-    )
-    assert captured["ledger"] == expected_ledger_text
-    assert captured["attendees"] == (Attendee(player_name="Alice", roles=("Zaria",)),)
-    captured_glossary = cast(list[GlossaryPromptEntry], captured["glossary"])
-    assert [entry.term for entry in captured_glossary] == ["Aldor", "Zaria"]
-    assert captured["campaign_name"] == "Iron Pact"
-    assert captured["session_date"] == "2026-08-18"
-    assert captured["game_system"] == "Blades in the Dark"
-    assert captured["model"] == "test-model"
-    assert not (session_folder / ".summary.tmp.md").exists()
+    monkeypatch.setattr("tablesage_application.llm.llm_helper.call_llm", unexpected_model)
+    result = application.generate_summary(game_session.id)
+    assert result.startswith("# Iron Pact\n")
+    assert "2026-08-18" in result and "The burning gate" in result
+    assert "- The party stands before the gate." in result
+    assert "- The gate is burning." in result
+    assert (folder / "summary.md").read_text() == result
+    assert (folder / "table_recap.md").read_text() == "existing recap\n"
+    assert any(path.read_text() == "old summary\n" for path in (folder / "legacy/narrative").rglob("summary.md"))
 
 
-def test_application_generate_summary_preserves_existing_summary_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_application_generate_summary_preserves_existing_summary_on_render_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    session_folder = application.session_folder(game_session.id)
-    Ledger(
-        session_id=game_session.id,
-        session_name="Session One",
-        starting_situation="The party stands before the gate.",
-        utterances=[Narration(type="narration", source="Game Master", fact="The gate opens.")],
-    ).save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
-    (session_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text("## Recap\n\n- Old recap.\n", encoding="utf-8")
-    PlayerIntroductions(session_id=game_session.id, introductions=[]).save(
-        session_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename
-    )
-    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    summary_path.write_text("old summary\n", encoding="utf-8")
+    folder = summary_sources(application, game_session.id)
+    (folder / "summary.md").write_text("old summary\n")
+    complete_campaign(application, campaign.id)
 
-    async def _failing_generate_summary(*args: object, **kwargs: object) -> str:
-        raise RuntimeError("provider failed")
+    def failing_render(*args: object, **kwargs: object) -> str:
+        raise RuntimeError("render failed")
 
-    monkeypatch.setattr(generate_summary_module, "generate_summary", _failing_generate_summary)
-
-    with pytest.raises(RuntimeError, match="provider failed"):
+    monkeypatch.setattr(session_summary, "render", failing_render)
+    with pytest.raises(RuntimeError, match="render failed"):
         application.generate_summary(game_session.id)
-
-    assert summary_path.read_text(encoding="utf-8") == "old summary\n"
-    assert not (session_folder / ".summary.tmp.md").exists()
+    assert (folder / "summary.md").read_text() == "old summary\n"
 
 
 @pytest.mark.parametrize(
@@ -288,116 +224,72 @@ def test_compose_summary_removes_recap_marker_when_there_is_no_previous_session(
     assert result == ("# Session\n\n## Player Characters\n\n- **Zaria** — A wizard.\n\n## Starting Situation\n- At the gate.\n")
 
 
-@pytest.mark.parametrize("sidecar", ["recap", "session", "character"])
-def test_application_preserves_existing_summary_when_sidecar_validation_fails(
-    sidecar: str,
+@pytest.mark.parametrize("source", ["matters-session", "scene-session", "malformed-matters"])
+def test_application_preserves_existing_summary_when_source_validation_fails(
+    source: str,
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
 ) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    previous_session = application.create_session(campaign.id, "Previous Session", date(2026, 8, 11))
     game_session = application.create_session(campaign.id, "Session One")
-    session_folder = application.session_folder(game_session.id)
-    previous_folder = application.session_folder(previous_session.id)
-    Ledger(
-        session_id=game_session.id,
-        session_name="Session One",
-        starting_situation="The party stands before the gate.",
-        utterances=[],
-    ).save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
-    recap = "" if sidecar == "recap" else "## Recap\n\n- The party arrived.\n"
-    (previous_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text(recap, encoding="utf-8")
-    introductions = PlayerIntroductions(
-        session_id=uuid.uuid4() if sidecar == "session" else game_session.id,
-        introductions=[
-            PlayerIntroduction(
-                character="Unknown" if sidecar == "character" else "Zaria",
-                description="An elven wizard.",
-            )
-        ],
-    )
-    introductions.save(session_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename)
-    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    summary_path.write_text("old summary\n", encoding="utf-8")
-
-    async def _valid_template(*args: object, **kwargs: object) -> str:
-        return f"# Session\n\n{RECAP_MARKER}\n\n{PLAYER_INTRODUCTIONS_MARKER}\n\n## Starting Situation\n- Ready.\n"
-
-    monkeypatch.setattr(generate_summary_module, "generate_summary", _valid_template)
-
-    with pytest.raises(ValueError):
+    folder = summary_sources(application, game_session.id)
+    (folder / "summary.md").write_text("old summary\n")
+    path = folder / ("scene_log.json" if source == "scene-session" else "post_session_matters.json")
+    document = json.loads(path.read_text())
+    if source == "malformed-matters":
+        del document["present_matters"]
+    else:
+        document["session_id"] = str(uuid.uuid4())
+    path.write_text(json.dumps(document))
+    complete_campaign(application, campaign.id)
+    expected_error = jsonschema.ValidationError if source == "malformed-matters" else ValueError
+    expected_message = {
+        "malformed-matters": "'present_matters' is a required property",
+        "matters-session": "Post-Session Matters belongs to a different Session",
+        "scene-session": "Scene Log identity or predecessor differs",
+    }[source]
+    with pytest.raises(expected_error, match=expected_message):
         application.generate_summary(game_session.id)
-
-    assert summary_path.read_text(encoding="utf-8") == "old summary\n"
-    assert not (session_folder / ".summary.tmp.md").exists()
+    assert (folder / "summary.md").read_text() == "old summary\n"
 
 
-def test_application_does_not_load_sidecars_before_marker_validation(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+def test_application_rejects_missing_matters_before_reading_scene_log(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tablesage_application.session_pipeline import narrative
+
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    session_folder = application.session_folder(game_session.id)
-    Ledger(
-        session_id=game_session.id,
-        session_name="Session One",
-        starting_situation="The party stands before the gate.",
-        utterances=[],
-    ).save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
-    (session_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text("unread recap", encoding="utf-8")
-    (session_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("unread introductions", encoding="utf-8")
 
-    async def _invalid_template(*args: object, **kwargs: object) -> str:
-        return "# Session without markers"
+    def unexpected_load(folder: Path) -> narrative.SceneLog:
+        raise AssertionError("Read Scene Log before checking Matters")
 
-    def _unexpected_load(path: Path) -> PlayerIntroductions:
-        raise AssertionError(f"Loaded sidecar before marker validation: {path}")
-
-    monkeypatch.setattr(generate_summary_module, "call_llm_with_prompt", _invalid_template)
-    monkeypatch.setattr(PlayerIntroductions, "load", _unexpected_load)
-
-    with pytest.raises(SummaryValidationError, match="all 3 attempts"):
+    monkeypatch.setattr(narrative.SceneLog, "load", unexpected_load)
+    with pytest.raises(ValueError, match="Post-Session Matters is missing"):
         application.generate_summary(game_session.id)
 
 
 def test_application_preserves_existing_summary_when_atomic_replace_fails(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
 ) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One")
-    session_folder = application.session_folder(game_session.id)
-    Ledger(
-        session_id=game_session.id,
-        session_name="Session One",
-        starting_situation="The party stands before the gate.",
-        utterances=[],
-    ).save(session_folder / ARTIFACTS[ArtifactName.LEDGER].filename)
-    (session_folder / ARTIFACTS[ArtifactName.RECAP_SUMMARY].filename).write_text(
-        "## Recap\n\n- The party arrived.\n",
-        encoding="utf-8",
-    )
-    PlayerIntroductions(session_id=game_session.id, introductions=[]).save(
-        session_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename
-    )
-    summary_path = session_folder / ARTIFACTS[ArtifactName.SUMMARY].filename
-    summary_path.write_text("old summary\n", encoding="utf-8")
+    folder = summary_sources(application, game_session.id)
+    (folder / "summary.md").write_text("old summary\n")
+    complete_campaign(application, campaign.id)
+    original_replace = Path.replace
 
-    async def _valid_template(*args: object, **kwargs: object) -> str:
-        return f"# Session\n\n{RECAP_MARKER}\n\n{PLAYER_INTRODUCTIONS_MARKER}\n\n## Starting Situation\n- Ready.\n"
+    def failing_replace(self: Path, target: Path) -> Path:
+        if Path(target) == folder / "summary.md":
+            raise OSError("replace failed")
+        return original_replace(self, target)
 
-    def _failing_replace(self: Path, target: Path) -> Path:
-        raise OSError("replace failed")
-
-    monkeypatch.setattr(generate_summary_module, "generate_summary", _valid_template)
-    monkeypatch.setattr(Path, "replace", _failing_replace)
-
+    monkeypatch.setattr(Path, "replace", failing_replace)
     with pytest.raises(OSError, match="replace failed"):
         application.generate_summary(game_session.id)
-
-    assert summary_path.read_text(encoding="utf-8") == "old summary\n"
-    assert not (session_folder / ".summary.tmp.md").exists()
+    assert (folder / "summary.md").read_text() == "old summary\n"

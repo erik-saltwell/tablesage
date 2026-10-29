@@ -5,17 +5,16 @@ import os
 import time
 import uuid
 from pathlib import Path
-from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
 from tablesage_application import Application
 from tablesage_application import previously_on as module
-from tablesage_application.llm import PromptName, llm_helper
+from tablesage_application.llm import llm_helper
 from tablesage_application.paths import ARTIFACTS, LEDGER_PAIR_MARKER, ArtifactName
 from tablesage_application.session_pipeline.scene_breakdown import LedgerRange, Scene, SceneBreakdown
 from tablesage_model.model import Campaign, GlossaryEntry
-from tablesage_model.settings import AppSettings, PreviouslyOnSettings
+from tablesage_model.settings import AppSettings
 
 
 def _breakdown(session_id: uuid.UUID, name: str = "At the gate") -> SceneBreakdown:
@@ -220,52 +219,28 @@ def _ready_campaign(tmp_path: Path) -> tuple[Application, uuid.UUID, tuple[Path,
     return app, campaign.id, tuple(folders)
 
 
-def test_history_uses_real_freshness_graph_without_mutating_campaign(tmp_path: Path) -> None:
+def test_paused_history_does_not_mutate_campaign(tmp_path: Path) -> None:
     app, campaign_id, folders = _ready_campaign(tmp_path)
-    # Opening any Session imports the campaign's pre-existing processing state once; history itself writes nothing.
-    app.session_artifact_states(app.list_sessions(campaign_id)[0].id)
     original = {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()}
-    history = app.previously_on_history(campaign_id)
-    assert [session.sequence_number for session in history.sessions] == [1, 2]
-    assert history.starting_situation == "Ending of Last session."
-    assert history.glossary[0].term == "George"
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        app.previously_on_history(campaign_id)
     assert {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()} == original
-    assert len(app.list_sessions(campaign_id)) == 2
 
 
-def test_campaign_scene_recap_brackets_every_scene_with_campaign_endpoints(tmp_path: Path) -> None:
-    app, campaign_id, _ = _ready_campaign(tmp_path)
+def test_campaign_scene_recap_brackets_every_scene_with_campaign_endpoints(history: module.CampaignHistory) -> None:
+    from tablesage_application.campaign_recap import create_campaign_scene_recap
 
-    recap = app.create_campaign_scene_recap(campaign_id)
-
+    campaign_id = uuid.uuid4()
+    recap = create_campaign_scene_recap(campaign_id, history)
     assert recap.campaign_id == campaign_id
     assert recap.campaign_name == "Brandonsford"
     assert recap.starting_situation == "Outside the gate."
-    assert [scene.title for scene in recap.scenes] == [
-        "Old warning 0",
-        "Old warning 1",
-        "Old warning 2",
-        "Old warning 3",
-        "Last session 0",
-        "Last session 1",
-        "Last session 2",
-        "Last session 3",
-    ]
-    assert set(recap.model_dump()["scenes"][0]) == {
-        "title",
-        "location",
-        "participants",
-        "situation",
-        "outcome",
-        "carry_forward",
-        "signature_detail",
-        "ledger_ranges",
-    }
-    assert recap.ending_situation == "Ending of Last session."
+    assert [scene.title for scene in recap.scenes] == [f"Session {session} {index}" for session in (1, 7) for index in range(4)]
+    assert recap.ending_situation == "Ending of Session 7."
 
 
 @pytest.mark.parametrize("problem", ["missing", "invalid", "incomplete", "stale", "interrupted", "wrong-session", "gap"])
-def test_history_blocks_any_bad_session_and_lists_all_affected(tmp_path: Path, problem: str) -> None:
+def test_paused_history_leaves_malformed_sessions_untouched(tmp_path: Path, problem: str) -> None:
     app, campaign_id, folders = _ready_campaign(tmp_path)
     for folder in folders:
         file = folder / "scene_breakdown.json"
@@ -291,45 +266,37 @@ def test_history_blocks_any_bad_session_and_lists_all_affected(tmp_path: Path, p
             file.write_text(json.dumps(value))
             timestamp = time.time_ns() + 2_000_000_000
             os.utime(file, ns=(timestamp, timestamp))
-    with pytest.raises(ValueError, match="Regenerate All Outputs") as exc:
+    before = {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()}
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
         app.previously_on_history(campaign_id)
-    assert "Session 001 — Old warning" in str(exc.value)
-    assert "Session 002 — Last session" in str(exc.value)
-    if problem == "invalid":
-        assert "Invalid JSON" in str(exc.value)
+    assert {file: file.read_bytes() for folder in folders for file in folder.iterdir() if file.is_file()} == before
 
 
-def test_empty_campaign_is_blocked(tmp_path: Path) -> None:
+def test_empty_campaign_preparation_is_paused(tmp_path: Path) -> None:
     app = Application(tmp_path)
     campaign = app.create_campaign(Campaign(name="Empty"))
-    with pytest.raises(ValueError, match="no Sessions"):
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
         app.previously_on_history(campaign.id)
 
 
-def test_application_settings_and_export_boundary(history: module.CampaignHistory, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    settings = AppSettings(
-        llm_model_high="chosen-model", previously_on=PreviouslyOnSettings(ingredient_timeout=11, scout_timeout=12, editor_timeout=13)
-    )
-    app = Application(tmp_path, settings)
+def test_paused_application_preparation_never_calls_provider(
+    history: module.CampaignHistory, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    call = AsyncMock(side_effect=AssertionError("Paused preparation must not call the provider"))
+    monkeypatch.setattr(module, "call_llm_with_prompt", call)
+    app = Application(tmp_path, AppSettings(llm_model_high="chosen-model"))
     refs = tuple(history.scene_catalog())
-    ingredients = _ingredients(refs[0])
-    responses = iter([ingredients.model_dump_json(), '{"recommendations": []}', "raw Markdown"])
-    calls: list[dict[str, Any]] = []
-
-    async def respond(prompt: PromptName, data: module.PromptData, model: str, **kwargs: Any) -> str:
-        calls.append({"prompt": prompt, "model": model, **kwargs})
-        return next(responses)
-
-    monkeypatch.setattr(module, "call_llm_with_prompt", respond)
-    assert app.previously_on_ingredients(history) == ingredients
-    app.previously_on_scout(
-        module.ScoutInput(history=history, starting_situation="Opening", upcoming_notes="Plan", selected_ingredients=())
-    )
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        app.previously_on_ingredients(history)
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        app.previously_on_scout(
+            module.ScoutInput(history=history, starting_situation="Opening", upcoming_notes="Plan", selected_ingredients=())
+        )
     target = tmp_path / "previously-on.md"
-    app.export_previously_on(module.editor_input(history, frozenset(refs), "Opening"), target)
-    assert target.read_text() == "raw Markdown"
-    assert [call["timeout"] for call in calls] == [11, 12, 13]
-    assert all(call["model"] == "chosen-model" for call in calls)
+    with pytest.raises(ValueError, match="Temporarily unavailable"):
+        app.export_previously_on(module.editor_input(history, frozenset(refs), "Opening"), target)
+    assert not target.exists()
+    call.assert_not_called()
     for path in (tmp_path / "wrong.txt", tmp_path / "campaigns" / "bad.md", tmp_path / "missing" / "recap.md"):
         with pytest.raises(ValueError):
             app.previously_on_destination(path)

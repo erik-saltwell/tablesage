@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import uuid
 import wave
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 from unittest.mock import MagicMock
@@ -199,63 +200,37 @@ def _can_process_session(application: Application, session_id: uuid.UUID) -> tup
         return session_pipeline.processing.can_process_session(session, session_id, session_folder)
 
 
-def test_can_generate_summary_requires_ledger(tmp_path: Path) -> None:
+def test_can_generate_summary_requires_current_matters_and_scene_log(
+    tmp_path: Path,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
     game_session = application.create_session(campaign.id, "Session One", date(2026, 1, 1))
-
-    enabled, reason = application.can_generate_summary(game_session.id)
-    assert not enabled
-    assert reason == "Generate the Ledger first."
-
-    folder = tmp_path / "campaigns" / "Iron Pact" / "001"
-    (folder / ROLE_TRANSCRIPT_FILENAME).write_text("{}")
-
-    enabled, reason = application.can_generate_summary(game_session.id)
-    assert not enabled
-    assert reason == "Generate the Ledger first."
-
-    (folder / LEDGER_FILENAME).write_text("{}")
-
-    enabled, reason = application.can_generate_summary(game_session.id)
-    assert not enabled
-    assert reason == "Generate Player Introductions first."
-
-    (folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("{}")
-
-    enabled, reason = application.can_generate_summary(game_session.id)
-    assert enabled
-    assert reason is None
-
-    next_session = application.create_session(campaign.id, "Session Two", date(2026, 1, 8))
-    next_folder = application.session_folder(next_session.id)
-    (next_folder / LEDGER_FILENAME).write_text("{}")
-    (next_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("{}")
-
-    enabled, reason = application.can_generate_summary(next_session.id)
-    assert not enabled
-    assert reason == "Generate the previous Session's Recap Summary first."
-
-    (folder / RECAP_SUMMARY_FILENAME).write_text("## Recap\n")
-
-    enabled, reason = application.can_generate_summary(next_session.id)
-    assert enabled
-    assert reason is None
+    assert application.can_generate_summary(game_session.id) == (False, "Post-Session Matters is missing; regenerate it first.")
+    folder = summary_sources(application, game_session.id)
+    complete_campaign(application, campaign.id)
+    assert application.can_generate_summary(game_session.id) == (True, None)
+    (folder / "present_matters.json").write_text('{"present_matters": {"current_position": "Elsewhere", "present_danger": []}}')
+    assert application.can_generate_summary(game_session.id) == (False, "Post-Session Matters is stale; regenerate it first.")
 
 
-def test_can_generate_summary_does_not_require_a_recap_from_an_undated_session(tmp_path: Path) -> None:
-    """Undated Sessions are never prior, so a following undated Session needs no recap."""
+def test_can_generate_summary_does_not_require_a_legacy_recap(
+    tmp_path: Path,
+    summary_sources: Callable[[Application, uuid.UUID], Path],
+    complete_campaign: Callable[[Application, uuid.UUID], None],
+) -> None:
     application = Application(tmp_path)
     campaign = application.create_campaign(Campaign(name="Iron Pact"))
-    application.create_session(campaign.id, "Session One")
-    next_session = application.create_session(campaign.id, "Session Two")
-    next_folder = application.session_folder(next_session.id)
-    (next_folder / LEDGER_FILENAME).write_text("{}")
-    (next_folder / ARTIFACTS[ArtifactName.PLAYER_INTRODUCTIONS].filename).write_text("{}")
-
-    enabled, reason = application.can_generate_summary(next_session.id)
-    assert enabled
-    assert reason is None
+    previous = application.create_session(campaign.id, "Session One")
+    current = application.create_session(campaign.id, "Session Two")
+    summary_sources(application, previous.id)
+    summary_sources(application, current.id)
+    complete_campaign(application, campaign.id)
+    for item in (previous, current):
+        (application.session_folder(item.id) / RECAP_SUMMARY_FILENAME).unlink(missing_ok=True)
+    assert application.can_generate_summary(current.id) == (True, None)
 
 
 def test_can_clean_session_requires_any_artifact(tmp_path: Path) -> None:
