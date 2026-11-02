@@ -269,6 +269,50 @@ Where a rule and a prompt disagree, the prompt is current behavior and the rule 
 - History: this rejects production's character-only boundary, which is kept as production behavior, not a rule to port.
 - Source: SRC-57
 
+### PREF-057
+**When a written bullet is split into shown `text` and stored `detail`, each heading's `text` keeps its essentials and the rest moves to `detail`.**
+- Status: on trial (pass 16 step 6b; not yet generated)
+- Rule: `detail` is stored, not discarded, so moving something there hides it from the players without losing it. `text` is rewritten from the information that stays as a natural sentence, not the original with words cut out; it keeps the meaning exactly and adds nothing. Per heading:
+  - **Last session...:** keep who did what, with whom, and the outcome. Move a second event that only adds what else happened; keep one that is important in its own right. Move deal amounts and terms an open bullet carries (PREF-048), a gain's properties beyond the one that makes it useful (PREF-038), traits beyond a short role, incidental setting, and learned content an open bullet states.
+  - **Your goals:** keep the outcome, reward amount and who offers it. Move leads and sources, reasons, descriptions of the thing wanted, how the reward is claimed, and doubts others raise about the reward or its giver.
+  - **Standing in your way:** keep the condition, its source, what it blocks and who claims it. Move a way past it (an opening, PREF-034), evidence or anecdotes, and why it exists.
+  - **What could help:** keep the short action, the advantage, who claims it and a limiting time window. Move contract terms (PREF-028), descriptions of the helper, conditions the helper sets, doubts about the advantage or the plan (including others' doubts), and explanation of how it works.
+  - **Still unanswered:** no specific guidance; keep the whole question. Compound questions that are really one mystery stay whole.
+  - **Promises and debts:** keep who owes whom, what, any amount still owed, a place central to the debt, and the completion condition. Move arrangements and logistics, what a payment is for, how the debt arose, descriptions of the person owed, and terms that only qualify or limit what is owed.
+  - **Meanwhile:** keep the source, the development, the established harm, possibility wording, who claims it, a location that puts it in the party's way, and a change that makes the danger grow. Move fixed abilities and limits, who in particular is at risk, descriptions of the source and how the harm was learned.
+  - Possibilities kept for later: always moving a second event in history; moving background clauses from questions.
+- User's words:
+  > I agree with all 7. For number one, I think we can start by saying that an important move should always stay, but maybe we should make a note that if this is then causing issues that I want to improve later, this is an opportunity.
+
+  > #4-date [safe] to move
+  > #5- move
+  > I approve all your choices otherwise
+
+  > #2- I am OK with it moving for now, but don't feel strongly about sorry it's
+  > Approve, Also, we need to make the change to step 6 to avoid the conflicting instructions when we make these other changes.
+
+  > Conditions: move
+  > Doubts: move
+  > I approve
+
+  > Note: about the prior mysteries section, I changed my mind and want to keep guidance as is (more or less no change) mysteries are chevron wishing all.
+
+  > 1 arrangements : move
+  > 2 move
+  > 3 move
+  > 4 move
+  > Limiting terms: move
+  > Where: keep it it is central to the debt
+
+  > Who-move
+  > Abilities and limits- I agree with your proposal.
+  > I agree with all your recommendations
+
+  > I am worried that this will lead to wierd sounding items.  is there a way to say 'split the text field into text and detail' while retaining the rest?
+- Note: the per-heading lists were the agent's recommendations, approved or adjusted by the user heading by heading. Moving others' doubts and caveats to `detail` narrows what PREF-009 keeps in shown text; the claim's own attribution and hedge still stay. "chevron wishing all" is a garbled dictation whose meaning was not recovered.
+- History: 2026-11-02, stated for pass 16's step 6b (SRC-61). Same day: the first draft's "only remove words, smallest grammatical repair" was replaced by rewriting `text` naturally from what stays, because the user worried cut-down bullets would sound weird.
+- Source: SRC-61
+
 ## Last session...
 
 ### PREF-039
@@ -279,6 +323,7 @@ Where a rule and a prompt disagree, the prompt is current behavior and the rule 
   - A noteworthy encounter deserves an event of its own even when its consequences are small and its incidental interest (such as a purchase) is not a goal. Hospitality, an established contact or a significant exchange of information can make it noteworthy. Preserve the encounter's context when its evidence is spread across threads. Do not force one bullet per scene or character, and do not repeat an event already told.
   - Historical value does not depend on Revelation eligibility: learning a useful location can be an event (EX-011 follow-up) even though it is not a Revelation.
   - Whether to publish low-impact changes with high lasting consequences is deferred (PREF-044).
+  - One moment is told once: when two history items share the same anchor beat, only one is shown (pass 17). Whether a lasting consequence must be established rather than possible is open (work item `established-lasting-consequences`).
 - User's words:
   > Developments represent the notable state changes in the state of the fiction that persist beyond the session.  This means changes like 'frank took damage' or 'alice moved down the stairs' or irrelevant because they are not likely to matter after a session ends.
 
@@ -286,13 +331,17 @@ Where a rule and a prompt disagree, the prompt is current behavior and the rule 
 
   > we lost any mention of dunk and farmer gill. Most of that is fine, but seems to deserve a development at least.
 
+  > I noticed that there's more than I had expected, and I want to know if you look at the JSON for those about their properties and which ones might be able to be filtered out or similar.
+
+  > Do A now, and add a woekitem to try b on all four sessions
+
   > agree this is not a revelation, but ok as a developments
 
   > Yes, I think it is a fine item to put into the last session or development section, although I think its omission is a relatively minor issue.
 - Severity: omitting a suitable encounter, such as an unaccepted challenge, was judged a relatively minor issue (SRC-60).
 - Evidence: EX-057 (Session 001 golden), EX-079, EX-069, EX-011; [ALW-005](allowances.md#alw-005), [ALW-006](allowances.md#alw-006)
-- History: originally (2026-10-26) Developments also excluded gains and discoveries covered by New Assets and Revelations; in the unified pipeline those are told here as events. 2026-11-01 (SRC-57): the user approved the general encounter-coverage remedy after EX-079.
-- Source: SRC-37, SRC-57, SRC-59, SRC-60
+- History: originally (2026-10-26) Developments also excluded gains and discoveries covered by New Assets and Revelations; in the unified pipeline those are told here as events. 2026-11-01 (SRC-57): the user approved the general encounter-coverage remedy after EX-079. 2026-11-02 (SRC-61): the user found Session 002's pass 16 history longer than expected and chose one item per anchor beat.
+- Source: SRC-37, SRC-57, SRC-59, SRC-60, SRC-61
 
 ### PREF-027
 **"Last session..." is in the past tense and in the order things happened.**

@@ -1,0 +1,109 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Brandon's magic sword needed to kill the dragon",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_47",
+    "beat_60",
+    "beat_79"
+   ],
+   "reason": "The sword thread is about the very item the dragon hunt would use."
+  },
+  {
+   "subject": "Location and distance of Brandon's Barrow Mound",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_13",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_48",
+    "beat_53",
+    "beat_80",
+    "beat_81"
+   ],
+   "reason": "The party seeks the Barrow first for the sword."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_77"
+   ],
+   "reason": "The chain-shirt thread is about the item itself, which the dragon hunt might use."
+  },
+  {
+   "subject": "Naggeneen captured in a bag behind Quinn's bar",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_15",
+    "beat_18",
+    "beat_39"
+   ],
+   "reason": "The Clurichen's fate and his release offer live on the thread about the creature."
+  },
+  {
+   "subject": "Gill's sons away hunting the dragon",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_6"
+   ],
+   "beats": [
+    "beat_2",
+    "beat_79"
+   ],
+   "reason": "The danger to the sons is part of the dragon threat, though their return affects the mule price."
+  },
+  {
+   "subject": "Brother Dirk's intentions and place in the party",
+   "home": "thread_15",
+   "other_threads": [
+    "thread_11",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_93",
+    "beat_94",
+    "beat_95"
+   ],
+   "reason": "Dirk's own thread is about the person himself."
+  },
+  {
+   "subject": "The giant on the route north",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_84",
+    "beat_91"
+   ],
+   "reason": "The giant's own thread comes before the Barrow journey it lies near."
+  },
+  {
+   "subject": "Ingrid's ability to make her own potions",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_52",
+    "beat_73"
+   ],
+   "reason": "Whether she can brew the potion matters most to the deal relying on it."
+  }
+ ]
+}

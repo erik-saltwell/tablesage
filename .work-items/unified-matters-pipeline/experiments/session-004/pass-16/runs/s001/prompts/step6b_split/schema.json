@@ -1,0 +1,40 @@
+{
+  "title": "SummarySplit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bullets"
+  ],
+  "properties": {
+    "bullets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Bullet"
+      }
+    }
+  },
+  "$defs": {
+    "Bullet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "detail",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detail": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

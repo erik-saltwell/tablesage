@@ -41,7 +41,7 @@ No unit-test files or test tooling were added. These checks verify deterministic
 
 ## First Complete Chained Run (2026-10-31)
 
-At the user's request, Sessions 001–004 were generated fresh in order and copied into [the pass 7 review index](../../../../../deployment/unified-review/12-PASS7/0-START-HERE.md). Summaries, Recaps, kept/dropped lists, Matters JSON and selection JSON are exact copies. Beats, threads and facts are also available as Markdown, with supporting beat text embedded for phone review. The root review guide links to this revision; earlier review files remain intact.
+At the user's request, Sessions 001–004 were generated fresh in order and copied into [the pass 7 review index](../../../../../deployment/unified-review/archive/12-PASS7/0-START-HERE.md). Summaries, Recaps, kept/dropped lists, Matters JSON and selection JSON are exact copies. Beats, threads and facts are also available as Markdown, with supporting beat text embedded for phone review. The root review guide links to this revision; earlier review files remain intact.
 
 The runner now supports all four Sessions and consistently loads the pass 7 seed, overriding the inherited special case that would have given Session 004 a hand-made seed. Seed high-water marks retain ended IDs. Each Session after 001 uses the preceding pass 7 result.
 
@@ -56,4 +56,4 @@ Generation exposed local adapter/validator mismatches: empty text fields must st
 
 `generation-verification.json` records successful checks of schemas/classifications, prior-state accounting, citations, deterministic selection replay, unchanged input hashes, exact output copies, full-text preservation in Markdown and review links. All Recap bullets meet the configured 35-word limit. This is structural verification; no full LLM faithfulness audit, output-quality score or user verdict has occurred.
 
-Unjudged observations: Hilda's offer is repeated in Session 001 and Session 002, and Session 002 retains more than one sword opportunity. Conservative content-preserving deduplication does not collapse paraphrases. Exact examples are preserved in [review notes](../../../../../deployment/unified-review/12-PASS7/run-notes.md) and the learnings; no prompt tuning was performed after seeing these outputs. The Last session cutoff remains unchanged and the separate low-impact/high-lasting investigation remains deferred.
+Unjudged observations: Hilda's offer is repeated in Session 001 and Session 002, and Session 002 retains more than one sword opportunity. Conservative content-preserving deduplication does not collapse paraphrases. Exact examples are preserved in [review notes](../../../../../deployment/unified-review/archive/12-PASS7/run-notes.md) and the learnings; no prompt tuning was performed after seeing these outputs. The Last session cutoff remains unchanged and the separate low-impact/high-lasting investigation remains deferred.

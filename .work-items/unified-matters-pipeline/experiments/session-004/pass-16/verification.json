@@ -1,0 +1,32 @@
+{
+ "passed": true,
+ "checks": [
+  "run16.py CLI imports without model calls; --from accepts 6b",
+  "step 6b schema valid and template renders",
+  "s001: recomputed step 5 selection equals pass 14's (version excluded)",
+  "s001: identity split makes one call, no problems or warnings, 18 bullets",
+  "s001: identity split renders summary.md byte-identical to pass 14's",
+  "s001: detail stored for every item in matters.json and absent from summary.md",
+  "s001: split.md and split.json written; added words reported as warnings",
+  "s001: truncated output is retried once, then missing bullets keep written text; count preserved",
+  "s001: retry success uses second response and records first failure",
+  "s001: invalid then reordered output keeps input order and all bullets",
+  "s002: recomputed step 5 selection equals pass 14's (version excluded)",
+  "s002: identity split makes one call, no problems or warnings, 28 bullets",
+  "s002: identity split renders summary.md byte-identical to pass 14's",
+  "s002: detail stored for every item in matters.json and absent from summary.md",
+  "s002: split.md and split.json written; added words reported as warnings",
+  "s002: truncated output is retried once, then missing bullets keep written text; count preserved",
+  "s002: retry success uses second response and records first failure",
+  "s002: invalid then reordered output keeps input order and all bullets"
+ ],
+ "method": "A throwaway script imported run16.py, stubbed the model call, and ran step 5, step 6b and step 7 on pass 14's copied inputs into a temporary folder. Nothing in this folder's runs/ was written.",
+ "changed_from_pass_14": [
+  "prompts/step6b_split/ (new)",
+  "prompts/step6_writing/system.md (Standing in your way: no way past the obstacle)",
+  "run16.py (from run14.py via run15.py: step 6b, step 7 detail storage, --from 6b, pass numbering)",
+  "generate.sh",
+  "README.md"
+ ],
+ "limits": "Offline contract, fallback and rendering checks only. No model generation; how the splitter actually splits is unassessed."
+}

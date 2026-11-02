@@ -52,7 +52,7 @@ These checks establish mechanics, not fresh model compliance or output quality. 
 
 ## Fresh Session 001–002 Generation
 
-The user requested both Sessions run and their summaries copied into unified-review. Generation completed as a fresh pass 8 chain; Session 002's seed retained all 18 prior facts with full classification metadata. Review copies are in [13-PASS8](../../../../../deployment/unified-review/13-PASS8/0-START-HERE.md). Source prompts, raw responses and artifacts remain under runs/. Summary lengths are 360 words (001) and 587 words (002).
+The user requested both Sessions run and their summaries copied into unified-review. Generation completed as a fresh pass 8 chain; Session 002's seed retained all 18 prior facts with full classification metadata. Review copies are in [13-PASS8](../../../../../deployment/unified-review/archive/13-PASS8/0-START-HERE.md). Source prompts, raw responses and artifacts remain under runs/. Summary lengths are 360 words (001) and 587 words (002).
 
 Session 001 produced 36 beats, 7 threads and 18 facts, showing 4 historical items and 9 open facts. Session 002 produced 91 beats, 14 threads and 51 facts, showing 7 historical items and 17 open facts. Both omit the duel and mule Goals, show Hilda once, and exclude held assets from open matters. Session 002 reconciled the sword and potion-plan pairs into two canonical opportunities. These are agent observations awaiting user judgment, not evidence all semantic failures are fixed.
 

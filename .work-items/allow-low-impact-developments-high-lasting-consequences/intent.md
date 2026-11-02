@@ -97,7 +97,7 @@ Source locations to verify when resuming:
 | Saved Session 001 baseline selection | [pass-6/runs/s001/selection.json](../unified-matters-pipeline/experiments/session-004/pass-6/runs/s001/selection.json) |
 | Saved Session 002 selection available on disk | [pass-6/runs/s002/selection.json](../unified-matters-pipeline/experiments/session-004/pass-6/runs/s002/selection.json) |
 | Earlier Sessions 003 and 004 experiment history | [pass-3/README.md](../unified-matters-pipeline/experiments/session-004/pass-3/README.md) |
-| Existing phone-review copies and navigation | [deployment/unified-review/0-START-HERE.md](../../deployment/unified-review/0-START-HERE.md) |
+| Existing phone-review copies and navigation | [deployment/unified-review/archive/0-START-HERE.md](../../deployment/unified-review/archive/0-START-HERE.md) |
 
 Experiment histories use different versions. Pass 4 documented that Sessions 003 and 004 had not been rerun under its rules; the pass 6 README describes a Session 001 run, although Session 002 artifacts also exist on disk. File existence is not proof that outputs form a complete, comparable four-Session baseline. Verify provenance rather than assuming every latest-looking file is comparable. Historical TODAY files represent production outputs, not an unchanged unified control run.
 

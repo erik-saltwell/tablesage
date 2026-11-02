@@ -20,7 +20,7 @@ The requested fresh chained Sessions 001–002 are complete. Session 002 receive
 
 Use run9.py with the same step1, step2, step2c, step3, check, chain and seed commands as pass 8. For each Session, generate steps 1–3, then chain (defaults to --from 3 for opportunity reconciliation through Recap). After s001, run seed s001 002 before generating s002. A new step2c run is mandatory for the scene candidates/new fields; old changes.json does not meet this contract. Resume behavior is otherwise inherited from pass 8. Preserve raw evidence before any targeted retries.
 
-Review destination: deployment/unified-review/14-PASS9/. Completed generation/copy results are recorded below.
+Review destination: deployment/unified-review/archive/14-PASS9/. Completed generation/copy results are recorded below.
 
 ## Verification Before Generation
 
@@ -30,7 +30,7 @@ Quality dimensions remain the existing qualitative rubric: Faithfulness, Continu
 
 ## Completed Generation and Review Copies
 
-Fresh Sessions 001–002 completed in order and are copied to [14-PASS9](../../../../../deployment/unified-review/14-PASS9/0-START-HERE.md). Summary, Recap, kept/dropped and JSON copies match the source bytes; supporting beats/threads/facts are rendered in Markdown for phone review. Root unified-review guide points to this pass; earlier copies remain unchanged.
+Fresh Sessions 001–002 completed in order and are copied to [14-PASS9](../../../../../deployment/unified-review/archive/14-PASS9/0-START-HERE.md). Summary, Recap, kept/dropped and JSON copies match the source bytes; supporting beats/threads/facts are rendered in Markdown for phone review. Root unified-review guide points to this pass; earlier copies remain unchanged.
 
 Session 001: 5 scenes, 37 beats, 10 threads, 23 facts; 8 historical items (one encounter) and 11 open facts; Summary 458 words, Recap 313. Session 002: 13 scenes, 86 beats, 16 threads, 51 facts; 10 historical items (two encounters) and 20 open facts; Summary 665 words, Recap 449. All Recap bullets meet the nominal 35-word limit.
 

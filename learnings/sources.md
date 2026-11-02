@@ -180,3 +180,9 @@ SRC-60 continued review: “Agreed” to omitting the Gill’s sons mystery beca
 SRC-60 continued review completed: user says “Yes” to retaining Uriah’s penance obligation for now while keeping the general low-stakes commitment-filter investigation deferred. Recorded in obligations.md under the EX-042 deferred-filter boundary. All distinct pass 12 review issues have now been discussed or carried forward from express prior judgments. No prompt implementation or regeneration requested in this final answer.
 
 SRC-60 implementation authorization: after all review items were discussed, the user said “Okay, please start by updating learning and prompts”. This authorizes consolidating the judgments and the generic prompt revision now, superseding the earlier wait-until-discussion-is-complete sequencing. It does not request fresh generation, production cutover or the deferred threshold investigations. Pass 13 and APP-034 preserve the implementation and verification limits.
+
+### SRC-61
+- Date: 2026-11-02.
+- Source: Claude Code (T3) conversation in `/home/eriksalt/proj/tablesage` designing pass 16's step 6b split; provider conversation identifier unavailable.
+- Evidence: the user chose a separate split step after an unchanged writer over splitting the writer into de-duplication and formatting passes, then approved per-heading split guidance in a heading-by-heading interview, and asked that step 6's obstacle wording stop telling the writer to keep a way past the obstacle.
+- Captured in: PREF-057, APP-034 (passes 16 and 17), PREF-039 (one history item per anchor beat) and the pass 16 and 17 READMEs. The user also asked for a work item to try requiring established lasting consequences.

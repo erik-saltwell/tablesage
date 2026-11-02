@@ -1,0 +1,29 @@
+{
+ "passed": true,
+ "checks": [
+  "run17.py imports without model calls",
+  "Step 5 recomputed for Sessions 001 and 002 on pass 16's copied inputs and compared with pass 16's selection.json"
+ ],
+ "results": {
+  "s001": {
+   "before": 6,
+   "after": 6,
+   "removed": [],
+   "open_unchanged": true,
+   "order_preserved": true
+  },
+  "s002": {
+   "before": 12,
+   "after": 11,
+   "removed": [
+    [
+     "thread_13",
+     "same anchor beat (beat_53) as thread_1, which is kept; this item's new facts shown under open headings: 100%, kept item's: 33%"
+    ]
+   ],
+   "open_unchanged": true,
+   "order_preserved": true
+  }
+ },
+ "limits": "Selection only; no generation with the rule."
+}

@@ -36,7 +36,7 @@ The unified pipeline's Summary order, the files that cover each heading, and the
 
 | Summary heading | Fact kind | Former Matter | Rules | Examples |
 |---|---|---|---|---|
-| Across the Summary | (all) | cross-matter, Summary and Recap | PREF-004, PREF-017, PREF-041, PREF-050, PREF-007, PREF-049, PREF-026, PREF-002, PREF-024, PREF-025, PREF-023, PREF-021, PREF-029, PREF-008, PREF-009, PREF-043 | [across-the-summary.md](examples/across-the-summary.md) |
+| Across the Summary | (all) | cross-matter, Summary and Recap | PREF-004, PREF-017, PREF-041, PREF-050, PREF-007, PREF-049, PREF-026, PREF-002, PREF-024, PREF-025, PREF-023, PREF-021, PREF-029, PREF-008, PREF-009, PREF-043, PREF-057 | [across-the-summary.md](examples/across-the-summary.md) |
 | Last session... | thread beats, events, encounters; gains | Developments, Revelations, New Assets | PREF-039, PREF-027, PREF-048, PREF-038, PREF-044; superseded PREF-005, PREF-010 | [last-session.md](examples/last-session.md) |
 | Your goals | `want` | Goals | PREF-033, PREF-051, PREF-053, PREF-055 | [your-goals.md](examples/your-goals.md) |
 | Standing in your way | `blocked_by` | Goal Impediments | PREF-034, PREF-042 | [standing-in-your-way.md](examples/standing-in-your-way.md) |

@@ -1,0 +1,142 @@
+{
+ "bullets": [
+  {
+   "heading": "Last session...",
+   "id": "thread_1",
+   "written": "The party arrived in Brandonsford at sunset, following a treasure map whose marked places they could not recognize.",
+   "detail": "They arrived at sunset. They could not recognize the places marked on the map.",
+   "text": "The party arrived in Brandonsford following a treasure map."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_3",
+   "written": "Reginald, a frog by the river, warned Dr. Uriah that a trickster Clurichen comes into town every night.",
+   "detail": "Reginald was by the river.",
+   "text": "Reginald, a frog, warned Dr. Uriah that a trickster Clurichen comes into town every night."
+  },
+  {
+   "heading": "Last session...",
+   "id": "scene_4",
+   "written": "Dunk spent the night drinking with Farmer Gill, who told him the legend of Sir Brandon's dragon slaying.",
+   "detail": "",
+   "text": "Dunk spent the night drinking with Farmer Gill, who told him the legend of Sir Brandon's dragon slaying."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_2",
+   "written": "Eric the Reeve offered 1000 gold for the dragon's body. Sir Phidipaldi slapped him and challenged him to a duel.",
+   "detail": "The offer was 1000 gold.",
+   "text": "Eric the Reeve offered a reward for the dragon's body. Sir Phidipaldi slapped him and challenged him to a duel."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_5",
+   "written": "Drop Dead Ned, a murderous thief, offered to hire on with Dr. Uriah, who said he would think about it.",
+   "detail": "Ned is murderous.",
+   "text": "Drop Dead Ned, a thief, offered to hire on with Dr. Uriah, who said he would think about it."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_7",
+   "written": "Quinn, who runs the Golden Egg, offered Sir Phidipaldi 100 gold to help catch whoever empties his ale.",
+   "detail": "The offer was 100 gold.",
+   "text": "Quinn, who runs the Golden Egg, offered Sir Phidipaldi a reward to help catch whoever empties his ale."
+  },
+  {
+   "heading": "Your goals",
+   "id": "fact_1",
+   "written": "Find the treasure shown on the party's map.",
+   "detail": "",
+   "text": "Find the treasure shown on the party's map."
+  },
+  {
+   "heading": "Your goals",
+   "id": "fact_4",
+   "written": "Kill the black dragon and drag its body into Brandonsford to collect Eric the Reeve's 1000 gold.",
+   "detail": "Its body must be dragged into Brandonsford to collect.",
+   "text": "Kill the black dragon and collect Eric the Reeve's 1000 gold."
+  },
+  {
+   "heading": "Your goals",
+   "id": "fact_17",
+   "written": "Catch whoever empties Quinn's good ale at the Golden Egg each night and collect his 100 gold.",
+   "detail": "The ale is emptied at the Golden Egg each night.",
+   "text": "Catch whoever empties Quinn's good ale and collect his 100 gold."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_5",
+   "written": "If the party pays Lady Hilda, a seasoned fighter, she will join them to hunt the dragon. She won't go alone.",
+   "detail": "Lady Hilda is a seasoned fighter. She won't go alone.",
+   "text": "If the party pays Lady Hilda, she will join them to hunt the dragon."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_14",
+   "written": "If Dr. Uriah pays Drop Dead Ned 100 gold a week, Ned and his killer wasp will work for him, as long as Ned gets to kill people.",
+   "detail": "The fee is 100 gold a week. Ned insists on getting to kill people.",
+   "text": "If Dr. Uriah pays Drop Dead Ned, Ned and his killer wasp will work for him."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_18",
+   "written": "If Sir Phidipaldi stages the planned fake ale delivery, the party may see who comes for Quinn's stock.",
+   "detail": "",
+   "text": "If Sir Phidipaldi stages the planned fake ale delivery, the party may see who comes for Quinn's stock."
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_2",
+   "written": "Where are the places on the treasure map, and which holds the treasure?",
+   "detail": "",
+   "text": "Where are the places on the treasure map, and which holds the treasure?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_19",
+   "written": "Who or what empties Quinn's good ale each night?",
+   "detail": "",
+   "text": "Who or what empties Quinn's good ale each night?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_8",
+   "written": "Where does the black dragon lurk outside Brandonsford?",
+   "detail": "",
+   "text": "Where does the black dragon lurk outside Brandonsford?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_12",
+   "written": "What happened to Bentley's overdue shipment, and why has nothing arrived in months?",
+   "detail": "",
+   "text": "What happened to Bentley's overdue shipment, and why has nothing arrived in months?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_7",
+   "written": "Where did this new dragon come from?",
+   "detail": "",
+   "text": "Where did this new dragon come from?"
+  },
+  {
+   "heading": "Meanwhile",
+   "id": "fact_9",
+   "written": "The black dragon tore off George the woodsman's arm, and Gill's three sons are hunting it now.",
+   "detail": "",
+   "text": "The black dragon tore off George the woodsman's arm, and Gill's three sons are hunting it now."
+  }
+ ],
+ "problems": [],
+ "warnings": [
+  "thread_1: added words ['on'], lost words ['whose']",
+  "thread_3: added words ['was'], lost words []",
+  "thread_2: added words ['offer', 'reward', 'was'], lost words []",
+  "thread_5: added words ['is'], lost words []",
+  "thread_7: added words ['a', 'offer', 'reward', 'was'], lost words []",
+  "fact_4: added words ['be', 'dragged', 'must'], lost words ['drag']",
+  "fact_17: added words ['emptied', 'is'], lost words []",
+  "fact_5: added words ['is'], lost words []",
+  "fact_14: added words ['fee', 'getting', 'insists', 'is', 'on', 'the'], lost words ['as', 'gets', 'long']"
+ ]
+}

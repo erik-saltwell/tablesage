@@ -22,11 +22,11 @@ Keep the user's intentional-table-revelation preference (EX-068); no production-
 
 ## Four-Session Generation Completed (2026-10-31)
 
-The user requested pass 7 outputs for Sessions 001–004 and copies in `deployment/unified-review/`. The fresh chain completed in order for all four Sessions; 004 used 003's generated seed. The runner now supports all four labels and avoids pass 2's hand-made Session 004 seed override; seed high-water marks preserve ended IDs. `pass-7/generation-journal.json` records completed stages, source hashes and repairs. All review copies are saved under `deployment/unified-review/12-PASS7/`, linked from the root review guide.
+The user requested pass 7 outputs for Sessions 001–004 and copies in `deployment/unified-review/`. The fresh chain completed in order for all four Sessions; 004 used 003's generated seed. The runner now supports all four labels and avoids pass 2's hand-made Session 004 seed override; seed high-water marks preserve ended IDs. `pass-7/generation-journal.json` records completed stages, source hashes and repairs. All review copies are saved under `deployment/unified-review/archive/12-PASS7/`, linked from the root review guide.
 
 Generation exposed adapter/schema issues, corrected without selection-policy changes: preserve empty string text fields while normalizing only thread references; allow null role/support ratings only on resources with no goal link, which remain excluded. Session 003 thread 18 was retried once because it assigned resource metadata to an obstacle; its original response is preserved under `runs/s003-step3/attempts/initial/` and other thread responses were reused. The Last session cutoff remains unchanged. No four-Session quality assessment or user approval is claimed.
 
-Completion verification passed for all four Sessions: schema/classification validity, prior thread/fact accounting, citations, deterministic selection replay, unchanged source Ledger/seed hashes, exact copied outputs, full-text Markdown renderings, recap thread counts and review links. All Recap bullets are within 35 words. [Review index](../../deployment/unified-review/12-PASS7/0-START-HERE.md); [run notes](../../deployment/unified-review/12-PASS7/run-notes.md); machine-readable evidence is in pass 7's `generation-journal.json` and `generation-verification.json`.
+Completion verification passed for all four Sessions: schema/classification validity, prior thread/fact accounting, citations, deterministic selection replay, unchanged source Ledger/seed hashes, exact copied outputs, full-text Markdown renderings, recap thread counts and review links. All Recap bullets are within 35 words. [Review index](../../deployment/unified-review/archive/12-PASS7/0-START-HERE.md); [run notes](../../deployment/unified-review/archive/12-PASS7/run-notes.md); machine-readable evidence is in pass 7's `generation-journal.json` and `generation-verification.json`.
 
 Current resume point: the requested generation and copying are complete; await the user's review of these pass 7 outputs. Remaining semantic repetition is recorded as unjudged observation, not silently corrected. Pipeline adoption/cutover and the separate low-impact/high-lasting comparison remain undecided/deferred.
 
@@ -42,7 +42,7 @@ Current resume point: the approved implementation is complete. Use the pass 8 RE
 
 ## Pass 8 Generation Completed
 
-The requested fresh Session 001–002 chain and review copies are complete. [Open review index](../../deployment/unified-review/13-PASS8/0-START-HERE.md). Both summaries, Recaps, kept/dropped lists, source Markdown and JSON are preserved there; earlier review folders remain unchanged. Classification/citation/chaining/selection replay and copy/link checks passed. Two Session 002 Recap bullets exceed the nominal word limit; the requested summaries and all generated text remain unchanged for review.
+The requested fresh Session 001–002 chain and review copies are complete. [Open review index](../../deployment/unified-review/archive/13-PASS8/0-START-HERE.md). Both summaries, Recaps, kept/dropped lists, source Markdown and JSON are preserved there; earlier review folders remain unchanged. Classification/citation/chaining/selection replay and copy/link checks passed. Two Session 002 Recap bullets exceed the nominal word limit; the requested summaries and all generated text remain unchanged for review.
 
 Session 002 required one unchanged-prompt retry each for threads 2 and 10, followed by a validation-only asset-role schema repair. All other responses were reused. Initial evidence and schema are preserved; the 49 implementation checks passed again. See [pass 8 generation details](experiments/session-004/pass-8/README.md), generation-journal.json, generation-inputs.json and generation-verification.json. No semantic publication policy or prompt was tuned during generation.
 
@@ -52,11 +52,11 @@ Current resume point: user review of the new Sessions 001–002 summaries. Remai
 
 The user approved the general EX-079 remedy and requested a fresh Session 001–002 chain and unified-review copies. Approval and exact prior omission were saved in learnings before changes. Implemented [pass 9](experiments/session-004/pass-9/README.md): one historical call now receives full scene context plus scene encounter candidates, selects otherwise-unrepresented noteworthy interactions independently from enduring consequences/open goals, and propagates only focus beats to the Summary and Recap. Existing base thread/event cutoff and all open-matter filters remain; the overall historical policy explicitly expands via the encounter channel.
 
-64 direct checks passed, plus syntax/schema/CLI checks. Fresh generation is underway and provenance is retained in pass 9. Destination is deployment/unified-review/14-PASS9/. Current task continues through generation, verification and copying; this is not a handback gate. Low-stakes commitment filtering remains registered/deferred, and the low-impact/high-lasting comparison is not being run.
+64 direct checks passed, plus syntax/schema/CLI checks. Fresh generation is underway and provenance is retained in pass 9. Destination is deployment/unified-review/archive/14-PASS9/. Current task continues through generation, verification and copying; this is not a handback gate. Low-stakes commitment filtering remains registered/deferred, and the low-impact/high-lasting comparison is not being run.
 
 ## Pass 9 Generation and Copy Completed
 
-The approved encounter-level change and fresh Sessions 001–002 run are complete. Outputs are in [14-PASS9](../../deployment/unified-review/14-PASS9/0-START-HERE.md). Session 001 now includes Dunk's encounter with Gill as one added historical encounter; Session 002 adds two encounters (fauns and Uriah/Ingrid). Both preserve the hidden incidental mule Goal. Earlier review outputs remain unchanged.
+The approved encounter-level change and fresh Sessions 001–002 run are complete. Outputs are in [14-PASS9](../../deployment/unified-review/archive/14-PASS9/0-START-HERE.md). Session 001 now includes Dunk's encounter with Gill as one added historical encounter; Session 002 adds two encounters (fauns and Uriah/Ingrid). Both preserve the hidden incidental mule Goal. Earlier review outputs remain unchanged.
 
 64 direct checks passed before generation. Actual structural verification, selection replay, source accounting/citations, unchanged input/implementation hashes, exact copies, full-text source views, Recap counts/word limits and links passed. Session 001 had one writing-only retry for an omitted selected ID; original response is preserved. Session 002 completed without retries. No prompt/schema/implementation edits during generation. See pass 9 provenance, verification and review run notes. No semantic quality scores or user approval of these fresh outputs is claimed.
 
@@ -179,5 +179,19 @@ Generated 2026-11-02 at the user's request; run 1 completed. Repeat runs showed 
 
 The user then asked to revert the `detail` field. Pass 15's step 6 prompt and schema are pass 14's again; a single Session 001 run from step 6 completed with all items present.
 
-Current resume point: the user's new approach to extraneous detail.
+### Pass 16 Split Step (2026-11-02)
+
+The user's new approach: leave the step 6 writer unchanged and add a step 6b that only splits each written bullet into `text` (rendered) and `detail` (stored), never changing the bullet count. The user chose this over splitting step 6 into a de-duplication pass and a formatting pass, following the agent's recommendation: it gives a controlled comparison on pass 14's existing writing, and step 6's rules mix content and form too closely to divide cleanly. [Pass 16](experiments/session-004/pass-16/README.md) implements step 6b on copies of pass 14's step 1–6 outputs. Code enforces the count: a response with wrong IDs is retried once, then any missing bullet keeps its written text with an empty `detail`. Each run writes a phone-readable `split.md`. 17 offline checks with the model stubbed passed ([verification](experiments/session-004/pass-16/verification.json)). Not generated, at the user's direction.
+
+In a heading-by-heading interview the user then approved per-heading split guidance (PREF-057, SRC-61), now in the step 6b prompt with a fictional example per heading. At the user's request step 6's obstacle wording no longer tells the writer to keep a way past the obstacle, so `generate.sh` now reruns from step 6 (`--from 6b` remains available for a split-only comparison on pass 14's writing). Offline checks passed again.
+
+At the user's request `text` is now rewritten naturally from what stays rather than cut down (PREF-057 history). The user then asked to run the pass: `generate.sh` completed both Sessions on 2026-11-02 without retries or fallbacks, and the Summaries and split files are in `deployment/unified-review/pass-16/`. Agent observations, including three possible misses against the approved guidance, are in the pass 16 README.
+
+### Pass 16 History Count and Pass 17 (2026-11-02)
+
+The user found Session 002's pass 16 "Last session..." longer than expected (12 items) and asked for an analysis of the items' JSON. The agent found (unjudged): `thread_1` (map markings) and `thread_13` (penance and donation for them) share anchor beat `beat_53`, one bargain told twice, with the debt half fully shown under "Promises and debts"; Dunk's shirt plan is told across three items (`thread_9`, `thread_10`, `scene_10`); and four items passed on speculative lasting reasons ("may come up again", "may return", "is unsettled": `thread_3`, `beat_72`, `thread_14`, `thread_15`). Options offered: A one item per anchor beat; B a step 2c field for established versus possible lasting effect, required for medium/medium items; C drop medium/medium threads; D drop items whose lasting effect is wholly shown as open facts; E link threads serving one plan. The user said "Do A now, and add a woekitem to try b on all four sessions".
+
+[Pass 17](experiments/session-004/pass-17/README.md) implements A in step 5. Offline, Session 002 goes from 12 to 11 items (`thread_13` hidden); Session 001 and all open headings are unchanged. Not generated. B is captured as [Require established lasting consequences in Last session...](../established-lasting-consequences/).
+
+Current resume point: the user's review of the pass 16 Summaries; pass 17 generation when requested.
 

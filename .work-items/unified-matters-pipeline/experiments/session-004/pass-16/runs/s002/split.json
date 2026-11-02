@@ -1,0 +1,213 @@
+{
+ "bullets": [
+  {
+   "heading": "Last session...",
+   "id": "thread_9",
+   "written": "Dunk spotted a glowing mithril chain shirt in Warwick's shop and told the party he had a plan to get it.",
+   "detail": "The shirt was glowing.",
+   "text": "Dunk spotted a mithril chain shirt in Warwick's shop and told the party he had a plan to get it."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_3",
+   "written": "Dr. Uriah and Trout caught Naggeneen, a drunken Clurichen, and Quinn hung him in a bag behind his bar.",
+   "detail": "Naggeneen was drunk.",
+   "text": "Dr. Uriah and Trout caught Naggeneen, a Clurichen, and Quinn hung him in a bag behind his bar."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_10",
+   "written": "Dunk proposed that Ingrid, who secretly watches Warwick sleep, brew a sleeping potion for Warwick.",
+   "detail": "Ingrid secretly watches Warwick sleep.",
+   "text": "Dunk proposed that Ingrid brew a sleeping potion for Warwick."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_11",
+   "written": "Father William told the party he had sent Brother Dirk to Brandon's Barrow Mound for a dragon-slaying sword.",
+   "detail": "",
+   "text": "Father William told the party he had sent Brother Dirk to Brandon's Barrow Mound for a dragon-slaying sword."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_1",
+   "written": "Father William marked the Barrow Mound and the witch's home on the party's map.",
+   "detail": "",
+   "text": "Father William marked the Barrow Mound and the witch's home on the party's map."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_13",
+   "written": "Dr. Uriah agreed to repay Father William for the map markings with penance and a donation.",
+   "detail": "",
+   "text": "Dr. Uriah agreed to repay Father William for the map markings with penance and a donation."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_2",
+   "written": "George, a one-armed survivor, told the party the dragon's lair lies at the foot of the northern mountains.",
+   "detail": "",
+   "text": "George, a one-armed survivor, told the party the dragon's lair lies at the foot of the northern mountains."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_8",
+   "written": "Trout recruited the halfling Squints as a junior member of his Halfling Corps.",
+   "detail": "",
+   "text": "Trout recruited the halfling Squints as a junior member of his Halfling Corps."
+  },
+  {
+   "heading": "Last session...",
+   "id": "scene_10",
+   "written": "Dunk out-drank the fauns in their grove and traded a rabbit's foot for a flask of faun wine.",
+   "detail": "It happened in their grove.",
+   "text": "Dunk out-drank the fauns and traded a rabbit's foot for a flask of faun wine."
+  },
+  {
+   "heading": "Last session...",
+   "id": "beat_72",
+   "written": "Ingrid told Uriah that fairies who once stayed hidden have been coming out more often.",
+   "detail": "",
+   "text": "Ingrid told Uriah that fairies who once stayed hidden have been coming out more often."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_14",
+   "written": "Squints pulled a bound Brother Dirk from a sack in a giant's cottage, and the party outran the woken giant.",
+   "detail": "",
+   "text": "Squints pulled a bound Brother Dirk from a sack in a giant's cottage, and the party outran the woken giant."
+  },
+  {
+   "heading": "Last session...",
+   "id": "thread_15",
+   "written": "Sir Phidipaldi objected when Brother Dirk said he should go home, and Trout assigned Dirk to Squints.",
+   "detail": "",
+   "text": "Sir Phidipaldi objected when Brother Dirk said he should go home, and Trout assigned Dirk to Squints."
+  },
+  {
+   "heading": "Your goals",
+   "id": "fact_4",
+   "written": "Kill the black dragon and drag its body into town to collect Eric the Reeve's 1000 gold, if he has it.",
+   "detail": "Its body must be dragged into town to collect. It is uncertain whether Eric has the gold.",
+   "text": "Kill the black dragon and collect Eric the Reeve's 1000 gold."
+  },
+  {
+   "heading": "Your goals",
+   "id": "fact_1",
+   "written": "Find the treasure shown on the party's map.",
+   "detail": "",
+   "text": "Find the treasure shown on the party's map."
+  },
+  {
+   "heading": "Standing in your way",
+   "id": "fact_23",
+   "written": "George says nothing pierces the dragon's black scales; his friends' arrows and swords all failed.",
+   "detail": "His friends' arrows and swords all failed.",
+   "text": "George says nothing pierces the dragon's black scales."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_36",
+   "written": "If Dunk helps Ingrid give Warwick her sleeping potion tonight, Warwick may sleep while Dunk is inside with the mithril shirt. The diluted faun wine and Ingrid's uncertain skill may weaken it.",
+   "detail": "The diluted faun wine and Ingrid's uncertain skill may weaken the potion.",
+   "text": "If Dunk helps Ingrid give Warwick her sleeping potion tonight, Warwick may sleep while Dunk is inside with the mithril shirt."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_41",
+   "written": "Father William says that if the party retrieves the sword buried with Sir Brandon, they can slay the dragon. George says no one knows if the legend is true or where the sword is.",
+   "detail": "George says no one knows if the legend is true or where the sword is.",
+   "text": "Father William says that if the party retrieves the sword buried with Sir Brandon, they can slay the dragon."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_5",
+   "written": "If the party pays Lady Hilda, a seasoned fighter, she will join their dragon hunt.",
+   "detail": "Lady Hilda is a seasoned fighter.",
+   "text": "If the party pays Lady Hilda, she will join their dragon hunt."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_14",
+   "written": "If the party pays Drop Dead Ned 100 gold a week, he and his killer wasp will work for them. He insists on getting to kill people.",
+   "detail": "His fee is 100 gold a week. He insists on getting to kill people.",
+   "text": "If the party pays Drop Dead Ned, he and his killer wasp will work for them."
+  },
+  {
+   "heading": "What could help",
+   "id": "fact_25",
+   "written": "If Dunk gets Warwick's mithril chain shirt, it could protect against the dragon.",
+   "detail": "",
+   "text": "If Dunk gets Warwick's mithril chain shirt, it could protect against the dragon."
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_2",
+   "written": "Where are the map's marked locations, and which one holds the treasure?",
+   "detail": "",
+   "text": "Where are the map's marked locations, and which one holds the treasure?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_12",
+   "written": "Why has nothing reached Brandonsford in months, including Bentley's overdue shipment?",
+   "detail": "",
+   "text": "Why has nothing reached Brandonsford in months, including Bentley's overdue shipment?"
+  },
+  {
+   "heading": "Still unanswered",
+   "id": "fact_7",
+   "written": "Where did this new dragon come from, centuries after Sir Brandon's?",
+   "detail": "",
+   "text": "Where did this new dragon come from, centuries after Sir Brandon's?"
+  },
+  {
+   "heading": "Promises and debts",
+   "id": "fact_37",
+   "written": "Dunk must help Ingrid get into Warwick's house to give him the sleeping potion once she brews it. They meet tonight.",
+   "detail": "They meet tonight.",
+   "text": "Dunk must help Ingrid get into Warwick's house to give him the sleeping potion once she brews it."
+  },
+  {
+   "heading": "Promises and debts",
+   "id": "fact_46",
+   "written": "Dr. Uriah must do penance for Father William at Brandon's Barrow Mound.",
+   "detail": "",
+   "text": "Dr. Uriah must do penance for Father William at Brandon's Barrow Mound."
+  },
+  {
+   "heading": "Promises and debts",
+   "id": "fact_47",
+   "written": "Dr. Uriah must donate 10 gold to Father William for the Barrow Mound's upkeep.",
+   "detail": "The donation is for the Barrow Mound's upkeep.",
+   "text": "Dr. Uriah must donate 10 gold to Father William."
+  },
+  {
+   "heading": "Promises and debts",
+   "id": "fact_31",
+   "written": "Trout's Halfling Corps owes Squints second pick of the first treasure, after the elite members, if he funds himself and follows orders.",
+   "detail": "It is second pick, after the elite members.",
+   "text": "Trout's Halfling Corps owes Squints a pick of the first treasure if he funds himself and follows orders."
+  },
+  {
+   "heading": "Meanwhile",
+   "id": "fact_9",
+   "written": "The black dragon killed George's friends and took his arm, and Gill's three sons are hunting it now. George says it will soon fly, dooming the town.",
+   "detail": "Gill's three sons are hunting it now.",
+   "text": "The black dragon killed George's friends and took his arm. George says it will soon fly, dooming the town."
+  }
+ ],
+ "problems": [],
+ "warnings": [
+  "thread_9: added words ['was'], lost words []",
+  "thread_3: added words ['drunk', 'was'], lost words ['drunken']",
+  "thread_10: added words [], lost words ['who']",
+  "scene_10: added words ['happened', 'it'], lost words []",
+  "fact_4: added words ['be', 'dragged', 'is', 'must', 'uncertain', 'whether'], lost words ['drag', 'he', 'if']",
+  "fact_36: added words [], lost words ['it']",
+  "fact_5: added words ['is'], lost words []",
+  "fact_14: added words ['fee', 'is'], lost words []",
+  "fact_47: added words ['donation', 'is'], lost words []",
+  "fact_31: added words ['a', 'is', 'it'], lost words []"
+ ]
+}

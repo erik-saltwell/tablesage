@@ -14,6 +14,7 @@
 | Investigate disfluency and backchannel removal approaches | complete | [.work-items/disfluency-backchannel-removal/](.work-items/disfluency-backchannel-removal/) |
 | Documentation guides | complete | [.work-items/documentation-guides/](.work-items/documentation-guides/) |
 | enhance-readme | complete | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
+| Require established lasting consequences in Last session... | captured | [.work-items/established-lasting-consequences/](.work-items/established-lasting-consequences/) |
 | Explore filtering low-stakes commitments | registered | [.work-items/filter-low-stakes-commitments/](.work-items/filter-low-stakes-commitments/) |
 | generate-badges | registered | [.work-items/generate-badges/](.work-items/generate-badges/) |
 | Readable Revelations and New Assets headlines | complete | [.work-items/historical-matters-readable-headlines/](.work-items/historical-matters-readable-headlines/) |
