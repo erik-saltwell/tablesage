@@ -1,0 +1,12 @@
+{
+ "where_you_are": "The party is inside Sir Brandon's tomb in the Barrow Mound, ready to leave.",
+ "immediate_danger": [
+  {
+   "text": "A seven-foot undead brown skeleton stands in the tomb's doorway. It wears rusted armor and a mustachioed death mask, and it drags a huge greatsword. The goblins say it killed many of their friends, and the slime says it is very mad.",
+   "thread": null,
+   "covers_facts": [
+    "fact_28"
+   ]
+  }
+ ]
+}

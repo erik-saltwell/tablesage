@@ -1,0 +1,206 @@
+{
+ "scenes": "r1-step1",
+ "shared_subjects": [
+  {
+   "subject": "Where the Dragon's Lair is on the map and what the cave is like",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_77"
+   ],
+   "reason": "The lair is the dragon's location, so the party would act on it in the hunt."
+  },
+  {
+   "subject": "Bral and the dwarves' hoard he probably hid in the Dragon's Lair",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_16",
+    "thread_2"
+   ],
+   "beats": [
+    "beat_74",
+    "beat_75",
+    "beat_77"
+   ],
+   "reason": "The hoard is the treasure the map marks, so the treasure-map thread records it."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt, on loan and worn by Wayman",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_2",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_36",
+    "beat_37",
+    "beat_59",
+    "beat_60"
+   ],
+   "reason": "The shirt was received under the Warwick bargain."
+  },
+  {
+   "subject": "Sir Phidipaldi's lyre left with Warwick",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_8"
+   ],
+   "beats": [
+    "beat_34",
+    "beat_35",
+    "beat_36"
+   ],
+   "reason": "The lyre is part of the Warwick bargain."
+  },
+  {
+   "subject": "Warwick's night visitors (Ingrid's visits)",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_32",
+    "beat_33"
+   ],
+   "reason": "The visits are the subject of Dunk's deal with Ingrid."
+  },
+  {
+   "subject": "The holy robes kept until the dragon is defeated",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_25",
+    "beat_41"
+   ],
+   "reason": "The robes are held under Dr. Uriah's promise to the church."
+  },
+  {
+   "subject": "Cedric's promissory note as payment for Malzazarik and Lady Hilda",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_64"
+   ],
+   "reason": "The note is the thread's own subject; the dragon hunt only uses it."
+  },
+  {
+   "subject": "The barrow treasure Squints was to pick from, now sold to Cedric",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_28"
+   ],
+   "reason": "The treasure is what the promise to Squints concerns."
+  },
+  {
+   "subject": "When shipments to Brandonsford resume",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_26",
+    "beat_27"
+   ],
+   "reason": "The shipments thread is about this very question; Cedric's payment depends on it."
+  },
+  {
+   "subject": "Warwick's lack of metal since the dragon appeared",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_5"
+   ],
+   "beats": [
+    "beat_29",
+    "beat_35"
+   ],
+   "reason": "The metal shortage is what the Warwick deal aims to fix."
+  },
+  {
+   "subject": "The Dwarven mine's location, state and cave-in",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1",
+    "thread_16"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_63",
+    "beat_69",
+    "beat_70"
+   ],
+   "reason": "The party seeks metal there first, and the cave-in blocks the Warwick deal."
+  },
+  {
+   "subject": "Where King Hogboon's tribe lives",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_67"
+   ],
+   "reason": "It answers which place the map's unidentified location marks."
+  },
+  {
+   "subject": "Sir Brandon's sword and its power against evil",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_18",
+    "beat_50"
+   ],
+   "reason": "The party plans to use the sword against the dragon."
+  },
+  {
+   "subject": "Walling off the stairs to contain Sir Alfred",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_15"
+   ],
+   "reason": "The walling is part of the renegotiated goblin bargain."
+  },
+  {
+   "subject": "The ring letting Dunk see Grimny's ghost",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_16",
+    "thread_15"
+   ],
+   "beats": [
+    "beat_72",
+    "beat_79"
+   ],
+   "reason": "The ring thread is about this very item."
+  },
+  {
+   "subject": "Grimny's ghost has departed",
+   "home": "thread_16",
+   "other_threads": [
+    "thread_15"
+   ],
+   "beats": [
+    "beat_81"
+   ],
+   "reason": "The question about Grimny's death is about Grimny himself."
+  }
+ ]
+}

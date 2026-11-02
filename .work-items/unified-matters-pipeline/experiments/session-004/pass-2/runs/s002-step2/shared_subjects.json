@@ -1,0 +1,121 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen, the Clurichen ale thief, captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_26",
+    "beat_27",
+    "beat_28",
+    "beat_29",
+    "beat_40"
+   ],
+   "reason": "The Clurichen thread is about the creature itself, and the ale question is resolved."
+  },
+  {
+   "subject": "Warwick's magical mithril chain shirt",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3",
+    "thread_12"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_47"
+   ],
+   "reason": "Thread_9 is the thread about the shirt itself, which comes before the hunt and the plan that would use it."
+  },
+  {
+   "subject": "What Warwick is warding against: Ingrid's secret nightly visits to his window",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_33"
+   ],
+   "reason": "The question of what Warwick fears lives on the thread about Warwick."
+  },
+  {
+   "subject": "Ingrid's fear of discovery and Dunk's unpromised secrecy",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_33",
+    "beat_39"
+   ],
+   "reason": "This is leverage and a sense of debt within Dunk's bargain with Ingrid."
+  },
+  {
+   "subject": "Warwick's cracked-open second-story bedroom window",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_15"
+   ],
+   "reason": "The window is the entry point the potion deal would use first."
+  },
+  {
+   "subject": "Brandon's magic sword needed to kill the dragon",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_49",
+    "beat_61",
+    "beat_73"
+   ],
+   "reason": "A child thread about the sword itself comes before the broader dragon hunt."
+  },
+  {
+   "subject": "Location and distance of the Barrow Mound, now marked on the map",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1",
+    "thread_14"
+   ],
+   "beats": [
+    "beat_51",
+    "beat_62",
+    "beat_66"
+   ],
+   "reason": "The sword quest is the first thread that seeks out the Barrow."
+  },
+  {
+   "subject": "Brother Dirk, the church's agent sent for the sword, now with the party",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_11",
+    "thread_16"
+   ],
+   "beats": [
+    "beat_91",
+    "beat_92",
+    "beat_93"
+   ],
+   "reason": "Dirk's mission and whether he continues to the Barrow bear most directly on the sword quest."
+  },
+  {
+   "subject": "Farmer Gill's sons, away hunting the dragon",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_8"
+   ],
+   "beats": [
+    "beat_2",
+    "beat_50"
+   ],
+   "reason": "Their hunt is a rival threat on the dragon thread, while their return only conditions the mule's price."
+  }
+ ]
+}

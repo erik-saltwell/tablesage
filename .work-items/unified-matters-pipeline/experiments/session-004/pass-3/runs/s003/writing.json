@@ -1,0 +1,112 @@
+{
+ "last_session": [
+  {
+   "id": "thread_8",
+   "text": "The party hired Drop Dead Ned for the Barrow Mound, and Ned offered Wayman 5 gold per goblin body."
+  },
+  {
+   "id": "thread_2",
+   "text": "The party opened Sir Brandon's tomb, and Sir Phidipaldi took the dragon slayer's sword and armor."
+  },
+  {
+   "id": "thread_5",
+   "text": "Sir Phidipaldi planned to carry out Dunk's scheme for the mithril chain shirt once the sword was won."
+  },
+  {
+   "id": "thread_9",
+   "text": "Sir Phidipaldi's dragon plan called for getting poison protection from the witch or the alchemist."
+  },
+  {
+   "id": "thread_11",
+   "text": "Goblins and a talking slime warned the party of a mad undead giant who cut down goblins."
+  },
+  {
+   "id": "thread_10",
+   "text": "Sir Phidipaldi, posing as Brandon's son, struck a bargain with the Free Goblin Society in the Barrow Mound."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_2",
+   "text": "Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty."
+  },
+  {
+   "id": "fact_22",
+   "text": "Obtain protection against the black dragon's poison before going after the dragon."
+  },
+  {
+   "id": "fact_1",
+   "text": "Find the treasure marked on the party's map."
+  },
+  {
+   "id": "fact_26",
+   "text": "The undead giant swordsman who killed many goblins stands in the way of clearing the evil from the Barrow Mound."
+  },
+  {
+   "id": "fact_3",
+   "text": "George says nothing pierces the black dragon's scales. Arrows and swords have all failed against them."
+  },
+  {
+   "id": "fact_21",
+   "text": "The Free Goblin Society would not want their dead defiled. Giving the goblin bodies to Ned means sneaking them past the goblins."
+  },
+  {
+   "id": "fact_6",
+   "text": "Sir Phidipaldi holds Sir Brandon's magical, uncursed sword, etched \"All shadows yield to my light\". Father William says only this sword can kill the dragon."
+  },
+  {
+   "id": "fact_17",
+   "text": "The party holds a jeweled ceremonial dagger, seven 50-gold candleholders, a 20-gold gold-toothed skull and five 100-gold urns. Dr. Uriah values the dagger at over 200 gold in a major city."
+  },
+  {
+   "id": "fact_18",
+   "text": "Drop Dead Ned, the inn's killer with a little killer wasp, scouts and kills for the party in the Barrow Mound for a 100 gold fee."
+  },
+  {
+   "id": "fact_29",
+   "text": "Is the undead giant swordsman Alfred, Sir Brandon's shaggy companion with a greatsword in the mosaics?"
+  },
+  {
+   "id": "fact_30",
+   "text": "Do the robes of Saint Arthur have magical properties? Dr. Uriah judged them uncursed but needs Ingrid's witch powder to test them."
+  },
+  {
+   "id": "fact_34",
+   "text": "Brother Dirk says the jeweled chalice was surely a gift to the church. Does it belong to the church, and will the party give it up?"
+  },
+  {
+   "id": "fact_8",
+   "text": "Where did the new dragon near Brandonsford come from?"
+  },
+  {
+   "id": "fact_9",
+   "text": "Why have shipments stopped reaching Brandonsford?"
+  },
+  {
+   "id": "fact_24",
+   "text": "The party must clear the evil out of the Barrow Mound for the Free Goblin Society. In return, the goblins live there and let the party take Sir Brandon's goods."
+  },
+  {
+   "id": "fact_11",
+   "text": "Dunk must help Ingrid get into Warwick's house and give Warwick the sleeping potion."
+  },
+  {
+   "id": "fact_12",
+   "text": "Dr. Uriah must do penance at the Barrow Mound for Father William."
+  },
+  {
+   "id": "fact_14",
+   "text": "The party must let Squints pick second from the Barrow Mound treasure, after the elite members."
+  },
+  {
+   "id": "fact_13",
+   "text": "Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep."
+  },
+  {
+   "id": "fact_4",
+   "text": "George says the black dragon will soon fly and doom Brandonsford."
+  }
+ ],
+ "session_cue_scene": "scene_5",
+ "problems": []
+}

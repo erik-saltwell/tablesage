@@ -1,0 +1,102 @@
+{
+  "started": "2026-10-31T22:25:55.539886+00:00",
+  "model": "anthropic/claude-opus-5-5",
+  "sessions": [
+    "001",
+    "002",
+    "003",
+    "004"
+  ],
+  "completed": [
+    "s001-step1",
+    "s001-step2",
+    "s001-step2c",
+    "s001-step3",
+    "s001-check",
+    "s001-chain",
+    "s001-seed",
+    "s002-step1",
+    "s002-step2",
+    "s002-step2c",
+    "s002-step3",
+    "s002-check",
+    "s002-chain",
+    "s002-seed",
+    "s003-step1",
+    "s003-step2",
+    "s003-step2c",
+    "s003-step3",
+    "s003-check",
+    "s003-chain",
+    "s003-seed",
+    "s004-step1",
+    "s004-step2",
+    "s004-step2c",
+    "s004-step3",
+    "s004-check",
+    "s004-chain"
+  ],
+  "inputs": {
+    "001": {
+      "ledger_sha256": "089c13af267eba796905094d4bfb6e25b4c545fce6a404760f7c89b50ee2ddc5",
+      "seed_sha256": "63e9b54a7e6721df55135b4769a3cbecf0d861630bb899144220eedc407f99d2"
+    },
+    "002": {
+      "ledger_sha256": "91065536fee5ac83bb3893fc52a25ea1cf66addd89e5b373d7044492a9f3379a",
+      "seed_sha256": "543bf3b9a7f3b2323cba682a954549091b0b3ecadd2c38353f808e402cd90030"
+    },
+    "003": {
+      "ledger_sha256": "77061294f97a8622507ceff5791301912f244ce607f5b34fa32d25f15d10c1a0",
+      "seed_sha256": "e6ae62c0f77ae50acff411bba3d4d380f9906544d331f77cbdaba65bcb7b6d10"
+    },
+    "004": {
+      "ledger_sha256": "96988bb64213d5893eebef6f33c3539f6dc03f2da6191285abbcb91ff421cb16",
+      "seed_sha256": "4e15ef76c8445aa8161077d5c8cc7b3ef2bd9e57690191af0cce311518ad95fc"
+    }
+  },
+  "last_session_rule": "both ratings medium or high; unchanged",
+  "mechanical_repairs": [
+    {
+      "stage": "s001-step3",
+      "detail": "kind_class now converts empty thread references only; preserve valid empty action_basis on assets. Raw outputs unchanged; no LLM retry.",
+      "time": "2026-10-31T22:29:22.108153+00:00"
+    },
+    {
+      "stage": "s002-step3",
+      "detail": "Allow null role only for resources with no supported helps_thread; they remain hidden by existing goal-link rule. Linked resources still require direct/step. Raw outputs unchanged; no LLM retry.",
+      "time": "2026-10-31T22:36:39.335692+00:00"
+    },
+    {
+      "stage": "s003-step3",
+      "detail": "Allow unset goal_support only on unlinked resources; linked resources still require rank. Retried thread_18 once for resource_subject on blocked_by; original raw response and combined facts saved in attempts/initial. All other responses reused.",
+      "time": "2026-10-31T22:44:06.071077+00:00"
+    }
+  ],
+  "finished": "2026-10-31T22:54:07.841594+00:00",
+  "final_implementation_sha256": {
+    "run7.py": "08b74dd9f32206ab69d70b916f729ea00aeeff062c6cd79b9afb62c5a861ebdc",
+    "classification_schema.json": "cb8175402021df250f92d02aee85aaaa536e37a510f57e0cc7a014a5251ff76e",
+    "prompts/step1_scenes/schema.json": "cd88c67d535b03bd302ff621663a2bba6b3ad0aea9c069a000b803fa30f83cbd",
+    "prompts/step1_scenes/system.md": "f8b32e86db285a9490f60f2dfbbddbc7c90b9fe69b9346860b60f9befd9987a2",
+    "prompts/step1_scenes/template.j2": "617ec120cdd06df9717fc81d675b479f48c83627a44fb2dedb8de439ddf6f159",
+    "prompts/step2_threads/schema.json": "dfa9bbdac04bd91825226377ef016c32f0d17a401e25dca080dead1b37e05dd1",
+    "prompts/step2_threads/system.md": "27f955062b191bb1d5e66408ec77fa3a4aa6412c1732a8f9157ffd7f3dcc75dc",
+    "prompts/step2_threads/template.j2": "0a3ff33dd0f02653c9350cb8a1a2c1c9b65c38a40f0beeb9fd5ed0e89b607cdc",
+    "prompts/step2c_changes/schema.json": "4063ec5b66833945d2069434472dbcee70ff62af78f6c498d3a2770e4cbefa53",
+    "prompts/step2c_changes/system.md": "a8950ecedf11f0c153921db36f27312d16a9a36b29253be6a591a7819adfa9e1",
+    "prompts/step2c_changes/template.j2": "bfd125996a3467c39c41ddf31034e685373259cf7d37545937efc59c24121d82",
+    "prompts/step3_facts_homes/schema.json": "6076e869dc4ad973d35de1ad8f10ca7a2a6cab652e902c1e439850d29dabfa3b",
+    "prompts/step3_facts_homes/system.md": "1145c32e2088160440bc3010f9174c602d3515c9252a37690db6103378e2d08f",
+    "prompts/step3_facts_homes/template.j2": "9a0f76379d62e5092c9fe119a1701905b298006d760391167c54fce68b76915c",
+    "prompts/step4_stopping/schema.json": "f23721f2b4606a0a46d6dd6da812de7f674b70f5372c3405c13103126a59cfb9",
+    "prompts/step4_stopping/system.md": "03c0ebafc7424b601ac6c5781fae9a596dd17b687bf54a15010fba96d749e756",
+    "prompts/step4_stopping/template.j2": "f44a8e86c9c4542faf69be19ba7fb9b8416a1739761b61385c2547f15b6fadce",
+    "prompts/step6_writing/schema.json": "42a2bf14fb0c22d297a0be463a2b531b2752dd71f05b8226d8d58dcad661e51c",
+    "prompts/step6_writing/system.md": "965537bacc5057f467b8bf18412d6e9748053eb7928d8d8c2596add9cf88525e",
+    "prompts/step6_writing/template.j2": "b57aee782a36552320d3f71831cd99ea5c4a3abfd63d801620111fad691c62eb",
+    "prompts/step8_recap/schema.json": "aab1bba67a7acce02082d0bc6949b84ee5f8b31db14284ab1449a39159baf077",
+    "prompts/step8_recap/system.md": "90c89fb41eb5bc0dc0d4c43bf61fe0861f1d13596daae7cd5d21f6ca95cce70f",
+    "prompts/step8_recap/template.j2": "bbcc9733f9fdd3becaa60ef7a3f96290734f2e7fdaaba710ff767e2138902bbd"
+  },
+  "review_folder": "deployment/unified-review/12-PASS7/"
+}

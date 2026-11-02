@@ -1,0 +1,25 @@
+step3: 45 facts (41 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 9, 'unknown': 13, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_33']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.48 fact_22 (thread_1, could_use) ~ fact_24 (thread_2, could_use)
+         Dr. Uriah's Read Languages spell lets him read the writing under one location on the treasure map per day.
+         The treasure map marks the dragon's lair: Dr. Uriah's Read Languages shows the writing under that location reads "Dragon's lair."
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.39 fact_44 (thread_17, unknown) ~ fact_45 (thread_17, could_use)
+         Is the magical, uninscribed ring Dunk took from a dead dwarf in the mine cave-in cursed? Dunk felt a growing urge he could not resist to put it on.
+         Dunk wears a magical ring from a dead dwarf at the Dwarven mine; while wearing it he could see and speak with Grimny's ghost, whom no one else could see.
+  cross-thread facts sharing 4-word phrases:
+    fact_1 (thread_1) & fact_35 (thread_13): ['from the dwarven mine']
+    fact_22 (thread_1) & fact_24 (thread_2): ["dr uriah's read languages"]
+    fact_30 (thread_3) & fact_10 (thread_4): ['in the barrow mound']
+    fact_30 (thread_3) & fact_15 (thread_7): ['in the barrow mound']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_13 (thread_5) & fact_34 (thread_12): ['the dragon troubles began']

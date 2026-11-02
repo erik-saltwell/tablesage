@@ -1,0 +1,22 @@
+step3: 48 facts (40 open) {'want': 3, 'owe': 6, 'blocked_by': 1, 'could_use': 20, 'unknown': 7, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_34']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.67 fact_27 (thread_3, could_use) ~ fact_42 (thread_12, could_use)
+         Father William says the dragon cannot be killed without Brandon's sword from the Barrow Mound (see thread_12).
+         Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound; the party is walking to the Barrow to get it.
+    0.62 fact_46 (thread_13, owe) ~ fact_47 (thread_13, owe)
+         Dr. Uriah owes Father William penance at the Barrow Mound, agreed in exchange for William marking the Barrow Mound and the witch's home on his map.
+         Dr. Uriah owes Father William a 10 gold donation for upkeep, agreed in exchange for William marking the map.
+    0.50 fact_30 (thread_3, could_use) ~ fact_31 (thread_3, owe)
+         George allows that Sir Phidipaldi's lance may be one of the few weapons not yet tried against the dragon.
+         Sir Phidipaldi vowed to George to bring his lance against the dragon.
+    0.40 fact_36 (thread_11, could_use) ~ fact_40 (thread_11, unknown)
+         Ingrid is brewing a sleeping potion from the faun wine Dunk gave her. Dunk plans to use it to keep Warwick asleep while he gets into the house. He is due to collect it tonight.
+         Can Ingrid make a working sleeping potion from the heavily diluted faun wine?
+  cross-thread facts sharing 4-word phrases:
+    fact_22 (thread_1) & fact_48 (thread_14): ["the party's route north"]
+    fact_27 (thread_3) & fact_42 (thread_12): ['cannot be killed without', 'dragon cannot be killed', 'father william says the']
+    fact_28 (thread_3) & fact_17 (thread_8): ['could help against the', 'help against the dragon']

@@ -1,0 +1,180 @@
+{
+ "scenes": "s004-step1",
+ "shared_subjects": [
+  {
+   "subject": "The Dragon's Lair's map location and layout (small cave, one big room)",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_17",
+    "beat_18",
+    "beat_74"
+   ],
+   "reason": "The party would act on the lair's location and layout when hunting the dragon."
+  },
+  {
+   "subject": "Where the dwarves' hoard probably is (hidden by Bral in the Dragon's Lair)",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_24",
+    "thread_3"
+   ],
+   "beats": [
+    "beat_71",
+    "beat_74"
+   ],
+   "reason": "The hoard's location answers the treasure map's central question."
+  },
+  {
+   "subject": "The map came from Bral, who lost it to the party in a bet",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_24"
+   ],
+   "beats": [
+    "beat_71",
+    "beat_72"
+   ],
+   "reason": "It answers the map thread's question of where the map came from."
+  },
+  {
+   "subject": "Suspicion that Bral is faking the dragon",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_24"
+   ],
+   "beats": [
+    "beat_75"
+   ],
+   "reason": "It bears on the dragon thread's question of where the dragon came from."
+  },
+  {
+   "subject": "The Dwarven mine: location, cave-in entrance and expected metal",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_1",
+    "thread_24"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_33",
+    "beat_60",
+    "beat_66"
+   ],
+   "reason": "The party owes Warwick metal from the mine, so that is where they would act on it first."
+  },
+  {
+   "subject": "Supplies stopped since the dragon appeared",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_9",
+    "thread_21"
+   ],
+   "beats": [
+    "beat_25",
+    "beat_28",
+    "beat_33"
+   ],
+   "reason": "It answers the missing-shipments question, and the other threads depend on that cause."
+  },
+  {
+   "subject": "Cedric's note pledged to pay Lady Hilda and Malzazarik",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_21"
+   ],
+   "beats": [
+    "beat_29",
+    "beat_61"
+   ],
+   "reason": "Payment owed under the hiring bargain lives on the hiring thread."
+  },
+  {
+   "subject": "Sir Brandon's sword is far more effective against evil beings",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_17"
+   ],
+   "beats": [
+    "beat_3"
+   ],
+   "reason": "The sword is the dragon hunt's key resource."
+  },
+  {
+   "subject": "The party's supply of faun wine",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_47",
+    "beat_48",
+    "beat_62"
+   ],
+   "reason": "The wine would be used first in the plan to drug the dragon."
+  },
+  {
+   "subject": "The barrow robes, kept until the dragon is defeated",
+   "home": "thread_19",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_24",
+    "beat_40"
+   ],
+   "reason": "The robes are held under Dr. Uriah's promise to Brother Dirk."
+  },
+  {
+   "subject": "The mithril shirt on loan, worn by Wayman",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_35",
+    "beat_36"
+   ],
+   "reason": "The shirt was received under the bargain with Warwick."
+  },
+  {
+   "subject": "Warwick's nightly visitor is Ingrid, and he has been told so",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_31",
+    "beat_57"
+   ],
+   "reason": "Ingrid's visits are the subject of her own thread."
+  },
+  {
+   "subject": "Sir Alfred incapacitated but not destroyed",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_18"
+   ],
+   "beats": [
+    "beat_7",
+    "beat_9"
+   ],
+   "reason": "The danger itself is the subject of the undead swordsman thread."
+  },
+  {
+   "subject": "Grimny's ghost, seen through the ring",
+   "home": "thread_23",
+   "other_threads": [
+    "thread_22"
+   ],
+   "beats": [
+    "beat_69",
+    "beat_76"
+   ],
+   "reason": "Seeing the ghost is the ring's known power."
+  }
+ ]
+}

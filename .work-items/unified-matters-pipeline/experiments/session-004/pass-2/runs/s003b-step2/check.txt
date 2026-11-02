@@ -1,0 +1,16 @@
+step2: 14 threads, standalone ['beat_6', 'beat_11', 'beat_23', 'beat_34', 'beat_38'], problems none
+  thread_1 [earlier/open] Treasure map parent=None beats=0
+  thread_2 [earlier/open] Dragon hunt (Eric the Reeve's bounty) parent=None beats=9
+  thread_3 [earlier/open] Missing shipments parent=None beats=0
+  thread_4 [earlier/open] Fairies appearing more often parent=None beats=0
+  thread_5 [earlier/open] Ingrid and Warwick (Dunk's deal) parent=None beats=1
+  thread_6 [earlier/open] Dr. Uriah's penance for Father William parent=None beats=0
+  thread_7 [earlier/open] Squints' share of the treasure parent=None beats=5
+  thread_8 [new/open] Drop Dead Ned's hire parent=None beats=3
+  thread_9 [new/open] Protection against the black dragon's poison parent=thread_2 beats=1
+  thread_10 [new/open] The Free Goblin Society bargain parent=None beats=9
+  thread_11 [new/open] The undead giant in the Barrow Mound parent=None beats=5
+  thread_12 [new/open] The robes of Saint Arthur parent=None beats=4
+  thread_13 [new/open] The noblewoman statue parent=None beats=3
+  thread_14 [new/open] Brother Dirk's claim on the chalice parent=None beats=1
+  medium/high beats on no thread and not standalone: none

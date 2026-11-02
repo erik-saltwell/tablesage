@@ -1,0 +1,2356 @@
+<party>
+- Dunk
+- Sir Phidipaldi
+- Trout
+- Dr. Uriah
+</party>
+
+<items>
+[
+ {
+  "id": "thread_1",
+  "kind": "thread",
+  "name": "The unrecognized treasure map",
+  "origin": "earlier",
+  "status": "open",
+  "reason": "Uriah learned nothing of the map's history. Father William added marks to it and the party set out to check a marked location, but the treasure is still unfound.",
+  "beats": [
+   {
+    "id": "beat_3",
+    "kind": "event",
+    "text": "Dr. Uriah, who carries the party's map, tried to recall its history but knew nothing about it, and planned to secretly copy it during his downtime."
+   },
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map."
+   },
+   {
+    "id": "beat_69",
+    "kind": "event",
+    "text": "At Trout's proposal, the party decided to walk to the Barrow, avoiding the witch's house and checking out a marked map location on the way. Trout told Dunk to meet them there."
+   }
+  ]
+ },
+ {
+  "id": "thread_2",
+  "kind": "thread",
+  "name": "The Clurichen from the riverbanks",
+  "origin": "earlier",
+  "status": "changed",
+  "reason": "Beat_13 answered what the Clurichen does at night: Naggeneen drinks Quinn's stock. Beats 11 and 14 left him captured, not destroyed, hanging in a bag behind Quinn's bar, and his offer of a pot of gold or a secret remains.",
+  "beats": [
+   {
+    "id": "beat_10",
+    "kind": "event",
+    "text": "The basement door flung open on its own, and the invisible Clurichen slipped on the marbles, landed on its back and turned visible. When it said it was a good luck spirit, Sir Phidipaldi offered it a game of cards."
+   },
+   {
+    "id": "beat_11",
+    "kind": "event",
+    "text": "Trout and Dr. Uriah kicked the basement door open. Uriah threw vials of ink to reveal anything invisible, and Trout leapt in and caught the ink-soaked Clurichen in his bag of fish."
+   },
+   {
+    "id": "beat_12",
+    "kind": "event",
+    "text": "The Clurichen, Naggeneen, begged to be let go, offering his pot of gold or a secret. Sir Phidipaldi refused out of honor, having already called Quinn down."
+   },
+   {
+    "id": "beat_13",
+    "kind": "learned",
+    "text": "The thief of Quinn's alcohol was Naggeneen the Clurichen, not Bentley as Quinn had suspected. Naggeneen says he just likes to drink, has a problem, and drinks to unwind at night."
+   },
+   {
+    "id": "beat_18",
+    "kind": "event",
+    "text": "Dr. Uriah planned to nap until his ability to speak to animals returned, then stake out the river and follow the Clurichen when it emerged."
+   },
+   {
+    "id": "beat_19",
+    "kind": "learned",
+    "text": "Talking to the Clurichen does not require the ability to talk to aquatic animals."
+   },
+   {
+    "id": "beat_21",
+    "kind": "learned",
+    "text": "The Clurichen swims across the river towing a corked jug, drags it up the bank and turns invisible, but its little footprints show in the reeds."
+   },
+   {
+    "id": "beat_22",
+    "kind": "event",
+    "text": "Dr. Uriah followed the footprints unseen, with Trout behind him, to the Golden Egg Tavern's basement door."
+   },
+   {
+    "id": "beat_32",
+    "kind": "event",
+    "text": "The next morning Brandonsford bustled, though shipments still had not come in, and Naggeneen's bag still hung behind Quinn's bar at the Golden Egg."
+   }
+  ]
+ },
+ {
+  "id": "thread_3",
+  "kind": "thread",
+  "name": "The dragon and the Reeve's bounty",
+  "origin": "earlier",
+  "status": "changed",
+  "reason": "The lair's location and the dragon's deadly traits are now known (beats 48-49), and it will soon fly. Beat_40 says it can only be killed with Brandon's sword, and George doubts Eric can pay the bounty, which reshapes the hunt.",
+  "beats": [
+   {
+    "id": "beat_39",
+    "kind": "event",
+    "text": "Dr. Uriah said he had not known about the dragon before arriving, but admitted he had been offered money to go after it."
+   },
+   {
+    "id": "beat_40",
+    "kind": "learned",
+    "text": "Father William says he sent Brother Dirk a while ago to kill the dragon. Dirk had to go to Brandon's Barrow Mound first, because the dragon cannot be killed without the magic sword buried with Brandon."
+   },
+   {
+    "id": "beat_48",
+    "kind": "learned",
+    "text": "George says the dragon's lair is up north at the foot of the mountains, reachable without climbing. It cannot fly yet but soon will, and then the town is doomed."
+   },
+   {
+    "id": "beat_49",
+    "kind": "learned",
+    "text": "George says he went to the lair to kill the dragon and it killed all his friends. Its jaws drip poison and one bite kills, which is why he chopped off his own arm. It spits sulfur that smells of rotten eggs, and nothing pierces its black scales; their arrows and swords all failed."
+   },
+   {
+    "id": "beat_50",
+    "kind": "learned",
+    "text": "George asked whether Eric had promised Sir Phidipaldi 1000 gold and said he doubts Eric has 1000 gold. Both men dislike Eric, though George says Eric thinks George is amazing."
+   },
+   {
+    "id": "beat_51",
+    "kind": "learned",
+    "text": "George says only Sir Brandon ever killed the dragon, 1000 or maybe 2000 years ago. Schoolchildren are taught that a little fairy gave Brandon a magic sword with which he killed it, but no one knows what is true or where the sword is. He says Farmer Gill knows the fairytales."
+   },
+   {
+    "id": "beat_52",
+    "kind": "event",
+    "text": "George said Sir Phidipaldi could repay him by killing the dragon but doubted he could, though he allowed that a lance might be one of the few weapons they never tried. Sir Phidipaldi vowed to bring his lance."
+   },
+   {
+    "id": "beat_64",
+    "kind": "event",
+    "text": "Dunk told the others that Warwick the smith has beautiful armor that shimmers in the moonlight and could help against the dragon, and said he had a plan to get it and would go out one more night before rejoining them."
+   },
+   {
+    "id": "beat_66",
+    "kind": "event",
+    "text": "Sir Phidipaldi shared that the dragon is poisonous, spits sulfur and has unpierceable scales, and that the sword is at the Barrow. Dr. Uriah warned that the priest is a racist who won't like them."
+   },
+   {
+    "id": "beat_67",
+    "kind": "event",
+    "text": "Trout pointed out that Brother Dirk was headed to the Barrow to fight the dragon, and Sir Phidipaldi added that Farmer Gill's sons were after the dragon too."
+   },
+   {
+    "id": "beat_80",
+    "kind": "learned",
+    "text": "Brother Dirk says the giant was going to eat him in its stew. He was captured on his way to the Barrow to get the sword and save the town."
+   },
+   {
+    "id": "beat_81",
+    "kind": "event",
+    "text": "Brother Dirk said he should just head home. Sir Phidipaldi said they were also headed to the Barrow and objected to Dirk leaving, and Dr. Uriah asked what Father William would say, since William believed sending Dirk had settled the dragon problem."
+   }
+  ]
+ },
+ {
+  "id": "thread_6",
+  "kind": "thread",
+  "name": "Brandonsford's missing shipments",
+  "origin": "earlier",
+  "status": "open",
+  "reason": "Shipments still have not arrived, and the cause remains unknown.",
+  "beats": [
+   {
+    "id": "beat_32",
+    "kind": "event",
+    "text": "The next morning Brandonsford bustled, though shipments still had not come in, and Naggeneen's bag still hung behind Quinn's bar at the Golden Egg."
+   }
+  ]
+ },
+ {
+  "id": "thread_8",
+  "kind": "thread",
+  "name": "Buying Shamus the mule",
+  "origin": "earlier",
+  "status": "changed",
+  "reason": "In beat_2 Gill said he would lower the price once his sons return, so the deal now hinges on their return. Beat_67 notes the sons are away after the dragon.",
+  "beats": [
+   {
+    "id": "beat_2",
+    "kind": "event",
+    "text": "Dunk said he might take the bed but first offered 20 gold for Seamus the mule. Gill said he would go lower, but he could not work without his boys or a mule, and would drop the price once his boys came back."
+   },
+   {
+    "id": "beat_67",
+    "kind": "event",
+    "text": "Trout pointed out that Brother Dirk was headed to the Barrow to fight the dragon, and Sir Phidipaldi added that Farmer Gill's sons were after the dragon too."
+   }
+  ]
+ },
+ {
+  "id": "thread_9",
+  "kind": "thread",
+  "name": "Quinn's vanishing ale and the fake shipment",
+  "origin": "earlier",
+  "status": "resolved",
+  "reason": "The ale thief was revealed as Naggeneen, not Bentley (beat_13), and Quinn paid the party (beat_14), so nothing remains owed or unknown.",
+  "beats": [
+   {
+    "id": "beat_8",
+    "kind": "event",
+    "text": "Sir Phidipaldi slept in the Golden Egg's basement, where Quinn keeps his alcohol, hoping to find a secret door, since Quinn would pay him for finding who was taking the booze."
+   },
+   {
+    "id": "beat_9",
+    "kind": "event",
+    "text": "Sir Phidipaldi covered the basement floor with his bag of marbles in anticipation of the thief."
+   },
+   {
+    "id": "beat_10",
+    "kind": "event",
+    "text": "The basement door flung open on its own, and the invisible Clurichen slipped on the marbles, landed on its back and turned visible. When it said it was a good luck spirit, Sir Phidipaldi offered it a game of cards."
+   },
+   {
+    "id": "beat_11",
+    "kind": "event",
+    "text": "Trout and Dr. Uriah kicked the basement door open. Uriah threw vials of ink to reveal anything invisible, and Trout leapt in and caught the ink-soaked Clurichen in his bag of fish."
+   },
+   {
+    "id": "beat_12",
+    "kind": "event",
+    "text": "The Clurichen, Naggeneen, begged to be let go, offering his pot of gold or a secret. Sir Phidipaldi refused out of honor, having already called Quinn down."
+   },
+   {
+    "id": "beat_13",
+    "kind": "learned",
+    "text": "The thief of Quinn's alcohol was Naggeneen the Clurichen, not Bentley as Quinn had suspected. Naggeneen says he just likes to drink, has a problem, and drinks to unwind at night."
+   },
+   {
+    "id": "beat_14",
+    "kind": "event",
+    "text": "Quinn said he knew what he would do with this one, hung the flailing bag on a hook behind his bar, and paid Sir Phidipaldi, Trout and Dr. Uriah 33 gold each."
+   },
+   {
+    "id": "beat_22",
+    "kind": "event",
+    "text": "Dr. Uriah followed the footprints unseen, with Trout behind him, to the Golden Egg Tavern's basement door."
+   }
+  ]
+ },
+ {
+  "id": "thread_10",
+  "kind": "thread",
+  "name": "Squints in Trout's Halfling Corps",
+  "origin": "new",
+  "status": "open",
+  "reason": "Trout recruited Squints on terms that promise him a pick of treasure, which the party still owes. Trout's secret willingness to abandon him and the sling mishap shape the relationship.",
+  "beats": [
+   {
+    "id": "beat_6",
+    "kind": "event",
+    "text": "Trout chummed up to the lone halfling, Squints, who said he had just come to town looking for his big break and wanted an adventuring crew to join, and showed off his sling."
+   },
+   {
+    "id": "beat_7",
+    "kind": "event",
+    "text": "Trout invited Squints to meet him there the next morning to be introduced to his friends and called it too early to discuss pay. Squints agreed."
+   },
+   {
+    "id": "beat_34",
+    "kind": "event",
+    "text": "Squints asked where the promised friends were. Trout put him off until later, leaving him waiting and disappointed."
+   },
+   {
+    "id": "beat_35",
+    "kind": "event",
+    "text": "Trout offered Squints a junior assistant place in the party's Halfling Corps, which Trout leads. Squints would fund himself until the first treasure, then pick second after the elite members, get his own gear, fight monsters starting immediately, and take orders directly from Trout. Squints, starry-eyed, agreed to join."
+   },
+   {
+    "id": "beat_36",
+    "kind": "event",
+    "text": "Squints, armed with a sling and a dagger, is a more experienced fighter than Trout."
+   },
+   {
+    "id": "beat_37",
+    "kind": "event",
+    "text": "Trout told Squints to follow him, observe, not talk too much, and ask for no more than three tips a day. Squints agreed."
+   },
+   {
+    "id": "beat_63",
+    "kind": "event",
+    "text": "Sir Phidipaldi returned to the Clumsy Fox and met Trout and Squints. Dunk arrived after more than 24 hours away, and Trout introduced Squints as having just joined up."
+   },
+   {
+    "id": "beat_73",
+    "kind": "event",
+    "text": "Trout boosted Squints to the high window. Squints saw a wriggling, human-sized sack pinned to the wall beside the sleeping giant, with a pot cooking under the chimney."
+   },
+   {
+    "id": "beat_74",
+    "kind": "event",
+    "text": "Trout told Squints that intelligence suggested the sack held members of another adventuring party going after the dragon, and ordered him to bring it out unseen, promising to intervene if he was caught. Trout then whispered to the others that they would not actually rescue Squints, and Sir Phidipaldi agreed."
+   },
+   {
+    "id": "beat_76",
+    "kind": "event",
+    "text": "Squints crept in, froze when the giant stirred, and pulled the sack down. A bound and gagged Brother Dirk fell out, and the giant woke demanding who was there."
+   },
+   {
+    "id": "beat_77",
+    "kind": "event",
+    "text": "Dr. Uriah smashed the other window as a distraction, and Squints got Dirk out through the door that Dunk and Sir Phidipaldi opened."
+   },
+   {
+    "id": "beat_78",
+    "kind": "event",
+    "text": "Trout fired his sling at the giant's head but hit Squints in the head instead."
+   },
+   {
+    "id": "beat_82",
+    "kind": "event",
+    "text": "Trout told Brother Dirk he would report to Squints, which pleased Squints, who reasoned that he had rescued Dirk."
+   }
+  ]
+ },
+ {
+  "id": "thread_11",
+  "kind": "thread",
+  "name": "Warwick's mithril chain shirt",
+  "origin": "new",
+  "status": "open",
+  "reason": "Dunk spotted a magical mithril shirt in Warwick's shop and plans to get it. In beat_64 he pitched it explicitly as help against the dragon.",
+  "beats": [
+   {
+    "id": "beat_15",
+    "kind": "event",
+    "text": "Dunk stayed up and went to look around Warwick the smith's closed shop. It doubles as his home, sits about a fifth of a mile from Gill's farm, and is covered in horseshoes, rabbit feet and clovers."
+   },
+   {
+    "id": "beat_16",
+    "kind": "event",
+    "text": "Peeking through the window, Dunk saw iron daggers, a long sword, junk, and a mithril chain shirt glowing in the moonlight, clearly magical. Warwick was snoring in a second-story bedroom with its window cracked open."
+   },
+   {
+    "id": "beat_64",
+    "kind": "event",
+    "text": "Dunk told the others that Warwick the smith has beautiful armor that shimmers in the moonlight and could help against the dragon, and said he had a plan to get it and would go out one more night before rejoining them."
+   }
+  ]
+ },
+ {
+  "id": "thread_12",
+  "kind": "thread",
+  "name": "Dunk's sleeping-potion deal with Ingrid",
+  "origin": "new",
+  "status": "open",
+  "reason": "Dunk is to help Ingrid get a sleeping potion into Warwick's house, and he supplied diluted faun wine as the key ingredient. The potion is pending and the meeting is set, and Dunk holds her secret over her. It serves his stated plan to get Warwick's armor (beat_64).",
+  "beats": [
+   {
+    "id": "beat_17",
+    "kind": "event",
+    "text": "A thin, frazzled woman heading for the house saw Dunk, stiffened, and diverted as if she had not been going there. Dunk followed her."
+   },
+   {
+    "id": "beat_23",
+    "kind": "event",
+    "text": "Dunk followed the woman to Ingrid the Alchemist's shop and adjoining home, where she pretended to do chores, and he introduced himself."
+   },
+   {
+    "id": "beat_25",
+    "kind": "event",
+    "text": "When Ingrid asked whether Warwick had mentioned her, Dunk falsely said Warwick had mentioned a beautiful apothecary."
+   },
+   {
+    "id": "beat_26",
+    "kind": "learned",
+    "text": "Ingrid loves Warwick but is too scared to talk to him and has never spoken to him. Every night she climbs up to leave little gifts on his windowsill and watches him sleep. Her biggest fear is that he wakes and learns she has been watching him through his window; she would die of shame."
+   },
+   {
+    "id": "beat_27",
+    "kind": "event",
+    "text": "Ingrid asked Dunk, being tall, to put her gifts up for her. Dunk instead proposed that she make a potion to calm her nerves and he lift her into the house, so she could unlock Warwick's front door for him from inside. When she asked why he wanted in, he claimed to love clovers, and she grew dubious and would not go along."
+   },
+   {
+    "id": "beat_28",
+    "kind": "event",
+    "text": "Dunk then proposed that Ingrid make a sleeping potion, which he would help her get inside and give to Warwick, so she could watch him all night without fear of him waking."
+   },
+   {
+    "id": "beat_29",
+    "kind": "learned",
+    "text": "Ingrid says she knows how to make such a potion but needs a key ingredient, among others: wine from the Fauns Grove, in the woods slightly north of town across the river. The grove's trees bleed red wine instead of sap, the fauns collect it, and it can put any creature to sleep or make it drunk. The grove is close enough to reach the next day."
+   },
+   {
+    "id": "beat_30",
+    "kind": "event",
+    "text": "Dunk said he would see what he could do and set a meeting with Ingrid at the same spot and time the next night."
+   },
+   {
+    "id": "beat_31",
+    "kind": "event",
+    "text": "Ingrid thanked Dunk for keeping her romance secret and said she owed him. Dunk replied that he hadn't kept it secret yet, which left her looking a little scared."
+   },
+   {
+    "id": "beat_44",
+    "kind": "learned",
+    "text": "Father William says Ingrid keeps scrolls, that she and the witch in the woods have a coven, and that Ingrid is incompetent and cannot make her potions herself."
+   },
+   {
+    "id": "beat_53",
+    "kind": "event",
+    "text": "Dunk set out alone from Gill's farmhouse to the Faun Grove, where he found fauns dancing to mandolin music and drinking from golden goblets, each wearing a necklace with a little flask."
+   },
+   {
+    "id": "beat_54",
+    "kind": "event",
+    "text": "Dunk joined the dancing and drank both the fauns' wine and their emergency flask wine without effect, leaving the fauns gobsmacked."
+   },
+   {
+    "id": "beat_55",
+    "kind": "learned",
+    "text": "The fauns say almost any creature except fauns gets drunk immediately from a sip of their wine. The emergency wine in their neck flasks is the same wine, collected from trees that bleed red and white."
+   },
+   {
+    "id": "beat_56",
+    "kind": "learned",
+    "text": "The fauns collect little sentimental items and will trade for things like a love letter or a pixie's treasure."
+   },
+   {
+    "id": "beat_57",
+    "kind": "event",
+    "text": "Asking for wine to carry for anxious times, Dunk traded a crusty rabbit's foot from a child in his village for a faun's necklace flask of faun wine."
+   },
+   {
+    "id": "beat_60",
+    "kind": "learned",
+    "text": "Asked whether Vivian is a witch, Ingrid says they are trying to reclaim the word; witches mostly do not marry and live solitary lives, perhaps with a friend such as an alchemist. She says she makes all her products herself, contradicting Father William."
+   },
+   {
+    "id": "beat_65",
+    "kind": "event",
+    "text": "Dunk bought a flask of wine for one gold."
+   },
+   {
+    "id": "beat_70",
+    "kind": "event",
+    "text": "Dunk heavily diluted the faun wine with tavern wine, about 20% faun wine to 80% tavern wine, so it still smelled like something Ingrid would recognize, and gave it to her."
+   },
+   {
+    "id": "beat_71",
+    "kind": "event",
+    "text": "Ingrid said she would work on the potion and told Dunk to come back tomorrow. Dunk said he would see her tonight."
+   }
+  ]
+ },
+ {
+  "id": "thread_13",
+  "kind": "thread",
+  "name": "Brandon's sword in the Barrow Mound",
+  "origin": "new",
+  "status": "open",
+  "reason": "The party set out for the Barrow because the dragon cannot be killed without the sword buried with Brandon (beat_40). Brother Dirk, who was sent for it, was rescued and now wants to go home.",
+  "beats": [
+   {
+    "id": "beat_40",
+    "kind": "learned",
+    "text": "Father William says he sent Brother Dirk a while ago to kill the dragon. Dirk had to go to Brandon's Barrow Mound first, because the dragon cannot be killed without the magic sword buried with Brandon."
+   },
+   {
+    "id": "beat_41",
+    "kind": "learned",
+    "text": "The Barrow Mound is about a day's walk from town."
+   },
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map."
+   },
+   {
+    "id": "beat_51",
+    "kind": "learned",
+    "text": "George says only Sir Brandon ever killed the dragon, 1000 or maybe 2000 years ago. Schoolchildren are taught that a little fairy gave Brandon a magic sword with which he killed it, but no one knows what is true or where the sword is. He says Farmer Gill knows the fairytales."
+   },
+   {
+    "id": "beat_66",
+    "kind": "event",
+    "text": "Sir Phidipaldi shared that the dragon is poisonous, spits sulfur and has unpierceable scales, and that the sword is at the Barrow. Dr. Uriah warned that the priest is a racist who won't like them."
+   },
+   {
+    "id": "beat_67",
+    "kind": "event",
+    "text": "Trout pointed out that Brother Dirk was headed to the Barrow to fight the dragon, and Sir Phidipaldi added that Farmer Gill's sons were after the dragon too."
+   },
+   {
+    "id": "beat_68",
+    "kind": "learned",
+    "text": "The Barrow is roughly a three-mile walk through the forest, shorter than the day's walk given earlier."
+   },
+   {
+    "id": "beat_69",
+    "kind": "event",
+    "text": "At Trout's proposal, the party decided to walk to the Barrow, avoiding the witch's house and checking out a marked map location on the way. Trout told Dunk to meet them there."
+   },
+   {
+    "id": "beat_72",
+    "kind": "event",
+    "text": "The party, with Dunk and Squints, headed north through the woods and found a cottage three times normal size, built of cyclopean rocks, with a horrible roaring drone coming from inside."
+   },
+   {
+    "id": "beat_80",
+    "kind": "learned",
+    "text": "Brother Dirk says the giant was going to eat him in its stew. He was captured on his way to the Barrow to get the sword and save the town."
+   },
+   {
+    "id": "beat_81",
+    "kind": "event",
+    "text": "Brother Dirk said he should just head home. Sir Phidipaldi said they were also headed to the Barrow and objected to Dirk leaving, and Dr. Uriah asked what Father William would say, since William believed sending Dirk had settled the dragon problem."
+   }
+  ]
+ },
+ {
+  "id": "thread_14",
+  "kind": "thread",
+  "name": "Vivian, the witch in the woods",
+  "origin": "new",
+  "status": "open",
+  "reason": "The witch's home is now marked on the map and the party chose to avoid it. Her coven with Ingrid and the encroaching fairies she is linked to remain unknowns.",
+  "beats": [
+   {
+    "id": "beat_44",
+    "kind": "learned",
+    "text": "Father William says Ingrid keeps scrolls, that she and the witch in the woods have a coven, and that Ingrid is incompetent and cannot make her potions herself."
+   },
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map."
+   },
+   {
+    "id": "beat_59",
+    "kind": "learned",
+    "text": "Ingrid follows the religion of the forest, which she says the church represses. She says things have changed: there is the dragon, and fairies that used to stay hidden are encroaching and coming out more often. She sees them on visits to her friend Vivian, who lives in the forest."
+   },
+   {
+    "id": "beat_60",
+    "kind": "learned",
+    "text": "Asked whether Vivian is a witch, Ingrid says they are trying to reclaim the word; witches mostly do not marry and live solitary lives, perhaps with a friend such as an alchemist. She says she makes all her products herself, contradicting Father William."
+   },
+   {
+    "id": "beat_69",
+    "kind": "event",
+    "text": "At Trout's proposal, the party decided to walk to the Barrow, avoiding the witch's house and checking out a marked map location on the way. Trout told Dunk to meet them there."
+   }
+  ]
+ },
+ {
+  "id": "thread_15",
+  "kind": "thread",
+  "name": "Dr. Uriah's penance and donation for Father William",
+  "origin": "new",
+  "status": "open",
+  "reason": "Uriah agreed to do penance at the Barrow Mound and donate 10 gold, and has not yet done either.",
+  "beats": [
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map."
+   }
+  ]
+ },
+ {
+  "id": "thread_16",
+  "kind": "thread",
+  "name": "The giant in the stone cottage",
+  "origin": "new",
+  "status": "open",
+  "reason": "The party stole Brother Dirk from a man-eating giant and outran it, but the giant is unharmed and still lives in the woods on their route.",
+  "beats": [
+   {
+    "id": "beat_72",
+    "kind": "event",
+    "text": "The party, with Dunk and Squints, headed north through the woods and found a cottage three times normal size, built of cyclopean rocks, with a horrible roaring drone coming from inside."
+   },
+   {
+    "id": "beat_73",
+    "kind": "event",
+    "text": "Trout boosted Squints to the high window. Squints saw a wriggling, human-sized sack pinned to the wall beside the sleeping giant, with a pot cooking under the chimney."
+   },
+   {
+    "id": "beat_76",
+    "kind": "event",
+    "text": "Squints crept in, froze when the giant stirred, and pulled the sack down. A bound and gagged Brother Dirk fell out, and the giant woke demanding who was there."
+   },
+   {
+    "id": "beat_77",
+    "kind": "event",
+    "text": "Dr. Uriah smashed the other window as a distraction, and Squints got Dirk out through the door that Dunk and Sir Phidipaldi opened."
+   },
+   {
+    "id": "beat_79",
+    "kind": "event",
+    "text": "The party fled across the field. The slow giant chased them for a while before tiring, and they easily outran him."
+   },
+   {
+    "id": "beat_80",
+    "kind": "learned",
+    "text": "Brother Dirk says the giant was going to eat him in its stew. He was captured on his way to the Barrow to get the sword and save the town."
+   }
+  ]
+ },
+ {
+  "id": "beat_24",
+  "kind": "beat",
+  "name": "Standalone event",
+  "beats": [
+   {
+    "id": "beat_24",
+    "kind": "learned",
+    "text": "Ingrid says she sells mandrake root tea that heals all wounds, witch powder that glows when sprinkled on anything magical, and essence of wolfsbane against wolves."
+   }
+  ]
+ },
+ {
+  "id": "beat_38",
+  "kind": "beat",
+  "name": "Standalone event",
+  "beats": [
+   {
+    "id": "beat_38",
+    "kind": "event",
+    "text": "Dr. Uriah visited the church, the only fully stone building in town. Father William, prejudiced against nonhumans, remarked pointedly on Uriah being a Dagonite and dismissed him as an amateur scholar come to profit from rumors of the dragon."
+   }
+  ]
+ },
+ {
+  "id": "beat_43",
+  "kind": "beat",
+  "name": "Standalone event",
+  "beats": [
+   {
+    "id": "beat_43",
+    "kind": "learned",
+    "text": "Father William has no books for Dr. Uriah but offers to heal him if he is injured."
+   }
+  ]
+ },
+ {
+  "id": "beat_62",
+  "kind": "beat",
+  "name": "Standalone event",
+  "beats": [
+   {
+    "id": "beat_62",
+    "kind": "event",
+    "text": "Dr. Uriah bought wolfsbane and mandrake root tea and passed on the witch powder."
+   }
+  ]
+ },
+ {
+  "id": "scene_1",
+  "kind": "encounter",
+  "name": "Farmer Gill's farm",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Farmer Gill"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_1",
+    "kind": "event",
+    "text": "At sunset Dunk and Farmer Gill drank steadily together, Dunk holding his drink far better, and Gill offered Dunk a free bed in his barn for the night."
+   },
+   {
+    "id": "beat_2",
+    "kind": "event",
+    "text": "Dunk said he might take the bed but first offered 20 gold for Seamus the mule. Gill said he would go lower, but he could not work without his boys or a mule, and would drop the price once his boys came back."
+   }
+  ]
+ },
+ {
+  "id": "scene_2",
+  "kind": "encounter",
+  "name": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_3",
+    "kind": "event",
+    "text": "Dr. Uriah, who carries the party's map, tried to recall its history but knew nothing about it, and planned to secretly copy it during his downtime."
+   },
+   {
+    "id": "beat_4",
+    "kind": "event",
+    "text": "Having been thrown out of the Clumsy Fox, Sir Phidipaldi could only sleep at the Golden Egg, which is empty and has no regulars, while Trout and Dr. Uriah lodged at the Clumsy Fox for 10 silver a night."
+   },
+   {
+    "id": "beat_5",
+    "kind": "event",
+    "text": "Trout listened in unnoticed on the adventurers' table: Lady Hilda, Drop Dead Ned with his wasp necklace, the boisterous, joking human wizard Malzatarik the Magnificent, and a halfling sitting alone."
+   },
+   {
+    "id": "beat_6",
+    "kind": "event",
+    "text": "Trout chummed up to the lone halfling, Squints, who said he had just come to town looking for his big break and wanted an adventuring crew to join, and showed off his sling."
+   },
+   {
+    "id": "beat_7",
+    "kind": "event",
+    "text": "Trout invited Squints to meet him there the next morning to be introduced to his friends and called it too early to discuss pay. Squints agreed."
+   }
+  ]
+ },
+ {
+  "id": "scene_3",
+  "kind": "encounter",
+  "name": "The Golden Egg Tavern's basement",
+  "people": {
+   "party": [
+    "Sir Phidipaldi",
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Naggeneen",
+    "Quinn"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_8",
+    "kind": "event",
+    "text": "Sir Phidipaldi slept in the Golden Egg's basement, where Quinn keeps his alcohol, hoping to find a secret door, since Quinn would pay him for finding who was taking the booze."
+   },
+   {
+    "id": "beat_9",
+    "kind": "event",
+    "text": "Sir Phidipaldi covered the basement floor with his bag of marbles in anticipation of the thief."
+   },
+   {
+    "id": "beat_10",
+    "kind": "event",
+    "text": "The basement door flung open on its own, and the invisible Clurichen slipped on the marbles, landed on its back and turned visible. When it said it was a good luck spirit, Sir Phidipaldi offered it a game of cards."
+   },
+   {
+    "id": "beat_11",
+    "kind": "event",
+    "text": "Trout and Dr. Uriah kicked the basement door open. Uriah threw vials of ink to reveal anything invisible, and Trout leapt in and caught the ink-soaked Clurichen in his bag of fish."
+   },
+   {
+    "id": "beat_12",
+    "kind": "event",
+    "text": "The Clurichen, Naggeneen, begged to be let go, offering his pot of gold or a secret. Sir Phidipaldi refused out of honor, having already called Quinn down."
+   },
+   {
+    "id": "beat_13",
+    "kind": "learned",
+    "text": "The thief of Quinn's alcohol was Naggeneen the Clurichen, not Bentley as Quinn had suspected. Naggeneen says he just likes to drink, has a problem, and drinks to unwind at night."
+   },
+   {
+    "id": "beat_14",
+    "kind": "event",
+    "text": "Quinn said he knew what he would do with this one, hung the flailing bag on a hook behind his bar, and paid Sir Phidipaldi, Trout and Dr. Uriah 33 gold each."
+   }
+  ]
+ },
+ {
+  "id": "scene_4",
+  "kind": "encounter",
+  "name": "Warwick's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_15",
+    "kind": "event",
+    "text": "Dunk stayed up and went to look around Warwick the smith's closed shop. It doubles as his home, sits about a fifth of a mile from Gill's farm, and is covered in horseshoes, rabbit feet and clovers."
+   },
+   {
+    "id": "beat_16",
+    "kind": "event",
+    "text": "Peeking through the window, Dunk saw iron daggers, a long sword, junk, and a mithril chain shirt glowing in the moonlight, clearly magical. Warwick was snoring in a second-story bedroom with its window cracked open."
+   },
+   {
+    "id": "beat_17",
+    "kind": "event",
+    "text": "A thin, frazzled woman heading for the house saw Dunk, stiffened, and diverted as if she had not been going there. Dunk followed her."
+   }
+  ]
+ },
+ {
+  "id": "scene_5",
+  "kind": "encounter",
+  "name": "The river",
+  "people": {
+   "party": [
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "the Clurichen"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_18",
+    "kind": "event",
+    "text": "Dr. Uriah planned to nap until his ability to speak to animals returned, then stake out the river and follow the Clurichen when it emerged."
+   },
+   {
+    "id": "beat_19",
+    "kind": "learned",
+    "text": "Talking to the Clurichen does not require the ability to talk to aquatic animals."
+   },
+   {
+    "id": "beat_20",
+    "kind": "event",
+    "text": "Trout spear-fished at the river just outside town and caught several fish unseen. He saw Dr. Uriah arrive and hide, though Uriah did not notice him."
+   },
+   {
+    "id": "beat_21",
+    "kind": "learned",
+    "text": "The Clurichen swims across the river towing a corked jug, drags it up the bank and turns invisible, but its little footprints show in the reeds."
+   },
+   {
+    "id": "beat_22",
+    "kind": "event",
+    "text": "Dr. Uriah followed the footprints unseen, with Trout behind him, to the Golden Egg Tavern's basement door."
+   }
+  ]
+ },
+ {
+  "id": "scene_6",
+  "kind": "encounter",
+  "name": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_23",
+    "kind": "event",
+    "text": "Dunk followed the woman to Ingrid the Alchemist's shop and adjoining home, where she pretended to do chores, and he introduced himself."
+   },
+   {
+    "id": "beat_24",
+    "kind": "learned",
+    "text": "Ingrid says she sells mandrake root tea that heals all wounds, witch powder that glows when sprinkled on anything magical, and essence of wolfsbane against wolves."
+   },
+   {
+    "id": "beat_25",
+    "kind": "event",
+    "text": "When Ingrid asked whether Warwick had mentioned her, Dunk falsely said Warwick had mentioned a beautiful apothecary."
+   },
+   {
+    "id": "beat_26",
+    "kind": "learned",
+    "text": "Ingrid loves Warwick but is too scared to talk to him and has never spoken to him. Every night she climbs up to leave little gifts on his windowsill and watches him sleep. Her biggest fear is that he wakes and learns she has been watching him through his window; she would die of shame."
+   },
+   {
+    "id": "beat_27",
+    "kind": "event",
+    "text": "Ingrid asked Dunk, being tall, to put her gifts up for her. Dunk instead proposed that she make a potion to calm her nerves and he lift her into the house, so she could unlock Warwick's front door for him from inside. When she asked why he wanted in, he claimed to love clovers, and she grew dubious and would not go along."
+   },
+   {
+    "id": "beat_28",
+    "kind": "event",
+    "text": "Dunk then proposed that Ingrid make a sleeping potion, which he would help her get inside and give to Warwick, so she could watch him all night without fear of him waking."
+   },
+   {
+    "id": "beat_29",
+    "kind": "learned",
+    "text": "Ingrid says she knows how to make such a potion but needs a key ingredient, among others: wine from the Fauns Grove, in the woods slightly north of town across the river. The grove's trees bleed red wine instead of sap, the fauns collect it, and it can put any creature to sleep or make it drunk. The grove is close enough to reach the next day."
+   },
+   {
+    "id": "beat_30",
+    "kind": "event",
+    "text": "Dunk said he would see what he could do and set a meeting with Ingrid at the same spot and time the next night."
+   },
+   {
+    "id": "beat_31",
+    "kind": "event",
+    "text": "Ingrid thanked Dunk for keeping her romance secret and said she owed him. Dunk replied that he hadn't kept it secret yet, which left her looking a little scared."
+   }
+  ]
+ },
+ {
+  "id": "scene_7",
+  "kind": "encounter",
+  "name": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Trout"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_32",
+    "kind": "event",
+    "text": "The next morning Brandonsford bustled, though shipments still had not come in, and Naggeneen's bag still hung behind Quinn's bar at the Golden Egg."
+   },
+   {
+    "id": "beat_33",
+    "kind": "event",
+    "text": "At the Clumsy Fox, the halfling owner and his wife gratefully took Trout's fish. Lady Hilda, Malzatarik the Magnificent, Drop Dead Ned, Squints and Eric the Reeve were all there."
+   },
+   {
+    "id": "beat_34",
+    "kind": "event",
+    "text": "Squints asked where the promised friends were. Trout put him off until later, leaving him waiting and disappointed."
+   },
+   {
+    "id": "beat_35",
+    "kind": "event",
+    "text": "Trout offered Squints a junior assistant place in the party's Halfling Corps, which Trout leads. Squints would fund himself until the first treasure, then pick second after the elite members, get his own gear, fight monsters starting immediately, and take orders directly from Trout. Squints, starry-eyed, agreed to join."
+   },
+   {
+    "id": "beat_36",
+    "kind": "event",
+    "text": "Squints, armed with a sling and a dagger, is a more experienced fighter than Trout."
+   },
+   {
+    "id": "beat_37",
+    "kind": "event",
+    "text": "Trout told Squints to follow him, observe, not talk too much, and ask for no more than three tips a day. Squints agreed."
+   }
+  ]
+ },
+ {
+  "id": "scene_8",
+  "kind": "encounter",
+  "name": "The church",
+  "people": {
+   "party": [
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Father William"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_38",
+    "kind": "event",
+    "text": "Dr. Uriah visited the church, the only fully stone building in town. Father William, prejudiced against nonhumans, remarked pointedly on Uriah being a Dagonite and dismissed him as an amateur scholar come to profit from rumors of the dragon."
+   },
+   {
+    "id": "beat_39",
+    "kind": "event",
+    "text": "Dr. Uriah said he had not known about the dragon before arriving, but admitted he had been offered money to go after it."
+   },
+   {
+    "id": "beat_40",
+    "kind": "learned",
+    "text": "Father William says he sent Brother Dirk a while ago to kill the dragon. Dirk had to go to Brandon's Barrow Mound first, because the dragon cannot be killed without the magic sword buried with Brandon."
+   },
+   {
+    "id": "beat_41",
+    "kind": "learned",
+    "text": "The Barrow Mound is about a day's walk from town."
+   },
+   {
+    "id": "beat_42",
+    "kind": "event",
+    "text": "Doubting that Dagonites walk, Father William measured Dr. Uriah's hand and later his feet with a little pocket ruler, wrote the results down, and conceded there was no webbing."
+   },
+   {
+    "id": "beat_43",
+    "kind": "learned",
+    "text": "Father William has no books for Dr. Uriah but offers to heal him if he is injured."
+   },
+   {
+    "id": "beat_44",
+    "kind": "learned",
+    "text": "Father William says Ingrid keeps scrolls, that she and the witch in the woods have a coven, and that Ingrid is incompetent and cannot make her potions herself."
+   },
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map."
+   },
+   {
+    "id": "beat_46",
+    "kind": "event",
+    "text": "Dr. Uriah searched the church for secret doors and found none."
+   }
+  ]
+ },
+ {
+  "id": "scene_9",
+  "kind": "encounter",
+  "name": "George's hut",
+  "people": {
+   "party": [
+    "Sir Phidipaldi"
+   ],
+   "others": [
+    "George"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_47",
+    "kind": "event",
+    "text": "Sir Phidipaldi visited one-armed George the Hunter at his woodsman's hut and asked about the Black Dragon."
+   },
+   {
+    "id": "beat_48",
+    "kind": "learned",
+    "text": "George says the dragon's lair is up north at the foot of the mountains, reachable without climbing. It cannot fly yet but soon will, and then the town is doomed."
+   },
+   {
+    "id": "beat_49",
+    "kind": "learned",
+    "text": "George says he went to the lair to kill the dragon and it killed all his friends. Its jaws drip poison and one bite kills, which is why he chopped off his own arm. It spits sulfur that smells of rotten eggs, and nothing pierces its black scales; their arrows and swords all failed."
+   },
+   {
+    "id": "beat_50",
+    "kind": "learned",
+    "text": "George asked whether Eric had promised Sir Phidipaldi 1000 gold and said he doubts Eric has 1000 gold. Both men dislike Eric, though George says Eric thinks George is amazing."
+   },
+   {
+    "id": "beat_51",
+    "kind": "learned",
+    "text": "George says only Sir Brandon ever killed the dragon, 1000 or maybe 2000 years ago. Schoolchildren are taught that a little fairy gave Brandon a magic sword with which he killed it, but no one knows what is true or where the sword is. He says Farmer Gill knows the fairytales."
+   },
+   {
+    "id": "beat_52",
+    "kind": "event",
+    "text": "George said Sir Phidipaldi could repay him by killing the dragon but doubted he could, though he allowed that a lance might be one of the few weapons they never tried. Sir Phidipaldi vowed to bring his lance."
+   }
+  ]
+ },
+ {
+  "id": "scene_10",
+  "kind": "encounter",
+  "name": "The Faun Grove",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "the fauns"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_53",
+    "kind": "event",
+    "text": "Dunk set out alone from Gill's farmhouse to the Faun Grove, where he found fauns dancing to mandolin music and drinking from golden goblets, each wearing a necklace with a little flask."
+   },
+   {
+    "id": "beat_54",
+    "kind": "event",
+    "text": "Dunk joined the dancing and drank both the fauns' wine and their emergency flask wine without effect, leaving the fauns gobsmacked."
+   },
+   {
+    "id": "beat_55",
+    "kind": "learned",
+    "text": "The fauns say almost any creature except fauns gets drunk immediately from a sip of their wine. The emergency wine in their neck flasks is the same wine, collected from trees that bleed red and white."
+   },
+   {
+    "id": "beat_56",
+    "kind": "learned",
+    "text": "The fauns collect little sentimental items and will trade for things like a love letter or a pixie's treasure."
+   },
+   {
+    "id": "beat_57",
+    "kind": "event",
+    "text": "Asking for wine to carry for anxious times, Dunk traded a crusty rabbit's foot from a child in his village for a faun's necklace flask of faun wine."
+   }
+  ]
+ },
+ {
+  "id": "scene_11",
+  "kind": "encounter",
+  "name": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_58",
+    "kind": "event",
+    "text": "Dr. Uriah and Ingrid agreed that Father William was the worst, and Uriah passed on William's claim that she does not make her own potions."
+   },
+   {
+    "id": "beat_59",
+    "kind": "learned",
+    "text": "Ingrid follows the religion of the forest, which she says the church represses. She says things have changed: there is the dragon, and fairies that used to stay hidden are encroaching and coming out more often. She sees them on visits to her friend Vivian, who lives in the forest."
+   },
+   {
+    "id": "beat_60",
+    "kind": "learned",
+    "text": "Asked whether Vivian is a witch, Ingrid says they are trying to reclaim the word; witches mostly do not marry and live solitary lives, perhaps with a friend such as an alchemist. She says she makes all her products herself, contradicting Father William."
+   },
+   {
+    "id": "beat_61",
+    "kind": "learned",
+    "text": "Ingrid's prices are 5 gold for wolfsbane, 7 gold for witch powder and 10 gold for mandrake tea."
+   },
+   {
+    "id": "beat_62",
+    "kind": "event",
+    "text": "Dr. Uriah bought wolfsbane and mandrake root tea and passed on the witch powder."
+   }
+  ]
+ },
+ {
+  "id": "scene_12",
+  "kind": "encounter",
+  "name": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Sir Phidipaldi",
+    "Trout",
+    "Dunk",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_63",
+    "kind": "event",
+    "text": "Sir Phidipaldi returned to the Clumsy Fox and met Trout and Squints. Dunk arrived after more than 24 hours away, and Trout introduced Squints as having just joined up."
+   },
+   {
+    "id": "beat_64",
+    "kind": "event",
+    "text": "Dunk told the others that Warwick the smith has beautiful armor that shimmers in the moonlight and could help against the dragon, and said he had a plan to get it and would go out one more night before rejoining them."
+   },
+   {
+    "id": "beat_65",
+    "kind": "event",
+    "text": "Dunk bought a flask of wine for one gold."
+   },
+   {
+    "id": "beat_66",
+    "kind": "event",
+    "text": "Sir Phidipaldi shared that the dragon is poisonous, spits sulfur and has unpierceable scales, and that the sword is at the Barrow. Dr. Uriah warned that the priest is a racist who won't like them."
+   },
+   {
+    "id": "beat_67",
+    "kind": "event",
+    "text": "Trout pointed out that Brother Dirk was headed to the Barrow to fight the dragon, and Sir Phidipaldi added that Farmer Gill's sons were after the dragon too."
+   },
+   {
+    "id": "beat_68",
+    "kind": "learned",
+    "text": "The Barrow is roughly a three-mile walk through the forest, shorter than the day's walk given earlier."
+   },
+   {
+    "id": "beat_69",
+    "kind": "event",
+    "text": "At Trout's proposal, the party decided to walk to the Barrow, avoiding the witch's house and checking out a marked map location on the way. Trout told Dunk to meet them there."
+   }
+  ]
+ },
+ {
+  "id": "scene_13",
+  "kind": "encounter",
+  "name": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_70",
+    "kind": "event",
+    "text": "Dunk heavily diluted the faun wine with tavern wine, about 20% faun wine to 80% tavern wine, so it still smelled like something Ingrid would recognize, and gave it to her."
+   },
+   {
+    "id": "beat_71",
+    "kind": "event",
+    "text": "Ingrid said she would work on the potion and told Dunk to come back tomorrow. Dunk said he would see her tonight."
+   }
+  ]
+ },
+ {
+  "id": "scene_14",
+  "kind": "encounter",
+  "name": "The giant's cottage",
+  "people": {
+   "party": [
+    "Dunk",
+    "Sir Phidipaldi",
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints",
+    "the giant",
+    "Brother Dirk"
+   ]
+  },
+  "beats": [
+   {
+    "id": "beat_72",
+    "kind": "event",
+    "text": "The party, with Dunk and Squints, headed north through the woods and found a cottage three times normal size, built of cyclopean rocks, with a horrible roaring drone coming from inside."
+   },
+   {
+    "id": "beat_73",
+    "kind": "event",
+    "text": "Trout boosted Squints to the high window. Squints saw a wriggling, human-sized sack pinned to the wall beside the sleeping giant, with a pot cooking under the chimney."
+   },
+   {
+    "id": "beat_74",
+    "kind": "event",
+    "text": "Trout told Squints that intelligence suggested the sack held members of another adventuring party going after the dragon, and ordered him to bring it out unseen, promising to intervene if he was caught. Trout then whispered to the others that they would not actually rescue Squints, and Sir Phidipaldi agreed."
+   },
+   {
+    "id": "beat_75",
+    "kind": "event",
+    "text": "Dunk and Sir Phidipaldi waited at the door, Dr. Uriah at the other window, and Trout on the windowsill with his sling ready."
+   },
+   {
+    "id": "beat_76",
+    "kind": "event",
+    "text": "Squints crept in, froze when the giant stirred, and pulled the sack down. A bound and gagged Brother Dirk fell out, and the giant woke demanding who was there."
+   },
+   {
+    "id": "beat_77",
+    "kind": "event",
+    "text": "Dr. Uriah smashed the other window as a distraction, and Squints got Dirk out through the door that Dunk and Sir Phidipaldi opened."
+   },
+   {
+    "id": "beat_78",
+    "kind": "event",
+    "text": "Trout fired his sling at the giant's head but hit Squints in the head instead."
+   },
+   {
+    "id": "beat_79",
+    "kind": "event",
+    "text": "The party fled across the field. The slow giant chased them for a while before tiring, and they easily outran him."
+   },
+   {
+    "id": "beat_80",
+    "kind": "learned",
+    "text": "Brother Dirk says the giant was going to eat him in its stew. He was captured on his way to the Barrow to get the sword and save the town."
+   },
+   {
+    "id": "beat_81",
+    "kind": "event",
+    "text": "Brother Dirk said he should just head home. Sir Phidipaldi said they were also headed to the Barrow and objected to Dirk leaving, and Dr. Uriah asked what Father William would say, since William believed sending Dirk had settled the dragon problem."
+   },
+   {
+    "id": "beat_82",
+    "kind": "event",
+    "text": "Trout told Brother Dirk he would report to Squints, which pleased Squints, who reasoned that he had rescued Dirk."
+   }
+  ]
+ }
+]
+</items>
+
+<scenes>
+[
+ {
+  "id": "scene_1",
+  "location": "Farmer Gill's farm",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Farmer Gill"
+   ]
+  },
+  "cue": "Haggling over Seamus the mule at sunset",
+  "beats": [
+   {
+    "id": "beat_1",
+    "kind": "event",
+    "text": "At sunset Dunk and Farmer Gill drank steadily together, Dunk holding his drink far better, and Gill offered Dunk a free bed in his barn for the night.",
+    "importance": "low",
+    "ledger": [
+     0,
+     1
+    ]
+   },
+   {
+    "id": "beat_2",
+    "kind": "event",
+    "text": "Dunk said he might take the bed but first offered 20 gold for Seamus the mule. Gill said he would go lower, but he could not work without his boys or a mule, and would drop the price once his boys came back.",
+    "importance": "medium",
+    "ledger": [
+     2,
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_2",
+  "location": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "cue": "\"Back home I could bullseye womp rats\" - Squints",
+  "beats": [
+   {
+    "id": "beat_3",
+    "kind": "event",
+    "text": "Dr. Uriah, who carries the party's map, tried to recall its history but knew nothing about it, and planned to secretly copy it during his downtime.",
+    "importance": "medium",
+    "ledger": [
+     4,
+     5,
+     6
+    ]
+   },
+   {
+    "id": "beat_4",
+    "kind": "event",
+    "text": "Having been thrown out of the Clumsy Fox, Sir Phidipaldi could only sleep at the Golden Egg, which is empty and has no regulars, while Trout and Dr. Uriah lodged at the Clumsy Fox for 10 silver a night.",
+    "importance": "low",
+    "ledger": [
+     7,
+     8
+    ]
+   },
+   {
+    "id": "beat_5",
+    "kind": "event",
+    "text": "Trout listened in unnoticed on the adventurers' table: Lady Hilda, Drop Dead Ned with his wasp necklace, the boisterous, joking human wizard Malzatarik the Magnificent, and a halfling sitting alone.",
+    "importance": "low",
+    "ledger": [
+     9,
+     10,
+     11,
+     12
+    ]
+   },
+   {
+    "id": "beat_6",
+    "kind": "event",
+    "text": "Trout chummed up to the lone halfling, Squints, who said he had just come to town looking for his big break and wanted an adventuring crew to join, and showed off his sling.",
+    "importance": "medium",
+    "ledger": [
+     13,
+     14,
+     15,
+     16
+    ]
+   },
+   {
+    "id": "beat_7",
+    "kind": "event",
+    "text": "Trout invited Squints to meet him there the next morning to be introduced to his friends and called it too early to discuss pay. Squints agreed.",
+    "importance": "medium",
+    "ledger": [
+     17,
+     18
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_3",
+  "location": "The Golden Egg Tavern's basement",
+  "people": {
+   "party": [
+    "Sir Phidipaldi",
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Naggeneen",
+    "Quinn"
+   ]
+  },
+  "cue": "The invisible Clurichen slipping flat on Sir Phidipaldi's marbles",
+  "beats": [
+   {
+    "id": "beat_8",
+    "kind": "event",
+    "text": "Sir Phidipaldi slept in the Golden Egg's basement, where Quinn keeps his alcohol, hoping to find a secret door, since Quinn would pay him for finding who was taking the booze.",
+    "importance": "medium",
+    "ledger": [
+     22
+    ]
+   },
+   {
+    "id": "beat_9",
+    "kind": "event",
+    "text": "Sir Phidipaldi covered the basement floor with his bag of marbles in anticipation of the thief.",
+    "importance": "low",
+    "ledger": [
+     49
+    ]
+   },
+   {
+    "id": "beat_10",
+    "kind": "event",
+    "text": "The basement door flung open on its own, and the invisible Clurichen slipped on the marbles, landed on its back and turned visible. When it said it was a good luck spirit, Sir Phidipaldi offered it a game of cards.",
+    "importance": "medium",
+    "ledger": [
+     36,
+     50,
+     51
+    ]
+   },
+   {
+    "id": "beat_11",
+    "kind": "event",
+    "text": "Trout and Dr. Uriah kicked the basement door open. Uriah threw vials of ink to reveal anything invisible, and Trout leapt in and caught the ink-soaked Clurichen in his bag of fish.",
+    "importance": "medium",
+    "ledger": [
+     52,
+     53,
+     56
+    ]
+   },
+   {
+    "id": "beat_12",
+    "kind": "event",
+    "text": "The Clurichen, Naggeneen, begged to be let go, offering his pot of gold or a secret. Sir Phidipaldi refused out of honor, having already called Quinn down.",
+    "importance": "medium",
+    "ledger": [
+     55,
+     57,
+     58,
+     59
+    ]
+   },
+   {
+    "id": "beat_13",
+    "kind": "learned",
+    "text": "The thief of Quinn's alcohol was Naggeneen the Clurichen, not Bentley as Quinn had suspected. Naggeneen says he just likes to drink, has a problem, and drinks to unwind at night.",
+    "importance": "high",
+    "ledger": [
+     55,
+     61,
+     62,
+     63,
+     64
+    ]
+   },
+   {
+    "id": "beat_14",
+    "kind": "event",
+    "text": "Quinn said he knew what he would do with this one, hung the flailing bag on a hook behind his bar, and paid Sir Phidipaldi, Trout and Dr. Uriah 33 gold each.",
+    "importance": "medium",
+    "ledger": [
+     65,
+     66
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_4",
+  "location": "Warwick's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "cue": "Mithril shirt glowing in the moonlight behind clover-covered walls",
+  "beats": [
+   {
+    "id": "beat_15",
+    "kind": "event",
+    "text": "Dunk stayed up and went to look around Warwick the smith's closed shop. It doubles as his home, sits about a fifth of a mile from Gill's farm, and is covered in horseshoes, rabbit feet and clovers.",
+    "importance": "low",
+    "ledger": [
+     19,
+     24
+    ]
+   },
+   {
+    "id": "beat_16",
+    "kind": "event",
+    "text": "Peeking through the window, Dunk saw iron daggers, a long sword, junk, and a mithril chain shirt glowing in the moonlight, clearly magical. Warwick was snoring in a second-story bedroom with its window cracked open.",
+    "importance": "high",
+    "ledger": [
+     25,
+     26
+    ]
+   },
+   {
+    "id": "beat_17",
+    "kind": "event",
+    "text": "A thin, frazzled woman heading for the house saw Dunk, stiffened, and diverted as if she had not been going there. Dunk followed her.",
+    "importance": "medium",
+    "ledger": [
+     27,
+     28,
+     29
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_5",
+  "location": "The river",
+  "people": {
+   "party": [
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "the Clurichen"
+   ]
+  },
+  "cue": "The Clurichen's little footprints in the reeds",
+  "beats": [
+   {
+    "id": "beat_18",
+    "kind": "event",
+    "text": "Dr. Uriah planned to nap until his ability to speak to animals returned, then stake out the river and follow the Clurichen when it emerged.",
+    "importance": "low",
+    "ledger": [
+     20
+    ]
+   },
+   {
+    "id": "beat_19",
+    "kind": "learned",
+    "text": "Talking to the Clurichen does not require the ability to talk to aquatic animals.",
+    "importance": "low",
+    "ledger": [
+     21
+    ]
+   },
+   {
+    "id": "beat_20",
+    "kind": "event",
+    "text": "Trout spear-fished at the river just outside town and caught several fish unseen. He saw Dr. Uriah arrive and hide, though Uriah did not notice him.",
+    "importance": "low",
+    "ledger": [
+     23,
+     30,
+     31,
+     32
+    ]
+   },
+   {
+    "id": "beat_21",
+    "kind": "learned",
+    "text": "The Clurichen swims across the river towing a corked jug, drags it up the bank and turns invisible, but its little footprints show in the reeds.",
+    "importance": "medium",
+    "ledger": [
+     33
+    ]
+   },
+   {
+    "id": "beat_22",
+    "kind": "event",
+    "text": "Dr. Uriah followed the footprints unseen, with Trout behind him, to the Golden Egg Tavern's basement door.",
+    "importance": "medium",
+    "ledger": [
+     34,
+     35,
+     36
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_6",
+  "location": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "cue": "\"You have a brusque, romantic poet's soul\" - Ingrid",
+  "beats": [
+   {
+    "id": "beat_23",
+    "kind": "event",
+    "text": "Dunk followed the woman to Ingrid the Alchemist's shop and adjoining home, where she pretended to do chores, and he introduced himself.",
+    "importance": "low",
+    "ledger": [
+     37,
+     38
+    ]
+   },
+   {
+    "id": "beat_24",
+    "kind": "learned",
+    "text": "Ingrid says she sells mandrake root tea that heals all wounds, witch powder that glows when sprinkled on anything magical, and essence of wolfsbane against wolves.",
+    "importance": "medium",
+    "ledger": [
+     39
+    ]
+   },
+   {
+    "id": "beat_25",
+    "kind": "event",
+    "text": "When Ingrid asked whether Warwick had mentioned her, Dunk falsely said Warwick had mentioned a beautiful apothecary.",
+    "importance": "low",
+    "ledger": [
+     42,
+     43
+    ]
+   },
+   {
+    "id": "beat_26",
+    "kind": "learned",
+    "text": "Ingrid loves Warwick but is too scared to talk to him and has never spoken to him. Every night she climbs up to leave little gifts on his windowsill and watches him sleep. Her biggest fear is that he wakes and learns she has been watching him through his window; she would die of shame.",
+    "importance": "high",
+    "ledger": [
+     41,
+     44,
+     67,
+     69
+    ]
+   },
+   {
+    "id": "beat_27",
+    "kind": "event",
+    "text": "Ingrid asked Dunk, being tall, to put her gifts up for her. Dunk instead proposed that she make a potion to calm her nerves and he lift her into the house, so she could unlock Warwick's front door for him from inside. When she asked why he wanted in, he claimed to love clovers, and she grew dubious and would not go along.",
+    "importance": "medium",
+    "ledger": [
+     44,
+     45,
+     46,
+     47,
+     48,
+     67
+    ]
+   },
+   {
+    "id": "beat_28",
+    "kind": "event",
+    "text": "Dunk then proposed that Ingrid make a sleeping potion, which he would help her get inside and give to Warwick, so she could watch him all night without fear of him waking.",
+    "importance": "medium",
+    "ledger": [
+     70
+    ]
+   },
+   {
+    "id": "beat_29",
+    "kind": "learned",
+    "text": "Ingrid says she knows how to make such a potion but needs a key ingredient, among others: wine from the Fauns Grove, in the woods slightly north of town across the river. The grove's trees bleed red wine instead of sap, the fauns collect it, and it can put any creature to sleep or make it drunk. The grove is close enough to reach the next day.",
+    "importance": "high",
+    "ledger": [
+     71,
+     72,
+     73
+    ]
+   },
+   {
+    "id": "beat_30",
+    "kind": "event",
+    "text": "Dunk said he would see what he could do and set a meeting with Ingrid at the same spot and time the next night.",
+    "importance": "high",
+    "ledger": [
+     74
+    ]
+   },
+   {
+    "id": "beat_31",
+    "kind": "event",
+    "text": "Ingrid thanked Dunk for keeping her romance secret and said she owed him. Dunk replied that he hadn't kept it secret yet, which left her looking a little scared.",
+    "importance": "medium",
+    "ledger": [
+     75,
+     76,
+     77
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_7",
+  "location": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Trout"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "cue": "Squints limited to three tips a day",
+  "beats": [
+   {
+    "id": "beat_32",
+    "kind": "event",
+    "text": "The next morning Brandonsford bustled, though shipments still had not come in, and Naggeneen's bag still hung behind Quinn's bar at the Golden Egg.",
+    "importance": "medium",
+    "ledger": [
+     78
+    ]
+   },
+   {
+    "id": "beat_33",
+    "kind": "event",
+    "text": "At the Clumsy Fox, the halfling owner and his wife gratefully took Trout's fish. Lady Hilda, Malzatarik the Magnificent, Drop Dead Ned, Squints and Eric the Reeve were all there.",
+    "importance": "low",
+    "ledger": [
+     79
+    ]
+   },
+   {
+    "id": "beat_34",
+    "kind": "event",
+    "text": "Squints asked where the promised friends were. Trout put him off until later, leaving him waiting and disappointed.",
+    "importance": "low",
+    "ledger": [
+     80,
+     81,
+     82
+    ]
+   },
+   {
+    "id": "beat_35",
+    "kind": "event",
+    "text": "Trout offered Squints a junior assistant place in the party's Halfling Corps, which Trout leads. Squints would fund himself until the first treasure, then pick second after the elite members, get his own gear, fight monsters starting immediately, and take orders directly from Trout. Squints, starry-eyed, agreed to join.",
+    "importance": "high",
+    "ledger": [
+     114,
+     115,
+     116
+    ]
+   },
+   {
+    "id": "beat_36",
+    "kind": "event",
+    "text": "Squints, armed with a sling and a dagger, is a more experienced fighter than Trout.",
+    "importance": "medium",
+    "ledger": [
+     117
+    ]
+   },
+   {
+    "id": "beat_37",
+    "kind": "event",
+    "text": "Trout told Squints to follow him, observe, not talk too much, and ask for no more than three tips a day. Squints agreed.",
+    "importance": "low",
+    "ledger": [
+     118,
+     119
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_8",
+  "location": "The church",
+  "people": {
+   "party": [
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Father William"
+   ]
+  },
+  "cue": "Father William measuring Uriah's hand with a pocket ruler",
+  "beats": [
+   {
+    "id": "beat_38",
+    "kind": "event",
+    "text": "Dr. Uriah visited the church, the only fully stone building in town. Father William, prejudiced against nonhumans, remarked pointedly on Uriah being a Dagonite and dismissed him as an amateur scholar come to profit from rumors of the dragon.",
+    "importance": "medium",
+    "ledger": [
+     84,
+     85,
+     86,
+     87
+    ]
+   },
+   {
+    "id": "beat_39",
+    "kind": "event",
+    "text": "Dr. Uriah said he had not known about the dragon before arriving, but admitted he had been offered money to go after it.",
+    "importance": "low",
+    "ledger": [
+     88
+    ]
+   },
+   {
+    "id": "beat_40",
+    "kind": "learned",
+    "text": "Father William says he sent Brother Dirk a while ago to kill the dragon. Dirk had to go to Brandon's Barrow Mound first, because the dragon cannot be killed without the magic sword buried with Brandon.",
+    "importance": "high",
+    "ledger": [
+     89
+    ]
+   },
+   {
+    "id": "beat_41",
+    "kind": "learned",
+    "text": "The Barrow Mound is about a day's walk from town.",
+    "importance": "medium",
+    "ledger": [
+     90
+    ]
+   },
+   {
+    "id": "beat_42",
+    "kind": "event",
+    "text": "Doubting that Dagonites walk, Father William measured Dr. Uriah's hand and later his feet with a little pocket ruler, wrote the results down, and conceded there was no webbing.",
+    "importance": "low",
+    "ledger": [
+     91,
+     92,
+     93,
+     102,
+     103
+    ]
+   },
+   {
+    "id": "beat_43",
+    "kind": "learned",
+    "text": "Father William has no books for Dr. Uriah but offers to heal him if he is injured.",
+    "importance": "medium",
+    "ledger": [
+     96
+    ]
+   },
+   {
+    "id": "beat_44",
+    "kind": "learned",
+    "text": "Father William says Ingrid keeps scrolls, that she and the witch in the woods have a coven, and that Ingrid is incompetent and cannot make her potions herself.",
+    "importance": "medium",
+    "ledger": [
+     98
+    ]
+   },
+   {
+    "id": "beat_45",
+    "kind": "event",
+    "text": "Dr. Uriah agreed to Father William's requests to give penance at the Barrow Mound and donate 10 gold for its upkeep. Father William then marked the witch's home and the Barrow Mound on the party's map.",
+    "importance": "high",
+    "ledger": [
+     99,
+     100,
+     101,
+     103
+    ]
+   },
+   {
+    "id": "beat_46",
+    "kind": "event",
+    "text": "Dr. Uriah searched the church for secret doors and found none.",
+    "importance": "low",
+    "ledger": [
+     134
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_9",
+  "location": "George's hut",
+  "people": {
+   "party": [
+    "Sir Phidipaldi"
+   ],
+   "others": [
+    "George"
+   ]
+  },
+  "cue": "George chopping off his own arm after the dragon's bite",
+  "beats": [
+   {
+    "id": "beat_47",
+    "kind": "event",
+    "text": "Sir Phidipaldi visited one-armed George the Hunter at his woodsman's hut and asked about the Black Dragon.",
+    "importance": "low",
+    "ledger": [
+     104,
+     105,
+     106
+    ]
+   },
+   {
+    "id": "beat_48",
+    "kind": "learned",
+    "text": "George says the dragon's lair is up north at the foot of the mountains, reachable without climbing. It cannot fly yet but soon will, and then the town is doomed.",
+    "importance": "high",
+    "ledger": [
+     107
+    ]
+   },
+   {
+    "id": "beat_49",
+    "kind": "learned",
+    "text": "George says he went to the lair to kill the dragon and it killed all his friends. Its jaws drip poison and one bite kills, which is why he chopped off his own arm. It spits sulfur that smells of rotten eggs, and nothing pierces its black scales; their arrows and swords all failed.",
+    "importance": "high",
+    "ledger": [
+     108
+    ]
+   },
+   {
+    "id": "beat_50",
+    "kind": "learned",
+    "text": "George asked whether Eric had promised Sir Phidipaldi 1000 gold and said he doubts Eric has 1000 gold. Both men dislike Eric, though George says Eric thinks George is amazing.",
+    "importance": "medium",
+    "ledger": [
+     109,
+     110,
+     111
+    ]
+   },
+   {
+    "id": "beat_51",
+    "kind": "learned",
+    "text": "George says only Sir Brandon ever killed the dragon, 1000 or maybe 2000 years ago. Schoolchildren are taught that a little fairy gave Brandon a magic sword with which he killed it, but no one knows what is true or where the sword is. He says Farmer Gill knows the fairytales.",
+    "importance": "medium",
+    "ledger": [
+     111
+    ]
+   },
+   {
+    "id": "beat_52",
+    "kind": "event",
+    "text": "George said Sir Phidipaldi could repay him by killing the dragon but doubted he could, though he allowed that a lance might be one of the few weapons they never tried. Sir Phidipaldi vowed to bring his lance.",
+    "importance": "medium",
+    "ledger": [
+     112,
+     113
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_10",
+  "location": "The Faun Grove",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "the fauns"
+   ]
+  },
+  "cue": "Crusty rabbit's foot traded for a faun's necklace flask",
+  "beats": [
+   {
+    "id": "beat_53",
+    "kind": "event",
+    "text": "Dunk set out alone from Gill's farmhouse to the Faun Grove, where he found fauns dancing to mandolin music and drinking from golden goblets, each wearing a necklace with a little flask.",
+    "importance": "low",
+    "ledger": [
+     83,
+     120
+    ]
+   },
+   {
+    "id": "beat_54",
+    "kind": "event",
+    "text": "Dunk joined the dancing and drank both the fauns' wine and their emergency flask wine without effect, leaving the fauns gobsmacked.",
+    "importance": "medium",
+    "ledger": [
+     121,
+     122,
+     123,
+     127,
+     128,
+     129
+    ]
+   },
+   {
+    "id": "beat_55",
+    "kind": "learned",
+    "text": "The fauns say almost any creature except fauns gets drunk immediately from a sip of their wine. The emergency wine in their neck flasks is the same wine, collected from trees that bleed red and white.",
+    "importance": "medium",
+    "ledger": [
+     124,
+     126
+    ]
+   },
+   {
+    "id": "beat_56",
+    "kind": "learned",
+    "text": "The fauns collect little sentimental items and will trade for things like a love letter or a pixie's treasure.",
+    "importance": "medium",
+    "ledger": [
+     131
+    ]
+   },
+   {
+    "id": "beat_57",
+    "kind": "event",
+    "text": "Asking for wine to carry for anxious times, Dunk traded a crusty rabbit's foot from a child in his village for a faun's necklace flask of faun wine.",
+    "importance": "high",
+    "ledger": [
+     130,
+     132,
+     133
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_11",
+  "location": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "cue": "Reclaiming the word witch",
+  "beats": [
+   {
+    "id": "beat_58",
+    "kind": "event",
+    "text": "Dr. Uriah and Ingrid agreed that Father William was the worst, and Uriah passed on William's claim that she does not make her own potions.",
+    "importance": "low",
+    "ledger": [
+     137,
+     138,
+     140,
+     141
+    ]
+   },
+   {
+    "id": "beat_59",
+    "kind": "learned",
+    "text": "Ingrid follows the religion of the forest, which she says the church represses. She says things have changed: there is the dragon, and fairies that used to stay hidden are encroaching and coming out more often. She sees them on visits to her friend Vivian, who lives in the forest.",
+    "importance": "medium",
+    "ledger": [
+     138
+    ]
+   },
+   {
+    "id": "beat_60",
+    "kind": "learned",
+    "text": "Asked whether Vivian is a witch, Ingrid says they are trying to reclaim the word; witches mostly do not marry and live solitary lives, perhaps with a friend such as an alchemist. She says she makes all her products herself, contradicting Father William.",
+    "importance": "medium",
+    "ledger": [
+     139
+    ]
+   },
+   {
+    "id": "beat_61",
+    "kind": "learned",
+    "text": "Ingrid's prices are 5 gold for wolfsbane, 7 gold for witch powder and 10 gold for mandrake tea.",
+    "importance": "low",
+    "ledger": [
+     141
+    ]
+   },
+   {
+    "id": "beat_62",
+    "kind": "event",
+    "text": "Dr. Uriah bought wolfsbane and mandrake root tea and passed on the witch powder.",
+    "importance": "medium",
+    "ledger": [
+     142
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_12",
+  "location": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Sir Phidipaldi",
+    "Trout",
+    "Dunk",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints"
+   ]
+  },
+  "cue": "Squints marveling at how huge Dunk is",
+  "beats": [
+   {
+    "id": "beat_63",
+    "kind": "event",
+    "text": "Sir Phidipaldi returned to the Clumsy Fox and met Trout and Squints. Dunk arrived after more than 24 hours away, and Trout introduced Squints as having just joined up.",
+    "importance": "low",
+    "ledger": [
+     143,
+     144,
+     145,
+     146
+    ]
+   },
+   {
+    "id": "beat_64",
+    "kind": "event",
+    "text": "Dunk told the others that Warwick the smith has beautiful armor that shimmers in the moonlight and could help against the dragon, and said he had a plan to get it and would go out one more night before rejoining them.",
+    "importance": "high",
+    "ledger": [
+     147
+    ]
+   },
+   {
+    "id": "beat_65",
+    "kind": "event",
+    "text": "Dunk bought a flask of wine for one gold.",
+    "importance": "low",
+    "ledger": [
+     148
+    ]
+   },
+   {
+    "id": "beat_66",
+    "kind": "event",
+    "text": "Sir Phidipaldi shared that the dragon is poisonous, spits sulfur and has unpierceable scales, and that the sword is at the Barrow. Dr. Uriah warned that the priest is a racist who won't like them.",
+    "importance": "low",
+    "ledger": [
+     149,
+     151
+    ]
+   },
+   {
+    "id": "beat_67",
+    "kind": "event",
+    "text": "Trout pointed out that Brother Dirk was headed to the Barrow to fight the dragon, and Sir Phidipaldi added that Farmer Gill's sons were after the dragon too.",
+    "importance": "medium",
+    "ledger": [
+     152,
+     153
+    ]
+   },
+   {
+    "id": "beat_68",
+    "kind": "learned",
+    "text": "The Barrow is roughly a three-mile walk through the forest, shorter than the day's walk given earlier.",
+    "importance": "low",
+    "ledger": [
+     90,
+     154
+    ]
+   },
+   {
+    "id": "beat_69",
+    "kind": "event",
+    "text": "At Trout's proposal, the party decided to walk to the Barrow, avoiding the witch's house and checking out a marked map location on the way. Trout told Dunk to meet them there.",
+    "importance": "high",
+    "ledger": [
+     150,
+     155
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_13",
+  "location": "Ingrid's shop",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Ingrid"
+   ]
+  },
+  "cue": "Faun wine watered down to one part in five",
+  "beats": [
+   {
+    "id": "beat_70",
+    "kind": "event",
+    "text": "Dunk heavily diluted the faun wine with tavern wine, about 20% faun wine to 80% tavern wine, so it still smelled like something Ingrid would recognize, and gave it to her.",
+    "importance": "high",
+    "ledger": [
+     156
+    ]
+   },
+   {
+    "id": "beat_71",
+    "kind": "event",
+    "text": "Ingrid said she would work on the potion and told Dunk to come back tomorrow. Dunk said he would see her tonight.",
+    "importance": "medium",
+    "ledger": [
+     157,
+     158
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_14",
+  "location": "The giant's cottage",
+  "people": {
+   "party": [
+    "Dunk",
+    "Sir Phidipaldi",
+    "Trout",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Squints",
+    "the giant",
+    "Brother Dirk"
+   ]
+  },
+  "cue": "\"Ow, why did you do that?\" - Squints",
+  "beats": [
+   {
+    "id": "beat_72",
+    "kind": "event",
+    "text": "The party, with Dunk and Squints, headed north through the woods and found a cottage three times normal size, built of cyclopean rocks, with a horrible roaring drone coming from inside.",
+    "importance": "medium",
+    "ledger": [
+     159,
+     160
+    ]
+   },
+   {
+    "id": "beat_73",
+    "kind": "event",
+    "text": "Trout boosted Squints to the high window. Squints saw a wriggling, human-sized sack pinned to the wall beside the sleeping giant, with a pot cooking under the chimney.",
+    "importance": "medium",
+    "ledger": [
+     161,
+     162,
+     163,
+     164
+    ]
+   },
+   {
+    "id": "beat_74",
+    "kind": "event",
+    "text": "Trout told Squints that intelligence suggested the sack held members of another adventuring party going after the dragon, and ordered him to bring it out unseen, promising to intervene if he was caught. Trout then whispered to the others that they would not actually rescue Squints, and Sir Phidipaldi agreed.",
+    "importance": "medium",
+    "ledger": [
+     165,
+     166,
+     167,
+     168
+    ]
+   },
+   {
+    "id": "beat_75",
+    "kind": "event",
+    "text": "Dunk and Sir Phidipaldi waited at the door, Dr. Uriah at the other window, and Trout on the windowsill with his sling ready.",
+    "importance": "low",
+    "ledger": [
+     169
+    ]
+   },
+   {
+    "id": "beat_76",
+    "kind": "event",
+    "text": "Squints crept in, froze when the giant stirred, and pulled the sack down. A bound and gagged Brother Dirk fell out, and the giant woke demanding who was there.",
+    "importance": "high",
+    "ledger": [
+     170,
+     171,
+     172,
+     173
+    ]
+   },
+   {
+    "id": "beat_77",
+    "kind": "event",
+    "text": "Dr. Uriah smashed the other window as a distraction, and Squints got Dirk out through the door that Dunk and Sir Phidipaldi opened.",
+    "importance": "medium",
+    "ledger": [
+     174,
+     175
+    ]
+   },
+   {
+    "id": "beat_78",
+    "kind": "event",
+    "text": "Trout fired his sling at the giant's head but hit Squints in the head instead.",
+    "importance": "low",
+    "ledger": [
+     176,
+     177
+    ]
+   },
+   {
+    "id": "beat_79",
+    "kind": "event",
+    "text": "The party fled across the field. The slow giant chased them for a while before tiring, and they easily outran him.",
+    "importance": "medium",
+    "ledger": [
+     178
+    ]
+   },
+   {
+    "id": "beat_80",
+    "kind": "learned",
+    "text": "Brother Dirk says the giant was going to eat him in its stew. He was captured on his way to the Barrow to get the sword and save the town.",
+    "importance": "medium",
+    "ledger": [
+     179,
+     181
+    ]
+   },
+   {
+    "id": "beat_81",
+    "kind": "event",
+    "text": "Brother Dirk said he should just head home. Sir Phidipaldi said they were also headed to the Barrow and objected to Dirk leaving, and Dr. Uriah asked what Father William would say, since William believed sending Dirk had settled the dragon problem.",
+    "importance": "high",
+    "ledger": [
+     181,
+     182,
+     183
+    ]
+   },
+   {
+    "id": "beat_82",
+    "kind": "event",
+    "text": "Trout told Brother Dirk he would report to Squints, which pleased Squints, who reasoned that he had rescued Dirk.",
+    "importance": "low",
+    "ledger": [
+     184,
+     185
+    ]
+   }
+  ]
+ }
+]
+</scenes>

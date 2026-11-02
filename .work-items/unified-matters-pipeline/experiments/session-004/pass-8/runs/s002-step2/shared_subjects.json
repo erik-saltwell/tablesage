@@ -1,0 +1,136 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_19",
+    "beat_20",
+    "beat_22",
+    "beat_39"
+   ],
+   "reason": "The thread about the Clurichen itself records his capture and fate."
+  },
+  {
+   "subject": "Brandon's sword as the only way to kill the dragon",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_47",
+    "beat_58",
+    "beat_75"
+   ],
+   "reason": "The thread about the sword comes before the broader dragon hunt."
+  },
+  {
+   "subject": "Location and distance of Brandon's Barrow Mound",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_13",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_48",
+    "beat_52",
+    "beat_77",
+    "beat_78"
+   ],
+   "reason": "The sword quest is where the party will act on the Barrow first."
+  },
+  {
+   "subject": "Witch's home marked on the party's map",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_52",
+    "beat_78"
+   ],
+   "reason": "The thread about the witch records where she lives."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_24",
+    "beat_73"
+   ],
+   "reason": "The thread about the armor itself comes before the dragon hunt it might aid."
+  },
+  {
+   "subject": "Ingrid's secret nightly visits to Warwick's window",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_25",
+    "beat_32",
+    "beat_38"
+   ],
+   "reason": "Her secret is the leverage and motive in Dunk's dealings with Ingrid."
+  },
+  {
+   "subject": "The sleeping potion and its faun-wine ingredient",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_35",
+    "beat_36",
+    "beat_79",
+    "beat_80"
+   ],
+   "reason": "The potion is made under Dunk's bargain with Ingrid."
+  },
+  {
+   "subject": "Farmer Gill's sons away hunting the dragon",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_6"
+   ],
+   "beats": [
+    "beat_4",
+    "beat_76"
+   ],
+   "reason": "The sons' danger lives on the dragon hunt; their return also governs Shamus's price."
+  },
+  {
+   "subject": "Brother Dirk placed under Squints in the Halfling Corps",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_90",
+    "beat_91"
+   ],
+   "reason": "Dirk's place in the party's chain of command belongs to the Corps arrangement, though his Barrow mission bears on the sword."
+  },
+  {
+   "subject": "The giant's danger on the route north",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_81",
+    "beat_85",
+    "beat_87",
+    "beat_89"
+   ],
+   "reason": "The thread about the giant itself records the danger, ahead of the sword quest it threatens."
+  }
+ ]
+}

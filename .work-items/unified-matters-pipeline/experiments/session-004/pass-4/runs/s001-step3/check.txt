@@ -1,0 +1,11 @@
+step3: 21 facts (21 open) {'want': 3, 'owe': 3, 'blocked_by': 0, 'could_use': 7, 'unknown': 6, 'threat': 2}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_16']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.48 fact_7 (thread_3, could_use) ~ fact_10 (thread_4, could_use)
+         Lady Hilda offers to join the party for pay on the dragon hunt.
+         Lady Hilda, a seasoned-looking noblewoman with chain mail and a shield, offers to join the party for money for the dragon hunt; she says she cannot kill the dragon herself, and no fee has been named.
+  cross-thread facts sharing 4-word phrases:
+    fact_7 (thread_3) & fact_10 (thread_4): ['join the party for', 'offers to join the', 'to join the party']

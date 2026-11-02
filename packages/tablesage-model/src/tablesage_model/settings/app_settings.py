@@ -186,6 +186,13 @@ class GenerateArtifactsSettings(BaseModel, frozen=True):
         return self
 
 
+class PromptCachingSettings(BaseModel, frozen=True):
+    # Used only for repeated system prefixes during campaign-wide output regeneration.
+    ttl: Literal["5m", "1h"] = "1h"
+    # Chat Completions supports 30m; 12h requires the Responses API.
+    openai_ttl: Literal["30m"] = "30m"
+
+
 class AppSettings(BaseModel, frozen=True):
     # Zero means that this workspace has not acknowledged the current schema.
     settings_version: int = Field(default=0, ge=0)
@@ -196,6 +203,7 @@ class AppSettings(BaseModel, frozen=True):
     opportunities_timeout: PositiveInt = 600
     previously_on: PreviouslyOnSettings = Field(default_factory=PreviouslyOnSettings)
     generate_artifacts: GenerateArtifactsSettings = Field(default_factory=GenerateArtifactsSettings)
+    prompt_caching: PromptCachingSettings = Field(default_factory=PromptCachingSettings)
     audio_cleaning: AudioCleaningSettings = Field(default_factory=AudioCleaningSettings)
     transcription_and_diarization: TranscriptionAndDiarizationSettings = Field(default_factory=TranscriptionAndDiarizationSettings)
     speaker_identification: SpeakerIdentificationSettings = Field(default_factory=SpeakerIdentificationSettings)

@@ -1,0 +1,7 @@
+step3: 18 facts (18 open) {'want': 4, 'owe': 0, 'blocked_by': 0, 'could_use': 7, 'unknown': 4, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_15']
+  problems: none
+  similar open fact pairs (review for restatement):
+  cross-thread facts sharing 4-word phrases:

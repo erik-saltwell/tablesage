@@ -1,0 +1,214 @@
+{
+ "scenes": "s001-step1",
+ "threads": "s001-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived in Brandonsford following a treasure map whose marked locations they did not recognize.",
+   "impact_basis": "Beat_1 establishes the party's reason for being in this unknown land, setting up their overarching pursuit.",
+   "narrative_impact": "high",
+   "lasting_basis": "Beat_1's unresolved map will drive later Sessions as the party seeks the treasure.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_2",
+   "change": "Reginald the frog warned Dr. Uriah that a trickster Clurichen comes from the riverbanks into town every night.",
+   "impact_basis": "Beat_6 reveals a new nightly danger in town that the party should avoid.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_6's nightly creature likely ties into other town troubles and will probably come up again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_3",
+   "change": "Eric the Reeve offered 1000 gold for the body of a black dragon troubling Brandonsford, and the party gathered accounts of it.",
+   "impact_basis": "Beats 15, 16 and 27 give the party a major bounty and details of a black dragon, a likely main goal.",
+   "narrative_impact": "high",
+   "lasting_basis": "Beat_15's open bounty on a living dragon will shape later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_4",
+   "change": "Lady Hilda offered to join the party's dragon hunt for pay, and Sir Phidipaldi promised to return for her services.",
+   "impact_basis": "Beat_10 introduces a seasoned potential hireling for the dragon hunt.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_10's pending promise to return makes her likely to reappear.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned offered himself and his killer wasp for hire at 100 gold a week, and Dr. Uriah said he would think about it.",
+   "impact_basis": "Beats 21 and 22 present a dangerous, murderous hireling option.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_22's open offer may come up again if the party seeks help.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_6",
+   "change": "The party learned that shipments to Brandonsford have stopped arriving for months, leaving the town short of goods.",
+   "impact_basis": "Beats 13 and 30 reveal a town-wide supply problem with an unknown cause.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_13 and beat_30 describe an unexplained mystery likely to be investigated later.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_7",
+   "change": "Sir Phidipaldi insulted Eric the Reeve and challenged him to a duel, and Bentley sent him off to the Golden Egg for the night.",
+   "impact_basis": "Beats 17, 19 and 23 sour relations with the town's quest-giver and get Sir Phidipaldi ejected from the inn.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_19's unresolved ill will with the Reeve who offers the bounty is likely to matter again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_8",
+   "change": "Farmer Gill offered Dunk the mule Shamus for 100 gold or the dragon's death, and Dunk slept in Gill's barn to think it over.",
+   "impact_basis": "Beats 25 and 29 present a minor purchase offer and a night's lodging.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_25's offer for an ordinary mule is a small matter that may briefly resurface.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_9",
+   "change": "Sir Phidipaldi agreed to help Quinn stage a fake ale shipment to get back at Bentley, for 100 gold.",
+   "impact_basis": "Beats 35 and 36 give Sir Phidipaldi a paid scheme and reveal Quinn's nightly vanishing stock.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_36's agreed but unperformed scheme will likely be carried out in a later Session.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "beat_31",
+   "change": "Dunk learned that Warwick the smith displays a superb mithril chain shirt that he refuses to sell.",
+   "impact_basis": "Beat_31 notes a valuable item in town but changes nothing yet.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_31's mithril shirt may draw interest later but is not pursued.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "scene_1",
+   "change": "The night watchman let the party into Brandonsford after Sir Phidipaldi invoked Zeus's law of hospitality.",
+   "impact_basis": "Beats 3 and 4 cover a routine entry into town and orientation.",
+   "narrative_impact": "low",
+   "lasting_basis": "The entry in beat_3 matters mostly within the Session.",
+   "lasting_consequence": "low",
+   "encounter_basis": "The arrival is mostly logistics; the meaningful part, the treasure map, is already told by thread_1.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_3"
+   ],
+   "represented_by": [
+    "thread_1"
+   ]
+  },
+  {
+   "id": "scene_2",
+   "change": "Dr. Uriah spoke with Reginald the frog, who warned of the Clurichen.",
+   "impact_basis": "Beat_6 delivers the Clurichen warning; beat_5 is colour.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The warning in beat_6 is likely to matter again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "The frog conversation's only substance is the Clurichen warning, which thread_2 already tells.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_6"
+   ],
+   "represented_by": [
+    "thread_2"
+   ]
+  },
+  {
+   "id": "scene_3",
+   "change": "At the Clumsy Fox the party learned of the dragon bounty, met potential hirelings, and Sir Phidipaldi's quarrel with the Reeve got him sent away.",
+   "impact_basis": "Beats 10, 15, 19, 22 and 23 introduce the bounty, hirelings and a feud.",
+   "narrative_impact": "high",
+   "lasting_basis": "The bounty in beat_15 and the feud in beat_19 will shape later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "The tavern night is pivotal, but its central events (bounty, Hilda, Ned, Reeve quarrel) are each told by their own threads.",
+   "encounter_value": "high",
+   "focus_beats": [
+    "beat_15",
+    "beat_19",
+    "beat_23"
+   ],
+   "represented_by": [
+    "thread_3",
+    "thread_4",
+    "thread_5",
+    "thread_7"
+   ]
+  },
+  {
+   "id": "scene_4",
+   "change": "Dunk spent the evening with Farmer Gill, who offered his mule, shared Brandonsford's dragon history and town gossip, and hosted him in his barn.",
+   "impact_basis": "Beats 26, 27 and 29 provide lore and hospitality, adding modestly to the dragon situation.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Gill's hospitality and lore in beats 26 and 29 may matter again, as his sons are hunting the dragon.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "Dunk's solitary night of hospitality and lore with Gill gives personal context distinct from the mule purchase and the dragon bounty.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_24",
+    "beat_26",
+    "beat_28",
+    "beat_29"
+   ],
+   "represented_by": []
+  },
+  {
+   "id": "scene_5",
+   "change": "At the Golden Egg, Sir Phidipaldi heard Quinn's complaint of vanishing stock and agreed to stage a fake shipment against Bentley.",
+   "impact_basis": "Beats 35 and 36 create a paid scheme.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The scheme in beat_36 is pending.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "The central interaction is the agreement with Quinn, already told by thread_9.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_35",
+    "beat_36"
+   ],
+   "represented_by": [
+    "thread_9"
+   ]
+  }
+ ],
+ "problems": []
+}

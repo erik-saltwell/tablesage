@@ -1,0 +1,488 @@
+{
+ "version": 6,
+ "rules": {
+  "last_session": "PROVISIONAL: touched threads and standalone beats with narrative_impact and lasting_consequence both medium or high; story order; no cap",
+  "want": "serves_thread is null (an end, not a means) and significance is not incidental (Goals: parent_goal_id null, significance not incidental)",
+  "owe": "definite_end; commitment_type is not general_agreement; stake, burden and consequence are not trivial (Obligations filter)",
+  "blocked_by": "in_effect is active (Goal Impediments: anticipated filtered out)",
+  "could_use": "helps_thread names a thread whose want or debt is shown, directly or through a parent thread (Opportunities and New Assets need a goal link); role is direct (Opportunities: parent_opportunity_id null); an asset with low or trivial goal_support is shown only if acquired by acting on an opening (New Assets filter)",
+  "unknown": "question_type open_ended and all four dimensions medium or high (Mysteries filter)",
+  "threat": "harm_origin is not party and no evaluation is low (Brewing Troubles filter); not covered by an immediate danger",
+  "all": "never possibly moot facts; no caps"
+ },
+ "last_session": [
+  {
+   "id": "thread_1",
+   "kind": "thread",
+   "first": 3
+  },
+  {
+   "id": "thread_10",
+   "kind": "thread",
+   "first": 8
+  },
+  {
+   "id": "thread_2",
+   "kind": "thread",
+   "first": 10
+  },
+  {
+   "id": "thread_8",
+   "kind": "thread",
+   "first": 23
+  },
+  {
+   "id": "thread_11",
+   "kind": "thread",
+   "first": 26
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 46
+  },
+  {
+   "id": "thread_12",
+   "kind": "thread",
+   "first": 48
+  },
+  {
+   "id": "thread_13",
+   "kind": "thread",
+   "first": 59
+  },
+  {
+   "id": "thread_14",
+   "kind": "thread",
+   "first": 84
+  }
+ ],
+ "last_session_candidates": [
+  {
+   "id": "thread_7",
+   "change": "Dunk offered 20 gold for the mule, but no deal was made and Gill will only lower his price when his sons return.",
+   "impact_basis": "One beat records an offer and a deferral, a small adjustment to the situation.",
+   "narrative_impact": "low",
+   "lasting_basis": "Gill tied the price to his sons' return, so the purchase may come up again.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 2,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_1",
+   "change": "Father William marked the witch's house and the Barrow Mound on Uriah's map, and the party set out to check a marked location on the way north.",
+   "impact_basis": "Beats show William adding two locations to the map and Trout leading the plan to visit a marked spot, a clear but modest update to the map's use.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The newly marked locations guide the party's route north and will come up again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 3,
+   "beats": 3,
+   "shown": true
+  },
+  {
+   "id": "thread_10",
+   "change": "Trout recruited the halfling Squints into his Halfling Corps with second pick of the first treasure, and Squints rescued Brother Dirk, who now reports to him.",
+   "impact_basis": "Beats show a new companion gained on specific terms, the rescue, and Dirk being placed under Squints.",
+   "narrative_impact": "high",
+   "lasting_basis": "The treasure promise is still owed and Squints now travels with the party with a follower, so he will feature in coming sessions.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 8,
+   "beats": 12,
+   "shown": true
+  },
+  {
+   "id": "thread_2",
+   "change": "The party caught the Clurichen Naggeneen stealing Quinn's booze, and he now hangs captive in a bag behind Quinn's bar with his offer of gold or a secret refused.",
+   "impact_basis": "Beats show the capture, his name and motive revealed, his offer refused, and Quinn taking custody, answering the thread's central question.",
+   "narrative_impact": "high",
+   "lasting_basis": "Naggeneen remains captive with an outstanding offer of a pot of gold or a secret, and Quinn's plans for him are unknown, so he is likely to return.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 10,
+   "beats": 12,
+   "shown": true
+  },
+  {
+   "id": "thread_9",
+   "change": "The thief proved to be Naggeneen rather than Bentley, and Quinn paid the party 33 gold each, settling the deal.",
+   "impact_basis": "The trap, capture and payment closed the arrangement and cleared Bentley.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The deal is resolved and nothing remains owed, and the payment was ordinary gold.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 13,
+   "beats": 7,
+   "shown": false
+  },
+  {
+   "id": "thread_6",
+   "change": "Nothing lasting changed; the shipments still had not arrived.",
+   "impact_basis": "A single beat only repeats that the shipments have not come in.",
+   "narrative_impact": "none",
+   "lasting_basis": "The beat restates the known situation without adding anything.",
+   "lasting_consequence": "none",
+   "kind": "thread",
+   "first": 22,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_8",
+   "change": "Dunk saw that Warwick's mithril chain shirt is magical and resolved to get it, scouting the shop and learning of Ingrid's nightly watching.",
+   "impact_basis": "Beats show the shirt confirmed magical, Warwick's open bedroom window spotted and Dunk announcing a plan, turning interest into an active heist.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Dunk plans to go back another night for the armor, so the heist will continue in later sessions.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 23,
+   "beats": 6,
+   "shown": true
+  },
+  {
+   "id": "thread_11",
+   "change": "Dunk got faun wine for Ingrid's sleeping potion but secretly diluted it before handing it over, and he plans to meet her tonight.",
+   "impact_basis": "Beats show the bargain struck, the trip to the Fauns Grove, the trade for the flask and the diluted delivery, all advancing a scheme that serves the heist.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The potion is not yet made, the dilution may cause trouble, and the meeting tonight is pending, so this will come up again.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 26,
+   "beats": 16,
+   "shown": true
+  },
+  {
+   "id": "beat_33",
+   "change": "Ingrid's stock of healing tea, magic-detecting witch powder and wolfsbane was revealed.",
+   "impact_basis": "The beat only describes the goods she sells.",
+   "narrative_impact": "low",
+   "lasting_basis": "The shop's stock may be useful later but is minor.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 32,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_3",
+   "change": "The party learned the dragon can reportedly only be killed with Brandon's buried sword, that it will soon be able to fly, and that Eric may not have the 1000 gold bounty.",
+   "impact_basis": "Father William's and George's accounts reshape the hunt with a required weapon, a ticking threat of flight and a doubtful reward.",
+   "narrative_impact": "high",
+   "lasting_basis": "The sword requirement, the coming flight and the doubt about the bounty will shape the party's plans for future sessions.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 46,
+   "beats": 9,
+   "shown": true
+  },
+  {
+   "id": "thread_12",
+   "change": "The party learned that Brandon's sword lies at the Barrow Mound and is needed to kill the dragon, and they set out for it with a rescued but reluctant Brother Dirk.",
+   "impact_basis": "Beats establish the sword as a new main objective, mark the Barrow on the map, start the journey and add Dirk to the group.",
+   "narrative_impact": "high",
+   "lasting_basis": "Recovering the sword at the Barrow is now the party's immediate goal and will drive the next sessions.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 48,
+   "beats": 11,
+   "shown": true
+  },
+  {
+   "id": "beat_58",
+   "change": "Father William offered to heal Uriah if he is injured.",
+   "impact_basis": "A minor offer of a possible resource.",
+   "narrative_impact": "low",
+   "lasting_basis": "The healing offer may come up again, but it is incidental.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 57,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_13",
+   "change": "Uriah promised Father William penance at the Barrow Mound and a 10 gold donation in return for marking the map.",
+   "impact_basis": "Beats show a bargain struck and William fulfilling his side by marking the map.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Uriah's penance and donation are still owed and tie in with the trip to the Barrow.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 59,
+   "beats": 2,
+   "shown": true
+  },
+  {
+   "id": "beat_78",
+   "change": "Ingrid revealed that the dragon is drawing hidden fairies out more often and that she has a friend, Vivian, in the forest.",
+   "impact_basis": "The beat adds lore linking the dragon to fairy activity and introduces a contact.",
+   "narrative_impact": "low",
+   "lasting_basis": "The fairy activity and Vivian may come up again in the forest.",
+   "lasting_consequence": "medium",
+   "kind": "beat",
+   "first": 77,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "beat_79",
+   "change": "Ingrid suggested that Vivian is a witch, which adds detail to the coven Father William mentioned.",
+   "impact_basis": "The beat adds colour about witches and Vivian.",
+   "narrative_impact": "low",
+   "lasting_basis": "It may matter if the party meets the witch.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 78,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "beat_82",
+   "change": "Uriah bought wolfsbane and mandrake root tea.",
+   "impact_basis": "An ordinary purchase of minor goods.",
+   "narrative_impact": "low",
+   "lasting_basis": "It is a purchase of ordinary goods of limited future weight.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 81,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_14",
+   "change": "The party snatched Brother Dirk from a man-eating giant's stew pot and outran him, leaving the giant unharmed on the route north.",
+   "impact_basis": "Beats show a new foe met, a rescue and an escape.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The angry giant still lives on the route north and could be met again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 84,
+   "beats": 6,
+   "shown": true
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_5",
+    "fact_1",
+    "fact_14"
+   ]
+  },
+  {
+   "heading": "Standing in your way",
+   "kind": "blocked_by",
+   "facts": [
+    "fact_26"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_42",
+    "fact_25",
+    "fact_27",
+    "fact_17",
+    "fact_22",
+    "fact_28",
+    "fact_10",
+    "fact_15",
+    "fact_16"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_44",
+    "fact_8",
+    "fact_13"
+   ]
+  },
+  {
+   "heading": "Promises and debts",
+   "kind": "owe",
+   "facts": [
+    "fact_37",
+    "fact_46",
+    "fact_32",
+    "fact_11"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_9",
+    "fact_48"
+   ]
+  }
+ ],
+ "decisions": {
+  "fact_1": {
+   "shown": true,
+   "reason": "end; side; committed"
+  },
+  "fact_5": {
+   "shown": true,
+   "reason": "end; adventure; committed"
+  },
+  "fact_31": {
+   "shown": false,
+   "reason": "commitment_type general_agreement"
+  },
+  "fact_11": {
+   "shown": true,
+   "reason": "personal_promise; stake low, burden minor, consequence minor"
+  },
+  "fact_14": {
+   "shown": true,
+   "reason": "end; side; considering"
+  },
+  "fact_32": {
+   "shown": true,
+   "reason": "bargain; stake medium, burden minor, consequence minor"
+  },
+  "fact_37": {
+   "shown": true,
+   "reason": "bargain; stake medium, burden minor, consequence minor"
+  },
+  "fact_46": {
+   "shown": true,
+   "reason": "bargain; stake low, burden minor, consequence minor"
+  },
+  "fact_47": {
+   "shown": false,
+   "reason": "burden trivial"
+  },
+  "fact_2": {
+   "shown": false,
+   "reason": "investigative_depth low; narrative_payoff low"
+  },
+  "fact_22": {
+   "shown": true,
+   "reason": "opening; helps thread_1; support low"
+  },
+  "fact_23": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_24": {
+   "shown": false,
+   "reason": "investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_8": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_9": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity high, outcome_severity high, evidentiary_strength medium, evidence_of_progression medium, preventability medium"
+  },
+  "fact_25": {
+   "shown": true,
+   "reason": "asset; helps thread_3; support medium"
+  },
+  "fact_26": {
+   "shown": true,
+   "reason": "active; blocks thread_3"
+  },
+  "fact_27": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support high"
+  },
+  "fact_28": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_29": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_30": {
+   "shown": false,
+   "reason": "asset with low goal support, not from an opening"
+  },
+  "fact_10": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support low"
+  },
+  "fact_12": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_13": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_15": {
+   "shown": true,
+   "reason": "opening; helps thread_7; support high"
+  },
+  "fact_16": {
+   "shown": true,
+   "reason": "opening; helps thread_7; support low"
+  },
+  "fact_17": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_33": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_34": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_35": {
+   "shown": false,
+   "reason": "harm_origin party"
+  },
+  "fact_36": {
+   "shown": false,
+   "reason": "helps thread_8 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_38": {
+   "shown": false,
+   "reason": "helps thread_8 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_39": {
+   "shown": false,
+   "reason": "helps thread_8 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_40": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_41": {
+   "shown": false,
+   "reason": "helps thread_8 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_42": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_43": {
+   "shown": false,
+   "reason": "a step toward another opening"
+  },
+  "fact_44": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_45": {
+   "shown": false,
+   "reason": "a step toward another opening"
+  },
+  "fact_48": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity high, outcome_severity high, evidentiary_strength high, evidence_of_progression medium, preventability high"
+  }
+ }
+}

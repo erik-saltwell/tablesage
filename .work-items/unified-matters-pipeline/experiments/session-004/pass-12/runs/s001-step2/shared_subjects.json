@@ -1,0 +1,38 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Lady Hilda's offer to fight for pay",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_10"
+   ],
+   "reason": "The offer is the thread about hiring Hilda, though it serves the dragon hunt."
+  },
+  {
+   "subject": "Killing the dragon as work in exchange for Shamus",
+   "home": "thread_7",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_25"
+   ],
+   "reason": "It is a term of Gill's mule bargain."
+  },
+  {
+   "subject": "Overdue shipments and nothing reaching town",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_13"
+   ],
+   "reason": "The missing shipments are the subject of their own question thread, even though townsfolk link the town's woes to the dragon."
+  }
+ ]
+}

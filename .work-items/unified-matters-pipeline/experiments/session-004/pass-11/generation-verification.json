@@ -1,0 +1,37 @@
+{
+  "input_and_implementation_hashes_unchanged": true,
+  "sessions": {
+    "001": {
+      "scenes": 5,
+      "beats": 36,
+      "threads": 9,
+      "facts": 21,
+      "history_candidates": 15,
+      "history_shown": 9,
+      "open_shown": 11,
+      "schema_reference_classification_and_writing_checks": "passed",
+      "selection_replay": "identical",
+      "recap_over_word_limit": [],
+      "recap_closing_words": 51
+    },
+    "002": {
+      "scenes": 14,
+      "beats": 82,
+      "threads": 16,
+      "facts": 58,
+      "history_candidates": 31,
+      "history_shown": 12,
+      "open_shown": 19,
+      "schema_reference_classification_and_writing_checks": "passed",
+      "selection_replay": "identical",
+      "recap_over_word_limit": [
+        {
+          "label": "Drop Dead Ned",
+          "words": 37
+        }
+      ],
+      "recap_closing_words": 48
+    }
+  },
+  "session_002_chained_from_fresh_001": true
+}

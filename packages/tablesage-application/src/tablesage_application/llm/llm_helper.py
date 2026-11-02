@@ -14,6 +14,7 @@ from tablesage_tools.llm import call_llm
 
 from ..observability import prompt_traces_dir
 from ._prompts import PromptName, read_prompt_template, read_system_prompt
+from .prompt_caching import system_prompt_cache_ttl
 
 DEFAULT_LLM_MODEL = "anthropic/claude-sonnet-4-5"
 
@@ -100,6 +101,9 @@ async def call_llm_with_prompt(
         call_kwargs["strict_schema"] = True
     if model_options is not None:
         call_kwargs["model_options"] = model_options
+    cache_ttl = system_prompt_cache_ttl(model, system_prompt)
+    if cache_ttl is not None:
+        call_kwargs["system_prompt_cache_ttl"] = cache_ttl
     observer = execution.observer if execution else None
     if observer:
         observer(

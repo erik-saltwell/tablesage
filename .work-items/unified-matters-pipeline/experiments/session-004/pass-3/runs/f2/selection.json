@@ -1,0 +1,171 @@
+{
+ "version": 5,
+ "rules": {
+  "last_session": "touched threads with at least one high beat and standalone beats rated high, at most 10, ranked by number of high beats, then threads whose situation changed or began this Session before earlier threads still plainly open, then story order; shown in story order",
+  "open": "every want and every owe with a definite end; blocked_by, unknown and threat facts rated high or medium, could_use facts rated high or medium with high actionability, ranked by importance then actionability, capped per heading; never possibly moot facts, open-ended promises or facts covered by an immediate danger"
+ },
+ "last_session": [
+  {
+   "id": "thread_4",
+   "kind": "thread",
+   "first": 0,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_2",
+   "kind": "thread",
+   "first": 2,
+   "highs": 10,
+   "plain": false
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 9,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_11",
+   "kind": "thread",
+   "first": 15,
+   "highs": 1,
+   "plain": false
+  },
+  {
+   "id": "thread_1",
+   "kind": "thread",
+   "first": 16,
+   "highs": 5,
+   "plain": false
+  },
+  {
+   "id": "thread_12",
+   "kind": "thread",
+   "first": 24,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_13",
+   "kind": "thread",
+   "first": 26,
+   "highs": 3,
+   "plain": false
+  },
+  {
+   "id": "thread_14",
+   "kind": "thread",
+   "first": 36,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_16",
+   "kind": "thread",
+   "first": 66,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_17",
+   "kind": "thread",
+   "first": 67,
+   "highs": 3,
+   "plain": false
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_1",
+    "fact_2",
+    "fact_40"
+   ]
+  },
+  {
+   "heading": "Standing in your way",
+   "kind": "blocked_by",
+   "facts": [
+    "fact_39",
+    "fact_3",
+    "fact_35"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_22",
+    "fact_23",
+    "fact_25",
+    "fact_26",
+    "fact_20",
+    "fact_33",
+    "fact_24",
+    "fact_38"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_27",
+    "fact_42",
+    "fact_28",
+    "fact_43",
+    "fact_44"
+   ]
+  },
+  {
+   "heading": "Promises and debts",
+   "kind": "owe",
+   "facts": [
+    "fact_36",
+    "fact_37",
+    "fact_34",
+    "fact_17",
+    "fact_32"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_4",
+    "fact_30",
+    "fact_10"
+   ]
+  }
+ ],
+ "excluded": {
+  "possibly_moot": [
+   "fact_16",
+   "fact_18",
+   "fact_19"
+  ],
+  "open_ended": [
+   "fact_29"
+  ],
+  "covered_by_danger": [],
+  "below_threshold": [
+   "fact_21",
+   "fact_12",
+   "fact_14",
+   "fact_15"
+  ],
+  "over_cap": [
+   "fact_7",
+   "fact_13",
+   "fact_31",
+   "fact_41"
+  ],
+  "last_session_over_cap": [
+   "thread_15",
+   "thread_10"
+  ]
+ }
+}

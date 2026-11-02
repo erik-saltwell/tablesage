@@ -1,0 +1,26 @@
+step3: 49 facts (44 open) {'want': 3, 'owe': 9, 'blocked_by': 6, 'could_use': 9, 'unknown': 14, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_31']
+  uncertain: ['fact_22', 'fact_11', 'fact_38']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.48 fact_27 (thread_2, could_use) ~ fact_38 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes the wizard Malzazarik and Lady Hilda payment out of Cedric's promissory note for joining the party.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.36 fact_32 (thread_3, threat) ~ fact_35 (thread_9, blocked_by)
+         The goblins settling in the Barrow Mound's upper rooms intend to destroy its church, declaring it job number one of any free state, after Wayman said they could.
+         The goblins now settling the Barrow Mound intend to destroy its church, which stands in the way of Dr. Uriah's penance there and the upkeep his donation is meant for.
+  cross-thread facts sharing 4-word phrases:
+    fact_21 (thread_1) & fact_46 (thread_16): ['his brother bral the']
+    fact_22 (thread_1) & fact_35 (thread_9): ['in the way of', 'stands in the way']
+    fact_27 (thread_2) & fact_38 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_27 (thread_2) & fact_39 (thread_12): ['malzazarik and lady hilda']
+    fact_32 (thread_3) & fact_11 (thread_4): ["in the barrow mound's"]
+    fact_32 (thread_3) & fact_35 (thread_9): ['intend to destroy its', 'to destroy its church']
+    fact_18 (thread_9) & fact_36 (thread_11): ['dr uriah must give']

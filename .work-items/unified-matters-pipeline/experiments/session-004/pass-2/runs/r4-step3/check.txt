@@ -1,0 +1,24 @@
+step3: 39 facts (36 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 7, 'unknown': 10, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_23', 'fact_35', 'fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.50 fact_6 (thread_2, could_use) ~ fact_32 (thread_12, could_use)
+         The party holds Warwick's magical mithril chain shirt on loan, worn by Wayman Tisdale; it halves damage from magic weapons and spells, and Dunk says it could help against the dragon.
+         Wayman Tisdale wears Warwick's mithril chain shirt, on loan, over his leather armor: it greatly improves his protection and halves the damage he takes from magic weapons and spells.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.44 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the seven-foot undead knight with a greatsword, was left incapacitated but not destroyed in the Barrow Mound and may rise and attack the party if they return.
+         Why does Sir Alfred, a huge undead knight with a greatsword whom Brother Dirk regards as holy, roam the Barrow Mound?
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.41 fact_21 (thread_1, could_use) ~ fact_26 (thread_2, unknown)
+         A location on the map is labelled "Dragon's lair"; Grimny says Bral, who gave the party the map, probably hid the treasure there, in a very small one-room cave the dwarves once scouted as a hiding place and found empty.
+         Grimny says the Dragon's Lair is a very small one-room cave the dwarves found empty; is there really a dragon, or is Bral faking one to keep everybody away, as Dunk suspects?
+    0.37 fact_29 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman Tisdale has promised Snurk the Walkout never to tell King Hogboon where the Free Goblin Society goblins are, now that they are settling the Barrow Mound's upper chambers.
+         If Sir Alfred recovers, he may kill more Free Goblin Society members, who are now settling the Barrow Mound's upper level behind a wall over the stairs.

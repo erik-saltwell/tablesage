@@ -1,0 +1,30 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Farmer Gill's three sons already out hunting the dragon",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_26"
+   ],
+   "reason": "The sons are rival hunters for the dragon, and the party would deal with them on the dragon hunt."
+  },
+  {
+   "subject": "No shipments reaching Brandonsford for months",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_10",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_30",
+    "beat_37"
+   ],
+   "reason": "The question of what happened to the shipments belongs to the thread about the missing shipments, even though Quinn's fake-shipment plan and Warwick's empty stock both depend on it."
+  }
+ ]
+}

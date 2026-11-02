@@ -1,0 +1,203 @@
+{
+ "scenes": "f2-step1",
+ "shared_subjects": [
+  {
+   "subject": "Sir Brandon's magic sword, effective against evil",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_16",
+    "beat_48"
+   ],
+   "reason": "The party will next use the sword to drag it through the dragon's mouth."
+  },
+  {
+   "subject": "Sir Alfred incapacitated but intact in the lower level",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_7",
+    "beat_10",
+    "beat_11"
+   ],
+   "reason": "The danger itself is the subject of the Sir Alfred thread."
+  },
+  {
+   "subject": "Goblins' intent to destroy the Barrow Mound church",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_14"
+   ],
+   "reason": "It arose from the renegotiated goblin bargain."
+  },
+  {
+   "subject": "The barrow robes, non-magical relics kept against the dragon",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_23",
+    "beat_40"
+   ],
+   "reason": "The robes are held under Dr. Uriah's promise to the church."
+  },
+  {
+   "subject": "Squints' pick from the barrow treasure now sold to Cedric",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_26"
+   ],
+   "reason": "The debt to Squints lives on its bargain's thread."
+  },
+  {
+   "subject": "Cedric's note as payment for Malzazarik and Lady Hilda",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_28",
+    "beat_62"
+   ],
+   "reason": "The note is what the party received under the Cedric deal."
+  },
+  {
+   "subject": "Whether the caravans will flow again",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_24",
+    "beat_25",
+    "beat_26"
+   ],
+   "reason": "The question is about the shipments themselves, and the note's payment depends on the answer."
+  },
+  {
+   "subject": "Warwick's metal shortage since the dragon appeared",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_5"
+   ],
+   "beats": [
+    "beat_27",
+    "beat_33"
+   ],
+   "reason": "The party acts on the shortage by bringing Warwick metal."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt, on loan and worn by Wayman",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_57"
+   ],
+   "reason": "The shirt was received under the Warwick bargain."
+  },
+  {
+   "subject": "Warwick's night visitor, who is Ingrid",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_31",
+    "beat_32",
+    "beat_59"
+   ],
+   "reason": "The visits are the very matter of the Ingrid deal."
+  },
+  {
+   "subject": "The Dragon's Lair's location and layout",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_77"
+   ],
+   "reason": "The party plans to go there first to lure and kill the dragon."
+  },
+  {
+   "subject": "The treasure probably hidden at the Dragon's Lair",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_77"
+   ],
+   "reason": "Finding the treasure is the treasure map thread's aim."
+  },
+  {
+   "subject": "Whether the dragon is real or Bral's ruse",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_78"
+   ],
+   "reason": "The question is about the dragon itself."
+  },
+  {
+   "subject": "Bral as the dwarf who lost the party their map",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_16"
+   ],
+   "beats": [
+    "beat_74",
+    "beat_75"
+   ],
+   "reason": "Bral's link to the map bears on finding the treasure."
+  },
+  {
+   "subject": "The cave-in sealing the Dwarven mine",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_16"
+   ],
+   "beats": [
+    "beat_67",
+    "beat_68"
+   ],
+   "reason": "The cave-in most directly blocks getting metal for Warwick."
+  },
+  {
+   "subject": "Grimny's ghost and its departure",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_16",
+    "thread_15"
+   ],
+   "beats": [
+    "beat_70",
+    "beat_71",
+    "beat_81"
+   ],
+   "reason": "The ghost was reached through the ring, and its departure changes what the ring does."
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+step3: 33 facts (29 open) {'want': 3, 'owe': 8, 'blocked_by': 3, 'could_use': 4, 'unknown': 8, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19', 'fact_24']
+  definite_end false: ['fact_23']
+  uncertain: ['fact_25', 'fact_26', 'fact_33']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.40 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the undead knight, lies incapacitated but not destroyed in the Barrow Mound and may threaten the party if they return.
+         Why does Sir Alfred, a huge undead knight whom Brother Dirk regards as holy, roam the Barrow Mound?
+    0.39 fact_21 (thread_2, could_use) ~ fact_26 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt, recruited with Cedric's promissory note.
+         The party owes Malzazarik and Lady Hilda payment backed by Cedric's promissory note, in exchange for their joining the party; due once Cedric pays out.
+    0.37 fact_10 (thread_4, threat) ~ fact_11 (thread_4, threat)
+         Sir Alfred, the undead knight, lies incapacitated but not destroyed in the Barrow Mound and may threaten the party if they return.
+         Sir Alfred, incapacitated but not destroyed, may kill more Free Goblin Society members in the Barrow Mound; the goblins plan to wall off the stairs to him.
+  cross-thread facts sharing 4-word phrases:
+    fact_21 (thread_2) & fact_26 (thread_12): ['malzazarik and lady hilda']
+    fact_23 (thread_3) & fact_10 (thread_4): ['in the barrow mound']
+    fact_23 (thread_3) & fact_11 (thread_4): ['in the barrow mound']
+    fact_23 (thread_3) & fact_15 (thread_7): ['in the barrow mound']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

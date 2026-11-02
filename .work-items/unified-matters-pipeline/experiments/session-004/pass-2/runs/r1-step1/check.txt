@@ -1,0 +1,11 @@
+step1: 10 scenes, 81 beats {'event': 58, 'learned': 23}, ledger coverage 142/147, out-of-range refs none
+  scene_1 Sir Brandon's tomb (11 beats) cue: Drop Dead Ned's blood-red wasp spinning inside Sir Alfred's ribs
+  scene_2 The Barrow Mound entrance (11 beats) cue: Destroying the church as job number one of any free state
+  scene_3 Brandonsford (3 beats) cue: "If it is tomb robbery, you are a tomb robber too" - Dr. Uriah
+  scene_4 Cedric's general store (5 beats) cue: Sir Phidipaldi demanding a futures contract from Cedric
+  scene_5 Warwick's shop (8 beats) cue: Warwick's walls of horseshoes, rabbits' feet and clovers
+  scene_6 Ingrid's shop (6 beats) cue: Dr. Uriah sprinkling witch powder on the barrow robes
+  scene_7 Vivian's hut (13 beats) cue: The topiary garden of animals and humans around Vivian's hut
+  scene_8 Brandonsford (8 beats) cue: "Fucking idiot" - Ingrid
+  scene_9 The goblin temple ruins (3 beats) cue: Drunk goblins slurring songs in praise of King Hogboon
+  scene_10 The Dwarven mine (13 beats) cue: "My loins will forever burn with the heat of the forge" - Vivian

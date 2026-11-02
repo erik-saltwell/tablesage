@@ -1,0 +1,928 @@
+{
+ "session": "004",
+ "scenes": "f2-step1",
+ "threads": "f2-step2",
+ "facts": [
+  {
+   "thread": "thread_1",
+   "id": "fact_1",
+   "kind": "want",
+   "text": "Find the treasure marked on the party's map.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "medium",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_1",
+   "id": "fact_20",
+   "kind": "could_use",
+   "text": "Grimny's ghost says the map came from his brother Bral and that Bral probably hid the dwarves' hoard at the map's Dragon's Lair.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_2",
+    "thread_16"
+   ],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_74",
+    "beat_75",
+    "beat_77"
+   ],
+   "temporary_id": "fact_new_1"
+  },
+  {
+   "thread": "thread_1",
+   "id": "fact_21",
+   "kind": "could_use",
+   "text": "Dr. Uriah can now read the label under one map location per day.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "medium",
+   "evidence": [
+    "beat_17",
+    "beat_20"
+   ],
+   "temporary_id": "fact_new_2"
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_2",
+   "kind": "want",
+   "text": "Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_3",
+   "kind": "blocked_by",
+   "text": "George says nothing pierces the black dragon's scales; arrows and swords have all failed against them. Vivian says enough faun wine would knock the dragon out so Sir Brandon's sword can be dragged through its mouth, as Sir Brandon did, though dragons move around a lot.",
+   "state": "open",
+   "change": "updated",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "prior",
+    "beat_48"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_4",
+   "kind": "threat",
+   "text": "George says the black dragon will soon fly and doom Brandonsford.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "medium",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_5",
+   "kind": "could_use",
+   "text": "Lady Hilda will join the party against the dragon if they pay her.",
+   "state": "ended",
+   "change": "ended",
+   "ended_how": "used up: Lady Hilda joined the party, recruited with Cedric's promissory note",
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": "thread_12",
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_62"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_6",
+   "kind": "could_use",
+   "text": "Warwick keeps a magical mithril chain shirt; Dunk says it could help against the dragon.",
+   "state": "ended",
+   "change": "ended",
+   "ended_how": "used up: Warwick lent the shirt to the party under the Warwick deal",
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": "thread_13",
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_35"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_7",
+   "kind": "unknown",
+   "text": "Where did the new dragon near Brandonsford come from?",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_22",
+   "kind": "could_use",
+   "text": "The map labels the dragon's lair; Grimny says it is a very small cave of one big room that the dwarves scouted several times and found empty.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_1"
+   ],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_18",
+    "beat_77"
+   ],
+   "temporary_id": "fact_new_3"
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_23",
+   "kind": "unknown",
+   "text": "Is there really a dragon, or is Bral pretending there is one to keep everyone away from his hidden treasure, as Dunk suspects?",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_16"
+   ],
+   "importance": "high",
+   "actionability": "medium",
+   "evidence": [
+    "beat_77",
+    "beat_78"
+   ],
+   "temporary_id": "fact_new_4"
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_24",
+   "kind": "could_use",
+   "text": "The party holds Sir Brandon's sword, a magic sword especially effective against evil beings.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_3",
+    "beat_16"
+   ],
+   "temporary_id": "fact_new_5"
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_25",
+   "kind": "could_use",
+   "text": "Dunk carries enough faun wine to dose the dragon; the party need not return to the fauns.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_47",
+    "beat_63"
+   ],
+   "temporary_id": "fact_new_6"
+  },
+  {
+   "thread": "thread_2",
+   "id": "fact_26",
+   "kind": "could_use",
+   "text": "Sir Phidipaldi's plan: catch game, dose it with faun wine, leave it outside the dragon's cave and go in once the dragon has eaten it.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "high",
+   "evidence": [
+    "beat_50"
+   ],
+   "temporary_id": "fact_new_7"
+  },
+  {
+   "thread": "thread_3",
+   "id": "fact_8",
+   "kind": "want",
+   "text": "Clear the evil out of the Barrow Mound for the Free Goblin Society.",
+   "state": "ended",
+   "change": "ended",
+   "ended_how": "replaced: deal renegotiated so the goblins wall off the stairs and keep the church, antechamber and statue room",
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_13"
+   ]
+  },
+  {
+   "thread": "thread_3",
+   "id": "fact_9",
+   "kind": "blocked_by",
+   "text": "A huge undead with a greatsword in the Barrow Mound stands in the way (see thread_4).",
+   "state": "ended",
+   "change": "ended",
+   "ended_how": "no longer relevant: Sir Alfred incapacitated and the deal no longer requires clearing him",
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": "thread_4",
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_7",
+    "beat_13"
+   ]
+  },
+  {
+   "thread": "thread_3",
+   "id": "fact_27",
+   "kind": "owe",
+   "text": "Wayman promised Snurk never to tell King Hogboon where the Free Goblin Society goblins are.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": false,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_15"
+   ],
+   "temporary_id": "fact_new_8"
+  },
+  {
+   "thread": "thread_4",
+   "id": "fact_10",
+   "kind": "threat",
+   "text": "The skeleton in the tomb doorway may attack the party.",
+   "state": "ended",
+   "change": "ended",
+   "ended_how": "replaced by fact_11: Sir Alfred was incapacitated and the party left",
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_7",
+    "beat_10"
+   ]
+  },
+  {
+   "thread": "thread_4",
+   "id": "fact_11",
+   "kind": "threat",
+   "text": "Sir Alfred lies incapacitated but not destroyed in the Barrow Mound; if he recovers he may kill more Free Goblin Society members, who plan to wall off the stairs to him.",
+   "state": "open",
+   "change": "updated",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_3"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_7",
+    "beat_10",
+    "beat_13"
+   ]
+  },
+  {
+   "thread": "thread_4",
+   "id": "fact_12",
+   "kind": "unknown",
+   "text": "Why does the undead knight Sir Alfred roam the Barrow Mound, and why does Brother Dirk regard him as holy?",
+   "state": "open",
+   "change": "updated",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_1",
+    "beat_9"
+   ]
+  },
+  {
+   "thread": "thread_5",
+   "id": "fact_13",
+   "kind": "unknown",
+   "text": "Cedric and Warwick say shipments and metal stopped reaching Brandonsford when the dragon appeared. Why have they stopped?",
+   "state": "open",
+   "change": "updated",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_24",
+    "beat_27"
+   ]
+  },
+  {
+   "thread": "thread_6",
+   "id": "fact_14",
+   "kind": "unknown",
+   "text": "Why are hidden fairies coming out more often along with the dragon?",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_7",
+   "id": "fact_15",
+   "kind": "unknown",
+   "text": "Who does the noblewoman statue in the Barrow Mound depict?",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_8",
+   "id": "fact_16",
+   "kind": "owe",
+   "text": "Dunk must help Ingrid get into Warwick's house and give Warwick the sleeping potion.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": "Sir Phidipaldi told Ingrid Warwick knows of her visits and isn't interested (beat_58); Dunk was never released",
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_58"
+   ]
+  },
+  {
+   "thread": "thread_9",
+   "id": "fact_17",
+   "kind": "owe",
+   "text": "Dr. Uriah must do penance at the Barrow Mound for Father William.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "medium",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_9",
+   "id": "fact_18",
+   "kind": "owe",
+   "text": "Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "high",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "thread": "thread_10",
+   "id": "fact_19",
+   "kind": "owe",
+   "text": "The party must let Squints pick second from the first treasure, after the elite members.",
+   "state": "open",
+   "change": "carried",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": "The barrow treasure was signed over to Cedric for a promissory note (beat_26) without Squints picking",
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_12"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "prior",
+    "beat_26"
+   ]
+  },
+  {
+   "thread": "thread_11",
+   "id": "fact_28",
+   "kind": "owe",
+   "text": "Dr. Uriah must give the barrow robes back to Brother Dirk's church once the dragon is defeated; he keeps them until then. The robes are not magical.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_2"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_23",
+    "beat_40"
+   ],
+   "temporary_id": "fact_new_9"
+  },
+  {
+   "thread": "thread_12",
+   "id": "fact_29",
+   "kind": "could_use",
+   "text": "Cedric's signed promissory note owes 975 gold for the barrow treasure, payable once the caravans flow again.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "uncertain",
+   "uncertain_reason": "The note was used to recruit Malzazarik and Lady Hilda; unclear whether the party still holds it or how much of it was promised away",
+   "about_thread": "thread_5",
+   "also_bears_on": [
+    "thread_5"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_25",
+    "beat_26",
+    "beat_62"
+   ],
+   "temporary_id": "fact_new_10"
+  },
+  {
+   "thread": "thread_12",
+   "id": "fact_30",
+   "kind": "owe",
+   "text": "The party must pay Malzazarik and Lady Hilda from Cedric's promissory note for joining against the dragon.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "uncertain",
+   "uncertain_reason": "Unclear whether the note was handed over at recruitment or payment is still to come",
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_2"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_62"
+   ],
+   "temporary_id": "fact_new_11"
+  },
+  {
+   "thread": "thread_13",
+   "id": "fact_31",
+   "kind": "owe",
+   "text": "The party must bring Warwick metal from the Dwarven mine, in exchange for the loan of his mithril shirt.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_34",
+    "beat_35"
+   ],
+   "temporary_id": "fact_new_12"
+  },
+  {
+   "thread": "thread_13",
+   "id": "fact_32",
+   "kind": "owe",
+   "text": "The party must return Warwick's mithril shirt, his grandfather's heirloom; Warwick holds the party's plate armor as collateral and keeps Sir Phidipaldi's lyre meanwhile.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": true,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "medium",
+   "evidence": [
+    "beat_35",
+    "beat_57"
+   ],
+   "temporary_id": "fact_new_13"
+  },
+  {
+   "thread": "thread_13",
+   "id": "fact_33",
+   "kind": "could_use",
+   "text": "Wayman wears Warwick's mithril shirt (on loan), which greatly improves his protection and halves damage from magic weapons and spells.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_2"
+   ],
+   "importance": "medium",
+   "actionability": "high",
+   "evidence": [
+    "beat_35",
+    "beat_36"
+   ],
+   "temporary_id": "fact_new_14"
+  },
+  {
+   "thread": "thread_13",
+   "id": "fact_34",
+   "kind": "blocked_by",
+   "text": "A natural-looking cave-in seals the Dwarven mine entrance, blocking the metal for Warwick; it can be dug through, and Dunk has begun breaking into it.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "high",
+   "actionability": "high",
+   "evidence": [
+    "beat_67",
+    "beat_68"
+   ],
+   "temporary_id": "fact_new_15"
+  },
+  {
+   "thread": "thread_14",
+   "id": "fact_35",
+   "kind": "want",
+   "text": "Obtain protection against the dragon's poison before facing it.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": false,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_37"
+   ],
+   "temporary_id": "fact_new_16"
+  },
+  {
+   "thread": "thread_14",
+   "id": "fact_36",
+   "kind": "blocked_by",
+   "text": "Ingrid says protection against the dragon's poison is beyond her, and Vivian privately admits she knows only three potions and has nothing against it; no other source is known.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_42",
+    "beat_51"
+   ],
+   "temporary_id": "fact_new_17"
+  },
+  {
+   "thread": "thread_16",
+   "id": "fact_37",
+   "kind": "unknown",
+   "text": "Grimny's ghost believes his greedy brother Bral killed him. Did Bral kill Grimny?",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_72"
+   ],
+   "temporary_id": "fact_new_18"
+  },
+  {
+   "thread": "thread_16",
+   "id": "fact_38",
+   "kind": "unknown",
+   "text": "Where is Bral now?",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_1"
+   ],
+   "importance": "medium",
+   "actionability": "low",
+   "evidence": [
+    "beat_74",
+    "beat_75"
+   ],
+   "temporary_id": "fact_new_19"
+  },
+  {
+   "thread": "thread_16",
+   "id": "fact_39",
+   "kind": "unknown",
+   "text": "What became of the other dwarf brothers of the burned, caved-in Dwarven mine?",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "established",
+   "uncertain_reason": null,
+   "about_thread": null,
+   "also_bears_on": [
+    "thread_13"
+   ],
+   "importance": "medium",
+   "actionability": "medium",
+   "evidence": [
+    "beat_61",
+    "beat_67",
+    "beat_72"
+   ],
+   "temporary_id": "fact_new_20"
+  },
+  {
+   "thread": "thread_16",
+   "id": "fact_40",
+   "kind": "could_use",
+   "text": "Dunk holds Grimny's magic ring, which let its wearer see and speak with Grimny's ghost; Dr. Uriah could not tell whether it is cursed.",
+   "state": "open",
+   "change": "new",
+   "ended_how": null,
+   "learned_this_session": true,
+   "definite_end": null,
+   "possibly_moot": null,
+   "certainty": "uncertain",
+   "uncertain_reason": "Grimny's ghost has ascended, so it is unclear whether the ring still does anything",
+   "about_thread": null,
+   "also_bears_on": [],
+   "importance": "low",
+   "actionability": "low",
+   "evidence": [
+    "beat_69",
+    "beat_71",
+    "beat_81"
+   ],
+   "temporary_id": "fact_new_21"
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_12",
+   "members": [
+    "fact_12",
+    "fact_9"
+   ],
+   "basis": "Both facts describe the same offer from beat_10. Lady Hilda, a seasoned, armored fighter, will join the dragon hunt if the party pays her. Both serve thread_2 with the same form and certainty. fact_12 is the home representation in thread_4.",
+   "text": "Lady Hilda, a seasoned fighter in chain mail and shield, would join the party's dragon hunt for pay. Her fee is not yet set.",
+   "evidence": [
+    "beat_10"
+   ]
+  }
+ ],
+ "input_fingerprint": "94222b56a9dbc8f9e0ed6eb0ee827c4e6e13a3e4777e6510158a9e35e86afe87"
+}

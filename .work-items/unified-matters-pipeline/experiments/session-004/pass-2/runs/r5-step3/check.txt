@@ -1,0 +1,24 @@
+step3: 39 facts (35 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 6, 'unknown': 11, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_35', 'fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.40 fact_30 (thread_12, owe) ~ fact_31 (thread_12, owe)
+         The party must bring Warwick metal from the Dwarven mine north of Brandonsford, in exchange for the loan of his mithril chain shirt. Meanwhile Warwick keeps Sir Phidipaldi's lyre, playing it every night, and holds Sir Phidipaldi's plate armor as collateral.
+         The party must return Warwick's mithril chain shirt, his grandfather's armor, to him; in return Warwick gives back Sir Phidipaldi's plate armor and lyre.
+    0.36 fact_21 (thread_1, could_use) ~ fact_26 (thread_2, unknown)
+         One map location reads "Dragon's lair". Grimny says Bral, who lost the map to the party in a bet, probably hid the treasure there: a very small one-room cave the dwarves once scouted as a hiding place and found empty.
+         Grimny says the Dragon's Lair was a very small, empty one-room cave when the dwarves scouted it. Is there really a dragon, or is Bral faking one to keep everyone away, as Dunk suspects?
+    0.35 fact_29 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman Tisdale promised Snurk the Walkout never to tell King Hogboon where the Free Goblin Society goblins are, who are now settled in the upper Barrow Mound.
+         Sir Alfred, left incapacitated but not destroyed in the lower Barrow Mound, may recover and kill the Free Goblin Society goblins now settling the upper mound.
+  cross-thread facts sharing 4-word phrases:
+    fact_29 (thread_3) & fact_11 (thread_4): ['free goblin society goblins', 'the free goblin society']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

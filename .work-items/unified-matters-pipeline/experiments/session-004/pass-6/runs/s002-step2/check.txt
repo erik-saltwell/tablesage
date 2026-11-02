@@ -1,0 +1,18 @@
+step2: 16 threads, standalone ['beat_30', 'beat_80'], problems none
+  thread_1 [earlier/open] The treasure map parent=None beats=3
+  thread_2 [earlier/changed] The Clurichen trickster parent=None beats=11
+  thread_3 [earlier/changed] The dragon and Eric the Reeve's bounty parent=None beats=11
+  thread_4 [earlier/open] Lady Hilda's offer to join the party parent=thread_3 beats=0
+  thread_5 [earlier/open] Drop Dead Ned's offer of hire parent=None beats=0
+  thread_6 [earlier/open] Brandonsford's missing shipment parent=None beats=1
+  thread_7 [earlier/changed] Farmer Gill's mule Shamus parent=None beats=1
+  thread_8 [earlier/changed] Warwick's mithril chain shirt parent=None beats=9
+  thread_9 [earlier/resolved] Quinn's deal against Bentley parent=None beats=6
+  thread_10 [new/open] Squints and the Halfling Corps parent=None beats=12
+  thread_11 [new/open] Ingrid's sleeping potion for Warwick parent=thread_8 beats=17
+  thread_12 [new/open] Sir Brandon's sword in the Barrow Mound parent=thread_3 beats=9
+  thread_13 [new/open] Vivian, the witch in the woods parent=None beats=4
+  thread_14 [new/open] Dr. Uriah's penance and donation for Father William parent=None beats=3
+  thread_15 [new/open] Fairies coming out of hiding parent=None beats=1
+  thread_16 [new/open] The giant's cottage in the woods parent=None beats=6
+  medium/high beats on no thread and not standalone: none

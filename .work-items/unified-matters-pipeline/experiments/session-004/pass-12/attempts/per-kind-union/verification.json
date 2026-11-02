@@ -1,0 +1,31 @@
+{
+  "passed": 25,
+  "checks": [
+    "Python syntax and CLI import",
+    "All schemas and templates parse",
+    "Complete facts prompt example validates",
+    "Example per-kind classifications validate",
+    "Adventure objective survives low depth and practical payoff",
+    "No exception for a side/missing/hidden adventure goal",
+    "grounding still required for adventure questions",
+    "investigative_potential still required for adventure questions",
+    "Closed questions remain excluded",
+    "Ordinary gap rejected even with inflated dimension ranks",
+    "Ordinary revelation path retains depth/payoff thresholds",
+    "Independent revelation still eligible without a goal link",
+    "Incidental end hidden by existing code filter",
+    "Adventure goal not hidden by low generic importance",
+    "Obstacle without a shown live target remains hidden",
+    "Immediate-danger coverage remains enforced",
+    "Validated focus and anchors for every history kind",
+    "History ordered by actual event Ledger position, not scene/thread introduction",
+    "Anchor outside focused event evidence is rejected",
+    "Foreign focus/anchor rejected",
+    "Primary adventure before other adventure and side regardless of actionability",
+    "Carried priority cannot drift without an evidence basis",
+    "Writer receives focused event evidence, not the entire thread",
+    "Writer receives the event anchor and selected change",
+    "Whole-word overtuning sweep: no test Session terms in prompts"
+  ],
+  "limits": "Direct fixtures and validation only; fresh model compliance and output quality await generation."
+}

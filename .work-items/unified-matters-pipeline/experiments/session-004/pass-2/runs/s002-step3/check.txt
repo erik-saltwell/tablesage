@@ -1,0 +1,18 @@
+step3: 53 facts (46 open) {'want': 6, 'owe': 3, 'blocked_by': 4, 'could_use': 19, 'unknown': 10, 'threat': 4}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_27', 'fact_5', 'fact_39', 'fact_48']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.46 fact_33 (thread_3, could_use) ~ fact_36 (thread_9, want)
+         Dunk says Warwick the smith's shimmering armor could help against the dragon and that he has a plan to get it.
+         Dunk wants to obtain Warwick's magical mithril chain shirt, which he says could help against the dragon.
+    0.42 fact_18 (thread_8, could_use) ~ fact_34 (thread_8, want)
+         Farmer Gill offers to sell Dunk his shabby mule Shamus for 100 gold.
+         Dunk wants to buy Farmer Gill's mule Shamus at a lower price; he has offered 20 gold.
+  cross-thread facts sharing 4-word phrases:
+    fact_28 (thread_2) & fact_16 (thread_6): ['at the golden egg']
+    fact_32 (thread_3) & fact_46 (thread_13): ['magic sword buried with', 'the magic sword buried']
+    fact_32 (thread_3) & fact_49 (thread_13): ['father william says it']
+    fact_33 (thread_3) & fact_36 (thread_9): ['could help against the', 'help against the dragon']
+    fact_12 (thread_4) & fact_17 (thread_7): ['at the clumsy fox']

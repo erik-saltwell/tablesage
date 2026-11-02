@@ -1,0 +1,4 @@
+interface:
+  display_name: "Regen Campaign"
+  short_description: "Regenerate campaign outputs through the TableSage UI"
+  default_prompt: "Use $regen-campaign to regenerate outputs for Brandonsford in the deployment workspace."

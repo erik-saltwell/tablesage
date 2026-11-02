@@ -1,0 +1,73 @@
+{
+  "started": "2026-11-01T19:41:44.572574+00:00",
+  "model": "anthropic/claude-opus-5-5",
+  "sessions": [
+    "001",
+    "002"
+  ],
+  "completed": [
+    "s001-step1",
+    "s001-step2",
+    "s001-step2c",
+    "s001-step3",
+    "s001-check",
+    "s001-chain",
+    "s001-seed",
+    "s002-step1",
+    "s002-step2",
+    "s002-step2c",
+    "s002-step3",
+    "s002-check",
+    "s002-chain"
+  ],
+  "inputs": {
+    "001": {
+      "ledger_sha256": "089c13af267eba796905094d4bfb6e25b4c545fce6a404760f7c89b50ee2ddc5",
+      "seed_sha256": "63e9b54a7e6721df55135b4769a3cbecf0d861630bb899144220eedc407f99d2"
+    },
+    "002": {
+      "ledger_sha256": "91065536fee5ac83bb3893fc52a25ea1cf66addd89e5b373d7044492a9f3379a",
+      "seed_sha256": "a38815809729c0c5592f84f5ae7678d4a27cce02145fdb9275c4542c60093e80"
+    }
+  },
+  "last_session_rule": "base threads/events require both ratings medium/high; noteworthy unrepresented encounters qualify independently",
+  "retries": [
+    {
+      "stage": "s001-step6",
+      "detail": "Retry Summary writing only: initial response omitted selected open-item ID(s). Original writing and raw/user response saved in runs/s001/attempts/initial-step6. No prompt or selection changes.",
+      "time": "2026-11-01T19:45:46.379704+00:00"
+    }
+  ],
+  "finished": "2026-11-01T19:54:54.663153+00:00",
+  "review_folder": "deployment/unified-review/14-PASS9",
+  "final_implementation_sha256": {
+    "run9.py": "f031ed58c7fd139e99fc23235b58f76605a9ca47f085c9046cb52f9d212cb0b9",
+    "resource_reconciliation.py": "a0435b1e66ff436c4a7b6b706bd4597bc08cb0e9126df04d7ab44d485065b98b",
+    "historical_coverage.py": "6860405b291e9026bab9f44ad1358653029f7f5c7c108cf468223bba64614de7",
+    "classification_schema.json": "32ddef280e7a3ebe940607936cc54c6c160d15a785af198b9dda0e4554c2a899",
+    "prompts/step6_writing/system.md": "87d50e8044e0ecc1737a2abaf26d9dd10f47fbc8d29a8daa44b320e8c0997090",
+    "prompts/step6_writing/schema.json": "7ce1bd11a8db53a47ca65fba929fec0c96098de2bc9ae7311ea0e388ba7c8765",
+    "prompts/step6_writing/template.j2": "b57aee782a36552320d3f71831cd99ea5c4a3abfd63d801620111fad691c62eb",
+    "prompts/step1_scenes/system.md": "e7607525096d302b8e03ff7fa0f784e4077347d0698b9e85f7967be0faa8a411",
+    "prompts/step1_scenes/schema.json": "cd88c67d535b03bd302ff621663a2bba6b3ad0aea9c069a000b803fa30f83cbd",
+    "prompts/step1_scenes/template.j2": "617ec120cdd06df9717fc81d675b479f48c83627a44fb2dedb8de439ddf6f159",
+    "prompts/step3r_resources/system.md": "85eb3f39c763153003e9fa288f2b9b4f06f0eabf532e7a07e8a462a85bd13ad9",
+    "prompts/step3r_resources/schema.json": "3df0ca91efc6ee26fbb0840c3d1c077492681a56889e6a39dff9a7c7ab75cdb4",
+    "prompts/step3r_resources/template.j2": "fda9c970d411b23affeae0e4a7e8252d7f5440c46ed5aa60d7445f52d0532d03",
+    "prompts/step3_facts_homes/system.md": "f21d6f7d0f5af1bd8b8b54f33de7091dafb7250e3b2434d2d829ad37d368d7e6",
+    "prompts/step3_facts_homes/schema.json": "f9845c8824e865fe059ff5c2469107fcb10ed5929059e730e9346f9e03ce5409",
+    "prompts/step3_facts_homes/template.j2": "9a0f76379d62e5092c9fe119a1701905b298006d760391167c54fce68b76915c",
+    "prompts/step8_recap/system.md": "a404696e00bd84185fb51f6a506797cb6128dfd4db988d3824e8f433c23d7b7a",
+    "prompts/step8_recap/schema.json": "aab1bba67a7acce02082d0bc6949b84ee5f8b31db14284ab1449a39159baf077",
+    "prompts/step8_recap/template.j2": "bbcc9733f9fdd3becaa60ef7a3f96290734f2e7fdaaba710ff767e2138902bbd",
+    "prompts/step2c_changes/system.md": "10aca11c8e6952d7a33de0f4f5c52f6fc6d1c54538f504eeb2a9897fedeb5e5c",
+    "prompts/step2c_changes/schema.json": "3d28bf3a896e5178552acda3274b5aef71e2c78c0b427c240e3fc6beaf11219e",
+    "prompts/step2c_changes/template.j2": "076cc7dc077641efbaa11d1bd21fa66c343250b16c031d8f03973ca83e0c7615",
+    "prompts/step2_threads/system.md": "b40db20165a12f3f3850d23101cdf7512ba530f1a200e3d50eb9d74a11cacc9b",
+    "prompts/step2_threads/schema.json": "dfa9bbdac04bd91825226377ef016c32f0d17a401e25dca080dead1b37e05dd1",
+    "prompts/step2_threads/template.j2": "0a3ff33dd0f02653c9350cb8a1a2c1c9b65c38a40f0beeb9fd5ed0e89b607cdc",
+    "prompts/step4_stopping/system.md": "0973f66367220c2d6906ad64faf0aa8f5565cfee4a4359ed4c0360d1a2f87cb1",
+    "prompts/step4_stopping/schema.json": "75526987bdefa04179a89bcfc92d67490de195afe83a72dd228f1d387749e8cf",
+    "prompts/step4_stopping/template.j2": "4b9a9aae4fee741a39ef502183d9b4b09dcbe754f16692712a62583da06bbcfa"
+  }
+}

@@ -1,0 +1,23 @@
+step3: 44 facts (40 open) {'want': 3, 'owe': 9, 'blocked_by': 5, 'could_use': 8, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.47 fact_26 (thread_2, could_use) ~ fact_33 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt, recruited with Cedric's promissory note.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note for joining the party; the exact split was not stated.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.39 fact_13 (thread_5, unknown) ~ fact_34 (thread_12, blocked_by)
+         Cedric and Warwick say supplies and metal stopped reaching Brandonsford when the dragon troubles began. What exactly is stopping the shipments, and is the dragon really to blame?
+         Cedric cannot pay the note until his supply caravans resume; shipments stopped when the dragon troubles began.
+  cross-thread facts sharing 4-word phrases:
+    fact_1 (thread_1) & fact_35 (thread_13): ['from the dwarven mine']
+    fact_26 (thread_2) & fact_33 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_13 (thread_5) & fact_34 (thread_12): ['the dragon troubles began', 'when the dragon troubles']
+    fact_18 (thread_9) & fact_31 (thread_11): ['dr uriah must give']

@@ -1,0 +1,19 @@
+step3: 38 facts (33 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 8, 'unknown': 8, 'threat': 2}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_26']
+  uncertain: ['fact_29', 'fact_30']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.36 fact_29 (thread_12, could_use) ~ fact_30 (thread_12, owe)
+         Cedric's signed promissory note obliges him to pay 975 gold, three-quarters price for the barrow treasure, once the supply caravans flow again. It cannot be collected until then.
+         The party owes Malzazarik and Lady Hilda their hire for joining the dragon hunt, to be paid from Cedric's promissory note once the caravans flow again.
+  cross-thread facts sharing 4-word phrases:
+    fact_26 (thread_3) & fact_11 (thread_4): ['in the barrow mound', 'the free goblin society']
+    fact_26 (thread_3) & fact_15 (thread_7): ['in the barrow mound']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

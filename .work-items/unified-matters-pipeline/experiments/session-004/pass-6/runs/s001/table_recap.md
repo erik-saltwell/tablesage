@@ -1,0 +1,15 @@
+# Brandonsford
+**2026-08-18: Sir Phidipaldi slapping the Reeve with his glove**
+
+- **Your treasure map.** It led you to Brandonsford at sunset, and it marks several places around town that you don't recognize. Its treasure is still unfound.
+- **The Clurichen trickster.** Reginald the frog warned you to avoid it, because it comes into town every night. What it does here each night is still unknown.
+- **The black dragon.** Eric the Reeve offers a thousand gold if you drag its body into town. It took George the woodsman's arm, and Farmer Gill's three sons are hunting it now.
+- **Lady Hilda.** She offered to join you against the dragon if you pay her. Sir Phidipaldi told her you would return after seeing the Reeve.
+- **Drop Dead Ned.** He offered himself and his killer wasp for hire, and Dr. Uriah said he would think about it.
+- **The missing supplies.** Bentley the tavern keeper and Farmer Gill say supplies have stopped reaching Brandonsford. What is stopping them is still unknown.
+- **Shamus the mule.** You want to buy him from Farmer Gill for a hundred gold. Gill might trade him to Dunk if Dunk kills the dragon, but Gill never agreed to that.
+- **Quinn the tavern keeper's offer.** He promised Sir Phidipaldi a hundred gold to help him get back at Bentley. A showy fake ale delivery might reveal who or what empties his stock each night.
+
+## Where you are
+
+Sir Phidipaldi is at the bar of the empty Golden Egg with its owner, Quinn. Across the street, Wayman Tisdale and Dr. Uriah are in the Clumsy Fox, where Bentley has let them stay. Dunk is drinking on Farmer Gill's porch with a very drunk Gill before bedding down in the barn.

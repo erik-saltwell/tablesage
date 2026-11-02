@@ -1,0 +1,24 @@
+step3: 51 facts (44 open) {'want': 4, 'owe': 5, 'blocked_by': 3, 'could_use': 19, 'unknown': 9, 'threat': 4}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_25', 'fact_17', 'fact_41', 'fact_46']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_33 (thread_3, could_use) ~ fact_34 (thread_3, owe)
+         George says a lance might be one of the few weapons not yet tried against the dragon; Sir Phidipaldi has a lance.
+         Sir Phidipaldi vowed to George to bring his lance against the dragon.
+    0.45 fact_38 (thread_9, could_use) ~ fact_41 (thread_12, could_use)
+         Ingrid's sleeping potion, which Dunk plans to help her give Warwick, could keep Warwick asleep while Dunk takes the shirt.
+         Ingrid is brewing a sleeping potion with the faun wine Dunk gave her, which Dunk plans to help her give to Warwick so he stays asleep while they are inside his house. Dunk heavily diluted the faun wine, about one part in five, with tavern wine.
+    0.44 fact_44 (thread_13, could_use) ~ fact_47 (thread_13, unknown)
+         Father William says the dragon can't be killed without the magic sword buried with Brandon in Brandon's Barrow Mound; the party could retrieve it there.
+         Is Brandon's magic sword really buried in Brandon's Barrow Mound?
+    0.40 fact_45 (thread_13, could_use) ~ fact_48 (thread_14, owe)
+         Father William marked Brandon's Barrow Mound on Dr. Uriah's map; he says it is about a day's walk from town.
+         Dr. Uriah promised Father William to give penance at Brandon's Barrow Mound and donate 10 gold for its upkeep.
+    0.36 fact_19 (thread_9, want) ~ fact_20 (thread_9, blocked_by)
+         Acquire Warwick the smith's mithril chain shirt.
+         Farmer Gill says Warwick always refuses to sell his mithril chain shirt, which fits a normal-sized person but not Dunk.
+  cross-thread facts sharing 4-word phrases:
+    fact_31 (thread_3) & fact_37 (thread_9): ['magical mithril chain shirt']
+    fact_38 (thread_9) & fact_41 (thread_12): ['dunk plans to help', 'plans to help her', 'to help her give']

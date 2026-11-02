@@ -1,0 +1,17 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_12",
+   "members": [
+    "fact_12",
+    "fact_11"
+   ],
+   "basis": "Both facts describe the same offer from beat_10: Lady Hilda will join the party against the dragon for pay. Each has the same trigger (hiring her) and the same benefit (a seasoned armored fighter for the dragon hunt). Both help thread_3 as established openings.",
+   "text": "If the party pays Lady Hilda, a seasoned fighter with chain mail and a shield, she will join them against the dragon. Her fee is unset, and she says she cannot kill the dragon herself; Sir Phidipaldi told her they would come back to hire her.",
+   "evidence": [
+    "beat_10"
+   ]
+  }
+ ],
+ "input_fingerprint": "7c37c2f84f6cb6abd62a4c3f86096b051d1daf1c4c0fcbcce817c08d273747d4"
+}

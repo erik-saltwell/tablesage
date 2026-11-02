@@ -1,0 +1,21 @@
+step3: 49 facts (45 open) {'want': 3, 'owe': 9, 'blocked_by': 5, 'could_use': 11, 'unknown': 14, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_32']
+  uncertain: ['fact_34', 'fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.37 fact_21 (thread_1, blocked_by) ~ fact_26 (thread_2, unknown)
+         The dragon believed to inhabit the Dragon's Lair stands between the party and the treasure hidden there; Dunk suspects there is no dragon, only Bral keeping people away.
+         Is there really a dragon in the Dragon's Lair? Grimny says the cave was empty and unvisited when the dwarves scouted it, and Dunk suspects Bral is only pretending there is a dragon to keep everybody away.
+    0.36 fact_29 (thread_2, could_use) ~ fact_36 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes the wizard Malzazarik and Lady Hilda payment for joining, offered against Cedric's promissory note.
+  cross-thread facts sharing 4-word phrases:
+    fact_29 (thread_2) & fact_36 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

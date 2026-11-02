@@ -1,0 +1,51 @@
+step3: 68 facts (62 open) {'want': 5, 'owe': 7, 'blocked_by': 5, 'could_use': 22, 'unknown': 17, 'threat': 6}
+  possibly moot: []
+  definite_end false: ['fact_69']
+  uncertain: ['fact_41']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.77 fact_33 (thread_3, could_use) ~ fact_38 (thread_9, could_use)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         Dunk says Warwick's mithril chain shirt is magical armor that could help against the dragon, once the party has it.
+    0.55 fact_8 (thread_3, could_use) ~ fact_13 (thread_4, could_use)
+         Lady Hilda would join the party against the dragon for pay (see her offer's thread).
+         Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party against the dragon for pay.
+    0.50 fact_3 (thread_1, unknown) ~ fact_27 (thread_1, unknown)
+         Where is the treasure the map marks?
+         Where did the party's treasure map come from?
+    0.47 fact_17 (thread_7, want) ~ fact_18 (thread_7, unknown)
+         Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn.
+         Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?
+    0.42 fact_33 (thread_3, could_use) ~ fact_40 (thread_9, unknown)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         What magic does Warwick's mithril chain shirt hold?
+    0.42 fact_64 (thread_5, could_use) ~ fact_71 (thread_18, unknown)
+         Ned offers to buy the bodies of the dead goblins in the Barrow Mound's lower corridor for 5 gold each.
+         What is making the scratching sounds at the far west end of the Barrow Mound's lower corridor?
+    0.42 fact_21 (thread_9, want) ~ fact_22 (thread_9, blocked_by)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+    0.41 fact_45 (thread_12, could_use) ~ fact_49 (thread_12, unknown)
+         Ingrid is making a sleeping potion from the faun wine Dunk gave her; Dunk can collect it when they meet tonight and use it to put Warwick to sleep.
+         Will a potion made from Dunk's heavily diluted faun wine still put Warwick to sleep?
+    0.40 fact_1 (thread_1, want) ~ fact_27 (thread_1, unknown)
+         Find the treasure marked on the party's treasure map.
+         Where did the party's treasure map come from?
+    0.40 fact_27 (thread_1, unknown) ~ fact_10 (thread_3, unknown)
+         Where did the party's treasure map come from?
+         Where has this new dragon come from, centuries after Sir Brandon killed the first?
+    0.38 fact_21 (thread_9, want) ~ fact_40 (thread_9, unknown)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         What magic does Warwick's mithril chain shirt hold?
+    0.36 fact_33 (thread_3, could_use) ~ fact_22 (thread_9, blocked_by)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+  cross-thread facts sharing 4-word phrases:
+    fact_8 (thread_3) & fact_13 (thread_4): ['against the dragon for', 'join the party against', 'party against the dragon']
+    fact_33 (thread_3) & fact_38 (thread_9): ['could help against the', "dunk says warwick's mithril", 'help against the dragon']
+    fact_33 (thread_3) & fact_40 (thread_9): ["warwick's mithril chain shirt"]
+    fact_60 (thread_3) & fact_61 (thread_4): ['sir phidipaldi plans to']
+    fact_64 (thread_5) & fact_71 (thread_18): ["barrow mound's lower corridor", "the barrow mound's lower"]
+    fact_65 (thread_5) & fact_68 (thread_18): ['the free goblin society']
+    fact_65 (thread_5) & fact_69 (thread_18): ['the free goblin society']
+    fact_69 (thread_18) & fact_74 (thread_20): ['in the barrow mound']

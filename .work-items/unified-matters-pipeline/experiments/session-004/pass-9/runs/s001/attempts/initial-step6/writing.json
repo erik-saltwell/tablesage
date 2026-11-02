@@ -1,0 +1,82 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map to places they did not recognize."
+  },
+  {
+   "id": "thread_2",
+   "text": "Reginald the frog warned the party to avoid a trickster Clurichen that comes into town each night."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve offered a bounty for the dragon that tore off woodsman George's arm. Sir Phidipaldi then challenged Eric to a duel, which Eric declined."
+  },
+  {
+   "id": "thread_4",
+   "text": "Lady Hilda, a seasoned warrior at the Clumsy Fox, offered to hunt the dragon with the party for pay."
+  },
+  {
+   "id": "thread_6",
+   "text": "Dr. Uriah shared drinks with Drop Dead Ned, a thief with a killer wasp who offered his services."
+  },
+  {
+   "id": "thread_5",
+   "text": "Bentley and Farmer Gill said supplies have stopped reaching Brandonsford, leaving the smith with almost nothing to sell."
+  },
+  {
+   "id": "scene_4",
+   "text": "Dunk drank from Farmer Gill's still on the porch, keeping Gill talking about his trinkets until he wobbled."
+  },
+  {
+   "id": "thread_10",
+   "text": "Golden Egg owner Quinn hired Sir Phidipaldi to catch whoever empties his bar each night."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_1",
+   "text": "Find the treasure on the party's map."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon near Brandonsford and drag its body into town for Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_21",
+   "text": "Find out who empties Quinn's bar at the Golden Egg each night and collect his 100 gold."
+  },
+  {
+   "id": "fact_22",
+   "text": "If Sir Phidipaldi makes a big show of delivering Quinn's water-filled bottles, they may see who comes for the stock."
+  },
+  {
+   "id": "fact_11",
+   "text": "If the party returns to the Clumsy Fox and pays Lady Hilda, she will join their dragon hunt."
+  },
+  {
+   "id": "fact_14",
+   "text": "If the party pays Drop Dead Ned 100 gold a week, he and his killer wasp will do anything that lets him kill. He refunds 5 gold per allowed kill if he can do what he wants with the bodies."
+  },
+  {
+   "id": "fact_23",
+   "text": "Who or what empties Quinn's bar each night?"
+  },
+  {
+   "id": "fact_18",
+   "text": "Why does Warwick the smith keep adding lucky charms to his shop?"
+  },
+  {
+   "id": "fact_13",
+   "text": "What is stopping shipments from reaching Brandonsford?"
+  },
+  {
+   "id": "fact_5",
+   "text": "What does the Clurichen do when it comes into town each night?"
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": [
+  "open IDs do not match the selection"
+ ]
+}

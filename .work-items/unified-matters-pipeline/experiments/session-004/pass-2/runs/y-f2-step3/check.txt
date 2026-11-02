@@ -1,0 +1,23 @@
+step3: 45 facts (40 open) {'want': 3, 'owe': 10, 'blocked_by': 2, 'could_use': 8, 'unknown': 15, 'threat': 2}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_34', 'fact_35', 'fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.38 fact_30 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman promised Snurk the Walkout never to tell King Hogboon where the Free Goblin Society goblins are living (the Barrow Mound's upper rooms).
+         Sir Alfred, the undead knight, lies incapacitated but not destroyed in the Barrow Mound's lower level and may yet harm the Free Goblin Society goblins now settling in the mound's upper rooms.
+    0.35 fact_33 (thread_12, could_use) ~ fact_35 (thread_12, owe)
+         Cedric's signed promissory note owes the party about 975 gold for the barrow treasure (three-quarters price), payable only once the caravans flow again.
+         The party must let Cedric have the barrow treasure covered by his promissory note so he can truck it to town once the caravans flow again.
+  cross-thread facts sharing 4-word phrases:
+    fact_21 (thread_1) & fact_43 (thread_16): ['where is bral now']
+    fact_30 (thread_3) & fact_11 (thread_4): ['free goblin society goblins', 'the free goblin society']
+    fact_18 (thread_9) & fact_32 (thread_11): ['dr uriah must give']
+    fact_19 (thread_10) & fact_35 (thread_12): ['the party must let']

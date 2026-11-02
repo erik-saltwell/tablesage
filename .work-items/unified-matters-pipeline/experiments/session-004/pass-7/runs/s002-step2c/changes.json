@@ -1,0 +1,143 @@
+{
+ "scenes": "s002-step1",
+ "threads": "s002-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "Father William marked the witch's home and the Barrow Mound on Dr. Uriah's map, and the party decided to check a marked location on the way north.",
+   "impact_basis": "Beats show new marks added to the map and a plan to check a location, a small adjustment to an existing thread.",
+   "narrative_impact": "low",
+   "lasting_basis": "The added marks and the plan to copy and follow the map will likely guide later travel.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_2",
+   "change": "The party caught the Clurichen Naggeneen stealing Quinn's booze, and Quinn now holds him captive in a bag behind his bar while his offer of a pot of gold or a secret stands.",
+   "impact_basis": "The marbles, ink and bag capture answered what the Clurichen does and turned it into a captive bargaining figure.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Naggeneen still hangs behind Quinn's bar offering gold, a secret or luck, so he is likely to come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_3",
+   "change": "The party learned from George where the dragon's lair is, that it will soon be able to fly, and from Father William that it can only be killed with Brandon's buried sword.",
+   "impact_basis": "George's lair location and warnings, plus William's claim about the sword, reshape how the party must face the dragon.",
+   "narrative_impact": "high",
+   "lasting_basis": "The lair's location, the looming threat of flight and the need for the sword will drive the coming Sessions.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_6",
+   "change": "Nothing lasting changed; shipments still had not arrived.",
+   "impact_basis": "The single beat only repeats that shipments are missing.",
+   "narrative_impact": "none",
+   "lasting_basis": "No new development was added beyond restating the situation.",
+   "lasting_consequence": "none"
+  },
+  {
+   "id": "thread_7",
+   "change": "Nothing lasting changed; Phidipaldi only repeated his scorn for Eric.",
+   "impact_basis": "Phidipaldi calling Eric a man of no honor restates the existing quarrel.",
+   "narrative_impact": "none",
+   "lasting_basis": "The remark adds nothing new to the quarrel.",
+   "lasting_consequence": "none"
+  },
+  {
+   "id": "thread_8",
+   "change": "Gill said he would lower his price for the mule once his sons return, but no deal was made.",
+   "impact_basis": "Dunk's 20 gold offer met only a conditional willingness to go lower.",
+   "narrative_impact": "low",
+   "lasting_basis": "The offer may return if Gill's sons come back, but it is a minor matter.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "thread_9",
+   "change": "Dunk confirmed Warwick's mithril chain shirt is magical, scouted his house and his open bedroom window, and formed a plan to get it.",
+   "impact_basis": "Dunk's window scouting confirmed the glowing magical shirt and revealed the cracked bedroom window, clearly advancing the thread.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Dunk plans to go out another night for the armor, so it will likely come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_10",
+   "change": "The booze thief turned out to be Naggeneen rather than Bentley, and Quinn paid the party 33 gold each for catching him.",
+   "impact_basis": "Catching Naggeneen cleared Bentley and closed Quinn's grievance.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The thread is resolved and the payment was ordinary gold, so little carries forward.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "thread_11",
+   "change": "Trout recruited the halfling Squints as a junior member of his Halfling Corps on set terms, and Squints proved himself by rescuing Brother Dirk.",
+   "impact_basis": "Squints joined on stated terms, took part in the rescue and was given Dirk as a follower, adding a new ally to the party.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Squints' ongoing membership, his treasure terms and Trout's secret intent not to rescue him will likely matter later.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_12",
+   "change": "Dunk struck a deal with Ingrid to have her brew a sleeping potion for Warwick, obtained faun wine from the Fauns Grove and gave her a heavily diluted batch, all serving his plan to get Warwick's armor.",
+   "impact_basis": "The bargain, the faun wine trade and the diluted delivery clearly set up a scheme, and Dunk also holds Ingrid's secret.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The potion is pending, Dunk is to meet Ingrid tonight, and he also kept faun wine of his own, so this will shape upcoming play.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_13",
+   "change": "The party learned that Sir Brandon's magic sword is buried at the Barrow Mound and is needed to kill the dragon, and set out for the Barrow.",
+   "impact_basis": "Father William's and George's accounts gave the party a new main goal, and they began walking to the Barrow.",
+   "narrative_impact": "high",
+   "lasting_basis": "Recovering the sword at the Barrow is the party's next objective.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_14",
+   "change": "Dr. Uriah promised Father William penance at the Barrow Mound and a 10 gold donation for its upkeep.",
+   "impact_basis": "Uriah's agreement with Father William creates a small new obligation.",
+   "narrative_impact": "low",
+   "lasting_basis": "The promise is owed at the Barrow, where the party is headed, so it may come up.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_15",
+   "change": "Ingrid revealed that fairies that used to stay hidden have been coming out more often lately.",
+   "impact_basis": "Ingrid's report adds a new unexplained mystery, but only as a single remark.",
+   "narrative_impact": "low",
+   "lasting_basis": "The fairy encroachment is a plausible hook for later play but is unexplored so far.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_16",
+   "change": "The party rescued Brother Dirk from a man-eating giant's cottage and escaped when the giant chased them.",
+   "impact_basis": "The cottage break-in, Dirk's rescue and the chase introduced a new foe and saved a captive.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The giant lives on the road north and was provoked, so he may return.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "beat_28",
+   "change": "The party learned that Ingrid sells healing tea, witch powder that detects magic, and essence of wolfsbane.",
+   "impact_basis": "The list of Ingrid's wares is shop information.",
+   "narrative_impact": "low",
+   "lasting_basis": "The available goods might be useful later but are minor.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "beat_53",
+   "change": "Father William offered to heal Uriah if he is injured.",
+   "impact_basis": "Father William's offer of healing is a minor detail.",
+   "narrative_impact": "low",
+   "lasting_basis": "Father William's healing offer may be used later, but it is minor.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "beat_74",
+   "change": "Uriah bought essence of wolfsbane and mandrake root tea.",
+   "impact_basis": "The purchase gave Uriah a couple of consumables.",
+   "narrative_impact": "low",
+   "lasting_basis": "The tea and wolfsbane are minor consumables that may see later use.",
+   "lasting_consequence": "low"
+  }
+ ],
+ "problems": []
+}

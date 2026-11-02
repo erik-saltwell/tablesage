@@ -1,0 +1,21 @@
+{
+  "input_and_implementation_hashes_unchanged": true,
+  "sessions": {
+    "001": {
+      "scenes": 5,
+      "beats": 36,
+      "threads": 8,
+      "facts": 20,
+      "history_candidates": 15,
+      "history_shown": 8,
+      "open_shown": 12,
+      "schema_reference_classification_and_writing_checks": "passed",
+      "event_anchor_and_chronology_checks": "passed",
+      "adventure_question_link_checks": "passed",
+      "selection_replay": "identical",
+      "recap_over_word_limit": [],
+      "recap_closing_words": 49
+    }
+  },
+  "session_002_chained_from_fresh_001": true
+}

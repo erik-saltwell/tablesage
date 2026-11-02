@@ -1,0 +1,754 @@
+<eligible_openings>
+[
+ {
+  "thread": "thread_3",
+  "id": "fact_10",
+  "kind": "could_use",
+  "text": "Eric says the woodsman George, who met the dragon and lives a couple of houses down from the Clumsy Fox, may come to the tavern tonight; the party could ask him what he saw and where.",
+  "state": "open",
+  "change": "new",
+  "ended_how": null,
+  "learned_this_session": true,
+  "definite_end": null,
+  "possibly_moot": null,
+  "certainty": "established",
+  "uncertain_reason": null,
+  "about_thread": null,
+  "also_bears_on": [],
+  "importance": "medium",
+  "actionability": "high",
+  "evidence": [
+   "beat_16"
+  ],
+  "classification": {
+   "serves_thread": "",
+   "significance": null,
+   "commitment_type": null,
+   "stake_basis": "",
+   "stake": null,
+   "burden": null,
+   "consequence": null,
+   "blocks_thread": "",
+   "in_effect": null,
+   "form": "opening",
+   "helps_thread": "thread_3",
+   "role": "direct",
+   "support_basis": "George is a firsthand witness who could help the party learn where the dragon is and what it is like, though he doesn't know where his arm went.",
+   "goal_support": "medium",
+   "action_basis": "Eric told the party to ask George themselves and said where he lives.",
+   "action_supported": "yes",
+   "acquired_by_acting_on_opening": false,
+   "grounding_justification": "",
+   "grounding": null,
+   "investigative_depth_justification": "",
+   "investigative_depth": null,
+   "narrative_payoff_justification": "",
+   "narrative_payoff": null,
+   "investigative_potential_justification": "",
+   "investigative_potential": null,
+   "question_type": null,
+   "harm_origin": null,
+   "negative_outcome_clarity_justification": "",
+   "negative_outcome_clarity": null,
+   "outcome_severity_justification": "",
+   "outcome_severity": null,
+   "evidentiary_strength_justification": "",
+   "evidentiary_strength": null,
+   "evidence_of_progression_justification": "",
+   "evidence_of_progression": null,
+   "preventability_justification": "",
+   "preventability": null,
+   "scope_basis": "",
+   "persists_beyond_scene": false,
+   "opening_basis": "Trigger: talking with George. Benefit: a firsthand account of the dragon and the encounter site, helping locate and face it.",
+   "opening_type": "enabling"
+  },
+  "resource_subject": "",
+  "classification_change_basis": "",
+  "temporary_id": "fact_new_5"
+ },
+ {
+  "thread": "thread_3",
+  "id": "fact_11",
+  "kind": "could_use",
+  "text": "Lady Hilda's offer to join the party for pay could add a seasoned fighter to the dragon hunt.",
+  "state": "open",
+  "change": "new",
+  "ended_how": null,
+  "learned_this_session": false,
+  "definite_end": null,
+  "possibly_moot": null,
+  "certainty": "established",
+  "uncertain_reason": null,
+  "about_thread": "thread_4",
+  "also_bears_on": [],
+  "importance": "medium",
+  "actionability": "high",
+  "evidence": [
+   "beat_10"
+  ],
+  "classification": {
+   "serves_thread": "",
+   "significance": null,
+   "commitment_type": null,
+   "stake_basis": "",
+   "stake": null,
+   "burden": null,
+   "consequence": null,
+   "blocks_thread": "",
+   "in_effect": null,
+   "form": "opening",
+   "helps_thread": "thread_3",
+   "role": "direct",
+   "support_basis": "An armored, seasoned ally would strengthen the party against the dragon, though she says she could not kill it herself.",
+   "goal_support": "medium",
+   "action_basis": "Hilda offered to join adventurers for money, explicitly in the context of the dragon.",
+   "action_supported": "yes",
+   "acquired_by_acting_on_opening": false,
+   "grounding_justification": "",
+   "grounding": null,
+   "investigative_depth_justification": "",
+   "investigative_depth": null,
+   "narrative_payoff_justification": "",
+   "narrative_payoff": null,
+   "investigative_potential_justification": "",
+   "investigative_potential": null,
+   "question_type": null,
+   "harm_origin": null,
+   "negative_outcome_clarity_justification": "",
+   "negative_outcome_clarity": null,
+   "outcome_severity_justification": "",
+   "outcome_severity": null,
+   "evidentiary_strength_justification": "",
+   "evidentiary_strength": null,
+   "evidence_of_progression_justification": "",
+   "evidence_of_progression": null,
+   "preventability_justification": "",
+   "preventability": null,
+   "scope_basis": "",
+   "persists_beyond_scene": false,
+   "opening_basis": "Trigger: hiring Hilda. Benefit: a seasoned armored fighter for the dragon fight.",
+   "opening_type": "enabling"
+  },
+  "resource_subject": "Lady Hilda's offer to join for pay",
+  "classification_change_basis": "",
+  "temporary_id": "fact_new_6"
+ },
+ {
+  "thread": "thread_4",
+  "id": "fact_12",
+  "kind": "could_use",
+  "text": "Lady Hilda, a seasoned fighter with chain mail and a shield, offers to join a party of adventurers against the dragon for pay; she says she cannot kill it herself.",
+  "state": "open",
+  "change": "new",
+  "ended_how": null,
+  "learned_this_session": false,
+  "definite_end": null,
+  "possibly_moot": null,
+  "certainty": "established",
+  "uncertain_reason": null,
+  "about_thread": null,
+  "also_bears_on": [
+   "thread_3"
+  ],
+  "importance": "medium",
+  "actionability": "high",
+  "evidence": [
+   "beat_10"
+  ],
+  "classification": {
+   "serves_thread": "",
+   "significance": null,
+   "commitment_type": null,
+   "stake_basis": "",
+   "stake": null,
+   "burden": null,
+   "consequence": null,
+   "blocks_thread": "",
+   "in_effect": null,
+   "form": "opening",
+   "helps_thread": "thread_3",
+   "role": "direct",
+   "support_basis": "A more seasoned armored fighter would strengthen the party's attempt to kill the dragon for the Reeve's bounty, though her fee is unset and she says she cannot kill it alone.",
+   "goal_support": "medium",
+   "action_basis": "Hilda explicitly offered to join an adventuring party against the dragon for money, and Sir Phidipaldi said they would return to hire her.",
+   "action_supported": "yes",
+   "acquired_by_acting_on_opening": false,
+   "grounding_justification": "",
+   "grounding": null,
+   "investigative_depth_justification": "",
+   "investigative_depth": null,
+   "narrative_payoff_justification": "",
+   "narrative_payoff": null,
+   "investigative_potential_justification": "",
+   "investigative_potential": null,
+   "question_type": null,
+   "harm_origin": null,
+   "negative_outcome_clarity_justification": "",
+   "negative_outcome_clarity": null,
+   "outcome_severity_justification": "",
+   "outcome_severity": null,
+   "evidentiary_strength_justification": "",
+   "evidentiary_strength": null,
+   "evidence_of_progression_justification": "",
+   "evidence_of_progression": null,
+   "preventability_justification": "",
+   "preventability": null,
+   "scope_basis": "",
+   "persists_beyond_scene": false,
+   "opening_basis": "Trigger: paying Hilda to join; benefit: an experienced armored fighter added to the party's dragon hunt. Linked by her own offer in beat_10.",
+   "opening_type": "enabling"
+  },
+  "resource_subject": "Lady Hilda's offer to join for pay",
+  "classification_change_basis": "",
+  "temporary_id": "fact_new_1"
+ },
+ {
+  "thread": "thread_10",
+  "id": "fact_25",
+  "kind": "could_use",
+  "text": "Quinn and Sir Phidipaldi plan a fake shipment: Quinn brings bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering ale to see who comes for it.",
+  "state": "open",
+  "change": "new",
+  "ended_how": null,
+  "learned_this_session": false,
+  "definite_end": null,
+  "possibly_moot": null,
+  "certainty": "established",
+  "uncertain_reason": null,
+  "about_thread": null,
+  "also_bears_on": [],
+  "importance": "high",
+  "actionability": "high",
+  "evidence": [
+   "beat_36"
+  ],
+  "classification": {
+   "serves_thread": "",
+   "significance": null,
+   "commitment_type": null,
+   "stake_basis": "",
+   "stake": null,
+   "burden": null,
+   "consequence": null,
+   "blocks_thread": "",
+   "in_effect": null,
+   "form": "opening",
+   "helps_thread": "thread_10",
+   "role": "direct",
+   "support_basis": "A conspicuous decoy delivery could draw out whoever takes Quinn's stock, giving a way to catch or identify the thief, though whether it works is untested.",
+   "goal_support": "medium",
+   "action_basis": "Quinn proposed the plan and Sir Phidipaldi agreed to its terms, with Quinn supplying the bottles.",
+   "action_supported": "yes",
+   "acquired_by_acting_on_opening": false,
+   "grounding_justification": "",
+   "grounding": null,
+   "investigative_depth_justification": "",
+   "investigative_depth": null,
+   "narrative_payoff_justification": "",
+   "narrative_payoff": null,
+   "investigative_potential_justification": "",
+   "investigative_potential": null,
+   "question_type": null,
+   "harm_origin": null,
+   "negative_outcome_clarity_justification": "",
+   "negative_outcome_clarity": null,
+   "outcome_severity_justification": "",
+   "outcome_severity": null,
+   "evidentiary_strength_justification": "",
+   "evidentiary_strength": null,
+   "evidence_of_progression_justification": "",
+   "evidence_of_progression": null,
+   "preventability_justification": "",
+   "preventability": null,
+   "scope_basis": "",
+   "persists_beyond_scene": false,
+   "opening_basis": "Trigger: staging the fake delivery. Benefit: luring the night thief into revealing themselves, advancing Quinn's job. Linked by Quinn's stated purpose of seeing what happens.",
+   "opening_type": "enabling"
+  },
+  "resource_subject": "",
+  "classification_change_basis": "",
+  "temporary_id": "fact_new_2"
+ }
+]
+</eligible_openings>
+
+<scenes>
+[
+ {
+  "id": "scene_1",
+  "location": "Brandonsford's gate",
+  "people": {
+   "party": [
+    "Dunk",
+    "Sir Phidipaldi",
+    "Wayman Tisdale",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "a night watchman"
+   ]
+  },
+  "cue": "\"We claim the sacred law of Zeus for hospitality\" - Sir Phidipaldi",
+  "beats": [
+   {
+    "id": "beat_1",
+    "kind": "event",
+    "text": "The party reached Brandonsford at sunset, following a treasure map that marks several locations they did not recognize; they assumed the treasure was probably at one of them, and all the surrounding land was unknown to them.",
+    "importance": "high",
+    "ledger": [
+     0,
+     2
+    ]
+   },
+   {
+    "id": "beat_2",
+    "kind": "learned",
+    "text": "Brandonsford has no guards or proper law enforcement; a rotating group of able-bodied men keeps night watch, and an ancient small stone wall surrounds the town.",
+    "importance": "low",
+    "ledger": [
+     1
+    ]
+   },
+   {
+    "id": "beat_3",
+    "kind": "event",
+    "text": "When a night watchman challenged them, Sir Phidipaldi claimed the sacred law of Zeus for hospitality and Wayman said they came from Ithaca; the watchman let them in before nightfall and pointed out the two inns.",
+    "importance": "low",
+    "ledger": [
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   {
+    "id": "beat_4",
+    "kind": "learned",
+    "text": "The Clumsy Fox Tavern is busy, warm and cozy, while the Golden Egg Tavern across the street has fewer people. Down the street are a general store, a smith, a small church and an alchemist shop, with a farm on the edge of town.",
+    "importance": "low",
+    "ledger": [
+     8,
+     9
+    ]
+   },
+   {
+    "id": "beat_5",
+    "kind": "event",
+    "text": "Sir Phidipaldi recommended the busy inn as likely higher-status and better for hearing rumors, while Dunk, preferring to be alone in the wilderness, was hesitant about the inns.",
+    "importance": "low",
+    "ledger": [
+     14,
+     15
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_2",
+  "location": "The river",
+  "people": {
+   "party": [
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Reginald the Frog"
+   ]
+  },
+  "cue": "\"Wherever it goes, stay away\" - Reginald",
+  "beats": [
+   {
+    "id": "beat_6",
+    "kind": "event",
+    "text": "Dr. Uriah used his one daily casting of speak with aquatic animals at the river and asked a frog named Reginald which tavern was better; Reginald did not know.",
+    "importance": "low",
+    "ledger": [
+     10,
+     11,
+     12,
+     13
+    ]
+   },
+   {
+    "id": "beat_7",
+    "kind": "learned",
+    "text": "Reginald says a little creature called a Clurichen comes from the riverbanks every night and goes into town; it is a trickster up to no good, and wherever it goes, they should stay away.",
+    "importance": "medium",
+    "ledger": [
+     12
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_3",
+  "location": "The Clumsy Fox Tavern",
+  "people": {
+   "party": [
+    "Sir Phidipaldi",
+    "Wayman Tisdale",
+    "Dr. Uriah"
+   ],
+   "others": [
+    "Lady Hilda",
+    "Bentley",
+    "Eric the Reeve",
+    "Drop Dead Ned"
+   ]
+  },
+  "cue": "\"I challenge thee to a duel at dawn\" - Sir Phidipaldi",
+  "beats": [
+   {
+    "id": "beat_8",
+    "kind": "event",
+    "text": "Sir Phidipaldi told the red-headed noblewoman Lady Hilda she looked as fine as his oversized lance, Lady Isaboob; unflappable, she bought him a drink and drank with him.",
+    "importance": "low",
+    "ledger": [
+     18,
+     19,
+     20,
+     21,
+     22
+    ]
+   },
+   {
+    "id": "beat_9",
+    "kind": "learned",
+    "text": "Lady Hilda says there are rumors of a dragon around town and that Eric the Reeve, a portly mutton-chopped man who controls the town on behalf of the common people, has been trying to hire somebody to kill it.",
+    "importance": "medium",
+    "ledger": [
+     25,
+     26
+    ]
+   },
+   {
+    "id": "beat_10",
+    "kind": "event",
+    "text": "Lady Hilda, who has chain mail and a shield and looks more seasoned than the party, said she could not kill the dragon herself but would join a party of adventurers for money; Sir Phidipaldi said they would talk with the Reeve and come back to avail themselves of her services.",
+    "importance": "high",
+    "ledger": [
+     25,
+     27,
+     28
+    ]
+   },
+   {
+    "id": "beat_11",
+    "kind": "event",
+    "text": "Dr. Uriah sensed no curses in the tavern but noticed a greasy-haired thief wearing a small jar on a necklace with a wasp buzzing inside.",
+    "importance": "low",
+    "ledger": [
+     29,
+     30
+    ]
+   },
+   {
+    "id": "beat_12",
+    "kind": "event",
+    "text": "The halfling owner Bentley gave Wayman a free first Fox Tail Brew, which tasted fantastic, and offered rooms at 10 silver a night; one gold would cover the whole party for multiple nights.",
+    "importance": "low",
+    "ledger": [
+     31,
+     32,
+     33,
+     34
+    ]
+   },
+   {
+    "id": "beat_13",
+    "kind": "learned",
+    "text": "Bentley says the town has become downhearted because of the rumored dragon, and his shipment to restock the tavern was due a week ago and never arrived, hurting the whole town. Nothing like this has happened since Sir Brandon killed the first dragon hundreds of years ago. The townsfolk can't afford adventurers, but the Reeve has been trying to get people to help. Wayman asked whether anybody had gone after the missing shipment.",
+    "importance": "medium",
+    "ledger": [
+     35,
+     36
+    ]
+   },
+   {
+    "id": "beat_14",
+    "kind": "event",
+    "text": "Sir Phidipaldi introduced himself to the visibly stressed Eric the Reeve as a chivalrous knight seeking adventure, fame and fortune, bearing Lady Isaboob and the two-handed sword Sir Chumunga, which he can barely lift.",
+    "importance": "low",
+    "ledger": [
+     51,
+     52,
+     53,
+     54,
+     55
+    ]
+   },
+   {
+    "id": "beat_15",
+    "kind": "event",
+    "text": "Eric the Reeve, saying he has a lot of problems, offered 1000 gold to whoever kills the dragon and drags its body into town.",
+    "importance": "high",
+    "ledger": [
+     56
+    ]
+   },
+   {
+    "id": "beat_16",
+    "kind": "learned",
+    "text": "Eric says the woodsman George, who lives a couple of houses down and might show up at the tavern tonight, encountered the dragon and lost an arm when it ripped it off; George described it as a black dragon, not a big one, and does not know where his arm is. Eric says they should ask George themselves.",
+    "importance": "medium",
+    "ledger": [
+     58,
+     65
+    ]
+   },
+   {
+    "id": "beat_17",
+    "kind": "event",
+    "text": "Committing a faux pas, Sir Phidipaldi told Eric that black dragons do not exist and that verified cases were illusions cast by a Clurichen, a small river beast he said sometimes steals people's limbs, and asked whether one had been seen in the village.",
+    "importance": "medium",
+    "ledger": [
+     59,
+     60,
+     61,
+     62
+    ]
+   },
+   {
+    "id": "beat_18",
+    "kind": "learned",
+    "text": "Sir Phidipaldi's claims about black dragons and Clurichens are wrong; Dr. Uriah knows this, and so does Eric the Reeve.",
+    "importance": "medium",
+    "ledger": [
+     63
+    ]
+   },
+   {
+    "id": "beat_19",
+    "kind": "event",
+    "text": "When an offended Eric defended George's honesty, Sir Phidipaldi slapped him with his glove and challenged him to a duel at dawn; a flustered Eric did not accept, only saying Sir Phidipaldi was obviously more skilled at adventure.",
+    "importance": "high",
+    "ledger": [
+     64,
+     65,
+     66,
+     67,
+     68,
+     69
+    ]
+   },
+   {
+    "id": "beat_20",
+    "kind": "event",
+    "text": "Dr. Uriah bought two Fox Tail Brews and sat with the shifty thief, who introduced himself as Drop Dead Ned; Uriah introduced himself as Dr. Uriah Marsh, a scholar seeking folk remedies and lore and looking for work with his crew.",
+    "importance": "low",
+    "ledger": [
+     71,
+     72,
+     73,
+     74
+    ]
+   },
+   {
+    "id": "beat_21",
+    "kind": "event",
+    "text": "Drop Dead Ned offered himself and his killer wasp for hire at 100 gold for the week, willing to do anything as long as he gets to kill people with the wasp; asked about a night with at least ten guaranteed kills, he kept the 100-gold fee but offered to give back 5 gold for each killing he is allowed, provided he can do what he wants with the victims. Dr. Uriah said he would think about it.",
+    "importance": "high",
+    "ledger": [
+     75,
+     78,
+     79,
+     80
+    ]
+   },
+   {
+    "id": "beat_22",
+    "kind": "learned",
+    "text": "Drop Dead Ned says his wasp is for things he wants to kill fast; he prefers to kill slowly and watch them die. Dr. Uriah sensed nothing unusual about the jar, which stays secured around Ned's neck.",
+    "importance": "medium",
+    "ledger": [
+     76,
+     77
+    ]
+   },
+   {
+    "id": "beat_23",
+    "kind": "event",
+    "text": "As the argument between Sir Phidipaldi and Eric grew heated, Bentley stepped in, forbade fighting, and ruled that Sir Phidipaldi must spend the night at the Golden Egg while his friends could stay, putting his drink on the house.",
+    "importance": "high",
+    "ledger": [
+     87,
+     88,
+     89
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_4",
+  "location": "Farmer Gill's farm",
+  "people": {
+   "party": [
+    "Dunk"
+   ],
+   "others": [
+    "Farmer Gill"
+   ]
+  },
+  "cue": "Shamus, the shabby \"prize mule\" priced at 100 gold",
+  "beats": [
+   {
+    "id": "beat_24",
+    "kind": "event",
+    "text": "Dunk split from the party to scavenge at the farm on the edge of town, where he found Farmer Gill on his porch chewing straw and packing a pipe.",
+    "importance": "low",
+    "ledger": [
+     16,
+     37
+    ]
+   },
+   {
+    "id": "beat_25",
+    "kind": "event",
+    "text": "Farmer Gill offered to sell his shabby \"prize mule\" Shamus for 100 gold so Dunk could start his own farm; Dunk asked whether he could trade work for the mule.",
+    "importance": "medium",
+    "ledger": [
+     38,
+     39,
+     40,
+     41,
+     42,
+     43
+    ]
+   },
+   {
+    "id": "beat_26",
+    "kind": "learned",
+    "text": "Farmer Gill says the big work needed is killing the dragon outside town. He saw it, it saw him and wanted nothing to do with him, and he sent his three sons to kill it; they are trying now, and he is sure they will bring it back.",
+    "importance": "medium",
+    "ledger": [
+     44
+    ]
+   },
+   {
+    "id": "beat_27",
+    "kind": "learned",
+    "text": "Farmer Gill tells the legend that long ago Sir Brandon met a fairy in the woods who gave him a magic sword; he and his friends killed a dragon that had terrorized the town for weeks, the town was named after him, they were knighted, and then they all left and Brandon died. Gill says that dragon was definitely dead, dragged through town and ripped apart hundreds of years ago, so he assumes this is a different dragon, though he doesn't know where dragons come from.",
+    "importance": "medium",
+    "ledger": [
+     44,
+     45,
+     46
+    ]
+   },
+   {
+    "id": "beat_28",
+    "kind": "event",
+    "text": "Dunk said he isn't sure what he is, having been sent out of his village as a child, and asked to sleep in the barn that night and think about the offer; Gill told him to make himself at home and brought drinks from his still to the porch.",
+    "importance": "medium",
+    "ledger": [
+     47,
+     48,
+     49
+    ]
+   },
+   {
+    "id": "beat_29",
+    "kind": "learned",
+    "text": "Farmer Gill says Warwick the smith barely has anything for sale because nothing has come into town in months, and most of it is poor. Warwick adds lucky charms to his shop every day, such as a rabbit's foot, a dream catcher, horseshoes and a wall covered in clovers, and is getting more and more paranoid.",
+    "importance": "medium",
+    "ledger": [
+     82,
+     84
+    ]
+   },
+   {
+    "id": "beat_30",
+    "kind": "learned",
+    "text": "Farmer Gill says Warwick displays a beautiful mithril chain shirt, probably the best chain in the world, which he always refuses to sell; it would not fit Dunk but would fit someone normal-sized.",
+    "importance": "medium",
+    "ledger": [
+     82
+    ]
+   },
+   {
+    "id": "beat_31",
+    "kind": "learned",
+    "text": "Farmer Gill thinks Ingrid, who sells potions, is hot for Warwick and that Warwick may put up the charms to keep her away; he doesn't know what Warwick thinks of her, but she is where to go for potions.",
+    "importance": "low",
+    "ledger": [
+     84
+    ]
+   },
+   {
+    "id": "beat_32",
+    "kind": "event",
+    "text": "Dunk kept Gill drinking to hear more gossip, and the wobbling farmer had the time of his life.",
+    "importance": "low",
+    "ledger": [
+     83,
+     85,
+     86
+    ]
+   }
+  ]
+ },
+ {
+  "id": "scene_5",
+  "location": "The Golden Egg Tavern",
+  "people": {
+   "party": [
+    "Sir Phidipaldi"
+   ],
+   "others": [
+    "Bentley",
+    "Quinn"
+   ]
+  },
+  "cue": "Quinn's watered-down ale at 10 silver a mug",
+  "beats": [
+   {
+    "id": "beat_33",
+    "kind": "event",
+    "text": "Bentley escorted Sir Phidipaldi to the Golden Egg as he clanked along in plate mail with his lance and sword, blustering that Zeus's law of courtesy was no longer honored and that this foretold doom for the Clumsy Fox.",
+    "importance": "low",
+    "ledger": [
+     90
+    ]
+   },
+   {
+    "id": "beat_34",
+    "kind": "event",
+    "text": "At the empty Golden Egg, the white-bearded owner Quinn charged Sir Phidipaldi 10 silver up front for watered-down, terrible ale costing three times the Clumsy Fox's price.",
+    "importance": "low",
+    "ledger": [
+     91,
+     92,
+     93,
+     94,
+     95,
+     96,
+     97
+    ]
+   },
+   {
+    "id": "beat_35",
+    "kind": "learned",
+    "text": "Quinn says that however much good stock he buys, it is gone the next morning: he goes to bed with a fully stocked bar and wakes to find half the glasses empty or knocked over, so he waters down what little he has. He believes Bentley has been stealing his good ale at night because the Clumsy Fox and its Fox Tail Brew are so popular.",
+    "importance": "high",
+    "ledger": [
+     98,
+     100
+    ]
+   },
+   {
+    "id": "beat_36",
+    "kind": "event",
+    "text": "Quinn offered 100 gold for help getting back at Bentley and, since no shipments have come for a while, proposed staging a fake shipment to see what happens; Sir Phidipaldi agreed that Quinn would bring bottles, they would fill them with water, and Sir Phidipaldi would make a big show of delivering ale.",
+    "importance": "high",
+    "ledger": [
+     99,
+     101,
+     102,
+     103
+    ]
+   }
+  ]
+ }
+]
+</scenes>

@@ -1,0 +1,16 @@
+step3: 26 facts (26 open) {'want': 6, 'owe': 1, 'blocked_by': 3, 'could_use': 7, 'unknown': 7, 'threat': 2}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_6', 'fact_17', 'fact_21', 'fact_22']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.50 fact_1 (thread_1, want) ~ fact_3 (thread_1, unknown)
+         Find the treasure.
+         Where is the treasure?
+    0.47 fact_22 (thread_9, want) ~ fact_23 (thread_9, blocked_by)
+         Get Warwick the smith's mithril chain shirt.
+         Farmer Gill says Warwick the smith displays his mithril chain shirt but always refuses to sell it.
+    0.42 fact_6 (thread_3, want) ~ fact_7 (thread_3, unknown)
+         Kill the black dragon near Brandonsford and drag its body into town to collect Eric the Reeve's 1000-gold bounty.
+         Where is the black dragon near Brandonsford?
+  cross-thread facts sharing 4-word phrases:

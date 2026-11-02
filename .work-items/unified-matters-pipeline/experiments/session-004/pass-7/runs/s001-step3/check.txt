@@ -1,0 +1,17 @@
+step3: 25 facts (25 open) {'want': 6, 'owe': 1, 'blocked_by': 1, 'could_use': 7, 'unknown': 7, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_20', 'fact_21']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.55 fact_8 (thread_3, could_use) ~ fact_13 (thread_4, could_use)
+         Lady Hilda would join the party against the dragon for pay (see her offer's thread).
+         Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party against the dragon for pay.
+    0.47 fact_17 (thread_7, want) ~ fact_18 (thread_7, unknown)
+         Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn.
+         Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?
+    0.42 fact_21 (thread_9, want) ~ fact_22 (thread_9, blocked_by)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+  cross-thread facts sharing 4-word phrases:
+    fact_8 (thread_3) & fact_13 (thread_4): ['against the dragon for', 'join the party against', 'party against the dragon']

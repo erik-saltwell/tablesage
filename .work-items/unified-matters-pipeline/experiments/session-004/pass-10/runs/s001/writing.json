@@ -1,0 +1,92 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map to places they did not recognize."
+  },
+  {
+   "id": "thread_2",
+   "text": "Reginald warned the party that a trickster called a Clurichen comes from the riverbanks into town every night."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve, who runs Brandonsford for the common people, offered a bounty to whoever kills the rumored black dragon."
+  },
+  {
+   "id": "thread_4",
+   "text": "Lady Hilda offered to join the party's fight against the dragon for pay."
+  },
+  {
+   "id": "thread_5",
+   "text": "Drop Dead Ned offered to work for Dr. Uriah with his killer wasp for 100 gold a week."
+  },
+  {
+   "id": "thread_6",
+   "text": "Bentley and Farmer Gill told the party that missing shipments have left Brandonsford's tavern and smithy short."
+  },
+  {
+   "id": "thread_7",
+   "text": "Sir Phidipaldi challenged Eric the Reeve to a duel, and Bentley sent him to the Golden Egg for the night."
+  },
+  {
+   "id": "scene_4",
+   "text": "Dunk drank with Farmer Gill, who told him how Sir Brandon slew a dragon long ago."
+  },
+  {
+   "id": "thread_10",
+   "text": "Quinn, who owns the Golden Egg, blamed Bentley for stealing his ale and offered a reward for revenge."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_1",
+   "text": "Find the treasure."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon near Brandonsford and drag its body into town for Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_24",
+   "text": "Help Quinn get back at Bentley and collect Quinn's 100 gold."
+  },
+  {
+   "id": "fact_17",
+   "text": "Have Sir Phidipaldi fight Eric the Reeve in a duel at dawn."
+  },
+  {
+   "id": "fact_18",
+   "text": "Eric the Reeve has not accepted Sir Phidipaldi's duel challenge."
+  },
+  {
+   "id": "fact_25",
+   "text": "If the party stages a fake ale delivery with water-filled bottles, they can see who comes to take it."
+  },
+  {
+   "id": "fact_10",
+   "text": "Eric says the woodsman George may come to the Clumsy Fox tonight. If the party asks him, they can learn what he saw and where."
+  },
+  {
+   "id": "fact_12",
+   "text": "If the party pays Lady Hilda, she will join them against the dragon."
+  },
+  {
+   "id": "fact_26",
+   "text": "Who or what empties Quinn's stock each night?"
+  },
+  {
+   "id": "fact_4",
+   "text": "What is the Clurichen doing in Brandonsford every night?"
+  },
+  {
+   "id": "fact_16",
+   "text": "Why has nothing reached Brandonsford in months?"
+  },
+  {
+   "id": "fact_9",
+   "text": "The black dragon tore off the woodsman George's arm, and Farmer Gill's three sons are hunting it now."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

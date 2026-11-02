@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import re
 from collections.abc import Mapping
 from copy import deepcopy
 from importlib.metadata import version
@@ -24,6 +25,16 @@ _ANTHROPIC_MODEL_METADATA = {
         "max_input_tokens": 1_000_000,
     }
 }
+
+
+def supports_openai_explicit_prompt_caching(model: str) -> bool:
+    """Direct GPT-5.6+ models expose explicit breakpoints; older models stay implicit.
+
+    Use the documented model generation rather than LiteLLM's older parameter catalog,
+    which does not yet list prompt_cache_options for Chat Completions.
+    """
+    match = re.match(r"^openai/gpt-(\d+)(?:\.(\d+))?(?:-|$)", model)
+    return match is not None and (int(match[1]), int(match[2] or 0)) >= (5, 6)
 
 
 def _remove_schema_keyword(value: Any, keyword: str) -> None:
@@ -139,6 +150,7 @@ async def call_llm(
     prompt_name: str | None = None,
     model_options: Mapping[str, Any] | None = None,
     strict_schema: bool = False,
+    system_prompt_cache_ttl: str | None = None,
 ) -> str:
     """Send a single-turn system+user prompt to *model* via litellm and return its text response.
 
@@ -152,14 +164,28 @@ async def call_llm(
     provider. Opus 5.5 uses streaming internally to keep long requests active, then assembles
     the complete response; an explicit *timeout* also bounds the full stream. *model_options*
     passes provider-specific controls such as reasoning effort through to LiteLLM.
+    *system_prompt_cache_ttl* opts direct Anthropic (``5m``/``1h``) or GPT-5.6+
+    (``30m``) calls into caching the system prefix only. GPT-5.6+ uses explicit-only
+    mode without breakpoints when no TTL is supplied, avoiding automatic writes of
+    changing user input. Older OpenAI models and Gemini keep implicit caching. The provider
+    enforces model-specific minimum cache sizes; requesting caching does not guarantee a hit.
     """
     import litellm
 
     from ..credentials import require_credential
 
+    if system_prompt_cache_ttl not in (None, "5m", "1h", "30m"):
+        raise ValueError("System prompt cache TTL must be 5m, 1h, or 30m.")
+
     require_credential(model.partition("/")[0], model)
 
     provider, _, model_name = model.partition("/")
+    openai_explicit = supports_openai_explicit_prompt_caching(model)
+    if system_prompt_cache_ttl is not None:
+        if provider == "anthropic" and system_prompt_cache_ttl not in ("5m", "1h"):
+            raise ValueError("Anthropic system prompt cache TTL must be 5m or 1h.")
+        if openai_explicit and system_prompt_cache_ttl != "30m":
+            raise ValueError("OpenAI Chat Completions system prompt cache TTL must be 30m.")
     if provider == "anthropic" and model_name in _ANTHROPIC_MODEL_METADATA:
         # Older bundled LiteLLM catalogs omit this capability and fall back to forced tool use,
         # which Opus 5.5 rejects, and a tiny output budget that can be exhausted by thinking.
@@ -169,17 +195,32 @@ async def call_llm(
         metadata = _ANTHROPIC_MODEL_METADATA[model_name]
         litellm.register_model({model_name: metadata, model: metadata})
 
-    effective_model_options = dict(model_options) if model_options is not None else {}
+    effective_model_options: dict[str, Any] = dict(model_options) if model_options is not None else {}
     if model == _ASTRA_MODEL and "reasoning_effort" not in effective_model_options:
         effective_model_options = {**_ASTRA_MEDIUM_THINKING_OPTIONS, **effective_model_options}
 
-    request_options = dict(effective_model_options)
+    request_options: dict[str, Any] = dict(effective_model_options)
     if provider == "anthropic" and model_name in _ANTHROPIC_MODEL_METADATA:
         request_options.setdefault("stream", True)
     streaming = bool(request_options.get("stream"))
+    if streaming and provider in ("openai", "gemini"):
+        request_options["stream_options"] = {**(request_options.get("stream_options") or {}), "include_usage": True}
 
+    cache_enabled = system_prompt_cache_ttl is not None and (provider == "anthropic" or openai_explicit)
+    system_content: str | list[dict[str, Any]] = system_prompt
+    if cache_enabled and provider == "anthropic":
+        system_content = [{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral", "ttl": system_prompt_cache_ttl}}]
+    if openai_explicit:
+        # extra_body is OpenAI's supported pass-through for fields not yet present in
+        # the installed LiteLLM/SDK parameter catalogs. Preserve unrelated extra fields.
+        cache_options = {"mode": "explicit"}
+        if cache_enabled:
+            cache_options["ttl"] = system_prompt_cache_ttl
+            system_content = [{"type": "text", "text": system_prompt, "prompt_cache_breakpoint": {"mode": "explicit"}}]
+        request_options.pop("prompt_cache_options", None)
+        request_options["extra_body"] = {**(request_options.get("extra_body") or {}), "prompt_cache_options": cache_options}
     messages = [
-        {"role": "system", "content": system_prompt},
+        {"role": "system", "content": system_content},
         {"role": "user", "content": user_prompt},
     ]
     response_schema = (
@@ -224,6 +265,9 @@ async def call_llm(
         strict_schema=strict_schema if response_format is not None else None,
         model_options=effective_model_options or None,
         streaming=streaming,
+        system_prompt_cache_ttl_requested=system_prompt_cache_ttl,
+        system_prompt_cache_ttl_applied=system_prompt_cache_ttl if cache_enabled else None,
+        prompt_caching_mode="explicit" if openai_explicit or cache_enabled else "implicit" if provider in ("openai", "gemini") else None,
     ) as log:
         async with asyncio.timeout(timeout if streaming else None):
             response = await litellm.acompletion(
@@ -249,12 +293,26 @@ async def call_llm(
         choices = _response_value(response, "choices") or []
         choice = choices[0]
         content = _message_content(choice)
+        usage = _response_value(response, "usage")
+        prompt_details = _response_value(usage, "prompt_tokens_details")
+        if prompt_details is None:
+            prompt_details = _response_value(usage, "input_tokens_details")
+        cache_read_tokens = _response_value(prompt_details, "cached_tokens")
+        if cache_read_tokens is None:
+            cache_read_tokens = _response_value(usage, "cache_read_input_tokens")
+        cache_write_tokens = _response_value(prompt_details, "cache_write_tokens")
+        if cache_write_tokens is None:
+            cache_write_tokens = _response_value(usage, "cache_creation_input_tokens")
         log.set(
             response_id=_response_value(response, "id"),
             response_model=_response_value(response, "model"),
             finish_reason=_choice_value(choice, "finish_reason"),
             response_content_chars=len(content),
             response_content_nonempty=bool(content.strip()),
+            prompt_tokens=_response_value(usage, "prompt_tokens"),
+            completion_tokens=_response_value(usage, "completion_tokens"),
+            cache_read_input_tokens=cache_read_tokens,
+            cache_creation_input_tokens=cache_write_tokens,
         )
 
         if response_format is not None:

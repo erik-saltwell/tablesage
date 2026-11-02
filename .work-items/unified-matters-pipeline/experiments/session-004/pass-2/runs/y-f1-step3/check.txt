@@ -1,0 +1,24 @@
+step3: 50 facts (46 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 11, 'unknown': 16, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_32']
+  uncertain: ['fact_33', 'fact_37', 'fact_38']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.42 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the undead knight in the Barrow Mound, was left helpless but not destroyed and may recover to attack the party if they return.
+         Why does Sir Alfred, the seven-foot undead knight with a greatsword, roam the Barrow Mound?
+    0.36 fact_29 (thread_2, could_use) ~ fact_38 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes Malzazarik and Lady Hilda payment out of Cedric's promissory note for joining the party against the dragon. Their share and the payment terms were not stated.
+    0.35 fact_12 (thread_4, unknown) ~ fact_15 (thread_7, unknown)
+         Why does Sir Alfred, the seven-foot undead knight with a greatsword, roam the Barrow Mound?
+         Who does the noblewoman statue in the Barrow Mound depict?
+  cross-thread facts sharing 4-word phrases:
+    fact_29 (thread_2) & fact_38 (thread_12): ['malzazarik and lady hilda']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

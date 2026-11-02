@@ -1,0 +1,39 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Killing the dragon as work to pay for Shamus",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_25"
+   ],
+   "reason": "It is a term of Gill's offer for the mule, so it lives on that bargain."
+  },
+  {
+   "subject": "Lady Hilda's willingness to hunt the dragon for pay",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_10"
+   ],
+   "reason": "The offer is the very thing the Hilda thread is about."
+  },
+  {
+   "subject": "Eric the Reeve's offense at Sir Phidipaldi",
+   "home": "thread_7",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_17",
+    "beat_19"
+   ],
+   "reason": "The ill will belongs to the quarrel, though it could affect dealings over the bounty."
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+step3: 44 facts (39 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 9, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_18', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_34']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.38 fact_25 (thread_2, could_use) ~ fact_34 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party against the dragon.
+         The party owes the wizard Malzazarik and Lady Hilda payment for joining, offered out of Cedric's promissory note.
+    0.37 fact_33 (thread_12, could_use) ~ fact_35 (thread_12, blocked_by)
+         Cedric signed a promissory note to pay the party 975 gold for the barrow treasure, at three-quarters price, once the caravans flow again. The party has offered the note as payment to its new hirelings.
+         Cedric cannot pay the note until the caravans flow again.
+    0.35 fact_31 (thread_5, unknown) ~ fact_35 (thread_12, blocked_by)
+         Will the caravans to Brandonsford flow again? Cedric's payment on his promissory note depends on it.
+         Cedric cannot pay the note until the caravans flow again.
+  cross-thread facts sharing 4-word phrases:
+    fact_25 (thread_2) & fact_34 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_29 (thread_3) & fact_10 (thread_4): ['the free goblin society']
+    fact_30 (thread_3) & fact_10 (thread_4): ["in the barrow mound's"]

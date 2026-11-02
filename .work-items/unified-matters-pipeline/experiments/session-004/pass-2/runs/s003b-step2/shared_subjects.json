@@ -1,0 +1,65 @@
+{
+ "scenes": "s003-step1",
+ "shared_subjects": [
+  {
+   "subject": "The undead giant swordsman in the mound",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_26",
+    "beat_40",
+    "beat_46",
+    "beat_62"
+   ],
+   "reason": "The danger thread is about the giant itself, though clearing him is part of the evil the goblin bargain requires removed."
+  },
+  {
+   "subject": "Goblins would object to their dead being given to Ned",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_42"
+   ],
+   "reason": "It is an obstacle most directly blocking Ned's body deal."
+  },
+  {
+   "subject": "Sir Brandon's sword and goods",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_59",
+    "beat_60",
+    "beat_61"
+   ],
+   "reason": "The party took the sword from the tomb to use against the dragon rather than receiving it from the goblins."
+  },
+  {
+   "subject": "The jeweled chalice",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_56"
+   ],
+   "reason": "The thread about the chalice's ownership comes before the broader treasure-share promise."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_5"
+   ],
+   "beats": [
+    "beat_3"
+   ],
+   "reason": "The dragon hunt is where the shirt would be used, while Dunk's scheme is only the means of getting it."
+  }
+ ]
+}

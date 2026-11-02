@@ -1,0 +1,164 @@
+{
+ "last_session": [
+  {
+   "id": "thread_11",
+   "text": "Trout recruited Squints, a newly arrived halfling, as junior assistant in his Halfling Corps. Trout later put the rescued Brother Dirk under Squints."
+  },
+  {
+   "id": "thread_2",
+   "text": "The party caught Naggeneen, the invisible Clurichen stealing Quinn's booze, and handed him over to Quinn."
+  },
+  {
+   "id": "thread_9",
+   "text": "Dunk spotted a glowing magical mithril chain shirt in Warwick the smith's shop and told the party he had a plan to get it."
+  },
+  {
+   "id": "thread_12",
+   "text": "Dunk struck a deal with Ingrid the Alchemist for a sleeping potion. He got wine from the fauns and gave her a watered-down batch."
+  },
+  {
+   "id": "thread_3",
+   "text": "George the woodsman described the dragon's deadly powers and lair, and doubted the Reeve can pay the bounty."
+  },
+  {
+   "id": "thread_13",
+   "text": "The party set out for Sir Brandon's Barrow Mound after Father William pointed them to the sword buried there."
+  },
+  {
+   "id": "thread_16",
+   "text": "Squints pulled Brother Dirk from a sleeping giant's sack, and the party outran the waking giant across a field."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_21",
+   "text": "Acquire the mithril chain shirt from Warwick the smith's shop."
+  },
+  {
+   "id": "fact_1",
+   "text": "Find the treasure marked on the party's treasure map."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon and drag its body into Brandonsford to collect Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_17",
+   "text": "Fight Eric the Reeve in the dawn duel Sir Phidipaldi challenged him to."
+  },
+  {
+   "id": "fact_19",
+   "text": "Get Farmer Gill's mule Shamus."
+  },
+  {
+   "id": "fact_31",
+   "text": "George says nothing pierces the dragon's black scales. Its poisonous bite kills, and it spits sulfur."
+  },
+  {
+   "id": "fact_37",
+   "text": "Farmer Gill won't lower his price for Shamus until his boys return, since he can't work without them or a mule."
+  },
+  {
+   "id": "fact_22",
+   "text": "Farmer Gill says Warwick always refuses to sell his mithril chain shirt."
+  },
+  {
+   "id": "fact_2",
+   "text": "The party holds a treasure map marking several unrecognized locations near Brandonsford."
+  },
+  {
+   "id": "fact_39",
+   "text": "If Dunk helps Ingrid get her sleeping potion to Warwick, he could get into Warwick's house to take the shirt."
+  },
+  {
+   "id": "fact_45",
+   "text": "If Dunk meets Ingrid tonight, he can collect her sleeping potion and use it to put Warwick to sleep."
+  },
+  {
+   "id": "fact_51",
+   "text": "Father William says that if the party goes to Sir Brandon's Barrow Mound, they can retrieve the sword buried with him."
+  },
+  {
+   "id": "fact_30",
+   "text": "George says the dragon's lair lies north at the foot of the mountains, with no climbing needed."
+  },
+  {
+   "id": "fact_32",
+   "text": "If the party claims Sir Brandon's sword, they gain what is said to be the only way to kill the dragon."
+  },
+  {
+   "id": "fact_26",
+   "text": "If the party checks a marked map location on its way north through the forest, they could find the map's treasure."
+  },
+  {
+   "id": "fact_8",
+   "text": "If the party pays Lady Hilda, she will fight the dragon alongside them."
+  },
+  {
+   "id": "fact_42",
+   "text": "Squints has joined the party as Trout's junior assistant, taking orders directly from Trout."
+  },
+  {
+   "id": "fact_33",
+   "text": "Dunk says that if the party gets Warwick's mithril chain shirt, it could help them against the dragon."
+  },
+  {
+   "id": "fact_13",
+   "text": "If the party hires Lady Hilda, they gain a seasoned fighter in chain mail with a shield."
+  },
+  {
+   "id": "fact_38",
+   "text": "Dunk says that if the party gets Warwick's mithril chain shirt, they will have magical armor."
+  },
+  {
+   "id": "fact_15",
+   "text": "If the party pays Drop Dead Ned 100 gold a week, he and his killer wasp will do anything that lets him kill people."
+  },
+  {
+   "id": "fact_56",
+   "text": "Why are the once-hidden fairies coming out more often?"
+  },
+  {
+   "id": "fact_10",
+   "text": "Where did this new dragon come from?"
+  },
+  {
+   "id": "fact_16",
+   "text": "Why has nothing reached Brandonsford in months?"
+  },
+  {
+   "id": "fact_44",
+   "text": "Dunk must help Ingrid get into Warwick's house and give him her sleeping potion, in return for her brewing it."
+  },
+  {
+   "id": "fact_55",
+   "text": "Dr. Uriah must do penance at the Barrow Mound and give Father William 10 gold for its upkeep."
+  },
+  {
+   "id": "fact_41",
+   "text": "Trout must let Squints pick from the Halfling Corps' first treasure after the elite members. Until then, Squints pays his own way."
+  },
+  {
+   "id": "fact_36",
+   "text": "Sir Phidipaldi must bring his lance against the dragon, as he vowed to George."
+  },
+  {
+   "id": "fact_14",
+   "text": "Sir Phidipaldi must come back for Lady Hilda's services after the party talks to the Reeve."
+  },
+  {
+   "id": "fact_11",
+   "text": "The black dragon that tore off George's arm is still at large around Brandonsford and may maim others."
+  },
+  {
+   "id": "fact_34",
+   "text": "George says the dragon can't fly yet but soon will, and then they are doomed."
+  },
+  {
+   "id": "fact_57",
+   "text": "A slow giant in the cyclopean cottage captures people to eat, and Brother Dirk says he meant to stew him. The giant is now awake and chased the party."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

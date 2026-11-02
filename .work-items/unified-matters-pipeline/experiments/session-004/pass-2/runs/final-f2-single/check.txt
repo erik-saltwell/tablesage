@@ -1,0 +1,19 @@
+step3: 43 facts (39 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 10, 'unknown': 10, 'threat': 3}
+  possibly moot: ['fact_16']
+  definite_end false: ['fact_28']
+  uncertain: ['fact_29', 'fact_32']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.45 fact_33 (thread_13, owe) ~ fact_34 (thread_13, owe)
+         The party must bring metal from the Dwarven mine to Warwick, in exchange for the loan of his mithril chain shirt.
+         The party must return Warwick's mithril chain shirt, his grandfather's heirloom.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_26 (thread_2) & fact_32 (thread_12): ['malzazarik and lady hilda']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_18 (thread_9) & fact_30 (thread_11): ['dr uriah must give']

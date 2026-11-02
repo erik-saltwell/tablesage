@@ -1,0 +1,60 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map of places they did not recognize."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve offered a bounty for the black dragon. Sir Phidipaldi then insulted Eric and challenged him to a duel, which Eric declined."
+  },
+  {
+   "id": "thread_4",
+   "text": "Bentley, Farmer Gill and Quinn said supplies have stopped reaching Brandonsford, leaving the taverns and smith short."
+  },
+  {
+   "id": "thread_7",
+   "text": "Quinn hired Sir Phidipaldi to get back at Bentley, whom Quinn blames for stealing his ale."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_1",
+   "text": "Find the treasure marked on the party's treasure map."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon near Brandonsford and drag its body into town for Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_16",
+   "text": "Help Quinn get back at Bentley and collect Quinn's 100 gold."
+  },
+  {
+   "id": "fact_17",
+   "text": "If Sir Phidipaldi stages a showy fake delivery of Quinn's water-filled bottles, they may see who comes for the stock at night."
+  },
+  {
+   "id": "fact_7",
+   "text": "If the party returns to the Clumsy Fox and pays Lady Hilda, the seasoned warrior will join them against the dragon."
+  },
+  {
+   "id": "fact_13",
+   "text": "If the party hires Drop Dead Ned for 100 gold a week, he and his killer wasp will do any job. Ned insists on killing people and gives back 5 gold for each one he may kill."
+  },
+  {
+   "id": "fact_18",
+   "text": "Who or what empties Quinn's bar every night?"
+  },
+  {
+   "id": "fact_12",
+   "text": "What has become of the shipments to Brandonsford?"
+  },
+  {
+   "id": "fact_10",
+   "text": "A black dragon, not a big one, is terrorizing the land around Brandonsford and tore off the woodsman George's arm."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

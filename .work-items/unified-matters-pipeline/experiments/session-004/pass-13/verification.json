@@ -1,0 +1,42 @@
+{
+  "passed": 28,
+  "checks": [
+    "Runner/helper Python syntax",
+    "Runner CLI import without model calls",
+    "Eight output schemas and per-kind classification schema valid",
+    "Eight Jinja templates parse",
+    "24 prompt files; only six intended system prompts changed",
+    "Unchanged historical_coverage.py",
+    "Unchanged resource_reconciliation.py",
+    "Unchanged classification_schema.json",
+    "All output schemas unchanged",
+    "Executable runner logic unchanged except identity/version",
+    "Parent implementation/prompt hashes preserved",
+    "Full facts example validates transport and decoded per-kind schemas",
+    "Session 001 full selection replay unchanged except version",
+    "Session 001 actual writer-input assembly/template renders offline",
+    "Session 001 reconciliation template renders",
+    "Session 002 full selection replay unchanged except version",
+    "Session 002 actual writer-input assembly/template renders offline",
+    "Session 002 reconciliation template renders",
+    "Corrected narrative priority drives existing deterministic sort",
+    "Existing guard excludes direct goal pursuit",
+    "Existing guard excludes honestly rated unestablished harm",
+    "Adventure question survives low independent depth/payoff",
+    "Accepted low-stake penance remains eligible",
+    "No test-Session names/distinctive named items in prompt sweep",
+    "Conditional opportunity structure required (text check only)",
+    "No blanket every-source-amount display requirement (text check only)",
+    "Optional first mention and open continuity present (text check only)",
+    "No generation; only empty first-Session seed"
+  ],
+  "changed_prompts": [
+    "step2c_changes/system.md",
+    "step3_facts_homes/system.md",
+    "step3r_resources/system.md",
+    "step4_stopping/system.md",
+    "step6_writing/system.md",
+    "step8_recap/system.md"
+  ],
+  "limits": "Offline syntax/schema, fixture/replay and prompt-text checks only. No model calls, fresh quality assessment or unit-test suite. Prompt compliance and semantic fix success remain unassessed."
+}

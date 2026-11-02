@@ -1,0 +1,36 @@
+{
+  "sessions": [
+    {
+      "session": "001",
+      "scenes": 5,
+      "beats": 36,
+      "threads": 7,
+      "facts": 18,
+      "historical_shown": 4,
+      "open_shown": 9,
+      "recap_bullets": 5,
+      "over_word_limit": [],
+      "summary_words": 360,
+      "recap_words": 231
+    },
+    {
+      "session": "002",
+      "scenes": 14,
+      "beats": 91,
+      "threads": 14,
+      "facts": 51,
+      "historical_shown": 7,
+      "open_shown": 17,
+      "recap_bullets": 12,
+      "over_word_limit": [
+        "Squints the halfling",
+        "Ingrid's sleeping potion"
+      ],
+      "summary_words": 587,
+      "recap_words": 402
+    }
+  ],
+  "review_markdown_files": 14,
+  "link_errors": [],
+  "limits": "Structural verification; no LLM faithfulness audit or user quality approval."
+}

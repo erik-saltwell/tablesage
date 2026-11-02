@@ -1,0 +1,48 @@
+{
+  "title": "ThreadReconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["prior_threads", "new_threads", "standalone_beats"],
+  "properties": {
+    "prior_threads": {"type": "array", "items": {"$ref": "#/$defs/PriorThread"}},
+    "new_threads": {"type": "array", "items": {"$ref": "#/$defs/NewThread"}},
+    "standalone_beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["beat", "reason"],
+        "properties": {"beat": {"$ref": "#/$defs/BeatId"}, "reason": {"$ref": "#/$defs/Text"}}
+      }
+    }
+  },
+  "$defs": {
+    "Text": {"type": "string", "minLength": 1},
+    "BeatId": {"type": "string", "pattern": "^beat_[0-9]+$"},
+    "Status": {"enum": ["open", "changed", "resolved", "abandoned"]},
+    "PriorThread": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "beats", "reason"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^thread_[0-9]+$"},
+        "status": {"$ref": "#/$defs/Status"},
+        "beats": {"type": "array", "items": {"$ref": "#/$defs/BeatId"}},
+        "reason": {"$ref": "#/$defs/Text"}
+      }
+    },
+    "NewThread": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "parent", "status", "beats", "reason"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^thread_new_[0-9]+$"},
+        "name": {"$ref": "#/$defs/Text"},
+        "parent": {"anyOf": [{"type": "string", "pattern": "^thread_(new_)?[0-9]+$"}, {"type": "null"}]},
+        "status": {"$ref": "#/$defs/Status"},
+        "beats": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/BeatId"}},
+        "reason": {"$ref": "#/$defs/Text"}
+      }
+    }
+  }
+}

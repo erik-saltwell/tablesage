@@ -1,0 +1,33 @@
+step3: 51 facts (45 open) {'want': 4, 'owe': 5, 'blocked_by': 2, 'could_use': 21, 'unknown': 10, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_15', 'fact_32']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.80 fact_49 (thread_13, owe) ~ fact_50 (thread_13, owe)
+         Dr. Uriah promised Father William he will do penance at Brandon's Barrow Mound.
+         Dr. Uriah promised Father William he will donate 10 gold for the upkeep of Brandon's Barrow Mound.
+    0.44 fact_1 (thread_1, want) ~ fact_20 (thread_1, unknown)
+         Find the treasure marked on the party's treasure map.
+         What is the history of the party's treasure map?
+    0.43 fact_44 (thread_11, could_use) ~ fact_49 (thread_13, owe)
+         Father William marked Brandon's Barrow Mound on the party's map; it is roughly a three-mile walk north through the forest.
+         Dr. Uriah promised Father William he will do penance at Brandon's Barrow Mound.
+    0.40 fact_33 (thread_9, want) ~ fact_36 (thread_9, unknown)
+         Dunk wants to get the glowing magical mithril chain shirt from Warwick the smith's shop.
+         What magic does Warwick's glowing mithril chain shirt hold?
+    0.40 fact_44 (thread_11, could_use) ~ fact_50 (thread_13, owe)
+         Father William marked Brandon's Barrow Mound on the party's map; it is roughly a three-mile walk north through the forest.
+         Dr. Uriah promised Father William he will donate 10 gold for the upkeep of Brandon's Barrow Mound.
+    0.38 fact_28 (thread_3, could_use) ~ fact_36 (thread_9, unknown)
+         Warwick's mithril chain shirt, which Dunk says could help against the dragon (see thread_9).
+         What magic does Warwick's glowing mithril chain shirt hold?
+    0.38 fact_45 (thread_11, unknown) ~ fact_49 (thread_13, owe)
+         Is Brandon's magic sword really buried in the Barrow Mound?
+         Dr. Uriah promised Father William he will do penance at Brandon's Barrow Mound.
+    0.36 fact_43 (thread_11, could_use) ~ fact_45 (thread_11, unknown)
+         Father William says the black dragon can't be killed without the magic sword buried with Brandon in Brandon's Barrow Mound; the party could retrieve it from the Barrow.
+         Is Brandon's magic sword really buried in the Barrow Mound?
+  cross-thread facts sharing 4-word phrases:
+    fact_34 (thread_9) & fact_37 (thread_10): ['dunk plans to help', 'plans to help her']
+    fact_44 (thread_11) & fact_47 (thread_12): ["on the party's map"]

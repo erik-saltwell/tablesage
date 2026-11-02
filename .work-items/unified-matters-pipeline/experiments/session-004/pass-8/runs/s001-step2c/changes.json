@@ -1,0 +1,71 @@
+{
+ "scenes": "s001-step1",
+ "threads": "s001-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived at Brandonsford following a treasure map whose marked locations they did not recognize, in land unknown to them.",
+   "impact_basis": "The single beat establishes the party's arrival and their map-driven goal, framing the campaign's premise without any discovery about the treasure.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The beat sets up an unfound treasure the party is actively pursuing, which should drive later Sessions.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_2",
+   "change": "Reginald warned that a trickster Clurichen comes from the riverbanks into town every night and should be avoided.",
+   "impact_basis": "Reginald's warning introduces a new local danger but nothing happened with it yet.",
+   "narrative_impact": "low",
+   "lasting_basis": "The nightly Clurichen likely ties into the vanishing ale and Sir Phidipaldi's claims, so it is likely to come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_3",
+   "change": "The party learned a black dragon is terrorizing Brandonsford and Eric the Reeve offered 1000 gold for its body, though Sir Phidipaldi insulted and challenged Eric.",
+   "impact_basis": "Eric's 1000-gold bounty, Lady Hilda's offer to join, George's lost arm and Gill's sons hunting the dragon together give the party a major new goal and foe.",
+   "narrative_impact": "high",
+   "lasting_basis": "The standing bounty, the hireable Hilda and the strained relationship with Eric after the glove slap will shape later Sessions.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_4",
+   "change": "The party learned that shipments to Brandonsford have stopped for weeks or months, leaving the town short of goods.",
+   "impact_basis": "Bentley's overdue shipment, Warwick's empty shop and Quinn's report reveal a town-wide supply problem whose cause is unknown.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The unexplained missing shipments are an open mystery likely tied to the dragon and likely to come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned offered himself and his killer wasp for hire at 100 gold a week, and Dr. Uriah said he would think about it.",
+   "impact_basis": "Ned's murderous hire offer introduces a potential, dangerous ally, but no agreement was made.",
+   "narrative_impact": "low",
+   "lasting_basis": "Dr. Uriah left the offer open, so Ned may return as hireling or threat.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_6",
+   "change": "Farmer Gill offered Dunk the mule Shamus for 100 gold, and Dunk is considering trading work for it while staying in Gill's barn.",
+   "impact_basis": "An offer of an ordinary mount was made and not accepted, a small adjustment.",
+   "narrative_impact": "low",
+   "lasting_basis": "The pending mule offer and Dunk's lodging with Gill may come up again but are minor.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "thread_7",
+   "change": "Sir Phidipaldi agreed to Quinn's 100-gold deal to stage a fake ale shipment to catch Bentley, whom Quinn blames for his vanishing stock.",
+   "impact_basis": "Sir Phidipaldi struck a paid agreement with Quinn and planned the water-bottle ruse, clearly changing the situation.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The agreed deal remains to be carried out and pits the party against Bentley, so it will likely shape the next Session.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "beat_24",
+   "change": "Bentley banned Sir Phidipaldi from his tavern for the night, sending him to the Golden Egg while his friends stayed.",
+   "impact_basis": "Bentley's intervention split the party's lodging for one night after the argument with Eric.",
+   "narrative_impact": "low",
+   "lasting_basis": "The ejection lasts only the night, though it may color Bentley's view of Sir Phidipaldi.",
+   "lasting_consequence": "low"
+  }
+ ],
+ "problems": []
+}

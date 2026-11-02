@@ -1,0 +1,20 @@
+step3: 46 facts (42 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 11, 'unknown': 12, 'threat': 4}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.36 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the undead knight in the Barrow Mound, is incapacitated but not destroyed; he may recover and attack anyone who returns to the mound, the party included.
+         Why does Sir Alfred, a seven-foot undead knight with a greatsword and a bronze death mask, roam the Barrow Mound?
+  cross-thread facts sharing 4-word phrases:
+    fact_22 (thread_1) & fact_38 (thread_13): ['to the dwarven mine']
+    fact_28 (thread_2) & fact_36 (thread_12): ['the wizard malzazarik and']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

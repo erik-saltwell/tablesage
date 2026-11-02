@@ -1,0 +1,167 @@
+{
+ "session": "001",
+ "scenes": "s001-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_1"
+   ],
+   "note": "The party is following a map whose marked locations they do not recognize, and the treasure has not been found."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_7",
+    "beat_17",
+    "beat_18"
+   ],
+   "note": "Reginald warned of a trickster creature that comes into town nightly. Sir Phidipaldi's claims about it were shown wrong, but what it is up to remains unknown."
+  },
+  {
+   "id": "thread_3",
+   "name": "The black dragon near Brandonsford",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_9",
+    "beat_13",
+    "beat_15",
+    "beat_16",
+    "beat_17",
+    "beat_18",
+    "beat_26",
+    "beat_27"
+   ],
+   "note": "The dragon, Eric's 1000-gold bounty, George's account and Gill's sons' hunt are all one danger and pursuit, and none of it is settled."
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_10"
+   ],
+   "note": "Lady Hilda offered to join a paid party against the dragon, and Sir Phidipaldi said they would come back for her services after seeing the Reeve (beat_10)."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_11",
+    "beat_20",
+    "beat_21",
+    "beat_22"
+   ],
+   "note": "Ned offered himself and his killer wasp for hire, and Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "thread_6",
+   "name": "The missing shipments to Brandonsford",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_13",
+    "beat_29",
+    "beat_36"
+   ],
+   "note": "Bentley's shipment never arrived and nothing has come into town for months. Why remains unknown, and Wayman asked whether anyone had gone after it."
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_17",
+    "beat_19",
+    "beat_23"
+   ],
+   "note": "Sir Phidipaldi insulted the bounty-giver and challenged him to a duel. Eric declined, but the ill will and Bentley's ruling sending Phidipaldi to the Golden Egg leave relations strained."
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_25",
+    "beat_26",
+    "beat_28"
+   ],
+   "note": "Gill offered the mule for 100 gold, and Dunk asked about trading work for it. Dunk is sleeping on the offer."
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_30"
+   ],
+   "note": "A superb mithril shirt that Warwick refuses to sell is a potential prize for the party."
+  },
+  {
+   "id": "thread_10",
+   "name": "Quinn's vanishing ale",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_34",
+    "beat_35",
+    "beat_36"
+   ],
+   "note": "Quinn's stock disappears nightly and he blames Bentley. Sir Phidipaldi agreed to a 100-gold fake-shipment plan that has not yet been carried out."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_2",
+   "reason": "Brandonsford has no real law enforcement, only a night watch, which is useful background but tied to no thread."
+  },
+  {
+   "beat": "beat_3",
+   "reason": "The party gained entry to town; this was consequential but left nothing open."
+  },
+  {
+   "beat": "beat_12",
+   "reason": "The party learned the lodging terms at the Clumsy Fox."
+  },
+  {
+   "beat": "beat_31",
+   "reason": "Ingrid is where to get potions; this is a local resource not tied to any thread."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_1",
+  "thread_new_2": "thread_2",
+  "thread_new_3": "thread_3",
+  "thread_new_4": "thread_4",
+  "thread_new_5": "thread_5",
+  "thread_new_6": "thread_6",
+  "thread_new_7": "thread_7",
+  "thread_new_8": "thread_8",
+  "thread_new_9": "thread_9",
+  "thread_new_10": "thread_10"
+ },
+ "problems": []
+}

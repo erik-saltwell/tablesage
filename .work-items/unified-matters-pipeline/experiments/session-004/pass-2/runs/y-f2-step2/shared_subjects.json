@@ -1,0 +1,162 @@
+{
+ "scenes": "f2-step1",
+ "shared_subjects": [
+  {
+   "subject": "Sir Brandon's magic sword, effective against evil",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_16",
+    "beat_46",
+    "beat_48"
+   ],
+   "reason": "The party will next use the sword against the dragon, as Sir Brandon did."
+  },
+  {
+   "subject": "Sir Alfred incapacitated but not destroyed in the lower level",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_7",
+    "beat_10",
+    "beat_11"
+   ],
+   "reason": "The undead's state is the subject of thread_4 itself."
+  },
+  {
+   "subject": "The barrow robes, kept until the dragon is defeated",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_23",
+    "beat_40"
+   ],
+   "reason": "The robes are held under Dr. Uriah's promise to the church."
+  },
+  {
+   "subject": "Cedric's promissory note used to hire Malzazarik and Lady Hilda",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_26",
+    "beat_28",
+    "beat_62"
+   ],
+   "reason": "The note and its terms belong to the bargain with Cedric."
+  },
+  {
+   "subject": "The barrow treasure pledged to Cedric",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_26"
+   ],
+   "reason": "The sale of the treasure is the substance of Cedric's bargain."
+  },
+  {
+   "subject": "Shipments and metal stopped since the dragon appeared",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_12",
+    "thread_13"
+   ],
+   "beats": [
+    "beat_24",
+    "beat_25",
+    "beat_27"
+   ],
+   "reason": "Why shipments stopped is the question thread_5 asks."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt, on loan to the party",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_57"
+   ],
+   "reason": "The shirt was received under the Warwick deal and must be returned."
+  },
+  {
+   "subject": "Warwick's night visitors",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_31",
+    "beat_58",
+    "beat_59"
+   ],
+   "reason": "The visitor is Ingrid, which is the subject of thread_8."
+  },
+  {
+   "subject": "The Dwarven mine and its cave-in",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_16",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_61",
+    "beat_67",
+    "beat_68"
+   ],
+   "reason": "The cave-in blocks the metal owed to Warwick most directly."
+  },
+  {
+   "subject": "The map's Dragon's Lair: location and layout",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_77"
+   ],
+   "reason": "The party plans to act at the lair first as part of the dragon hunt."
+  },
+  {
+   "subject": "Bral as the dwarf who lost the map to the party",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_16"
+   ],
+   "beats": [
+    "beat_74",
+    "beat_75"
+   ],
+   "reason": "The map's origin is a question about the map itself."
+  },
+  {
+   "subject": "Dunk's theory that Bral fakes the dragon",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_16",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_78"
+   ],
+   "reason": "The theory bears directly on whether the dragon exists and where it came from."
+  }
+ ]
+}

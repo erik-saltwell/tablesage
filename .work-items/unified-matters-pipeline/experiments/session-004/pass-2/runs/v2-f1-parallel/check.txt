@@ -1,0 +1,34 @@
+step3: 50 facts (46 open) {'want': 3, 'owe': 10, 'blocked_by': 4, 'could_use': 13, 'unknown': 13, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_33']
+  uncertain: ['fact_31', 'fact_37']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.64 fact_31 (thread_2, owe) ~ fact_37 (thread_12, owe)
+         The party owes Malzazarik and Lady Hilda payment for joining, which Sir Phidipaldi proposed to cover with Cedric's promissory note.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note for joining the party.
+    0.53 fact_29 (thread_2, could_use) ~ fact_34 (thread_4, could_use)
+         The party holds Sir Brandon's sword, a magic sword especially effective against evil beings; Vivian says stabbing the dragon's mouth echoes Sir Brandon's tale.
+         Sir Brandon's magic sword is especially effective against evil beings, and Sir Alfred counts as evil.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.45 fact_30 (thread_2, could_use) ~ fact_37 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note for joining the party.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.38 fact_21 (thread_1, could_use) ~ fact_26 (thread_2, could_use)
+         The party's map marks the location of the Dragon's Lair, as Dr. Uriah read from the writing under it.
+         The party's treasure map marks the Dragon's Lair, read by Dr. Uriah's Read Languages; Grimny says the cave is very small, just one big room.
+    0.36 fact_33 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman promised Snurk and the Free Goblin Society, now living in the upper Barrow Mound, that he will never tell King Hogboon where they are.
+         Sir Alfred may kill more Free Goblin Society members, who are staying in the upper Barrow Mound behind a wall across the stairs.
+  cross-thread facts sharing 4-word phrases:
+    fact_22 (thread_1) & fact_26 (thread_2): ["dr uriah's read languages"]
+    fact_29 (thread_2) & fact_34 (thread_4): ['effective against evil beings', 'especially effective against evil']
+    fact_30 (thread_2) & fact_37 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_31 (thread_2) & fact_37 (thread_12): ['and lady hilda payment', 'malzazarik and lady hilda']
+    fact_33 (thread_3) & fact_11 (thread_4): ['in the upper barrow', 'the upper barrow mound']
+    fact_43 (thread_13) & fact_50 (thread_17): ['at the dwarven mine']

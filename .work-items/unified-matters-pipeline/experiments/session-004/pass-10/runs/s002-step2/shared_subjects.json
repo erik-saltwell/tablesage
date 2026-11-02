@@ -1,0 +1,95 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_33",
+    "beat_34",
+    "beat_35"
+   ],
+   "reason": "The ale question is settled, so the Clurichen's captivity and fate belong on the Clurichen thread."
+  },
+  {
+   "subject": "Warwick's glowing magical mithril chain shirt",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_12",
+    "beat_65"
+   ],
+   "reason": "The thread about the shirt itself comes before the dragon hunt it might help."
+  },
+  {
+   "subject": "Warwick's cracked-open second-story bedroom window",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_12",
+    "beat_23"
+   ],
+   "reason": "The Ingrid deal uses the window first, and the child comes before its parent."
+  },
+  {
+   "subject": "Brandon's magic sword needed to kill the dragon",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_42",
+    "beat_53",
+    "beat_67"
+   ],
+   "reason": "The thread about the sword itself comes before the broader hunt."
+  },
+  {
+   "subject": "Location and distance of Brandon's Barrow Mound",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_14",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_42",
+    "beat_46",
+    "beat_68",
+    "beat_69"
+   ],
+   "reason": "The sword quest seeks the Barrow first."
+  },
+  {
+   "subject": "Brother Dirk's intentions after his rescue",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_79",
+    "beat_80",
+    "beat_81"
+   ],
+   "reason": "Whether Dirk continues to the Barrow bears most directly on the sword quest."
+  },
+  {
+   "subject": "Return of Farmer Gill's sons from hunting the dragon",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_67"
+   ],
+   "reason": "Their return is the condition for Gill lowering Shamus's price."
+  }
+ ]
+}

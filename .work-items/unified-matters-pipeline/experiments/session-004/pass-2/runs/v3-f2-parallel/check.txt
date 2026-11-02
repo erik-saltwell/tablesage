@@ -1,0 +1,22 @@
+step3: 40 facts (36 open) {'want': 3, 'owe': 8, 'blocked_by': 3, 'could_use': 10, 'unknown': 9, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_28']
+  uncertain: ['fact_21', 'fact_31']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.64 fact_25 (thread_2, could_use) ~ fact_29 (thread_4, could_use)
+         The party holds Sir Brandon's magic sword, which is especially effective against evil beings.
+         Sir Brandon's magic sword, held by the party, is especially effective against Sir Alfred, who counts as evil.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_20 (thread_1) & fact_27 (thread_2): ['small one room cave', "the map's dragon's lair"]
+    fact_21 (thread_1) & fact_27 (thread_2): ["the map's dragon's lair"]
+    fact_25 (thread_2) & fact_29 (thread_4): ['is especially effective against', "sir brandon's magic sword"]
+    fact_26 (thread_2) & fact_31 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_18 (thread_9) & fact_30 (thread_11): ['dr uriah must give']

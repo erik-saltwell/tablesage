@@ -1,0 +1,154 @@
+{
+  "title": "ThreadFacts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "facts"
+  ],
+  "properties": {
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Fact"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "NullableText": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Text"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Rating": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "Fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "text",
+        "state",
+        "change",
+        "ended_how",
+        "learned_this_session",
+        "definite_end",
+        "possibly_moot",
+        "certainty",
+        "uncertain_reason",
+        "about_thread",
+        "also_bears_on",
+        "importance",
+        "actionability",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^fact_(new_)?[0-9]+$"
+        },
+        "kind": {
+          "enum": [
+            "want",
+            "owe",
+            "blocked_by",
+            "could_use",
+            "unknown",
+            "threat"
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "ended"
+          ]
+        },
+        "change": {
+          "enum": [
+            "carried",
+            "updated",
+            "new",
+            "ended"
+          ]
+        },
+        "ended_how": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "learned_this_session": {
+          "type": "boolean"
+        },
+        "definite_end": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "possibly_moot": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "certainty": {
+          "enum": [
+            "established",
+            "uncertain"
+          ]
+        },
+        "uncertain_reason": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "about_thread": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^thread_[0-9]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "also_bears_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^thread_[0-9]+$"
+          }
+        },
+        "importance": {
+          "$ref": "#/$defs/Rating"
+        },
+        "actionability": {
+          "$ref": "#/$defs/Rating"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(beat_[0-9]+|prior)$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_13",
+    "beat_17",
+    "beat_18",
+    "beat_36"
+   ],
+   "reason": "Quinn's case is resolved, so the captive Clurichen's fate is followed on the Clurichen thread."
+  },
+  {
+   "subject": "Farmer Gill's sons out hunting the dragon",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_2",
+    "beat_45"
+   ],
+   "reason": "The sons are rivals for the bounty, and their return also lowers Shamus's price; the party acts on them first in the hunt."
+  },
+  {
+   "subject": "Warwick's magical mithril chain shirt",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_21",
+    "beat_43"
+   ],
+   "reason": "A thread about the item itself comes before the hunt that might use it."
+  },
+  {
+   "subject": "Warwick's cracked-open bedroom window and shop layout",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_21"
+   ],
+   "reason": "The way into Warwick's house serves getting the shirt first."
+  },
+  {
+   "subject": "Ingrid's sleeping potion made with faun wine",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_32",
+    "beat_33",
+    "beat_75",
+    "beat_76"
+   ],
+   "reason": "The potion is part of Dunk's arrangement with Ingrid, and that child thread is about the very thing."
+  },
+  {
+   "subject": "Ingrid's nightly visits to Warwick's window",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_29"
+   ],
+   "reason": "It answers the question about Warwick's charms and paranoia, so it lives on the question thread."
+  },
+  {
+   "subject": "Brandon's sword as the only way to kill the dragon",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_45",
+    "beat_49",
+    "beat_59",
+    "beat_62"
+   ],
+   "reason": "A thread about the very item comes before the broader hunt."
+  },
+  {
+   "subject": "Location of Brandon's Barrow Mound, marked on Uriah's map",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1",
+    "thread_14"
+   ],
+   "beats": [
+    "beat_50",
+    "beat_55"
+   ],
+   "reason": "The sword quest seeks the Barrow first."
+  },
+  {
+   "subject": "Brother Dirk, rescued and wanting to go home",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_85",
+    "beat_86"
+   ],
+   "reason": "Dirk's purpose is the sword quest, though Trout assigned him to Squints."
+  }
+ ]
+}

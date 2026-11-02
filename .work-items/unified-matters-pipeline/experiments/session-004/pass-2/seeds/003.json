@@ -1,0 +1,28 @@
+{
+  "note": "Hand-built from Session 002's post_session_matters.json open Matters, the same shortcut pass 1 used for Session 004. Present Matters had no danger.",
+  "threads": [
+    {"id": "thread_1", "name": "Treasure map", "parent": null},
+    {"id": "thread_2", "name": "Dragon hunt (Eric the Reeve's bounty)", "parent": null},
+    {"id": "thread_3", "name": "Missing shipments", "parent": null},
+    {"id": "thread_4", "name": "Fairies appearing more often", "parent": null},
+    {"id": "thread_5", "name": "Ingrid and Warwick (Dunk's deal)", "parent": null},
+    {"id": "thread_6", "name": "Dr. Uriah's penance for Father William", "parent": null},
+    {"id": "thread_7", "name": "Squints' share of the treasure", "parent": null}
+  ],
+  "facts": [
+    {"id": "fact_1", "thread": "thread_1", "kind": "want", "text": "Find the treasure marked on the party's map.", "from": "goal_200"},
+    {"id": "fact_2", "thread": "thread_2", "kind": "want", "text": "Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.", "from": "goal_201"},
+    {"id": "fact_3", "thread": "thread_2", "kind": "blocked_by", "text": "George says nothing pierces the black dragon's scales; arrows and swords have all failed against them.", "from": "impediment_53"},
+    {"id": "fact_4", "thread": "thread_2", "kind": "threat", "text": "George says the black dragon will soon fly and doom Brandonsford.", "from": "brewing trouble"},
+    {"id": "fact_5", "thread": "thread_2", "kind": "could_use", "text": "Lady Hilda will join the party against the dragon if they pay her.", "from": "opportunity_101"},
+    {"id": "fact_6", "thread": "thread_2", "kind": "could_use", "text": "Father William says the dragon can only be killed with the magic sword buried with Sir Brandon in the Barrow Mound.", "from": "opportunity_104"},
+    {"id": "fact_7", "thread": "thread_2", "kind": "could_use", "text": "Warwick keeps a magical mithril chain shirt; Dunk says it could help against the dragon.", "from": "opportunity_105"},
+    {"id": "fact_8", "thread": "thread_2", "kind": "unknown", "text": "Where did the new dragon near Brandonsford come from?", "from": "mystery"},
+    {"id": "fact_9", "thread": "thread_3", "kind": "unknown", "text": "Why have shipments stopped reaching Brandonsford?", "from": "mystery"},
+    {"id": "fact_10", "thread": "thread_4", "kind": "unknown", "text": "Why are hidden fairies coming out more often along with the dragon?", "from": "mystery"},
+    {"id": "fact_11", "thread": "thread_5", "kind": "owe", "text": "Dunk must help Ingrid get into Warwick's house and give Warwick the sleeping potion.", "from": "obligation"},
+    {"id": "fact_12", "thread": "thread_6", "kind": "owe", "text": "Dr. Uriah must do penance at the Barrow Mound for Father William.", "from": "obligation"},
+    {"id": "fact_13", "thread": "thread_6", "kind": "owe", "text": "Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.", "from": "obligation"},
+    {"id": "fact_14", "thread": "thread_7", "kind": "owe", "text": "The party must let Squints pick second from the first treasure, after the elite members.", "from": "obligation"}
+  ]
+}

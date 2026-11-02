@@ -1,0 +1,28 @@
+step3: 45 facts (41 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 10, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_34']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.45 fact_28 (thread_2, could_use) ~ fact_34 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note for joining the party.
+    0.44 fact_30 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman promised Snurk of the Free Goblin Society never to tell King Hogboon where the goblins are (the upper Barrow Mound).
+         Sir Alfred may kill more Free Goblin Society members, who are staying on in the upper Barrow Mound, if he recovers.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_1 (thread_1) & fact_35 (thread_13): ['from the dwarven mine']
+    fact_1 (thread_1) & fact_38 (thread_13): ['the dwarven mine which']
+    fact_1 (thread_1) & fact_42 (thread_16): ['in a gambling bet']
+    fact_21 (thread_1) & fact_23 (thread_2): ["dr uriah's read languages"]
+    fact_21 (thread_1) & fact_38 (thread_13): ['on the treasure map']
+    fact_28 (thread_2) & fact_31 (thread_5): ['the party for the']
+    fact_28 (thread_2) & fact_34 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_30 (thread_3) & fact_11 (thread_4): ['the upper barrow mound']
+    fact_18 (thread_9) & fact_32 (thread_11): ['dr uriah must give']

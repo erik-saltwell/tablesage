@@ -1,0 +1,15 @@
+step3: 26 facts (26 open) {'want': 3, 'owe': 1, 'blocked_by': 2, 'could_use': 10, 'unknown': 7, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_4', 'fact_19']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.53 fact_4 (thread_3, want) ~ fact_8 (thread_3, threat)
+         Kill the black dragon near Brandonsford.
+         A black dragon lurks near Brandonsford. It tore off the woodsman George's arm and may harm others.
+    0.40 fact_4 (thread_3, want) ~ fact_10 (thread_3, unknown)
+         Kill the black dragon near Brandonsford.
+         Where is the dragon to be found outside Brandonsford?
+  cross-thread facts sharing 4-word phrases:
+    fact_12 (thread_4) & fact_17 (thread_7): ['at the clumsy fox']
+    fact_16 (thread_6) & fact_25 (thread_10): ['at the golden egg']

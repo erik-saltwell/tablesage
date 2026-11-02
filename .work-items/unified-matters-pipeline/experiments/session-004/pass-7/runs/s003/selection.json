@@ -1,0 +1,560 @@
+{
+ "version": 8,
+ "rules": {
+  "last_session": "PROVISIONAL: touched threads and standalone beats with narrative_impact and lasting_consequence both medium or high; story order; no cap",
+  "want": "serves_thread is null (an end, not a means) and significance is not incidental (Goals: parent_goal_id null, significance not incidental)",
+  "owe": "definite_end; commitment_type is not general_agreement; stake, burden and consequence are not trivial (Obligations filter)",
+  "blocked_by": "active, persists beyond the scene, not covered by immediate danger, and blocks a thread holding a shown want, debt or opening",
+  "could_use": "helps_thread names a thread whose want or debt is shown, directly or through a parent thread (Opportunities and New Assets need a goal link); role is direct (Opportunities: parent_opportunity_id null); an opening needs action_supported yes; a pointer is hidden only when a selected home fact has the same resource_subject, form, helped thread, full text and uncertainty; an asset with low or trivial goal_support is shown only if acquired by acting on an opening (New Assets filter)",
+  "unknown": "question_type open_ended and all four dimensions medium or high (Mysteries filter)",
+  "threat": "harm_origin is not party and no evaluation is low (Brewing Troubles filter); not covered by an immediate danger",
+  "all": "never possibly moot facts; no caps"
+ },
+ "last_session": [
+  {
+   "id": "thread_5",
+   "kind": "thread",
+   "first": 0
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 1
+  },
+  {
+   "id": "thread_13",
+   "kind": "thread",
+   "first": 2
+  },
+  {
+   "id": "thread_17",
+   "kind": "thread",
+   "first": 7
+  },
+  {
+   "id": "thread_18",
+   "kind": "thread",
+   "first": 11
+  },
+  {
+   "id": "thread_19",
+   "kind": "thread",
+   "first": 25
+  },
+  {
+   "id": "thread_20",
+   "kind": "thread",
+   "first": 29
+  }
+ ],
+ "last_session_candidates": [
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned was formally hired on a kickback deal and offered to buy the goblin bodies.",
+   "impact_basis": "Beats establish Ned's hiring for 100 gold with 10 gold back per murder and the body his, plus an offer for goblin corpses that conflicts with the goblins.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Ned is now a companion with an ongoing grisly arrangement likely to recur.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 0,
+   "beats": 3,
+   "shown": true
+  },
+  {
+   "id": "thread_3",
+   "change": "Sir Phidipaldi obtained Sir Brandon's magical dragon-slaying sword and set out a step-by-step plan for hunting the dragon.",
+   "impact_basis": "Beats show Phidipaldi taking the non-cursed magical sword that killed the dragon in legend and laying out the full hunt plan, a major advance toward the main goal.",
+   "narrative_impact": "high",
+   "lasting_basis": "The sword is the party's key weapon against the dragon and proof for the reeve, so it will shape later Sessions.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 1,
+   "beats": 6,
+   "shown": true
+  },
+  {
+   "id": "thread_4",
+   "change": "The party planned to pay Lady Hilda with an advance squeezed from the reeve.",
+   "impact_basis": "Only the plan beat touches Hilda, adding a funding source to an already pending hiring.",
+   "narrative_impact": "low",
+   "lasting_basis": "The payment plan will likely come up when the party returns to town.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 1,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_9",
+   "change": "Getting the mithril shirt through Dunk's scheme was set as the next step of the plan, but nothing else changed.",
+   "impact_basis": "Only the plan beat mentions the shirt, repeating an existing intention.",
+   "narrative_impact": "low",
+   "lasting_basis": "The shirt remains a pending goal for later Sessions.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 1,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_12",
+   "change": "Nothing lasting changed; Dunk's potion scheme was simply restated in the plan.",
+   "impact_basis": "Only the plan beat refers to the scheme, repeating it.",
+   "narrative_impact": "none",
+   "lasting_basis": "The debt to Ingrid stands unchanged.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 1,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_13",
+   "change": "The party found Sir Brandon's sword in his sarcophagus and Sir Phidipaldi took it, completing the retrieval.",
+   "impact_basis": "Beats show the party entering the tomb, opening the sarcophagus and taking the magical sword, resolving the thread.",
+   "narrative_impact": "high",
+   "lasting_basis": "Possessing the sword closes this quest and enables the dragon hunt.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 2,
+   "beats": 7,
+   "shown": true
+  },
+  {
+   "id": "thread_17",
+   "change": "The party learned an angry undead giant with a greatsword, likely Brandon's companion Alfred, roams the mound, and it appeared in the tomb doorway.",
+   "impact_basis": "Goblin and slime reports, the slaughtered goblins, and the seven-foot skeleton's arrival reveal a major new foe now confronting the party.",
+   "narrative_impact": "high",
+   "lasting_basis": "The confrontation is imminent and will carry into the next Session.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 7,
+   "beats": 6,
+   "shown": true
+  },
+  {
+   "id": "beat_9",
+   "change": "The party noted that the antechamber mosaics are inlaid with real gemstones.",
+   "impact_basis": "The beat adds descriptive detail of possible treasure without changing the situation.",
+   "narrative_impact": "low",
+   "lasting_basis": "The gemstones might tempt the party later but nothing was decided.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 8,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_18",
+   "change": "Sir Phidipaldi, posing as Brandon's son, struck a bargain with the Free Goblin Society to clear the mound and hide them from King Hogboon in exchange for their company and Brandon's goods.",
+   "impact_basis": "Beats show the goblins agreeing to the deal and granting the party their finds, a new alliance with obligations.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The unfinished promise to clear the mound and keep them secret from Hogboon will shape later play.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 11,
+   "beats": 8,
+   "shown": true
+  },
+  {
+   "id": "beat_17",
+   "change": "Dr. Uriah found a jeweled ceremonial dagger worth over 200 gold.",
+   "impact_basis": "The beat is a treasure find with no other effect.",
+   "narrative_impact": "low",
+   "lasting_basis": "Ordinary valuable treasure mattered mostly within the Session.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 16,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_11",
+   "change": "Squints proved himself by killing the gray ooze and began acting as Trout's apprentice.",
+   "impact_basis": "Beats show Squints's kill, Trout's praise, and Squints directing Dirk, a small development of the relationship.",
+   "narrative_impact": "low",
+   "lasting_basis": "Squints's growing role may matter in later Sessions but mostly colored this one.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 18,
+   "beats": 3,
+   "shown": false
+  },
+  {
+   "id": "beat_23",
+   "change": "Dr. Uriah discovered a secret room in the crypt holding a dark-wood chest and golden candleholders.",
+   "impact_basis": "The beat reveals a hidden room and an unopened chest, a minor discovery.",
+   "narrative_impact": "low",
+   "lasting_basis": "The chest's contents may matter but the room mostly mattered this Session.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 22,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "beat_24",
+   "change": "The party took seven gold candleholders worth 50 gold each.",
+   "impact_basis": "The beat is ordinary treasure gained.",
+   "narrative_impact": "low",
+   "lasting_basis": "Ordinary treasure has little lasting effect.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 23,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_19",
+   "change": "Dr. Uriah donned the robes of Saint Arthur and Trout took the 600-gold chalice over Brother Dirk's objections, straining relations with the church's representative.",
+   "impact_basis": "Beats show Dirk deeply offended by Uriah wearing the holy robes and the chalice's ownership left unresolved.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The untested robes and the disputed chalice are likely to resurface with Dirk and the church.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 25,
+   "beats": 5,
+   "shown": true
+  },
+  {
+   "id": "thread_20",
+   "change": "The party answered a mysterious female voice's riddle and opened the stone doors behind an unidentified noblewoman statue.",
+   "impact_basis": "Beats show the hidden room, the unknown statue and the riddle opening the doors, a notable discovery with an open mystery.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The voice and statue's identity remain unexplained and may come up again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 29,
+   "beats": 4,
+   "shown": true
+  },
+  {
+   "id": "beat_51",
+   "change": "Sir Phidipaldi found the five urns held only dust but are worth 100 gold each.",
+   "impact_basis": "The beat is an ordinary treasure appraisal.",
+   "narrative_impact": "low",
+   "lasting_basis": "Ordinary treasure has little lasting effect.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 50,
+   "beats": 1,
+   "shown": false
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_6",
+    "fact_1",
+    "fact_19",
+    "fact_17"
+   ]
+  },
+  {
+   "heading": "Standing in your way",
+   "kind": "blocked_by",
+   "facts": [
+    "fact_31",
+    "fact_37",
+    "fact_22"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_58",
+    "fact_30",
+    "fact_42",
+    "fact_2",
+    "fact_26",
+    "fact_8",
+    "fact_33",
+    "fact_13",
+    "fact_38"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_74",
+    "fact_10",
+    "fact_16",
+    "fact_56",
+    "fact_75"
+   ]
+  },
+  {
+   "heading": "Promises and debts",
+   "kind": "owe",
+   "facts": [
+    "fact_68",
+    "fact_44",
+    "fact_41",
+    "fact_36"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_11",
+    "fact_34",
+    "fact_57"
+   ]
+  }
+ ],
+ "decisions": {
+  "fact_1": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_6": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_36": {
+   "shown": true,
+   "reason": "personal_promise; stake low, burden minor, consequence minor"
+  },
+  "fact_14": {
+   "shown": false,
+   "reason": "commitment_type general_agreement"
+  },
+  "fact_17": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_19": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_21": {
+   "shown": false,
+   "reason": "means, not an end: serves thread_3 (The dragon and the Reeve's bounty)"
+  },
+  "fact_41": {
+   "shown": true,
+   "reason": "bargain; stake medium, burden minor, consequence minor"
+  },
+  "fact_44": {
+   "shown": true,
+   "reason": "bargain; stake medium, burden minor, consequence minor"
+  },
+  "fact_55": {
+   "shown": false,
+   "reason": "burden trivial"
+  },
+  "fact_68": {
+   "shown": true,
+   "reason": "bargain; stake high, burden major, consequence major"
+  },
+  "fact_69": {
+   "shown": false,
+   "reason": "no definite end"
+  },
+  "fact_2": {
+   "shown": true,
+   "reason": "asset; helps thread_1; support high"
+  },
+  "fact_3": {
+   "shown": false,
+   "reason": "investigative_depth low; narrative_payoff low"
+  },
+  "fact_26": {
+   "shown": true,
+   "reason": "opening; helps thread_1; support medium"
+  },
+  "fact_27": {
+   "shown": false,
+   "reason": "grounding low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_28": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_29": {
+   "shown": false,
+   "reason": "investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_8": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support low"
+  },
+  "fact_10": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_11": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity high, outcome_severity high, evidentiary_strength high, evidence_of_progression medium, preventability high"
+  },
+  "fact_12": {
+   "shown": false,
+   "reason": "evidentiary_strength low; evidence_of_progression low"
+  },
+  "fact_30": {
+   "shown": true,
+   "reason": "asset; helps thread_3; support medium"
+  },
+  "fact_33": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support low"
+  },
+  "fact_34": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity medium, outcome_severity high, evidentiary_strength medium, evidence_of_progression medium, preventability high"
+  },
+  "fact_35": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_58": {
+   "shown": true,
+   "reason": "asset; helps thread_3; support high"
+  },
+  "fact_59": {
+   "shown": false,
+   "reason": "asset with low goal support, not from an opening"
+  },
+  "fact_60": {
+   "shown": false,
+   "reason": "no supported action and concrete advantage (It is the party's plan, but no witch or alchemist has been shown to have or offer poison protection.)"
+  },
+  "fact_13": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_61": {
+   "shown": false,
+   "reason": "a step toward another opening"
+  },
+  "fact_62": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_63": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_64": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_16": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_18": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth trivial; narrative_payoff low; investigative_potential trivial"
+  },
+  "fact_20": {
+   "shown": false,
+   "reason": "no supported action and concrete advantage (Gill only named the dragon as the big work needed; he did not agree to trade the mule for it.)"
+  },
+  "fact_38": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_39": {
+   "shown": false,
+   "reason": "helps thread_9 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_40": {
+   "shown": false,
+   "reason": "investigative_depth trivial; narrative_payoff low; investigative_potential low"
+  },
+  "fact_42": {
+   "shown": true,
+   "reason": "asset; helps thread_3; support low"
+  },
+  "fact_43": {
+   "shown": false,
+   "reason": "harm_origin party"
+  },
+  "fact_45": {
+   "shown": false,
+   "reason": "helps thread_9 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_46": {
+   "shown": false,
+   "reason": "helps thread_9 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_47": {
+   "shown": false,
+   "reason": "helps thread_9 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_48": {
+   "shown": false,
+   "reason": "helps thread_9 (Warwick's mithril chain shirt), which has no shown goal or debt"
+  },
+  "fact_49": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_50": {
+   "shown": false,
+   "reason": "closed_ended"
+  },
+  "fact_56": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_57": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity high, outcome_severity high, evidentiary_strength high, evidence_of_progression medium, preventability medium"
+  },
+  "fact_66": {
+   "shown": false,
+   "reason": "covered by an immediate danger"
+  },
+  "fact_67": {
+   "shown": false,
+   "reason": "investigative_potential low"
+  },
+  "fact_71": {
+   "shown": false,
+   "reason": "grounding low; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_72": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth trivial; narrative_payoff low; investigative_potential low"
+  },
+  "fact_73": {
+   "shown": false,
+   "reason": "closed_ended; investigative_depth low; narrative_payoff low; investigative_potential low"
+  },
+  "fact_74": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_75": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_31": {
+   "shown": true,
+   "reason": "active beyond scene; blocks thread_3"
+  },
+  "fact_65": {
+   "shown": false,
+   "reason": "blocks no shown live want, debt or opening"
+  },
+  "fact_37": {
+   "shown": true,
+   "reason": "active beyond scene; blocks thread_8"
+  },
+  "fact_22": {
+   "shown": true,
+   "reason": "active beyond scene; blocks thread_9"
+  },
+  "fact_70": {
+   "shown": false,
+   "reason": "covered by an immediate danger"
+  }
+ }
+}

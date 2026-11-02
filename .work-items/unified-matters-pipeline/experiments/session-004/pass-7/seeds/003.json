@@ -1,0 +1,384 @@
+{
+ "note": "Chained from pass 7's s002 (s002-step2, s002-step3).",
+ "fact_high_water": 57,
+ "thread_high_water": 16,
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and the Reeve's bounty",
+   "parent": null
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3"
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipments",
+   "parent": null
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null
+  },
+  {
+   "id": "thread_11",
+   "name": "Squints and Trout's Halfling Corps",
+   "parent": null
+  },
+  {
+   "id": "thread_12",
+   "name": "Ingrid's sleeping potion for Warwick",
+   "parent": "thread_9"
+  },
+  {
+   "id": "thread_13",
+   "name": "Sir Brandon's magic sword at the Barrow Mound",
+   "parent": "thread_3"
+  },
+  {
+   "id": "thread_14",
+   "name": "Dr. Uriah's penance and donation at the Barrow Mound",
+   "parent": null
+  },
+  {
+   "id": "thread_15",
+   "name": "Why the hidden fairies are coming out",
+   "parent": null
+  },
+  {
+   "id": "thread_16",
+   "name": "The giant in the cyclopean cottage",
+   "parent": null
+  }
+ ],
+ "facts": [
+  {
+   "id": "fact_1",
+   "thread": "thread_1",
+   "kind": "want",
+   "text": "Find the treasure marked on the party's treasure map."
+  },
+  {
+   "id": "fact_2",
+   "thread": "thread_1",
+   "kind": "could_use",
+   "text": "The party holds a treasure map marking several locations they do not recognize, near Brandonsford."
+  },
+  {
+   "id": "fact_3",
+   "thread": "thread_1",
+   "kind": "unknown",
+   "text": "Where is the treasure the map marks?"
+  },
+  {
+   "id": "fact_26",
+   "thread": "thread_1",
+   "kind": "could_use",
+   "text": "The party plans to check one of the map's marked locations on its way north through the forest."
+  },
+  {
+   "id": "fact_27",
+   "thread": "thread_1",
+   "kind": "unknown",
+   "text": "Where did the party's treasure map come from?"
+  },
+  {
+   "id": "fact_28",
+   "thread": "thread_2",
+   "kind": "could_use",
+   "text": "Naggeneen, held in a bag behind Quinn's bar at the Golden Egg, offers his pot of gold or a secret to whoever lets him go."
+  },
+  {
+   "id": "fact_29",
+   "thread": "thread_2",
+   "kind": "unknown",
+   "text": "What does Quinn intend to do with the captive Naggeneen?"
+  },
+  {
+   "id": "fact_6",
+   "thread": "thread_3",
+   "kind": "want",
+   "text": "Kill the black dragon troubling Brandonsford and drag its body into town to collect Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_8",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "Lady Hilda would join the party against the dragon for pay (see her offer's thread)."
+  },
+  {
+   "id": "fact_10",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Where has this new dragon come from, centuries after Sir Brandon killed the first?"
+  },
+  {
+   "id": "fact_11",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "The black dragon, which tore off George the woodsman's arm, is still at large around Brandonsford and may maim others."
+  },
+  {
+   "id": "fact_12",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "Farmer Gill's three sons are hunting the dragon now and could kill it before the party, taking the Reeve's bounty."
+  },
+  {
+   "id": "fact_30",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "George says the dragon's lair is up north at the foot of the mountains, with no climbing needed."
+  },
+  {
+   "id": "fact_31",
+   "thread": "thread_3",
+   "kind": "blocked_by",
+   "text": "Nothing pierces the dragon's black scales: George says his friends' arrows and swords all failed, and Father William says it can't be killed without the magic sword buried with Sir Brandon. Its jaws drip poison whose bite kills, and it spits sulfur."
+  },
+  {
+   "id": "fact_32",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "The magic sword buried with Sir Brandon at the Barrow Mound is said to be the only way to kill the dragon (see its thread)."
+  },
+  {
+   "id": "fact_33",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread)."
+  },
+  {
+   "id": "fact_34",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "George says the dragon can't fly yet but soon will, and then they are doomed."
+  },
+  {
+   "id": "fact_35",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Does Eric the Reeve actually have the 1000 gold he promised for the dragon?"
+  },
+  {
+   "id": "fact_36",
+   "thread": "thread_3",
+   "kind": "owe",
+   "text": "Sir Phidipaldi vowed to George to bring his lance against the dragon, which George allows may be one of the few weapons not yet tried."
+  },
+  {
+   "id": "fact_13",
+   "thread": "thread_4",
+   "kind": "could_use",
+   "text": "Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party against the dragon for pay."
+  },
+  {
+   "id": "fact_14",
+   "thread": "thread_4",
+   "kind": "owe",
+   "text": "Sir Phidipaldi told Lady Hilda the party would talk to the Reeve and then come back to take up her services."
+  },
+  {
+   "id": "fact_15",
+   "thread": "thread_5",
+   "kind": "could_use",
+   "text": "Drop Dead Ned, a thief with a killer wasp in a jar, offers himself and the wasp for hire at 100 gold a week, doing anything as long as he gets to kill people; Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "fact_16",
+   "thread": "thread_6",
+   "kind": "unknown",
+   "text": "Why has nothing come into Brandonsford in months, including Bentley's restock shipment that was due a week ago?"
+  },
+  {
+   "id": "fact_17",
+   "thread": "thread_7",
+   "kind": "want",
+   "text": "Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn."
+  },
+  {
+   "id": "fact_18",
+   "thread": "thread_7",
+   "kind": "unknown",
+   "text": "Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?"
+  },
+  {
+   "id": "fact_19",
+   "thread": "thread_8",
+   "kind": "want",
+   "text": "Get Farmer Gill's mule Shamus; Gill asked 100 gold but says he is willing to go lower."
+  },
+  {
+   "id": "fact_20",
+   "thread": "thread_8",
+   "kind": "could_use",
+   "text": "When Dunk asked to trade work for Shamus, Farmer Gill said the big work needed is killing the dragon; he did not say outright he would give the mule for it."
+  },
+  {
+   "id": "fact_37",
+   "thread": "thread_8",
+   "kind": "blocked_by",
+   "text": "Farmer Gill can get no work done without his boys or a mule, so he won't drop his price for Shamus until his boys come back."
+  },
+  {
+   "id": "fact_21",
+   "thread": "thread_9",
+   "kind": "want",
+   "text": "Acquire the mithril chain shirt Warwick the smith displays in his shop."
+  },
+  {
+   "id": "fact_22",
+   "thread": "thread_9",
+   "kind": "blocked_by",
+   "text": "Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays."
+  },
+  {
+   "id": "fact_38",
+   "thread": "thread_9",
+   "kind": "could_use",
+   "text": "Dunk says Warwick's mithril chain shirt is magical armor that could help against the dragon, once the party has it."
+  },
+  {
+   "id": "fact_39",
+   "thread": "thread_9",
+   "kind": "could_use",
+   "text": "Dunk's plan to help Ingrid get her sleeping potion to Warwick could let him into Warwick's house to take the shirt."
+  },
+  {
+   "id": "fact_40",
+   "thread": "thread_9",
+   "kind": "unknown",
+   "text": "What magic does Warwick's mithril chain shirt hold?"
+  },
+  {
+   "id": "fact_41",
+   "thread": "thread_11",
+   "kind": "owe",
+   "text": "Under Trout's recruitment terms, once the Halfling Corps finds its first treasure Squints gets to pick from it after the elite members; until then Squints funds himself and his gear and takes orders from Trout."
+  },
+  {
+   "id": "fact_42",
+   "thread": "thread_11",
+   "kind": "could_use",
+   "text": "Squints, a halfling more experienced at fighting than Trout and armed with a sling and dagger, has joined the party as Trout's junior assistant and takes orders directly from Trout."
+  },
+  {
+   "id": "fact_43",
+   "thread": "thread_11",
+   "kind": "threat",
+   "text": "Trout, with Phidipaldi's agreement, secretly intends not to rescue Squints if he is caught while sent into danger, despite promising him intervention."
+  },
+  {
+   "id": "fact_44",
+   "thread": "thread_12",
+   "kind": "owe",
+   "text": "Dunk owes Ingrid help getting into Warwick's house and giving Warwick her sleeping potion, so she can watch him sleep without fear of waking him, in exchange for her making the potion."
+  },
+  {
+   "id": "fact_45",
+   "thread": "thread_12",
+   "kind": "could_use",
+   "text": "Ingrid is making a sleeping potion from the faun wine Dunk gave her; Dunk can collect it when they meet tonight and use it to put Warwick to sleep."
+  },
+  {
+   "id": "fact_46",
+   "thread": "thread_12",
+   "kind": "could_use",
+   "text": "Warwick sleeps in a second-story bedroom above his shop whose window is left cracked open; Ingrid climbs up to it every night."
+  },
+  {
+   "id": "fact_47",
+   "thread": "thread_12",
+   "kind": "could_use",
+   "text": "Dunk knows Ingrid secretly watches Warwick sleep every night, which she dreads him learning, and he has hinted he might not keep it secret."
+  },
+  {
+   "id": "fact_48",
+   "thread": "thread_12",
+   "kind": "could_use",
+   "text": "The fauns of the Faun Grove trade their faun wine for sentimental items such as a love letter or a pixie's treasure."
+  },
+  {
+   "id": "fact_49",
+   "thread": "thread_12",
+   "kind": "unknown",
+   "text": "Will a potion made from Dunk's heavily diluted faun wine still put Warwick to sleep?"
+  },
+  {
+   "id": "fact_50",
+   "thread": "thread_12",
+   "kind": "unknown",
+   "text": "Does Ingrid really make her potions herself, as she claims, or can't she, as Father William says?"
+  },
+  {
+   "id": "fact_51",
+   "thread": "thread_13",
+   "kind": "could_use",
+   "text": "Father William says the dragon can't be killed without the magic sword buried with Sir Brandon in his Barrow Mound; the party could go to the Barrow and retrieve it."
+  },
+  {
+   "id": "fact_52",
+   "thread": "thread_13",
+   "kind": "could_use",
+   "text": "Father William marked the Barrow Mound's location on Dr. Uriah's map; he says it is about a day's walk away, while the party also heard it is roughly a three-mile walk through the forest."
+  },
+  {
+   "id": "fact_53",
+   "thread": "thread_13",
+   "kind": "unknown",
+   "text": "Will Brother Dirk continue to the Barrow with the party, or go home?"
+  },
+  {
+   "id": "fact_54",
+   "thread": "thread_13",
+   "kind": "unknown",
+   "text": "Is Sir Brandon's magic sword really buried in his Barrow Mound?"
+  },
+  {
+   "id": "fact_55",
+   "thread": "thread_14",
+   "kind": "owe",
+   "text": "Dr. Uriah owes Father William penance at the Barrow Mound and a 10 gold donation for the Mound's upkeep."
+  },
+  {
+   "id": "fact_56",
+   "thread": "thread_15",
+   "kind": "unknown",
+   "text": "Why are fairies that used to stay hidden now encroaching and coming out more often, as Ingrid reports?"
+  },
+  {
+   "id": "fact_57",
+   "thread": "thread_16",
+   "kind": "threat",
+   "text": "A slow-moving giant living in an oversized cottage of cyclopean rocks in the woods north of Brandonsford captures people to eat; Brother Dirk says the giant meant to cook him in a stew. The giant is now awake and chased the party until he tired."
+  }
+ ]
+}

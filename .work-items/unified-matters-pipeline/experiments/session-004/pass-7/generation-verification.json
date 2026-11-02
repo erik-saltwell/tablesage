@@ -1,0 +1,59 @@
+{
+  "sessions": [
+    {
+      "session": "001",
+      "scenes": 5,
+      "beats": 37,
+      "threads": 10,
+      "facts": 25,
+      "historical_shown": 7,
+      "open_shown": 15,
+      "recap_bullets": 8,
+      "over_word_limit": [],
+      "summary_words": 440,
+      "recap_words": 293
+    },
+    {
+      "session": "002",
+      "scenes": 13,
+      "beats": 87,
+      "threads": 16,
+      "facts": 57,
+      "historical_shown": 7,
+      "open_shown": 32,
+      "recap_bullets": 15,
+      "over_word_limit": [],
+      "summary_words": 758,
+      "recap_words": 460
+    },
+    {
+      "session": "003",
+      "scenes": 11,
+      "beats": 55,
+      "threads": 19,
+      "facts": 68,
+      "historical_shown": 7,
+      "open_shown": 28,
+      "recap_bullets": 17,
+      "over_word_limit": [],
+      "summary_words": 685,
+      "recap_words": 510
+    },
+    {
+      "session": "004",
+      "scenes": 10,
+      "beats": 78,
+      "threads": 22,
+      "facts": 85,
+      "historical_shown": 11,
+      "open_shown": 39,
+      "recap_bullets": 19,
+      "over_word_limit": [],
+      "summary_words": 987,
+      "recap_words": 581
+    }
+  ],
+  "review_markdown_files": 26,
+  "link_errors": [],
+  "limits": "Structural verification; no LLM faithfulness audit or user quality approval."
+}

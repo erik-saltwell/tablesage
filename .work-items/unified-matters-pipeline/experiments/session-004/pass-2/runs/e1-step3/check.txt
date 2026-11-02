@@ -1,0 +1,24 @@
+step3: 44 facts (41 open) {'want': 3, 'owe': 9, 'blocked_by': 2, 'could_use': 10, 'unknown': 14, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_32', 'fact_33']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.78 fact_6 (thread_2, could_use) ~ fact_36 (thread_13, could_use)
+         Wayman Tisdale wears Warwick's magical mithril chain shirt, on loan against the party's plate armor; it greatly improves his protection and halves damage from magic weapons and spells.
+         Wayman Tisdale wears Warwick's mithril shirt over his leather armor, on loan. It greatly improves his protection and halves damage from magic weapons and spells.
+    0.69 fact_23 (thread_1, unknown) ~ fact_28 (thread_2, unknown)
+         Is there really a dragon, or is Bral faking one to keep everybody away from the hidden hoard, as Dunk suspects?
+         Is there really a dragon, or is Bral faking one to keep everyone away from the cave where Grimny thinks he hid the treasure, as Dunk suspects?
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.40 fact_38 (thread_14, want) ~ fact_39 (thread_14, unknown)
+         Obtain protection from the dragon's poison, such as an anti-poison remedy, before facing the dragon.
+         Ingrid says protection from the dragon's poison is powerful magic beyond her, and Vivian privately admits she cannot make a poison remedy. Who, if anyone, can provide it?
+    0.39 fact_27 (thread_2, could_use) ~ fact_33 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party, recruited against Cedric's promissory note.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note, which recruited them; the exact shares are not stated and the note pays only once the caravans flow again.

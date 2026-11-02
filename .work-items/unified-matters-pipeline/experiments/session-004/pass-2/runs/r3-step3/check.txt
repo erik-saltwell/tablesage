@@ -1,0 +1,18 @@
+step3: 39 facts (35 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 5, 'unknown': 11, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.38 fact_29 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman Tisdale promised Snurk the Walkout never to tell King Hogboon where the Free Goblin Society goblins are living in the upper Barrow Mound.
+         If Sir Alfred recovers, he may kill more Free Goblin Society members, who are now settling the upper Barrow Mound and walling off the stairs.
+    0.37 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the undead knight left incapacitated but not destroyed in the Barrow Mound, may recover and attack the party if they return.
+         Why does Sir Alfred, a seven-foot undead knight whom Brother Dirk regards as holy, roam the Barrow Mound?

@@ -1,0 +1,6 @@
+step1: 5 scenes, 40 beats {'event': 25, 'learned': 15}, ledger coverage 93/104, out-of-range refs none
+  scene_1 Brandonsford's town gate (5 beats) cue: "We claim the sacred law of Zeus for hospitality" - Sir Phidipaldi
+  scene_2 The river (2 beats) cue: Reginald the frog's warning about the Clurichen
+  scene_3 The Clumsy Fox Tavern (17 beats) cue: Drop Dead Ned's killer wasp buzzing in a necklace jar
+  scene_4 Farmer Gill's farm (11 beats) cue: Shamus, the shabby "prize mule" for 100 gold
+  scene_5 The Golden Egg Tavern (5 beats) cue: Quinn's watered-down ale at three times the price

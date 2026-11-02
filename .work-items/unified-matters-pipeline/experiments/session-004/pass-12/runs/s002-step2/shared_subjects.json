@@ -1,0 +1,107 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen captive in a bag behind Quinn's bar and his offer for release",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_8"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_24",
+    "beat_26"
+   ],
+   "reason": "The Clurichen thread is about Naggeneen himself, while Quinn's job is finished."
+  },
+  {
+   "subject": "Farmer Gill's sons out hunting the dragon",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_49"
+   ],
+   "reason": "Their fate is already an open question on the dragon thread, and the mule price waits on their return."
+  },
+  {
+   "subject": "The party's map carried by Dr. Uriah, now marking the witch's home and the Barrow",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_4",
+    "beat_60"
+   ],
+   "reason": "The map thread is about the map itself."
+  },
+  {
+   "subject": "Location and distance of Brandon's Barrow Mound",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_1",
+    "thread_13"
+   ],
+   "beats": [
+    "beat_50",
+    "beat_55",
+    "beat_60"
+   ],
+   "reason": "The sword trip is where the party would use the Barrow's location first."
+  },
+  {
+   "subject": "Legend that only Brandon's magic sword can kill the dragon",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_54",
+    "beat_66"
+   ],
+   "reason": "The thread about the sword comes before the broader hunt."
+  },
+  {
+   "subject": "Brother Dirk's intentions after his rescue",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2",
+    "thread_9"
+   ],
+   "beats": [
+    "beat_88",
+    "beat_89",
+    "beat_90"
+   ],
+   "reason": "Dirk was on the sword errand, and whether he continues it bears first on that trip."
+  },
+  {
+   "subject": "Warwick's magical mithril chain shirt",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_13",
+    "beat_46"
+   ],
+   "reason": "The thread about the shirt itself comes before the dragon hunt it might aid."
+  },
+  {
+   "subject": "The sleeping potion Ingrid is brewing",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_35",
+    "beat_46",
+    "beat_79"
+   ],
+   "reason": "The potion is the subject of Dunk's bargain with Ingrid, though it serves his plan for the shirt."
+  }
+ ]
+}

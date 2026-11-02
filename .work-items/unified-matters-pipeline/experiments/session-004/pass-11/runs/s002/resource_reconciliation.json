@@ -1,0 +1,49 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_11",
+   "members": [
+    "fact_11",
+    "fact_7"
+   ],
+   "basis": "Both record Lady Hilda's own offer to join the party's dragon hunt for pay. They share the same trigger (hiring Hilda) and the same benefit (a seasoned armoured fighter) toward thread_3. Both are established openings from the prior Session.",
+   "text": "Lady Hilda, a seasoned armoured fighter who says she can't hunt the dragon alone, offers to join the party's dragon hunt for money (fee not yet set).",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "canonical": "fact_47",
+   "members": [
+    "fact_47",
+    "fact_29"
+   ],
+   "basis": "Both rest on Father William's claim that the dragon can only be killed with the magic sword buried with Brandon in the Barrow Mound. They share the same trigger (retrieving the sword) and the same benefit toward thread_3. Both are established openings with the same resource subject.",
+   "text": "Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound, about three miles away and marked on the party's map. Retrieving it could give the party a weapon said to pierce the dragon's otherwise impervious scales, though George says no one knows what is true of the legend or where the sword is.",
+   "evidence": [
+    "beat_40",
+    "beat_51",
+    "beat_66",
+    "beat_69",
+    "beat_80"
+   ]
+  },
+  {
+   "canonical": "fact_42",
+   "members": [
+    "fact_42",
+    "fact_39"
+   ],
+   "basis": "Both describe the same plan toward thread_11 with the same trigger and benefit. Ingrid makes the sleeping potion from Dunk's faun wine, it is used to keep Warwick asleep, and Dunk gets inside his house. Both are established openings.",
+   "text": "Ingrid is making a sleeping potion from Dunk's diluted faun wine (she said to collect it tomorrow, he said tonight). Dosing Warwick with it while Dunk helps her inside could keep Warwick asleep so Dunk can get into the house unnoticed, though the dilution may weaken the potion.",
+   "evidence": [
+    "beat_28",
+    "beat_29",
+    "beat_64",
+    "beat_70",
+    "beat_71"
+   ]
+  }
+ ],
+ "input_fingerprint": "987487e2c3f994c64fa5e08f29ea58e8b568c2d362866890cd7d295d445ec956"
+}

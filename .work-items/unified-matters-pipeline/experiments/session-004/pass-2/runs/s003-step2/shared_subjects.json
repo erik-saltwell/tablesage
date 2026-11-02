@@ -1,0 +1,42 @@
+{
+ "scenes": "s003-step1",
+ "shared_subjects": [
+  {
+   "subject": "The undead giant with the greatsword, likely Alfred",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_10",
+    "beat_26",
+    "beat_46",
+    "beat_62"
+   ],
+   "reason": "The danger thread is about this very foe, though it is also the evil the goblin deal requires the party to clear."
+  },
+  {
+   "subject": "Selling the dead goblins' bodies to Ned behind the goblins' backs",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_41",
+    "beat_42"
+   ],
+   "reason": "The goblins' objection is an obstacle to Ned's body deal, which is where the party would act on it."
+  },
+  {
+   "subject": "Whether the jeweled chalice belongs to the church",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_56"
+   ],
+   "reason": "The question of the chalice's ownership lives on the church-claim thread rather than the treasure-share thread."
+  }
+ ]
+}

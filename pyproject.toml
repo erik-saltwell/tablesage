@@ -90,6 +90,10 @@ dev = [
 [tool.ruff]
 line-length = 140
 target-version = "py312"
+# Work-item experiment scripts are preserved records whose hashes are recorded in
+# their pass provenance; reformatting or "fixing" them would invalidate it.
+extend-exclude = [".work-items"]
+force-exclude = true
 
 [tool.ruff.lint]
 select = [

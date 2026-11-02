@@ -1,0 +1,33 @@
+step3: 46 facts (42 open) {'want': 3, 'owe': 9, 'blocked_by': 6, 'could_use': 11, 'unknown': 10, 'threat': 3}
+  possibly moot: ['fact_16']
+  definite_end false: ['fact_31']
+  uncertain: ['fact_34', 'fact_35', 'fact_39', 'fact_45']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.57 fact_21 (thread_1, could_use) ~ fact_27 (thread_2, could_use)
+         The party's map marks and labels the location of the Dragon's lair.
+         The treasure map marks the dragon's location at a cave labeled "Dragon's lair."
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.38 fact_32 (thread_10, blocked_by) ~ fact_34 (thread_12, could_use)
+         The barrow treasure, tallied at 975 gold pieces, was signed over to Cedric for a promissory note payable only once the caravans flow again. This leaves no treasure on hand for Squints to pick from.
+         Cedric signed a promissory note to pay the party 975 gold pieces for the barrow treasure (three-quarters price), payable only once the caravans flow again to Brandonsford.
+    0.37 fact_29 (thread_2, could_use) ~ fact_35 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note in exchange for their joining the party; the exact terms are unclear.
+    0.36 fact_10 (thread_4, threat) ~ fact_11 (thread_4, threat)
+         Sir Alfred lies broken and incapacitated but not destroyed in the Barrow Mound, and may attack the party again if they return.
+         Sir Alfred, incapacitated but not destroyed, may kill more Free Goblin Society members, who plan to stay in the Barrow Mound and wall off the stairs to his tomb.
+  cross-thread facts sharing 4-word phrases:
+    fact_29 (thread_2) & fact_35 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_29 (thread_2) & fact_41 (thread_14): ['for the dragon hunt']
+    fact_31 (thread_3) & fact_10 (thread_4): ['in the barrow mound']
+    fact_31 (thread_3) & fact_11 (thread_4): ['in the barrow mound']
+    fact_31 (thread_3) & fact_15 (thread_7): ['in the barrow mound']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_32 (thread_10) & fact_34 (thread_12): ['once the caravans flow', 'only once the caravans', 'payable only once the']

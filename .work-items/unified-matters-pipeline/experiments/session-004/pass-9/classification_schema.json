@@ -1,0 +1,532 @@
+{
+  "$defs": {
+    "WantClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serves_thread",
+        "significance"
+      ],
+      "properties": {
+        "serves_thread": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^thread_[0-9]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "significance": {
+          "enum": [
+            "adventure",
+            "side",
+            "incidental"
+          ]
+        }
+      }
+    },
+    "OweClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commitment_type",
+        "stake_basis",
+        "stake",
+        "burden",
+        "consequence"
+      ],
+      "properties": {
+        "commitment_type": {
+          "enum": [
+            "general_agreement",
+            "personal_promise",
+            "debt",
+            "bargain",
+            "assigned_duty",
+            "oath"
+          ]
+        },
+        "stake_basis": {
+          "$ref": "#/$defs/Text"
+        },
+        "stake": {
+          "enum": [
+            "trivial",
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "burden": {
+          "enum": [
+            "trivial",
+            "minor",
+            "major",
+            "extreme"
+          ]
+        },
+        "consequence": {
+          "enum": [
+            "trivial",
+            "minor",
+            "major",
+            "extreme"
+          ]
+        }
+      }
+    },
+    "BlockedClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blocks_thread",
+        "in_effect",
+        "scope_basis",
+        "persists_beyond_scene"
+      ],
+      "properties": {
+        "blocks_thread": {
+          "type": "string",
+          "pattern": "^thread_[0-9]+$"
+        },
+        "in_effect": {
+          "enum": [
+            "active",
+            "anticipated"
+          ]
+        },
+        "scope_basis": {
+          "$ref": "#/$defs/Text"
+        },
+        "persists_beyond_scene": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CouldUseClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "form",
+        "helps_thread",
+        "role",
+        "support_basis",
+        "goal_support",
+        "acquired_by_acting_on_opening",
+        "action_basis",
+        "action_supported",
+        "opening_basis",
+        "opening_type"
+      ],
+      "properties": {
+        "form": {
+          "enum": [
+            "asset",
+            "opening"
+          ]
+        },
+        "helps_thread": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^thread_[0-9]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "enum": [
+            "direct",
+            "step",
+            null
+          ]
+        },
+        "support_basis": {
+          "$ref": "#/$defs/Text"
+        },
+        "goal_support": {
+          "enum": [
+            "trivial",
+            "low",
+            "medium",
+            "high",
+            null
+          ]
+        },
+        "acquired_by_acting_on_opening": {
+          "type": "boolean"
+        },
+        "action_basis": {
+          "type": "string"
+        },
+        "action_supported": {
+          "enum": [
+            "yes",
+            "no",
+            null
+          ]
+        },
+        "opening_basis": {
+          "type": "string"
+        },
+        "opening_type": {
+          "enum": [
+            "enabling",
+            "goal_pursuit",
+            "generic_benefit",
+            "possession_tautology",
+            null
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "helps_thread": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "goal_support": {
+                "enum": [
+                  "trivial",
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "form": {
+                "const": "opening"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "opening_basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "opening_type": {
+                "enum": [
+                  "enabling",
+                  "goal_pursuit",
+                  "generic_benefit",
+                  "possession_tautology"
+                ]
+              },
+              "action_basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action_supported": {
+                "enum": [
+                  "yes",
+                  "no"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "form": {
+                "const": "asset"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "opening_basis": {
+                "const": ""
+              },
+              "opening_type": {
+                "type": "null"
+              },
+              "action_basis": {
+                "const": ""
+              },
+              "action_supported": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "form": {
+                "const": "opening"
+              },
+              "helps_thread": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "role": {
+                "enum": [
+                  "direct",
+                  "step"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UnknownClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grounding",
+        "investigative_depth",
+        "narrative_payoff",
+        "investigative_potential",
+        "question_type"
+      ],
+      "properties": {
+        "grounding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        },
+        "investigative_depth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        },
+        "narrative_payoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        },
+        "investigative_potential": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        },
+        "question_type": {
+          "enum": [
+            "open_ended",
+            "closed_ended"
+          ]
+        }
+      }
+    },
+    "ThreatClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "harm_origin",
+        "negative_outcome_clarity",
+        "outcome_severity",
+        "evidentiary_strength",
+        "evidence_of_progression",
+        "preventability"
+      ],
+      "properties": {
+        "harm_origin": {
+          "enum": [
+            "party",
+            "external",
+            "unclear"
+          ]
+        },
+        "negative_outcome_clarity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        },
+        "outcome_severity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        },
+        "evidentiary_strength": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        },
+        "evidence_of_progression": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        },
+        "preventability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "justification",
+            "rank"
+          ],
+          "properties": {
+            "justification": {
+              "$ref": "#/$defs/Text"
+            },
+            "rank": {
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "kinds": {
+    "want": "WantClass",
+    "owe": "OweClass",
+    "blocked_by": "BlockedClass",
+    "could_use": "CouldUseClass",
+    "unknown": "UnknownClass",
+    "threat": "ThreatClass"
+  }
+}

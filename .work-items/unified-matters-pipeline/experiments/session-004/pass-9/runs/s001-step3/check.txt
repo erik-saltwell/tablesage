@@ -1,0 +1,17 @@
+step3: 23 facts (23 open) {'want': 5, 'owe': 1, 'blocked_by': 1, 'could_use': 6, 'unknown': 7, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_17', 'fact_19']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.44 fact_21 (thread_10, want) ~ fact_23 (thread_10, unknown)
+         Find out who empties Quinn's bar at the Golden Egg each night and collect Quinn's 100 gold for the help.
+         Who or what empties Quinn's bar each night? Quinn suspects Bentley.
+    0.36 fact_19 (thread_9, want) ~ fact_20 (thread_9, blocked_by)
+         Acquire Warwick the smith's mithril chain shirt.
+         Farmer Gill says Warwick always refuses to sell his mithril chain shirt, which fits a normal-sized person but not Dunk.
+    0.35 fact_9 (thread_3, threat) ~ fact_10 (thread_3, unknown)
+         The black dragon outside Brandonsford, which George says is not big, tore off George's arm and may maim whoever hunts it.
+         Where is the dragon to be found outside Brandonsford?
+  cross-thread facts sharing 4-word phrases:
+    fact_7 (thread_3) & fact_11 (thread_4): ['the clumsy fox and', 'the dragon the party']

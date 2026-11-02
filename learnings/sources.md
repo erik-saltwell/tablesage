@@ -98,16 +98,6 @@ Excluded before triage:
 | R-10 | `pt/docs/.stversions/delete_me/` (Syncthing version history) | The user's own hand-written Session 002 matters and their revisions, 2026-10-17 and 2026-10-18 (EX-049). |
 | R-09 | `pt` deployment review folder from SRC-55 (2026-10-30) | Latest side-by-side output under review. Cite only; its verdicts are pending. |
 
-## Mining order
-
-1. **Revelations and Mysteries:** SRC-03, 12, 17, 32–35, plus R-04 to R-06.
-2. **Cross-matter duplication:** SRC-16, 18, 24, 42, 51, 53, 55, plus R-07.
-3. **Summary and Recap presentation:** SRC-38, 39, 41, 44–46.
-4. **Goals, Goal Impediments and Opportunities:** SRC-07, 08, 19, 21, 29, 31.
-5. **Obligations and Brewing Troubles:** SRC-10, 11, 23, 26, 27, 43, plus R-03.
-6. **New Assets and Developments:** SRC-13, 36, 37.
-7. **Goldens and output edits** (R-01, R-02), run across all scopes.
-
 ## Subsequent Conversation Evidence
 
 ### SRC-57
@@ -122,7 +112,7 @@ SRC-57 implementation follow-up: the user said "ok now implement the other appro
 
 SRC-57 generation follow-up: the user requested "now please generate outputs for sessions 001,002,003, and 004, and copy them into the unified-review folder". Pass 7 artifacts, input hashes and repairs are retained in the experiment workspace; exact output copies and Markdown reviews are in `deployment/unified-review/12-PASS7/`. Generation completed 2026-10-31; structural checks passed, but no new user output-quality verdict has been given.
 
-SRC-57 review follow-up: the user supplied Session 001 and 002 pass 7 notes and asked “We should make improvements here first before moving on.  Please propose fixes:”. Actual judgments, exact output and proposed remedies are retained in EX-070–EX-078 in `examples/pass7-session-001-002-review.md`. Mule treatment is explicitly unresolved; sorting algorithm and asset presentation are proposals. No behavior change or regeneration was authorized by this proposal request.
+SRC-57 review follow-up: the user supplied Session 001 and 002 pass 7 notes and asked “We should make improvements here first before moving on.  Please propose fixes:”. Actual judgments, exact output and proposed remedies are retained in EX-070–EX-078, now in the `examples/` file for each heading. Mule treatment is explicitly unresolved; sorting algorithm and asset presentation are proposals. No behavior change or regeneration was authorized by this proposal request.
 
 SRC-57 approval follow-up: user approved all nine Session 001–002 recommendations and required bad-example capture before behavior changes. Clarified that no explicit duel withdrawal exists, assets must be excluded from open matters, and immediate intentions appear only if established. Exact bad outputs and approval clarifications were saved in EX-070–EX-078 before starting implementation.
 
@@ -150,7 +140,7 @@ SRC-57 positive inclusion follow-up, 2026-11-01: user said “Can your add the p
 - Date: 2026-11-01.
 - Source: current Codex/T3 conversation in `/home/eriksalt/proj/tablesage`, user feedback on the pass 11 review; provider conversation identifier unavailable.
 - Evidence: selected explicit judgments and a request to propose generic fixes. The user reframes the duel as a low-impact honor pursuit, rejects its alleged obstacle, reaffirms lifecycle/chronology/job-outcome/wording fixes and the irrelevance of the reporting hierarchy, accepts the map marking as history and the shirt benefit, tolerates the Session 001 origin omission for now while requesting the Session 002 loss be fixed, and requests protection from low-impact filtering for adventure-level goals. The user asks about deterministic ordering without selecting its mechanism.
-- Captured in: [pass 11 review](examples/pass11-session-001-002-review.md), EX-081, PREF-053, PREF-054 and dated preference clarifications. Proposed mechanisms are not approved implementation.
+- Captured in: EX-081, PREF-053, PREF-054 and the pass 11 judgments folded into the relevant examples and preferences. Proposed mechanisms are not approved implementation.
 
 **Approval (2026-11-01, SRC-59):** the user said “implement then run pass 12”, approving the seven proposed general rules: ends and completion significance, causal obstacles, job success conditions, a guarded adventure-objective question path, detail relevance across headings, concise contextual opportunity benefits with an essential second sentence allowed, and deterministic goal/event ordering. The request includes fresh chained Sessions 001–002 as in the preceding run. No production cutover or unrelated threshold investigation is included.
 

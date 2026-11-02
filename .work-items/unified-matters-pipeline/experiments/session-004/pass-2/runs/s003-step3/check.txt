@@ -1,0 +1,28 @@
+step3: 31 facts (30 open) {'want': 3, 'owe': 6, 'blocked_by': 2, 'could_use': 10, 'unknown': 7, 'threat': 2}
+  possibly moot: []
+  definite_end false: ['fact_25']
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.65 fact_24 (thread_9, owe) ~ fact_25 (thread_9, owe)
+         Under the bargain with the Free Goblin Society, the party must clear the evil out of the Barrow Mound so the goblins can live there.
+         Under the bargain with the Free Goblin Society, the party must not tell King Hogboon that the goblins are settled in the Barrow Mound.
+    0.47 fact_12 (thread_6, owe) ~ fact_13 (thread_6, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_8 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.42 fact_24 (thread_9, owe) ~ fact_26 (thread_9, could_use)
+         Under the bargain with the Free Goblin Society, the party must clear the evil out of the Barrow Mound so the goblins can live there.
+         The Free Goblin Society agreed to walk with the party through the Barrow Mound and, rejecting property, lets the party take whatever it wants there.
+    0.35 fact_25 (thread_9, owe) ~ fact_26 (thread_9, could_use)
+         Under the bargain with the Free Goblin Society, the party must not tell King Hogboon that the goblins are settled in the Barrow Mound.
+         The Free Goblin Society agreed to walk with the party through the Barrow Mound and, rejecting property, lets the party take whatever it wants there.
+  cross-thread facts sharing 4-word phrases:
+    fact_20 (thread_8) & fact_25 (thread_9): ['in the barrow mound']
+    fact_22 (thread_8) & fact_27 (thread_9): ["barrow mound's lower corridor", "the barrow mound's lower"]
+    fact_23 (thread_8) & fact_24 (thread_9): ['the free goblin society']
+    fact_23 (thread_8) & fact_25 (thread_9): ['the free goblin society']
+    fact_23 (thread_8) & fact_26 (thread_9): ['the free goblin society']
+    fact_26 (thread_9) & fact_30 (thread_11): ['the barrow mound and']

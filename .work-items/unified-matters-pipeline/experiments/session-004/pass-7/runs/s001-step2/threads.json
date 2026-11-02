@@ -1,0 +1,147 @@
+{
+ "session": "001",
+ "scenes": "s001-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_1"
+   ],
+   "note": "The party follows a treasure map whose marked locations they do not recognize, and the treasure's location is still unknown."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_7"
+   ],
+   "note": "Reginald warned of a trickster creature that comes into town from the riverbanks every night, a danger that stands apart from the other threads."
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and the Reeve's bounty",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_9",
+    "beat_13",
+    "beat_14",
+    "beat_15",
+    "beat_25",
+    "beat_26",
+    "beat_27"
+   ],
+   "note": "A black dragon troubles Brandonsford and Eric the Reeve offers 1000 gold for its body. The dragon still lives, and Farmer Gill's sons are already hunting it."
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_10"
+   ],
+   "note": "Lady Hilda offered to join an adventuring party against the dragon for money, and Sir Phidipaldi said they would return to take up her services after seeing the Reeve (beat_10)."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_11",
+    "beat_19",
+    "beat_20",
+    "beat_21"
+   ],
+   "note": "Drop Dead Ned offered himself and his killer wasp for hire at 100 gold a week, and Dr. Uriah is still thinking it over."
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipments",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_13",
+    "beat_30",
+    "beat_37"
+   ],
+   "note": "Nothing has come into town in months and Bentley's restock never arrived, hurting the whole town. The cause is unknown."
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_16",
+    "beat_18",
+    "beat_22"
+   ],
+   "note": "Sir Phidipaldi insulted Eric and challenged him to a duel at dawn, and Bentley expelled him for the night over it (beat_22). The challenge is unresolved."
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_24",
+    "beat_25",
+    "beat_29"
+   ],
+   "note": "Farmer Gill offered Shamus for 100 gold, and Dunk asked about trading work instead. Dunk is sleeping on the offer in Gill's barn."
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_31"
+   ],
+   "note": "Warwick displays a superb mithril shirt that would fit a normal-sized person but always refuses to sell it, leaving a coveted item still out of reach."
+  },
+  {
+   "id": "thread_10",
+   "name": "Quinn's revenge on Bentley",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_35",
+    "beat_36",
+    "beat_37"
+   ],
+   "note": "Quinn's stock vanishes nightly and he blames Bentley. Sir Phidipaldi agreed to stage a fake ale delivery for 100 gold and has not yet done so (beat_37)."
+  }
+ ],
+ "standalone_beats": [],
+ "temporary_ids": {
+  "thread_new_1": "thread_1",
+  "thread_new_2": "thread_2",
+  "thread_new_3": "thread_3",
+  "thread_new_4": "thread_4",
+  "thread_new_5": "thread_5",
+  "thread_new_6": "thread_6",
+  "thread_new_7": "thread_7",
+  "thread_new_8": "thread_8",
+  "thread_new_9": "thread_9",
+  "thread_new_10": "thread_10"
+ },
+ "problems": []
+}

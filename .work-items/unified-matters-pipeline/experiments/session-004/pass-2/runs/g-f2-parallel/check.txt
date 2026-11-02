@@ -1,0 +1,20 @@
+step3: 42 facts (37 open) {'want': 3, 'owe': 8, 'blocked_by': 5, 'could_use': 10, 'unknown': 9, 'threat': 2}
+  possibly moot: ['fact_16']
+  definite_end false: ['fact_31']
+  uncertain: ['fact_21', 'fact_34', 'fact_35']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.67 fact_27 (thread_2, could_use) ~ fact_28 (thread_2, could_use)
+         The wizard Malzazarik has joined the party for the dragon hunt.
+         Lady Hilda has joined the party for the dragon hunt.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_21 (thread_1) & fact_29 (thread_2): ["the dragon's lair cave"]
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_18 (thread_9) & fact_33 (thread_11): ['dr uriah must give']
+    fact_32 (thread_10) & fact_35 (thread_12): ['malzazarik and lady hilda']

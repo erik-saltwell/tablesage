@@ -1,0 +1,59 @@
+step3: 57 facts (50 open) {'want': 5, 'owe': 5, 'blocked_by': 3, 'could_use': 19, 'unknown': 13, 'threat': 5}
+  possibly moot: []
+  definite_end false: []
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.77 fact_33 (thread_3, could_use) ~ fact_38 (thread_9, could_use)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         Dunk says Warwick's mithril chain shirt is magical armor that could help against the dragon, once the party has it.
+    0.55 fact_8 (thread_3, could_use) ~ fact_13 (thread_4, could_use)
+         Lady Hilda would join the party against the dragon for pay (see her offer's thread).
+         Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party against the dragon for pay.
+    0.53 fact_32 (thread_3, could_use) ~ fact_54 (thread_13, unknown)
+         The magic sword buried with Sir Brandon at the Barrow Mound is said to be the only way to kill the dragon (see its thread).
+         Is Sir Brandon's magic sword really buried in his Barrow Mound?
+    0.50 fact_3 (thread_1, unknown) ~ fact_27 (thread_1, unknown)
+         Where is the treasure the map marks?
+         Where did the party's treasure map come from?
+    0.47 fact_17 (thread_7, want) ~ fact_18 (thread_7, unknown)
+         Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn.
+         Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?
+    0.47 fact_32 (thread_3, could_use) ~ fact_51 (thread_13, could_use)
+         The magic sword buried with Sir Brandon at the Barrow Mound is said to be the only way to kill the dragon (see its thread).
+         Father William says the dragon can't be killed without the magic sword buried with Sir Brandon in his Barrow Mound; the party could go to the Barrow and retrieve it.
+    0.46 fact_31 (thread_3, blocked_by) ~ fact_51 (thread_13, could_use)
+         Nothing pierces the dragon's black scales: George says his friends' arrows and swords all failed, and Father William says it can't be killed without the magic sword buried with Sir Brandon. Its jaws drip poison whose bite kills, and it spits sulfur.
+         Father William says the dragon can't be killed without the magic sword buried with Sir Brandon in his Barrow Mound; the party could go to the Barrow and retrieve it.
+    0.42 fact_33 (thread_3, could_use) ~ fact_40 (thread_9, unknown)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         What magic does Warwick's mithril chain shirt hold?
+    0.42 fact_21 (thread_9, want) ~ fact_22 (thread_9, blocked_by)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+    0.41 fact_45 (thread_12, could_use) ~ fact_49 (thread_12, unknown)
+         Ingrid is making a sleeping potion from the faun wine Dunk gave her; Dunk can collect it when they meet tonight and use it to put Warwick to sleep.
+         Will a potion made from Dunk's heavily diluted faun wine still put Warwick to sleep?
+    0.40 fact_1 (thread_1, want) ~ fact_27 (thread_1, unknown)
+         Find the treasure marked on the party's treasure map.
+         Where did the party's treasure map come from?
+    0.40 fact_27 (thread_1, unknown) ~ fact_10 (thread_3, unknown)
+         Where did the party's treasure map come from?
+         Where has this new dragon come from, centuries after Sir Brandon killed the first?
+    0.40 fact_51 (thread_13, could_use) ~ fact_54 (thread_13, unknown)
+         Father William says the dragon can't be killed without the magic sword buried with Sir Brandon in his Barrow Mound; the party could go to the Barrow and retrieve it.
+         Is Sir Brandon's magic sword really buried in his Barrow Mound?
+    0.38 fact_21 (thread_9, want) ~ fact_40 (thread_9, unknown)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         What magic does Warwick's mithril chain shirt hold?
+    0.36 fact_33 (thread_3, could_use) ~ fact_22 (thread_9, blocked_by)
+         Dunk says Warwick's mithril chain shirt could help against the dragon (see its thread).
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+  cross-thread facts sharing 4-word phrases:
+    fact_8 (thread_3) & fact_13 (thread_4): ['against the dragon for', 'join the party against', 'party against the dragon']
+    fact_31 (thread_3) & fact_51 (thread_13): ['be killed without the', 'buried with sir brandon', "can't be killed without"]
+    fact_32 (thread_3) & fact_51 (thread_13): ['buried with sir brandon', 'magic sword buried with', 'sword buried with sir']
+    fact_32 (thread_3) & fact_55 (thread_14): ['at the barrow mound']
+    fact_33 (thread_3) & fact_38 (thread_9): ['could help against the', "dunk says warwick's mithril", 'help against the dragon']
+    fact_33 (thread_3) & fact_40 (thread_9): ["warwick's mithril chain shirt"]
+    fact_34 (thread_3) & fact_51 (thread_13): ["says the dragon can't"]

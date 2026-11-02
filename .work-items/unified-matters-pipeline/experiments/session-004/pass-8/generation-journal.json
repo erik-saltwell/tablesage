@@ -1,0 +1,83 @@
+{
+  "started": "2026-11-01T05:34:19.020193+00:00",
+  "model": "anthropic/claude-opus-5-5",
+  "sessions": [
+    "001",
+    "002"
+  ],
+  "completed": [
+    "s001-step1",
+    "s001-step2",
+    "s001-step2c",
+    "s001-step3",
+    "s001-check",
+    "s001-chain",
+    "s001-seed",
+    "s002-step1",
+    "s002-step2",
+    "s002-step2c",
+    "s002-step3",
+    "s002-check",
+    "s002-chain"
+  ],
+  "inputs": {
+    "001": {
+      "ledger_sha256": "089c13af267eba796905094d4bfb6e25b4c545fce6a404760f7c89b50ee2ddc5",
+      "seed_sha256": "63e9b54a7e6721df55135b4769a3cbecf0d861630bb899144220eedc407f99d2"
+    },
+    "002": {
+      "ledger_sha256": "91065536fee5ac83bb3893fc52a25ea1cf66addd89e5b373d7044492a9f3379a",
+      "seed_sha256": "ba20e66647a4db0b0859a52d42a9e7cd1dd08d151a572acab85e628281ca7b81"
+    }
+  },
+  "last_session_rule": "both ratings medium or high; unchanged",
+  "repairs": [
+    {
+      "stage": "s002-step3",
+      "detail": "Per-kind schema now requires direct/step role for linked openings only. Assets may leave this opportunity-only field null, matching response schema/prompt and their unconditional exclusion from open matters. Prior schema saved in implementation-snapshots.",
+      "time": "2026-11-01T05:45:38.751186+00:00",
+      "final_schema_sha256": "32ddef280e7a3ebe940607936cc54c6c160d15a785af198b9dda0e4554c2a899"
+    }
+  ],
+  "retries": [
+    {
+      "stage": "s002-step3",
+      "threads": [
+        "thread_2",
+        "thread_10"
+      ],
+      "detail": "One unchanged-prompt retry each. Resource-subject error corrected; asset role remained null, exposing schema mismatch. Initial affected responses and combined facts preserved in attempts/initial; all other responses reused."
+    }
+  ],
+  "finished": "2026-11-01T05:46:52.628094+00:00",
+  "review_folder": "deployment/unified-review/13-PASS8",
+  "final_implementation_sha256": {
+    "resource_reconciliation.py": "a0435b1e66ff436c4a7b6b706bd4597bc08cb0e9126df04d7ab44d485065b98b",
+    "run8.py": "3a0500f63bbe602dde374a368023a2164e59f7ce2af61858372c243ea74a8252",
+    "classification_schema.json": "32ddef280e7a3ebe940607936cc54c6c160d15a785af198b9dda0e4554c2a899",
+    "prompts/step6_writing/system.md": "24dcfb248b702b20b31410229ff00f94a302cf1f34f324139510d24957f6c309",
+    "prompts/step6_writing/schema.json": "42a2bf14fb0c22d297a0be463a2b531b2752dd71f05b8226d8d58dcad661e51c",
+    "prompts/step6_writing/template.j2": "b57aee782a36552320d3f71831cd99ea5c4a3abfd63d801620111fad691c62eb",
+    "prompts/step1_scenes/system.md": "e7607525096d302b8e03ff7fa0f784e4077347d0698b9e85f7967be0faa8a411",
+    "prompts/step1_scenes/schema.json": "cd88c67d535b03bd302ff621663a2bba6b3ad0aea9c069a000b803fa30f83cbd",
+    "prompts/step1_scenes/template.j2": "617ec120cdd06df9717fc81d675b479f48c83627a44fb2dedb8de439ddf6f159",
+    "prompts/step3r_resources/system.md": "85eb3f39c763153003e9fa288f2b9b4f06f0eabf532e7a07e8a462a85bd13ad9",
+    "prompts/step3r_resources/schema.json": "3df0ca91efc6ee26fbb0840c3d1c077492681a56889e6a39dff9a7c7ab75cdb4",
+    "prompts/step3r_resources/template.j2": "fda9c970d411b23affeae0e4a7e8252d7f5440c46ed5aa60d7445f52d0532d03",
+    "prompts/step3_facts_homes/system.md": "f21d6f7d0f5af1bd8b8b54f33de7091dafb7250e3b2434d2d829ad37d368d7e6",
+    "prompts/step3_facts_homes/schema.json": "f9845c8824e865fe059ff5c2469107fcb10ed5929059e730e9346f9e03ce5409",
+    "prompts/step3_facts_homes/template.j2": "9a0f76379d62e5092c9fe119a1701905b298006d760391167c54fce68b76915c",
+    "prompts/step8_recap/system.md": "c054f7635c5d07f9b40d10b101f0b73b70b9cfb5dbb667c87d72350e66c5389b",
+    "prompts/step8_recap/schema.json": "aab1bba67a7acce02082d0bc6949b84ee5f8b31db14284ab1449a39159baf077",
+    "prompts/step8_recap/template.j2": "bbcc9733f9fdd3becaa60ef7a3f96290734f2e7fdaaba710ff767e2138902bbd",
+    "prompts/step2c_changes/system.md": "a8950ecedf11f0c153921db36f27312d16a9a36b29253be6a591a7819adfa9e1",
+    "prompts/step2c_changes/schema.json": "4063ec5b66833945d2069434472dbcee70ff62af78f6c498d3a2770e4cbefa53",
+    "prompts/step2c_changes/template.j2": "bfd125996a3467c39c41ddf31034e685373259cf7d37545937efc59c24121d82",
+    "prompts/step2_threads/system.md": "b40db20165a12f3f3850d23101cdf7512ba530f1a200e3d50eb9d74a11cacc9b",
+    "prompts/step2_threads/schema.json": "dfa9bbdac04bd91825226377ef016c32f0d17a401e25dca080dead1b37e05dd1",
+    "prompts/step2_threads/template.j2": "0a3ff33dd0f02653c9350cb8a1a2c1c9b65c38a40f0beeb9fd5ed0e89b607cdc",
+    "prompts/step4_stopping/system.md": "0973f66367220c2d6906ad64faf0aa8f5565cfee4a4359ed4c0360d1a2f87cb1",
+    "prompts/step4_stopping/schema.json": "75526987bdefa04179a89bcfc92d67490de195afe83a72dd228f1d387749e8cf",
+    "prompts/step4_stopping/template.j2": "4b9a9aae4fee741a39ef502183d9b4b09dcbe754f16692712a62583da06bbcfa"
+  }
+}

@@ -1,0 +1,44 @@
+step3: 58 facts (52 open) {'want': 5, 'owe': 6, 'blocked_by': 3, 'could_use': 24, 'unknown': 12, 'threat': 2}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_23', 'fact_25', 'fact_15']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.85 fact_29 (thread_3, could_use) ~ fact_47 (thread_13, could_use)
+         Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound.
+         Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound; the party could retrieve it from the Barrow.
+    0.67 fact_22 (thread_1, unknown) ~ fact_9 (thread_3, unknown)
+         Where did the treasure map come from?
+         Where did the black dragon come from?
+    0.57 fact_3 (thread_1, unknown) ~ fact_22 (thread_1, unknown)
+         Where does the treasure lie?
+         Where did the treasure map come from?
+    0.56 fact_29 (thread_3, could_use) ~ fact_50 (thread_13, unknown)
+         Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound.
+         Is the magic sword that can kill the dragon really buried with Brandon in the Barrow Mound?
+    0.47 fact_47 (thread_13, could_use) ~ fact_50 (thread_13, unknown)
+         Father William says the dragon cannot be killed without the magic sword buried with Brandon in the Barrow Mound; the party could retrieve it from the Barrow.
+         Is the magic sword that can kill the dragon really buried with Brandon in the Barrow Mound?
+    0.42 fact_33 (thread_3, could_use) ~ fact_40 (thread_11, unknown)
+         Dunk says Warwick's mithril chain shirt could help against the dragon, and he has a plan to get it.
+         What magic does Warwick's mithril chain shirt hold?
+    0.42 fact_55 (thread_15, owe) ~ fact_56 (thread_15, owe)
+         Dr. Uriah agreed to Father William's request that he give penance at the Barrow Mound.
+         Dr. Uriah agreed to donate 10 gold to Father William for the Barrow Mound's upkeep.
+    0.40 fact_37 (thread_11, want) ~ fact_40 (thread_11, unknown)
+         Obtain Warwick the smith's magical mithril chain shirt.
+         What magic does Warwick's mithril chain shirt hold?
+    0.38 fact_7 (thread_3, could_use) ~ fact_11 (thread_4, could_use)
+         Lady Hilda would join the party's dragon hunt for pay.
+         Lady Hilda, a seasoned fighter who says she can't hunt the dragon alone, offers to join the party for money to hunt it.
+    0.36 fact_45 (thread_12, unknown) ~ fact_53 (thread_14, unknown)
+         Can Ingrid really make her own potions? Father William says she is incompetent and cannot; Ingrid says she makes all her products herself.
+         What is the coven Father William says Vivian and Ingrid share?
+  cross-thread facts sharing 4-word phrases:
+    fact_23 (thread_1) & fact_52 (thread_14): ['the party plans to']
+    fact_29 (thread_3) & fact_47 (thread_13): ['be killed without the', 'brandon in the barrow', 'buried with brandon in']
+    fact_29 (thread_3) & fact_50 (thread_13): ['brandon in the barrow', 'buried with brandon in', 'in the barrow mound']
+    fact_33 (thread_3) & fact_40 (thread_11): ["warwick's mithril chain shirt"]
+    fact_48 (thread_13) & fact_52 (thread_14): ['father william marked the', "on the party's map"]
+    fact_48 (thread_13) & fact_57 (thread_15): ["on the party's map"]
+    fact_52 (thread_14) & fact_57 (thread_15): ["on the party's map"]

@@ -1,0 +1,54 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Gill's work wanted in trade for the mule: killing the dragon",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_27"
+   ],
+   "reason": "It is the work Gill names as the possible price of the mule, so it belongs with that bargain."
+  },
+  {
+   "subject": "Lady Hilda's offer to join the dragon hunt for pay",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_10"
+   ],
+   "reason": "The child thread about hiring Hilda is about this very offer."
+  },
+  {
+   "subject": "Sir Phidipaldi's feud with Eric the Reeve",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_19",
+    "beat_24"
+   ],
+   "reason": "The quarrel has its own thread, though it may strain the Reeve's bounty."
+  },
+  {
+   "subject": "No shipments reaching town for months",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_9",
+    "thread_10"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_33",
+    "beat_40"
+   ],
+   "reason": "The missing shipment thread is about the very supply failure that empties Warwick's shop and makes Quinn's fake shipment plausible."
+  }
+ ]
+}

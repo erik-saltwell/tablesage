@@ -11,6 +11,15 @@ install_agent_files: true
 connection_test_timeout: 30
 opportunities_timeout: 600  # Generate Opportunities uses llm_model_high.
 
+# Explicit system-prefix caching for Anthropic and GPT-5.6+ during Regenerate All Outputs only,
+# when at least three Sessions need the same prompt. Ordinary processing never opts in.
+# Providers enforce model-specific minimum prefix lengths. TTLs are provider-specific below.
+prompt_caching:
+  # Anthropic: 5m or 1h. Retained for compatibility with existing deployed settings.
+  ttl: 1h
+  # OpenAI Chat Completions: 30m only. Gemini uses automatic caching, without a TTL setting.
+  openai_ttl: 30m
+
 # Create Previously On uses llm_model_high for all three stages.
 previously_on:
   ingredient_timeout: 600

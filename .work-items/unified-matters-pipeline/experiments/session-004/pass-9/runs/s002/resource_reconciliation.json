@@ -1,0 +1,21 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_44",
+   "members": [
+    "fact_44",
+    "fact_30"
+   ],
+   "basis": "Both facts describe the same opportunity: retrieving Brandon's magic sword from Brandon's Barrow Mound. Father William claims this sword is the only way to kill the dragon (beat_49). Both help thread_3 as established openings, and the party is already heading to the Barrow marked on Uriah's map (beat_46, beat_55). fact_30 is simply the use of that same sword against the dragon of thread_13.",
+   "text": "Retrieve the magic sword buried with Brandon in Brandon's Barrow Mound, about a day's walk away and marked on Uriah's map. Father William says the dragon can't be killed without it, since nothing else pierces its scales. This rests on Father William's word and old tales, and George says no one knows what is true or where the sword is.",
+   "evidence": [
+    "beat_45",
+    "beat_46",
+    "beat_49",
+    "beat_62",
+    "beat_84"
+   ]
+  }
+ ],
+ "input_fingerprint": "0c86103cc55e2b79633210da4f67e3a4abbad7b94cce308278e0b1978203789c"
+}

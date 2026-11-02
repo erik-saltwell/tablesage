@@ -1,0 +1,22 @@
+[
+  {
+    "stage": "Session 001 step3",
+    "reason": "Provider rejected original flat nullable classification schema: compiled grammar too large.",
+    "change": "Per-kind classification union: emit only own fields; unchanged per-kind validators, semantics and selection.",
+    "preserved": "attempts/initial-flat-classification",
+    "reuse": "All valid step1, step2 and step2c outputs. Retry only step3 and later."
+  },
+  {
+    "stage": "Session 001 step3",
+    "reason": "Provider also rejected the per-kind union for compiled-grammar size; no fact responses returned.",
+    "change": "Strict outer schema carries classification as JSON text. Decoder restores the classification object; full per-kind schema/reference/continuity validation is unchanged. Prompt example and instruction match this transport.",
+    "preserved": "attempts/per-kind-union",
+    "reuse": "Valid scenes, threads and historical assessment. Retry only facts onward."
+  },
+  {
+    "stage": "Session 002 step3 thread_2",
+    "reason": "Carried fact_9 retained an obsolete shared-resource subject label no longer in current shared_subjects.",
+    "change": "No prompt/schema/code change. Retry only thread_2 with unchanged inputs; reassemble normalized facts from valid saved per-thread responses.",
+    "preserved": "attempts/s002-initial-facts"
+  }
+]

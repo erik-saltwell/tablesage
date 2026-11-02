@@ -1,0 +1,830 @@
+{
+  "session": "004",
+  "ledger_index": "0-based positions in ledger.json utterances",
+  "scenes": [
+    {
+      "id": "scene_1",
+      "location": "Sir Brandon's tomb",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Sir Alfred",
+          "Brother Dirk",
+          "Drop Dead Ned"
+        ]
+      },
+      "cue": "The baseball-sized blood-red wasp spinning inside Sir Alfred's rib cage",
+      "beats": [
+        {
+          "id": "beat_1",
+          "kind": "event",
+          "text": "The undead knight Sir Alfred, a seven-foot skeleton in rusted armor and a mustachioed bronze death mask, confronted the party in the Barrow Mound.",
+          "importance": "medium",
+          "ledger": [
+            0
+          ]
+        },
+        {
+          "id": "beat_2",
+          "kind": "learned",
+          "text": "Sir Brandon's sword is magical and far more effective against evil beings, and Sir Alfred counts as evil.",
+          "importance": "high",
+          "ledger": [
+            3
+          ]
+        },
+        {
+          "id": "beat_3",
+          "kind": "event",
+          "text": "Wayman Tisdale poured lantern oil on Sir Brandon's sword in Dunk's hands and set it alight, making it a flaming sword.",
+          "importance": "medium",
+          "ledger": [
+            6
+          ]
+        },
+        {
+          "id": "beat_4",
+          "kind": "event",
+          "text": "Sir Alfred's greatsword blow destroyed Dunk's ordinary kite shield, leaving Dunk unhurt.",
+          "importance": "medium",
+          "ledger": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": "beat_5",
+          "kind": "event",
+          "text": "Drop Dead Ned released a baseball-sized blood-red wasp from his wax-sealed jar into Sir Alfred's rib cage, and Sir Alfred broke himself apart flailing at it and fell, incapacitated.",
+          "importance": "high",
+          "ledger": [
+            10,
+            11,
+            12
+          ]
+        },
+        {
+          "id": "beat_6",
+          "kind": "event",
+          "text": "Brother Dirk regarded Sir Alfred as holy and preferred that the party not destroy him.",
+          "importance": "medium",
+          "ledger": [
+            14
+          ]
+        },
+        {
+          "id": "beat_7",
+          "kind": "event",
+          "text": "At Wayman Tisdale's urging, the party left the Barrow Mound without destroying Sir Alfred, who was still incapacitated.",
+          "importance": "high",
+          "ledger": [
+            15
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_2",
+      "location": "The Barrow Mound's entrance",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Watak the Scribbler",
+          "Grimble Who Holds the Stick",
+          "Snurk the Walkout",
+          "Peg Who Had the Torch"
+        ]
+      },
+      "cue": "\"That is job number one of any free state\" - the goblins",
+      "beats": [
+        {
+          "id": "beat_8",
+          "kind": "event",
+          "text": "Four Free Goblin Society goblins waiting at the top of the stairs asked whether they could now inhabit the mound, and Wayman Tisdale said no, because the deal had changed.",
+          "importance": "high",
+          "ledger": [
+            16,
+            17,
+            18
+          ]
+        },
+        {
+          "id": "beat_9",
+          "kind": "event",
+          "text": "The goblins protested that inhabiting the mound was the whole deal and that Sir Alfred had killed all their friends down there; Grimble Who Holds the Stick said they would have to go back to King Hogboon and beg forgiveness.",
+          "importance": "medium",
+          "ledger": [
+            19,
+            21
+          ]
+        },
+        {
+          "id": "beat_10",
+          "kind": "event",
+          "text": "At Wayman Tisdale's suggestion, the goblins agreed to stay, wall off the stairs and settle the upper mound's church, antechamber and statue room.",
+          "importance": "high",
+          "ledger": [
+            22,
+            23
+          ]
+        },
+        {
+          "id": "beat_11",
+          "kind": "event",
+          "text": "When Wayman Tisdale added that they could destroy the church, the goblins declared it job number one of any free state.",
+          "importance": "medium",
+          "ledger": [
+            24,
+            25
+          ]
+        },
+        {
+          "id": "beat_12",
+          "kind": "event",
+          "text": "Wayman Tisdale promised Snurk the Walkout never to tell King Hogboon where the goblins are.",
+          "importance": "high",
+          "ledger": [
+            26,
+            27
+          ]
+        },
+        {
+          "id": "beat_13",
+          "kind": "event",
+          "text": "The party came away from the barrow with some robes, a lot of treasure and Sir Brandon's magic sword.",
+          "importance": "high",
+          "ledger": [
+            28
+          ]
+        },
+        {
+          "id": "beat_14",
+          "kind": "event",
+          "text": "Dr. Uriah gained the Read Languages spell, which reveals the writing under one treasure-map location per day.",
+          "importance": "high",
+          "ledger": [
+            29
+          ]
+        },
+        {
+          "id": "beat_15",
+          "kind": "learned",
+          "text": "The writing under the map location Dr. Uriah suspected reads \"Dragon's lair\".",
+          "importance": "high",
+          "ledger": [
+            30,
+            31
+          ]
+        },
+        {
+          "id": "beat_16",
+          "kind": "learned",
+          "text": "Another marked location on the treasure map is the Dwarven mine; one marked location remains unidentified, which Sir Phidipaldi guesses is King Hogboon's.",
+          "importance": "medium",
+          "ledger": [
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_3",
+      "location": "Brandonsford",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Brother Dirk"
+        ]
+      },
+      "cue": "\"If it is tomb robbery, you are a tomb robber too\" - Dr. Uriah",
+      "beats": [
+        {
+          "id": "beat_17",
+          "kind": "event",
+          "text": "Back in Brandonsford, Brother Dirk asked Dr. Uriah to donate the barrow robes to the church, saying they are holy relics that belong to it.",
+          "importance": "medium",
+          "ledger": [
+            33,
+            36
+          ]
+        },
+        {
+          "id": "beat_18",
+          "kind": "event",
+          "text": "After Brother Dirk conceded that fighting the dragon comes first, Dr. Uriah promised to return the robes to the church after the dragon is defeated, keeping them meanwhile in case they help against it, and Dirk agreed.",
+          "importance": "high",
+          "ledger": [
+            39,
+            40
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_4",
+      "location": "The general store",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Cedric"
+        ]
+      },
+      "cue": "Sir Phidipaldi demanding a futures contract for the treasure",
+      "beats": [
+        {
+          "id": "beat_19",
+          "kind": "learned",
+          "text": "Cedric says his supply shipments have not come in since the troubles with the dragon began.",
+          "importance": "medium",
+          "ledger": [
+            43
+          ]
+        },
+        {
+          "id": "beat_20",
+          "kind": "event",
+          "text": "Cedric could not pay gold for the party's treasure, so at Sir Phidipaldi's demand he signed a promissory note to pay three-quarters price once the caravans flow again; Dr. Uriah tallied the note at 975 gold pieces.",
+          "importance": "high",
+          "ledger": [
+            44,
+            45,
+            46,
+            47
+          ]
+        },
+        {
+          "id": "beat_21",
+          "kind": "learned",
+          "text": "Cedric says Warwick the smith has had no metal for weeks since the dragon appeared and would probably give the party an even better deal.",
+          "importance": "medium",
+          "ledger": [
+            48
+          ]
+        },
+        {
+          "id": "beat_22",
+          "kind": "event",
+          "text": "Worried that Eric the Reeve would not pay in advance, Sir Phidipaldi wanted to offer the promissory note to hire the wizard and the noble warrior.",
+          "importance": "medium",
+          "ledger": [
+            49
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_5",
+      "location": "Warwick's shop",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Warwick"
+        ]
+      },
+      "cue": "Warwick's walls of horseshoes, rabbits' feet and a dream catcher",
+      "beats": [
+        {
+          "id": "beat_23",
+          "kind": "learned",
+          "text": "Warwick says something visits him in the night and leaves things almost every night despite everything he has tried; on the one night it did not happen, he slept like a baby.",
+          "importance": "medium",
+          "ledger": [
+            52,
+            53
+          ]
+        },
+        {
+          "id": "beat_24",
+          "kind": "event",
+          "text": "Sir Phidipaldi told Warwick the visitors are Clurichen from the river, said to steal people's breath and extremely afraid of music.",
+          "importance": "medium",
+          "ledger": [
+            54,
+            56
+          ]
+        },
+        {
+          "id": "beat_25",
+          "kind": "event",
+          "text": "Warwick said his real worry was being out of metal, and agreed that if the party brings back metal from a mine to the north, he will keep Sir Phidipaldi's lyre and play it every night while they are gone.",
+          "importance": "high",
+          "ledger": [
+            56,
+            57
+          ]
+        },
+        {
+          "id": "beat_26",
+          "kind": "event",
+          "text": "Warwick lent the party his mithril chain shirt so they would not be killed in the Dwarven mine, holding Sir Phidipaldi's plate armor as collateral along with the lyre.",
+          "importance": "high",
+          "ledger": [
+            58,
+            59,
+            60
+          ]
+        },
+        {
+          "id": "beat_27",
+          "kind": "event",
+          "text": "Wayman Tisdale wore the mithril shirt over his leather armor, greatly improving his protection and halving the damage he takes from magic weapons and spells.",
+          "importance": "high",
+          "ledger": [
+            61
+          ]
+        },
+        {
+          "id": "beat_28",
+          "kind": "event",
+          "text": "Sir Phidipaldi told Warwick the party is hunting the dragon and needs anti-poison remedies, and Warwick named Ingrid as the town's alchemist.",
+          "importance": "low",
+          "ledger": [
+            62,
+            63
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_6",
+      "location": "Ingrid's shop",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Ingrid"
+        ]
+      },
+      "cue": "Dr. Uriah sprinkling witch powder on the barrow robes",
+      "beats": [
+        {
+          "id": "beat_29",
+          "kind": "learned",
+          "text": "Ingrid sells Essence of Wolfsbane, which repels wolves for one to eight hours (5 gold), witch powder that reveals magic, and Mandrake root tea that heals over four hours (10 gold).",
+          "importance": "low",
+          "ledger": [
+            64
+          ]
+        },
+        {
+          "id": "beat_30",
+          "kind": "event",
+          "text": "The party stocked up: Dr. Uriah bought three witch powders, and Sir Phidipaldi, Wayman Tisdale and Dunk bought Mandrake root teas and Essences of Wolfsbane.",
+          "importance": "medium",
+          "ledger": [
+            65,
+            67,
+            68,
+            69
+          ]
+        },
+        {
+          "id": "beat_31",
+          "kind": "learned",
+          "text": "The barrow robes are not magical, just a religious relic.",
+          "importance": "medium",
+          "ledger": [
+            65,
+            66
+          ]
+        },
+        {
+          "id": "beat_32",
+          "kind": "learned",
+          "text": "Ingrid says protection against poison is powerful magic beyond her as an apprentice witch, and that the witch of the wood, who tutors her at night and lives just north of town, would know more.",
+          "importance": "high",
+          "ledger": [
+            70,
+            71
+          ]
+        },
+        {
+          "id": "beat_33",
+          "kind": "event",
+          "text": "Ingrid agreed to close her shop and take the party to her tutor during the day.",
+          "importance": "medium",
+          "ledger": [
+            72,
+            73
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_7",
+      "location": "Vivian's hut",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah"
+        ],
+        "others": [
+          "Vivian",
+          "Ingrid"
+        ]
+      },
+      "cue": "\"We are going to stab it in the mouth\" - Dr. Uriah",
+      "beats": [
+        {
+          "id": "beat_34",
+          "kind": "event",
+          "text": "Ingrid led the party through the old forest to the thatched hut of Vivian, a hunched one-eyed old woman, who invited them in.",
+          "importance": "low",
+          "ledger": [
+            74,
+            75,
+            79,
+            82
+          ]
+        },
+        {
+          "id": "beat_35",
+          "kind": "event",
+          "text": "Dunk showed Vivian his faun wine, and she was thrilled that he had passed the fauns' drinking test.",
+          "importance": "low",
+          "ledger": [
+            87,
+            88,
+            89,
+            90
+          ]
+        },
+        {
+          "id": "beat_36",
+          "kind": "learned",
+          "text": "Vivian says enough faun wine would knock the dragon out if it drank it, so the party could drag Sir Brandon's sword through its mouth as Sir Brandon did.",
+          "importance": "high",
+          "ledger": [
+            86,
+            91
+          ]
+        },
+        {
+          "id": "beat_37",
+          "kind": "learned",
+          "text": "Vivian says it is hard to know how Sir Brandon really killed the dragon, since the tale is told only by Sir Brandon himself.",
+          "importance": "medium",
+          "ledger": [
+            92,
+            93
+          ]
+        },
+        {
+          "id": "beat_38",
+          "kind": "event",
+          "text": "Sir Phidipaldi proposed dosing game with faun wine, leaving it outside the dragon's cave and going in once the dragon had eaten it.",
+          "importance": "high",
+          "ledger": [
+            94
+          ]
+        },
+        {
+          "id": "beat_39",
+          "kind": "learned",
+          "text": "Vivian privately admitted she has no potion against the dragon's venom: she only knows three herbs, one of which drives off wolves.",
+          "importance": "high",
+          "ledger": [
+            96,
+            97
+          ]
+        },
+        {
+          "id": "beat_40",
+          "kind": "learned",
+          "text": "Vivian was fond of Grimny, the oldest dwarf, and she and the dwarves have not visited each other in some time.",
+          "importance": "medium",
+          "ledger": [
+            98,
+            99
+          ]
+        },
+        {
+          "id": "beat_41",
+          "kind": "learned",
+          "text": "Vivian says the church knows the tale of Sir Brandon but will not let her near it.",
+          "importance": "low",
+          "ledger": [
+            101
+          ]
+        },
+        {
+          "id": "beat_42",
+          "kind": "event",
+          "text": "Vivian asked the party to tell Grimny to visit Old Viv, and gave them a sealed letter and a bottle of a scent he loves to take to him.",
+          "importance": "high",
+          "ledger": [
+            101,
+            103,
+            104,
+            105
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_8",
+      "location": "Brandonsford",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah",
+          "Malzazarik",
+          "Lady Hilda"
+        ],
+        "others": [
+          "Ingrid"
+        ]
+      },
+      "cue": "\"Fucking idiot\" - Ingrid",
+      "beats": [
+        {
+          "id": "beat_43",
+          "kind": "learned",
+          "text": "Ingrid says the mithril shirt was Warwick's grandfather's armor, which he never even let her touch.",
+          "importance": "medium",
+          "ledger": [
+            107,
+            108
+          ]
+        },
+        {
+          "id": "beat_44",
+          "kind": "event",
+          "text": "Sir Phidipaldi told Ingrid that Warwick knew of her nighttime visits and was honored but not interested; she accused Dunk of telling, which he denied.",
+          "importance": "medium",
+          "ledger": [
+            109,
+            110,
+            111
+          ]
+        },
+        {
+          "id": "beat_45",
+          "kind": "event",
+          "text": "Ingrid left, crestfallen, to be alone in her shop, muttering \"Fucking idiot\".",
+          "importance": "medium",
+          "ledger": [
+            112,
+            113
+          ]
+        },
+        {
+          "id": "beat_46",
+          "kind": "learned",
+          "text": "Little is known of the Dwarven mine beyond the smith's belief that there is metal there and that seven dwarves worked it; it is not famous or cursed, and no armed resistance is expected.",
+          "importance": "medium",
+          "ledger": [
+            115
+          ]
+        },
+        {
+          "id": "beat_47",
+          "kind": "event",
+          "text": "On Sir Phidipaldi's recommendation to use Cedric's promissory note to recruit them, the wizard Malzazarik and Lady Hilda joined the party.",
+          "importance": "high",
+          "ledger": [
+            116,
+            117
+          ]
+        },
+        {
+          "id": "beat_48",
+          "kind": "event",
+          "text": "The party already had enough faun wine and did not need to return to the fauns.",
+          "importance": "low",
+          "ledger": [
+            118
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_9",
+      "location": "The goblin temple ruins",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah",
+          "Malzazarik",
+          "Lady Hilda"
+        ],
+        "others": []
+      },
+      "cue": "Drunk goblins singing slurred praise of King Hogboon",
+      "beats": [
+        {
+          "id": "beat_49",
+          "kind": "event",
+          "text": "On the way to the Dwarven mine, the party trailed drunk goblins singing praise of King Hogboon to a ruined temple, then went around it undetected.",
+          "importance": "medium",
+          "ledger": [
+            119,
+            120,
+            122
+          ]
+        },
+        {
+          "id": "beat_50",
+          "kind": "learned",
+          "text": "King Hogboon and a goblin tribe evidently live in the ruins of a temple to a forgotten wild god, now a goblin castle, near an unmarked area of the map.",
+          "importance": "high",
+          "ledger": [
+            119,
+            121
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_10",
+      "location": "The Dwarven mine",
+      "people": {
+        "party": [
+          "Dunk",
+          "Sir Phidipaldi",
+          "Wayman Tisdale",
+          "Dr. Uriah",
+          "Malzazarik",
+          "Lady Hilda"
+        ],
+        "others": [
+          "Grimny"
+        ]
+      },
+      "cue": "\"My loins will forever burn with the heat of the forge\" - Vivian",
+      "beats": [
+        {
+          "id": "beat_51",
+          "kind": "event",
+          "text": "The party found the Dwarven mine's cabin burnt down and its entrance sealed by a natural-looking cave-in that could be dug through.",
+          "importance": "medium",
+          "ledger": [
+            123,
+            124
+          ]
+        },
+        {
+          "id": "beat_52",
+          "kind": "event",
+          "text": "Dunk bashed into the cave-in and took a ring from a dead dwarf's hand.",
+          "importance": "medium",
+          "ledger": [
+            125,
+            126,
+            127
+          ]
+        },
+        {
+          "id": "beat_53",
+          "kind": "learned",
+          "text": "The ring is magical; Dr. Uriah could not tell whether it is cursed.",
+          "importance": "medium",
+          "ledger": [
+            128,
+            129
+          ]
+        },
+        {
+          "id": "beat_54",
+          "kind": "event",
+          "text": "Unable to resist the urge, Dunk put on the ring, and the ghost of the dwarf Grimny appeared, visible only to Dunk.",
+          "importance": "high",
+          "ledger": [
+            130,
+            131,
+            132
+          ]
+        },
+        {
+          "id": "beat_55",
+          "kind": "learned",
+          "text": "The ring lets its wearer see and speak with Grimny's ghost; Grimny can see only Dunk.",
+          "importance": "high",
+          "ledger": [
+            132,
+            135
+          ]
+        },
+        {
+          "id": "beat_56",
+          "kind": "learned",
+          "text": "Grimny says he believes he was killed by Bral, his brother and the greediest of the seven dwarves: Grimny, Grelli, Durney, Brenny, Tedry, Rooney and Bral.",
+          "importance": "high",
+          "ledger": [
+            134
+          ]
+        },
+        {
+          "id": "beat_57",
+          "kind": "learned",
+          "text": "Grimny says the dwarves amassed a hoard from the mine, selling metal to the town but keeping the good stuff.",
+          "importance": "high",
+          "ledger": [
+            137
+          ]
+        },
+        {
+          "id": "beat_58",
+          "kind": "learned",
+          "text": "Grimny says Bral tried to sell a treasure map in a faraway town and came back penniless.",
+          "importance": "medium",
+          "ledger": [
+            137
+          ]
+        },
+        {
+          "id": "beat_59",
+          "kind": "event",
+          "text": "Sir Phidipaldi realized, with Dr. Uriah agreeing, that the dwarf the party lost a gambling bet to and got their map from was Bral.",
+          "importance": "high",
+          "ledger": [
+            138
+          ]
+        },
+        {
+          "id": "beat_60",
+          "kind": "learned",
+          "text": "Shown the party's map, Grimny says Bral probably hid the treasure in the Dragon's Lair, a very small one-room cave the dwarves had scouted as a hiding place and found empty.",
+          "importance": "high",
+          "ledger": [
+            139,
+            140,
+            141
+          ]
+        },
+        {
+          "id": "beat_61",
+          "kind": "event",
+          "text": "Dunk speculated that there is no dragon, just Bral pretending there is one to keep everybody away.",
+          "importance": "medium",
+          "ledger": [
+            142
+          ]
+        },
+        {
+          "id": "beat_62",
+          "kind": "event",
+          "text": "Dunk gave Grimny Vivian's scent and held up her letter for him to read.",
+          "importance": "high",
+          "ledger": [
+            143,
+            144
+          ]
+        },
+        {
+          "id": "beat_63",
+          "kind": "learned",
+          "text": "Vivian's letter laments cold nights without Grimny and declares \"My loins will forever burn with the heat of the forge\".",
+          "importance": "low",
+          "ledger": [
+            145
+          ]
+        },
+        {
+          "id": "beat_64",
+          "kind": "event",
+          "text": "Grimny looked elated and evaporated into the sky as a shooting star crossed it.",
+          "importance": "high",
+          "ledger": [
+            146
+          ]
+        }
+      ]
+    }
+  ]
+}

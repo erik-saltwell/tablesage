@@ -1,0 +1,39 @@
+{
+  "method": "Incremental synchronization of existing guide with SRC-60 dated decisions; prior coverage retained and revalidated. Not a new full-corpus extract-learnings run.",
+  "added": [
+    "RC-073",
+    "RC-074",
+    "RC-075"
+  ],
+  "changed": [
+    "RC-016",
+    "RC-030",
+    "RC-044",
+    "RC-053",
+    "RC-054",
+    "RC-055",
+    "RC-069",
+    "RC-071",
+    "SE-001",
+    "SE-006",
+    "SE-008",
+    "SE-015",
+    "SE-032",
+    "SE-033"
+  ],
+  "retired": [
+    "RC-019",
+    "RC-060"
+  ],
+  "generation": "none",
+  "learnings_state": "fed301cbcc3a",
+  "counts": {
+    "failing_pattern_checks": 57,
+    "advisory_pattern_checks": 10,
+    "current_session_expectations": 29,
+    "advisory_session_expectations": 7
+  },
+  "added_checks_hash": "46fe7d1901fb58e2e408948ad1e4ef9650fd9a3ad30b29110428e28d76e048ad",
+  "coverage_entries": 126,
+  "coverage_verified": true
+}

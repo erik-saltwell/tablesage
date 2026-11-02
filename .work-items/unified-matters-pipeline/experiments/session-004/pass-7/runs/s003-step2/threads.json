@@ -1,0 +1,262 @@
+{
+ "session": "003",
+ "scenes": "s003-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and the Reeve's bounty",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_2",
+    "beat_3",
+    "beat_8",
+    "beat_52",
+    "beat_53",
+    "beat_54"
+   ],
+   "note": "Sir Phidipaldi now holds Sir Brandon's magical sword (beat_54) and laid out a plan for the hunt, but the dragon is still at large and the bounty unclaimed."
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3",
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_2"
+   ],
+   "note": "The plan to pay Lady Hilda with an advance from the reeve adds to the hiring, which is still pending."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_1",
+    "beat_37",
+    "beat_38"
+   ],
+   "note": "The offer was accepted: Ned is now formally hired on new terms, paying 10 gold back per murder with the body his (beat_1), and has offered to buy the goblin bodies."
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipments",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_2"
+   ],
+   "note": "Getting the shirt through Dunk's scheme remains a step in the party's plan; the shirt is not yet obtained."
+  },
+  {
+   "id": "thread_11",
+   "name": "Squints and Trout's Halfling Corps",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_19",
+    "beat_20",
+    "beat_43"
+   ],
+   "note": "Squints proved himself by killing the ooze and is acting under Trout's orders; the recruitment terms and Trout's secret intent still stand."
+  },
+  {
+   "id": "thread_12",
+   "name": "Ingrid's sleeping potion for Warwick",
+   "parent": "thread_9",
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_2"
+   ],
+   "note": "Dunk's potion scheme is still part of the plan and the debt to Ingrid is unfulfilled."
+  },
+  {
+   "id": "thread_13",
+   "name": "Sir Brandon's magic sword at the Barrow Mound",
+   "parent": "thread_3",
+   "origin": "earlier",
+   "status": "resolved",
+   "touched_by": [
+    "beat_3",
+    "beat_5",
+    "beat_6",
+    "beat_48",
+    "beat_52",
+    "beat_53",
+    "beat_54"
+   ],
+   "note": "The sword was found in Sir Brandon's sarcophagus and taken by Sir Phidipaldi (beat_54), and Brother Dirk came along to the Barrow, so nothing about the retrieval remains open."
+  },
+  {
+   "id": "thread_14",
+   "name": "Dr. Uriah's penance and donation at the Barrow Mound",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "The party reached the Barrow Mound but no penance or donation was shown, so the debt stands."
+  },
+  {
+   "id": "thread_15",
+   "name": "Why the hidden fairies are coming out",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_16",
+   "name": "The giant in the cyclopean cottage",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_17",
+   "name": "The undead swordsman of the Barrow Mound",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_8",
+    "beat_22",
+    "beat_34",
+    "beat_36",
+    "beat_41",
+    "beat_55"
+   ],
+   "note": "A huge, angry undead figure with a greatsword, possibly one of Brandon's companions, has slaughtered goblins below and has just appeared in the tomb's doorway (beat_55); the danger is live."
+  },
+  {
+   "id": "thread_18",
+   "name": "The Free Goblin Society's bargain",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_12",
+    "beat_13",
+    "beat_14",
+    "beat_16",
+    "beat_21",
+    "beat_22",
+    "beat_38",
+    "beat_39"
+   ],
+   "note": "Sir Phidipaldi promised to clear the evil from the mound and keep the goblins hidden from King Hogboon in exchange for their company and his 'father's goods' (beat_14); the clearing is unfinished."
+  },
+  {
+   "id": "thread_19",
+   "name": "Brother Dirk and the Barrow's holy relics",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_26",
+    "beat_27",
+    "beat_28",
+    "beat_29",
+    "beat_49"
+   ],
+   "note": "Dr. Uriah wears the robes of Saint Arthur, whose magic is untested, over Dirk's offence, and whether the chalice belongs to the church was left to 'figure out later' (beat_49)."
+  },
+  {
+   "id": "thread_20",
+   "name": "The noblewoman statue and the voice in the tomb",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_30",
+    "beat_45",
+    "beat_46",
+    "beat_47"
+   ],
+   "note": "No one knows who the noblewoman statue depicts or whose voice asked the knightly riddle; the doors opened but the question stands."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_9",
+   "reason": "Real gemstones inlaid in the antechamber mosaics are a notable potential haul."
+  },
+  {
+   "beat": "beat_17",
+   "reason": "Dr. Uriah found a jewel-encrusted ceremonial dagger worth over 200 gold."
+  },
+  {
+   "beat": "beat_23",
+   "reason": "Discovery of the crypt's secret room that held the candleholders and the relics."
+  },
+  {
+   "beat": "beat_24",
+   "reason": "The party took seven gold candleholders worth 50 gold each."
+  },
+  {
+   "beat": "beat_51",
+   "reason": "The five urns, worth 100 gold each, were opened and found to hold only dust."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_17",
+  "thread_new_2": "thread_18",
+  "thread_new_3": "thread_19",
+  "thread_new_4": "thread_20"
+ },
+ "problems": []
+}

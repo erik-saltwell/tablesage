@@ -1,0 +1,12 @@
+step1: 11 scenes, 62 beats {'event': 46, 'learned': 16}, ledger coverage 143/147, out-of-range refs none
+  scene_1 The Barrow Mound (7 beats) cue: The faded mural of a conquering knight on the door
+  scene_2 The Barrow Mound's antechamber (5 beats) cue: Real gemstones glinting in the Brandon mosaics
+  scene_3 The goblin crypt (14 beats) cue: The goblins' peeled white speaking stick
+  scene_4 The goblin crypt's secret room (7 beats) cue: "Your boss sucks" - Dr. Uriah
+  scene_5 The statue room (3 beats) cue: Four eight-foot knight statues labeled Valor Piety Wisdom Duty
+  scene_6 The chapel of Saint Arthur (3 beats) cue: Spore cloud from the moldy Saint Arthur statue
+  scene_7 The lower corridor (4 beats) cue: Three goblins in bloody pieces at the stairs' foot
+  scene_8 The slime pool room (6 beats) cue: "I am Sir Dirk's manager" - Squints
+  scene_9 The noblewoman statue room (4 beats) cue: A voice asking "What makes a true knight?"
+  scene_10 Sir Brandon's tomb (8 beats) cue: A life-size wooden dragon-headed ship
+  scene_11 Sir Brandon's tomb (1 beats) cue: A mustachioed death mask dragging a huge greatsword

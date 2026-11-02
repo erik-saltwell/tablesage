@@ -1,0 +1,242 @@
+{
+ "scenes": "f2-step1",
+ "threads": "f2-step2",
+ "shared_subjects": [
+  {
+   "subject": "Where the Dragon's Lair is and what the cave is like (small, one big room, found empty by the dwarves)",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_77"
+   ],
+   "reason": "The party would go to the lair first to deal with the dragon, which is the dragon hunt's aim."
+  },
+  {
+   "subject": "The treasure probably being hidden at the Dragon's Lair",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_2",
+    "thread_16"
+   ],
+   "beats": [
+    "beat_74",
+    "beat_77"
+   ],
+   "reason": "Finding the map's treasure is thread_1's own aim."
+  },
+  {
+   "subject": "Whether there is really a dragon, or Bral is faking one to keep people away",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_16"
+   ],
+   "beats": [
+    "beat_77",
+    "beat_78"
+   ],
+   "reason": "This question is about the dragon the hunt targets, so it lives on the dragon hunt."
+  },
+  {
+   "subject": "Bral: Grimny's greedy brother, his killer and the dwarf who lost the map to the party",
+   "home": "thread_16",
+   "other_threads": [
+    "thread_1",
+    "thread_2"
+   ],
+   "beats": [
+    "beat_72",
+    "beat_74",
+    "beat_75"
+   ],
+   "reason": "The party would act on Bral to address Grimny's murder, which is thread_16's matter."
+  },
+  {
+   "subject": "Sir Brandon's magic sword, effective against evil and usable through the dragon's mouth",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_16",
+    "beat_48"
+   ],
+   "reason": "The party's plan for the sword is to drag it through the dragon's mouth, so the hunt would use it first."
+  },
+  {
+   "subject": "Warwick's mithril chain shirt lent to the party and worn by Wayman",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_2",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_35",
+    "beat_36",
+    "beat_57"
+   ],
+   "reason": "The shirt was received under the Warwick deal, so it lives on that bargain."
+  },
+  {
+   "subject": "Cedric's 975-gold promissory note for the barrow treasure, payable when caravans flow",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_25",
+    "beat_26"
+   ],
+   "reason": "The note is Cedric's debt to the party and is the subject of thread_12."
+  },
+  {
+   "subject": "The promissory note pledged to recruit Malzazarik and Lady Hilda",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_28",
+    "beat_62"
+   ],
+   "reason": "The pledge is a use of Cedric's note, which is thread_12's matter."
+  },
+  {
+   "subject": "Malzazarik and Lady Hilda as allies in the party",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_62"
+   ],
+   "reason": "They were recruited to fight the dragon, so the hunt would use them first."
+  },
+  {
+   "subject": "The barrow robes, kept until the dragon is defeated and found non-magical",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_23",
+    "beat_40"
+   ],
+   "reason": "Dr. Uriah's promise to return the robes is the bargain thread_11 tracks."
+  },
+  {
+   "subject": "Why shipments and metal stopped reaching Brandonsford when the dragon appeared",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_12",
+    "thread_13"
+   ],
+   "beats": [
+    "beat_24",
+    "beat_26",
+    "beat_27",
+    "beat_33"
+   ],
+   "reason": "This is the very question thread_5 asks."
+  },
+  {
+   "subject": "The Dwarven mine's location and the cave-in sealing it",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1",
+    "thread_16"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_61",
+    "beat_67",
+    "beat_68"
+   ],
+   "reason": "The cave-in most directly blocks bringing metal back under the Warwick deal."
+  },
+  {
+   "subject": "King Hogboon's temple ruins as the map's unmarked location",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_64",
+    "beat_65"
+   ],
+   "reason": "The question of what the unmarked map location is belongs to the treasure map thread."
+  },
+  {
+   "subject": "The magic ring that lets its wearer see and speak with Grimny's ghost",
+   "home": "thread_16",
+   "other_threads": [
+    "thread_15"
+   ],
+   "beats": [
+    "beat_68",
+    "beat_69",
+    "beat_70",
+    "beat_71"
+   ],
+   "reason": "The ring is the party's link to Grimny's murder, and thread_15 is resolved."
+  },
+  {
+   "subject": "Sir Alfred left incapacitated but not destroyed",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_7",
+    "beat_10",
+    "beat_11"
+   ],
+   "reason": "Thread_4 is about Sir Alfred himself."
+  },
+  {
+   "subject": "The goblins walling off the stairs and holding the church, antechamber and statue room",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_13"
+   ],
+   "reason": "This is the renegotiated term of the goblins' bargain."
+  },
+  {
+   "subject": "No source yet for protection against the dragon's poison",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_37",
+    "beat_42",
+    "beat_51"
+   ],
+   "reason": "The child thread about poison protection comes before the broader dragon hunt."
+  },
+  {
+   "subject": "Warwick's night visitors (Ingrid) and the lyre left to ward them off",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_31",
+    "beat_32",
+    "beat_58",
+    "beat_59"
+   ],
+   "reason": "The identity of the night visitor is the matter of Dunk's deal with Ingrid."
+  }
+ ],
+ "problems": []
+}

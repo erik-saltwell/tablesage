@@ -1,0 +1,16 @@
+step3: 42 facts (37 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 9, 'unknown': 11, 'threat': 2}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_28']
+  uncertain: ['fact_31']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_27 (thread_2) & fact_31 (thread_12): ['malzazarik and lady hilda']
+    fact_28 (thread_3) & fact_11 (thread_4): ['free goblin society goblins']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']

@@ -1,0 +1,215 @@
+{
+ "session": "003",
+ "scenes": "s003-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "Treasure map",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session; the Barrow Mound treasure is not tied to the map."
+  },
+  {
+   "id": "thread_2",
+   "name": "Dragon hunt (Eric the Reeve's bounty)",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_3",
+    "beat_4",
+    "beat_7",
+    "beat_10",
+    "beat_53",
+    "beat_54",
+    "beat_59",
+    "beat_60",
+    "beat_61"
+   ],
+   "note": "Sir Phidipaldi took Sir Brandon's magic sword (beat_61) and the party set out a plan, but the dragon still lives, so the hunt continues with an added resource."
+  },
+  {
+   "id": "thread_3",
+   "name": "Missing shipments",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_4",
+   "name": "Fairies appearing more often",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session; the myth of a fairy-given sword does not explain why fairies are appearing."
+  },
+  {
+   "id": "thread_5",
+   "name": "Ingrid and Warwick (Dunk's deal)",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_3"
+   ],
+   "note": "The party plans to carry out Dunk's scheme with Ingrid after the Barrow, but it has not been done."
+  },
+  {
+   "id": "thread_6",
+   "name": "Dr. Uriah's penance for Father William",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Dr. Uriah reached the Barrow Mound but did no penance and made no donation; still owed."
+  },
+  {
+   "id": "thread_7",
+   "name": "Squints' share of the treasure",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_21",
+    "beat_28",
+    "beat_48",
+    "beat_56",
+    "beat_58"
+   ],
+   "note": "The party gathered its first treasure, but Squints has not yet made his promised second pick."
+  },
+  {
+   "id": "thread_8",
+   "name": "Drop Dead Ned's hire",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_1",
+    "beat_41",
+    "beat_42"
+   ],
+   "note": "The party hired Ned under an ongoing arrangement paying them for murders and bodies, and he has offered a deal on the goblin corpses that would need sneaking past the goblins."
+  },
+  {
+   "id": "thread_9",
+   "name": "Protection against the black dragon's poison",
+   "parent": "thread_2",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_3"
+   ],
+   "note": "Sir Phidipaldi's plan states that protection from the witch or alchemist is needed because the black dragon is poisonous, so it serves the dragon hunt."
+  },
+  {
+   "id": "thread_10",
+   "name": "The Free Goblin Society bargain",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_14",
+    "beat_15",
+    "beat_16",
+    "beat_17",
+    "beat_18",
+    "beat_19",
+    "beat_22",
+    "beat_24",
+    "beat_43"
+   ],
+   "note": "The party promised to clear the evil from the mound and keep the goblins' presence from King Hogboon in return for their home there; the evil is not yet cleared."
+  },
+  {
+   "id": "thread_11",
+   "name": "The undead giant in the Barrow Mound",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_10",
+    "beat_26",
+    "beat_40",
+    "beat_46",
+    "beat_62"
+   ],
+   "note": "A huge undead swordsman, apparently one of Brandon's companions, has killed many goblins and has just appeared in the tomb doorway (beat_62); the danger is live."
+  },
+  {
+   "id": "thread_12",
+   "name": "The robes of Saint Arthur",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_30",
+    "beat_31",
+    "beat_32",
+    "beat_33"
+   ],
+   "note": "Dr. Uriah wears the holy robes untested for magic, over Brother Dirk's deep offense; both the robes' nature and Dirk's grievance remain open."
+  },
+  {
+   "id": "thread_13",
+   "name": "The noblewoman statue",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_50",
+    "beat_51",
+    "beat_52"
+   ],
+   "note": "The riddle was answered, but whom the speaking noblewoman statue depicts remains an unanswered question."
+  },
+  {
+   "id": "thread_14",
+   "name": "Brother Dirk's claim on the chalice",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_56"
+   ],
+   "note": "Dirk suggested the jeweled chalice belongs to the church and Trout deferred the question until later."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_6",
+   "reason": "The recently opened door was a notable clue, explained by the goblins' arrival."
+  },
+  {
+   "beat": "beat_11",
+   "reason": "The real gemstones in the mosaics are a notable potential source of wealth."
+  },
+  {
+   "beat": "beat_23",
+   "reason": "Squints killed the gray ooze and was praised as Trout's apprentice."
+  },
+  {
+   "beat": "beat_34",
+   "reason": "The four virtue statues supplied the answers to the tomb's riddle."
+  },
+  {
+   "beat": "beat_38",
+   "reason": "Sir Phidipaldi was blessed with good fortune for the rest of the Barrow Mound adventure."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_8",
+  "thread_new_2": "thread_9",
+  "thread_new_3": "thread_10",
+  "thread_new_4": "thread_11",
+  "thread_new_5": "thread_12",
+  "thread_new_6": "thread_13",
+  "thread_new_7": "thread_14"
+ },
+ "problems": []
+}

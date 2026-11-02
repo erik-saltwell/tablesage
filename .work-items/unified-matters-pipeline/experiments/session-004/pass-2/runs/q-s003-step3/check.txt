@@ -1,0 +1,23 @@
+step3: 34 facts (34 open) {'want': 3, 'owe': 6, 'blocked_by': 3, 'could_use': 12, 'unknown': 8, 'threat': 2}
+  possibly moot: []
+  definite_end false: ['fact_25']
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_12 (thread_6, owe) ~ fact_13 (thread_6, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.44 fact_24 (thread_10, owe) ~ fact_25 (thread_10, owe)
+         The party promised the Free Goblin Society to clear the evil out of the Barrow Mound, in return for the goblins living there and letting the party take Sir Brandon's goods.
+         The party promised the Free Goblin Society never to tell King Hogboon that the goblins are settled in the Barrow Mound.
+    0.43 fact_2 (thread_2, want) ~ fact_8 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_14 (thread_7) & fact_18 (thread_8): ['in the barrow mound']
+    fact_14 (thread_7) & fact_25 (thread_10): ['in the barrow mound']
+    fact_17 (thread_7) & fact_26 (thread_10): ['from the barrow mound']
+    fact_18 (thread_8) & fact_25 (thread_10): ['in the barrow mound']
+    fact_21 (thread_8) & fact_24 (thread_10): ['the free goblin society']
+    fact_21 (thread_8) & fact_25 (thread_10): ['the free goblin society']
+    fact_26 (thread_10) & fact_29 (thread_11): ['the undead giant swordsman']

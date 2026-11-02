@@ -1,0 +1,91 @@
+{
+  "title": "SessionChanges",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "change",
+          "impact_basis",
+          "narrative_impact",
+          "lasting_basis",
+          "lasting_consequence",
+          "encounter_basis",
+          "encounter_value",
+          "focus_beats",
+          "represented_by"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(thread|beat|scene)_[0-9]+$"
+          },
+          "change": {
+            "type": "string",
+            "minLength": 1
+          },
+          "impact_basis": {
+            "type": "string",
+            "minLength": 1
+          },
+          "narrative_impact": {
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "lasting_basis": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lasting_consequence": {
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "encounter_basis": {
+            "type": "string"
+          },
+          "encounter_value": {
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high",
+              null
+            ]
+          },
+          "focus_beats": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^beat_[0-9]+$"
+            }
+          },
+          "represented_by": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^(thread|beat)_[0-9]+$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

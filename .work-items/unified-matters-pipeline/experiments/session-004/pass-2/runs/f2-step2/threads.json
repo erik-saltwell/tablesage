@@ -1,0 +1,264 @@
+{
+ "session": "004",
+ "scenes": "f2-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "Treasure map",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_17",
+    "beat_18",
+    "beat_20",
+    "beat_64",
+    "beat_65",
+    "beat_74",
+    "beat_75",
+    "beat_76",
+    "beat_77"
+   ],
+   "note": "Dr. Uriah can now read the map's labels, and the unmarked location proved to be King Hogboon's ruins. Grimny revealed the map came from Bral and the treasure is probably hidden at the Dragon's Lair (beat_74, beat_77), so the question is partly answered while the treasure is still unfound."
+  },
+  {
+   "id": "thread_2",
+   "name": "Dragon hunt (Eric the Reeve's bounty)",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_3",
+    "beat_16",
+    "beat_18",
+    "beat_28",
+    "beat_35",
+    "beat_42",
+    "beat_47",
+    "beat_48",
+    "beat_49",
+    "beat_50",
+    "beat_62",
+    "beat_63",
+    "beat_77",
+    "beat_78"
+   ],
+   "note": "The impenetrable scales now have a stated workaround: knock the dragon out with faun wine and drag Sir Brandon's sword through its mouth (beat_48, beat_50). Lady Hilda joined and the lair is identified, but Grimny's account of an empty cave makes Dunk suspect there is no dragon (beat_77, beat_78)."
+  },
+  {
+   "id": "thread_3",
+   "name": "The goblins' bargain",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_10",
+    "beat_11",
+    "beat_12",
+    "beat_13",
+    "beat_14",
+    "beat_15"
+   ],
+   "note": "The deal was renegotiated: instead of a cleared mound, the goblins will wall off the stairs and hold the church, antechamber and statue room (beat_13). Wayman's new promise never to reveal their whereabouts to King Hogboon remains owed (beat_15)."
+  },
+  {
+   "id": "thread_4",
+   "name": "Sir Alfred, the undead in the Barrow Mound",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_1",
+    "beat_3",
+    "beat_5",
+    "beat_6",
+    "beat_7",
+    "beat_9",
+    "beat_10",
+    "beat_11",
+    "beat_13"
+   ],
+   "note": "Sir Alfred was incapacitated but not destroyed, and the party left him that way (beat_7, beat_10), so the danger continues in a changed form. The goblins plan to wall him off, and Brother Dirk regards him as holy."
+  },
+  {
+   "id": "thread_5",
+   "name": "Missing shipments",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_24",
+    "beat_27",
+    "beat_33"
+   ],
+   "note": "Cedric and Warwick say shipments and metal stopped when the dragon appeared, but why they stopped is still unexplained."
+  },
+  {
+   "id": "thread_6",
+   "name": "Fairies appearing more often",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_7",
+   "name": "The noblewoman statue",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_8",
+   "name": "Ingrid and Warwick (Dunk's deal)",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_30",
+    "beat_31",
+    "beat_56",
+    "beat_58",
+    "beat_59",
+    "beat_60"
+   ],
+   "note": "Warwick's night visitor is revealed as Ingrid, and Sir Phidipaldi told her Warwick knows and is not interested (beat_58, beat_59), which changes the situation's shape. Dunk's promise to help her was never released, so the thread stays open."
+  },
+  {
+   "id": "thread_9",
+   "name": "Dr. Uriah's penance for Father William",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session; the penance and donation are still owed."
+  },
+  {
+   "id": "thread_10",
+   "name": "Squints' share of the treasure",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_16",
+    "beat_25",
+    "beat_26"
+   ],
+   "note": "The party took a lot of treasure from the barrow and signed it over to Cedric for a promissory note (beat_26). Squints has not been given second pick, so the promise is still owed."
+  },
+  {
+   "id": "thread_11",
+   "name": "Robes for Brother Dirk",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_21",
+    "beat_22",
+    "beat_23",
+    "beat_39",
+    "beat_40"
+   ],
+   "note": "Dr. Uriah promised to return the barrow robes to the church once the dragon is defeated (beat_23); the robes proved non-magical, and the promise is still outstanding."
+  },
+  {
+   "id": "thread_12",
+   "name": "Cedric's promissory note",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_25",
+    "beat_26",
+    "beat_28",
+    "beat_62"
+   ],
+   "note": "Cedric owes 975 gold for the treasure once the caravans flow again, and the note was used to recruit Malzazarik and Lady Hilda (beat_62). Payment is still pending."
+  },
+  {
+   "id": "thread_13",
+   "name": "The Warwick deal",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_32",
+    "beat_33",
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_57",
+    "beat_61",
+    "beat_67",
+    "beat_68"
+   ],
+   "note": "This is one bargain: Warwick keeps the lyre and holds the plate armor as collateral, and the party borrows his heirloom mithril shirt in exchange for bringing metal from the Dwarven mine. The mine is blocked by a cave-in, and the metal has not been delivered."
+  },
+  {
+   "id": "thread_14",
+   "name": "Protection against the dragon's poison",
+   "parent": "thread_2",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_37",
+    "beat_42",
+    "beat_43",
+    "beat_51"
+   ],
+   "note": "Sir Phidipaldi said they needed anti-poison remedies because they are hunting the dragon (beat_37), so this serves the dragon hunt. Neither Ingrid nor Vivian could supply any (beat_42, beat_51)."
+  },
+  {
+   "id": "thread_15",
+   "name": "Vivian's message to Grimny",
+   "parent": null,
+   "origin": "new",
+   "status": "resolved",
+   "touched_by": [
+    "beat_52",
+    "beat_54",
+    "beat_55",
+    "beat_79",
+    "beat_80",
+    "beat_81"
+   ],
+   "note": "Vivian asked the party to deliver her note and scent to Grimny, and Dunk delivered both to his ghost. Grimny ascended elated, so nothing more is owed (beat_79, beat_81)."
+  },
+  {
+   "id": "thread_16",
+   "name": "Who killed Grimny",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_68",
+    "beat_69",
+    "beat_70",
+    "beat_71",
+    "beat_72",
+    "beat_74",
+    "beat_75",
+    "beat_81"
+   ],
+   "note": "Grimny's ghost, reached through the ring, said his greedy brother Bral killed him, and the party's map came from Bral. Grimny has departed, but Bral and the murder remain unaddressed."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_53",
+   "reason": "Vivian revealed the church keeps the tale of Sir Brandon and bars her from it, which is background that bears on no open situation."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_11",
+  "thread_new_2": "thread_12",
+  "thread_new_3": "thread_13",
+  "thread_new_4": "thread_14",
+  "thread_new_5": "thread_15",
+  "thread_new_6": "thread_16"
+ },
+ "problems": []
+}

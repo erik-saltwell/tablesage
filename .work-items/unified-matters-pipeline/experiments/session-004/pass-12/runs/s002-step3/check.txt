@@ -1,0 +1,18 @@
+step3: 48 facts (41 open) {'want': 4, 'owe': 5, 'blocked_by': 2, 'could_use': 17, 'unknown': 9, 'threat': 4}
+  possibly moot: []
+  definite_end false: []
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.42 fact_27 (thread_2, could_use) ~ fact_36 (thread_10, want)
+         Warwick's magical mithril chain shirt (thread_10), which Dunk says he has a plan to get, could protect against the dragon.
+         Get Warwick the smith's magical mithril chain shirt, which glows in the moonlight in his shop.
+    0.40 fact_1 (thread_1, want) ~ fact_22 (thread_1, unknown)
+         Find the treasure marked on the party's treasure map.
+         Where did the party's treasure map come from?
+    0.36 fact_46 (thread_13, owe) ~ fact_47 (thread_13, owe)
+         Dr. Uriah agreed, at Father William's request, to give penance at Brandon's Barrow Mound.
+         Dr. Uriah agreed to donate 10 gold to Father William for the Barrow Mound's upkeep; no payment has been made.
+  cross-thread facts sharing 4-word phrases:
+    fact_26 (thread_2) & fact_43 (thread_12): ["can't be killed without"]
+    fact_27 (thread_2) & fact_36 (thread_10): ['magical mithril chain shirt']

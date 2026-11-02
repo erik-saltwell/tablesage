@@ -1,0 +1,18 @@
+step2: 16 threads, standalone ['beat_53', 'beat_64', 'beat_80'], problems none
+  thread_1 [earlier/open] The unrecognized treasure map parent=None beats=3
+  thread_2 [earlier/changed] The Clurichen of the riverbanks parent=None beats=13
+  thread_3 [earlier/changed] The dragon near Brandonsford parent=None beats=9
+  thread_4 [earlier/open] Hiring Lady Hilda parent=thread_3 beats=0
+  thread_5 [earlier/open] Bentley's missing shipment parent=None beats=1
+  thread_6 [earlier/open] Sir Phidipaldi's challenge to Eric the Reeve parent=None beats=0
+  thread_7 [earlier/open] Drop Dead Ned's offer of hire parent=None beats=0
+  thread_8 [earlier/open] Shamus the mule parent=None beats=1
+  thread_9 [earlier/changed] Warwick the smith and his mithril shirt parent=None beats=9
+  thread_10 [earlier/resolved] Quinn's vanishing ale parent=None beats=8
+  thread_11 [new/open] Squints and Trout's Halfling Corps parent=None beats=11
+  thread_12 [new/open] Dunk's sleeping-potion deal with Ingrid parent=thread_9 beats=14
+  thread_13 [new/open] Sir Brandon's sword in the Barrow Mound parent=thread_3 beats=8
+  thread_14 [new/open] Uriah's penance pledge to Father William parent=None beats=1
+  thread_15 [new/open] Fairies coming out of hiding parent=None beats=1
+  thread_16 [new/open] The man-eating giant in the north woods parent=None beats=6
+  medium/high beats on no thread and not standalone: none

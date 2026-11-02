@@ -1,0 +1,29 @@
+step3: 85 facts (67 open) {'want': 5, 'owe': 9, 'blocked_by': 8, 'could_use': 20, 'unknown': 19, 'threat': 6}
+  possibly moot: ['fact_64', 'fact_21', 'fact_44', 'fact_45']
+  definite_end false: ['fact_69']
+  uncertain: ['fact_79', 'fact_84', 'fact_45']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_7, want) ~ fact_18 (thread_7, unknown)
+         Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn.
+         Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?
+    0.43 fact_87 (thread_9, owe) ~ fact_88 (thread_9, owe)
+         The party must bring Warwick metal from the Dwarven mine, in exchange for his loan of the mithril chain shirt; meanwhile Warwick keeps Sir Phidipaldi's lyre to play each night.
+         The party must return the mithril chain shirt Warwick lent them; Warwick holds Sir Phidipaldi's plate armor and lyre as collateral.
+    0.42 fact_21 (thread_9, want) ~ fact_22 (thread_9, blocked_by)
+         Acquire the mithril chain shirt Warwick the smith displays in his shop.
+         Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays.
+    0.41 fact_33 (thread_3, could_use) ~ fact_89 (thread_9, could_use)
+         Wayman now wears Warwick's borrowed mithril chain shirt, which could protect him against the dragon (see its thread).
+         Wayman wears Warwick's mithril chain shirt, on loan; it greatly improves his protection and halves damage from magic weapons and spells.
+    0.41 fact_45 (thread_12, could_use) ~ fact_49 (thread_12, unknown)
+         Ingrid is making a sleeping potion from the faun wine Dunk gave her; Dunk can collect it when they meet tonight and use it to put Warwick to sleep.
+         Will a potion made from Dunk's heavily diluted faun wine still put Warwick to sleep?
+  cross-thread facts sharing 4-word phrases:
+    fact_77 (thread_1) & fact_90 (thread_9): ['on the treasure map']
+    fact_84 (thread_4) & fact_86 (thread_6): ["for the party's treasure", "note for the party's", 'promissory note for the']
+    fact_64 (thread_5) & fact_69 (thread_18): ["in the barrow mound's"]
+    fact_65 (thread_5) & fact_69 (thread_18): ['the free goblin society']
+    fact_86 (thread_6) & fact_93 (thread_21): ['the caravans flow again']
+    fact_86 (thread_6) & fact_94 (thread_21): ['since the dragon appeared', 'the caravans flow again', 'until the caravans flow']
+    fact_66 (thread_17) & fact_74 (thread_20): ['in the barrow mound']

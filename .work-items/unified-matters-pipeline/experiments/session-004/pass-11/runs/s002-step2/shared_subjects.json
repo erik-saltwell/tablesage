@@ -1,0 +1,122 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Brandon's sword as the only means of killing the dragon",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_40",
+    "beat_51",
+    "beat_66"
+   ],
+   "reason": "The thread about obtaining the sword comes before the broader dragon hunt."
+  },
+  {
+   "subject": "Location and distance of the Barrow Mound",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_15",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_41",
+    "beat_45",
+    "beat_68"
+   ],
+   "reason": "The sword quest is the first thread that seeks the Barrow."
+  },
+  {
+   "subject": "Location of the witch's home marked on the map",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_45",
+    "beat_69"
+   ],
+   "reason": "A location lives on the thread about the very thing it locates."
+  },
+  {
+   "subject": "Brother Dirk, rescued and wanting to go home",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_16",
+    "thread_10",
+    "thread_3"
+   ],
+   "beats": [
+    "beat_80",
+    "beat_81",
+    "beat_82"
+   ],
+   "reason": "Dirk's errand was fetching the sword, and the party is acting on that errand."
+  },
+  {
+   "subject": "Warwick's magical mithril chain shirt",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_3",
+    "thread_12"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_64"
+   ],
+   "reason": "The thread about the item comes before the hunt that might use it."
+  },
+  {
+   "subject": "Faun wine as the sleeping potion's key ingredient",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_29",
+    "beat_57",
+    "beat_70"
+   ],
+   "reason": "The wine was supplied under Dunk's deal with Ingrid."
+  },
+  {
+   "subject": "Whether Ingrid can make her own potions",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_14"
+   ],
+   "beats": [
+    "beat_44",
+    "beat_60"
+   ],
+   "reason": "Her competence bears most directly on the potion she owes Dunk."
+  },
+  {
+   "subject": "Farmer Gill's sons, away hunting the dragon",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_2",
+    "beat_67"
+   ],
+   "reason": "Their absence is the obstacle blocking a lower price for the mule."
+  },
+  {
+   "subject": "Naggeneen held in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_13",
+    "beat_14",
+    "beat_32"
+   ],
+   "reason": "The thread about the Clurichen itself records his captivity."
+  }
+ ]
+}

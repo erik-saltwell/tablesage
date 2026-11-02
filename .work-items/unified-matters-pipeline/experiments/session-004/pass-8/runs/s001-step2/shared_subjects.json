@@ -1,0 +1,29 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "No shipments have reached Brandonsford for weeks or months",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_15",
+    "beat_30",
+    "beat_35"
+   ],
+   "reason": "The broken supply line is the question the missing-shipments thread holds, and the fake-shipment plan only plays on it."
+  },
+  {
+   "subject": "Farmer Gill wants the dragon killed, as work Dunk could trade for",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_6"
+   ],
+   "beats": [
+    "beat_26"
+   ],
+   "reason": "The party would act on killing the dragon in the dragon hunt, though it could also pay for Shamus."
+  }
+ ]
+}

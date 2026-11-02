@@ -1,0 +1,87 @@
+{
+ "scenes": "s001-step1",
+ "threads": "s001-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived at Brandonsford following a treasure map whose marked locations they did not recognize.",
+   "impact_basis": "The opening beat sets up the party's motivating goal of finding the treasure via an unfamiliar map.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The map's unknown locations and treasure remain the party's reason for being here and will drive later exploration.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_2",
+   "change": "Reginald warned the party that a trickster Clurichen comes into town from the riverbanks every night.",
+   "impact_basis": "A single warning introduces a new nightly danger but nothing has happened with it yet.",
+   "narrative_impact": "low",
+   "lasting_basis": "The creature is said to come nightly, and Sir Phidipaldi already invoked Clurichens, so it is likely to come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_3",
+   "change": "The party learned a black dragon troubles Brandonsford and Eric the Reeve offered 1000 gold to whoever kills it and brings back its body.",
+   "impact_basis": "Eric's 1000-gold offer, George's lost arm, and Farmer Gill's account of the old dragon and his hunting sons establish a major foe and a new main goal.",
+   "narrative_impact": "high",
+   "lasting_basis": "The dragon still lives with a large bounty and rival hunters in the field, so it will shape later Sessions.",
+   "lasting_consequence": "high"
+  },
+  {
+   "id": "thread_4",
+   "change": "Lady Hilda offered to join the party against the dragon for pay, and Sir Phidipaldi said they would return to hire her.",
+   "impact_basis": "A seasoned potential ally made an offer and the party signalled intent to accept, but no deal is struck.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Sir Phidipaldi promised to come back for her services, so the hire is likely to come up again.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned offered himself and his killer wasp for hire at 100 gold a week, and Dr. Uriah said he would think about it.",
+   "impact_basis": "A dangerous potential hireling made a concrete offer that remains undecided.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Dr. Uriah is still considering the offer, so Ned is likely to reappear.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_6",
+   "change": "The party learned no shipments have reached Brandonsford in months, starving the town of goods, for an unknown reason.",
+   "impact_basis": "Bentley's and Gill's accounts reveal a town-wide supply problem, a significant discovery tied to the dragon.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The unexplained cause is an open mystery likely to be investigated later.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_7",
+   "change": "Sir Phidipaldi insulted Eric the Reeve and challenged him to a duel at dawn, and Bentley sent him to the Golden Egg for the night.",
+   "impact_basis": "The glove slap and duel challenge soured relations with the bounty-giver and got Sir Phidipaldi expelled from the tavern.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The dawn duel is unresolved and the quarrel with the Reeve who holds the bounty will likely carry into the next Session.",
+   "lasting_consequence": "medium"
+  },
+  {
+   "id": "thread_8",
+   "change": "Farmer Gill offered Dunk his mule Shamus for 100 gold, and Dunk is sleeping in Gill's barn to consider trading work instead.",
+   "impact_basis": "An offer of an ordinary mount was made and not yet accepted.",
+   "narrative_impact": "low",
+   "lasting_basis": "Dunk is sleeping on the offer, so it will probably be settled soon but is minor.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "thread_9",
+   "change": "The party learned Warwick the smith displays a superb mithril chain shirt that he refuses to sell.",
+   "impact_basis": "A single beat reveals a coveted item that is out of reach.",
+   "narrative_impact": "low",
+   "lasting_basis": "It may tempt the party later, but nothing has been set in motion.",
+   "lasting_consequence": "low"
+  },
+  {
+   "id": "thread_10",
+   "change": "Sir Phidipaldi agreed to stage a fake ale delivery for Quinn for 100 gold to get back at Bentley.",
+   "impact_basis": "An agreement was made for paid work, while Quinn's account of nightly vanishing stock adds a mystery.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The staged delivery has not yet happened and is likely to play out in a later Session.",
+   "lasting_consequence": "medium"
+  }
+ ],
+ "problems": []
+}

@@ -1,0 +1,10 @@
+step3: 20 facts (20 open) {'want': 4, 'owe': 1, 'blocked_by': 0, 'could_use': 7, 'unknown': 6, 'threat': 2}
+  possibly moot: []
+  definite_end false: []
+  uncertain: []
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.56 fact_18 (thread_8, want) ~ fact_20 (thread_8, unknown)
+         Catch whoever empties the Golden Egg's bar at night, which Quinn blames on Bentley, and collect Quinn's 100 gold.
+         Who or what empties and knocks over the Golden Egg's stock every night? Quinn blames Bentley.
+  cross-thread facts sharing 4-word phrases:

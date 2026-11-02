@@ -1,0 +1,116 @@
+{
+ "session": "001",
+ "scenes": "s001-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The unrecognized treasure map",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_1"
+   ],
+   "note": "The party is following a treasure map whose marked locations they do not recognize, and the treasure has not been found."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen from the riverbanks",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_6"
+   ],
+   "note": "Reginald warned of a trickster Clurichen that comes into town every night up to no good. The danger stands on its own and is unresolved."
+  },
+  {
+   "id": "thread_3",
+   "name": "The black dragon and Eric the Reeve's bounty",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_11",
+    "beat_12",
+    "beat_15",
+    "beat_16",
+    "beat_17",
+    "beat_18",
+    "beat_19",
+    "beat_20",
+    "beat_26",
+    "beat_27",
+    "beat_28"
+   ],
+   "note": "One situation: a rumored black dragon is terrorizing Brandonsford, and Eric offers 1000 gold for its body. Lady Hilda's offer to join for pay, George's account, Gill's sons' hunt and the Sir Brandon history all bear on it. Sir Phidipaldi's insult and challenge strained relations with the bounty-giver, but Eric never accepted the duel, so there is no live duel."
+  },
+  {
+   "id": "thread_4",
+   "name": "The missing shipments to Brandonsford",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_15",
+    "beat_30",
+    "beat_35"
+   ],
+   "note": "Bentley's restocking shipment is a week overdue, and others say nothing has come into town for months. What became of the shipments is unknown."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer of hire",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_21",
+    "beat_22",
+    "beat_23"
+   ],
+   "note": "Ned offered himself and his killer wasp for 100 gold a week, and Dr. Uriah said he would think about it, so the offer stands."
+  },
+  {
+   "id": "thread_6",
+   "name": "Shamus the mule",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_25",
+    "beat_26",
+    "beat_29"
+   ],
+   "note": "Farmer Gill offered Shamus for 100 gold, and Dunk asked about trading work and is considering it. Gill named killing the dragon as the big work needed."
+  },
+  {
+   "id": "thread_7",
+   "name": "Quinn's vanishing ale and the deal against Bentley",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_35",
+    "beat_36"
+   ],
+   "note": "Quinn's stock vanishes nightly and he blames Bentley. Sir Phidipaldi agreed to his 100-gold deal to stage a fake shipment, which is still to be carried out."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_24",
+   "reason": "Bentley banished Sir Phidipaldi to the Golden Egg for the night, a consequence of the quarrel that leads to no ongoing thread of its own."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_1",
+  "thread_new_2": "thread_2",
+  "thread_new_3": "thread_3",
+  "thread_new_4": "thread_4",
+  "thread_new_5": "thread_5",
+  "thread_new_6": "thread_6",
+  "thread_new_7": "thread_7"
+ },
+ "problems": []
+}

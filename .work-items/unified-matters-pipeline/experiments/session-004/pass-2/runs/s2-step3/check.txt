@@ -1,0 +1,21 @@
+step3: 42 facts (38 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 9, 'unknown': 11, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_28']
+  uncertain: ['fact_31']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.36 fact_33 (thread_13, owe) ~ fact_34 (thread_13, could_use)
+         The party must return Warwick's grandfather's mithril chain shirt, on loan against the party's plate armor as collateral.
+         Wayman wears Warwick's mithril chain shirt (on loan) over his leather armor, greatly improving his protection and halving damage from magic weapons and spells.
+    0.35 fact_12 (thread_4, unknown) ~ fact_15 (thread_7, unknown)
+         Why does Sir Alfred, an undead knight Brother Dirk regards as holy, roam the Barrow Mound?
+         Who does the noblewoman statue in the Barrow Mound depict?
+  cross-thread facts sharing 4-word phrases:
+    fact_28 (thread_3) & fact_11 (thread_4): ['free goblin society goblins', 'the free goblin society']
+    fact_18 (thread_9) & fact_29 (thread_11): ['dr uriah must give']

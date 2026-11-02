@@ -1,0 +1,214 @@
+{
+ "scenes": "s001-step1",
+ "threads": "s001-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived in Brandonsford following a treasure map whose marked locations they did not recognize.",
+   "impact_basis": "Beat_1 establishes the map and the party's reason for travel, framing their pursuit in unknown lands.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_1 sets up an unresolved treasure hunt that will drive later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_2",
+   "change": "A frog named Reginald warned that a trickster Clurichen comes from the riverbanks into town every night, and Sir Phidipaldi's claims about it proved wrong.",
+   "impact_basis": "Beat_7 reveals a nightly mischievous creature, and beats_17-18 add Phidipaldi's mistaken lore.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_7's nightly trickster is an open mystery that may explain other town troubles.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_3",
+   "change": "The party learned a black dragon threatens Brandonsford, and Eric the Reeve offered 1000 gold to whoever kills it and brings back its body.",
+   "impact_basis": "Beat_15 gives a 1000-gold bounty, and beats_16 and 26 add George's lost arm and Gill's sons hunting the dragon.",
+   "narrative_impact": "high",
+   "lasting_basis": "Beat_15's bounty and the unresolved dragon threat will likely shape later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_4",
+   "change": "Lady Hilda offered to join the party for pay against the dragon, and Sir Phidipaldi said they would return for her services.",
+   "impact_basis": "Beat_10 offers a seasoned potential hireling.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_10 leaves an open hire offer that is likely to come up again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned, a murderous thief with a killer wasp, offered himself for hire at 100 gold a week, and Dr. Uriah said he would think about it.",
+   "impact_basis": "Beats_20-22 introduce a dangerous potential hireling and his terms.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_21 leaves an open offer from a memorable, dangerous character.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_6",
+   "change": "The party learned no shipments have reached Brandonsford in months, including Bentley's overdue restock.",
+   "impact_basis": "Beats_13 and 29 reveal a town-wide supply blockage, a new mystery tied to the town's troubles.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The unexplained missing shipments in beats_13 and 29 are likely to be investigated, as beat_36's fake-shipment plan shows.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_7",
+   "change": "Sir Phidipaldi insulted Eric the Reeve, slapped him and challenged him to a duel, which Eric declined, and Bentley banished Phidipaldi to the Golden Egg for the night.",
+   "impact_basis": "Beats_17, 19 and 23 sour relations with the bounty-giver and get Phidipaldi expelled from the inn.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_19's ill will with the town's leader and bounty-giver is likely to affect later dealings.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_8",
+   "change": "Farmer Gill offered Dunk the mule Shamus for 100 gold, and Dunk, asking to trade work, slept on the offer in Gill's barn.",
+   "impact_basis": "Beats_25 and 28 make a small purchase offer and a night's lodging.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_28 leaves a minor open offer that may come up again.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_9",
+   "change": "The party learned that Warwick the smith displays a superb mithril chain shirt he refuses to sell.",
+   "impact_basis": "Beat_30 identifies a potential prize item.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_30's shirt is a possible future goal but nothing was acted upon.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_10",
+   "change": "Quinn, whose ale vanishes nightly, hired Sir Phidipaldi for 100 gold to stage a fake ale shipment to catch the culprit he believes is Bentley.",
+   "impact_basis": "Beats_35-36 reveal a nightly theft mystery and an agreed paid plan.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_36 sets up a job to be carried out next Session.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "scene_1",
+   "change": "The party talked their way past a night watchman into Brandonsford and got directions to the town's inns.",
+   "impact_basis": "Beats_2-5 give routine arrival and orientation.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beats_2-5 are mostly orientation detail.",
+   "lasting_consequence": "low",
+   "encounter_basis": "Routine arrival with comic colour; the treasure map is covered by thread_1.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_3"
+   ],
+   "represented_by": [
+    "thread_1"
+   ]
+  },
+  {
+   "id": "scene_2",
+   "change": "Dr. Uriah spoke with Reginald the frog, who warned of the Clurichen.",
+   "impact_basis": "Beat_7's warning is the scene's only substantive content.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_7's warning persists via the Clurichen thread.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "The frog conversation's central content, the Clurichen warning, is exactly what thread_2 tells.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_7"
+   ],
+   "represented_by": [
+    "thread_2"
+   ]
+  },
+  {
+   "id": "scene_3",
+   "change": "At the Clumsy Fox the party met Lady Hilda, Bentley, Eric the Reeve and Drop Dead Ned, learning of the dragon bounty before Sir Phidipaldi's quarrel with Eric got him sent away.",
+   "impact_basis": "Beats_10, 15, 19, 21 and 23 bring a bounty, hire offers and a quarrel.",
+   "narrative_impact": "high",
+   "lasting_basis": "Beats_15 and 19 set up the main pursuit and strained relations.",
+   "lasting_consequence": "high",
+   "encounter_basis": "The pivotal tavern evening's main events (bounty, quarrel, Hilda's and Ned's offers) are each told by their own threads.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_15",
+    "beat_19",
+    "beat_23"
+   ],
+   "represented_by": [
+    "thread_3",
+    "thread_7",
+    "thread_4",
+    "thread_5"
+   ]
+  },
+  {
+   "id": "scene_4",
+   "change": "Dunk spent the evening drinking with Farmer Gill, who offered him a mule and lodging and shared dragon lore and town gossip.",
+   "impact_basis": "Beats_25-31 provide hospitality, the Sir Brandon legend and gossip about Warwick and Ingrid.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beats_26-27 and 30 add context likely to recur, though the hospitality itself is short-lived.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "Gill's hospitality toward Dunk, with Dunk's personal admission and the Sir Brandon legend, is a meaningful personal encounter beyond the mule offer and scattered gossip threads.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_24",
+    "beat_27",
+    "beat_28",
+    "beat_32"
+   ],
+   "represented_by": []
+  },
+  {
+   "id": "scene_5",
+   "change": "At the Golden Egg, Quinn told Sir Phidipaldi of his vanishing ale and hired him for a fake-shipment scheme.",
+   "impact_basis": "Beats_35-36 reveal a theft mystery and an agreement.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_36's planned scheme will play out later.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "The scene's central interaction, Quinn's complaint and the agreed scheme, is what thread_10 tells.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_35",
+    "beat_36"
+   ],
+   "represented_by": [
+    "thread_10"
+   ]
+  }
+ ],
+ "problems": []
+}

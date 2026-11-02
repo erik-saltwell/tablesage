@@ -1,0 +1,88 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map that marks places they did not recognize."
+  },
+  {
+   "id": "thread_2",
+   "text": "Reginald the frog warned the party that a trickster Clurichen comes from the riverbanks every night and to stay away from it."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve offered a bounty to whoever kills the black dragon troubling Brandonsford. Farmer Gill says his three sons are already hunting it."
+  },
+  {
+   "id": "thread_4",
+   "text": "Lady Hilda offered to join a dragon hunt for pay, and Sir Phidipaldi said they would return after seeing the Reeve."
+  },
+  {
+   "id": "thread_5",
+   "text": "Drop Dead Ned offered himself and his killer wasp for hire, and Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "thread_6",
+   "text": "Bentley said his tavern's restock shipment never arrived, and Farmer Gill said nothing has reached town in months."
+  },
+  {
+   "id": "thread_7",
+   "text": "Sir Phidipaldi slapped Eric the Reeve with his glove and challenged him to a duel at dawn. Bentley banished him to the Golden Egg for the night."
+  },
+  {
+   "id": "scene_4",
+   "text": "Dunk split from the party, and Farmer Gill told him the legend of Sir Brandon over drinks from his still."
+  },
+  {
+   "id": "thread_9",
+   "text": "Quinn hired Sir Phidipaldi to help get back at Bentley, whom Quinn blames for his vanishing ale."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_1",
+   "text": "Find the treasure."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon near Brandonsford and drag its body into town for Eric the Reeve's 1000 gold bounty."
+  },
+  {
+   "id": "fact_19",
+   "text": "Help Quinn get back at Bentley and collect Quinn's 100 gold."
+  },
+  {
+   "id": "fact_15",
+   "text": "Duel Eric the Reeve at dawn, if Sir Phidipaldi still means to press his challenge."
+  },
+  {
+   "id": "fact_16",
+   "text": "Eric the Reeve, offended by Sir Phidipaldi's false claims and glove slap, never accepted the dawn duel."
+  },
+  {
+   "id": "fact_7",
+   "text": "If the party pays Lady Hilda, she will join their dragon hunt."
+  },
+  {
+   "id": "fact_13",
+   "text": "If the party hires Drop Dead Ned for 100 gold a week, he and his killer wasp will do any job that lets him kill. He will refund 5 gold per kill if he can do what he wants with the bodies."
+  },
+  {
+   "id": "fact_20",
+   "text": "If Sir Phidipaldi makes a big show of delivering Quinn's water-filled bottles, the fake ale shipment can bait Bentley."
+  },
+  {
+   "id": "fact_14",
+   "text": "Why has nothing come into Brandonsford for months?"
+  },
+  {
+   "id": "fact_21",
+   "text": "Who or what empties Quinn's good stock every night?"
+  },
+  {
+   "id": "fact_10",
+   "text": "The black dragon that tore off the woodsman George's arm may maim others who meet it."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

@@ -1,0 +1,428 @@
+{
+ "scenes": "s002-step1",
+ "threads": "s002-step2",
+ "items": [
+  {
+   "id": "thread_1",
+   "change": "Uriah still could not recall the map's history, and the party planned to check one of its marked locations on the way to the Barrow.",
+   "impact_basis": "Beat_3 adds nothing new about the map, and beat_46 only plans a detour to a marked spot.",
+   "narrative_impact": "low",
+   "lasting_basis": "The planned check in beat_46 may matter on the next leg of the journey, but nothing has been found yet.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_2",
+   "change": "The party caught the Clurichen Naggeneen stealing drink, and he now hangs captive in a bag behind Quinn's bar, his offer of a pot of gold or a secret refused.",
+   "impact_basis": "Beats 13-15 and 17-18 show the capture, his identity and motive, and his refused bargain, which answers what the Clurichen was doing.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Per beats 18 and 36, Naggeneen is still captive, and his pot of gold and secret remain unresolved hooks.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_3",
+   "change": "Sir Phidipaldi learned from George where the dragon's lair is, that it will soon fly and that no ordinary weapon pierces it, and George doubted that Eric can pay the 1000 gold bounty.",
+   "impact_basis": "Beats 58-60 answer the lair's location, reveal the danger and cast doubt on the reward, and beat_49 adds that Brandon's sword is needed.",
+   "narrative_impact": "high",
+   "lasting_basis": "The lair's location, the soon-flying dragon and the doubtful bounty in beats 58-60 will shape the coming dragon hunt.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_5",
+   "change": "Nothing noteworthy happened; the shipments still had not arrived.",
+   "impact_basis": "Beat_36 only restates that the shipments are missing.",
+   "narrative_impact": "none",
+   "lasting_basis": "Beat_36 makes no change to the situation.",
+   "lasting_consequence": "none",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_7",
+   "change": "Farmer Gill refused Dunk's 20 gold offer for the mule but said he would lower the price once his sons returned.",
+   "impact_basis": "Beat_2 is a refused offer with a small conditional adjustment.",
+   "narrative_impact": "low",
+   "lasting_basis": "The price drop promised in beat_2 depends on the sons' return and may come up again in a minor way.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_8",
+   "change": "Ingrid's confession that she climbs to Warwick's window nightly to leave gifts and watch him largely explained the charms on his house.",
+   "impact_basis": "Beat_29 provides a likely explanation for the lucky charms described in beat_20.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_29 mostly explains a curiosity, though it ties into Dunk's ongoing scheme.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_9",
+   "change": "Dunk found a glowing magical mithril chain shirt in Warwick's shop and told the party he has a plan to get it.",
+   "impact_basis": "Beat_21 confirms that the armor is magical and shows where it is, and beat_43 announces Dunk's plan to get it.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Dunk's intended theft in beats 32 and 43 will likely play out next Session.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_10",
+   "change": "The party revealed that the thief of Quinn's ale was the Clurichen Naggeneen, not Bentley, and Quinn paid them 33 gold each.",
+   "impact_basis": "Beats 16-18 answer the question of the thief and close the job.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The job is resolved, and the payment in beat_18 is ordinary treasure.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_11",
+   "change": "Trout recruited the halfling Squints into his Halfling Corps as a junior assistant owed second pick of the first treasure, and after the rescue Squints gained Brother Dirk as his follower.",
+   "impact_basis": "Beat_39 adds a new companion on defined terms, and beat_86 gives him a follower.",
+   "narrative_impact": "high",
+   "lasting_basis": "Squints travels with the party and is owed treasure under beat_39, which will shape later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_12",
+   "change": "Dunk struck a deal for Ingrid to brew a sleeping potion for Warwick, got faun wine from the fauns, and gave her a heavily diluted batch to work with.",
+   "impact_basis": "Beats 32-35 establish the deal and Dunk's leverage over her secret, and beats 68 and 75 supply the ingredient.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The potion is in progress, Dunk is due back to meet her and holds her secret, and the diluted wine (beat_75) may cause trouble.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_13",
+   "change": "The party learned that the dragon reportedly cannot be killed without Brandon's sword, buried at the Barrow Mound, and set out to get it.",
+   "impact_basis": "Beat_49 reveals that the sword is needed, and beats 46 and 55 set the Barrow as the party's destination.",
+   "narrative_impact": "high",
+   "lasting_basis": "Reaching the Barrow for the sword is the party's next main goal (beat_46).",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_14",
+   "change": "Dr. Uriah agreed to Father William's demand that he do penance at the Barrow Mound and donate 10 gold for its upkeep.",
+   "impact_basis": "Beat_54 creates a new obligation to the hostile priest.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The penance in beat_54 is owed at the party's next destination.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_15",
+   "change": "Ingrid reported that fairies that used to stay hidden are encroaching and appearing more often in the woods.",
+   "impact_basis": "Beat_71 adds a new rumor of change in the forest.",
+   "narrative_impact": "low",
+   "lasting_basis": "The fairy activity in beat_71 may connect to the fairy-given sword and is likely to come up again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "thread_16",
+   "change": "The party stole Brother Dirk from a sleeping man-eating giant's stewpot and outran the giant.",
+   "impact_basis": "Beats 80-84 show a dangerous rescue that saved Dirk and made a foe of the giant.",
+   "narrative_impact": "high",
+   "lasting_basis": "The giant is still in the woods near the party's route and is aware of them (beat_83).",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "beat_27",
+   "change": "Dunk learned that Ingrid sells healing tea, magic-detecting powder and wolfsbane.",
+   "impact_basis": "Beat_27 is shop inventory information.",
+   "narrative_impact": "low",
+   "lasting_basis": "The goods in beat_27 may be bought later, but this is ordinary information.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "beat_52",
+   "change": "Father William offered to heal Uriah if he were injured.",
+   "impact_basis": "Beat_52 is a minor service offer.",
+   "narrative_impact": "low",
+   "lasting_basis": "The offer in beat_52 might be used later but is incidental.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "beat_74",
+   "change": "Dr. Uriah bought wolfsbane and mandrake root tea.",
+   "impact_basis": "Beat_74 is a routine purchase.",
+   "narrative_impact": "low",
+   "lasting_basis": "The ordinary consumables bought in beat_74 matter little beyond use.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [],
+   "represented_by": []
+  },
+  {
+   "id": "scene_1",
+   "change": "Dunk outdrank Farmer Gill, was offered a bed in the barn, and was refused on the mule.",
+   "impact_basis": "Beats 1-2 are hospitality and a refused offer.",
+   "narrative_impact": "low",
+   "lasting_basis": "Only the conditional mule price in beat_2 may recur.",
+   "lasting_consequence": "low",
+   "encounter_basis": "A drinking session and lodging with a minor offer; the mule talk is already covered by thread_7.",
+   "encounter_value": "low",
+   "focus_beats": [],
+   "represented_by": [
+    "thread_7"
+   ]
+  },
+  {
+   "id": "scene_2",
+   "change": "Trout befriended Squints at the Clumsy Fox and invited him to meet the party.",
+   "impact_basis": "Beats 6-7 set up the later recruitment.",
+   "narrative_impact": "low",
+   "lasting_basis": "The meeting leads into the recruitment told by thread_11.",
+   "lasting_consequence": "low",
+   "encounter_basis": "First meeting with Squints, which is part of the recruitment story thread_11 tells; the other beats are logistics.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_6"
+   ],
+   "represented_by": [
+    "thread_11"
+   ]
+  },
+  {
+   "id": "scene_3",
+   "change": "Sir Phidipaldi's marble trap and Trout's bag caught the invisible Clurichen Naggeneen, who was handed to Quinn for a reward.",
+   "impact_basis": "Beats 12-18 solve the theft and make Naggeneen a captive.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Naggeneen's captivity and his refused offer remain open (beats 15, 18).",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A defining comic capture that resolves Quinn's job; it is the same event thread_10 and thread_2 tell.",
+   "encounter_value": "high",
+   "focus_beats": [
+    "beat_12",
+    "beat_13",
+    "beat_18"
+   ],
+   "represented_by": [
+    "thread_10",
+    "thread_2"
+   ]
+  },
+  {
+   "id": "scene_4",
+   "change": "Dunk scouted Warwick's shop at night, spotted the magical mithril shirt, and followed a woman who was heading there.",
+   "impact_basis": "Beat_21 discovers the armor, and beat_22 leads to Ingrid.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The armor is Dunk's ongoing target.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "Night reconnaissance whose substance is the armor discovery that thread_9 already tells.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_21"
+   ],
+   "represented_by": [
+    "thread_9"
+   ]
+  },
+  {
+   "id": "scene_5",
+   "change": "Uriah and Trout staked out the river and tracked the Clurichen toward town.",
+   "impact_basis": "Beat_25 is a stakeout that leads into the capture.",
+   "narrative_impact": "low",
+   "lasting_basis": "The tracking in beat_25 matters only as a lead-in to the capture.",
+   "lasting_consequence": "none",
+   "encounter_basis": "A stakeout preceding the capture, which is covered by thread_2 and scene_3.",
+   "encounter_value": "low",
+   "focus_beats": [],
+   "represented_by": [
+    "thread_2"
+   ]
+  },
+  {
+   "id": "scene_6",
+   "change": "Dunk got Ingrid to confess her secret love for Warwick and struck a deal for her to brew a sleeping potion, while hinting he might not keep her secret.",
+   "impact_basis": "Beats 29 and 32-35 create the potion scheme and Dunk's leverage.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The deal and Dunk's leverage continue into later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "A pivotal manipulative negotiation with Ingrid; its central outcome, the potion deal, is the event thread_12 tells.",
+   "encounter_value": "high",
+   "focus_beats": [
+    "beat_29",
+    "beat_32",
+    "beat_35"
+   ],
+   "represented_by": [
+    "thread_12"
+   ]
+  },
+  {
+   "id": "scene_7",
+   "change": "Trout formally recruited Squints into the Halfling Corps, and the party pooled dragon intelligence and decided to head to the Barrow.",
+   "impact_basis": "Beats 39 and 45-46 add a companion and set the party's goal.",
+   "narrative_impact": "high",
+   "lasting_basis": "Squints and the Barrow trip shape the coming Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "The tavern gathering centers on Squints' recruitment and the Barrow decision, which thread_11 and thread_13 already tell.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_39",
+    "beat_46"
+   ],
+   "represented_by": [
+    "thread_11",
+    "thread_13"
+   ]
+  },
+  {
+   "id": "scene_8",
+   "change": "The prejudiced Father William measured Uriah's hands and feet, revealed Brother Dirk's mission for Brandon's sword, marked the Barrow on Uriah's map, and demanded penance.",
+   "impact_basis": "Beats 49, 54 and 55 give key information, a map mark and an obligation.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The penance and the Barrow mark matter on the next leg.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A memorable hostile meeting with the town priest that captures his prejudice and his relationship with the party, distinct from the sword discovery; its concluding penance agreement is the event thread_14 tells.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_47",
+    "beat_51",
+    "beat_54",
+    "beat_55"
+   ],
+   "represented_by": [
+    "thread_14"
+   ]
+  },
+  {
+   "id": "scene_9",
+   "change": "One-armed George told Sir Phidipaldi where the dragon's lair is and how it killed his friends, and Sir Phidipaldi vowed to bring his lance.",
+   "impact_basis": "Beats 58-63 reveal the lair, the dragon's danger and the bounty doubts.",
+   "narrative_impact": "high",
+   "lasting_basis": "The lair's location and the vow will shape the dragon hunt.",
+   "lasting_consequence": "high",
+   "encounter_basis": "An information exchange with a survivor of the dragon; its central revelations are what thread_3 tells.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_58",
+    "beat_59",
+    "beat_63"
+   ],
+   "represented_by": [
+    "thread_3"
+   ]
+  },
+  {
+   "id": "scene_10",
+   "change": "Dunk danced with the fauns, drank their wine unaffected to their astonishment, and traded a tear-stained rabbit's foot for a flask of faun wine.",
+   "impact_basis": "Beats 65 and 68 gain the potion ingredient through a memorable trade.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The faun wine feeds the potion scheme, and the fauns trade for sentimental items (beat_67).",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A distinctive meeting and trade with the fauns that thread_12's central deal does not tell.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_65",
+    "beat_68"
+   ],
+   "represented_by": []
+  },
+  {
+   "id": "scene_11",
+   "change": "Uriah bonded with Ingrid over disliking Father William, learned of her forest faith and encroaching fairies, and bought supplies.",
+   "impact_basis": "Beats 69-72 add context and a fairy rumor.",
+   "narrative_impact": "low",
+   "lasting_basis": "The rapport with Ingrid and the fairy rumor may recur.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A friendly meeting that builds rapport and gives religious and fairy context beyond the single fairy thread and the purchase.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_69",
+    "beat_71",
+    "beat_72"
+   ],
+   "represented_by": []
+  },
+  {
+   "id": "scene_12",
+   "change": "Dunk gave Ingrid heavily diluted faun wine for the potion.",
+   "impact_basis": "Beat_75 advances the potion scheme with a deceptive twist.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The dilution may affect the potion's strength.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A brief delivery that is part of the potion deal told by thread_12.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_75"
+   ],
+   "represented_by": [
+    "thread_12"
+   ]
+  },
+  {
+   "id": "scene_13",
+   "change": "Squints pulled Brother Dirk from a sleeping giant's cottage, the party escaped the giant, and Dirk joined as Squints' follower.",
+   "impact_basis": "Beats 80-86 rescue Dirk and make an enemy of the giant.",
+   "narrative_impact": "high",
+   "lasting_basis": "Dirk's presence and the giant at large carry forward.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "A defining rescue that is the same event thread_16 tells.",
+   "encounter_value": "high",
+   "focus_beats": [
+    "beat_81",
+    "beat_82",
+    "beat_83"
+   ],
+   "represented_by": [
+    "thread_16"
+   ]
+  }
+ ],
+ "problems": []
+}

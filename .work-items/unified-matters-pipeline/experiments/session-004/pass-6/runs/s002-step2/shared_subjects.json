@@ -1,0 +1,139 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Warwick's mithril chain shirt as a defence against the dragon",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_47"
+   ],
+   "reason": "The thread about the shirt itself comes before the broader dragon hunt that might use it."
+  },
+  {
+   "subject": "Ingrid's secret nightly gifts and watching at Warwick's window",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_15",
+    "beat_32",
+    "beat_33",
+    "beat_35"
+   ],
+   "reason": "It bears directly on thread_8's open question of why Warwick is growing paranoid."
+  },
+  {
+   "subject": "Access to Warwick's house through the cracked second-story window",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_14",
+    "beat_34"
+   ],
+   "reason": "Getting into the house is the obstacle that most directly blocks getting the chain shirt."
+  },
+  {
+   "subject": "Whether Ingrid can make her potions herself",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_58",
+    "beat_78"
+   ],
+   "reason": "The question matters most to whether the sleeping potion will be made."
+  },
+  {
+   "subject": "Naggeneen held captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_28",
+    "beat_40"
+   ],
+   "reason": "The Clurichen thread is about Naggeneen himself."
+  },
+  {
+   "subject": "Gill's sons away hunting the dragon",
+   "home": "thread_7",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_2",
+    "beat_50"
+   ],
+   "reason": "Their absence is the obstacle that most directly holds up the mule deal."
+  },
+  {
+   "subject": "Location of the Barrow Mound, marked on the map",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_1",
+    "thread_14"
+   ],
+   "beats": [
+    "beat_55",
+    "beat_60"
+   ],
+   "reason": "The sword thread is the one that seeks and would use the Barrow's location first."
+  },
+  {
+   "subject": "Location of the witch's house, marked on the map",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_51",
+    "beat_60"
+   ],
+   "reason": "The thread about the witch is about the very thing."
+  },
+  {
+   "subject": "Penance owed at the Barrow Mound",
+   "home": "thread_14",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_59"
+   ],
+   "reason": "A promise lives on the thread of the bargain that created it."
+  },
+  {
+   "subject": "Brother Dirk's abandoned Barrow mission and his joining under Squints",
+   "home": "thread_10",
+   "other_threads": [
+    "thread_12",
+    "thread_3"
+   ],
+   "beats": [
+    "beat_92",
+    "beat_93"
+   ],
+   "reason": "Dirk now acts as a follower within Squints' corps."
+  },
+  {
+   "subject": "The giant on the route north to the Barrow",
+   "home": "thread_16",
+   "other_threads": [
+    "thread_12"
+   ],
+   "beats": [
+    "beat_91"
+   ],
+   "reason": "The giant's own thread is about the very thing."
+  }
+ ]
+}

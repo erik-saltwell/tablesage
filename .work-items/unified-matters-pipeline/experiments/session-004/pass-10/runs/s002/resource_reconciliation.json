@@ -1,0 +1,33 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_12",
+   "members": [
+    "fact_12",
+    "fact_11"
+   ],
+   "basis": "Both facts describe Lady Hilda's same offer to join the party for pay. Both have the same trigger, hiring her, and the same benefit, a seasoned armored fighter for the dragon hunt (thread_3). They share the same form and certainty. fact_12 is the home representation in thread_4.",
+   "text": "Lady Hilda, a seasoned fighter with chain mail and a shield, offers to join the party against the dragon for pay. Her fee is unset, and she says she cannot kill the dragon herself.",
+   "evidence": [
+    "prior"
+   ]
+  },
+  {
+   "canonical": "fact_49",
+   "members": [
+    "fact_49",
+    "fact_34"
+   ],
+   "basis": "Both facts describe retrieving the same resource, Brandon's magic sword from Brandon's Barrow Mound, which Father William says is needed to kill the dragon. They share the same trigger, the same helped thread (thread_3) and the same certainty. fact_49 is the home representation in thread_13.",
+   "text": "Father William says the black dragon cannot be killed without the magic sword buried with Brandon. The party could retrieve it from Brandon's Barrow Mound, though George says no one knows what is true or where the sword is.",
+   "evidence": [
+    "beat_42",
+    "beat_53",
+    "beat_67",
+    "beat_69",
+    "beat_79"
+   ]
+  }
+ ],
+ "input_fingerprint": "b1cfd9e0f314c0ba7a934415830d54912a94e6e0a6ab0a3fa144762b9fba5556"
+}

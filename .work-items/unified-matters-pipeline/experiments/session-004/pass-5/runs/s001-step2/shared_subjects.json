@@ -1,0 +1,41 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Lady Hilda as a paid companion for the dragon hunt",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_11"
+   ],
+   "reason": "The offer and the promise to return for her live on her own thread rather than the broader hunt."
+  },
+  {
+   "subject": "Killing the dragon as the work Gill would accept for Shamus",
+   "home": "thread_7",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_27"
+   ],
+   "reason": "It is a term of the mule bargain, so it lives on the bargain's thread."
+  },
+  {
+   "subject": "How long since goods or shipments reached Brandonsford",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_9",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_15",
+    "beat_32",
+    "beat_40"
+   ],
+   "reason": "The lack of incoming goods is the shipment thread's very subject, which Quinn's fake delivery exploits and which explains Warwick's empty shop."
+  }
+ ]
+}

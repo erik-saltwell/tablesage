@@ -1,0 +1,308 @@
+{
+ "version": 6,
+ "rules": {
+  "last_session": "PROVISIONAL: touched threads and standalone beats with narrative_impact and lasting_consequence both medium or high; story order; no cap",
+  "want": "serves_thread is null (an end, not a means) and significance is not incidental (Goals: parent_goal_id null, significance not incidental)",
+  "owe": "definite_end; commitment_type is not general_agreement; stake, burden and consequence are not trivial (Obligations filter)",
+  "blocked_by": "in_effect is active (Goal Impediments: anticipated filtered out)",
+  "could_use": "helps_thread names a thread whose want or debt is shown, directly or through a parent thread (Opportunities and New Assets need a goal link); role is direct (Opportunities: parent_opportunity_id null); an asset with low or trivial goal_support is shown only if acquired by acting on an opening (New Assets filter)",
+  "unknown": "question_type open_ended and all four dimensions medium or high (Mysteries filter)",
+  "threat": "harm_origin is not party and no evaluation is low (Brewing Troubles filter); not covered by an immediate danger",
+  "all": "never possibly moot facts; no caps"
+ },
+ "last_session": [
+  {
+   "id": "thread_1",
+   "kind": "thread",
+   "first": 0
+  },
+  {
+   "id": "thread_2",
+   "kind": "thread",
+   "first": 7
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 9
+  },
+  {
+   "id": "thread_4",
+   "kind": "thread",
+   "first": 10
+  },
+  {
+   "id": "thread_5",
+   "kind": "thread",
+   "first": 11
+  },
+  {
+   "id": "thread_6",
+   "kind": "thread",
+   "first": 13
+  },
+  {
+   "id": "thread_9",
+   "kind": "thread",
+   "first": 36
+  }
+ ],
+ "last_session_candidates": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived in Brandonsford following a treasure map whose marked locations they did not recognize.",
+   "impact_basis": "The single beat establishes the map as the reason for the journey but reveals no new locations or clues.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The unfound treasure is the party's underlying goal and will drive later exploration.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 0,
+   "beats": 1,
+   "shown": true
+  },
+  {
+   "id": "thread_2",
+   "change": "Reginald warned the party that a trickster called a Clurichen comes from the riverbanks into town every night up to no good.",
+   "impact_basis": "One warning introduces a new nightly danger in town without any encounter yet.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The Clurichen ties into the vanishing stock and Sir Phidipaldi's claims, so it is likely to come up again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 7,
+   "beats": 1,
+   "shown": true
+  },
+  {
+   "id": "thread_3",
+   "change": "Eric the Reeve offered 1000 gold to whoever kills the small black dragon that took George's arm, though Sir Phidipaldi then insulted him and challenged him to a duel.",
+   "impact_basis": "The bounty, George's description of the black dragon, Gill's sighting and his sons' hunt give the party a major new goal and foe, while the slap strained relations with the bounty-giver.",
+   "narrative_impact": "high",
+   "lasting_basis": "The dragon bounty is the town's central problem and will shape later Sessions, and the strained relationship with Eric may matter when claiming it.",
+   "lasting_consequence": "high",
+   "kind": "thread",
+   "first": 9,
+   "beats": 11,
+   "shown": true
+  },
+  {
+   "id": "thread_4",
+   "change": "Lady Hilda, a seasoned armored fighter, offered to join the party for money, and Sir Phidipaldi said they would come back for her services.",
+   "impact_basis": "Her offer gives the party a potential capable ally for the dragon hunt, though no deal was made.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Sir Phidipaldi promised to return to her, so she is likely to come up again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 10,
+   "beats": 1,
+   "shown": true
+  },
+  {
+   "id": "thread_5",
+   "change": "The murderous thief Drop Dead Ned offered himself and his killer wasp for hire at 100 gold a week, and Dr. Uriah said he would think about it.",
+   "impact_basis": "The offer introduces a dangerous potential hireling, but nothing was agreed.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Dr. Uriah left the offer open, so Ned is likely to reappear.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 11,
+   "beats": 4,
+   "shown": true
+  },
+  {
+   "id": "thread_6",
+   "change": "The party learned that Brandonsford's restocking shipment is a week overdue and nothing has reached town in months, and Sir Phidipaldi agreed to stage a fake ale delivery with Quinn.",
+   "impact_basis": "Bentley's and Gill's accounts reveal a town-wide supply crisis, and the staged delivery plan is a concrete step toward it.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The planned fake delivery and the link to the dragon make it likely the shipment will come up again.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 13,
+   "beats": 4,
+   "shown": true
+  },
+  {
+   "id": "beat_25",
+   "change": "Bentley stopped the argument with Eric and made Sir Phidipaldi spend the night across the street at the Golden Egg, with his drink on the house.",
+   "impact_basis": "Bentley's intervention separated Sir Phidipaldi from the party for one night.",
+   "narrative_impact": "low",
+   "lasting_basis": "The arrangement covers only that night and is unlikely to matter later.",
+   "lasting_consequence": "low",
+   "kind": "beat",
+   "first": 24,
+   "beats": 1,
+   "shown": false
+  },
+  {
+   "id": "thread_7",
+   "change": "Farmer Gill offered Dunk his mule Shamus for 100 gold or work such as killing the dragon, and Dunk is sleeping on the offer in Gill's barn.",
+   "impact_basis": "An unresolved purchase offer and a night's lodging slightly adjust Dunk's situation.",
+   "narrative_impact": "low",
+   "lasting_basis": "Dunk is still considering the offer, so it may come up again, but it is a minor matter.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 25,
+   "beats": 3,
+   "shown": false
+  },
+  {
+   "id": "thread_8",
+   "change": "The party learned that the paranoid smith Warwick displays a superb mithril chain shirt he refuses to sell.",
+   "impact_basis": "Gill's description adds a coveted item and some town gossip about Warwick and Ingrid but no change in access.",
+   "narrative_impact": "low",
+   "lasting_basis": "The shirt is a possible future goal, but nothing was set in motion.",
+   "lasting_consequence": "low",
+   "kind": "thread",
+   "first": 31,
+   "beats": 2,
+   "shown": false
+  },
+  {
+   "id": "thread_9",
+   "change": "Sir Phidipaldi agreed to help Quinn get back at Bentley for 100 gold, starting with a staged fake ale delivery to find out what is taking Quinn's stock each night.",
+   "impact_basis": "A paid agreement was struck and a plan made around the mystery of the vanishing stock.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The deal and the planned stunt will play out in later Sessions.",
+   "lasting_consequence": "medium",
+   "kind": "thread",
+   "first": 36,
+   "beats": 4,
+   "shown": true
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_20",
+    "fact_1",
+    "fact_5",
+    "fact_15",
+    "fact_17"
+   ]
+  },
+  {
+   "heading": "Standing in your way",
+   "kind": "blocked_by",
+   "facts": [
+    "fact_18"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_21",
+    "fact_6",
+    "fact_11",
+    "fact_16"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_22",
+    "fact_14",
+    "fact_9"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_10"
+   ]
+  }
+ ],
+ "decisions": {
+  "fact_1": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_5": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_12": {
+   "shown": false,
+   "reason": "commitment_type general_agreement"
+  },
+  "fact_15": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_17": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_20": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_2": {
+   "shown": false,
+   "reason": "investigative_depth low; narrative_payoff low"
+  },
+  "fact_3": {
+   "shown": false,
+   "reason": "negative_outcome_clarity low; outcome_severity low"
+  },
+  "fact_4": {
+   "shown": false,
+   "reason": "narrative_payoff low"
+  },
+  "fact_6": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_7": {
+   "shown": false,
+   "reason": "a step toward another opening"
+  },
+  "fact_8": {
+   "shown": false,
+   "reason": "grounding low; investigative_depth low; narrative_payoff low"
+  },
+  "fact_9": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_10": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity medium, outcome_severity high, evidentiary_strength high, evidence_of_progression medium, preventability medium"
+  },
+  "fact_11": {
+   "shown": true,
+   "reason": "opening; helps thread_3; support medium"
+  },
+  "fact_13": {
+   "shown": false,
+   "reason": "helps no want or debt"
+  },
+  "fact_14": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_16": {
+   "shown": true,
+   "reason": "opening; helps thread_7; support medium"
+  },
+  "fact_18": {
+   "shown": true,
+   "reason": "active; blocks thread_8"
+  },
+  "fact_19": {
+   "shown": false,
+   "reason": "narrative_payoff low"
+  },
+  "fact_21": {
+   "shown": true,
+   "reason": "opening; helps thread_9; support medium"
+  },
+  "fact_22": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  }
+ }
+}

@@ -1,0 +1,12 @@
+step2: 10 threads, standalone [], problems none
+  thread_1 [new/open] The unrecognized treasure map parent=None beats=1
+  thread_2 [new/open] The Clurichen of the riverbanks parent=None beats=1
+  thread_3 [new/open] The dragon near Brandonsford parent=None beats=8
+  thread_4 [new/open] Hiring Lady Hilda parent=thread_3 beats=1
+  thread_5 [new/open] Bentley's missing shipment parent=None beats=2
+  thread_6 [new/open] Sir Phidipaldi's challenge to Eric the Reeve parent=None beats=3
+  thread_7 [new/open] Drop Dead Ned's offer of hire parent=None beats=4
+  thread_8 [new/open] Shamus the mule parent=None beats=3
+  thread_9 [new/open] Warwick the smith and his mithril shirt parent=None beats=2
+  thread_10 [new/open] Quinn's vanishing ale parent=None beats=3
+  medium/high beats on no thread and not standalone: none

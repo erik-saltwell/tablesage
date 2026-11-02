@@ -1,0 +1,43 @@
+{
+  "sessions": [
+    {
+      "session": "001",
+      "scenes": 5,
+      "beats": 37,
+      "threads": 10,
+      "facts": 23,
+      "historical_shown": 8,
+      "open_shown": 11,
+      "recap_bullets": 9,
+      "over_word_limit": [],
+      "summary_words": 458,
+      "recap_words": 313,
+      "encounter_candidates": 5,
+      "encounters_shown": [
+        "scene_4"
+      ]
+    },
+    {
+      "session": "002",
+      "scenes": 13,
+      "beats": 86,
+      "threads": 16,
+      "facts": 51,
+      "historical_shown": 10,
+      "open_shown": 20,
+      "recap_bullets": 15,
+      "over_word_limit": [],
+      "summary_words": 665,
+      "recap_words": 449,
+      "encounter_candidates": 13,
+      "encounters_shown": [
+        "scene_10",
+        "scene_11"
+      ]
+    }
+  ],
+  "review_markdown_files": 14,
+  "link_errors": [],
+  "limits": "Structural verification; no LLM faithfulness audit or user quality approval.",
+  "implementation_hashes_unchanged": true
+}

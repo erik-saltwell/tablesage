@@ -1,0 +1,19 @@
+step2: 17 threads, standalone [], problems none
+  thread_1 [earlier/changed] Treasure map parent=None beats=8
+  thread_2 [earlier/changed] Dragon hunt (Eric the Reeve's bounty) parent=None beats=20
+  thread_3 [earlier/changed] The goblins' bargain parent=None beats=6
+  thread_4 [earlier/open] Sir Alfred, the undead in the Barrow Mound parent=None beats=12
+  thread_5 [earlier/changed] Missing shipments parent=None beats=3
+  thread_6 [earlier/open] Fairies appearing more often parent=None beats=0
+  thread_7 [earlier/open] The noblewoman statue parent=None beats=0
+  thread_8 [earlier/changed] Ingrid and Warwick (Dunk's deal) parent=None beats=7
+  thread_9 [earlier/open] Dr. Uriah's penance for Father William parent=None beats=0
+  thread_10 [earlier/open] Squints' share of the treasure parent=None beats=2
+  thread_11 [new/open] The holy robes promised to the church parent=None beats=5
+  thread_12 [new/open] Cedric's promissory note parent=None beats=4
+  thread_13 [new/open] The Warwick deal parent=None beats=8
+  thread_14 [new/open] Protection from the dragon's poison parent=thread_2 beats=4
+  thread_15 [new/resolved] Vivian's message to Grimny parent=None beats=5
+  thread_16 [new/open] Who killed Grimny parent=None beats=7
+  thread_17 [new/open] Dunk's dwarven ring parent=None beats=4
+  medium/high beats on no thread and not standalone: none

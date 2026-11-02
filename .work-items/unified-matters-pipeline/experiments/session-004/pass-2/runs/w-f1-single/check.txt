@@ -1,0 +1,21 @@
+step3: 44 facts (40 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 10, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_30']
+  uncertain: ['fact_33']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.45 fact_27 (thread_2, could_use) ~ fact_33 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party for the dragon hunt.
+         The party owes Malzazarik and Lady Hilda payment from Cedric's promissory note for joining the dragon hunt.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.35 fact_12 (thread_4, unknown) ~ fact_15 (thread_7, unknown)
+         Why does the undead knight Sir Alfred roam the Barrow Mound? Brother Dirk regards him as holy.
+         Who does the noblewoman statue in the Barrow Mound depict?
+  cross-thread facts sharing 4-word phrases:
+    fact_27 (thread_2) & fact_33 (thread_12): ['malzazarik and lady hilda']
+    fact_42 (thread_16) & fact_43 (thread_17): ['dead dwarf in the', 'dwarf in the cave', 'in the cave in']

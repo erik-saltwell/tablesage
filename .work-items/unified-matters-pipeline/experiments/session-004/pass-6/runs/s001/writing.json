@@ -1,0 +1,88 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map to places they did not recognize."
+  },
+  {
+   "id": "thread_2",
+   "text": "Reginald the frog warned the party to avoid a Clurichen trickster that comes into town every night."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve offered a bounty on a black dragon that took a woodsman's arm. Sir Phidipaldi then slapped Eric with his glove."
+  },
+  {
+   "id": "thread_4",
+   "text": "Lady Hilda offered to hire on with the party, and Sir Phidipaldi said they would return after seeing the Reeve."
+  },
+  {
+   "id": "thread_5",
+   "text": "Drop Dead Ned offered himself and his killer wasp for hire, and Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "thread_6",
+   "text": "Bentley and Farmer Gill told the party that supplies have stopped reaching Brandonsford."
+  },
+  {
+   "id": "thread_9",
+   "text": "Quinn promised Sir Phidipaldi payment for helping him get back at rival tavern keeper Bentley."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_19",
+   "text": "Help Quinn get back at Bentley and collect his promised 100 gold."
+  },
+  {
+   "id": "fact_1",
+   "text": "Find the treasure on the party's treasure map."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon outside Brandonsford and drag its body into town for Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_16",
+   "text": "Buy Farmer Gill's mule Shamus for 100 gold."
+  },
+  {
+   "id": "fact_20",
+   "text": "If Sir Phidipaldi and Quinn stage a showy fake ale delivery at the Golden Egg, they could see who comes for the stock."
+  },
+  {
+   "id": "fact_12",
+   "text": "If the party pays Lady Hilda, she will join them against the dragon."
+  },
+  {
+   "id": "fact_2",
+   "text": "The party has a treasure map marking several unfamiliar locations around Brandonsford."
+  },
+  {
+   "id": "fact_17",
+   "text": "If Dunk kills the dragon outside town, Farmer Gill might trade him Shamus. Gill never actually agreed to this."
+  },
+  {
+   "id": "fact_21",
+   "text": "Who or what empties Quinn's stock every night?"
+  },
+  {
+   "id": "fact_5",
+   "text": "What does the Clurichen do in Brandonsford each night?"
+  },
+  {
+   "id": "fact_15",
+   "text": "What is stopping goods from reaching Brandonsford?"
+  },
+  {
+   "id": "fact_10",
+   "text": "Where has this new dragon come from?"
+  },
+  {
+   "id": "fact_11",
+   "text": "The black dragon has already taken the woodsman George's arm, and Farmer Gill's three sons are hunting it now."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

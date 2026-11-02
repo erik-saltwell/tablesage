@@ -1,0 +1,24 @@
+step3: 42 facts (38 open) {'want': 3, 'owe': 8, 'blocked_by': 4, 'could_use': 8, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_28']
+  uncertain: ['fact_32']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.50 fact_26 (thread_2, could_use) ~ fact_29 (thread_4, could_use)
+         The party holds Sir Brandon's magic sword, especially effective against evil beings, which they mean to stab into the dragon's mouth as in Sir Brandon's tale.
+         Sir Brandon's magic sword, held by the party, is especially effective against evil beings, and Sir Alfred counts as evil.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+  cross-thread facts sharing 4-word phrases:
+    fact_26 (thread_2) & fact_29 (thread_4): ['effective against evil beings', 'especially effective against evil', "sir brandon's magic sword"]
+    fact_28 (thread_3) & fact_10 (thread_4): ['in the barrow mound']
+    fact_28 (thread_3) & fact_11 (thread_4): ['in the barrow mound']
+    fact_28 (thread_3) & fact_15 (thread_7): ['in the barrow mound']
+    fact_10 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_13 (thread_5) & fact_31 (thread_12): ['since the dragon appeared']
+    fact_35 (thread_13) & fact_39 (thread_16): ['natural looking cave in']

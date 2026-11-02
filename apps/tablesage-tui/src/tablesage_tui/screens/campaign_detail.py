@@ -469,23 +469,24 @@ class CampaignDetailScreen(TableSageScreen):
             completed_sessions = 0
             generated: list[GenerationTask] = []
             total_sessions = len(ready_sessions)
-            for game_session in ready_sessions:
-                session_label = f"Session {game_session.sequence_number:03d}"
-                self.report_stage_progress(f"{session_label}: checking outputs…", completed_sessions, total_sessions)
-                generated.extend(
-                    self.application.generate_outputs(
-                        game_session.id,
-                        on_stage=lambda task, _completed, _total, session_label=session_label, completed_sessions=completed_sessions: (
-                            self.report_stage_progress(
-                                f"{session_label}: {GENERATION_LABELS[task.artifact_name]}…",
-                                completed_sessions,
-                                total_sessions,
-                            )
-                        ),
+            with self.application.cache_regeneration_prompts([item.id for item in ready_sessions]):
+                for game_session in ready_sessions:
+                    session_label = f"Session {game_session.sequence_number:03d}"
+                    self.report_stage_progress(f"{session_label}: checking outputs…", completed_sessions, total_sessions)
+                    generated.extend(
+                        self.application.generate_outputs(
+                            game_session.id,
+                            on_stage=lambda task, _completed, _total, session_label=session_label, completed_sessions=completed_sessions: (
+                                self.report_stage_progress(
+                                    f"{session_label}: {GENERATION_LABELS[task.artifact_name]}…",
+                                    completed_sessions,
+                                    total_sessions,
+                                )
+                            ),
+                        )
                     )
-                )
-                completed_sessions += 1
-                self.report_stage_progress(f"{session_label}: complete", completed_sessions, total_sessions)
+                    completed_sessions += 1
+                    self.report_stage_progress(f"{session_label}: complete", completed_sessions, total_sessions)
             return tuple(generated)
 
         def on_success(generated: tuple[GenerationTask, ...]) -> None:

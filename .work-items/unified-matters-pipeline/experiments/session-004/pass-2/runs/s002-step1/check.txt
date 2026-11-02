@@ -1,0 +1,15 @@
+step1: 14 scenes, 93 beats {'event': 64, 'learned': 29}, ledger coverage 181/186, out-of-range refs none
+  scene_1 Farmer Gill's farm (2 beats) cue: Dunk holding his drink far better than Farmer Gill
+  scene_2 The Clumsy Fox Tavern (8 beats) cue: "Back home I could bullseye womp rats" - Squints
+  scene_3 The Golden Egg's basement (2 beats) cue: Sir Phidipaldi's marbles spread across the basement floor
+  scene_4 Warwick's shop (4 beats) cue: Horseshoes, rabbit feet and clovers nailed all over the walls
+  scene_5 The river (7 beats) cue: The Clurichen towing a corked jug across the river
+  scene_6 The Golden Egg's basement (6 beats) cue: The invisible Clurichen slipping on Sir Phidipaldi's marbles
+  scene_7 Ingrid's shop (10 beats) cue: "You have a brusque, romantic poet's soul" - Ingrid
+  scene_8 The Clumsy Fox Tavern (12 beats) cue: Squints limited to three tips a day
+  scene_9 The Faun Grove (7 beats) cue: A crusty rabbit's foot traded for a faun's necklace flask
+  scene_10 The church (9 beats) cue: Father William measuring Uriah's hand with a little ruler
+  scene_11 George's hut (7 beats) cue: "You must have picked me out as the only one-armed man" - George
+  scene_12 Ingrid's shop (6 beats) cue: "We're trying to reclaim the word" - Ingrid
+  scene_13 Ingrid's shop (2 beats) cue: Faun wine watered down to one part in five
+  scene_14 The giant's cottage (11 beats) cue: "Ow, why did you do that?" - Squints

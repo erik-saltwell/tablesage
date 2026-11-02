@@ -1,0 +1,84 @@
+{
+ "last_session": [
+  {
+   "id": "thread_1",
+   "text": "The party reached Brandonsford at sunset, following a treasure map to places they didn't recognize."
+  },
+  {
+   "id": "thread_2",
+   "text": "Reginald the frog warned the party to avoid a trickster Clurichen that comes from the riverbanks nightly."
+  },
+  {
+   "id": "thread_3",
+   "text": "Eric the Reeve offered 1000 gold for the dragon. Sir Phidipaldi then challenged him to a duel, which Eric didn't accept."
+  },
+  {
+   "id": "thread_4",
+   "text": "Lady Hilda offered to join the dragon hunt for pay, and Sir Phidipaldi said they would return."
+  },
+  {
+   "id": "thread_6",
+   "text": "Dr. Uriah met Drop Dead Ned, a thief with a killer wasp, who offered himself for hire."
+  },
+  {
+   "id": "thread_5",
+   "text": "Bentley and Farmer Gill told the party that supplies have stopped reaching Brandonsford."
+  },
+  {
+   "id": "scene_4",
+   "text": "Dunk heard Farmer Gill's legend of Sir Brandon and kept him drinking on his porch all evening."
+  },
+  {
+   "id": "thread_10",
+   "text": "Quinn offered Sir Phidipaldi 100 gold to help catch whoever drains the Golden Egg's ale each night."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_1",
+   "text": "Find the treasure marked on the party's map."
+  },
+  {
+   "id": "fact_6",
+   "text": "Kill the black dragon near Brandonsford and drag its body into town for Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_21",
+   "text": "Find out who empties Quinn's bar at the Golden Egg each night and collect Quinn's 100 gold."
+  },
+  {
+   "id": "fact_22",
+   "text": "If Sir Phidipaldi makes a show of delivering Quinn's water-filled bottles as ale, they may see who comes for the stock."
+  },
+  {
+   "id": "fact_11",
+   "text": "If the party goes back to the Clumsy Fox and pays Lady Hilda, she will join their dragon hunt."
+  },
+  {
+   "id": "fact_14",
+   "text": "If the party pays Drop Dead Ned 100 gold a week, he and his killer wasp will do anything that lets him kill. He refunds 5 gold per kill if he can do what he wants with the bodies."
+  },
+  {
+   "id": "fact_23",
+   "text": "Who or what empties Quinn's bar each night?"
+  },
+  {
+   "id": "fact_18",
+   "text": "Why does Warwick the smith keep adding lucky charms and growing more paranoid?"
+  },
+  {
+   "id": "fact_13",
+   "text": "What is stopping shipments from reaching Brandonsford?"
+  },
+  {
+   "id": "fact_5",
+   "text": "What does the Clurichen do in town each night?"
+  },
+  {
+   "id": "fact_8",
+   "text": "Farmer Gill's three sons are already hunting the dragon, and Gill expects them to bring it back. They could claim Eric's bounty first."
+  }
+ ],
+ "session_cue_scene": "scene_3",
+ "problems": []
+}

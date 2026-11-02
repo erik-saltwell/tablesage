@@ -1,0 +1,55 @@
+{
+ "scenes": "s003-step1",
+ "shared_subjects": [
+  {
+   "subject": "Sir Brandon's magical sword, now carried by Sir Phidipaldi",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_52",
+    "beat_53",
+    "beat_54"
+   ],
+   "reason": "The retrieval is done and the sword is now a resource for killing the dragon."
+  },
+  {
+   "subject": "The undead greatsword-wielder killing goblins below",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_18"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_36",
+    "beat_41",
+    "beat_55"
+   ],
+   "reason": "The danger has its own thread, though clearing it is what the goblin bargain requires."
+  },
+  {
+   "subject": "Ned's offer to buy the goblin bodies and the need to sneak them past the goblins",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_18"
+   ],
+   "beats": [
+    "beat_37",
+    "beat_38"
+   ],
+   "reason": "The sale is part of Ned's arrangement, and the goblins' objection blocks it."
+  },
+  {
+   "subject": "An advance from the reeve to pay Lady Hilda",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_2"
+   ],
+   "reason": "The advance is planned to fund the party's undertaking to hire Hilda."
+  }
+ ]
+}

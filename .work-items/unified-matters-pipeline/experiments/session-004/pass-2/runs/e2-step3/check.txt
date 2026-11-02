@@ -1,0 +1,22 @@
+step3: 45 facts (41 open) {'want': 3, 'owe': 9, 'blocked_by': 4, 'could_use': 9, 'unknown': 13, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_31', 'fact_32']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_29 (thread_3, owe) ~ fact_11 (thread_4, threat)
+         Wayman promised Snurk never to tell King Hogboon where the Free Goblin Society is living, in the Barrow Mound's church, antechamber and statue room.
+         Sir Alfred may recover and kill more Free Goblin Society members, who plan to live in the mound's church, antechamber and statue room behind a wall over the stairs.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.37 fact_10 (thread_4, threat) ~ fact_12 (thread_4, unknown)
+         Sir Alfred, the undead knight in Sir Brandon's tomb, was left incapacitated but not destroyed and may recover and attack the party if they return to the Barrow Mound.
+         Why does Sir Alfred, the undead knight whom Brother Dirk regards as holy, roam the Barrow Mound?
+  cross-thread facts sharing 4-word phrases:
+    fact_27 (thread_2) & fact_32 (thread_12): ['malzazarik and lady hilda']
+    fact_29 (thread_3) & fact_11 (thread_4): ['antechamber and statue room', 'church antechamber and statue', "mound's church antechamber and"]
+    fact_36 (thread_13) & fact_41 (thread_16): ['natural looking cave in']

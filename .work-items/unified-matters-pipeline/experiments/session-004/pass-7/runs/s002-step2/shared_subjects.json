@@ -1,0 +1,80 @@
+{
+ "scenes": "s002-step1",
+ "shared_subjects": [
+  {
+   "subject": "Naggeneen held captive in a bag behind Quinn's bar",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_19",
+    "beat_37"
+   ],
+   "reason": "The thread about the Clurichen is the thread about the very creature."
+  },
+  {
+   "subject": "Warwick's magical mithril chain shirt and its potential use against the dragon",
+   "home": "thread_9",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_21",
+    "beat_44"
+   ],
+   "reason": "A thread about the item comes before the hunt that might use it."
+  },
+  {
+   "subject": "Warwick's cracked-open second-story bedroom window",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_9"
+   ],
+   "beats": [
+    "beat_22"
+   ],
+   "reason": "The potion plan, which involves getting into Warwick's house, would use the window first."
+  },
+  {
+   "subject": "The magic sword buried with Sir Brandon, needed to kill the dragon",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_46",
+    "beat_51",
+    "beat_62"
+   ],
+   "reason": "The child thread about the sword comes before the parent dragon hunt."
+  },
+  {
+   "subject": "Where the Barrow Mound is and how far away it is",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_14",
+    "thread_1"
+   ],
+   "beats": [
+    "beat_47",
+    "beat_51",
+    "beat_55"
+   ],
+   "reason": "The sword pursuit is the thread that seeks the location and would use it first."
+  },
+  {
+   "subject": "Brother Dirk's willingness to continue with the party",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_11"
+   ],
+   "beats": [
+    "beat_86",
+    "beat_87"
+   ],
+   "reason": "Dirk's choice to go home or go on bears most directly on the trip to the Barrow for the sword."
+  }
+ ]
+}

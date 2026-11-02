@@ -1,0 +1,452 @@
+{
+  "title": "ThreadFacts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "facts"
+  ],
+  "properties": {
+    "facts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Fact"
+      }
+    }
+  },
+  "$defs": {
+    "Text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "NullableText": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Text"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Rating": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "Fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "text",
+        "state",
+        "change",
+        "ended_how",
+        "learned_this_session",
+        "definite_end",
+        "possibly_moot",
+        "certainty",
+        "uncertain_reason",
+        "about_thread",
+        "also_bears_on",
+        "importance",
+        "actionability",
+        "evidence",
+        "classification",
+        "resource_subject",
+        "classification_change_basis"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^fact_(new_)?[0-9]+$"
+        },
+        "kind": {
+          "enum": [
+            "want",
+            "owe",
+            "blocked_by",
+            "could_use",
+            "unknown",
+            "threat"
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "ended"
+          ]
+        },
+        "change": {
+          "enum": [
+            "carried",
+            "updated",
+            "new",
+            "ended"
+          ]
+        },
+        "ended_how": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "learned_this_session": {
+          "type": "boolean"
+        },
+        "definite_end": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "possibly_moot": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "certainty": {
+          "enum": [
+            "established",
+            "uncertain"
+          ]
+        },
+        "uncertain_reason": {
+          "$ref": "#/$defs/NullableText"
+        },
+        "about_thread": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^thread_[0-9]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "also_bears_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^thread_[0-9]+$"
+          }
+        },
+        "importance": {
+          "$ref": "#/$defs/Rating"
+        },
+        "actionability": {
+          "$ref": "#/$defs/Rating"
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(beat_[0-9]+|prior)$"
+          }
+        },
+        "classification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "serves_thread",
+            "significance",
+            "commitment_type",
+            "stake_basis",
+            "stake",
+            "burden",
+            "consequence",
+            "blocks_thread",
+            "in_effect",
+            "form",
+            "helps_thread",
+            "role",
+            "support_basis",
+            "goal_support",
+            "action_basis",
+            "action_supported",
+            "acquired_by_acting_on_opening",
+            "grounding_justification",
+            "grounding",
+            "investigative_depth_justification",
+            "investigative_depth",
+            "narrative_payoff_justification",
+            "narrative_payoff",
+            "investigative_potential_justification",
+            "investigative_potential",
+            "question_type",
+            "harm_origin",
+            "negative_outcome_clarity_justification",
+            "negative_outcome_clarity",
+            "outcome_severity_justification",
+            "outcome_severity",
+            "evidentiary_strength_justification",
+            "evidentiary_strength",
+            "evidence_of_progression_justification",
+            "evidence_of_progression",
+            "preventability_justification",
+            "preventability",
+            "scope_basis",
+            "persists_beyond_scene",
+            "opening_basis",
+            "opening_type"
+          ],
+          "properties": {
+            "serves_thread": {
+              "type": "string"
+            },
+            "significance": {
+              "enum": [
+                "adventure",
+                "side",
+                "incidental",
+                null
+              ]
+            },
+            "commitment_type": {
+              "enum": [
+                "general_agreement",
+                "personal_promise",
+                "debt",
+                "bargain",
+                "assigned_duty",
+                "oath",
+                null
+              ]
+            },
+            "stake_basis": {
+              "type": "string"
+            },
+            "stake": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "burden": {
+              "enum": [
+                "trivial",
+                "minor",
+                "major",
+                "extreme",
+                null
+              ]
+            },
+            "consequence": {
+              "enum": [
+                "trivial",
+                "minor",
+                "major",
+                "extreme",
+                null
+              ]
+            },
+            "blocks_thread": {
+              "type": "string"
+            },
+            "in_effect": {
+              "enum": [
+                "active",
+                "anticipated",
+                null
+              ]
+            },
+            "form": {
+              "enum": [
+                "asset",
+                "opening",
+                null
+              ]
+            },
+            "helps_thread": {
+              "type": "string"
+            },
+            "role": {
+              "enum": [
+                "direct",
+                "step",
+                null
+              ]
+            },
+            "support_basis": {
+              "type": "string"
+            },
+            "goal_support": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "action_basis": {
+              "type": "string"
+            },
+            "action_supported": {
+              "enum": [
+                "yes",
+                "no",
+                null
+              ]
+            },
+            "acquired_by_acting_on_opening": {
+              "type": "boolean"
+            },
+            "grounding_justification": {
+              "type": "string"
+            },
+            "grounding": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "investigative_depth_justification": {
+              "type": "string"
+            },
+            "investigative_depth": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "narrative_payoff_justification": {
+              "type": "string"
+            },
+            "narrative_payoff": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "investigative_potential_justification": {
+              "type": "string"
+            },
+            "investigative_potential": {
+              "enum": [
+                "trivial",
+                "low",
+                "medium",
+                "high",
+                null
+              ]
+            },
+            "question_type": {
+              "enum": [
+                "open_ended",
+                "closed_ended",
+                null
+              ]
+            },
+            "harm_origin": {
+              "enum": [
+                "party",
+                "external",
+                "unclear",
+                null
+              ]
+            },
+            "negative_outcome_clarity_justification": {
+              "type": "string"
+            },
+            "negative_outcome_clarity": {
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                null
+              ]
+            },
+            "outcome_severity_justification": {
+              "type": "string"
+            },
+            "outcome_severity": {
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                null
+              ]
+            },
+            "evidentiary_strength_justification": {
+              "type": "string"
+            },
+            "evidentiary_strength": {
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                null
+              ]
+            },
+            "evidence_of_progression_justification": {
+              "type": "string"
+            },
+            "evidence_of_progression": {
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                null
+              ]
+            },
+            "preventability_justification": {
+              "type": "string"
+            },
+            "preventability": {
+              "enum": [
+                "high",
+                "medium",
+                "low",
+                null
+              ]
+            },
+            "scope_basis": {
+              "type": "string"
+            },
+            "persists_beyond_scene": {
+              "type": "boolean"
+            },
+            "opening_basis": {
+              "type": "string"
+            },
+            "opening_type": {
+              "enum": [
+                "enabling",
+                "goal_pursuit",
+                "generic_benefit",
+                "possession_tautology",
+                null
+              ]
+            }
+          }
+        },
+        "resource_subject": {
+          "type": "string"
+        },
+        "classification_change_basis": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "state": "4979ca9f4264",
+  "added": [
+    "RC-069",
+    "RC-070",
+    "RC-071",
+    "RC-072",
+    "SE-036",
+    "SE-037",
+    "SE-038"
+  ],
+  "retired": [
+    "RC-032",
+    "RC-037",
+    "RC-067",
+    "SE-031"
+  ],
+  "changed": [
+    "RC-010",
+    "RC-022",
+    "RC-029",
+    "RC-033",
+    "RC-045",
+    "RC-049",
+    "RC-062",
+    "RC-063",
+    "SE-005",
+    "SE-034"
+  ],
+  "counts": {
+    "RC": {
+      "failing": 55,
+      "advisory": 11
+    },
+    "SE": {
+      "current": 29,
+      "advisory": 7
+    }
+  },
+  "coverage_entries": 126
+}

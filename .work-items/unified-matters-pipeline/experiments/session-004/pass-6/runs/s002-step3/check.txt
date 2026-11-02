@@ -1,0 +1,43 @@
+step3: 51 facts (44 open) {'want': 4, 'owe': 6, 'blocked_by': 2, 'could_use': 18, 'unknown': 11, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_22', 'fact_24', 'fact_38']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.60 fact_49 (thread_15, threat) ~ fact_50 (thread_15, unknown)
+         Ingrid says fairies that used to stay hidden are encroaching and coming out more often, a trouble she sets alongside the dragon; she sees them when visiting Vivian in the forest.
+         Why are fairies that used to stay hidden now encroaching and coming out more often?
+    0.58 fact_29 (thread_3, could_use) ~ fact_33 (thread_8, want)
+         Dunk says Warwick's mithril chain shirt could help against the dragon and has a plan to get it.
+         Get Warwick the smith's magical mithril chain shirt, which Dunk says could help against the dragon.
+    0.57 fact_47 (thread_14, owe) ~ fact_48 (thread_14, owe)
+         Dr. Uriah owes Father William penance given at the Barrow Mound, in return for William marking the Barrow Mound and the witch's house on the party's map.
+         Dr. Uriah owes Father William a 10 gold donation for the Barrow Mound's upkeep, in return for William marking the map.
+    0.56 fact_28 (thread_3, could_use) ~ fact_42 (thread_12, could_use)
+         Father William says Sir Brandon's magic sword, buried with him in the Barrow Mound, is what can kill the dragon.
+         Father William says the dragon cannot be killed without the magic sword buried with Sir Brandon in the Barrow Mound; the party could retrieve it from the Barrow.
+    0.53 fact_28 (thread_3, could_use) ~ fact_44 (thread_12, unknown)
+         Father William says Sir Brandon's magic sword, buried with him in the Barrow Mound, is what can kill the dragon.
+         Is Sir Brandon's magic sword really in the Barrow Mound?
+    0.45 fact_7 (thread_3, could_use) ~ fact_12 (thread_4, could_use)
+         Lady Hilda offers to join the party's dragon hunt for pay.
+         Lady Hilda, a seasoned-looking noblewoman with chain mail and a shield, offers to join the party for pay to go after the dragon; no fee has been set.
+    0.44 fact_1 (thread_1, want) ~ fact_3 (thread_1, unknown)
+         Find the treasure the party's treasure map leads to.
+         Where is the treasure the party's map marks?
+    0.44 fact_1 (thread_1, want) ~ fact_23 (thread_1, unknown)
+         Find the treasure the party's treasure map leads to.
+         What is the history of the party's treasure map?
+    0.37 fact_43 (thread_12, could_use) ~ fact_47 (thread_14, owe)
+         Father William marked the Barrow Mound on the party's map; he says it is about a day's walk away.
+         Dr. Uriah owes Father William penance given at the Barrow Mound, in return for William marking the Barrow Mound and the witch's house on the party's map.
+  cross-thread facts sharing 4-word phrases:
+    fact_22 (thread_1) & fact_51 (thread_16): ['on the way north']
+    fact_7 (thread_3) & fact_12 (thread_4): ['offers to join the']
+    fact_27 (thread_3) & fact_44 (thread_12): ["sir brandon's magic sword"]
+    fact_28 (thread_3) & fact_42 (thread_12): ['in the barrow mound', 'magic sword buried with']
+    fact_28 (thread_3) & fact_44 (thread_12): ['in the barrow mound', "sir brandon's magic sword"]
+    fact_29 (thread_3) & fact_33 (thread_8): ['could help against the', 'help against the dragon']
+    fact_43 (thread_12) & fact_45 (thread_13): ["on the party's map"]
+    fact_43 (thread_12) & fact_47 (thread_14): ["on the party's map"]
+    fact_45 (thread_13) & fact_47 (thread_14): ["on the party's map"]

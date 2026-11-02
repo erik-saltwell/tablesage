@@ -1,0 +1,328 @@
+{
+ "session": "004",
+ "scenes": "s004-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_17",
+    "beat_18",
+    "beat_20",
+    "beat_71",
+    "beat_72",
+    "beat_73",
+    "beat_74"
+   ],
+   "note": "The map's origin is answered (won from Bral, beat_72), two locations are read, and Grimny says the hoard is probably in the Dragon's Lair (beat_74). The treasure is still unrecovered and one location is unidentified."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session; Sir Phidipaldi's Clurichen story to Warwick does not bear on Naggeneen."
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and the Reeve's bounty",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_3",
+    "beat_16",
+    "beat_17",
+    "beat_18",
+    "beat_24",
+    "beat_25",
+    "beat_36",
+    "beat_37",
+    "beat_42",
+    "beat_43",
+    "beat_45",
+    "beat_46",
+    "beat_47",
+    "beat_48",
+    "beat_49",
+    "beat_50",
+    "beat_51",
+    "beat_53",
+    "beat_61",
+    "beat_62",
+    "beat_74",
+    "beat_75"
+   ],
+   "note": "The party gained allies, armor, a faun-wine plan and the lair's location, but found no poison remedy. The dragon still threatens and the bounty is unclaimed."
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3",
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_29",
+    "beat_61"
+   ],
+   "note": "Lady Hilda and the wizard Malzazarik joined the party, recruited against Cedric's promissory note rather than a Reeve advance (beat_61). Their pay under that arrangement remains open."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_7"
+   ],
+   "note": "Ned's wasp incapacitated Sir Alfred. Ned remains with the party and his offers still stand."
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipments",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_25",
+    "beat_28",
+    "beat_33"
+   ],
+   "note": "Cedric and Warwick say supplies stopped when the dragon troubles began (beat_25, beat_28), which partly answers why shipments stopped."
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_20",
+    "beat_28",
+    "beat_30",
+    "beat_31",
+    "beat_32",
+    "beat_33",
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_57",
+    "beat_58",
+    "beat_60",
+    "beat_66"
+   ],
+   "note": "Warwick lent the mithril shirt, holding the plate armor and lyre as collateral, in exchange for metal from the Dwarven mine (beat_34, beat_35). That metal is still owed."
+  },
+  {
+   "id": "thread_11",
+   "name": "Squints and Trout's Halfling Corps",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_12",
+   "name": "Ingrid's sleeping potion for Warwick",
+   "parent": "thread_9",
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_30",
+    "beat_31",
+    "beat_57",
+    "beat_59"
+   ],
+   "note": "Sir Phidipaldi told Ingrid that Warwick knows of her visits and is not interested (beat_57), and the shirt was obtained another way. Dunk's promise to Ingrid was never released, so the thread stays open."
+  },
+  {
+   "id": "thread_14",
+   "name": "Dr. Uriah's penance and donation at the Barrow Mound",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_15",
+   "name": "Why the hidden fairies are coming out",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched; fairy magic in the forest was only colour."
+  },
+  {
+   "id": "thread_16",
+   "name": "The giant in the cyclopean cottage",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_17",
+   "name": "The undead swordsman of the Barrow Mound",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_1",
+    "beat_3",
+    "beat_4",
+    "beat_5",
+    "beat_6",
+    "beat_7",
+    "beat_8",
+    "beat_9"
+   ],
+   "note": "The swordsman is identified as the undead knight Sir Alfred, and he was incapacitated but not destroyed (beat_9). The danger remains."
+  },
+  {
+   "id": "thread_18",
+   "name": "The Free Goblin Society's bargain",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_9",
+    "beat_10",
+    "beat_11",
+    "beat_12",
+    "beat_13",
+    "beat_14",
+    "beat_15",
+    "beat_63",
+    "beat_64"
+   ],
+   "note": "The deal was renegotiated: the goblins stay, wall off the stairs and keep the upper rooms (beat_13), and Wayman renewed the promise not to tell King Hogboon (beat_15). That promise remains owed."
+  },
+  {
+   "id": "thread_19",
+   "name": "Brother Dirk and the Barrow's holy relics",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_16",
+    "beat_21",
+    "beat_22",
+    "beat_23",
+    "beat_24",
+    "beat_39",
+    "beat_40"
+   ],
+   "note": "The robes proved non-magical (beat_40), and Dr. Uriah promised to return them to the church after the dragon is defeated (beat_24). The chalice question is still open."
+  },
+  {
+   "id": "thread_20",
+   "name": "The noblewoman statue and the voice in the tomb",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_21",
+   "name": "Cedric's promissory note",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_26",
+    "beat_27",
+    "beat_29",
+    "beat_61"
+   ],
+   "note": "Cedric signed a note for the barrow treasure, tallied at 975 gold, payable once the caravans flow. It is unpaid and has been pledged to recruit allies."
+  },
+  {
+   "id": "thread_22",
+   "name": "Vivian's message to Grimny",
+   "parent": null,
+   "origin": "new",
+   "status": "resolved",
+   "touched_by": [
+    "beat_52",
+    "beat_54",
+    "beat_55",
+    "beat_76",
+    "beat_77",
+    "beat_78"
+   ],
+   "note": "The party agreed to carry Vivian's letter and scent to Grimny. Dunk delivered both to Grimny's ghost, who ascended (beat_78), so nothing remains owed."
+  },
+  {
+   "id": "thread_23",
+   "name": "Dunk's dwarven ring",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_67",
+    "beat_68",
+    "beat_69",
+    "beat_76"
+   ],
+   "note": "Dunk wears a magical ring taken from a dead dwarf that let him see Grimny's ghost. Whether it is cursed is unknown."
+  },
+  {
+   "id": "thread_24",
+   "name": "Bral and Grimny's murder",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_70",
+    "beat_71",
+    "beat_75"
+   ],
+   "note": "Grimny believes his brother Bral killed him, and Bral's whereabouts and the fate of the other dwarves are unknown. Dunk suspects Bral may be faking the dragon."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_38",
+   "reason": "Ingrid's wares are a lasting source of remedies, but they belong to no thread."
+  },
+  {
+   "beat": "beat_41",
+   "reason": "The party stocked up on Mandrake root tea and Essence of Wolfsbane."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_21",
+  "thread_new_2": "thread_22",
+  "thread_new_3": "thread_23",
+  "thread_new_4": "thread_24"
+ },
+ "problems": []
+}

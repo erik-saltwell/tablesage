@@ -1,0 +1,178 @@
+{
+ "note": "Chained from pass 6's s001 (s001-step2, s001-step3).",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen trickster",
+   "parent": null
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and Eric the Reeve's bounty",
+   "parent": null
+  },
+  {
+   "id": "thread_4",
+   "name": "Lady Hilda's offer to join the party",
+   "parent": "thread_3"
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer of hire",
+   "parent": null
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipment",
+   "parent": null
+  },
+  {
+   "id": "thread_7",
+   "name": "Farmer Gill's mule Shamus",
+   "parent": null
+  },
+  {
+   "id": "thread_8",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null
+  },
+  {
+   "id": "thread_9",
+   "name": "Quinn's deal against Bentley",
+   "parent": null
+  }
+ ],
+ "facts": [
+  {
+   "id": "fact_1",
+   "thread": "thread_1",
+   "kind": "want",
+   "text": "Find the treasure the party's treasure map leads to."
+  },
+  {
+   "id": "fact_2",
+   "thread": "thread_1",
+   "kind": "could_use",
+   "text": "The party holds a treasure map marking several locations around Brandonsford that they do not recognize."
+  },
+  {
+   "id": "fact_3",
+   "thread": "thread_1",
+   "kind": "unknown",
+   "text": "Where is the treasure the party's map marks?"
+  },
+  {
+   "id": "fact_4",
+   "thread": "thread_2",
+   "kind": "threat",
+   "text": "Reginald the frog warns that a little trickster called a Clurichen comes from the riverbanks into town every night, up to no good, and that the party should stay away from wherever it goes."
+  },
+  {
+   "id": "fact_5",
+   "thread": "thread_2",
+   "kind": "unknown",
+   "text": "What does the Clurichen do when it comes into Brandonsford each night?"
+  },
+  {
+   "id": "fact_6",
+   "thread": "thread_3",
+   "kind": "want",
+   "text": "Kill the black dragon outside Brandonsford and drag its body into town to collect Eric the Reeve's 1000 gold bounty."
+  },
+  {
+   "id": "fact_7",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "Lady Hilda offers to join the party's dragon hunt for pay."
+  },
+  {
+   "id": "fact_8",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "George, a capable woodsman who lost an arm to the dragon and describes it as a black dragon, not a big one, lives a couple of houses from the Clumsy Fox and might come to the tavern tonight; the party could ask him where and how he met it."
+  },
+  {
+   "id": "fact_9",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Where is the black dragon's lair?"
+  },
+  {
+   "id": "fact_10",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Where has this dragon come from, when nothing like it has been seen since Sir Brandon's dragon was killed centuries ago?"
+  },
+  {
+   "id": "fact_11",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "The black dragon outside Brandonsford has already taken the woodsman George's arm, and Farmer Gill's three sons are out hunting it now."
+  },
+  {
+   "id": "fact_12",
+   "thread": "thread_4",
+   "kind": "could_use",
+   "text": "Lady Hilda, a seasoned-looking noblewoman with chain mail and a shield, offers to join the party for pay to go after the dragon; no fee has been set."
+  },
+  {
+   "id": "fact_13",
+   "thread": "thread_4",
+   "kind": "owe",
+   "text": "Sir Phidipaldi told Lady Hilda the party would talk with Eric the Reeve and then come back to take up her services."
+  },
+  {
+   "id": "fact_14",
+   "thread": "thread_5",
+   "kind": "could_use",
+   "text": "Drop Dead Ned offers himself and his killer wasp for hire at 100 gold a week, as long as he gets to kill people with the wasp; for a night of guaranteed kills he would rebate 5 gold per kill if he can do what he wants with the bodies."
+  },
+  {
+   "id": "fact_15",
+   "thread": "thread_6",
+   "kind": "unknown",
+   "text": "What is stopping goods from reaching Brandonsford? Bentley says his restocking shipment is a week overdue, and Gill says nothing has come into town in months."
+  },
+  {
+   "id": "fact_16",
+   "thread": "thread_7",
+   "kind": "want",
+   "text": "Get Farmer Gill's mule Shamus, which Gill offers for 100 gold."
+  },
+  {
+   "id": "fact_17",
+   "thread": "thread_7",
+   "kind": "could_use",
+   "text": "When Dunk asked to trade work for Shamus, Farmer Gill pointed to killing the dragon outside town as the big work needed; no deal is settled."
+  },
+  {
+   "id": "fact_18",
+   "thread": "thread_8",
+   "kind": "unknown",
+   "text": "Why is Warwick the smith growing more paranoid, adding lucky charms to his shop every day? Gill guesses it is to keep away Ingrid the potion seller, who he says is hot for Warwick."
+  },
+  {
+   "id": "fact_19",
+   "thread": "thread_9",
+   "kind": "want",
+   "text": "Help Quinn get back at Bentley and collect Quinn's promised 100 gold."
+  },
+  {
+   "id": "fact_20",
+   "thread": "thread_9",
+   "kind": "could_use",
+   "text": "Quinn and Sir Phidipaldi plan to stage a fake ale delivery at the Golden Egg: Quinn brings bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering them, to see who comes for the stock."
+  },
+  {
+   "id": "fact_21",
+   "thread": "thread_9",
+   "kind": "unknown",
+   "text": "Who or what empties and knocks over Quinn's stock every night? Quinn blames Bentley."
+  }
+ ]
+}

@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: tablesage-learnings
+created: 2026-10-30T11:27:15-07:00

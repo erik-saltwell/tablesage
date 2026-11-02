@@ -1,0 +1,24 @@
+step3: 40 facts (36 open) {'want': 3, 'owe': 9, 'blocked_by': 3, 'could_use': 6, 'unknown': 12, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19', 'fact_36']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_22', 'fact_10', 'fact_11', 'fact_35', 'fact_36']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.67 fact_1 (thread_1, want) ~ fact_25 (thread_2, could_use)
+         Find the treasure marked on the party's map. Grimny says Bral probably hid it in the Dragon's Lair, a very small one-room cave the dwarves once scouted as a hiding place.
+         The treasure map marks the Dragon's Lair; Grimny says it is a very small one-room cave the dwarves once scouted as a hiding place and found empty.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.47 fact_1 (thread_1, want) ~ fact_38 (thread_16, unknown)
+         Find the treasure marked on the party's map. Grimny says Bral probably hid it in the Dragon's Lair, a very small one-room cave the dwarves once scouted as a hiding place.
+         Grimny says the dwarves kept the best metal from the mine as a hoard, and that Bral probably hid it in the Dragon's Lair, a very small one-room cave marked on the party's map. Is the hoard really hidden there?
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.39 fact_22 (thread_1, blocked_by) ~ fact_26 (thread_2, unknown)
+         The dragon said to lair at the Dragon's Lair stands between the party and the treasure Bral likely hid there; Dunk suspects there is no dragon and Bral only pretends there is.
+         Is the dragon real? Dunk suspects there is no dragon, only Bral pretending there is one to keep everybody away from the Dragon's Lair.
+    0.38 fact_35 (thread_14, owe) ~ fact_36 (thread_14, could_use)
+         The party owes the wizard Malzazarik and Lady Hilda payment for joining, offered from Cedric's promissory note (975 gold pieces, payable once the caravans flow again).
+         Cedric the storekeeper signed a promissory note to pay the party 975 gold pieces (three-quarters price for their treasure) once the caravans flow again; collection waits on supply shipments resuming.

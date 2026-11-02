@@ -1,0 +1,197 @@
+{
+ "scenes": "r1-step1",
+ "shared_subjects": [
+  {
+   "subject": "Sir Brandon's sword and its power against evil",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_4"
+   ],
+   "beats": [
+    "beat_3",
+    "beat_18",
+    "beat_47"
+   ],
+   "reason": "The party retrieved the sword to use against the dragon."
+  },
+  {
+   "subject": "The mithril chain shirt on loan from Warwick",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_2",
+    "thread_8"
+   ],
+   "beats": [
+    "beat_36",
+    "beat_37",
+    "beat_60"
+   ],
+   "reason": "The shirt was received under the Warwick deal."
+  },
+  {
+   "subject": "The treasure probably hidden in the Dragon's Lair",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_20",
+    "beat_77"
+   ],
+   "reason": "Where the treasure lies belongs to the thread seeking it."
+  },
+  {
+   "subject": "What the Dragon's Lair cave is like and whether a dragon is there",
+   "home": "thread_2",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_77",
+    "beat_78"
+   ],
+   "reason": "The party would act on the lair's layout and occupant first in the dragon hunt."
+  },
+  {
+   "subject": "Bral, who sold the map and is suspected of killing Grimny",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_1"
+   ],
+   "beats": [
+    "beat_73",
+    "beat_74",
+    "beat_75"
+   ],
+   "reason": "A question about who Bral is and what he did lives on the question thread about him."
+  },
+  {
+   "subject": "The Dwarven mine and its sealed entrance",
+   "home": "thread_13",
+   "other_threads": [
+    "thread_1",
+    "thread_17"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_63",
+    "beat_69"
+   ],
+   "reason": "The cave-in blocks the metal the party owes Warwick most directly."
+  },
+  {
+   "subject": "King Hogboon's home in the goblin temple ruins",
+   "home": "thread_1",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_22",
+    "beat_67"
+   ],
+   "reason": "It identifies the map's last unidentified location."
+  },
+  {
+   "subject": "The barrow treasure consigned to Cedric",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_18",
+    "beat_28"
+   ],
+   "reason": "The treasure is held under Cedric's note, though Squints' pick bears on it."
+  },
+  {
+   "subject": "Use of the promissory note to hire Malzazarik and Lady Hilda",
+   "home": "thread_12",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_30",
+    "beat_64"
+   ],
+   "reason": "The note is a resource received under Cedric's bargain."
+  },
+  {
+   "subject": "Shipments and metal stopped since the dragon appeared",
+   "home": "thread_5",
+   "other_threads": [
+    "thread_12",
+    "thread_13"
+   ],
+   "beats": [
+    "beat_26",
+    "beat_27",
+    "beat_29"
+   ],
+   "reason": "The cause of the stopped shipments is the question of the Missing shipments thread."
+  },
+  {
+   "subject": "The robes kept in case they help against the dragon",
+   "home": "thread_11",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_25",
+    "beat_41"
+   ],
+   "reason": "The robes are held under Dr. Uriah's promise to Brother Dirk."
+  },
+  {
+   "subject": "Warwick's night visitors (Ingrid's visits)",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_13"
+   ],
+   "beats": [
+    "beat_32",
+    "beat_33",
+    "beat_34",
+    "beat_61",
+    "beat_62"
+   ],
+   "reason": "The visits are the subject of Dunk's deal with Ingrid, though the lyre arrangement rests on them."
+  },
+  {
+   "subject": "The ring's power to reveal Grimny's ghost",
+   "home": "thread_16",
+   "other_threads": [
+    "thread_17",
+    "thread_15"
+   ],
+   "beats": [
+    "beat_72"
+   ],
+   "reason": "A thread about the ring itself comes before the threads that used it."
+  },
+  {
+   "subject": "Grimny's death and departure",
+   "home": "thread_17",
+   "other_threads": [
+    "thread_15"
+   ],
+   "beats": [
+    "beat_73",
+    "beat_81"
+   ],
+   "reason": "Grimny's death is the subject of the Who killed Grimny question."
+  },
+  {
+   "subject": "Sir Alfred's incapacitated state behind the walled stairs",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_11",
+    "beat_13",
+    "beat_15"
+   ],
+   "reason": "The danger itself lives on Sir Alfred's thread."
+  }
+ ]
+}

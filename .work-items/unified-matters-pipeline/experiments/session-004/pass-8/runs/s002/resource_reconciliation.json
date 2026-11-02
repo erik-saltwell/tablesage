@@ -1,0 +1,38 @@
+{
+ "groups": [
+  {
+   "canonical": "fact_43",
+   "members": [
+    "fact_43",
+    "fact_24"
+   ],
+   "basis": "Both describe the same opening: retrieving the magic sword buried with Brandon in Brandon's Barrow Mound, which Father William says is the only way to kill the black dragon. fact_24 refers back to thread_11, where fact_43 is the home representation. Both serve thread_3, are established and are openings.",
+   "text": "Retrieve the magic sword buried with Brandon in Brandon's Barrow Mound, about a three-mile walk through the forest and marked on the party's map. Father William says the black dragon can't be killed without it, though George says no one knows whether the legend is true or where the sword is.",
+   "evidence": [
+    "beat_47",
+    "beat_58",
+    "beat_75",
+    "beat_78",
+    "beat_89"
+   ]
+  },
+  {
+   "canonical": "fact_37",
+   "members": [
+    "fact_37",
+    "fact_34"
+   ],
+   "basis": "Both describe one plan. Ingrid brews a sleeping potion from the faun wine Dunk brought. Dunk then helps her into Warwick's house to give it to Warwick, so Dunk can get inside with the smith asleep and take the mithril shirt. fact_34 points to thread_10, where fact_37 is the home representation. Both serve thread_9, are established and are openings.",
+   "text": "Ingrid is making a sleeping potion from the faun wine Dunk brought. Dunk plans to help her into Warwick's house tonight and give it to Warwick, so Dunk can get inside the shop for the mithril shirt while the smith sleeps. The potion is not yet made, and Dunk heavily diluted the faun wine.",
+   "evidence": [
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_73",
+    "beat_79",
+    "beat_80"
+   ]
+  }
+ ],
+ "input_fingerprint": "27a7030fe04ed98523f361abe4e7c1bbd82803074852819eb659786bfe46724a"
+}

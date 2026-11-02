@@ -1,0 +1,52 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Killing the dragon as the work Dunk could trade for Shamus",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_25"
+   ],
+   "reason": "It answers Dunk's question about trading work for the mule, so it lives on the mule bargain."
+  },
+  {
+   "subject": "Lady Hilda's offer to join the party for pay",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_10"
+   ],
+   "reason": "The offer is the subject of its own hiring thread, which serves the dragon hunt."
+  },
+  {
+   "subject": "Eric the Reeve offended by Sir Phidipaldi",
+   "home": "thread_7",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_16",
+    "beat_18"
+   ],
+   "reason": "The offence is the substance of the quarrel, though it may affect dealings over the bounty."
+  },
+  {
+   "subject": "No real shipments reaching Brandonsford",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_13",
+    "beat_30",
+    "beat_37"
+   ],
+   "reason": "The thread about the missing shipments is about this very thing, while Quinn's fake-delivery plan merely relies on it."
+  }
+ ]
+}

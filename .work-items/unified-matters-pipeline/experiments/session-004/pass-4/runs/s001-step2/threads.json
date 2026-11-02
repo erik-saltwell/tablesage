@@ -1,0 +1,145 @@
+{
+ "session": "001",
+ "scenes": "s001-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_1"
+   ],
+   "note": "The party is following a treasure map whose marked locations they do not recognize; the treasure is still unfound."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen trickster",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_8"
+   ],
+   "note": "Reginald warned that a trickster called a Clurichen comes from the riverbanks into town every night up to no good, an open danger and question."
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and Eric the Reeve's bounty",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_10",
+    "beat_11",
+    "beat_15",
+    "beat_16",
+    "beat_18",
+    "beat_19",
+    "beat_20",
+    "beat_21",
+    "beat_27",
+    "beat_28",
+    "beat_29"
+   ],
+   "note": "Eric offered 1000 gold for killing the black dragon and dragging its body into town (beat_18), and the rumours, George's encounter, Gill's sighting and his sons' hunt all bear on this one dragon. Sir Phidipaldi's insult and duel challenge to Eric (beat_20, beat_21) strained relations with the bounty-giver but did not end the offer."
+  },
+  {
+   "id": "thread_4",
+   "name": "Lady Hilda's offer to join the party",
+   "parent": "thread_3",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_11"
+   ],
+   "note": "Lady Hilda said she cannot kill the dragon herself but would join adventurers for money, and Sir Phidipaldi said they would talk to the Reeve and come back for her services; her stated purpose ties her to the dragon hunt."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer of hire",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_12",
+    "beat_22",
+    "beat_23",
+    "beat_24"
+   ],
+   "note": "The thief Drop Dead Ned offered himself and his killer wasp for 100 gold a week, with a per-kill rebate, and Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipment",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_14",
+    "beat_15",
+    "beat_32",
+    "beat_40"
+   ],
+   "note": "The town's restocking shipment is a week overdue and goods have not reached town in months; nobody has yet gone after it."
+  },
+  {
+   "id": "thread_7",
+   "name": "Farmer Gill's mule Shamus",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_26",
+    "beat_27",
+    "beat_31"
+   ],
+   "note": "Gill offered Dunk the mule for 100 gold; Dunk asked to trade work, Gill pointed to killing the dragon, and Dunk is sleeping on the offer with no deal settled."
+  },
+  {
+   "id": "thread_8",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_32",
+    "beat_33"
+   ],
+   "note": "Warwick the increasingly paranoid smith displays a superb mithril chain shirt he refuses to sell, an item the party may want."
+  },
+  {
+   "id": "thread_9",
+   "name": "Quinn's deal against Bentley",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_37",
+    "beat_38",
+    "beat_39",
+    "beat_40"
+   ],
+   "note": "Quinn's stock vanishes nightly and he blames Bentley; Sir Phidipaldi agreed to help get back at Bentley for 100 gold and to stage a fake ale delivery. The mystery of the vanishing stock bears directly on this deal, so it is one situation."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_25",
+   "reason": "Bentley banished Sir Phidipaldi to the Golden Egg for the night to stop the fight, splitting him from the party."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_1",
+  "thread_new_2": "thread_2",
+  "thread_new_3": "thread_3",
+  "thread_new_4": "thread_4",
+  "thread_new_5": "thread_5",
+  "thread_new_6": "thread_6",
+  "thread_new_7": "thread_7",
+  "thread_new_8": "thread_8",
+  "thread_new_9": "thread_9"
+ },
+ "problems": []
+}

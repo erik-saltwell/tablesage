@@ -7,7 +7,8 @@ import json
 import math
 import shutil
 import uuid
-from collections.abc import Callable, Collection, Mapping, Sequence
+from collections.abc import Callable, Collection, Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Concatenate, ParamSpec, TypeVar, cast
@@ -26,6 +27,7 @@ from tablesage_model.model import Session as GameSession
 from tablesage_model.player_names import validate_player_name
 from tablesage_model.settings import AppSettings
 from tablesage_tools.embeddings import Embedding, EmbeddingFactory
+from tablesage_tools.llm import supports_openai_explicit_prompt_caching
 from tablesage_tools.model import Transcript
 from tablesage_tools.speakers import UNASSIGNED_SPEAKER
 
@@ -34,6 +36,7 @@ from ._fs import delete_named_entity_folder, named_entity_folder_exists
 from .entities import campaigns, glossary, players, sessions
 from .entities import session_processing as session_processing_entities
 from .llm import PromptName, system_prompt_path
+from .llm.prompt_caching import prompt_caching_scope
 from .player_archive import PlayerArchiveResult
 from .session_pipeline import artifact_graph as artifact_graph_pipeline
 from .session_pipeline import artifacts, import_audio, narrative, processing, processing_state, transcribe_audio, transcript_review
@@ -1737,6 +1740,46 @@ class Application:
                 if name in requested:
                     ensure(session_id, name, is_forced=name in forced)
             return tuple(plan)
+
+    @contextmanager
+    def cache_regeneration_prompts(self, session_ids: Sequence[uuid.UUID]) -> Iterator[None]:
+        """Opt into caching only prefixes needed by three distinct Sessions in this regeneration.
+
+        The generation plans already propagate stale dependencies across Sessions. Deduplicate
+        prior-Session tasks appearing in multiple plans; retries are not assumed when counting.
+        This scope must be entered in the worker that executes generation.
+        """
+        model = self._settings.llm_model_high
+        openai_explicit = supports_openai_explicit_prompt_caching(model)
+        ttl = self._settings.prompt_caching.openai_ttl if openai_explicit else self._settings.prompt_caching.ttl
+        uses: dict[tuple[str, str], set[uuid.UUID]] = {}
+        if (model.startswith("anthropic/") or openai_explicit) and session_ids:
+            tasks = {task for session_id in session_ids for task in self.generation_plan(session_id)}
+            with Session(self._engine) as session:
+                game_session = sessions.get_session(session, session_ids[0])
+                graph = self._artifact_graph(session, game_session.campaign_id)
+                for task in tasks:
+                    if task.artifact_name not in artifact_graph_pipeline.MODEL_GENERATED_ARTIFACTS:
+                        continue
+                    target_session = sessions.get_session(session, task.session_id)
+                    folder = self._session_folder(session, target_session)
+                    step = graph.step_for(artifact_graph_pipeline.ArtifactRef(folder, task.artifact_name))
+                    if step is None:
+                        continue
+                    for dependency in step.dependencies:
+                        if isinstance(dependency, artifact_graph_pipeline.SystemPromptInput) and dependency.path.name == "system.md":
+                            key = (model, dependency.path.read_text(encoding="utf-8"))
+                            uses.setdefault(key, set()).add(task.session_id)
+        prefixes = frozenset(key for key, used_by in uses.items() if len(used_by) >= 3)
+        with widelog.wide_event(
+            op="regeneration_prompt_caching",
+            model=model,
+            session_count=len(set(session_ids)),
+            eligible_prefix_count=len(prefixes),
+            ttl=ttl,
+        ):
+            with prompt_caching_scope(prefixes, ttl):
+                yield
 
     def generate_outputs(
         self,

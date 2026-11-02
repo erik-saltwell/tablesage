@@ -2,6 +2,8 @@
 
 | Name | Status | Folder |
 |---|---|---|
+| Allow low impact developments with high lasting consequences | captured | [.work-items/allow-low-impact-developments-high-lasting-consequences/](.work-items/allow-low-impact-developments-high-lasting-consequences/) |
+| Automated pipeline reviews | implementing | [.work-items/automated-pipeline-reviews/](.work-items/automated-pipeline-reviews/) |
 | Benchmarking v2 | complete | [.work-items/benchmarking-v2/](.work-items/benchmarking-v2/) |
 | Retry invalid campaign Matters responses once | complete | [.work-items/campaign-matters-validation-retry/](.work-items/campaign-matters-validation-retry/) |
 | Consistent Delete | complete | [.work-items/consistent-delete/](.work-items/consistent-delete/) |
@@ -12,6 +14,7 @@
 | Investigate disfluency and backchannel removal approaches | complete | [.work-items/disfluency-backchannel-removal/](.work-items/disfluency-backchannel-removal/) |
 | Documentation guides | complete | [.work-items/documentation-guides/](.work-items/documentation-guides/) |
 | enhance-readme | complete | [.work-items/enhance-readme/](.work-items/enhance-readme/) |
+| Explore filtering low-stakes commitments | registered | [.work-items/filter-low-stakes-commitments/](.work-items/filter-low-stakes-commitments/) |
 | generate-badges | registered | [.work-items/generate-badges/](.work-items/generate-badges/) |
 | Readable Revelations and New Assets headlines | complete | [.work-items/historical-matters-readable-headlines/](.work-items/historical-matters-readable-headlines/) |
 | Chat with an LLM in the app | ideating | [.work-items/in-app-llm-chat/](.work-items/in-app-llm-chat/) |
@@ -19,6 +22,12 @@
 | Isolate New Speakers sample yield | complete | [.work-items/isolate-new-speakers-sample-yield/](.work-items/isolate-new-speakers-sample-yield/) |
 | Ledger artifact contract | complete | [.work-items/ledger-artifact-contract/](.work-items/ledger-artifact-contract/) |
 | Improve Ledger prompt efficiency | complete | [.work-items/ledger-prompt-efficiency/](.work-items/ledger-prompt-efficiency/) |
+| Matters duplication: commitments restated as Goals or Obligations | complete | [.work-items/matters-dup-commitment-goal-obligation/](.work-items/matters-dup-commitment-goal-obligation/) |
+| Matters duplication: deal gains restated as New Assets | complete | [.work-items/matters-dup-deal-gain-new-asset/](.work-items/matters-dup-deal-gain-new-asset/) |
+| Matters duplication: offers and plans restated as Opportunities | complete | [.work-items/matters-dup-offer-opportunity/](.work-items/matters-dup-offer-opportunity/) |
+| Matters duplication: open bargains restated across categories | complete | [.work-items/matters-dup-open-bargain/](.work-items/matters-dup-open-bargain/) |
+| Matters duplication: Revelations restated as Goal Impediments | complete | [.work-items/matters-dup-revelation-impediment/](.work-items/matters-dup-revelation-impediment/) |
+| Matters duplication: one threat across threat categories | complete | [.work-items/matters-dup-threat-categories/](.work-items/matters-dup-threat-categories/) |
 | Matters: clearer wording for Summary and Table Recap | complete | [.work-items/matters-plain-language/](.work-items/matters-plain-language/) |
 | Move metadata fields below lists so bindings show up | complete | [.work-items/metadata-below-lists/](.work-items/metadata-below-lists/) |
 | New player from session | complete | [.work-items/new-player-from-session/](.work-items/new-player-from-session/) |
@@ -36,6 +45,7 @@
 | Remove duplicates in Post-Session Matters | complete | [.work-items/post-session-matters-dedup/](.work-items/post-session-matters-dedup/) |
 | Preparation tools allow an empty latest Session | complete | [.work-items/prep-tools-empty-latest-session/](.work-items/prep-tools-empty-latest-session/) |
 | Public documentation | complete | [.work-items/public-documentation/](.work-items/public-documentation/) |
+| Reduce duplication across Matters within a Session | complete | [.work-items/reduce-session-matters-duplication/](.work-items/reduce-session-matters-duplication/) |
 | Remove immediate goals from Matters and Session Summary | complete | [.work-items/remove-immediate-goals/](.work-items/remove-immediate-goals/) |
 | Remove Python source freshness dependencies | complete | [.work-items/remove-python-freshness-dependencies/](.work-items/remove-python-freshness-dependencies/) |
 | Track approved glossary spellcheck suggestions from previous sessions and show them alongside current LLM suggestions | complete | [.work-items/reuse-approved-spellcheck-suggestions/](.work-items/reuse-approved-spellcheck-suggestions/) |
@@ -56,6 +66,7 @@
 | Rename the Summary's Recap section to Previous Session Recap | complete | [.work-items/summary-previous-session-recap/](.work-items/summary-previous-session-recap/) |
 | Session Summary: sentence case for item text | complete | [.work-items/summary-sentence-case/](.work-items/summary-sentence-case/) |
 | Session Summary: remove stale, duplicated and inconsistent content | complete | [.work-items/summary-stale-content/](.work-items/summary-stale-content/) |
+| System prompt caching | complete | [.work-items/system-prompt-caching/](.work-items/system-prompt-caching/) |
 | Table Recap: connect related threads | complete | [.work-items/table-recap-connected-threads/](.work-items/table-recap-connected-threads/) |
 | Table Recap: one consistent voice | complete | [.work-items/table-recap-consistent-voice/](.work-items/table-recap-consistent-voice/) |
 | Table Recap: rephrase headings for listenability | complete | [.work-items/table-recap-heading-listenability/](.work-items/table-recap-heading-listenability/) |
@@ -68,6 +79,7 @@
 | Glossary-first transcript review | complete | [.work-items/transcript-review-glossary-first/](.work-items/transcript-review-glossary-first/) |
 | Transcript Sections artifact contract | complete | [.work-items/transcript-sections-artifact-contract/](.work-items/transcript-sections-artifact-contract/) |
 | Trim old and irrelevant open matters from combined campaign scene logs and return a new scene log JSON | complete | [.work-items/trim-inactive-scene-log-matters/](.work-items/trim-inactive-scene-log-matters/) |
+| Unified Matters Pipeline | implementing | [.work-items/unified-matters-pipeline/](.work-items/unified-matters-pipeline/) |
 | Use voice print terminology everywhere | complete | [.work-items/voice-print-terminology/](.work-items/voice-print-terminology/) |
 | Workspace agent help | complete | [.work-items/workspace-agent-help/](.work-items/workspace-agent-help/) |
 

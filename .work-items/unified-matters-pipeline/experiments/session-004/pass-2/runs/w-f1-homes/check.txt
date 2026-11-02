@@ -1,0 +1,28 @@
+step3: 50 facts (46 open) {'want': 3, 'owe': 9, 'blocked_by': 5, 'could_use': 11, 'unknown': 15, 'threat': 3}
+  possibly moot: ['fact_16', 'fact_19']
+  definite_end false: ['fact_29']
+  uncertain: ['fact_38']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.48 fact_27 (thread_2, could_use) ~ fact_38 (thread_12, owe)
+         The wizard Malzazarik and Lady Hilda have joined the party against the dragon.
+         The party owes the wizard Malzazarik and Lady Hilda payment from Cedric's promissory note in return for joining the party for the dragon hunt.
+    0.47 fact_17 (thread_9, owe) ~ fact_18 (thread_9, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_7 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.37 fact_1 (thread_1, want) ~ fact_20 (thread_1, could_use)
+         Find the treasure marked on the party's map, which Grimny's ghost says is the seven dwarves' hoard from the Dwarven mine.
+         Grimny's ghost says Bral, who lost the map to Sir Phidipaldi and Dr. Uriah in a bet, probably hid the dwarves' hoard in the Dragon's Lair marked on the map.
+  cross-thread facts sharing 4-word phrases:
+    fact_1 (thread_1) & fact_39 (thread_13): ['from the dwarven mine']
+    fact_20 (thread_1) & fact_47 (thread_16): ['phidipaldi and dr uriah', 'sir phidipaldi and dr']
+    fact_21 (thread_1) & fact_42 (thread_13): ['on the treasure map']
+    fact_22 (thread_1) & fact_42 (thread_13): ['the goblin temple ruins']
+    fact_27 (thread_2) & fact_38 (thread_12): ['malzazarik and lady hilda', 'the wizard malzazarik and', 'wizard malzazarik and lady']
+    fact_11 (thread_4) & fact_15 (thread_7): ['in the barrow mound']
+    fact_32 (thread_5) & fact_37 (thread_12): ['the caravans flow again']
+    fact_42 (thread_13) & fact_48 (thread_16): ['cave in beside a', 'in beside a burnt', 'is sealed by a']
+    fact_43 (thread_13) & fact_49 (thread_17): ['in the dwarven mine']

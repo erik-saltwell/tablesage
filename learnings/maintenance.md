@@ -1,54 +1,61 @@
 # Maintaining the Learnings
 
-Codex and Claude follow this procedure during work on Campaign Matters, the Session Summary, the Table Recap, and their replacements. Routine capture is authorized by the standing instruction in [../.agent_context.md](../.agent_context.md); it needs no separate save request or approval. An explicit user request to defer writing takes precedence. Store evidence here rather than in agent memory.
+Codex and Claude follow this procedure during work on the Session Summary, the Table Recap, the unified Matters pipeline and their replacements. Routine capture is authorized by the standing instruction in [../.agent_context.md](../.agent_context.md); it needs no separate save request. An explicit user request to defer writing takes precedence. Keep the evidence here, not in agent memory.
 
-The collection remains evidence under user review. Historical preferences and definitions do not automatically override current instructions or prompt contracts. Recording a problem does not authorize changing product behavior or starting a new work item.
+Recording a judgment does not authorize changing prompts, code or outputs, or starting a work item.
 
-## Before Changing Behavior
+## The Shape to Keep
 
-Read [README.md](README.md), the relevant scope files in `examples/`, and [examples/cross-matter.md](examples/cross-matter.md). Read the relevant entries in [preferences.md](preferences.md) and [approaches.md](approaches.md). Check for an existing failure, an earlier attempted fix, and any disagreement between the examples and current definitions.
+The collection stays simple by keeping one current statement of each thing:
+- A rule lives in one [preferences.md](preferences.md) entry, and that entry always states the rule as it is **now**.
+- An accepted particular occurrence lives in one [allowances.md](allowances.md) entry.
+- An example lives in one entry, in the `examples/` file for its Summary heading. A recurrence is added to that entry, not written as a new section elsewhere.
+- Pipeline run details live with the pipeline's experiments (pass READMEs, `progress.md`), not here. An example's **Outcome** says only which pass fixed it or where it recurred.
 
-Use the examples' **Spot it** checks when reviewing new output. Report a disagreement or unresolved expectation explicitly rather than silently choosing a historical definition.
+Never append a dated "clarification" section to the end of a file. Fold the new judgment into the entry it changes, and add one dated line to that entry's **History**.
 
 ## When to Capture
 
-- The user identifies bad output, an omission, or a regression: preserve the evidence immediately, before a fix or regeneration can overwrite it. Bad examples take priority.
-- The user approves concrete output or supplies a better version: preserve it when it teaches a useful distinction or provides a comparison for a known failure.
-- The user states or changes a substantive preference: update the relevant preference with its evidence and scope.
-- An experiment produces a meaningful result: record the approach, observed benefits and regressions, and whether it was kept, reverted, rejected, or remains in progress. Record inconclusive results honestly.
-- An agent notices a possible problem without user judgment: record a useful candidate under **Unjudged observations** in the relevant example file. Do not assign it a user verdict or present it as an agreed preference.
+- **The user judges output bad, missing or a regression:** preserve the exact output and the user's words immediately, before a fix or regeneration overwrites them. Bad examples come first. The user, verbatim: "Make sure that the examples i shared with you are put in the bad examples in learnings first before you change anything".
+- **The user approves output or supplies a better version:** preserve it when it teaches a distinction or is a target for a known failure.
+- **The user accepts a particular occurrence a check would flag** ("fine for now", "either way", "ok with this"): add or update an allowance.
+- **The user states or changes a preference:** update the rule's entry.
+- **An experiment teaches something reusable:** update the approach's entry and, if it generalizes, the *Lessons* in [approaches.md](approaches.md). Record inconclusive results honestly.
+- **An agent notices a possible problem without user judgment:** add a short bullet under *Unjudged observations* in the relevant example file. Do not give it a verdict.
 
-Capture at the point the evidence is available. Complete related outcomes and links before handing work back; do not postpone all capture until the end of a long conversation. Routine edits without a new lesson need no entry.
+Capture as evidence arrives, and before handing work back. Routine edits that teach nothing new need no entry.
 
-## Preserve the Example First
+## Writing an Example
 
-For an example, follow the conventions in [README.md](README.md) and the existing scope files. Include:
+Add to an existing entry when it is the same failure; add a new entry when the evidence teaches a distinct failure or boundary. An entry has:
+- a heading `### EX-### <short description>` and a line with verdict, Session, pass or run, and source;
+- the rules (and allowances) it supports;
+- **The text:** the exact output, including the other bullets when the fault is duplication. For an omission, say nothing was generated and quote what the user expected;
+- only the context needed to judge it independently (the relevant evidence, not run paths);
+- **User's words:** verbatim. Keep the agent's explanation separate and label it;
+- **Spot it:** a concrete test that can be applied to future output;
+- **Outcome**, when known: which pass fixed it or where it recurred.
 
-- Exact output, including the other bullets when the failure is duplication or contradiction. For an omission, state that nothing was generated and quote the user's expectation rather than inventing output.
-- Enough context to judge it independently: relevant input evidence, linked matters, classification fields, or before/after text. Identify the Campaign, Session, artifact, date, and run or revision when available.
-- The user's exact reaction and its source. Keep the agent's explanation separate and label inferences as such. If the user explicitly rejects an entry without explaining why, record that limit rather than inventing their reason.
-- The verdict, applicable definition, a short explanation, and a concrete **Spot it** check that can be applied to future output.
-- The attempted fix and observed result when available. Until then, say that the outcome is pending.
+Quote from available evidence. Mark unavailable text `not recovered`; never reconstruct a quote from memory. Exclude secrets.
 
-Copy quotes from available evidence. Mark unavailable text `not recovered`; never reconstruct a quote from memory or a conversational summary. Preserve meaningful hedges and attribution. If evidence is missing and the judgment cannot be understood without it, keep a pending observation with the missing context identified.
+## Updating a Rule
 
-Put the essential text and context in the entry itself. A link to a mutable output file or overwritten validation cache is insufficient. Reference a stable run folder or commit for larger prompt/input/response records when one exists; capture the relevant excerpts before overwriting mutable files. Exclude secrets and unrelated personal information.
+1. Rewrite the **Rule** so it states the current position, including the new boundary.
+2. Add the user's new words to **User's words**.
+3. Add a dated **History** line saying what changed. If the change reverses earlier guidance that examples were judged under, the history line keeps the old wording.
+4. Update **Status** if it changed (`firm`, `provisional`, `on trial`, `superseded`). A superseded rule keeps its entry and points to its replacement.
+5. If the judgment generalizes from one case, state the general pattern rather than the case ([PREF-012](preferences.md#pref-012)). If you can't find the general pattern, say so in the entry rather than writing a case-shaped rule.
 
-## Update the Collection
+A new rule gets the next `PREF-###` after the highest in use, under the heading it governs. Add it to the README's heading table.
 
-1. Look for an existing entry before adding one. Add a dated recurrence and outcome when it is the same failure; add a new example when the evidence teaches a distinct failure or boundary. Preserve the original occurrence and verdict.
-2. Use the relevant scope file; put examples spanning categories in `examples/cross-matter.md` and link from affected scopes. Follow the existing entry structure without adding empty fields or sections.
-3. Allocate new IDs from the highest existing ID of that prefix across the collection. IDs are permanent. Re-read the affected files and ID allocations immediately before writing when other agents may be editing.
-4. Add provenance to `sources.md` for new conversations or durable evidence sources. Use an available conversation identifier or transcript path and timestamp. If the identifier is unavailable, say so and identify the conversation by date and subject; never invent an ID supplied by a provider. Keep future additions separate from the original mining window.
-5. Link examples to relevant preferences and approaches, with links back where useful. Update the README's scope and failure-pattern indexes for new entries or patterns. The original mining progress table records that initial pass, not the completion of ongoing maintenance.
-6. When a preference changes, retain the earlier definition, mark it superseded, and link the new decision and reason. When an approach changes status, preserve its earlier results and add the dated outcome. Keep unresolved tensions visible.
+## Writing an Allowance
 
-An implementation or a successful run alone does not establish that the user likes the result. Separate observed behavior, the agent's assessment, and user approval. Do not mark an approach effective or a failure fixed without supporting output or verification; record the limits of the evidence and any regressions.
+Give the exact accepted text (or the omission), its Session, pass and heading; the user's words; its firmness (`firm`, `for now`, `tentative`); what it does **not** extend to; and the review-guide checks it would otherwise trigger. Link it from the rule it relates to. When the user later rejects the same occurrence, remove the allowance and record the reversal in the rule's history.
 
-This collection has no additional approval gate. Keep pending judgments visible for the user's normal review, and promote an unjudged observation into an example only when the user supplies a judgment. Never treat silence as approval or rewrite the historical collection wholesale during routine capture.
+## IDs and Sources
+
+Allocate each new ID from the highest in use for its prefix. IDs are permanent and never reused. Re-read the affected files immediately before writing when other agents may be editing. Add a `SRC-##` entry to [sources.md](sources.md) for each new conversation, with its identifier and date if available. If not, say so and identify it by date and subject; never invent an identifier.
 
 ## Before Handing Back
 
-Check the changed entries for exact quotes, sufficient context, stable IDs, working local links, and consistent index references. Confirm that user judgments and agent observations remain distinguishable and that outcomes say only what was observed.
-
-Briefly tell the user what was captured or updated, with the relevant example IDs or file links. Explain any evidence that could not be recovered. Keep unrelated work and existing review edits intact.
+Check that quotes are exact, links and IDs resolve, the README's heading table lists any new rule, and user judgments stay distinguishable from agent observations. Tell the user briefly what was captured, with the IDs. The review guide is derived from this collection, so after substantive changes it needs a rebuild with `extract-learnings`.

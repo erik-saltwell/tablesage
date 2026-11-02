@@ -1,0 +1,278 @@
+{
+ "session": "002",
+ "scenes": "s002-step1",
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_3",
+    "beat_51",
+    "beat_60"
+   ],
+   "note": "Father William added the Barrow Mound and the witch's house to the map and the party set out to check a marked location, but the treasure is still unfound."
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen trickster",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_16",
+    "beat_17",
+    "beat_20",
+    "beat_21",
+    "beat_22",
+    "beat_23",
+    "beat_24",
+    "beat_25",
+    "beat_26",
+    "beat_28",
+    "beat_40"
+   ],
+   "note": "The question of what the Clurichen does each night is answered: Naggeneen drinks Quinn's booze (beat_25). He is now a captive in a bag behind Quinn's bar who offered a pot of gold or a secret for release (beat_26, beat_40), so the situation has changed rather than ended."
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and Eric the Reeve's bounty",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_47",
+    "beat_49",
+    "beat_50",
+    "beat_54",
+    "beat_63",
+    "beat_64",
+    "beat_65",
+    "beat_66",
+    "beat_67",
+    "beat_91",
+    "beat_92"
+   ],
+   "note": "The lair's location is now known (beat_63), the dragon reportedly can only be killed with Sir Brandon's buried sword (beat_54), and George doubts Eric can pay the bounty (beat_65), which reshapes the hunt."
+  },
+  {
+   "id": "thread_4",
+   "name": "Lady Hilda's offer to join the party",
+   "parent": "thread_3",
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session; Sir Phidipaldi's promise to return to Lady Hilda still stands."
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer of hire",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [],
+   "note": "Not touched this Session."
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipment",
+   "parent": null,
+   "origin": "earlier",
+   "status": "open",
+   "touched_by": [
+    "beat_40"
+   ],
+   "note": "Shipments still have not come in, and the cause is still unknown."
+  },
+  {
+   "id": "thread_7",
+   "name": "Farmer Gill's mule Shamus",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_2"
+   ],
+   "note": "Gill is now willing to sell Shamus for less than 100 gold, but only after his sons return (beat_2), which changes the terms of the deal."
+  },
+  {
+   "id": "thread_8",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null,
+   "origin": "earlier",
+   "status": "changed",
+   "touched_by": [
+    "beat_13",
+    "beat_14",
+    "beat_15",
+    "beat_29",
+    "beat_31",
+    "beat_32",
+    "beat_33",
+    "beat_35",
+    "beat_47"
+   ],
+   "note": "Dunk found the magical mithril chain shirt and now means to get it (beat_14, beat_47). Ingrid's nightly visits to Warwick's window partly answer why Warwick is growing paranoid (beat_32)."
+  },
+  {
+   "id": "thread_9",
+   "name": "Quinn's deal against Bentley",
+   "parent": null,
+   "origin": "earlier",
+   "status": "resolved",
+   "touched_by": [
+    "beat_11",
+    "beat_12",
+    "beat_23",
+    "beat_26",
+    "beat_27",
+    "beat_28"
+   ],
+   "note": "The thief turned out to be the Clurichen rather than Bentley, and Quinn paid the party 33 gold each (beat_28), so nothing remains wanted or owed."
+  },
+  {
+   "id": "thread_10",
+   "name": "Squints and the Halfling Corps",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_7",
+    "beat_8",
+    "beat_9",
+    "beat_42",
+    "beat_43",
+    "beat_44",
+    "beat_45",
+    "beat_46",
+    "beat_85",
+    "beat_87",
+    "beat_89",
+    "beat_93"
+   ],
+   "note": "Trout recruited Squints on set terms (beat_43), including second pick after the first treasure, which keeps the arrangement open. Brother Dirk now reports to Squints (beat_93)."
+  },
+  {
+   "id": "thread_11",
+   "name": "Ingrid's sleeping potion for Warwick",
+   "parent": "thread_8",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_34",
+    "beat_35",
+    "beat_36",
+    "beat_37",
+    "beat_38",
+    "beat_39",
+    "beat_58",
+    "beat_68",
+    "beat_69",
+    "beat_70",
+    "beat_71",
+    "beat_72",
+    "beat_73",
+    "beat_74",
+    "beat_78",
+    "beat_81",
+    "beat_82"
+   ],
+   "note": "Dunk struck a deal with Ingrid to get Warwick drugged asleep and supplied the faun wine for it, as his stated plan to get the armor (beat_47). The potion is not finished and Dunk is due to meet her again."
+  },
+  {
+   "id": "thread_12",
+   "name": "Sir Brandon's sword in the Barrow Mound",
+   "parent": "thread_3",
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_49",
+    "beat_51",
+    "beat_54",
+    "beat_55",
+    "beat_59",
+    "beat_60",
+    "beat_66",
+    "beat_91",
+    "beat_92"
+   ],
+   "note": "Father William says the dragon cannot be killed without the sword buried with Brandon (beat_54), which gives this thread its stated purpose under the dragon hunt. The party is now on its way to the Barrow."
+  },
+  {
+   "id": "thread_13",
+   "name": "Vivian, the witch in the woods",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_51",
+    "beat_58",
+    "beat_60",
+    "beat_78"
+   ],
+   "note": "The witch's house is now marked on the map and the party means to avoid it. Father William and Ingrid give conflicting accounts of her ties to Ingrid, which leaves the question open."
+  },
+  {
+   "id": "thread_14",
+   "name": "Dr. Uriah's penance and donation for Father William",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_57",
+    "beat_59",
+    "beat_60"
+   ],
+   "note": "Uriah agreed to give penance at the Barrow Mound and donate 10 gold in return for the map markings (beat_59). Neither has been done yet."
+  },
+  {
+   "id": "thread_15",
+   "name": "Fairies coming out of hiding",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_77"
+   ],
+   "note": "Ingrid's report that once-hidden fairies are encroaching raises a danger that stands apart from every other thread."
+  },
+  {
+   "id": "thread_16",
+   "name": "The giant's cottage in the woods",
+   "parent": null,
+   "origin": "new",
+   "status": "open",
+   "touched_by": [
+    "beat_83",
+    "beat_84",
+    "beat_87",
+    "beat_88",
+    "beat_90",
+    "beat_91"
+   ],
+   "note": "The party rescued Brother Dirk from a man-eating giant on the way north and outran him, but the giant is still there."
+  }
+ ],
+ "standalone_beats": [
+  {
+   "beat": "beat_30",
+   "reason": "Ingrid's potion wares are a town resource the party may draw on later."
+  },
+  {
+   "beat": "beat_80",
+   "reason": "Dr. Uriah bought wolfsbane and mandrake tea, which adds to the party's supplies."
+  }
+ ],
+ "temporary_ids": {
+  "thread_new_1": "thread_10",
+  "thread_new_2": "thread_11",
+  "thread_new_3": "thread_12",
+  "thread_new_4": "thread_13",
+  "thread_new_5": "thread_14",
+  "thread_new_6": "thread_15",
+  "thread_new_7": "thread_16"
+ },
+ "problems": []
+}

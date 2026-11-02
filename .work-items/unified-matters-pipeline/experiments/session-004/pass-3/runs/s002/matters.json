@@ -1,0 +1,1671 @@
+{
+ "session": "002",
+ "session_cue": {
+  "scene": "scene_6",
+  "text": "The invisible Clurichen slipping on Sir Phidipaldi's marbles"
+ },
+ "previous": [
+  {
+   "id": "thread_1",
+   "text": "Father William marked the witch's home on Dr. Uriah's map, and the party planned a forest route around it."
+  },
+  {
+   "id": "thread_11",
+   "text": "Trout recruited Squints as a junior assistant in the Halfling Corps, then gave him Brother Dirk as a follower."
+  },
+  {
+   "id": "thread_10",
+   "text": "The party caught Naggeneen the Clurichen stealing Quinn's ale, and Quinn paid each of them 33 gold."
+  },
+  {
+   "id": "thread_9",
+   "text": "Dunk spotted Warwick's glowing mithril shirt through the shop window and told the party he has a plan to get it."
+  },
+  {
+   "id": "thread_2",
+   "text": "Dr. Uriah tracked the invisible Clurichen from the river, and it now hangs in a bag behind Quinn's bar."
+  },
+  {
+   "id": "thread_12",
+   "text": "Dunk agreed to help Ingrid with a sleeping potion, then gave her faun wine he had secretly watered down."
+  },
+  {
+   "id": "thread_3",
+   "text": "George told the party how the dragon killed his friends, and Sir Phidipaldi vowed to bring his lance against it."
+  },
+  {
+   "id": "thread_13",
+   "text": "The party set out for the Barrow Mound, but Brother Dirk wanted to go home rather than join them."
+  },
+  {
+   "id": "thread_14",
+   "text": "Dr. Uriah pledged penance to Father William after the priest measured his feet and found no webbing."
+  },
+  {
+   "id": "thread_16",
+   "text": "The party rescued Brother Dirk from a man-eating giant's sack and outran the giant across the field."
+  }
+ ],
+ "current": {
+  "where_you_are": "The party is in the field beyond the giant's cottage in the woods north of Brandonsford, with Squints and the newly rescued Brother Dirk.",
+  "immediate_danger": []
+ },
+ "open": {
+  "Your goals": [
+   {
+    "fact": "fact_46",
+    "text": "Retrieve Sir Brandon's magic sword from the Barrow Mound. Father William says it is needed to kill the dragon."
+   },
+   {
+    "fact": "fact_1",
+    "text": "Find the treasure on the party's map, which the party assumes lies at one of its marked spots."
+   },
+   {
+    "fact": "fact_4",
+    "text": "Kill the black dragon near Brandonsford."
+   },
+   {
+    "fact": "fact_36",
+    "text": "Get Warwick's magical mithril chain shirt, which Dunk says could help against the dragon."
+   },
+   {
+    "fact": "fact_14",
+    "text": "Fight Eric the Reeve in the dawn duel Sir Phidipaldi demanded by slapping him with his glove."
+   },
+   {
+    "fact": "fact_34",
+    "text": "Buy Farmer Gill's mule Shamus for less. Dunk has offered 20 gold."
+   }
+  ],
+  "Standing in your way": [
+   {
+    "fact": "fact_32",
+    "text": "George says nothing pierces the dragon's black scales. Father William says only Brandon's magic sword can kill it."
+   },
+   {
+    "fact": "fact_15",
+    "text": "Eric the Reeve hasn't accepted Sir Phidipaldi's challenge, so the dawn duel can't happen yet."
+   },
+   {
+    "fact": "fact_35",
+    "text": "Farmer Gill won't lower Shamus's price until his sons return from hunting the dragon. He can't work without them or the mule."
+   }
+  ],
+  "What could help": [
+   {
+    "fact": "fact_30",
+    "text": "George says the dragon's lair is up north at the foot of the mountains, with no climbing needed."
+   },
+   {
+    "fact": "fact_27",
+    "text": "One of the map's marked spots lies on the forest route to the Barrow Mound. The party plans to check it on the way."
+   },
+   {
+    "fact": "fact_12",
+    "text": "Lady Hilda at the Clumsy Fox will join the party against the dragon for pay. She says she couldn't kill it herself."
+   },
+   {
+    "fact": "fact_22",
+    "text": "Ingrid's shop sells healing mandrake root tea for 10 gold, witch powder that glows on magic for 7, and wolfsbane against wolves for 5."
+   },
+   {
+    "fact": "fact_38",
+    "text": "Squints is a sling and dagger fighter more experienced than Trout. He fights monsters for the Halfling Corps under Trout's orders."
+   },
+   {
+    "fact": "fact_42",
+    "text": "Warwick's second-story bedroom window is cracked open, offering a way into his house. Ingrid climbs up to it every night."
+   },
+   {
+    "fact": "fact_47",
+    "text": "Father William marked the Barrow Mound on Dr. Uriah's map. He called it a day's walk, but the party reckons about three miles."
+   }
+  ],
+  "Still unanswered": [
+   {
+    "fact": "fact_2",
+    "text": "Where are the places marked on the party's map? The land around Brandonsford is wholly unknown to the party."
+   },
+   {
+    "fact": "fact_20",
+    "text": "Why does Warwick always refuse to sell his glowing, magical mithril shirt?"
+   },
+   {
+    "fact": "fact_49",
+    "text": "Is Brandon's magic sword really in the Barrow Mound? George says no one knows the truth of the legend."
+   },
+   {
+    "fact": "fact_43",
+    "text": "Will Ingrid's sleeping potion still work with the faun wine Dunk watered down to one part in five?"
+   },
+   {
+    "fact": "fact_11",
+    "text": "Where did this new dragon come from, since Sir Brandon's dragon was killed centuries ago?"
+   }
+  ],
+  "Promises and debts": [
+   {
+    "fact": "fact_39",
+    "text": "Dunk must help Ingrid into Warwick's house and give Warwick her sleeping potion. They haven't settled whether to meet tonight or tomorrow."
+   },
+   {
+    "fact": "fact_51",
+    "text": "Dr. Uriah must perform penance at the Barrow Mound and donate 10 gold for its upkeep, as promised to Father William."
+   },
+   {
+    "fact": "fact_37",
+    "text": "Trout owes Squints second pick of treasure, after the elite members, once the first treasure is won."
+   }
+  ],
+  "Meanwhile": [
+   {
+    "fact": "fact_8",
+    "text": "The black dragon near Brandonsford may harm others. George says one poisoned bite kills, and it killed all his friends."
+   },
+   {
+    "fact": "fact_31",
+    "text": "George says the dragon can't fly yet but soon will, and then they're all doomed."
+   },
+   {
+    "fact": "fact_53",
+    "text": "The man-eating giant in the north woods may strike again if the party passes its cottage. It is slow and can be outrun."
+   }
+  ]
+ },
+ "excluded_from_open": {
+  "possibly_moot": [],
+  "open_ended": [],
+  "covered_by_danger": [],
+  "below_threshold": [
+   "fact_28",
+   "fact_29",
+   "fact_5",
+   "fact_7",
+   "fact_9",
+   "fact_33",
+   "fact_16",
+   "fact_17",
+   "fact_18",
+   "fact_19",
+   "fact_40",
+   "fact_41",
+   "fact_44",
+   "fact_45",
+   "fact_48",
+   "fact_50"
+  ],
+  "over_cap": [
+   "fact_13",
+   "fact_21",
+   "fact_52"
+  ],
+  "last_session_over_cap": []
+ },
+ "campaign_state": {
+  "threads": [
+   {
+    "id": "thread_1",
+    "name": "The unrecognized treasure map",
+    "parent": null,
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [
+     "beat_3",
+     "beat_51",
+     "beat_66"
+    ],
+    "note": "Uriah plans to copy the map, Father William added the witch's home and the Barrow Mound to it, and the party plans to check a marked spot on the way. The treasure is still unfound and the original marks are still unidentified."
+   },
+   {
+    "id": "thread_2",
+    "name": "The Clurichen of the riverbanks",
+    "parent": null,
+    "origin": "earlier",
+    "status": "changed",
+    "touched_by": [
+     "beat_17",
+     "beat_18",
+     "beat_20",
+     "beat_21",
+     "beat_22",
+     "beat_23",
+     "beat_24",
+     "beat_25",
+     "beat_26",
+     "beat_27",
+     "beat_28",
+     "beat_29",
+     "beat_40"
+    ],
+    "note": "The Clurichen, Naggeneen, was caught and is now held in a bag behind Quinn's bar (beat_26, beat_29, beat_40), so the nightly roaming danger has changed in nature. He is captive rather than destroyed, and his offers of a pot of gold, a secret and good luck remain open."
+   },
+   {
+    "id": "thread_3",
+    "name": "The dragon near Brandonsford",
+    "parent": null,
+    "origin": "earlier",
+    "status": "changed",
+    "touched_by": [
+     "beat_47",
+     "beat_49",
+     "beat_50",
+     "beat_61",
+     "beat_69",
+     "beat_70",
+     "beat_71",
+     "beat_73",
+     "beat_74"
+    ],
+    "note": "George revealed the lair's location and that the dragon will soon fly (beat_69). The party learned its poison, sulfur breath and impenetrable scales, that it can only be killed with Brandon's sword (beat_61), and that Eric may not have the bounty (beat_71)."
+   },
+   {
+    "id": "thread_4",
+    "name": "Hiring Lady Hilda",
+    "parent": "thread_3",
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [],
+    "note": "Not touched this Session; Lady Hilda was only seen at the tavern."
+   },
+   {
+    "id": "thread_5",
+    "name": "Bentley's missing shipment",
+    "parent": null,
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [
+     "beat_40"
+    ],
+    "note": "Shipments still have not arrived, and the cause remains unknown."
+   },
+   {
+    "id": "thread_6",
+    "name": "Sir Phidipaldi's challenge to Eric the Reeve",
+    "parent": null,
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [],
+    "note": "Not touched this Session; the challenge stands unaccepted."
+   },
+   {
+    "id": "thread_7",
+    "name": "Drop Dead Ned's offer of hire",
+    "parent": null,
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [],
+    "note": "Not touched this Session; Ned was only seen at the tavern."
+   },
+   {
+    "id": "thread_8",
+    "name": "Shamus the mule",
+    "parent": null,
+    "origin": "earlier",
+    "status": "open",
+    "touched_by": [
+     "beat_2"
+    ],
+    "note": "Dunk offered 20 gold for the mule. Gill will only lower his price once his sons return, so the purchase is still pending."
+   },
+   {
+    "id": "thread_9",
+    "name": "Warwick the smith and his mithril shirt",
+    "parent": null,
+    "origin": "earlier",
+    "status": "changed",
+    "touched_by": [
+     "beat_13",
+     "beat_14",
+     "beat_15",
+     "beat_16",
+     "beat_31",
+     "beat_32",
+     "beat_33",
+     "beat_47",
+     "beat_79"
+    ],
+    "note": "Dunk confirmed the mithril shirt is magical and now aims to get it (beat_47). Ingrid's secret nightly visits (beat_33) partly answer what Warwick is warding against. Why he won't sell the shirt is still unknown."
+   },
+   {
+    "id": "thread_10",
+    "name": "Quinn's vanishing ale",
+    "parent": null,
+    "origin": "earlier",
+    "status": "resolved",
+    "touched_by": [
+     "beat_11",
+     "beat_12",
+     "beat_24",
+     "beat_25",
+     "beat_26",
+     "beat_27",
+     "beat_28",
+     "beat_29"
+    ],
+    "note": "The ale thief was revealed to be Naggeneen (beat_27). Sir Phidipaldi's help was delivered and Quinn paid the party (beat_29), so nothing is owed or unknown."
+   },
+   {
+    "id": "thread_11",
+    "name": "Squints and Trout's Halfling Corps",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_9",
+     "beat_10",
+     "beat_42",
+     "beat_43",
+     "beat_44",
+     "beat_45",
+     "beat_46",
+     "beat_84",
+     "beat_85",
+     "beat_87",
+     "beat_93"
+    ],
+    "note": "Trout recruited Squints under set terms, including second pick of treasure after the elite members (beat_43), and gave him Brother Dirk as a follower (beat_93). Those terms and the party's secret plan not to rescue him keep the arrangement open."
+   },
+   {
+    "id": "thread_12",
+    "name": "Dunk's sleeping-potion deal with Ingrid",
+    "parent": "thread_9",
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_33",
+     "beat_34",
+     "beat_35",
+     "beat_36",
+     "beat_37",
+     "beat_38",
+     "beat_39",
+     "beat_54",
+     "beat_57",
+     "beat_58",
+     "beat_65",
+     "beat_78",
+     "beat_81",
+     "beat_82"
+    ],
+    "note": "This is Dunk's stated plan to get Warwick's armor (beat_47). He agreed to help Ingrid dose Warwick and has delivered diluted faun wine (beat_81). The potion, the night meeting and Ingrid's feeling that she owes him are still pending."
+   },
+   {
+    "id": "thread_13",
+    "name": "Sir Brandon's sword in the Barrow Mound",
+    "parent": "thread_3",
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_49",
+     "beat_51",
+     "beat_61",
+     "beat_62",
+     "beat_66",
+     "beat_73",
+     "beat_91",
+     "beat_92"
+    ],
+    "note": "Father William says the dragon cannot be killed without the sword buried with Brandon (beat_61), so retrieving it serves the dragon hunt. The party is now heading to the Barrow, and Brother Dirk is with them."
+   },
+   {
+    "id": "thread_14",
+    "name": "Uriah's penance pledge to Father William",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_66"
+    ],
+    "note": "Uriah promised Father William penance at the Barrow Mound and a 10 gold donation for its upkeep. This promise to a separate counterpart has not yet been fulfilled."
+   },
+   {
+    "id": "thread_15",
+    "name": "Fairies coming out of hiding",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_76"
+    ],
+    "note": "Ingrid reports that fairies which used to stay hidden are encroaching more often. This is a question or danger that stands apart from the existing threads."
+   },
+   {
+    "id": "thread_16",
+    "name": "The man-eating giant in the north woods",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_83",
+     "beat_84",
+     "beat_87",
+     "beat_88",
+     "beat_90",
+     "beat_91"
+    ],
+    "note": "The party took Brother Dirk from the giant who meant to eat him and outran it. Escaping does not end the danger of a giant living on the route north."
+   }
+  ],
+  "facts": [
+   {
+    "thread": "thread_1",
+    "id": "fact_1",
+    "kind": "want",
+    "text": "Find the treasure shown on the party's treasure map, which the party assumes lies at one of the map's marked spots.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_1",
+    "id": "fact_2",
+    "kind": "unknown",
+    "text": "Where are the locations marked on the party's treasure map? The party doesn't recognize them, and the land around Brandonsford is wholly unknown to them.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_1",
+    "id": "fact_27",
+    "kind": "could_use",
+    "text": "One of the treasure map's original marked spots lies along the party's forest route to the Barrow Mound; the party plans to check it on the way.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "uncertain",
+    "uncertain_reason": "The beats do not show whether the party has already checked the spot during its trip north.",
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_13"
+    ],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_51"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_3",
+    "kind": "threat",
+    "text": "Reginald the Frog warns that every night a little trickster creature called a Clurichen comes from the riverbanks into Brandonsford, up to no good, and that the party should stay away from wherever it goes.",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "removed: the Clurichen, Naggeneen, was caught and now hangs bagged behind Quinn's bar at the Golden Egg",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_26",
+     "beat_29",
+     "beat_40"
+    ]
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_28",
+    "kind": "could_use",
+    "text": "Naggeneen the Clurichen, held in a bag on a hook behind Quinn's bar at the Golden Egg, offers his pot of gold or a secret, and promises good luck, in exchange for being let go. Freeing him would mean taking him from Quinn, who has claimed him as his thief.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_28",
+     "beat_29",
+     "beat_40"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_29",
+    "kind": "unknown",
+    "text": "Quinn says he knows what he'll do with the captive Clurichen Naggeneen. What does he intend to do with him?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "beat_29"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_4",
+    "kind": "want",
+    "text": "Kill the black dragon near Brandonsford.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_5",
+    "kind": "could_use",
+    "text": "Eric the Reeve offers 1000 gold to whoever kills the dragon and drags its body into Brandonsford. George doubts Eric actually has 1000 gold.",
+    "state": "open",
+    "change": "updated",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "uncertain",
+    "uncertain_reason": "George says he doesn't think Eric has the 1000 gold to pay.",
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_71"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_6",
+    "kind": "could_use",
+    "text": "The one-armed woodsman George encountered the dragon and describes it as a black dragon, not a big one. Eric says he lives a couple of houses down from the Clumsy Fox and might come to the tavern tonight.",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "used up: Sir Phidipaldi visited George and heard his account of the dragon",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_68",
+     "beat_69",
+     "beat_70"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_7",
+    "kind": "could_use",
+    "text": "Lady Hilda's offer to join the dragon hunt for pay could help the party fight the dragon.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": "thread_4",
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_8",
+    "kind": "threat",
+    "text": "A black dragon lurks near Brandonsford and may harm others. George says its jaws drip poison and one bite kills (he cut off his own arm), and it spits sulfur; it killed all his friends who went to its lair.",
+    "state": "open",
+    "change": "updated",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "prior",
+     "beat_49",
+     "beat_70"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_9",
+    "kind": "threat",
+    "text": "Farmer Gill's three sons are out hunting the dragon now, and Gill is sure they will bring it back. They may kill it and claim the Reeve's bounty before the party does.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_8"
+    ],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_50"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_10",
+    "kind": "unknown",
+    "text": "Where is the dragon to be found outside Brandonsford?",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "answered: George says the lair is up north at the foot of the mountains (replaced by fact_new_1)",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_69"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_11",
+    "kind": "unknown",
+    "text": "Sir Brandon's dragon was killed and ripped apart centuries ago. Where did this new dragon come from?",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_30",
+    "kind": "could_use",
+    "text": "George says the dragon's lair is up north at the foot of the mountains, with no climbing needed.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_69"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_31",
+    "kind": "threat",
+    "text": "George says the dragon can't fly yet but will soon, and then they're all doomed.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_69"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_32",
+    "kind": "blocked_by",
+    "text": "George says nothing pierces the dragon's black scales; arrows and swords all failed. Father William says it can't be killed without the magic sword buried with Brandon, which is sought on its own thread.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": "thread_13",
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_49",
+     "beat_61",
+     "beat_70"
+    ],
+    "temporary_id": "fact_new_3"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_33",
+    "kind": "could_use",
+    "text": "Dunk says Warwick the smith's shimmering armor could help against the dragon and that he has a plan to get it.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": "thread_9",
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_47"
+    ],
+    "temporary_id": "fact_new_4"
+   },
+   {
+    "thread": "thread_4",
+    "id": "fact_12",
+    "kind": "could_use",
+    "text": "Lady Hilda, a seasoned red-headed noblewoman in chain mail and shield at the Clumsy Fox, will join the party against the dragon for pay (fee not yet named), though she says she couldn't kill it herself. Sir Phidipaldi told her they would come back for her services after talking to the Reeve.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_5",
+    "id": "fact_13",
+    "kind": "unknown",
+    "text": "What has stopped shipments from reaching Brandonsford for months, and what happened to Bentley's tavern restock shipment that was due a week ago?",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_40"
+    ]
+   },
+   {
+    "thread": "thread_6",
+    "id": "fact_14",
+    "kind": "want",
+    "text": "Sir Phidipaldi intends to fight Eric the Reeve in the duel at dawn he demanded after slapping him with his glove.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_6",
+    "id": "fact_15",
+    "kind": "blocked_by",
+    "text": "Eric the Reeve has not accepted Sir Phidipaldi's challenge; he only said, flustered, that Sir Phidipaldi was more skilled at adventure. This blocks the dawn duel.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_6",
+    "id": "fact_16",
+    "kind": "blocked_by",
+    "text": "Bentley, owner of the Clumsy Fox, has banned fighting between Sir Phidipaldi and Eric the Reeve and sent Sir Phidipaldi to sleep at the Golden Egg, which constrains pursuing the duel at his tavern.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_7",
+    "id": "fact_17",
+    "kind": "could_use",
+    "text": "Drop Dead Ned, a greasy-haired thief at the Clumsy Fox, offers himself and his killer wasp for hire at 100 gold a week, willing to do anything as long as he gets to kill people with the wasp. He offers a 5-gold rebate per kill if he can do what he wants with the victims. Dr. Uriah said he'd think about it; accepting requires paying the fee.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "high",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_8",
+    "id": "fact_18",
+    "kind": "could_use",
+    "text": "Farmer Gill offers to sell Dunk his shabby mule Shamus for 100 gold.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_8",
+    "id": "fact_19",
+    "kind": "could_use",
+    "text": "Dunk asked to trade work for Shamus instead of paying; Farmer Gill says the big work needed is killing the dragon outside town. Gill never said that killing it would pay for the mule.",
+    "state": "open",
+    "change": "carried",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior"
+    ]
+   },
+   {
+    "thread": "thread_8",
+    "id": "fact_34",
+    "kind": "want",
+    "text": "Dunk wants to buy Farmer Gill's mule Shamus at a lower price; he has offered 20 gold.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_2"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_8",
+    "id": "fact_35",
+    "kind": "blocked_by",
+    "text": "Farmer Gill says he can't work without his sons or the mule, so he will only lower Shamus's price once his sons, away hunting the dragon, come back.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": "thread_3",
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "beat_2"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_9",
+    "id": "fact_20",
+    "kind": "unknown",
+    "text": "Gill says Warwick the smith displays a superb mithril chain shirt sized for a normal-sized person but always refuses to sell it; Dunk saw it glow in the moonlight, clearly magical. Why won't Warwick sell the mithril shirt?",
+    "state": "open",
+    "change": "updated",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "prior",
+     "beat_14"
+    ]
+   },
+   {
+    "thread": "thread_9",
+    "id": "fact_21",
+    "kind": "unknown",
+    "text": "Warwick keeps adding lucky charms (horseshoes, rabbit feet, clovers) to his shop and home. Ingrid secretly climbs to his window every night to leave gifts and watch him sleep. Is that what Warwick is warding against, and does he know about it?",
+    "state": "open",
+    "change": "updated",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_12"
+    ],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_13",
+     "beat_33"
+    ]
+   },
+   {
+    "thread": "thread_9",
+    "id": "fact_22",
+    "kind": "could_use",
+    "text": "Ingrid's alchemist shop in Brandonsford sells mandrake root tea that heals all wounds (10 gold), witch powder that glows on anything magical (7 gold) and essence of wolfsbane against wolves (5 gold); the party can buy them there.",
+    "state": "open",
+    "change": "updated",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "prior",
+     "beat_31",
+     "beat_79"
+    ]
+   },
+   {
+    "thread": "thread_9",
+    "id": "fact_36",
+    "kind": "want",
+    "text": "Dunk wants to obtain Warwick's magical mithril chain shirt, which he says could help against the dragon.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_3"
+    ],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_47",
+     "beat_14"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_10",
+    "id": "fact_23",
+    "kind": "owe",
+    "text": "Sir Phidipaldi agreed to help Quinn, owner of the Golden Egg, get back at Bentley, whom Quinn believes steals his ale each night, in exchange for 100 gold.",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "fulfilled: the party caught the real ale thief and Quinn accepted him as his thief",
+    "learned_this_session": false,
+    "definite_end": true,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_26",
+     "beat_29"
+    ]
+   },
+   {
+    "thread": "thread_10",
+    "id": "fact_24",
+    "kind": "could_use",
+    "text": "Quinn offers Sir Phidipaldi 100 gold for helping him get back at Bentley, payable once the help is given.",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "used up: Quinn paid Phidipaldi, Trout and Uriah 33 gold each",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_29"
+    ]
+   },
+   {
+    "thread": "thread_10",
+    "id": "fact_25",
+    "kind": "could_use",
+    "text": "Plan agreed with Quinn: stage a fake shipment at the Golden Egg. Quinn brings up bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering ale to see what happens overnight.",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "no longer relevant: the thief was caught in the basement without the staged shipment",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_25",
+     "beat_26"
+    ]
+   },
+   {
+    "thread": "thread_10",
+    "id": "fact_26",
+    "kind": "unknown",
+    "text": "Quinn says his good stock is gone by morning, with half the glasses empty or knocked over, and blames Bentley because the Clumsy Fox is so popular. Who or what is really taking Quinn's ale each night?",
+    "state": "ended",
+    "change": "ended",
+    "ended_how": "answered: the Clurichen Naggeneen was taking the ale",
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": "thread_2",
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "prior",
+     "beat_27"
+    ]
+   },
+   {
+    "thread": "thread_11",
+    "id": "fact_37",
+    "kind": "owe",
+    "text": "Under the Halfling Corps terms, Trout owes Squints second pick of treasure, after the elite members, once the first treasure is won. Until then Squints funds himself.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": true,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "beat_43"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_11",
+    "id": "fact_38",
+    "kind": "could_use",
+    "text": "Squints, armed with a sling and a dagger and a more experienced fighter than Trout, has joined Trout's Halfling Corps as a junior assistant. He takes Trout's orders, fights monsters, supplies his own gear and funds himself until the first treasure.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_43",
+     "beat_44",
+     "beat_45",
+     "beat_87"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_39",
+    "kind": "owe",
+    "text": "Dunk agreed to help Ingrid get into Warwick's house at night and give Warwick her sleeping potion, so she can watch him all night without fear of him waking. Dunk told her he would meet her tonight, though she asked him to come back tomorrow.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": true,
+    "possibly_moot": null,
+    "certainty": "uncertain",
+    "uncertain_reason": "Ingrid said to come back tomorrow while Dunk said tonight; the meeting time is unsettled and the potion may not be ready.",
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_9"
+    ],
+    "importance": "high",
+    "actionability": "high",
+    "evidence": [
+     "beat_36",
+     "beat_38",
+     "beat_82"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_40",
+    "kind": "could_use",
+    "text": "Ingrid says she owes Dunk for keeping her romance with Warwick secret, a favour he could call in.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_39"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_41",
+    "kind": "could_use",
+    "text": "Ingrid's biggest fear is that Warwick learns she watches him sleep through his window; Dunk told her he has not kept her secret yet, leaving her scared, which gives him leverage over her.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_9"
+    ],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_33",
+     "beat_39"
+    ],
+    "temporary_id": "fact_new_3"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_42",
+    "kind": "could_use",
+    "text": "Warwick sleeps in a second-story bedroom whose window is cracked open; Ingrid climbs up to it every night, offering a way into his house.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_9"
+    ],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_15",
+     "beat_33"
+    ],
+    "temporary_id": "fact_new_4"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_43",
+    "kind": "unknown",
+    "text": "Dunk gave Ingrid faun wine diluted to about 20% with tavern wine. Will her sleeping potion still work with it?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "low",
+    "evidence": [
+     "beat_37",
+     "beat_54",
+     "beat_81"
+    ],
+    "temporary_id": "fact_new_5"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_44",
+    "kind": "unknown",
+    "text": "Father William claims Ingrid is incompetent and can't make her potions herself, while Ingrid says she makes all her products. Can Ingrid actually brew the sleeping potion?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "beat_65",
+     "beat_78"
+    ],
+    "temporary_id": "fact_new_6"
+   },
+   {
+    "thread": "thread_12",
+    "id": "fact_45",
+    "kind": "could_use",
+    "text": "The fauns of the Faun Grove, north of town across the river, trade their faun wine for little sentimental items such as a love letter or a pixie's treasure; the wine puts almost any non-faun creature to sleep or makes it drunk.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "medium",
+    "evidence": [
+     "beat_37",
+     "beat_54",
+     "beat_57",
+     "beat_58"
+    ],
+    "temporary_id": "fact_new_7"
+   },
+   {
+    "thread": "thread_13",
+    "id": "fact_46",
+    "kind": "want",
+    "text": "Retrieve the magic sword buried with Sir Brandon in the Barrow Mound, which Father William says is needed to kill the dragon.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_3"
+    ],
+    "importance": "high",
+    "actionability": "high",
+    "evidence": [
+     "beat_49",
+     "beat_51",
+     "beat_61",
+     "beat_92"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_13",
+    "id": "fact_47",
+    "kind": "could_use",
+    "text": "Father William marked the Barrow Mound on Dr. Uriah's map. He called it about a day's walk away, but the party reckons it roughly three miles through the forest.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_1",
+     "thread_14"
+    ],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_51",
+     "beat_62",
+     "beat_66"
+    ],
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_13",
+    "id": "fact_48",
+    "kind": "could_use",
+    "text": "Brother Dirk, whom Father William sent to fetch the sword from the Barrow, is now with the party after they rescued him from the giant, though he said he would rather head home.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "uncertain",
+    "uncertain_reason": "Dirk said he should head home; play did not show him agreeing to continue to the Barrow.",
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_11",
+     "thread_16"
+    ],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_61",
+     "beat_91",
+     "beat_92",
+     "beat_93"
+    ],
+    "temporary_id": "fact_new_3"
+   },
+   {
+    "thread": "thread_13",
+    "id": "fact_49",
+    "kind": "unknown",
+    "text": "Is Brandon's magic sword really in the Barrow Mound? Father William says it is buried with Brandon, but George says no one knows what is true of the legend or where the sword is.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_61",
+     "beat_73"
+    ],
+    "temporary_id": "fact_new_4"
+   },
+   {
+    "thread": "thread_13",
+    "id": "fact_50",
+    "kind": "could_use",
+    "text": "George says Farmer Gill knows the fairytales about Sir Brandon and the fairy's magic sword.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "medium",
+    "evidence": [
+     "beat_73"
+    ],
+    "temporary_id": "fact_new_5"
+   },
+   {
+    "thread": "thread_14",
+    "id": "fact_51",
+    "kind": "owe",
+    "text": "Dr. Uriah promised Father William he would perform penance at the Barrow Mound and donate 10 gold for its upkeep.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": true,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_66"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_15",
+    "id": "fact_52",
+    "kind": "unknown",
+    "text": "Ingrid says fairies that used to stay hidden are encroaching and coming out more often, seen near her friend Vivian's home in the forest. Why are the fairies coming out of hiding, and what do they want?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "beat_76"
+    ],
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_16",
+    "id": "fact_53",
+    "kind": "threat",
+    "text": "A man-eating giant lives in a cottage three times normal size, built of huge rocks, in the woods north of Brandonsford, on the way toward the Barrow. It captures people to cook in its stew, and it may strike again if the party passes that way. It is slow, tires quickly and can be outrun.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_13"
+    ],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_83",
+     "beat_84",
+     "beat_87",
+     "beat_88",
+     "beat_90",
+     "beat_91"
+    ],
+    "temporary_id": "fact_new_1"
+   }
+  ]
+ }
+}

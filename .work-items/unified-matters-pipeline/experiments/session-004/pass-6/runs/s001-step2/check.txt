@@ -1,0 +1,11 @@
+step2: 9 threads, standalone ['beat_25'], problems none
+  thread_1 [new/open] The treasure map parent=None beats=1
+  thread_2 [new/open] The Clurichen trickster parent=None beats=1
+  thread_3 [new/open] The dragon and Eric the Reeve's bounty parent=None beats=11
+  thread_4 [new/open] Lady Hilda's offer to join the party parent=thread_3 beats=1
+  thread_5 [new/open] Drop Dead Ned's offer of hire parent=None beats=4
+  thread_6 [new/open] Brandonsford's missing shipment parent=None beats=4
+  thread_7 [new/open] Farmer Gill's mule Shamus parent=None beats=3
+  thread_8 [new/open] Warwick's mithril chain shirt parent=None beats=2
+  thread_9 [new/open] Quinn's deal against Bentley parent=None beats=4
+  medium/high beats on no thread and not standalone: none

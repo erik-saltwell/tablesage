@@ -1,0 +1,34 @@
+step3: 36 facts (36 open) {'want': 3, 'owe': 6, 'blocked_by': 4, 'could_use': 12, 'unknown': 9, 'threat': 2}
+  possibly moot: []
+  definite_end false: ['fact_25']
+  uncertain: ['fact_23']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.47 fact_12 (thread_6, owe) ~ fact_13 (thread_6, owe)
+         Dr. Uriah must do penance at the Barrow Mound for Father William.
+         Dr. Uriah must give Father William a 10 gold donation for the Barrow Mound's upkeep.
+    0.43 fact_2 (thread_2, want) ~ fact_8 (thread_2, unknown)
+         Kill the dragon near Brandonsford for Eric the Reeve's 1000 gold bounty.
+         Where did the new dragon near Brandonsford come from?
+    0.43 fact_24 (thread_10, owe) ~ fact_25 (thread_10, owe)
+         The party owes the Free Goblin Society the clearing of the evil out of the Barrow Mound, in return for the goblins being allowed to live there.
+         The party promised the Free Goblin Society not to tell King Hogboon that the goblins are living in the Barrow Mound.
+    0.38 fact_24 (thread_10, owe) ~ fact_26 (thread_10, blocked_by)
+         The party owes the Free Goblin Society the clearing of the evil out of the Barrow Mound, in return for the goblins being allowed to live there.
+         The undead giant swordsman in the mound stands in the way of clearing the evil from the Barrow Mound for the goblins.
+    0.36 fact_22 (thread_9, want) ~ fact_23 (thread_9, could_use)
+         Obtain protection against the black dragon's poison before going after the dragon.
+         Sir Phidipaldi's plan names the witch or the alchemist as possible sources of protection against the black dragon's poison; the party must visit one of them after returning from the Barrow Mound. Any cost is not yet known.
+    0.36 fact_25 (thread_10, owe) ~ fact_28 (thread_10, could_use)
+         The party promised the Free Goblin Society not to tell King Hogboon that the goblins are living in the Barrow Mound.
+         The Free Goblin Society agreed to walk with the party through the Barrow Mound, though they refuse to do violence themselves.
+  cross-thread facts sharing 4-word phrases:
+    fact_17 (thread_2) & fact_24 (thread_10): ['of the barrow mound']
+    fact_17 (thread_2) & fact_26 (thread_10): ['mound stands in the']
+    fact_12 (thread_6) & fact_26 (thread_10): ['the barrow mound for']
+    fact_18 (thread_8) & fact_25 (thread_10): ['in the barrow mound']
+    fact_20 (thread_8) & fact_27 (thread_10): ["barrow mound's lower corridor", "the barrow mound's lower"]
+    fact_21 (thread_8) & fact_24 (thread_10): ['the free goblin society']
+    fact_21 (thread_8) & fact_25 (thread_10): ['the free goblin society']
+    fact_21 (thread_8) & fact_28 (thread_10): ['the free goblin society']
+    fact_23 (thread_9) & fact_26 (thread_10): ['from the barrow mound']

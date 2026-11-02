@@ -1,0 +1,65 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Eric the Reeve's 1000-gold dragon bounty",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_7"
+   ],
+   "beats": [
+    "beat_15",
+    "beat_19"
+   ],
+   "reason": "The bounty is acted on by hunting the dragon, though the quarrel puts the party's standing with its giver at risk."
+  },
+  {
+   "subject": "Whether black dragons exist",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_7",
+    "thread_2"
+   ],
+   "beats": [
+    "beat_17",
+    "beat_18"
+   ],
+   "reason": "This is knowledge about the dragon itself, even though Phidipaldi's false claim sparked the quarrel and invoked the Clurichen."
+  },
+  {
+   "subject": "Lady Hilda's offer to join for pay",
+   "home": "thread_4",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_10"
+   ],
+   "reason": "The offer has its own thread, which serves the dragon hunt."
+  },
+  {
+   "subject": "No shipments reaching town",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_10"
+   ],
+   "beats": [
+    "beat_13",
+    "beat_29",
+    "beat_36"
+   ],
+   "reason": "The lack of shipments is the missing-shipment thread's question, and Quinn's fake-shipment plan only exploits it."
+  },
+  {
+   "subject": "Killing the dragon as work to trade for Shamus",
+   "home": "thread_8",
+   "other_threads": [
+    "thread_3"
+   ],
+   "beats": [
+    "beat_26"
+   ],
+   "reason": "Gill named the dragon as the big work needed when Dunk asked about trading work for the mule."
+  }
+ ]
+}

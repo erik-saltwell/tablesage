@@ -1,0 +1,209 @@
+{
+ "note": "Chained from pass 7's s001 (s001-step2, s001-step3).",
+ "fact_high_water": 25,
+ "thread_high_water": 10,
+ "threads": [
+  {
+   "id": "thread_1",
+   "name": "The treasure map",
+   "parent": null
+  },
+  {
+   "id": "thread_2",
+   "name": "The Clurichen of the riverbanks",
+   "parent": null
+  },
+  {
+   "id": "thread_3",
+   "name": "The dragon and the Reeve's bounty",
+   "parent": null
+  },
+  {
+   "id": "thread_4",
+   "name": "Hiring Lady Hilda",
+   "parent": "thread_3"
+  },
+  {
+   "id": "thread_5",
+   "name": "Drop Dead Ned's offer",
+   "parent": null
+  },
+  {
+   "id": "thread_6",
+   "name": "Brandonsford's missing shipments",
+   "parent": null
+  },
+  {
+   "id": "thread_7",
+   "name": "Sir Phidipaldi's quarrel with Eric the Reeve",
+   "parent": null
+  },
+  {
+   "id": "thread_8",
+   "name": "Shamus the mule",
+   "parent": null
+  },
+  {
+   "id": "thread_9",
+   "name": "Warwick's mithril chain shirt",
+   "parent": null
+  },
+  {
+   "id": "thread_10",
+   "name": "Quinn's revenge on Bentley",
+   "parent": null
+  }
+ ],
+ "facts": [
+  {
+   "id": "fact_1",
+   "thread": "thread_1",
+   "kind": "want",
+   "text": "Find the treasure marked on the party's treasure map."
+  },
+  {
+   "id": "fact_2",
+   "thread": "thread_1",
+   "kind": "could_use",
+   "text": "The party holds a treasure map marking several locations they do not recognize, near Brandonsford."
+  },
+  {
+   "id": "fact_3",
+   "thread": "thread_1",
+   "kind": "unknown",
+   "text": "Where is the treasure the map marks?"
+  },
+  {
+   "id": "fact_4",
+   "thread": "thread_2",
+   "kind": "threat",
+   "text": "Reginald the Frog says a little trickster creature called a Clurichen comes from the riverbanks into Brandonsford every night, up to no good, and that the party should stay away wherever it goes."
+  },
+  {
+   "id": "fact_5",
+   "thread": "thread_2",
+   "kind": "unknown",
+   "text": "What does the Clurichen do when it comes into town each night?"
+  },
+  {
+   "id": "fact_6",
+   "thread": "thread_3",
+   "kind": "want",
+   "text": "Kill the black dragon troubling Brandonsford and drag its body into town to collect Eric the Reeve's 1000 gold."
+  },
+  {
+   "id": "fact_7",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "George, a woodsman living a couple of houses from the Clumsy Fox who may come to the tavern tonight, met the dragon and lost an arm to it; the party could question him about the dragon."
+  },
+  {
+   "id": "fact_8",
+   "thread": "thread_3",
+   "kind": "could_use",
+   "text": "Lady Hilda would join the party against the dragon for pay (see her offer's thread)."
+  },
+  {
+   "id": "fact_9",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Where is the black dragon to be found?"
+  },
+  {
+   "id": "fact_10",
+   "thread": "thread_3",
+   "kind": "unknown",
+   "text": "Where has this new dragon come from, centuries after Sir Brandon killed the first?"
+  },
+  {
+   "id": "fact_11",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "The black dragon, which tore off George the woodsman's arm, is still at large around Brandonsford and may maim others."
+  },
+  {
+   "id": "fact_12",
+   "thread": "thread_3",
+   "kind": "threat",
+   "text": "Farmer Gill's three sons are hunting the dragon now and could kill it before the party, taking the Reeve's bounty."
+  },
+  {
+   "id": "fact_13",
+   "thread": "thread_4",
+   "kind": "could_use",
+   "text": "Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party against the dragon for pay."
+  },
+  {
+   "id": "fact_14",
+   "thread": "thread_4",
+   "kind": "owe",
+   "text": "Sir Phidipaldi told Lady Hilda the party would talk to the Reeve and then come back to take up her services."
+  },
+  {
+   "id": "fact_15",
+   "thread": "thread_5",
+   "kind": "could_use",
+   "text": "Drop Dead Ned, a thief with a killer wasp in a jar, offers himself and the wasp for hire at 100 gold a week, doing anything as long as he gets to kill people; Dr. Uriah said he would think about it."
+  },
+  {
+   "id": "fact_16",
+   "thread": "thread_6",
+   "kind": "unknown",
+   "text": "Why has nothing come into Brandonsford in months, including Bentley's restock shipment that was due a week ago?"
+  },
+  {
+   "id": "fact_17",
+   "thread": "thread_7",
+   "kind": "want",
+   "text": "Sir Phidipaldi wants to fight Eric the Reeve in the duel he challenged him to at dawn."
+  },
+  {
+   "id": "fact_18",
+   "thread": "thread_7",
+   "kind": "unknown",
+   "text": "Will Eric the Reeve, offended by Sir Phidipaldi, accept his challenge to a duel at dawn?"
+  },
+  {
+   "id": "fact_19",
+   "thread": "thread_8",
+   "kind": "want",
+   "text": "Get Farmer Gill's mule Shamus, which Gill offers to sell for 100 gold."
+  },
+  {
+   "id": "fact_20",
+   "thread": "thread_8",
+   "kind": "could_use",
+   "text": "When Dunk asked to trade work for Shamus, Farmer Gill said the big work needed is killing the dragon; he did not say outright he would give the mule for it."
+  },
+  {
+   "id": "fact_21",
+   "thread": "thread_9",
+   "kind": "want",
+   "text": "Acquire the mithril chain shirt Warwick the smith displays in his shop."
+  },
+  {
+   "id": "fact_22",
+   "thread": "thread_9",
+   "kind": "blocked_by",
+   "text": "Farmer Gill says Warwick always refuses to sell the mithril chain shirt he displays."
+  },
+  {
+   "id": "fact_23",
+   "thread": "thread_10",
+   "kind": "want",
+   "text": "Help Quinn get back at Bentley and collect Quinn's 100 gold."
+  },
+  {
+   "id": "fact_24",
+   "thread": "thread_10",
+   "kind": "could_use",
+   "text": "Quinn's plan: he brings up bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering ale to stage a fake shipment."
+  },
+  {
+   "id": "fact_25",
+   "thread": "thread_10",
+   "kind": "unknown",
+   "text": "What empties or knocks over Quinn's stock every night? Quinn blames Bentley."
+  }
+ ]
+}

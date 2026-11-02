@@ -1,0 +1,14 @@
+step3: 21 facts (21 open) {'want': 4, 'owe': 1, 'blocked_by': 0, 'could_use': 7, 'unknown': 7, 'threat': 2}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_17']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.45 fact_7 (thread_3, could_use) ~ fact_12 (thread_4, could_use)
+         Lady Hilda offers to join the party's dragon hunt for pay.
+         Lady Hilda, a seasoned-looking noblewoman with chain mail and a shield, offers to join the party for pay to go after the dragon; no fee has been set.
+    0.44 fact_1 (thread_1, want) ~ fact_3 (thread_1, unknown)
+         Find the treasure the party's treasure map leads to.
+         Where is the treasure the party's map marks?
+  cross-thread facts sharing 4-word phrases:
+    fact_7 (thread_3) & fact_12 (thread_4): ['offers to join the']

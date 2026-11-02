@@ -1,0 +1,82 @@
+{
+  "title": "StoppingSituation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "where_you_are",
+    "immediate_danger",
+    "immediate_intention"
+  ],
+  "properties": {
+    "where_you_are": {
+      "type": "string",
+      "minLength": 1
+    },
+    "immediate_danger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "thread",
+          "covers_facts"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "thread": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^thread_[0-9]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "covers_facts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^fact_[0-9]+$"
+            }
+          }
+        }
+      }
+    },
+    "immediate_intention": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text",
+            "evidence"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^beat_[0-9]+$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

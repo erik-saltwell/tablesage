@@ -1,0 +1,125 @@
+{
+ "version": 5,
+ "rules": {
+  "last_session": "touched threads with at least one high beat and standalone beats rated high, at most 10, ranked by number of high beats, then threads whose situation changed or began this Session before earlier threads still plainly open, then story order; shown in story order",
+  "open": "every want and every owe with a definite end; blocked_by, unknown and threat facts rated high or medium, could_use facts rated high or medium with high actionability, ranked by importance then actionability, capped per heading; never possibly moot facts, open-ended promises or facts covered by an immediate danger"
+ },
+ "last_session": [
+  {
+   "id": "thread_1",
+   "kind": "thread",
+   "first": 0,
+   "highs": 1,
+   "plain": false
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 8,
+   "highs": 3,
+   "plain": false
+  },
+  {
+   "id": "thread_4",
+   "kind": "thread",
+   "first": 9,
+   "highs": 1,
+   "plain": false
+  },
+  {
+   "id": "thread_6",
+   "kind": "thread",
+   "first": 17,
+   "highs": 2,
+   "plain": false
+  },
+  {
+   "id": "thread_7",
+   "kind": "thread",
+   "first": 19,
+   "highs": 1,
+   "plain": false
+  },
+  {
+   "id": "thread_10",
+   "kind": "thread",
+   "first": 37,
+   "highs": 3,
+   "plain": false
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_1",
+    "fact_4",
+    "fact_14"
+   ]
+  },
+  {
+   "heading": "Standing in your way",
+   "kind": "blocked_by",
+   "facts": [
+    "fact_15"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_6",
+    "fact_25",
+    "fact_5",
+    "fact_7",
+    "fact_12",
+    "fact_17",
+    "fact_18"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_26",
+    "fact_2",
+    "fact_10",
+    "fact_13",
+    "fact_20"
+   ]
+  },
+  {
+   "heading": "Promises and debts",
+   "kind": "owe",
+   "facts": [
+    "fact_23"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_9",
+    "fact_3",
+    "fact_8"
+   ]
+  }
+ ],
+ "excluded": {
+  "possibly_moot": [],
+  "open_ended": [],
+  "covered_by_danger": [],
+  "below_threshold": [
+   "fact_11",
+   "fact_16",
+   "fact_19",
+   "fact_22",
+   "fact_24"
+  ],
+  "over_cap": [
+   "fact_21"
+  ],
+  "last_session_over_cap": []
+ }
+}
