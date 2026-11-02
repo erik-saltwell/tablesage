@@ -1,0 +1,4 @@
+interface:
+  display_name: "Extract Learnings"
+  short_description: "Rebuild the unified pipeline review guide from learnings/"
+  default_prompt: "Use $extract-learnings to rebuild the review guide from the learnings collection."

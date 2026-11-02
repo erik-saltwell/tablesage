@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Pipeline"
+  short_description: "Review the latest unified pipeline pass against the review guide"
+  default_prompt: "Use $review-pipeline to review the latest unified Matters pipeline pass."
