@@ -1,0 +1,21 @@
+step3: 50 facts (44 open) {'want': 4, 'owe': 5, 'blocked_by': 3, 'could_use': 20, 'unknown': 8, 'threat': 4}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_4']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.62 fact_25 (thread_2, could_use) ~ fact_34 (thread_9, want)
+         Warwick's mithril chain shirt, which Dunk plans to get, could protect against the dragon (see thread_9).
+         Obtain Warwick the smith's magical mithril chain shirt, which Dunk says could help against the dragon.
+    0.60 fact_46 (thread_13, owe) ~ fact_47 (thread_13, owe)
+         Dr. Uriah owes Father William penance at Brandon's Barrow Mound, agreed in return for William marking the Barrow Mound and the witch's home on the party's map.
+         Dr. Uriah owes Father William a donation of 10 gold for the Barrow Mound's upkeep, agreed in return for William marking the map.
+    0.46 fact_2 (thread_1, unknown) ~ fact_21 (thread_1, unknown)
+         Where are the locations marked on the party's treasure map, and at which one does the treasure lie?
+         Where did the party's treasure map come from?
+    0.41 fact_37 (thread_10, owe) ~ fact_38 (thread_10, could_use)
+         Dunk promised Ingrid that, once she brews the sleeping potion from the faun wine, he will help her get into Warwick's house to give it to Warwick; they are to meet again tonight.
+         Ingrid is brewing a sleeping potion from the faun wine Dunk gave her; if Dunk helps her give it to Warwick tonight, Warwick will sleep through the night while Dunk is at his house.
+  cross-thread facts sharing 4-word phrases:
+    fact_1 (thread_1) & fact_46 (thread_13): ["on the party's map"]
+    fact_25 (thread_2) & fact_34 (thread_9): ['chain shirt which dunk', 'mithril chain shirt which']

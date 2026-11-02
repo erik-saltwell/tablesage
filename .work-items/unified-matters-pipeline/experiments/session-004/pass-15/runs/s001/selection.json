@@ -1,0 +1,540 @@
+{
+ "version": 15,
+ "resource_texts": {},
+ "resource_reconciliation": {
+  "groups": [],
+  "input_fingerprint": "4d9fe423ff4ddfb4b54365f86aedb2f546afc4bff09606af6e5c394ac9359f71"
+ },
+ "rules": {
+  "last_session": "standalone beats rated low importance are dropped by code before assessment; threads/standalone events retain medium-or-high impact AND lasting consequence; an otherwise unrepresented encounter may also qualify with medium-or-high historical value, regardless of enduring consequence; no scene or character quota; validated main-event anchors sorted by Ledger position",
+  "want": "supported end and completion significance; primary adventure, other adventure, then meaningful side; importance and stable ties, not actionability; serves_thread is null (an end, not a means) and significance is not incidental (Goals: parent_goal_id null, significance not incidental)",
+  "owe": "definite_end; commitment_type is not general_agreement; stake, burden and consequence are not trivial (Obligations filter)",
+  "blocked_by": "active, persists beyond the scene, not covered by immediate danger, and blocks a thread holding a shown want, debt or opening",
+  "could_use": "openings only; supported enabling action toward a shown want/debt; direct role; equivalent offers/plans use validated canonical fact references; assets stay in state/history",
+  "unknown": "open_ended investigative objective: revelation with all four dimensions medium/high, or grounded/inspectable adventure-objective question linked to a shown adventure want; ordinary gaps excluded",
+  "threat": "harm_origin is not party and no evaluation is low (Brewing Troubles filter); not covered by an immediate danger",
+  "all": "never possibly moot facts; no caps; no assets in open matters"
+ },
+ "last_session": [
+  {
+   "id": "thread_1",
+   "kind": "thread",
+   "first": 0,
+   "focus_beats": [
+    "beat_1"
+   ],
+   "anchor_beat": "beat_1",
+   "change": "The party arrived in Brandonsford following a treasure map whose marked locations they could not recognize."
+  },
+  {
+   "id": "thread_3",
+   "kind": "thread",
+   "first": 12,
+   "focus_beats": [
+    "beat_6"
+   ],
+   "anchor_beat": "beat_6",
+   "change": "Reginald the frog warned Dr. Uriah that a trickster Clurichen comes from the riverbanks into town every night."
+  },
+  {
+   "id": "scene_4",
+   "kind": "encounter",
+   "first": 44,
+   "focus_beats": [
+    "beat_22",
+    "beat_24",
+    "beat_25",
+    "beat_26"
+   ],
+   "anchor_beat": "beat_24",
+   "change": "Dunk spent the night drinking with Farmer Gill, hearing the legend of Sir Brandon and that Gill's sons were hunting the dragon."
+  },
+  {
+   "id": "thread_2",
+   "kind": "thread",
+   "first": 56,
+   "focus_beats": [
+    "beat_14",
+    "beat_15",
+    "beat_17"
+   ],
+   "anchor_beat": "beat_14",
+   "change": "Eric the Reeve offered 1000 gold to kill a black dragon that had torn off a woodsman's arm, but Sir Phidipaldi insulted him and challenged him to a duel."
+  },
+  {
+   "id": "thread_5",
+   "kind": "thread",
+   "first": 75,
+   "focus_beats": [
+    "beat_18",
+    "beat_19"
+   ],
+   "anchor_beat": "beat_19",
+   "change": "Drop Dead Ned, a murderous thief with a killer wasp, offered to hire on with Dr. Uriah for 100 gold a week, and Uriah said he would think about it."
+  },
+  {
+   "id": "thread_7",
+   "kind": "thread",
+   "first": 99,
+   "focus_beats": [
+    "beat_31",
+    "beat_32"
+   ],
+   "anchor_beat": "beat_32",
+   "change": "Sir Phidipaldi agreed to help Quinn for 100 gold by staging a fake ale delivery to catch whoever empties his stock each night."
+  }
+ ],
+ "last_session_candidates": [
+  {
+   "id": "thread_1",
+   "change": "The party arrived in Brandonsford following a treasure map whose marked locations they could not recognize.",
+   "impact_basis": "Beat_1 establishes the party's driving pursuit, a treasure map leading into unknown land, which frames what they are doing.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_1 sets up an unfound treasure the party will keep pursuing in later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_1"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_1",
+   "kind": "thread",
+   "name": "The unrecognized treasure map",
+   "first": 0,
+   "beats": 1,
+   "shown": true,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "scene_1",
+   "change": "The party talked their way past a night watchman into Brandonsford.",
+   "impact_basis": "Beat_3 is a routine entry; beat_1's map is told by thread_1.",
+   "narrative_impact": "low",
+   "lasting_basis": "Entry and town layout (beat_2, beat_4) matter little afterward.",
+   "lasting_consequence": "low",
+   "encounter_basis": "Arrival and gate passage is routine logistics; the map arrival is already told by thread_1.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_3"
+   ],
+   "represented_by": [
+    "thread_1"
+   ],
+   "anchor_beat": "beat_3",
+   "kind": "encounter",
+   "name": "Brandonsford's gate",
+   "first": 4,
+   "beats": 1,
+   "shown": false,
+   "publication_reason": "same main event represented by thread_1"
+  },
+  {
+   "id": "thread_3",
+   "change": "Reginald the frog warned Dr. Uriah that a trickster Clurichen comes from the riverbanks into town every night.",
+   "impact_basis": "Beat_6 reveals a nightly local danger the party should avoid.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_6 describes a recurring nightly visitor that will likely come up again, possibly tied to the vanishing ale.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_6"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_6",
+   "kind": "thread",
+   "name": "Clurichen on the riverbanks",
+   "first": 12,
+   "beats": 1,
+   "shown": true,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "scene_2",
+   "change": "Dr. Uriah spoke with Reginald the frog, who warned of the Clurichen.",
+   "impact_basis": "Beat_6's warning is the only change and is told by thread_3.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The Clurichen warning may recur, as covered by thread_3.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "The frog conversation's only substance is the Clurichen warning, which thread_3 already tells.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_5",
+    "beat_6"
+   ],
+   "represented_by": [
+    "thread_3"
+   ],
+   "anchor_beat": "beat_6",
+   "kind": "encounter",
+   "name": "The river",
+   "first": 12,
+   "beats": 2,
+   "shown": false,
+   "publication_reason": "same main event represented by thread_3"
+  },
+  {
+   "id": "thread_4",
+   "change": "The party learned Bentley's restocking shipment was a week overdue and nothing has reached town in months.",
+   "impact_basis": "Beat_12 and beat_27 reveal a supply problem hurting the town, a small discovery alongside the dragon news.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_12 raises an unexplained missing shipment that Wayman asked about and may be pursued later.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_12"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_12",
+   "kind": "thread",
+   "name": "Bentley's missing shipment",
+   "first": 35,
+   "beats": 1,
+   "shown": false,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "thread_6",
+   "change": "Farmer Gill offered Dunk his shabby mule Shamus for 100 gold or dragon-killing work, and Dunk slept in the barn to think it over.",
+   "impact_basis": "Beat_23 and beat_26 record an open offer for an ordinary animal, a small adjustment.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_26 leaves the decision pending, so it may come up again but matters little.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_23",
+    "beat_26"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_23",
+   "kind": "thread",
+   "name": "Shamus the mule",
+   "first": 40,
+   "beats": 2,
+   "shown": false,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "scene_4",
+   "change": "Dunk spent the night drinking with Farmer Gill, hearing the legend of Sir Brandon and that Gill's sons were hunting the dragon.",
+   "impact_basis": "Beat_24 and beat_25 add dragon history and rival hunters, while beat_23's mule offer is minor.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Gill's sons hunting the dragon (beat_25) and Brandon's fairy sword lore (beat_24) are likely to come up again.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "Dunk's solitary night with Gill gives personal context and town lore, Sir Brandon's fairy sword and Gill's sons hunting the dragon, not captured by the mule thread.",
+   "encounter_value": "medium",
+   "focus_beats": [
+    "beat_22",
+    "beat_24",
+    "beat_25",
+    "beat_26"
+   ],
+   "represented_by": [
+    "thread_6"
+   ],
+   "anchor_beat": "beat_24",
+   "kind": "encounter",
+   "name": "Farmer Gill's farm",
+   "first": 44,
+   "beats": 4,
+   "shown": true,
+   "publication_reason": "encounter value medium; independent of lasting consequence"
+  },
+  {
+   "id": "thread_2",
+   "change": "Eric the Reeve offered 1000 gold to kill a black dragon that had torn off a woodsman's arm, but Sir Phidipaldi insulted him and challenged him to a duel.",
+   "impact_basis": "Beat_14 gives a 1000-gold bounty, beat_15 identifies the black dragon, and beat_17 shows the party's champion slapping and challenging the bounty-giver.",
+   "narrative_impact": "high",
+   "lasting_basis": "The standing bounty (beat_14), Hilda's offer (beat_9) and strained relations with Eric (beat_17) will shape later Sessions.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_14",
+    "beat_15",
+    "beat_17"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_14",
+   "kind": "thread",
+   "name": "The Brandonsford dragon and the Reeve's bounty",
+   "first": 56,
+   "beats": 3,
+   "shown": true,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "scene_3",
+   "change": "At the Clumsy Fox, Sir Phidipaldi took up the dragon bounty talk with Eric the Reeve but ended up slapping him and being thrown out.",
+   "impact_basis": "Beat_14, beat_17 and beat_21 together reshape relations with the town's leadership and the bounty.",
+   "narrative_impact": "high",
+   "lasting_basis": "The bounty and strained relations will matter later, as told by thread_2 and beat_21.",
+   "lasting_consequence": "high",
+   "encounter_basis": "The central interaction, the bounty and duel challenge leading to expulsion, is already told by thread_2 and beat_21; Hilda's flirtation adds only colour.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_17",
+    "beat_21"
+   ],
+   "represented_by": [
+    "thread_2",
+    "beat_21"
+   ],
+   "anchor_beat": "beat_17",
+   "kind": "encounter",
+   "name": "The Clumsy Fox Tavern",
+   "first": 64,
+   "beats": 2,
+   "shown": false,
+   "publication_reason": "same main event represented by thread_2"
+  },
+  {
+   "id": "thread_5",
+   "change": "Drop Dead Ned, a murderous thief with a killer wasp, offered to hire on with Dr. Uriah for 100 gold a week, and Uriah said he would think about it.",
+   "impact_basis": "Beat_19 makes an offer of a dangerous hireling that is pending.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_19 leaves the offer open, so Ned is likely to return.",
+   "lasting_consequence": "medium",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_18",
+    "beat_19"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_19",
+   "kind": "thread",
+   "name": "Drop Dead Ned's offer of hire",
+   "first": 75,
+   "beats": 2,
+   "shown": true,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "beat_27",
+   "change": "Gill revealed that Warwick the smith is growing paranoid and keeps an unsellable mithril chain shirt on display.",
+   "impact_basis": "Beat_27 adds gossip about a local figure and a coveted item, a small detail.",
+   "narrative_impact": "low",
+   "lasting_basis": "Beat_27's mithril shirt and paranoid smith may come up if the party visits the smithy.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_27"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_27",
+   "kind": "beat",
+   "name": "Standalone event",
+   "first": 82,
+   "beats": 1,
+   "shown": false,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "beat_21",
+   "change": "Bentley stopped Sir Phidipaldi's quarrel with Eric and banished him to the Golden Egg for the night while his friends stayed.",
+   "impact_basis": "Beat_21 separates Sir Phidipaldi from the party and sends him to the other tavern, enabling the Quinn deal.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_21 mainly affects this night, though it sours Sir Phidipaldi with Bentley.",
+   "lasting_consequence": "low",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_21"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_21",
+   "kind": "beat",
+   "name": "Standalone event",
+   "first": 87,
+   "beats": 1,
+   "shown": false,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "thread_7",
+   "change": "Sir Phidipaldi agreed to help Quinn for 100 gold by staging a fake ale delivery to catch whoever empties his stock each night.",
+   "impact_basis": "Beat_31 reveals the mystery and beat_32 seals a paid agreement and plan.",
+   "narrative_impact": "medium",
+   "lasting_basis": "Beat_32 sets up a sting that will play out in a later Session.",
+   "lasting_consequence": "high",
+   "encounter_basis": "",
+   "encounter_value": null,
+   "focus_beats": [
+    "beat_31",
+    "beat_32"
+   ],
+   "represented_by": [],
+   "anchor_beat": "beat_32",
+   "kind": "thread",
+   "name": "Quinn's vanishing ale",
+   "first": 99,
+   "beats": 2,
+   "shown": true,
+   "publication_reason": "thread/event requires impact and lasting consequence both medium or high"
+  },
+  {
+   "id": "scene_5",
+   "change": "At the Golden Egg, Sir Phidipaldi agreed to stage a fake ale delivery for Quinn.",
+   "impact_basis": "Beat_32's agreement is the central change, told by thread_7.",
+   "narrative_impact": "medium",
+   "lasting_basis": "The sting will play out later, as thread_7 records.",
+   "lasting_consequence": "high",
+   "encounter_basis": "The scene's central event is the Quinn deal, which thread_7 already tells.",
+   "encounter_value": "low",
+   "focus_beats": [
+    "beat_32"
+   ],
+   "represented_by": [
+    "thread_7"
+   ],
+   "anchor_beat": "beat_32",
+   "kind": "encounter",
+   "name": "The Golden Egg Tavern",
+   "first": 99,
+   "beats": 1,
+   "shown": false,
+   "publication_reason": "same main event represented by thread_7"
+  }
+ ],
+ "dropped_standalone": [
+  {
+   "beat": "beat_2",
+   "reason": "Background on Brandonsford's lack of law enforcement, not tied to any thread.",
+   "text": "Brandonsford has no guards or proper law enforcement; a rotating group of able-bodied men keeps the night watch.",
+   "importance": "low"
+  },
+  {
+   "beat": "beat_4",
+   "reason": "Layout of the town's shops and inns, general background.",
+   "text": "Brandonsford has a general store, a smith, a small church, an alchemist shop and a farm on the edge of town; the Clumsy Fox Tavern is busy and warm, while the Golden Egg Tavern across the street has fewer people.",
+   "importance": "low"
+  },
+  {
+   "beat": "beat_28",
+   "reason": "Gossip about Ingrid the potion seller and Warwick's clovers, pointing to where potions can be bought.",
+   "text": "Gill says Warwick has covered a wall of his shop with clovers, and guesses the charms may be to keep away Ingrid, the potion seller, who is hot for Warwick; Ingrid is where to go for potions.",
+   "importance": "low"
+  }
+ ],
+ "open": [
+  {
+   "heading": "Your goals",
+   "kind": "want",
+   "facts": [
+    "fact_1",
+    "fact_4",
+    "fact_17"
+   ]
+  },
+  {
+   "heading": "What could help",
+   "kind": "could_use",
+   "facts": [
+    "fact_5",
+    "fact_14",
+    "fact_18"
+   ]
+  },
+  {
+   "heading": "Still unanswered",
+   "kind": "unknown",
+   "facts": [
+    "fact_2",
+    "fact_19",
+    "fact_8",
+    "fact_12",
+    "fact_7"
+   ]
+  },
+  {
+   "heading": "Meanwhile",
+   "kind": "threat",
+   "facts": [
+    "fact_9"
+   ]
+  }
+ ],
+ "decisions": {
+  "fact_1": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_4": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_15": {
+   "shown": false,
+   "reason": "significance incidental"
+  },
+  "fact_17": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_2": {
+   "shown": true,
+   "reason": "adventure objective for thread_1; grounded and investigable; independent depth/payoff not required"
+  },
+  "fact_3": {
+   "shown": false,
+   "reason": "asset retained in campaign state, not an open matter"
+  },
+  "fact_5": {
+   "shown": true,
+   "reason": "opening; helps thread_2; support medium"
+  },
+  "fact_6": {
+   "shown": false,
+   "reason": "asset retained in campaign state, not an open matter"
+  },
+  "fact_7": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_8": {
+   "shown": true,
+   "reason": "adventure objective for thread_2; grounded and investigable; independent depth/payoff not required"
+  },
+  "fact_9": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity medium, outcome_severity high, evidentiary_strength medium, evidence_of_progression medium, preventability medium"
+  },
+  "fact_10": {
+   "shown": false,
+   "reason": "negative_outcome_clarity low; outcome_severity low"
+  },
+  "fact_11": {
+   "shown": false,
+   "reason": "narrative_payoff low"
+  },
+  "fact_12": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_13": {
+   "shown": false,
+   "reason": "outcome_severity low"
+  },
+  "fact_14": {
+   "shown": true,
+   "reason": "opening; helps thread_2; support low"
+  },
+  "fact_16": {
+   "shown": false,
+   "reason": "not an extra enabling opening: goal_pursuit (The trigger is paying 100 gold or killing the dragon; the benefit is simply obtaining the mule, which is the want itself, so the action pays the item's own price.)"
+  },
+  "fact_18": {
+   "shown": true,
+   "reason": "opening; helps thread_7; support medium"
+  },
+  "fact_19": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  }
+ }
+}

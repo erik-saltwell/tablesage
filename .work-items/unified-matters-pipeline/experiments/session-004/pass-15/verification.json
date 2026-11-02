@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": [
+    "run15.py CLI imports without model calls",
+    "Step 6 schema is valid JSON Schema; template parses",
+    "Recomputed step 5 selection equals pass 14's for Sessions 001 and 002 (version field excluded)",
+    "Pass 14's writing.json fails the new schema (detail missing), and passes once detail is added",
+    "Step 7 on pass 14's writing.json with sentinel detail strings: summary.md byte-identical to pass 14's for both Sessions; no sentinel in summary.md",
+    "matters.json carries detail for every item (18 of 18 in Session 001, 28 of 28 in Session 002)"
+  ],
+  "changed_from_pass_14": [
+    "prompts/step6_writing/schema.json",
+    "prompts/step6_writing/system.md",
+    "run15.py (renamed from run14.py)",
+    "generate.sh",
+    "README.md"
+  ],
+  "limits": "Offline contract and rendering checks only. No model generation; the writer's use of detail is unassessed."
+}

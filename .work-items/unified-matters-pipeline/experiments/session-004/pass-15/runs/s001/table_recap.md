@@ -1,0 +1,14 @@
+# Brandonsford
+**2026-08-18: Sir Phidipaldi slapping the Reeve with his glove**
+
+- **Your treasure map.** It led you to Brandonsford at sunset, but you don't recognize its marked places. You still need to learn where they are and which one holds the treasure.
+- **The black dragon.** Eric the Reeve offers a thousand gold for its body in town, though you never formally accepted. Sir Phidipaldi then slapped him and challenged him to a duel. Its lair is unknown.
+- **The Clurichen.** Reginald the frog warned Dr. Uriah that this trickster comes into town from the riverbanks every night.
+- **Bentley's shipment.** It is overdue, and nothing has reached town in months. Nobody knows why.
+- **Drop Dead Ned.** This thief offered to hire on with Dr. Uriah. For a hundred gold a week, he and his killer wasp will do any job, but Ned insists on killing people.
+- **Quinn's vanishing ale.** Sir Phidipaldi agreed to help Quinn, who runs the Golden Egg, catch whoever empties his good ale each night. Quinn offers a hundred gold, and the culprit is still unknown.
+- **Drinks with Farmer Gill.** Dunk drank the night away with him, and Gill told how Sir Brandon slew the town's first dragon.
+
+## Where you are
+
+Sir Phidipaldi is with Quinn in the empty Golden Egg, about to stage a fake ale shipment. They will fill Quinn's bottles with water, and he will deliver them with a big show to see what happens. Wayman and Dr. Uriah are across the street in the Clumsy Fox. Dunk sleeps in Farmer Gill's barn.

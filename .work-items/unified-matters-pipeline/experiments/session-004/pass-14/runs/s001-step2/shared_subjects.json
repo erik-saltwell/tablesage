@@ -1,0 +1,27 @@
+{
+ "scenes": "s001-step1",
+ "shared_subjects": [
+  {
+   "subject": "Killing the dragon as Gill's price for the mule",
+   "home": "thread_6",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_23"
+   ],
+   "reason": "It is a term of Gill's offer for Shamus, so it lives on the mule bargain."
+  },
+  {
+   "subject": "Sir Phidipaldi's claim that Clurichens steal limbs and fake dragon sightings",
+   "home": "thread_3",
+   "other_threads": [
+    "thread_2"
+   ],
+   "beats": [
+    "beat_16"
+   ],
+   "reason": "The claim concerns what Clurichens do, so it belongs to the thread about the Clurichen."
+  }
+ ]
+}

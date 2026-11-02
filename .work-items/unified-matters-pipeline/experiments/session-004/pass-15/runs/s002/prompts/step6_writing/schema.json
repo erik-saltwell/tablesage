@@ -1,0 +1,52 @@
+{
+  "title": "SummaryWriting",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "last_session",
+    "open",
+    "session_cue_scene"
+  ],
+  "properties": {
+    "last_session": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Item"
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Item"
+      }
+    },
+    "session_cue_scene": {
+      "type": "string",
+      "pattern": "^scene_[0-9]+$"
+    }
+  },
+  "$defs": {
+    "Item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "detail",
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detail": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

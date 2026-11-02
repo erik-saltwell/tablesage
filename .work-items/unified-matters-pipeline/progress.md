@@ -164,3 +164,20 @@ All 28 offline direct checks passed: schema/example/template contracts, runner i
 Learnings retain exact feedback, first-mention tentativeness, the minor severity distinctions and explicit allowances. The derived review guide was incrementally synchronized with SRC-60 (not a fresh full-corpus skill extraction), preserving/rechecking coverage and retiring stale objections. Added RC-073–RC-075; retired RC-019 and RC-060. User-added checks are unchanged. See the pass’s review-guide-refresh.json for affected IDs and counts.
 
 Current resume point: user inspection of pass 13 or a separately requested fresh generation. Fresh Session 001 must start from its empty seed and Session 002 must chain from that new result; no pass 13 runs exist. The current learning/prompt update request is complete. Overall pipeline item remains implementing; broader adoption and separate investigations remain open.
+
+### Pass 14 Prompt Generality Revision (2026-11-01)
+
+After a review of pass 13's prompts for guidance too specific to the four test Sessions, the user asked to "fix all of this". [Pass 14](experiments/session-004/pass-14/README.md) revises all eight system prompts: patch sections folded into their sections, the opportunity writing rule reduced to its distinctions, allowances removed from prompts, duplicated contract-precision and lifecycle text stated once, and fictional re-skins of Session details (statue question, dead dwarf, an ally's caveats, forecast questions, curator, map labels, "more experienced than", corrected distance, item fit) replaced. Runner, helpers, schemas and templates are unchanged apart from the pass number and selection version. Offline checks passed ([verification](experiments/session-004/pass-14/verification.json)). No generation has run.
+
+Current resume point: a fresh chained Sessions 001–002 generation of pass 14 when the user requests it, then review with `review-pipeline`, which now drops allowed occurrences.
+
+### Pass 15 Detail Field (2026-11-02)
+
+The user proposed a `detail` field in the step 6 output to absorb extraneous detail the writer resists dropping. Agreed refinements: keep the bullet field named `text` (not `title` or `headline`), put `detail` before `text` in the schema, apply it to "Last session..." as well, state per heading what the bullet keeps as well as what moves out, and check over-pruning in review. [Pass 15](experiments/session-004/pass-15/README.md) implements this on copies of pass 14's step 1–5 outputs; `generate.sh` reruns both chains from step 6. Offline checks passed ([verification](experiments/session-004/pass-15/verification.json)): step 7 renders a byte-identical `summary.md` from pass 14's writing with detail added, and stores detail in `matters.json`. No generation has run.
+
+Generated 2026-11-02 at the user's request; run 1 completed. Repeat runs showed the pass 15 writer omitting trailing open headings in 4 of 7 calls (pass 14's prompt: 0 of 5 on identical input), so run 1's Summaries remain in place and the failures are preserved. Details in the pass 15 README (unreviewed by the user).
+
+The user then asked to revert the `detail` field. Pass 15's step 6 prompt and schema are pass 14's again; a single Session 001 run from step 6 completed with all items present.
+
+Current resume point: the user's new approach to extraneous detail.
+

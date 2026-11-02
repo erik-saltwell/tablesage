@@ -17,6 +17,7 @@ Status values: **kept**, **superseded by APP-###**, **reverted**, **not adopted*
 9. **Splitting selection from writing does not help when selection itself is the problem** (APP-002). A narrow verify-against-evidence role catches unsupported claims, but only with a strict keep, narrow or flag contract (APP-003).
 10. **Simplify prompts for clarity, not token savings, and test on more than one run** (APP-008).
 11. **Single runs do not separate model variation from a change's effect.** Report observed differences as observations, not causes, unless the comparison controls for variation.
+12. **Review rounds accrete case residue in prompts.** Each round tends to append a clause or section for the case it fixed, and allowances ("either way is fine") get written in as rules that cannot change behavior. Periodically review prompts for generality and fold or remove such text (APP-034, pass 14).
 
 ## Lost or Never Shipped
 
@@ -36,9 +37,11 @@ Status values: **kept**, **superseded by APP-###**, **reverted**, **not adopted*
   - Passes 5–6: goal-wording and opening fixes (EX-051 to EX-061); deterministic pointer rules fixed duplicate offers, while ratings still ignored their own evidence (EX-055).
   - Pass 7: supported implicit openings, resource identity and the scene-local danger boundary (EX-065 to EX-067). Pass 8: the approved EX-070 to EX-078 fixes, including equivalence reconciliation and assets out of open headings. Pass 9: encounter coverage in history (EX-079).
   - Pass 10: every overtuned prompt rule restated from the general patterns PREF-045 to PREF-052; the automated review counted 11 failures against pass 9's 19 (agent observation).
-  - Passes 11–13: offer matching (EX-080), significance, ordering and the adventure-question path (SRC-59), then the pass 12 review refinements (SRC-60). Pass 13 has not been generated.
+  - Passes 11–13: offer matching (EX-080), significance, ordering and the adventure-question path (SRC-59), then the pass 12 review refinements (SRC-60).
+  - Pass 14 (2026-11-01): a generality review of pass 13's prompts found case-shaped clauses accumulated over review rounds, allowances written in as rules, duplicated guidance and fictional re-skins of Session details. At the user's request ("please fix all of this") they were consolidated without changing rule meanings. Not yet generated, so whether the shorter prompts hold the targeted behaviors is unassessed.
+  - Pass 15 (2026-11-02): the user proposed a `detail` field in the writer's output so information a bullet does not need has somewhere to go instead of leaking into the bullet; `summary.md` ignores it. Agreed with the agent's refinements: the bullet field stays `text` ("title" or "headline" would push toward clipped headline style), `detail` is written before `text`, and each heading states what its bullet keeps so essentials are not moved out. Steps 1–5 are reused from pass 14 for a controlled comparison. Generated 2026-11-02 (agent observation, unreviewed): in 7 calls the pass 15 writer ended its open list early 4 times, silently omitting trailing headings, against 0 of 5 with pass 14's prompt on identical input; complete outputs were not measurably shorter, and history consistently repeated the goal's 1000-gold amount. Some tacked-on clauses did move to `detail`. Reverted the same day at the user's request; the user has a different approach in mind. See the pass 15 README.
 - Current status: in progress. The user has not yet decided between this pipeline and the existing artifacts (PREF-018).
-- Lessons: 3, 4, 5, 11.
+- Lessons: 3, 4, 5, 11, 12.
 - Examples: EX-003, EX-021 to EX-024, EX-051 to EX-081
 
 ### APP-017

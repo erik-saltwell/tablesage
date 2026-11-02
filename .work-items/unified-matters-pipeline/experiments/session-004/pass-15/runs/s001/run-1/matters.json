@@ -1,0 +1,992 @@
+{
+ "session": "001",
+ "session_cue": {
+  "scene": "scene_3",
+  "text": "Sir Phidipaldi slapping the Reeve with his glove"
+ },
+ "previous": [
+  {
+   "id": "thread_1",
+   "text": "The party arrived in Brandonsford at sunset, following a treasure map of places they did not recognize.",
+   "detail": "They arrived at sunset. They assumed the treasure lay at one of the marked locations, but all the surrounding land was unknown to them."
+  },
+  {
+   "id": "thread_3",
+   "text": "Reginald the frog warned Dr. Uriah that a trickster Clurichen comes into town from the riverbanks every night.",
+   "detail": "Reginald said the Clurichen is a little trickster creature up to no good, and that wherever it goes they should stay away."
+  },
+  {
+   "id": "scene_4",
+   "text": "Dunk spent the night drinking with Farmer Gill, who told him the legend of Sir Brandon's dragon.",
+   "detail": "Dunk split from the party to scavenge at the farm, preferring solitude to the inns. Gill says Sir Brandon got a magic sword from a fairy in the woods. With his friends, Brandon killed a dragon that had terrorized the town for weeks, and the town was named after him. They were knighted and then all left, and Brandon died. That dragon was dragged through town and ripped apart hundreds of years ago. Gill assumes the current dragon is a different one and does not know where dragons come from. Gill saw the current dragon, which wanted nothing to do with him, and he sent his three sons after it. Dunk asked to sleep in the barn and think over the offer. They drank from Gill's still while Gill shared gossip."
+  },
+  {
+   "id": "thread_2",
+   "text": "Eric the Reeve offered 1000 gold for the dragon. Sir Phidipaldi then slapped him with a glove and challenged him to a duel.",
+   "detail": "Eric wants the dragon killed and its body dragged into town, and said it was the first of many problems he has. He passed on the account of George, a capable woodsman who lives nearby. George lost an arm to the dragon and described it as a black dragon, not a big one. When Eric defended George's account, Sir Phidipaldi slapped him with his glove and challenged him to a duel at dawn. The flustered Eric did not accept and only said Sir Phidipaldi was more skilled at adventure."
+  },
+  {
+   "id": "thread_5",
+   "text": "Drop Dead Ned, a thief with a killer wasp, offered to work for Dr. Uriah, who said he would think about it.",
+   "detail": "Uriah brought the thief a Fox Tail Brew. Ned recognized Uriah as a Dagonite. Uriah said he was a scholar of folk remedies and lore looking for work with his crew. Ned asked 100 gold for the week. When Uriah asked about a night of at least ten kills, Ned kept the fee but offered back 5 gold per kill if he could do what he wanted with the victims."
+  },
+  {
+   "id": "thread_7",
+   "text": "Sir Phidipaldi agreed to help Quinn catch whoever empties his good ale at the Golden Egg each night.",
+   "detail": "Quinn says his good stock is gone each morning, with half the glasses empty or knocked over, so he waters down what little he has. He believes Bentley steals it because Bentley's Fox Tail Brew is so popular. Quinn offered 100 gold for the help and proposed a fake shipment, which Sir Phidipaldi agreed to stage."
+  }
+ ],
+ "current": {
+  "where_you_are": "Sir Phidipaldi is with Quinn in the empty Golden Egg Tavern. Wayman and Dr. Uriah are across the street in the Clumsy Fox Tavern. Dunk is at Farmer Gill's farm on the edge of town, staying the night in the barn.",
+  "immediate_danger": [],
+  "immediate_intention": {
+   "text": "Sir Phidipaldi and Quinn are about to stage a fake ale shipment. Quinn will bring bottles and they will fill them with water. Then Sir Phidipaldi will make a big show of delivering them to see what happens. Quinn offered 100 gold for the help.",
+   "evidence": [
+    "beat_32"
+   ]
+  }
+ },
+ "open": {
+  "Your goals": [
+   {
+    "fact": "fact_1",
+    "text": "Find the treasure shown on the party's map.",
+    "detail": ""
+   },
+   {
+    "fact": "fact_4",
+    "text": "Kill the black dragon and drag its body into Brandonsford to collect Eric the Reeve's 1000 gold.",
+    "detail": "The party never explicitly accepted Eric's offer. Sir Phidipaldi said they would talk to the Reeve, then denied the dragon exists and challenged Eric to a duel."
+   },
+   {
+    "fact": "fact_17",
+    "text": "Catch whoever empties Quinn's good ale at the Golden Egg each night and collect his 100 gold.",
+    "detail": ""
+   }
+  ],
+  "What could help": [
+   {
+    "fact": "fact_5",
+    "text": "If the party pays Lady Hilda, she will join them to hunt the dragon. She won't go alone.",
+    "detail": "Lady Hilda is a seasoned fighter in chain mail with a shield."
+   },
+   {
+    "fact": "fact_14",
+    "text": "If Dr. Uriah hires Drop Dead Ned for 100 gold a week, Ned and his killer wasp will do any job. Ned insists on killing people with the wasp.",
+    "detail": "Dr. Uriah said he would think about the offer."
+   },
+   {
+    "fact": "fact_18",
+    "text": "If Sir Phidipaldi and Quinn stage their fake ale delivery, they may see who comes for the ale.",
+    "detail": "Quinn brings bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering ale to the Golden Egg."
+   }
+  ],
+  "Still unanswered": [
+   {
+    "fact": "fact_2",
+    "text": "Where are the map's marked locations, and which one holds the treasure?",
+    "detail": ""
+   },
+   {
+    "fact": "fact_19",
+    "text": "Who or what empties Quinn's good ale each night?",
+    "detail": "Half the glasses are left empty or knocked over. Quinn believes Bentley is stealing it."
+   },
+   {
+    "fact": "fact_8",
+    "text": "Where does the black dragon lurk outside Brandonsford?",
+    "detail": ""
+   },
+   {
+    "fact": "fact_12",
+    "text": "What happened to Bentley's overdue shipment, and why has nothing arrived in months?",
+    "detail": "Bentley's restocking shipment is a week overdue, and nothing has come into Brandonsford in months."
+   },
+   {
+    "fact": "fact_7",
+    "text": "Where did this new dragon come from?",
+    "detail": "Sir Brandon's dragon was killed centuries ago, and none has appeared since."
+   }
+  ],
+  "Meanwhile": [
+   {
+    "fact": "fact_9",
+    "text": "The black dragon tore off George's arm and may maim or kill others, including Gill's three sons hunting it now.",
+    "detail": "George is a woodsman."
+   }
+  ]
+ },
+ "decisions": {
+  "fact_1": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_4": {
+   "shown": true,
+   "reason": "end; adventure"
+  },
+  "fact_15": {
+   "shown": false,
+   "reason": "significance incidental"
+  },
+  "fact_17": {
+   "shown": true,
+   "reason": "end; side"
+  },
+  "fact_2": {
+   "shown": true,
+   "reason": "adventure objective for thread_1; grounded and investigable; independent depth/payoff not required"
+  },
+  "fact_3": {
+   "shown": false,
+   "reason": "asset retained in campaign state, not an open matter"
+  },
+  "fact_5": {
+   "shown": true,
+   "reason": "opening; helps thread_2; support medium"
+  },
+  "fact_6": {
+   "shown": false,
+   "reason": "asset retained in campaign state, not an open matter"
+  },
+  "fact_7": {
+   "shown": true,
+   "reason": "open_ended; grounding medium, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_8": {
+   "shown": true,
+   "reason": "adventure objective for thread_2; grounded and investigable; independent depth/payoff not required"
+  },
+  "fact_9": {
+   "shown": true,
+   "reason": "external; negative_outcome_clarity medium, outcome_severity high, evidentiary_strength medium, evidence_of_progression medium, preventability medium"
+  },
+  "fact_10": {
+   "shown": false,
+   "reason": "negative_outcome_clarity low; outcome_severity low"
+  },
+  "fact_11": {
+   "shown": false,
+   "reason": "narrative_payoff low"
+  },
+  "fact_12": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  },
+  "fact_13": {
+   "shown": false,
+   "reason": "outcome_severity low"
+  },
+  "fact_14": {
+   "shown": true,
+   "reason": "opening; helps thread_2; support low"
+  },
+  "fact_16": {
+   "shown": false,
+   "reason": "not an extra enabling opening: goal_pursuit (The trigger is paying 100 gold or killing the dragon; the benefit is simply obtaining the mule, which is the want itself, so the action pays the item's own price.)"
+  },
+  "fact_18": {
+   "shown": true,
+   "reason": "opening; helps thread_7; support medium"
+  },
+  "fact_19": {
+   "shown": true,
+   "reason": "open_ended; grounding high, investigative_depth medium, narrative_payoff medium, investigative_potential medium"
+  }
+ },
+ "resource_reconciliation": {
+  "groups": [],
+  "input_fingerprint": "4d9fe423ff4ddfb4b54365f86aedb2f546afc4bff09606af6e5c394ac9359f71"
+ },
+ "campaign_state": {
+  "threads": [
+   {
+    "id": "thread_1",
+    "name": "The unrecognized treasure map",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_1"
+    ],
+    "note": "The party is following a treasure map whose marked locations they cannot yet identify, and the treasure has not been found."
+   },
+   {
+    "id": "thread_2",
+    "name": "The Brandonsford dragon and the Reeve's bounty",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_9",
+     "beat_12",
+     "beat_14",
+     "beat_15",
+     "beat_16",
+     "beat_17",
+     "beat_23",
+     "beat_24",
+     "beat_25"
+    ],
+    "note": "Eric the Reeve's 1000-gold offer to kill the black dragon stands, with Lady Hilda's offer to join for pay and Gill's sons already hunting it; Sir Phidipaldi's insult and duel challenge (beat_17) strained relations with the bounty-giver but the offer was not withdrawn."
+   },
+   {
+    "id": "thread_3",
+    "name": "Clurichen on the riverbanks",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_6",
+     "beat_16"
+    ],
+    "note": "Reginald warned of a trickster Clurichen that comes into town every night up to no good, a danger standing on its own; Sir Phidipaldi's claims about it in beat_16 were known to be wrong."
+   },
+   {
+    "id": "thread_4",
+    "name": "Bentley's missing shipment",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_12",
+     "beat_27"
+    ],
+    "note": "Bentley's restocking shipment is a week overdue and Gill says nothing has come into town in months; why is unknown and Wayman asked whether anyone had gone after it."
+   },
+   {
+    "id": "thread_5",
+    "name": "Drop Dead Ned's offer of hire",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_10",
+     "beat_18",
+     "beat_19",
+     "beat_20"
+    ],
+    "note": "Ned offered himself and his killer wasp for 100 gold a week and Dr. Uriah said he would think about it, so the outside offer stays available."
+   },
+   {
+    "id": "thread_6",
+    "name": "Shamus the mule",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_23",
+     "beat_26"
+    ],
+    "note": "Farmer Gill offered his mule for 100 gold or work such as killing the dragon, and Dunk is sleeping in the barn to think it over."
+   },
+   {
+    "id": "thread_7",
+    "name": "Quinn's vanishing ale",
+    "parent": null,
+    "origin": "new",
+    "status": "open",
+    "touched_by": [
+     "beat_30",
+     "beat_31",
+     "beat_32"
+    ],
+    "note": "Sir Phidipaldi agreed to help Quinn for 100 gold by staging a fake ale delivery to catch whoever empties his stock each night, which Quinn believes is Bentley; the sting has not yet happened."
+   }
+  ],
+  "facts": [
+   {
+    "thread": "thread_1",
+    "id": "fact_1",
+    "kind": "want",
+    "text": "Find the treasure shown on the party's map.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_1"
+    ],
+    "classification": {
+     "serves_thread": null,
+     "significance": "adventure",
+     "adventure_priority": "primary"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_1",
+    "id": "fact_2",
+    "kind": "unknown",
+    "text": "Where are the locations marked on the party's treasure map, and at which one does the treasure lie?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_1"
+    ],
+    "classification": {
+     "question_basis": "Beat_1 establishes the party follows a map whose marked locations they do not recognize in land unknown to them; identifying them is what the party must discover to find the treasure.",
+     "question_role": "adventure_objective",
+     "goal_thread": "thread_1",
+     "grounding_justification": "The fiction explicitly states the marked locations are unrecognized and the land unknown.",
+     "grounding": "high",
+     "investigative_depth_justification": "Answering it is mainly identifying places, though it may require piecing together local knowledge.",
+     "investigative_depth": "low",
+     "narrative_payoff_justification": "The answer is mainly instrumental toward the treasure.",
+     "narrative_payoff": "low",
+     "investigative_potential_justification": "Locating unfamiliar map sites naturally supports asking locals, exploring and following leads.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_1",
+    "id": "fact_3",
+    "kind": "could_use",
+    "text": "The party holds a treasure map with several marked locations, one of which they assume holds the treasure.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_1"
+    ],
+    "classification": {
+     "opening_basis": "",
+     "opening_type": null,
+     "form": "asset",
+     "helps_thread": "thread_1",
+     "role": "direct",
+     "support_basis": "The map is the party's only guide to the treasure, though its locations are not yet recognized.",
+     "goal_support": "medium",
+     "action_basis": "",
+     "action_supported": null,
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_3"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_4",
+    "kind": "want",
+    "text": "Kill the black dragon near Brandonsford and drag its body into town to collect Eric the Reeve's 1000 gold.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "uncertain",
+    "uncertain_reason": "The party never explicitly accepted Eric's offer; Sir Phidipaldi said they would talk to the Reeve, then denied the dragon exists and challenged Eric to a duel.",
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_6"
+    ],
+    "importance": "high",
+    "actionability": "medium",
+    "evidence": [
+     "beat_9",
+     "beat_14",
+     "beat_17"
+    ],
+    "classification": {
+     "serves_thread": null,
+     "significance": "adventure",
+     "adventure_priority": "other"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_5",
+    "kind": "could_use",
+    "text": "Lady Hilda, a seasoned fighter in chain mail with a shield, offers to join the party for pay to hunt the dragon; she won't go alone.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_9"
+    ],
+    "classification": {
+     "opening_basis": "Trigger: hire Lady Hilda for an unstated fee. Benefit: an experienced armoured fighter added to the dragon hunt, reducing its risk.",
+     "opening_type": "enabling",
+     "form": "opening",
+     "helps_thread": "thread_2",
+     "role": "direct",
+     "support_basis": "A seasoned fighter adds real combat strength against a dragon that has already maimed a capable woodsman.",
+     "goal_support": "medium",
+     "action_basis": "Hilda explicitly offered to join a party of adventurers for money, and Sir Phidipaldi said they would come back for her services.",
+     "action_supported": "yes",
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_6",
+    "kind": "could_use",
+    "text": "George, a woodsman living a couple of houses from the Clumsy Fox, encountered the dragon and describes it as a black dragon, not a big one.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "beat_15"
+    ],
+    "classification": {
+     "opening_basis": "",
+     "opening_type": null,
+     "form": "asset",
+     "helps_thread": "thread_2",
+     "role": "direct",
+     "support_basis": "Knowing the foe is a smallish black dragon helps the party prepare, though the account is second-hand via Eric.",
+     "goal_support": "low",
+     "action_basis": "",
+     "action_supported": null,
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_3"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_7",
+    "kind": "unknown",
+    "text": "Where did this new dragon come from, when Sir Brandon's dragon was killed centuries ago and none has appeared since?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "low",
+    "evidence": [
+     "beat_12",
+     "beat_24"
+    ],
+    "classification": {
+     "question_basis": "Bentley and Gill stress nothing like this has happened since Sir Brandon killed the first dragon centuries ago; Gill says that dragon was surely dead and doesn't know where dragons come from. This is an anomaly worth explaining in itself, not a step toward killing it.",
+     "question_role": "revelation",
+     "goal_thread": "",
+     "grounding_justification": "Two sources make the dragon's sudden appearance after centuries conspicuous, and Gill openly doesn't know its origin.",
+     "grounding": "medium",
+     "investigative_depth_justification": "The answer would reveal a hidden cause behind the dragon's return.",
+     "investigative_depth": "medium",
+     "narrative_payoff_justification": "Explaining the dragon's return could reshape understanding of the town's legend and current troubles.",
+     "narrative_payoff": "medium",
+     "investigative_potential_justification": "The legend, George, Gill's sons and the dragon's haunts offer leads to follow.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_4"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_8",
+    "kind": "unknown",
+    "text": "Where does the black dragon lurk outside Brandonsford?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_15",
+     "beat_23",
+     "beat_25"
+    ],
+    "classification": {
+     "question_basis": "The dragon is only placed 'outside town'; finding it is required to kill it for the Reeve's bounty, and George and Gill have both encountered it, so locating it is a real investigative objective rather than a passing detail.",
+     "question_role": "adventure_objective",
+     "goal_thread": "thread_2",
+     "grounding_justification": "Sightings are reported but no location is given; the gap matters to the bounty.",
+     "grounding": "medium",
+     "investigative_depth_justification": "Mostly a location to discover.",
+     "investigative_depth": "low",
+     "narrative_payoff_justification": "Mainly practical.",
+     "narrative_payoff": "low",
+     "investigative_potential_justification": "George, Gill and his sons hunting it are leads that can be questioned or followed.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_5"
+   },
+   {
+    "thread": "thread_2",
+    "id": "fact_9",
+    "kind": "threat",
+    "text": "The black dragon near Brandonsford tore off the woodsman George's arm and may maim or kill others, including Gill's three sons, who are hunting it now.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_12",
+     "beat_15",
+     "beat_25"
+    ],
+    "classification": {
+     "harm_origin": "external",
+     "negative_outcome_clarity_justification": "George already lost an arm, and Gill's sons are actively confronting it, a particular endangered group.",
+     "negative_outcome_clarity": "medium",
+     "outcome_severity_justification": "Maiming or death of the hunters or townsfolk.",
+     "outcome_severity": "high",
+     "evidentiary_strength_justification": "George's injury is reported by Eric and the sons' hunt by Gill, but Gill also says the dragon wanted nothing to do with him.",
+     "evidentiary_strength": "medium",
+     "evidence_of_progression_justification": "One attack has happened and the sons are hunting it now, but no ongoing pattern of attacks is established.",
+     "evidence_of_progression": "medium",
+     "preventability_justification": "The party could hunt the dragon themselves or aid the sons, though they don't know where it is.",
+     "preventability": "medium"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_6"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_10",
+    "kind": "threat",
+    "text": "Reginald the frog says a little trickster creature called a Clurichen comes from the riverbanks into town every night, up to no good, and that the party should stay away from wherever it goes.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_6"
+    ],
+    "classification": {
+     "harm_origin": "external",
+     "negative_outcome_clarity_justification": "Reginald only says it is up to no good and to stay away; no specific harm or endangered subject is identified.",
+     "negative_outcome_clarity": "low",
+     "outcome_severity_justification": "It is described as a little trickster, suggesting mischief rather than grave harm.",
+     "outcome_severity": "low",
+     "evidentiary_strength_justification": "The warning rests on one local creature's testimony, not direct observation by the party.",
+     "evidentiary_strength": "medium",
+     "evidence_of_progression_justification": "Reginald describes a nightly pattern of it entering town.",
+     "evidence_of_progression": "medium",
+     "preventability_justification": "The party is in town at night and could avoid or confront it, but no specific means is established.",
+     "preventability": "medium"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_3",
+    "id": "fact_11",
+    "kind": "unknown",
+    "text": "What is the Clurichen doing in town each night?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "medium",
+    "evidence": [
+     "beat_6"
+    ],
+    "classification": {
+     "question_basis": "Reginald says the Clurichen comes into town nightly up to no good without saying what it does; this is a hidden activity worth discovering, not tied to an adventure want.",
+     "question_role": "revelation",
+     "goal_thread": "",
+     "grounding_justification": "Reginald's warning clearly raises that the creature does something unspecified in town each night.",
+     "grounding": "medium",
+     "investigative_depth_justification": "The answer would reveal the creature's hidden nightly activity and intention.",
+     "investigative_depth": "medium",
+     "narrative_payoff_justification": "Learning what the trickster does would be mildly interesting but nothing yet suggests a major revelation.",
+     "narrative_payoff": "low",
+     "investigative_potential_justification": "The party could watch the riverbanks or town at night and follow the creature.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_4",
+    "id": "fact_12",
+    "kind": "unknown",
+    "text": "What happened to Bentley's restocking shipment, a week overdue, and why has nothing come into Brandonsford in months?",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_12",
+     "beat_27"
+    ],
+    "classification": {
+     "question_basis": "Bentley says his shipment never arrived and nothing like this has happened in centuries, and Gill says nothing has come into town in months; Wayman asked whether anyone had gone after it. The cause of a town-wide supply stoppage is a hidden circumstance worth discovering, not a routine gap, and no party adventure want is tied to it.",
+     "question_role": "revelation",
+     "goal_thread": "",
+     "grounding_justification": "Two separate townsfolk report the stoppage, and Bentley frames it as unprecedented, making the unexplained cause conspicuous.",
+     "grounding": "high",
+     "investigative_depth_justification": "The answer would reveal an underlying cause cutting off supplies to the whole town, not a simple fact.",
+     "investigative_depth": "medium",
+     "narrative_payoff_justification": "Learning why the town has been cut off would explain the town's hardship and could change the party's understanding of its troubles.",
+     "narrative_payoff": "medium",
+     "investigative_potential_justification": "The party could question merchants and townsfolk or follow the supply route to trace where shipments stop.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_4",
+    "id": "fact_13",
+    "kind": "threat",
+    "text": "With no shipments reaching Brandonsford, the town's supplies are running short; Bentley says the missing shipment is hurting the whole town, and Gill says Warwick the smith has little left to sell.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "low",
+    "evidence": [
+     "beat_12",
+     "beat_27"
+    ],
+    "classification": {
+     "harm_origin": "unclear",
+     "negative_outcome_clarity_justification": "Bentley and Gill describe a specific harm: the tavern cannot restock and shops have little to sell, hurting the town.",
+     "negative_outcome_clarity": "medium",
+     "outcome_severity_justification": "The harm described is economic hardship and shortage, not established danger to life.",
+     "outcome_severity": "low",
+     "evidentiary_strength_justification": "Two townsfolk independently report the shortage, but its extent is only described by them.",
+     "evidentiary_strength": "medium",
+     "evidence_of_progression_justification": "Nothing has arrived for months and the shipment is a week overdue, an ongoing pattern, though no worsening is described.",
+     "evidence_of_progression": "medium",
+     "preventability_justification": "The party could look into the missing shipment, but since the cause is unknown the means are uncertain.",
+     "preventability": "medium"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_5",
+    "id": "fact_14",
+    "kind": "could_use",
+    "text": "Drop Dead Ned offers himself and his killer wasp for hire at 100 gold a week, doing anything as long as he gets to kill people with the wasp; Dr. Uriah said he would think about it.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_2"
+    ],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_10",
+     "beat_18",
+     "beat_19",
+     "beat_20"
+    ],
+    "classification": {
+     "opening_basis": "Trigger: paying Ned 100 gold a week to hire him. Benefit: an extra killer and his wasp, which he uses to kill things fast, added to the party's fighting strength against the dragon the Reeve wants killed.",
+     "opening_type": "enabling",
+     "form": "opening",
+     "helps_thread": "thread_2",
+     "role": "direct",
+     "support_basis": "Ned adds a willing killer and a fast-killing wasp to a dragon hunt, though nothing established shows the wasp works on a dragon and his condition is killing people.",
+     "goal_support": "low",
+     "action_basis": "Ned explicitly offered his and the wasp's services for 100 gold a week, and Uriah is weighing it.",
+     "action_supported": "yes",
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_6",
+    "id": "fact_15",
+    "kind": "want",
+    "text": "Get Farmer Gill's mule Shamus.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "low",
+    "actionability": "medium",
+    "evidence": [
+     "beat_23",
+     "beat_26"
+    ],
+    "classification": {
+     "serves_thread": null,
+     "significance": "incidental",
+     "adventure_priority": null
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_6",
+    "id": "fact_16",
+    "kind": "could_use",
+    "text": "Farmer Gill offers Dunk his mule Shamus for 100 gold, or in trade for work, the big work being killing the dragon outside town.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [
+     "thread_2"
+    ],
+    "importance": "medium",
+    "actionability": "medium",
+    "evidence": [
+     "beat_23",
+     "beat_26"
+    ],
+    "classification": {
+     "opening_basis": "The trigger is paying 100 gold or killing the dragon; the benefit is simply obtaining the mule, which is the want itself, so the action pays the item's own price.",
+     "opening_type": "goal_pursuit",
+     "form": "opening",
+     "helps_thread": "thread_6",
+     "role": "direct",
+     "support_basis": "Meeting Gill's price would get Dunk the mule outright; it adds no separate advantage beyond achieving the want.",
+     "goal_support": "high",
+     "action_basis": "Gill explicitly offered the mule for 100 gold and named killing the dragon as acceptable work in trade.",
+     "action_supported": "yes",
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "Killing the dragon as Gill's price for the mule",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_7",
+    "id": "fact_17",
+    "kind": "want",
+    "text": "Catch whoever empties Quinn's good ale stock at the Golden Egg each night and collect Quinn's 100 gold.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_31",
+     "beat_32"
+    ],
+    "classification": {
+     "serves_thread": null,
+     "significance": "side",
+     "adventure_priority": null
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_1"
+   },
+   {
+    "thread": "thread_7",
+    "id": "fact_18",
+    "kind": "could_use",
+    "text": "Quinn and Sir Phidipaldi have planned a fake ale delivery: Quinn brings bottles, they fill them with water, and Sir Phidipaldi makes a big show of delivering ale to the Golden Egg to see who comes for it.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": false,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_32"
+    ],
+    "classification": {
+     "opening_basis": "Trigger: staging the showy fake delivery. Benefit: it baits the nightly thief into revealing themselves without risking real stock, which Quinn proposed for exactly this purpose.",
+     "opening_type": "enabling",
+     "form": "opening",
+     "helps_thread": "thread_7",
+     "role": "direct",
+     "support_basis": "It gives the party a concrete way to draw out and observe whoever takes Quinn's ale, though it is untested whether the thief will take the bait.",
+     "goal_support": "medium",
+     "action_basis": "Quinn proposed the sting and agreed to supply bottles; Sir Phidipaldi agreed to perform the delivery.",
+     "action_supported": "yes",
+     "acquired_by_acting_on_opening": false
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_2"
+   },
+   {
+    "thread": "thread_7",
+    "id": "fact_19",
+    "kind": "unknown",
+    "text": "Who or what empties Quinn's good ale each night, leaving half the glasses empty or knocked over? Quinn believes it is Bentley.",
+    "state": "open",
+    "change": "new",
+    "ended_how": null,
+    "learned_this_session": true,
+    "definite_end": null,
+    "possibly_moot": null,
+    "certainty": "established",
+    "uncertain_reason": null,
+    "about_thread": null,
+    "also_bears_on": [],
+    "importance": "medium",
+    "actionability": "high",
+    "evidence": [
+     "beat_31"
+    ],
+    "classification": {
+     "question_basis": "Quinn reports his stock vanishing nightly with glasses emptied or knocked over and accuses Bentley only on the basis of Bentley's brew being popular; the culprit is the hidden truth the sting aims to expose. Identifying it is the core of the side job, not an adventure-level end, so it is framed as a revelation.",
+     "question_role": "revelation",
+     "goal_thread": "thread_7",
+     "grounding_justification": "Quinn explicitly describes the recurring nightly loss and offers an unproven suspect, making the culprit conspicuously unresolved.",
+     "grounding": "high",
+     "investigative_depth_justification": "The answer reveals a hidden nightly actor and their motive, and may overturn Quinn's accusation of Bentley.",
+     "investigative_depth": "medium",
+     "narrative_payoff_justification": "Learning the true culprit would explain the mystery and change how the party sees Bentley or Quinn.",
+     "narrative_payoff": "medium",
+     "investigative_potential_justification": "It supports staking out the tavern, the planned sting and questioning townsfolk.",
+     "investigative_potential": "medium",
+     "question_type": "open_ended"
+    },
+    "resource_subject": "",
+    "classification_change_basis": "",
+    "temporary_id": "fact_new_3"
+   }
+  ]
+ }
+}

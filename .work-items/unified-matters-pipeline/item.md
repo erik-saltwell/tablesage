@@ -44,3 +44,9 @@ Current implementation (2026-11-01): [pass 12](experiments/session-004/pass-12/R
 
 
 Current revision (2026-11-01, SRC-60): [pass 13](experiments/session-004/pass-13/README.md) implements the completed pass 12 review’s generic prompt refinements and preserves all explicit allowances/minor severity judgments in learnings and the synchronized review guide. All 28 offline direct checks passed; schemas and selection semantics are unchanged. No new outputs generated. Resume with user inspection or a separately requested fresh chained run; overall status remains implementing.
+
+Current revision (2026-11-01): [pass 14](experiments/session-004/pass-14/README.md) revises pass 13's prompts for generality, removing case-shaped guidance and fictional echoes of the test Sessions without changing rule meanings, schemas or selection. Offline checks passed; nothing generated yet. Resume with a requested fresh chained run. Status remains implementing.
+
+Current revision (2026-11-02): pass 14 has since been generated (log finished 2026-11-02T04:58:32Z). [Pass 15](experiments/session-004/pass-15/README.md) adds a `detail` field to the step 6 writer's output, written before each bullet's `text`, so information a bullet does not need has somewhere to go; `summary.md` renders only `text`, and `matters.json` keeps `detail`. It reuses pass 14's step 1–5 outputs for a controlled comparison. Offline checks passed; generated 2026-11-02; repeat runs showed it omitting trailing open headings in 4 of 7 calls (results in its README, unreviewed by the user). Resume with the user's review of the pass 15 Summaries against pass 14. Status remains implementing.
+
+Update (2026-11-02): the `detail` field was reverted at the user's request; pass 15 now runs pass 14's step 6, and a verification Session 001 run completed. Resume with the user's new approach to extraneous detail. Status remains implementing.

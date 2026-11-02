@@ -1,0 +1,19 @@
+2026-11-02T18:00:15Z
+=== chain s001 --from 6
+  step5: 6 of 14 Last session candidates, 12 of 19 open facts shown
+{"timestamp": "2026-11-02T18:00:48.359Z", "level": "info", "service": "app", "environment": "development", "duration_ms": 31438.74, "op": "call_llm", "prompt_name": "unified_pass15_step6", "model": "anthropic/claude-opus-5-5", "provider": "anthropic", "litellm_version": "1.99.0", "system_prompt_chars": 15608, "user_prompt_chars": 11151, "response_kind": "structured_json", "response_schema_name": "unified_pass15_step6", "response_schema": {"title": "SummaryWriting", "type": "object", "additionalProperties": false, "required": ["last_session", "open", "session_cue_scene"], "properties": {"last_session": {"type": "array", "items": {"$ref": "#/$defs/Item"}}, "open": {"type": "array", "items": {"$ref": "#/$defs/Item"}}, "session_cue_scene": {"type": "string", "description": "Must match this regular expression: ^scene_[0-9]+$"}}, "$defs": {"Item": {"type": "object", "additionalProperties": false, "required": ["id", "detail", "text"], "properties": {"id": {"type": "string", "minLength": 1}, "detail": {"type": "string"}, "text": {"type": "string", "minLength": 1}}}}}, "response_schema_sha256": "3ff2638729eda3697548adb922537fc8a5c17e84b617be5961f56fd985fa00f2", "response_schema_supported": true, "strict_schema": false, "model_options": {"reasoning_effort": "high", "drop_params": false}, "streaming": true, "stream_chunk_count": 273, "response_id": "chatcmpl-38ff6336-7422-4077-b030-07dd3303bced", "response_model": "claude-opus-5-5", "finish_reason": "stop", "response_content_chars": 4911, "response_content_nonempty": true, "prompt_tokens": 9918, "completion_tokens": 3629, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0, "response_json_valid": true, "response_json_shape": {"type": "object", "fields": {"last_session": {"type": "array", "length": 6, "item_types": ["dict"], "first_item": {"type": "object", "fields": {"id": {"type": "string", "length": 8}, "detail": {"type": "string", "length": 138}, "text": {"type": "string", "length": 102}}}}, "open": {"type": "array", "length": 11, "item_types": ["dict"], "first_item": {"type": "object", "fields": {"id": {"type": "string", "length": 6}, "detail": {"type": "string", "length": 56}, "text": {"type": "string", "length": 43}}}}, "session_cue_scene": {"type": "string", "length": 7}}}}
+  step6: 32s
+  PROBLEM: open IDs do not match the selection
+Traceback (most recent call last):
+  File "/home/eriksalt/proj/tablesage/.work-items/unified-matters-pipeline/experiments/session-004/pass-15/run15.py", line 799, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/eriksalt/proj/tablesage/.work-items/unified-matters-pipeline/experiments/session-004/pass-15/run15.py", line 766, in main
+    chain(args.name[0], args.start)
+  File "/home/eriksalt/proj/tablesage/.work-items/unified-matters-pipeline/experiments/session-004/pass-15/run15.py", line 721, in chain
+    writing = step6(out, scenes, threads, facts, stopping, selection) if start <= 6 else json.loads((out / "writing.json").read_text())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eriksalt/proj/tablesage/.work-items/unified-matters-pipeline/experiments/session-004/pass-15/run15.py", line 560, in step6
+    raise ValueError("Invalid Summary writing: " + "; ".join(problems))
+ValueError: Invalid Summary writing: open IDs do not match the selection
+FAILED: chain s001 --from 6

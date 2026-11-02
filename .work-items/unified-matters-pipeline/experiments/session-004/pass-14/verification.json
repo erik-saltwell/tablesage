@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checks": [
+    "Runner and helper Python syntax",
+    "Runner CLI imports without model calls",
+    "Runner differs from pass 13 only in pass number, docstring and selection version",
+    "historical_coverage.py, resource_reconciliation.py and classification_schema.json unchanged",
+    "Only the eight system.md prompt files differ from pass 13; schemas and templates unchanged",
+    "Eight output schemas are valid JSON Schema",
+    "Eight Jinja templates parse",
+    "Step 3 facts example validates the output schema and each decoded per-kind classification",
+    "No flagged phrase remains (rebate, statue, dead dwarf, more experienced than, map label/lore, who it would fit, seats four, forecast examples, curator, corrected distance, routine delegation, ally caveat list, original reason for travel, task-needs sentence, New Assets, optional-detail and mechanism allowances)",
+    "No test-Session proper noun in any prompt file",
+    "Every system prompt ends with its output format or final check section; no appended patch sections remain"
+  ],
+  "changed_prompts": [
+    "step1_scenes",
+    "step2_threads",
+    "step2c_changes",
+    "step3_facts_homes",
+    "step3r_resources",
+    "step4_stopping",
+    "step6_writing",
+    "step8_recap"
+  ],
+  "limits": "Offline text and contract checks only. No model generation; behavior of the revised prompts is unassessed."
+}

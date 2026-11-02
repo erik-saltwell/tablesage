@@ -1,0 +1,148 @@
+{
+ "last_session": [
+  {
+   "id": "thread_9",
+   "detail": "Warwick's shop also holds iron daggers, a long sword and much junk. The shirt is clearly magical. Dunk said it could help against the dragon and that he would go out one more night before rejoining the others.",
+   "text": "Dunk spotted a glowing mithril chain shirt in Warwick's shop and told the party he had a plan to get it."
+  },
+  {
+   "id": "thread_3",
+   "detail": "Dr. Uriah and Trout kicked the door open; Uriah threw vials of ink to reveal anything invisible; Trout caught the ink-soaked Clurichen in his bag of fish. Naggeneen says he drinks to unwind and has a problem. He begged release for his pot of gold or a secret; Sir Phidipaldi refused. Quinn said he knew what he would do with him and paid Sir Phidipaldi, Trout and Dr. Uriah 33 gold each.",
+   "text": "Trout bagged Naggeneen, the Clurichen stealing Quinn's ale, and Quinn hung him behind the bar."
+  },
+  {
+   "id": "thread_10",
+   "detail": "Ingrid loves Warwick but has never spoken to him; she leaves gifts on his windowsill nightly and fears dying of shame if he wakes and learns of it. The potion needs wine from the Fauns Grove, north of town across the river. Dunk mixed about 20% faun wine with 80% tavern wine so it would still smell familiar.",
+   "text": "Dunk proposed that Ingrid brew a sleeping potion for Warwick, whom she secretly watches sleep. He later gave her heavily diluted faun wine for it."
+  },
+  {
+   "id": "thread_11",
+   "detail": "Father William had sent Brother Dirk a while ago to kill the dragon, starting at the Barrow Mound. Trout led the decision to walk there, told Dunk to meet them, and planned to avoid the witch's house and check a marked location on the way.",
+   "text": "Father William, the priest, said only Brandon's buried sword can kill the dragon, so the party set out for the Barrow Mound."
+  },
+  {
+   "id": "thread_1",
+   "detail": "Dr. Uriah asked for the Barrow Mound and the coven to be marked. The party planned to check a marked location on the way to the Barrow.",
+   "text": "Father William marked the Barrow Mound and the witch's home on the party's map."
+  },
+  {
+   "id": "thread_13",
+   "detail": "Uriah agreed to penance at the Barrow Mound and a 10 gold donation for its upkeep.",
+   "text": "Dr. Uriah promised Father William penance and a donation in return for marking the map."
+  },
+  {
+   "id": "thread_2",
+   "detail": "No climbing is needed to reach the lair. George says its poison-dripping jaws kill with one bite, so he cut off his own bitten arm, and it spits sulfur that smells of rotten eggs.",
+   "text": "George, who lost an arm to the dragon, said its lair lies at the foot of the northern mountains."
+  },
+  {
+   "id": "thread_8",
+   "detail": "Terms: Squints funds himself until the first treasure, picks second after the elite members, gets his own gear, fights monsters immediately and takes Trout's orders. Trout later sent him in as bait at the giant's cottage, whispering that they would not actually rescue him; Sir Phidipaldi agreed.",
+   "text": "Trout recruited the halfling Squints as a junior member of his Halfling Corps."
+  },
+  {
+   "id": "scene_10",
+   "detail": "Dunk joined the dancing and drank their wine, then their emergency wine, with no effect. He asked for wine for anxious moments on his journeys and traded a crusty rabbit's foot that had kept a village child safe for a faun's necklace flask.",
+   "text": "Dunk out-drank the fauns at their grove and traded a rabbit's foot for a flask of faun wine."
+  },
+  {
+   "id": "beat_72",
+   "detail": "Ingrid sees the fairies when she visits her friend Vivian, who lives in the forest.",
+   "text": "Ingrid told Dr. Uriah that fairies who once stayed hidden are coming out more often."
+  },
+  {
+   "id": "thread_14",
+   "detail": "Brother Dirk was bound and gagged in the sack. Dr. Uriah smashed a window as a distraction while Dunk and Sir Phidipaldi opened the door. The slow giant chased them across the field before tiring.",
+   "text": "Squints pulled Brother Dirk from a giant's cottage, and the party outran the waking giant."
+  },
+  {
+   "id": "thread_15",
+   "detail": "Sir Phidipaldi said they were also headed to the Barrow; Dr. Uriah asked what Father William would say. Squints was pleased to have a follower; Dirk gave no reply.",
+   "text": "Brother Dirk wanted to go home, but Sir Phidipaldi objected and Trout assigned him to Squints."
+  }
+ ],
+ "open": [
+  {
+   "id": "fact_4",
+   "detail": "The dragon's body must be dragged into town to collect.",
+   "text": "Kill the black dragon and collect Eric the Reeve's 1000 gold, though George doubts Eric has it."
+  },
+  {
+   "id": "fact_1",
+   "detail": "",
+   "text": "Find the treasure shown on the party's map."
+  },
+  {
+   "id": "fact_23",
+   "detail": "",
+   "text": "George says nothing pierces the dragon's black scales; his friends' arrows and swords all failed."
+  },
+  {
+   "id": "fact_36",
+   "detail": "",
+   "text": "If Dunk helps Ingrid give Warwick her sleeping potion tonight, Warwick will sleep while Dunk is inside with the mithril shirt. The diluted faun wine and Ingrid's uncertain skill may weaken it."
+  },
+  {
+   "id": "fact_41",
+   "detail": "The dragon's scales have resisted everything else.",
+   "text": "If the party retrieves the sword buried with Sir Brandon, they would have the weapon Father William says the dragon requires. George says no one knows if the legend is true or where the sword is."
+  },
+  {
+   "id": "fact_5",
+   "detail": "Lady Hilda wears chain mail and carries a shield.",
+   "text": "If the party pays Lady Hilda, a seasoned fighter, she will join their dragon hunt. She won't go alone."
+  },
+  {
+   "id": "fact_14",
+   "detail": "Dr. Uriah said he would think about it.",
+   "text": "If the party hires Drop Dead Ned at 100 gold a week, he and his killer wasp will do anything, as long as he gets to kill people."
+  },
+  {
+   "id": "fact_25",
+   "detail": "Dunk plans to get it.",
+   "text": "If Dunk gets Warwick's mithril chain shirt, it could protect against the dragon."
+  },
+  {
+   "id": "fact_2",
+   "detail": "",
+   "text": "Where are the map's marked locations, and which one holds the treasure?"
+  },
+  {
+   "id": "fact_12",
+   "detail": "Bentley's restocking shipment is a week overdue, and nothing has come into Brandonsford in months.",
+   "text": "What happened to Bentley's shipment, and why has nothing reached Brandonsford?"
+  },
+  {
+   "id": "fact_7",
+   "detail": "Sir Brandon's dragon was killed centuries ago and none has appeared since.",
+   "text": "Where did this new dragon come from?"
+  },
+  {
+   "id": "fact_37",
+   "detail": "They are to meet again tonight; the potion is brewed from the faun wine.",
+   "text": "Dunk must help Ingrid into Warwick's house to give him the sleeping potion once she brews it."
+  },
+  {
+   "id": "fact_46",
+   "detail": "Agreed in return for William marking the Barrow Mound and the witch's home on the map.",
+   "text": "Dr. Uriah must do penance for Father William at Brandon's Barrow Mound."
+  },
+  {
+   "id": "fact_47",
+   "detail": "Agreed in return for William marking the map.",
+   "text": "Dr. Uriah must donate 10 gold to Father William for the Barrow Mound's upkeep."
+  },
+  {
+   "id": "fact_31",
+   "detail": "Under Trout's Halfling Corps terms, Squints funds himself until then, fights monsters and takes Trout's orders.",
+   "text": "The party must give Squints second pick of the first treasure, after the elite members."
+  },
+  {
+   "id": "fact_9",
+   "detail": "The dragon killed George's friends at its lair and cost him his arm.",
+   "text": "George says the black dragon cannot fly yet but soon will, dooming the town. Gill's three sons are hunting it now."
+  }
+ ],
+ "session_cue_scene": "scene_6",
+ "problems": []
+}

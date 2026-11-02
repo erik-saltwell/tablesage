@@ -12,6 +12,7 @@ The review is judged on **detection accuracy** (it finds the patterns that are r
 ## Inputs
 
 - **Guide:** [`review-guide.md`](review-guide.md), built by `extract-learnings`, plus the user's own checks in [`added-checks.md`](added-checks.md). If the guide is missing, stop and say that `extract-learnings` must run first.
+- **Allowances:** [`learnings/allowances.md`](../../../learnings/allowances.md), the particular occurrences the user has accepted. Read it directly rather than relying on the guide, so an allowance recorded after the guide was built still applies.
 - **Latest pass:** the `pass-N` folder under `.work-items/unified-matters-pipeline/experiments/session-004/` with the highest N, compared numerically (`pass-10` is later than `pass-9`).
 - **Prompts:** every file under that pass's `prompts/` folder (`system.md`, `template.j2`, `schema.json` for each step). Schema descriptions are prompt text. The copies under `runs/*/prompts/` are rendered with Session input, so they are not prompt checks' subject.
 - **Summaries:** each `runs/sNNN/summary.md` in that pass, in Session order. The pass may hold all four test Sessions or fewer. A pass that has not been generated yet has none: review its prompts only, and say "No Summaries yet; prompt checks only" in the header.
@@ -19,7 +20,7 @@ The review is judged on **detection accuracy** (it finds the patterns that are r
 
 ## Steps
 
-1. **Load.** Read the guide and `added-checks.md` in full. Compute the learnings state hash (command below) and compare it with the hash in the guide's header. Find the latest pass and list its Summaries.
+1. **Load.** Read the guide, `added-checks.md` and `allowances.md` in full. Compute the learnings state hash (command below) and compare it with the hash in the guide's header. Find the latest pass and list its Summaries.
 
 2. **Prompt checks.** Apply every check with scope `prompts`. For the overtuning check, search every prompt file for the guide's overtuning reference list and for the proper nouns and distinctive situations in this pass's own Summaries and beats. Each hit is a finding unless it is generic vocabulary (a dragon, a tavern) used without the test Session's particulars; say which when it is close.
 
@@ -28,9 +29,11 @@ The review is judged on **detection accuracy** (it finds the patterns that are r
    - A check comparing with the previous Session's Summary is `N/A` when this pass has no Summary for that Session.
    - Judge the Summary text as written. Use the run's records only to establish what happened.
 
-4. **Write the review** in the *Review Format* below, in the chat. It shows only **findings**: `FAIL`, `NOT MET` and `ADVISORY` results. It is complete when every finding from steps 2 and 3 appears in it.
+4. **Drop allowed occurrences.** Before writing, compare every `FAIL`, `NOT MET` and `ADVISORY` result with the allowances. Drop a result when it judges an allowed occurrence or one essentially the same: the same element (person, offer, question or event) of the same Session under the same heading, even if worded differently. Firmness (`firm`, `for now`, `tentative`) does not matter; all are dropped. Keep the result when it falls under the allowance's **Does not extend to**, or when it judges something else in the same bullet. When an allowance covers only part of a result (for example, one missing item among several in a Session-specific expectation), report the rest. If you can't tell whether an allowance applies, keep the finding and name the allowance in it.
 
-The review writes no files. It does not edit `learnings/`, the guide, the prompts or the outputs. When the user later gives a verdict on a finding, capture it then through [`learnings/maintenance.md`](../../../learnings/maintenance.md).
+5. **Write the review** in the *Review Format* below, in the chat. It shows only **findings**: `FAIL`, `NOT MET` and `ADVISORY` results that survived step 4. It is complete when every such finding from steps 2 and 3 appears in it.
+
+The review writes no files. It does not edit `learnings/`, the guide, the prompts or the outputs. When the user later gives a verdict on a finding, capture it then through [`learnings/maintenance.md`](../../../learnings/maintenance.md). A finding the user accepts ("fine for now", "either way") becomes an allowance, so later reviews stop reporting it.
 
 ## Results
 
@@ -50,7 +53,7 @@ The review writes no files. It does not edit `learnings/`, the guide, the prompt
 - the kind of change that would address it, taken from the check's fix direction and the evidence; it does not need to name the pipeline step responsible;
 - the check's sources (`EX-###`, `PREF-###`).
 
-The pipeline passes its review when no pattern check fails and every current Session-specific expectation is met. A Session-specific `NOT MET` must be fixed by general behavior. Writing a test Session's names, events or expected answers into a prompt fails the overtuning check.
+The pipeline passes its review when no pattern check fails and every current Session-specific expectation is met, after allowed occurrences are dropped. A Session-specific `NOT MET` must be fixed by general behavior. Writing a test Session's names, events or expected answers into a prompt fails the overtuning check.
 
 ## Review Format
 
@@ -63,6 +66,8 @@ Guide generated <date>, learnings state `<hash>` (<current | changed since the g
 
 Not checkable: <IDs and the reason, such as "RC-019 for Session 001: no earlier Session in this pass">.
 
+Allowed, not reported: <ALW IDs that suppressed at least one result>.
+
 ## Prompt Checks
 
 ## Summary Checks
@@ -74,7 +79,7 @@ Not checkable: <IDs and the reason, such as "RC-019 for Session 001: no earlier 
 #### <a heading the Summary contains, in Summary order>
 ```
 
-Write a section or subsection only when it holds at least one finding; leave out every one where everything passed. Within a subsection, list `FAIL` findings first, then `NOT MET`, then `ADVISORY`. The *Not checkable* line lists only checks that should have applied but could not, such as a comparison with a previous Session the pass lacks; omit it when there are none. A failing positive check whose heading the Summary lacks goes under *Across the Summary*.
+Write a section or subsection only when it holds at least one finding; leave out every one where everything passed. Within a subsection, list `FAIL` findings first, then `NOT MET`, then `ADVISORY`. The *Not checkable* line lists only checks that should have applied but could not, such as a comparison with a previous Session the pass lacks; omit it when there are none. The *Allowed, not reported* line lists only the allowance IDs, never the dropped findings; omit it when none applied. A failing positive check whose heading the Summary lacks goes under *Across the Summary*.
 
 Compute the learnings state hash from the repository root:
 

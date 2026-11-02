@@ -1,0 +1,10 @@
+step3: 19 facts (19 open) {'want': 4, 'owe': 0, 'blocked_by': 0, 'could_use': 6, 'unknown': 6, 'threat': 3}
+  possibly moot: []
+  definite_end false: []
+  uncertain: ['fact_4']
+  problems: none
+  similar open fact pairs (review for restatement):
+    0.37 fact_17 (thread_7, want) ~ fact_19 (thread_7, unknown)
+         Catch whoever empties Quinn's good ale stock at the Golden Egg each night and collect Quinn's 100 gold.
+         Who or what empties Quinn's good ale each night, leaving half the glasses empty or knocked over? Quinn believes it is Bentley.
+  cross-thread facts sharing 4-word phrases:
